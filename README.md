@@ -7,7 +7,7 @@
 
 XLS-20d is initially released on the NFT-Devnet in order to allow developers to test NFT capabilities, and server operators to understand the performance characteristics and implications of the proposed changes without compromising the performance of the XRPL.
 
-RippleX is just one contributor to the XRPL – there’s a whole community of independent developers building on it today for its inherent performance advantages and tokenization capabilities. One such project is Carbonland Trust, which is pushing the boundaries for potential NFT uses.
+RippleX is just one contributor to the XRPL – there’s a whole community of independent developers building on it today for its inherent performance advantages and tokenization capabilities. One such project is [Carbonland Trust](https://www.carbonlandtrust.com/), which is pushing the boundaries for potential NFT uses.
 
 In May, RippleX invited the developer community to provide feedback on XRPL's [proposal](https://github.com/XRPLF/XRPL-Standards/discussions/46) to enhance NFT support on the XRP Ledger (XRPL).
 
