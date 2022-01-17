@@ -3,6 +3,7 @@
 .secret
 .infuraid
 config.js
+yarn.lock
 
 # dependencies
 /node_modules
