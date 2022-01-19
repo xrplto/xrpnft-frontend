@@ -1,9 +1,11 @@
-## Full stack NFT marketplace built with XRP Ledger, & Next.js
+## NFT marketplace built on XRP Ledger
 
 ### About XLS-20 NFT-Devnet from RippleX
 (Jan 11)
 
 [Technical Tutorial](http://xrpl.org/nftoken-tester-tutorial.html)
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/775543f2-b60a-4993-8dc6-a30249b5dd91/deploy-status)](https://app.netlify.com/sites/freedevsoft/deploys)
 
 XLS-20d is initially released on the NFT-Devnet in order to allow developers to test NFT capabilities, and server operators to understand the performance characteristics and implications of the proposed changes without compromising the performance of the XRPL.
 
@@ -19,7 +21,8 @@ Developers are welcome to start building apps and tokenization use cases, as wel
 
 Non-fungible tokens serve to encode ownership of physical, non-physical or purely digital goods, such as works of art and in-game items.
 
-The XLS-20d proposal introduces extensions to the XRP Ledger that would support a native NFT type, along with operations to enumerate, transfer and hold such tokens. With XLS-20d [live on XLS-20 Sandbox](https://xrpl.org/nft-conceptual-overview.html) today, developers can access all essential NFT functionality including minting, trading, and burning. Moreover, advanced features like automatic royalties, which enable more sophisticated royalty structures for creators, and co-ownership, which expands access possibilities to assets, are also built into the proposal.
+The XLS-20d proposal introduces extensions to the XRP Ledger that would support a native NFT type, along with operations to enumerate, transfer and hold such tokens. With XLS-20d [live on XLS-20 Sandbox](https://xrpl.org/nft-conceptual-overview.html) today, developers can access all essential NFT functionality including minting, trading, and burning.
+Moreover, advanced features like automatic royalties, which enable more sophisticated royalty structures for creators, and co-ownership, which expands access possibilities to assets, are also built into the proposal.
 
 The NFT-Devnet is a beta environment where developers can preview, test and experiment with XLS-20d on XRPL before it is enabled on the Mainnet.
 
