@@ -1,6 +1,4 @@
-import indigo from "@material-ui/core/colors/indigo";
-import green from "@material-ui/core/colors/green";
-import red from "@material-ui/core/colors/red";
+import { indigo, green, red } from '@mui/material/colors';
 import { createSlice } from '@reduxjs/toolkit';
 
 const primaryColor = indigo;

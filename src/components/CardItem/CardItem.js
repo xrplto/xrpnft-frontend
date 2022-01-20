@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardContent, CardMedia, Fade,  Typography } from '@material-ui/core';
+import { Card, CardActionArea, CardContent, CardMedia, Fade,  Typography } from '@mui/material';
 import React from 'react';
 
 const CardItem = ( props ) => {

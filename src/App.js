@@ -2,14 +2,16 @@ import React from "react";
 import {
   BrowserRouter as Router,
   Route,
-  Switch
+  Routes
 } from "react-router-dom";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import { MuiThemeProvider } from "@material-ui/core/styles";
-import { createMuiTheme } from "@material-ui/core/styles";
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
+//import { createMuiTheme } from "@material-ui/core/styles";
+import { createTheme, adaptV4Theme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
 
 import Home from "./containers/Home/Home";
+import TokenTester from "./containers/TokenTester/TokenTester";
 import Setting from "./containers/Setting/Setting";
 
 import MainLayout from "./layouts/MainLayout";
@@ -53,16 +55,17 @@ export default function App() {
   const theTheme = useSelector(getTheme);
 
      return (
-      <MuiThemeProvider theme={createMuiTheme(theTheme)}>
+      <MuiThemeProvider theme={createTheme(theTheme)}>
         <CssBaseline />
         {/* <div style={{ height: "100vh" }}> */}
           <Router>
-            <Switch>
+            <Routes>
               <DashboardRoute path="/dashboard" component={Home} />
+              <DashboardRoute path="/token_tester" component={TokenTester} />
               <DashboardRoute path="/setting" component={Setting} />
               <DashboardRoute exact path="/" component={Home} />
               <EmptyRoute component={NotFound} />
-            </Switch>
+            </Routes>
           </Router>
         {/* </div> */}
       </MuiThemeProvider>

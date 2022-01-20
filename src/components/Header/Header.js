@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import PersonIcon from "@material-ui/icons/Person";
-import Typography from "@material-ui/core/Typography";
-import { withStyles } from "@material-ui/core/styles";
+import React, { useEffect, useState } from 'react';
+import {AppBar, Toolbar, IconButton, Typography} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import PersonIcon from '@mui/icons-material/Person';
+import { withStyles } from '@mui/styles';
 import Web3 from 'web3';
 
 const styles = theme => ({

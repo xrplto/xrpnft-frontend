@@ -1,14 +1,16 @@
 import React from "react";
 import classNames from "classnames";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import SettingsIcon from "@material-ui/icons/Settings";
+
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import TokenIcon from '@mui/icons-material/Token';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { Link } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from '@mui/styles';
 
 const drawerWidth = 240;
 
@@ -56,6 +58,14 @@ const Sidebar = props => {
               <DashboardIcon />
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
+          </ListItem>
+        </Link>
+        <Link to="/token_tester">
+          <ListItem button>
+            <ListItemIcon>
+              <TokenIcon />
+            </ListItemIcon>
+            <ListItemText primary="NFToken Tester" />
           </ListItem>
         </Link>
         <Link to="/setting">

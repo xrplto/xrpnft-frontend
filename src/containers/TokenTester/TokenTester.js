@@ -15,7 +15,7 @@ export default function Setting() {
 
   return (
   <div>
-    <Typography variant="h5">Settingsr</Typography>
+    <Typography variant="h5">NFToken Tester</Typography>
     <Card>
       <CardContent>
         <List>

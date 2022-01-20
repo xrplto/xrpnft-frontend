@@ -1,5 +1,5 @@
 import React, { Fragment, Component } from "react";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from '@mui/styles';
 import classNames from "classnames";
 
 import Header from "../components/Header";
