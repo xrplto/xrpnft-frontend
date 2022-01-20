@@ -55,7 +55,7 @@ export default function App() {
   const theTheme = useSelector(getTheme);
 
      return (
-      <MuiThemeProvider theme={createTheme(theTheme)}>
+      <ThemeProvider theme={createTheme(theTheme)}>
         <CssBaseline />
         {/* <div style={{ height: "100vh" }}> */}
           <Router>
@@ -68,6 +68,6 @@ export default function App() {
             </Routes>
           </Router>
         {/* </div> */}
-      </MuiThemeProvider>
+      </ThemeProvider>
     );
 };
