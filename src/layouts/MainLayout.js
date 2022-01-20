@@ -1,64 +1,47 @@
-import React, { Fragment, Component } from "react";
-import { withStyles } from '@mui/styles';
-import classNames from "classnames";
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+// material
+import { styled } from '@mui/material/styles';
+//
+import DashboardNavbar from './DashboardNavbar';
+import DashboardSidebar from './DashboardSidebar';
 
-import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
+// ----------------------------------------------------------------------
 
-const drawerWidth = 240;
+const APP_BAR_MOBILE = 64;
+const APP_BAR_DESKTOP = 92;
 
-const styles = theme => ({
-  root: {
-    display: "flex"
-  },
-  content: {
-    flexGrow: 1,
-    marginLeft: theme.spacing(9),
-    padding: theme.spacing(3),
-    marginTop: theme.spacing(7),
-    overflowX: "hidden"
-  },
-  contentShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  }
+const RootStyle = styled('div')({
+  display: 'flex',
+  minHeight: '100%',
+  overflow: 'hidden'
 });
 
-class MainLayout extends Component {
-  state = {
-    open: false
-  };
-
-  handleToggleDrawer = () => {
-    this.setState(prevState => {
-      return { open: !prevState.open };
-    });
-  };
-
-  render() {
-    const { classes, children } = this.props;
-    return (
-      <Fragment>
-        <div className={classes.root}>
-          <Header
-            handleToggleDrawer={this.handleToggleDrawer}
-          />
-          <main
-            className={classNames(classes.content, {
-              [classes.contentShift]: this.state.open
-            })}
-          >
-            {children}
-          </main>
-        </div>
-        <Sidebar open={this.state.open} drawerWidth={drawerWidth} />
-      </Fragment>
-    );
+const MainStyle = styled('div')(({ theme }) => ({
+  flexGrow: 1,
+  overflow: 'auto',
+  minHeight: '100%',
+  paddingTop: APP_BAR_MOBILE + 24,
+  paddingBottom: theme.spacing(10),
+  [theme.breakpoints.up('lg')]: {
+    paddingTop: APP_BAR_DESKTOP + 24,
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2)
   }
-}
+}));
 
-export default withStyles(styles)(MainLayout);
+// ----------------------------------------------------------------------
+
+export default function MainLayout() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <RootStyle>
+      <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
+      <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+      <MainStyle>
+        <Outlet />
+      </MainStyle>
+    </RootStyle>
+  );
+}
