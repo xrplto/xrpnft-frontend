@@ -33,7 +33,10 @@ const tokens = [...Array(19)].map((_, index) => ({
   id: faker.datatype.uuid(),
   imgUrl: mockImgToken(index + 1),
   name: TOKEN_NAME[index],
-  company: faker.company.companyName(),
+  price: '$ ' + faker.datatype.number({ min: 4, max: 99, precision: 0.01 }),
+  dailypercent: faker.datatype.number({ min: 4, max: 10, precision: 0.01 }) + ' %',
+  marketcap: '$ ' + faker.datatype.number({ min: 3000000, max: 10000000 }),
+  holders: faker.datatype.number({ min: 100000, max: 1000000 }),
   isVerified: faker.datatype.boolean(),
   status: sample(['active', 'banned']),
   role: sample([

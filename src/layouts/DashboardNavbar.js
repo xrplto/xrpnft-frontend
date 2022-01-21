@@ -9,17 +9,22 @@ import { MHidden } from '../components/@material-extend';
 //
 import AccountPopover from './AccountPopover';
 
+//import { createTheme } from '@mui/material/styles';
+
+//import { purple } from '@mui/material/colors';
+
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
 const APPBAR_MOBILE = 64;
-const APPBAR_DESKTOP = 92;
+const APPBAR_DESKTOP = 72;
 
 const RootStyle = styled(AppBar)(({ theme }) => ({
   boxShadow: 'none',
-  backdropFilter: 'blur(6px)',
-  WebkitBackdropFilter: 'blur(6px)', // Fix on Mobile
-  backgroundColor: alpha(theme.palette.background.default, 0.72),
+  backdropFilter: 'blur(1px)',
+  WebkitBackdropFilter: 'blur(1px)', // Fix on Mobile
+  //backgroundColor: alpha(theme.palette.background.default, 0.72),
+  backgroundColor: alpha("#00AB88", 0.4),
   [theme.breakpoints.up('lg')]: {
     width: `calc(100% - ${DRAWER_WIDTH + 1}px)`
   }

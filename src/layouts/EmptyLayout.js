@@ -1,6 +1,7 @@
-import { Link as RouterLink, Outlet } from 'react-router-dom';
+//import { Link as RouterLink, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 // material
-import { styled } from '@mui/material/styles';
+//import { styled } from '@mui/material/styles';
 // ----------------------------------------------------------------------
 
 // const HeaderStyle = styled('header')(({ theme }) => ({
@@ -17,11 +18,11 @@ import { styled } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
 
-{/* <HeaderStyle>
-  <RouterLink to="/">
-    <Logo />       
-  </RouterLink>
-</HeaderStyle> */}
+// <HeaderStyle>
+//   <RouterLink to="/">
+//     <Logo />       
+//   </RouterLink>
+// </HeaderStyle>
 
 export default function EmptyLayout() {
   return (
