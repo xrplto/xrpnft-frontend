@@ -1,8 +1,9 @@
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import { sentenceCase } from 'change-case';
+//import { sentenceCase } from 'change-case';
 import { useState } from 'react';
-import plusFill from '@iconify/icons-eva/plus-fill';
+//import plusFill from '@iconify/icons-eva/plus-fill';
+import cloudRefresh from '@iconify/icons-fontisto/cloud-refresh';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
@@ -22,7 +23,7 @@ import {
 } from '@mui/material';
 // components
 import Page from '../components/Page';
-import Label from '../components/Label';
+//import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
 import SearchNotFound from '../components/SearchNotFound';
 import { TokenListHead, TokenListToolbar, TokenMoreMenu } from '../components/token';
@@ -33,10 +34,11 @@ import TOKENLIST from '../_mocks_/tokens';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'price', label: 'Price', alignRight: false },
+  { id: 'dailypercent', label: '24H %', alignRight: false },
+  { id: 'marketcap', label: 'Market Cap', alignRight: false },
+  { id: 'holders', label: 'Holders', alignRight: false },
+  { id: 'trustlines', label: 'Trust Lines', alignRight: false },
   { id: '' }
 ];
 
@@ -75,9 +77,10 @@ export default function Token() {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('');
   const [filterName, setFilterName] = useState('');
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [labelRowsPerPage/*, setLabelRowsPerPage*/] = useState('Rows');
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -131,20 +134,22 @@ export default function Token() {
 
   const isTokenNotFound = filteredTokens.length === 0;
 
+  // style={{border: '1px solid red'}}
+  
   return (
-    <Page title="Token">
+    <Page title="Tokens">
       <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Token List
+            Tokens
           </Typography>
           <Button
             variant="contained"
             component={RouterLink}
             to="#"
-            startIcon={<Icon icon={plusFill} />}
+            startIcon={<Icon icon={cloudRefresh} />}
           >
-            New
+            Reload
           </Button>
         </Stack>
 
@@ -171,7 +176,7 @@ export default function Token() {
                   {filteredTokens
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, role, status, company, imgUrl, isVerified } = row;
+                      const { id, name, role/*, status*/, price, dailypercent, marketcap, holders, imgUrl/*, isVerified*/ } = row;
                       const isItemSelected = selected.indexOf(name) !== -1;
 
                       return (
@@ -197,17 +202,20 @@ export default function Token() {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{company}</TableCell>
+                          <TableCell align="left">{price}</TableCell>
+                          <TableCell align="left">{dailypercent}</TableCell>
+                          <TableCell align="left">{marketcap}</TableCell>
+                          <TableCell align="left">{holders}</TableCell>
                           <TableCell align="left">{role}</TableCell>
-                          <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-                          <TableCell align="left">
+                          {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell> */}
+                          {/* <TableCell align="left">
                             <Label
                               variant="ghost"
                               color={(status === 'banned' && 'error') || 'success'}
                             >
                               {sentenceCase(status)}
                             </Label>
-                          </TableCell>
+                          </TableCell> */}
 
                           <TableCell align="right">
                             <TokenMoreMenu />
@@ -239,6 +247,7 @@ export default function Token() {
             component="div"
             count={TOKENLIST.length}
             rowsPerPage={rowsPerPage}
+            labelRowsPerPage={labelRowsPerPage}
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}

@@ -4,8 +4,8 @@ import MainLayout from './layouts/MainLayout';
 import EmptyLayout from './layouts/EmptyLayout';
 //
 import Market from './pages/Market';
-import DashboardApp from './pages/DashboardApp';
 import Tokens from './pages/Token';
+import TokenTester from './pages/TokenTester';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -17,8 +17,8 @@ export default function Router() {
       children: [
         { path: '/', element: <Market /> },
         { path: 'market', element: <Market /> },
-        { path: 'app', element: <DashboardApp /> },
-        { path: 'token', element: <Tokens /> },
+        { path: 'tokens', element: <Tokens /> },
+        { path: 'tester', element: <TokenTester /> },
         { path: '*', element: <Navigate to="/404/NotFound" /> }
       ]
     },

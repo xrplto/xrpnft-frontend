@@ -1,10 +1,22 @@
 //import React, { useState, useEffect } from "react";
 // material
-import { Box, Grid, Container, Typography } from '@mui/material';
+import { 
+  Box, 
+//  Grid,
+//  TextField,
+  Container,
+  Typography,
+  Card,
+//  Table,
+//  TableBody,
+//  TableRow,
+//  TableCell,
+//  TableContainer
+ } from '@mui/material';
 //import { TextField, Grid } from '@mui/material';
 // components
 import Page from '../components/Page';
-
+import TesterControls from '../components/tester/TesterControls';
 
 //import axios from 'axios'
 //import { concatinate, getAssets } from "../context/counterReducer";
@@ -89,15 +101,18 @@ import Page from '../components/Page';
 //   );
 // };
 
-export default function DashboardApp() {
+export default function TokenTester() {
   return (
-    <Page title="Dashboard">
+    <Page title="NFToken Tester">
       <Container maxWidth="xl">
-        <Box sx={{ pb: 5 }}>
-          <Typography variant="h4">Hi, Welcome back</Typography>
+        <Box sx={{ pb: 2 }}>
+          <Typography variant="h4">NFToken Tester</Typography>
         </Box>
-        <Grid container spacing={3}>
-        </Grid>
+
+        <Card sx={{ pl: 3, pb: 2 }}>
+          <TesterControls/>
+        </Card>
+        
       </Container>
     </Page>
   );
