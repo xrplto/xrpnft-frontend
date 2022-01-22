@@ -1,9 +1,8 @@
 ## NFT marketplace built on XRP Ledger
-
+![Total](./docs/screenshot.png)
 ![Market Page](./docs/1token_market.png)
-![Token List 1](./docs/2token_list.png)
-![Token List 2](./docs/3token_list2.png)
-![Token Tester](./docs/4token_tester.png)
+![Token List ](./docs/2token_list.png)
+![Token Tester](./docs/3token_tester.png)
 
 ### About XLS-20 NFT-Devnet from RippleX
 (Jan 11)
