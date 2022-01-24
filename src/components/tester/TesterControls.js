@@ -3,42 +3,47 @@ import {
   Box,
   TextField,
   Button,
-  Container,
+  IconButton,
+  Container
   } from '@mui/material';
-//import IconButton from '@mui/material/IconButton';
-//import Input from '@mui/material/Input';
-//import FilledInput from '@mui/material/FilledInput';
-//import OutlinedInput from '@mui/material/OutlinedInput';
-//import InputLabel from '@mui/material/InputLabel';
-//import InputAdornment from '@mui/material/InputAdornment';
-//import FormHelperText from '@mui/material/FormHelperText';
-//import FormControl from '@mui/material/FormControl';
-//import TextField from '@mui/material/TextField';
-//import Visibility from '@mui/icons-material/Visibility';
-//import VisibilityOff from '@mui/icons-material/VisibilityOff';
+
 import { Link as RouterLink } from 'react-router-dom';
+
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 export default function TesterControls() {
   const [values, setValues] = React.useState({
-    tokenUrl: 'ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi',
+    account: 'rht9PFsHK2rds9dp5Nt9op4VWAceR63vWH',
+    secret: 'snkPFbLVfK123mxH3SLGchmAAzd37',
+    showSecret: false,
+    tokenUrl: 'ipfs://QmXSSpHaG9DH5U7zQNkL4BZrBZioGG3xmG54mqPqTCpddQ',
     flags: '1',
     amount: '1000000'
   });
 
-  // const handleChange = (prop) => (event) => {
-  //   setValues({ ...values, [prop]: event.target.value });
-  // };
+  const handleChange = (prop) => (event) => {
+    setValues({ ...values, [prop]: event.target.value });
+  };
 
-  // const handleClickShowPassword = () => {
-  //   setValues({
-  //     ...values,
-  //     showPassword: !values.showPassword,
-  //   });
-  // };
+  const handleClickshowSecret = () => {
+    setValues({
+      ...values,
+      showSecret: !values.showSecret,
+    });
+  };
 
-  // const handleMouseDownPassword = (event) => {
-  //   event.preventDefault();
-  // };
+  const handleMouseDownSecret = (event) => {
+    event.preventDefault();
+  };
+
+  const handleClickShowAccountInfo = () => {
+    // setValues({
+    //   ...values,
+    //   showPassword: !values.showPassword,
+    // });
+  };
 
   // <Button
   //   variant="contained"
@@ -138,22 +143,33 @@ export default function TesterControls() {
             <TextField
                 label="Account"
                 id="standard-start-adornment"
+                value={values.account}
                 sx={{ m: 1, width: '40ch' }}
                 variant="standard"
+                InputProps={{endAdornment:<IconButton onClick={handleClickShowAccountInfo}><AccountBalanceWalletOutlinedIcon/></IconButton>}}
             />
         </div>
         <div>
           <TextField
             label="Secret"
             id="standard-start-adornment"
+            type={values.showSecret ? 'text' : 'password'}
+            value={values.secret}
+            onChange={handleChange('secret')}
             sx={{ m: 1, width: '40ch' }}
             variant="standard"
+            InputProps={{
+                endAdornment:<IconButton
+                    onClick={handleClickshowSecret}
+                    onMouseDown={handleMouseDownSecret}>
+                    {values.showSecret ? <VisibilityOff /> : <Visibility />}
+                </IconButton>}}
           />
         </div>
         <div>
           <TextField
             label="Token URL"
-            id="standard-start-adornment"
+            id="standard-end-adornment"
             value={values.tokenUrl}
             sx={{ m: 1, width: '80ch' }}
             variant="standard"

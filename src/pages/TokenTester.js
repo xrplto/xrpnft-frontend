@@ -1,7 +1,10 @@
 //import React, { useState, useEffect } from "react";
+import { Icon } from '@iconify/react';
 // material
 import { 
-  Box, 
+  Box,
+  Button,
+  Stack,
 //  Grid,
 //  TextField,
   Container,
@@ -17,6 +20,8 @@ import {
 // components
 import Page from '../components/Page';
 import TesterControls from '../components/tester/TesterControls';
+import { Link as RouterLink } from 'react-router-dom';
+import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 
 //import axios from 'axios'
 //import { concatinate, getAssets } from "../context/counterReducer";
@@ -100,15 +105,33 @@ import TesterControls from '../components/tester/TesterControls';
 //     </div>
 //   );
 // };
+// https://xrpl.org/xrp-testnet-faucet.html
 
+    // <Button
+    //     variant="contained"
+    //     component={RouterLink}
+    //     to="#"
+    //     startIcon={<PersonAddAltOutlinedIcon/>}
+    //     >
+    // </Button>
 export default function TokenTester() {
   return (
     <Page title="NFToken Tester">
       <Container maxWidth="xl">
-        <Box sx={{ pb: 2 }}>
-          <Typography variant="h4">NFToken Tester</Typography>
-        </Box>
-
+        <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={2} mb={1}>
+          <Typography variant="h4" gutterBottom>
+            NFToken Tester
+          </Typography>
+          <Button
+            variant="contained"
+            component={RouterLink}
+            to="https://xrpl.org/xrp-testnet-faucet.html"
+            startIcon={<PersonAddAltOutlinedIcon/>}
+          >
+            Add
+          </Button>
+        </Stack>
+        
         <Card sx={{ pl: 3, pb: 2 }}>
           <TesterControls/>
         </Card>

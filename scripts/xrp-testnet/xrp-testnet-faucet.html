@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>XRP Faucets - XRPL.org</title>
+    <!-- jQuery -->
+    <script src="assets/vendor/jquery-3.6.0.min.js"></script>
+
+    <!-- Stylesheet -->
+    <link href="assets/css/devportal2021-v6.css" rel="stylesheet" />
+</head>
+
+<body class="xrp-ledger-dev-portal sidebar-primary lang-en page-test-net" data-spy="scroll" data-target=".page-toc" data-offset="0">
+
+<!-- main column -->
+<main class="main col-md-7 col-lg-6 order-md-3  " role="main" id="main_content_body">
+
+<!--/.breadcrumbs-wrap--><section class="container-fluid pt-3 p-md-3">
+  <h1>XRP Faucets</h1>
+
+  <div class="content">
+    <p>Ripple runs these parallel XRP Ledger test networks, the Testnet and Devnet, to provide a testing platform for any software products built on the XRP Ledger without using real funds.</p>
+    <p>These funds are intended for <strong>testing</strong> only. The Testnet ledger and balances will be reset approximately every 90 days, or when otherwise necessary. Devnet funds may be reset without warning as needed.</p>
+     <div class="btn-toolbar" role="toolbar" aria-label="Button">
+      <button id="testnet-creds-button" class="btn btn-primary mr-2 mb-2">Generate Testnet credentials</button>
+      <button id="devnet-creds-button" class="btn btn-primary mr-2 mb-2">Generate Devnet credentials</button>
+      <button id="nftnet-creds-button" class="btn btn-primary mb-2">Generate NFT-Devnet credentials</button>
+    </div><!--/.btn-toolbar-->
+    <div id='your-credentials'></div>
+    <div id='loader' style="display: none;"><img class="throbber" src="assets/img/xrp-loader-96.png"> Generating Keys...</div>
+    <div id='address'></div>
+    <div id='secret'></div>
+    <div id='balance'></div>
+    <div id='sequence'> <div id='loader' style="display: none;"><img class="throbber" src="assets/img/xrp-loader-96.png"> Waiting...</div></div>
+  </div>
+</section>
+</main>
+<script type="application/javascript" src="assets/js/xrpl-2.0.0.min.js"></script>
+<script type='text/javascript' src='assets/js/test-net.js'></script>
+</body>
+</html>
