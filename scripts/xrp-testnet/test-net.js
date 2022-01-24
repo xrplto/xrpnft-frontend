@@ -53,7 +53,7 @@ function rippleTestNetCredentials(url, altnet_name) {
         data.account.secret).fadeIn('fast')
       balance.hide().html('<h3>Balance</h3> ' +
         Number(data.balance).toLocaleString('en') + ' XRP').fadeIn('fast')
-      sequence.html('<h3>Sequence</h3> <img class="throbber" src="assets/img/xrp-loader-96.png"> Waiting...').fadeIn('fast')
+      sequence.html('<h3>Sequence</h3> <img class="throbber" src="xrp-loader-96.png"> Waiting...').fadeIn('fast')
       if (altnet_name=="Testnet") {
         wait_for_seq("wss://s.altnet.rippletest.net:51233", data.account.address)
       } else if (altnet_name=="NFT-Devnet") {
