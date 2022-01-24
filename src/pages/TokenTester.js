@@ -23,6 +23,8 @@ import TesterControls from '../components/tester/TesterControls';
 import { Link as RouterLink } from 'react-router-dom';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 
+import ConfirmCreateAccount from '../components/dialog/confirmCreateAccount';
+
 //import axios from 'axios'
 //import { concatinate, getAssets } from "../context/counterReducer";
 //import { useSelector, useDispatch } from "react-redux";
@@ -115,6 +117,14 @@ import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
     //     >
     // </Button>
 export default function TokenTester() {
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
   return (
     <Page title="NFToken Tester">
       <Container maxWidth="xl">
@@ -124,12 +134,12 @@ export default function TokenTester() {
           </Typography>
           <Button
             variant="contained"
-            component={RouterLink}
-            to="https://xrpl.org/xrp-testnet-faucet.html"
+            onClick={handleClickOpen}
             startIcon={<PersonAddAltOutlinedIcon/>}
           >
             Add
           </Button>
+      	  <ConfirmCreateAccount />
         </Stack>
         
         <Card sx={{ pl: 3, pb: 2 }}>

@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import postageStamp from '@iconify/icons-mdi/postage-stamp';
 import shoppingBagFill from '@iconify/icons-eva/shopping-bag-fill';
 import mint from '@iconify/icons-file-icons/mint';
+import testReact from '@iconify/icons-file-icons/test-react';
 
 // ----------------------------------------------------------------------
 
@@ -24,6 +25,11 @@ const sidebarConfig = [
     title: 'NFToken Tester',
     path: '/tester',
     icon: getIcon(mint)
+  },
+  {
+    title: 'Test React',
+    path: '/test_react',
+    icon: getIcon(testReact)
   }
 ];
 
