@@ -8,17 +8,18 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
-export default function ResponsiveDialog() {
-  const [open, setOpen] = React.useState(false);
+export default function ResponsiveDialog(props) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  
+  const { onClose, selectedValue, open } = props;
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleListItemClick = (value) => {
+    onClose(value);
   };
 
   const handleClose = () => {
-    setOpen(false);
+    onClose(selectedValue);
   };
 
   return (
@@ -29,20 +30,20 @@ export default function ResponsiveDialog() {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          {"Use Google's location service?"}
+          {"Add another account?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Let Google help apps determine location. This means sending anonymous
-            location data to Google, even when no apps are running.
+            The NFT-Devnet account credentials(account, secret, balance) will be reset approximately every 90 days.
+            Devnet funds may be reset without warning as needed.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
-            Disagree
+            No
           </Button>
           <Button onClick={handleClose} autoFocus>
-            Agree
+            Yes
           </Button>
         </DialogActions>
       </Dialog>

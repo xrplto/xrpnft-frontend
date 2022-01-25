@@ -1,12 +1,27 @@
-//import React, { useState, useEffect } from "react";
-import { Icon } from '@iconify/react';
+import * as React from 'react';
+//import { Icon } from '@iconify/react';
+import PropTypes from 'prop-types';
+// icons
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import PersonIcon from '@mui/icons-material/Person';
+import AddIcon from '@mui/icons-material/Add';
 // material
-import { 
-  Box,
+import {
   Button,
+  IconButton,
   Stack,
-//  Grid,
-//  TextField,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemAvatar,
+  DialogContent,
+  DialogActions,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  Avatar,
+  Dialog,
+  DialogTitle,
   Container,
   Typography,
   Card,
@@ -16,97 +31,14 @@ import {
 //  TableCell,
 //  TableContainer
  } from '@mui/material';
-//import { TextField, Grid } from '@mui/material';
+
 // components
 import Page from '../components/Page';
 import TesterControls from '../components/tester/TesterControls';
-import { Link as RouterLink } from 'react-router-dom';
-import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 
-import ConfirmCreateAccount from '../components/dialog/confirmCreateAccount';
-
-//import axios from 'axios'
-//import { concatinate, getAssets } from "../context/counterReducer";
-//import { useSelector, useDispatch } from "react-redux";
-//import CardItem from "../components/CardItem";
-//import InfiniteScroll from 'react-infinite-scroll-component';
+import { blue } from '@mui/material/colors';
 
 
-// ----------------------------------------------------------------------
-
-// export default function DashboardApp() {
-
-//   const [searchText, setSearchText] = useState('');
-//   const [ offset, setOffset ] = useState(0);
-//   const [ hasMore, setHasMore ] = useState(true);
-//   const assets = useSelector(getAssets);
-//   const [ assetsToDisplay, setAssetsToDisplay ] = useState([]);
-//   const dispatch = useDispatch();
-//   useEffect(() => {
-//     loadMoreAssets(offset);
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//   }, [])
-//   const loadMoreAssets = (offset) => {
-//     axios.get(`https://api.opensea.io/api/v1/assets?order_direction=desc&offset=${offset}&limit=20`)
-//     .then(res => {
-//       dispatch(concatinate(res.data.assets));
-//       if(res.data.assets.length < 20) setHasMore(false);
-//       setOffset(offset + 1);
-//     })
-//     .catch(err => {
-//       console.log("err->>", err);
-//     })
-//   }
-  
-//   const handleChange = (event) => {
-//     setSearchText(event.target.value);
-//   };
-//   useEffect(() => {
-//     if(searchText !== "" && assets)
-//     {
-//       const _assetsToDisplay = assets.filter( asset => {
-//         if(asset.name === null) return false;
-//         const name = asset.name.trim().toLowerCase();
-//         if(name.includes(searchText.trim().toLowerCase())) return true;
-//         else return false;
-//       });
-//       setAssetsToDisplay(_assetsToDisplay);
-//     }
-//     else setAssetsToDisplay(assets);
-//   }, [assets, searchText])
-//   return (
-//     <div id="home" >
-//       <div
-//         style={{
-//           display: "flex",
-//           justifyContent: "flex-start",
-//           marginBottom: 20
-//         }}
-//       >
-//         <TextField id="standard-basic" value={searchText} onChange={handleChange} label="Search Name" />
-//       </div>
-      
-//         <InfiniteScroll
-//           dataLength={assets.length}
-//           next={ () => loadMoreAssets(offset)}
-//           hasMore={hasMore}
-//           loader={<div className="lazy-loading"><div className="lds-ripple"><div></div><div></div></div></div>}
-//           // scrollableTarget="home"
-//           className="infinite-scroll-wrapper"
-//         >
-//           <Grid container spacing={3} >
-//             {assetsToDisplay.map((asset, index) => {
-//             return(
-//               <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-//                 <CardItem asset={asset} />
-//               </Grid>)
-//               }
-//             )}
-//           </Grid>
-//         </InfiniteScroll>
-//     </div>
-//   );
-// };
 // https://xrpl.org/xrp-testnet-faucet.html
 
     // <Button
@@ -116,13 +48,113 @@ import ConfirmCreateAccount from '../components/dialog/confirmCreateAccount';
     //     startIcon={<PersonAddAltOutlinedIcon/>}
     //     >
     // </Button>
+
+const accounts = [
+    'rp6yyGhjFR4Va6Eor8aPDAjj57R9cawqWn', // 1
+    'rBtxuG1TDYk85igMGZEx2PVixXasbJWPS7', // 2
+    'rUVey2NFANvF61HCCjcCmRqRBBeDCVSGQg', // 3
+    'roCuCcXVFMXrcHKoE4zPLjDzBY35JDjgN',  // 4
+    'rG2xxwM6xUTc5QvZrde4QtGk6fAqtsxy7m', // 5
+    'r9f3fG8Y1QjZ9gdYMb3by2T5vkfLE2qYxb', // 6
+    'rLsxBDBg2E129qoMWxk9PKpjmvsU59dWoB', // 7
+    'rPrzGpuLxnE2XWzNYJ2P1tR6mCQU2FcckS', // 8
+    'rPku8R9rWfZu73U8SxAuy7Leac5NaqfNfh', // 9
+    'rwjXkasNG3RGfddbo2o9Rd7tEZetnPHH4f', // 10
+];
+const secrets = [
+    'sh1yErMN7rkZegwuTg1ZNMvRAGiQM', // 1
+    'spojbN1oj6EAvAQQP8X5nTtVeLXsc', // 2
+    'snjUkkMByL57HjavjdjoX2Hi5Mpqf', // 3
+    'shEPrFrmm7RfXpebvo2goQVV5ErXE', // 4
+    'spvQYKEvbqBmeHL56ATSrMzAkg2dF', // 5
+    'shcBBdHbtYGMWvR54d3tJaPwpFLDn', // 6
+    'ssqxhYpqpbpNL5NzjfDLYBRJq9w21', // 7
+    'snDiyu26npfn6FBFXZJbKNNyZtwSH', // 8
+    'sn3ivz8y8UvHwoFA8jKSX8rGRyyyf', // 9
+    'shsaEo9V1iqtebYZkUaFfndrSr4JB', // 10
+];
+
+function ChooseAccountDialog(props) {
+    const { onClose, value: valueProp, open, ...other } = props;
+    const [value, setValue] = React.useState(valueProp);
+    const radioGroupRef = React.useRef(null);
+  
+    React.useEffect(() => {
+      if (!open) {
+        setValue(valueProp);
+      }
+    }, [valueProp, open]);
+  
+    const handleEntering = () => {
+      if (radioGroupRef.current != null) {
+        radioGroupRef.current.focus();
+      }
+    };
+  
+    const handleCancel = () => {
+      onClose();
+    };
+  
+    const handleOk = () => {
+      onClose(value);
+    };
+  
+    const handleChange = (event) => {
+      setValue(event.target.value);
+    };
+  
+    return (
+      <Dialog
+        sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
+        maxWidth="xs"
+        TransitionProps={{ onEntering: handleEntering }}
+        open={open}
+        {...other}
+      >
+        <DialogTitle>Choose an account</DialogTitle>
+        <DialogContent dividers>
+          <RadioGroup
+            ref={radioGroupRef}
+            aria-label="account"
+            name="account"
+            value={value}
+            onChange={handleChange}
+          >
+            {accounts.map((account) => (
+              <FormControlLabel
+                value={account}
+                key={account}
+                control={<Radio />}
+                label={account}
+              />
+            ))}
+          </RadioGroup>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleCancel}>Cancel</Button>
+          <Button onClick={handleOk}>Ok</Button>
+        </DialogActions>
+      </Dialog>
+    );
+}
+  
+ChooseAccountDialog.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    open: PropTypes.bool.isRequired,
+    value: PropTypes.string.isRequired,
+};
+
 export default function TokenTester() {
+  const [open, setOpen] = React.useState(false);
+  const [selectedValue, setSelectedValue] = React.useState(accounts[1]);
+  
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = (value) => {
     setOpen(false);
+    setSelectedValue(value);
   };
   
   return (
@@ -132,14 +164,14 @@ export default function TokenTester() {
           <Typography variant="h4" gutterBottom>
             NFToken Tester
           </Typography>
-          <Button
-            variant="contained"
-            onClick={handleClickOpen}
-            startIcon={<PersonAddAltOutlinedIcon/>}
-          >
-            Add
-          </Button>
-      	  <ConfirmCreateAccount />
+          <IconButton aria-label="manage account" onClick={handleClickOpen}>
+            <ManageAccountsOutlinedIcon />
+          </IconButton>
+          <ChooseAccountDialog
+            selectedValue={selectedValue}
+            open={open}
+            onClose={handleClose}
+          />
         </Stack>
         
         <Card sx={{ pl: 3, pb: 2 }}>
