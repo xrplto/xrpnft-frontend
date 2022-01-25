@@ -5,7 +5,7 @@ import menu2Fill from '@iconify/icons-eva/menu-2-fill';
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
 // components
-import { MHidden } from '../components/@material-extend';
+import MHidden from '../components/MHidden';
 //
 import AccountPopover from './AccountPopover';
 
@@ -40,11 +40,11 @@ const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-DashboardNavbar.propTypes = {
+Navbar.propTypes = {
   onOpenSidebar: PropTypes.func
 };
 
-export default function DashboardNavbar({ onOpenSidebar }) {
+export default function Navbar({ onOpenSidebar }) {
   return (
     <RootStyle>
       <ToolbarStyle>

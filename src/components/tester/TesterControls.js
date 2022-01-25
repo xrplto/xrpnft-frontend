@@ -142,7 +142,7 @@ export default function TesterControls() {
         <div>
             <TextField
                 label="Account"
-                id="standard-start-adornment"
+                id="id_tester_account"
                 value={values.account}
                 sx={{ m: 1, width: '40ch' }}
                 variant="standard"
@@ -152,7 +152,7 @@ export default function TesterControls() {
         <div>
           <TextField
             label="Secret"
-            id="standard-start-adornment"
+            id="id_tester_secret"
             type={values.showSecret ? 'text' : 'password'}
             value={values.secret}
             onChange={handleChange('secret')}
@@ -169,7 +169,7 @@ export default function TesterControls() {
         <div>
           <TextField
             label="Token URL"
-            id="standard-end-adornment"
+            id="id_tester_token_url"
             value={values.tokenUrl}
             sx={{ m: 1, width: '80ch' }}
             variant="standard"
@@ -178,7 +178,7 @@ export default function TesterControls() {
         <div>
           <TextField
             label="Flags"
-            id="standard-start-adornment"
+            id="id_tester_flags"
             value={values.flags}
             sx={{ m: 1, width: '10ch' }}
             variant="standard"
@@ -187,7 +187,7 @@ export default function TesterControls() {
         <div>
           <TextField
             label="Token ID"
-            id="standard-start-adornment"
+            id="id_tester_token_id"
             sx={{ m: 1, width: '80ch' }}
             variant="standard"
           />
@@ -195,7 +195,7 @@ export default function TesterControls() {
         <div>
           <TextField
             label="Amount"
-            id="standard-start-adornment"
+            id="id_tester_amount"
             value={values.amount}
             sx={{ m: 1, width: '20ch' }}
             variant="standard"
@@ -204,7 +204,7 @@ export default function TesterControls() {
         <div>
           <TextField
             label="Token Offer Index"
-            id="standard-start-adornment"
+            id="id_tester_token_offer_index"
             sx={{ m: 1, width: '80ch' }}
             variant="standard"
           />
@@ -212,7 +212,7 @@ export default function TesterControls() {
         <div>
           <TextField
             label="Owner"
-            id="standard-start-adornment"
+            id="id_tester_owner"
             sx={{ m: 1, width: '80ch' }}
             variant="standard"
           />

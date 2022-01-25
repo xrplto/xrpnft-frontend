@@ -9,7 +9,7 @@ import { Box, Drawer } from '@mui/material';
 import Logo from '../components/Logo';
 import Scrollbar from '../components/Scrollbar';
 import NavSection from '../components/NavSection';
-import { MHidden } from '../components/@material-extend';
+import MHidden from '../components/MHidden';
 //
 import sidebarConfig from './SidebarConfig';
 
@@ -26,12 +26,12 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-DashboardSidebar.propTypes = {
+Sidebar.propTypes = {
   isOpenSidebar: PropTypes.bool,
   onCloseSidebar: PropTypes.func
 };
 
-export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
+export default function Sidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
 
   useEffect(() => {
