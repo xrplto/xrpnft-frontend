@@ -4,39 +4,43 @@ import PropTypes from 'prop-types';
 // icons
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import PersonIcon from '@mui/icons-material/Person';
-import AddIcon from '@mui/icons-material/Add';
+import { blue } from '@mui/material/colors';
 // material
 import {
   Button,
   IconButton,
   Stack,
   List,
-  ListItem,
   ListItemText,
+  ListItemButton,
   ListItemAvatar,
-  DialogContent,
   DialogActions,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
   Avatar,
   Dialog,
   DialogTitle,
   Container,
   Typography,
   Card,
-//  Table,
-//  TableBody,
-//  TableRow,
-//  TableCell,
-//  TableContainer
+  Divider,
+  Paper,
  } from '@mui/material';
 
 // components
 import Page from '../components/Page';
 import TesterControls from '../components/tester/TesterControls';
 
-import { blue } from '@mui/material/colors';
+const accounts = [
+	{id:1, key:'rp6yyGhjFR4Va6Eor8aPDAjj57R9cawqWn', secret:'sh1yErMN7rkZegwuTg1ZNMvRAGiQM'},
+	{id:2, key:'rBtxuG1TDYk85igMGZEx2PVixXasbJWPS7', secret:'spojbN1oj6EAvAQQP8X5nTtVeLXsc'},
+	{id:3, key:'rUVey2NFANvF61HCCjcCmRqRBBeDCVSGQg', secret:'snjUkkMByL57HjavjdjoX2Hi5Mpqf'},
+	{id:4, key:'roCuCcXVFMXrcHKoE4zPLjDzBY35JDjgN', secret:'shEPrFrmm7RfXpebvo2goQVV5ErXE'},
+	{id:5, key:'rG2xxwM6xUTc5QvZrde4QtGk6fAqtsxy7m', secret:'spvQYKEvbqBmeHL56ATSrMzAkg2dF'},
+	{id:6, key:'r9f3fG8Y1QjZ9gdYMb3by2T5vkfLE2qYxb', secret:'shcBBdHbtYGMWvR54d3tJaPwpFLDn'},
+	{id:7, key:'rLsxBDBg2E129qoMWxk9PKpjmvsU59dWoB', secret:'ssqxhYpqpbpNL5NzjfDLYBRJq9w21'},
+	{id:8, key:'rPrzGpuLxnE2XWzNYJ2P1tR6mCQU2FcckS', secret:'snDiyu26npfn6FBFXZJbKNNyZtwSH'},
+	{id:9, key:'rPku8R9rWfZu73U8SxAuy7Leac5NaqfNfh', secret:'sn3ivz8y8UvHwoFA8jKSX8rGRyyyf'},
+	{id:10, key:'rwjXkasNG3RGfddbo2o9Rd7tEZetnPHH4f', secret:'shsaEo9V1iqtebYZkUaFfndrSr4JB'},
+];
 
 
 // https://xrpl.org/xrp-testnet-faucet.html
@@ -49,113 +53,76 @@ import { blue } from '@mui/material/colors';
     //     >
     // </Button>
 
-const accounts = [
-    'rp6yyGhjFR4Va6Eor8aPDAjj57R9cawqWn', // 1
-    'rBtxuG1TDYk85igMGZEx2PVixXasbJWPS7', // 2
-    'rUVey2NFANvF61HCCjcCmRqRBBeDCVSGQg', // 3
-    'roCuCcXVFMXrcHKoE4zPLjDzBY35JDjgN',  // 4
-    'rG2xxwM6xUTc5QvZrde4QtGk6fAqtsxy7m', // 5
-    'r9f3fG8Y1QjZ9gdYMb3by2T5vkfLE2qYxb', // 6
-    'rLsxBDBg2E129qoMWxk9PKpjmvsU59dWoB', // 7
-    'rPrzGpuLxnE2XWzNYJ2P1tR6mCQU2FcckS', // 8
-    'rPku8R9rWfZu73U8SxAuy7Leac5NaqfNfh', // 9
-    'rwjXkasNG3RGfddbo2o9Rd7tEZetnPHH4f', // 10
-];
-const secrets = [
-    'sh1yErMN7rkZegwuTg1ZNMvRAGiQM', // 1
-    'spojbN1oj6EAvAQQP8X5nTtVeLXsc', // 2
-    'snjUkkMByL57HjavjdjoX2Hi5Mpqf', // 3
-    'shEPrFrmm7RfXpebvo2goQVV5ErXE', // 4
-    'spvQYKEvbqBmeHL56ATSrMzAkg2dF', // 5
-    'shcBBdHbtYGMWvR54d3tJaPwpFLDn', // 6
-    'ssqxhYpqpbpNL5NzjfDLYBRJq9w21', // 7
-    'snDiyu26npfn6FBFXZJbKNNyZtwSH', // 8
-    'sn3ivz8y8UvHwoFA8jKSX8rGRyyyf', // 9
-    'shsaEo9V1iqtebYZkUaFfndrSr4JB', // 10
-];
-
-function ChooseAccountDialog(props) {
-    const { onClose, value: valueProp, open, ...other } = props;
-    const [value, setValue] = React.useState(valueProp);
-    const radioGroupRef = React.useRef(null);
-  
-    React.useEffect(() => {
-      if (!open) {
-        setValue(valueProp);
+    function ChooseAccountDialog(props) {
+        const { onClose, selectedValue, open } = props;
+        const [selectedIndex, setSelectedIndex] = React.useState(1);
+      
+        const handleListItemClick = (event, index) => {
+          setSelectedIndex(index);
+        };
+      
+        const handleClose = () => {
+          onClose(selectedValue);
+        };
+      
+        const handleCancel = () => {
+          onClose();
+        };
+      
+        const handleOk = () => {
+          //onClose(value);
+        };
+      
+        return (
+          <Dialog onClose={handleClose} open={open}>
+              <DialogTitle>Choose an Account</DialogTitle>
+              <Divider />
+              <Paper style={{maxHeight: 400, overflow: 'auto'}}>
+                  <List component="nav" sx={{ pt: 0 }}>
+                  {accounts.map((account) => (
+                      <ListItemButton
+                          selected={selectedIndex === account.id}
+                          onClick={(event) => handleListItemClick(event, account.id)}
+                          key={account.id}>
+                          <ListItemAvatar>
+                          <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
+                              <PersonIcon />
+                          </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText primary={`Account ${account.id}`} secondary={account.key} />
+                      </ListItemButton>
+                  ))}
+                  </List>
+              </Paper>
+              <Divider />
+              <DialogActions>
+                  <Button autoFocus onClick={handleCancel}>Cancel</Button>
+                  <Button onClick={handleOk}>Ok</Button>
+              </DialogActions>
+          </Dialog>
+        );
       }
-    }, [valueProp, open]);
-  
-    const handleEntering = () => {
-      if (radioGroupRef.current != null) {
-        radioGroupRef.current.focus();
-      }
-    };
-  
-    const handleCancel = () => {
-      onClose();
-    };
-  
-    const handleOk = () => {
-      onClose(value);
-    };
-  
-    const handleChange = (event) => {
-      setValue(event.target.value);
-    };
-  
-    return (
-      <Dialog
-        sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 435 } }}
-        maxWidth="xs"
-        TransitionProps={{ onEntering: handleEntering }}
-        open={open}
-        {...other}
-      >
-        <DialogTitle>Choose an account</DialogTitle>
-        <DialogContent dividers>
-          <RadioGroup
-            ref={radioGroupRef}
-            aria-label="account"
-            name="account"
-            value={value}
-            onChange={handleChange}
-          >
-            {accounts.map((account) => (
-              <FormControlLabel
-                value={account}
-                key={account}
-                control={<Radio />}
-                label={account}
-              />
-            ))}
-          </RadioGroup>
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleCancel}>Cancel</Button>
-          <Button onClick={handleOk}>Ok</Button>
-        </DialogActions>
-      </Dialog>
-    );
-}
-  
-ChooseAccountDialog.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    open: PropTypes.bool.isRequired,
-    value: PropTypes.string.isRequired,
-};
+      
+      ChooseAccountDialog.propTypes = {
+        onClose: PropTypes.func.isRequired,
+        open: PropTypes.bool.isRequired,
+        selectedValue: PropTypes.object.isRequired,
+      };
+      
 
 export default function TokenTester() {
-  const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(accounts[1]);
+    const [open, setOpen] = React.useState(false);
+    const [selectedValue, setSelectedValue] = React.useState(accounts[1]);
   
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (value) => {
-    setOpen(false);
-    setSelectedValue(value);
-  };
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+  
+    const handleClose = (value) => {
+      setOpen(false);
+      setSelectedValue(value);
+    };
+  
   
   return (
     <Page title="NFToken Tester">
