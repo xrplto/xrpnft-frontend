@@ -147,6 +147,7 @@ export default function TesterControls({values, setValues}) {
             id="id_tester_secret"
             type={values.showSecret ? 'text' : 'password'}
             value={values.secret}
+            onChange={handleChange('secret')}
             sx={{ m: 1, width: '40ch' }}
             variant="standard"
             InputProps={{

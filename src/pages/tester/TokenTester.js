@@ -61,7 +61,7 @@ export default function TokenTester() {
     };
   return (
     <Page title="NFToken Tester">
-      <Container maxWidth="xl">
+        <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={2} mb={1}>
           <Typography variant="h4" gutterBottom>
             NFToken Tester
@@ -83,7 +83,7 @@ export default function TokenTester() {
           />
         </Stack>
         
-        <Card sx={{ pl: 3, pb: 2 }}>
+        <Card sx={{ pl: 3, pb: 2 }}>  
           <TesterControls
             values={values}
             setValues={setValues}
