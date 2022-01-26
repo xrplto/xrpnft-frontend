@@ -1,6 +1,6 @@
-import * as React from 'react';
-//import { useState } from 'react';
-import PropTypes from 'prop-types';
+//import { useEffect, useState } from 'react';
+import { useState } from 'react';
+//import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 // material
 import { alpha, useTheme, styled } from '@mui/material/styles';
@@ -14,7 +14,7 @@ import {
     List, 
     ListItemText, 
     ListItemIcon, 
-    ListItemButton 
+    ListItemButton,
 } from '@mui/material';
 
 import roundAccountCircle from '@iconify/icons-ic/round-account-circle';
@@ -50,45 +50,41 @@ const ListItemIconStyle = styled(ListItemIcon)({
 
 // ----------------------------------------------------------------------
 
-ChooseAccountDialog.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    open: PropTypes.bool.isRequired,
-    accounts: PropTypes.array.isRequired,
-    selectedValue: PropTypes.number.isRequired,
-};
-
-
-export default function ChooseAccountDialog(props) {
-    const { onClose, accounts, selectedValue, open } = props;
-    const [selectedIndex, setSelectedIndex] = React.useState(selectedValue);
+export default function ChooseAccountDialog({ onClose, accounts, selectedIdx, render }) {
+    const [open, setOpen] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(selectedIdx);
 
 	const theme = useTheme();
 	const icon = <Icon icon={roundAccountCircle} width={48} height={48} />;
-	console.log(selectedIndex);
+
 	const selectedStyle = {
-	color: 'primary.main',
-	fontWeight: 'fontWeightMedium',
-	bgcolor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
-	'&:before': { display: 'block' }
+        color: 'primary.main',
+        fontWeight: 'fontWeightMedium',
+        bgcolor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
+        '&:before': { display: 'block' }
 	};
-   
+
+    const handleClickOpen = () => {
+        setOpen(true);
+        setSelectedIndex(selectedIdx);
+    };
+    
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     const handleListItemClick = (event, index) => {
         setSelectedIndex(index);
     };
 
-    const handleCancel = () => {
-        onClose(0);
-    };
-    
     const handleOk = () => {
+        handleClose();
         onClose(selectedIndex);
-        alert("handleOk");
     };
 
-    const handleClose = () => {
-    };
-    
     return (
+        <>
+        {render(handleClickOpen)}
         <Dialog onClose={handleClose} open={open}>
             <DialogTitle>Choose an Account</DialogTitle>
             <Divider />
@@ -110,9 +106,10 @@ export default function ChooseAccountDialog(props) {
             </Paper>
             <Divider />
             <DialogActions>
-                <Button autoFocus onClick={handleCancel}>Cancel</Button>
+                <Button autoFocus onClick={handleClose}>Cancel</Button>
                 <Button onClick={handleOk}>Ok</Button>
             </DialogActions>
         </Dialog>
+        </>
     );
 }

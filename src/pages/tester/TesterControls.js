@@ -1,4 +1,4 @@
-import * as React from 'react';
+//import {useState, useEffect} from 'react';
 import {
   Box,
   TextField,
@@ -13,16 +13,7 @@ import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalance
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-export default function TesterControls() {
-  const [values, setValues] = React.useState({
-    account: 'rht9PFsHK2rds9dp5Nt9op4VWAceR63vWH',
-    secret: 'snkPFbLVfK123mxH3SLGchmAAzd37',
-    showSecret: false,
-    tokenUrl: 'ipfs://QmXSSpHaG9DH5U7zQNkL4BZrBZioGG3xmG54mqPqTCpddQ',
-    flags: '1',
-    amount: '1000000'
-  });
-
+export default function TesterControls({values, setValues}) {
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
@@ -144,6 +135,7 @@ export default function TesterControls() {
                 label="Account"
                 id="id_tester_account"
                 value={values.account}
+                onChange={handleChange('account')}
                 sx={{ m: 1, width: '40ch' }}
                 variant="standard"
                 InputProps={{endAdornment:<IconButton onClick={handleClickShowAccountInfo}><AccountBalanceWalletOutlinedIcon/></IconButton>}}
@@ -155,7 +147,6 @@ export default function TesterControls() {
             id="id_tester_secret"
             type={values.showSecret ? 'text' : 'password'}
             value={values.secret}
-            onChange={handleChange('secret')}
             sx={{ m: 1, width: '40ch' }}
             variant="standard"
             InputProps={{
@@ -171,6 +162,7 @@ export default function TesterControls() {
             label="Token URL"
             id="id_tester_token_url"
             value={values.tokenUrl}
+            onChange={handleChange('tokenUrl')}
             sx={{ m: 1, width: '80ch' }}
             variant="standard"
           />
@@ -180,6 +172,7 @@ export default function TesterControls() {
             label="Flags"
             id="id_tester_flags"
             value={values.flags}
+            onChange={handleChange('flags')}
             sx={{ m: 1, width: '10ch' }}
             variant="standard"
           />
@@ -188,6 +181,7 @@ export default function TesterControls() {
           <TextField
             label="Token ID"
             id="id_tester_token_id"
+            value={values.tokenId}
             sx={{ m: 1, width: '80ch' }}
             variant="standard"
           />
@@ -196,7 +190,8 @@ export default function TesterControls() {
           <TextField
             label="Amount"
             id="id_tester_amount"
-            value={values.amount}
+            value={'account.key'}
+            onChange={handleChange('amount')}
             sx={{ m: 1, width: '20ch' }}
             variant="standard"
           />

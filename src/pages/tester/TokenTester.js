@@ -1,21 +1,22 @@
-import * as React from 'react';
+import {useState, useEffect} from 'react';
+//import { useEffect, useState } from 'react';
 //import { Icon } from '@iconify/react';
 //import PropTypes from 'prop-types';
 // icons
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 // material
 import {
-  IconButton,
-  Stack,
-  Container,
-  Typography,
-  Card,
+    Button,
+    Stack,
+    Container,
+    Typography,
+    Card,
  } from '@mui/material';
 
 // components
-import Page from '../components/Page';
-import TesterControls from '../components/tester/TesterControls';
-import ChooseAccountDialog from '../components/tester/ChooseAccountDialog';
+import Page from '../../components/Page';
+import TesterControls from './TesterControls';
+import ChooseAccountDialog from './ChooseAccountDialog';
 
 const accounts = [
 	{id:1, key:'rp6yyGhjFR4Va6Eor8aPDAjj57R9cawqWn', secret:'sh1yErMN7rkZegwuTg1ZNMvRAGiQM'},
@@ -41,18 +42,23 @@ const accounts = [
     //     >
     // </Button>      
 export default function TokenTester() {
-    const [open, setOpen] = React.useState(false);
-    const [selectedValue, setSelectedValue] = React.useState(accounts[1].id);
-  
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-  
+    const [selectedIndex, setSelectedIndex] = useState(1);
+    const [values, setValues] = useState({
+        account: accounts[0].key,
+        secret: accounts[0].secret,
+        showSecret: false,
+        tokenUrl: 'ipfs://QmXSSpHaG9DH5U7zQNkL4BZrBZioGG3xmG54mqPqTCpddQ',
+        flags: '1',
+        tokenId: '',
+        amount: '1000000'
+    });
+    useEffect(() => {
+    });
+
     const handleChooseAccount = (value) => {
-      setOpen(false);
-      setSelectedValue(value);
-    };  
-  
+        setSelectedIndex(value);
+        setValues({ ...values, 'account': accounts[value-1].key, 'secret': accounts[value-1].secret});
+    };
   return (
     <Page title="NFToken Tester">
       <Container maxWidth="xl">
@@ -60,19 +66,28 @@ export default function TokenTester() {
           <Typography variant="h4" gutterBottom>
             NFToken Tester
           </Typography>
-          <IconButton aria-label="manage account" onClick={handleClickOpen}>
-            <ManageAccountsOutlinedIcon />
-          </IconButton>
+          
           <ChooseAccountDialog
-            selectedValue={selectedValue}
-            open={open}
             accounts={accounts}
+            selectedIdx={selectedIndex}
             onClose={handleChooseAccount}
+            render={(open) => (
+                <Button
+                    variant="contained"
+                    onClick={open}
+                    startIcon={<ManageAccountsOutlinedIcon />}
+                >
+                    Account {accounts[selectedIndex-1].id}
+                </Button>
+                )}
           />
         </Stack>
         
         <Card sx={{ pl: 3, pb: 2 }}>
-          <TesterControls/>
+          <TesterControls
+            values={values}
+            setValues={setValues}
+            />
         </Card>
         
       </Container>
