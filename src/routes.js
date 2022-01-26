@@ -6,7 +6,7 @@ import EmptyLayout from './layouts/EmptyLayout';
 import Market from './pages/Market';
 import Tokens from './pages/Token';
 import TokenTester from './pages/tester/TokenTester';
-import TestReact from './pages/TestReact';
+import TestReact from './pages/testreact/TestReact';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------

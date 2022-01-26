@@ -1,5 +1,5 @@
-import {useState, useEffect} from 'react';
-//import { useEffect, useState } from 'react';
+import { useState } from 'react';
+//import { useState, useEffect } from 'react';
 //import { Icon } from '@iconify/react';
 //import PropTypes from 'prop-types';
 // icons
@@ -31,7 +31,6 @@ const accounts = [
 	{id:10, key:'rwjXkasNG3RGfddbo2o9Rd7tEZetnPHH4f', secret:'shsaEo9V1iqtebYZkUaFfndrSr4JB'},*/
 ];
 
-
 // https://xrpl.org/xrp-testnet-faucet.html
 
     // <Button
@@ -52,8 +51,8 @@ export default function TokenTester() {
         tokenId: '',
         amount: '1000000'
     });
-    useEffect(() => {
-    });
+    //useEffect(() => {
+    //});
 
     const handleChooseAccount = (value) => {
         setSelectedIndex(value);
@@ -83,7 +82,7 @@ export default function TokenTester() {
           />
         </Stack>
         
-        <Card sx={{ pl: 3, pb: 2 }}>  
+        <Card sx={{ pl: 3, pb: 2 }}>
           <TesterControls
             values={values}
             setValues={setValues}
