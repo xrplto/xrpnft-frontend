@@ -4,6 +4,10 @@ import { Icon } from '@iconify/react';
 import postageStamp from '@iconify/icons-mdi/postage-stamp';
 import shoppingBagFill from '@iconify/icons-eva/shopping-bag-fill';
 import mint from '@iconify/icons-file-icons/mint';
+//import spinIcon from '@iconify/icons-uil/spin';
+//import spin6Icon from '@iconify/icons-fontelico/spin6';
+import spinnerIcon from '@iconify/icons-fontisto/spinner';
+import progressBar from '@iconify/icons-carbon/progress-bar';
 import testReact from '@iconify/icons-file-icons/test-react';
 
 // ----------------------------------------------------------------------
@@ -27,8 +31,18 @@ const sidebarConfig = [
     icon: getIcon(mint)
   },
   {
-    title: 'Test React',
-    path: '/test_react',
+    title: 'Spinners',
+    path: '/spinners',
+    icon: getIcon(spinnerIcon)
+  },
+  {
+    title: 'Progress',
+    path: '/progress',
+    icon: getIcon(progressBar)
+  },
+  {
+    title: 'Test Page',
+    path: '/test_page',
     icon: getIcon(testReact)
   }
 ];

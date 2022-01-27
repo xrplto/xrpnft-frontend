@@ -13,28 +13,21 @@ import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalance
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-export default function TesterControls({values, setValues}) {
-  const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
+export default function TesterControls({values, setValues, onAccountInfo}) {
+    const handleChange = (prop) => (event) => {
+        setValues({ ...values, [prop]: event.target.value });
+    };
 
-  const handleClickshowSecret = () => {
-    setValues({
-      ...values,
-      showSecret: !values.showSecret,
-    });
-  };
+    const handleClickshowSecret = () => {
+        setValues({
+            ...values,
+            showSecret: !values.showSecret,
+        });
+    };
 
-  const handleMouseDownSecret = (event) => {
-    event.preventDefault();
-  };
-
-  const handleClickShowAccountInfo = () => {
-    // setValues({
-    //   ...values,
-    //   showPassword: !values.showPassword,
-    // });
-  };
+    const handleMouseDownSecret = (event) => {
+        event.preventDefault();
+    };
 
   // <Button
   //   variant="contained"
@@ -138,7 +131,7 @@ export default function TesterControls({values, setValues}) {
                 onChange={handleChange('account')}
                 sx={{ m: 1, width: '40ch' }}
                 variant="standard"
-                InputProps={{endAdornment:<IconButton onClick={handleClickShowAccountInfo}><AccountBalanceWalletOutlinedIcon/></IconButton>}}
+                InputProps={{endAdornment:<IconButton onClick={onAccountInfo}><AccountBalanceWalletOutlinedIcon/></IconButton>}}
             />
         </div>
         <div>

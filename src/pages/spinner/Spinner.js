@@ -3,13 +3,13 @@ import Page from '../../components/Page';
 import "./styles.css";
 import { data1, data2 } from "./model";
 
-import {
-    Card,
- } from '@mui/material';
+// import {
+//     Card,
+//  } from '@mui/material';
 
-export default function TestReact() {
+export default function Spinner() {
     return (
-        <Page title="Test React Controls">
+        <Page title="Spinner Loaders">
             <div className="spinnerContainer">
                 {data1.map((loader, index) => (
                 <div key={loader.name + index} className="spinnerItem1">
@@ -21,13 +21,10 @@ export default function TestReact() {
             </div>
             <div className="spinnerContainer">
                 {data2.map((loader, index) => (
-                    <Card sx={{ m: 2 }}>
-                        <div key={loader.name + index} className="spinnerItem2">
-                            <div className="spinnerTitle">{loader.name}</div>
-                            <loader.Component {...loader.props} />                    
-                        </div>
-                    </Card>
-                
+                    <div key={loader.name + index} className="spinnerItem2">
+                        <div className="spinnerTitle">{loader.name}</div>
+                        <loader.Component {...loader.props} />                    
+                    </div>
                 ))}
             </div>
         </Page>
