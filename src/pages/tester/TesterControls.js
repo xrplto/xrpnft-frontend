@@ -12,8 +12,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import AccountInfoDialog from './AccountInfoDialog';
 
-export default function TesterControls({values, setValues, onAccountInfo}) {
+export default function TesterControls({ values, setValues, setLoading }) {
     const handleChange = (prop) => (event) => {
         setValues({ ...values, [prop]: event.target.value });
     };
@@ -131,7 +132,17 @@ export default function TesterControls({values, setValues, onAccountInfo}) {
                 onChange={handleChange('account')}
                 sx={{ m: 1, width: '40ch' }}
                 variant="standard"
-                InputProps={{endAdornment:<IconButton onClick={onAccountInfo}><AccountBalanceWalletOutlinedIcon/></IconButton>}}
+                InputProps={{
+                    endAdornment:
+                    <AccountInfoDialog
+                        values = {values}
+                        setLoading = {setLoading}
+                        render={(onAccountInfo) => (
+                            <IconButton onClick={onAccountInfo}>
+                                <AccountBalanceWalletOutlinedIcon/>
+                            </IconButton>
+                            )}
+                    />}}
             />
         </div>
         <div>
@@ -184,7 +195,7 @@ export default function TesterControls({values, setValues, onAccountInfo}) {
           <TextField
             label="Amount"
             id="id_tester_amount"
-            value={'account.key'}
+            value={values.amount}
             onChange={handleChange('amount')}
             sx={{ m: 1, width: '20ch' }}
             variant="standard"
@@ -194,6 +205,7 @@ export default function TesterControls({values, setValues, onAccountInfo}) {
           <TextField
             label="Token Offer Index"
             id="id_tester_token_offer_index"
+            value={values.tokenOfferIndex}
             sx={{ m: 1, width: '80ch' }}
             variant="standard"
           />
@@ -202,6 +214,7 @@ export default function TesterControls({values, setValues, onAccountInfo}) {
           <TextField
             label="Owner"
             id="id_tester_owner"
+            value={values.owner}
             sx={{ m: 1, width: '80ch' }}
             variant="standard"
           />

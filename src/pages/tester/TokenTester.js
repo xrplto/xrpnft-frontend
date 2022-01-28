@@ -6,12 +6,16 @@ import { useState } from 'react';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 // material
 import {
+    Backdrop,
     Button,
     Stack,
     Container,
     Typography,
-    Card,
+    Card
  } from '@mui/material';
+import {
+    HashLoader,
+} from "react-spinners";
 
 // components
 import Page from '../../components/Page';
@@ -48,46 +52,442 @@ const accounts = [
 // https://s.devnet.rippletest.net:51234
 // ====================================
 // NFT-Devnet Servers
-// WebSocket
+// WebSocket 54.190.29.31
 // wss://xls20-sandbox.rippletest.net:51233
 // JSON-RPC
 // http://xls20-sandbox.rippletest.net:51234
 // ====================================
+// Account info return
+// {
+//   "id": 0,
+//   "result": {
+//     "account_data": {
+//       "Account": "rht9PFsHK2rds9dp5Nt9op4VWAceR63vWH",
+//       "Balance": "9999999952",
+//       "Flags": 0,
+//       "LedgerEntryType": "AccountRoot",
+//       "MintedTokens": 4,
+//       "OwnerCount": 1,
+//       "PreviousTxnID": "FCD543B99DE4F6EEC520C94501031000415F67E2F1BC014151CCBF6556988DB7",
+//       "PreviousTxnLgrSeq": 258324,
+//       "Sequence": 257656,
+//       "index": "5F0609FDFA077F68ED7F5C2F38C16E2C7B16FFD3FD2DC17CB81C7E117E3C7C7E"
+//     },
+//     "ledger_hash": "AC48ABEB942844E2F084DA4D5BA8767B1CB480A8124A0EAD0CAC3294BD096EB5",
+//     "ledger_index": 382985,
+//     "validated": true
+//   },
+//   "type": "response"
+// }
+// There are one million drops per XRP.
 const xrpl = require("xrpl");
-async function getAccountInfo() {
+async function mintToken(showWaitDialog, values) {
+    showWaitDialog(true);
     try {
-        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233");
-        await client.connect();
+        const wallet = xrpl.Wallet.fromSeed(values.secret)
+        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+        await client.connect()
+        console.log("Connected to Sandbox")
 
-        const response = await client.request({
-            "command": "account_info",
-            "account": "rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe",
-            "ledger_index": "validated"
-        });
-        console.log(response);
-        client.disconnect();
+        // Note that you must convert the token URL to a hexadecimal
+        // value for this transaction.
+        // ----------------------------------------------------------
+        const transactionBlob = {
+            TransactionType: "NFTokenMint",
+            Account: wallet.classicAddress,
+            URI: xrpl.convertStringToHex(values.tokenUrl),
+            Flags: parseInt(values.flags),
+            TokenTaxon: 0 //Required, but if you have no use for it, set to zero.
+        }
+        // Submit signed blob --------------------------------------------------------
+        const tx = await client.submitAndWait(transactionBlob,{wallet})
+
+        const nfts = await client.request({
+            method: "account_nfts",
+            account: wallet.classicAddress
+        })
+        console.log(nfts)
+
+        // Check transaction results -------------------------------------------------
+        console.log("Transaction result:", tx.result.meta.TransactionResult)
+        console.log("Balance changes:",
+        JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+        client.disconnect()
     } catch (error) {
         console.log(error);
     }
+    showWaitDialog(false);
+} //End of mintToken
+
+//***************************
+//** Get Tokens *************
+//***************************
+async function getTokens(showWaitDialog, values) {
+    showWaitDialog(true);
+    try {
+        const wallet = xrpl.Wallet.fromSeed(values.secret)
+        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+        await client.connect()
+        console.log("Connected to Sandbox")
+        const nfts = await client.request({
+            method: "account_nfts",
+            account: wallet.classicAddress
+        })
+        console.log(nfts)
+        client.disconnect()
+    } catch (error) {
+        console.log(error);
+    }
+    showWaitDialog(false);
+} //End of getTokens
+
+//***************************
+//** Burn Token *************
+//***************************
+async function burnToken(showWaitDialog, values) {
+    showWaitDialog(true)
+    try {
+        const wallet = xrpl.Wallet.fromSeed(values.secret)
+        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+        await client.connect()
+        console.log("Connected to Sandbox")
+
+        // Prepare transaction -------------------------------------------------------
+        const transactionBlob = {
+            "TransactionType": "NFTokenBurn",
+            "Account": wallet.classicAddress,
+            "TokenID": values.tokenId
+        }
+
+        // Submit signed blob --------------------------------------------------------
+        const tx = await client.submitAndWait(transactionBlob,{wallet})
+        const nfts = await client.request({
+            method: "account_nfts",
+            account: wallet.classicAddress
+        })
+        console.log(nfts)
+        // Check transaction results -------------------------------------------------
+        console.log("Transaction result:", tx.result.meta.TransactionResult)
+        console.log("Balance changes:",
+        JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+        client.disconnect()
+    } catch (error) {
+        console.log(error);
+    }
+    showWaitDialog(false);
+}
+// End of burnToken()
+
+//********************************
+//** Create Sell Offer ***********
+//********************************
+async function createSellOffer(showWaitDialog, values) {
+    showWaitDialog(true);
+    try {
+        const wallet = xrpl.Wallet.fromSeed(values.secret)
+        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+        await client.connect()
+        console.log("Connected to Sandbox")
+
+        // Prepare transaction -------------------------------------------------------
+        const transactionBlob = {
+            "TransactionType": "NFTokenCreateOffer",
+            "Account": wallet.classicAddress,
+            "TokenID": values.tokenId,
+            "Amount": values.amount,
+            "Flags": parseInt(values.flags)
+        }
+
+        // Submit signed blob --------------------------------------------------------
+
+        const tx = await client.submitAndWait(transactionBlob,{wallet})//AndWait
+        console.log("***Sell Offers***")
+        let nftSellOffers
+        try {
+            nftSellOffers = await client.request({
+            method: "nft_sell_offers",
+            tokenid: values.tokenId
+            })
+            } catch (err) {
+            console.log("No sell offers.")
+        }
+        console.log(JSON.stringify(nftSellOffers,null,2))
+        console.log("***Buy Offers***")
+        let nftBuyOffers
+        try {
+            nftBuyOffers = await client.request({
+            method: "nft_buy_offers",
+            tokenid: values.tokenId })
+        } catch (err) {
+            console.log("No buy offers.")
+        }
+        console.log(JSON.stringify(nftBuyOffers,null,2))
+
+        // Check transaction results -------------------------------------------------
+        console.log("Transaction result:",
+        JSON.stringify(tx.result.meta.TransactionResult, null, 2))
+        console.log("Balance changes:",
+        JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+        client.disconnect()
+        // End of createSellOffer()
+    } catch (error) {
+        console.log(error);
+    }
+    showWaitDialog(false);
+}
+
+//********************************
+//** Create Buy Offer ***********
+//********************************
+async function createBuyOffer(showWaitDialog, values) {
+    showWaitDialog(true);
+    try {
+        const wallet = xrpl.Wallet.fromSeed(values.secret)
+        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+        await client.connect()
+        console.log("Connected to Sandbox")
+
+        // Prepare transaction -------------------------------------------------------
+        const transactionBlob = {
+            "TransactionType": "NFTokenCreateOffer",
+            "Account": wallet.classicAddress,
+            "Owner": values.owner,
+            "TokenID": values.tokenId,
+            "Amount": values.amount,
+            "Flags": parseInt(values.flags)
+        }
+
+        // Submit signed blob --------------------------------------------------------
+        const tx = await client.submitAndWait(transactionBlob,{wallet})
+
+        console.log("***Sell Offers***")
+        let nftSellOffers
+        try {
+            nftSellOffers = await client.request({
+            method: "nft_sell_offers",
+            tokenid: values.tokenId
+            })
+            } catch (err) {
+            console.log("No sell offers.")
+        }
+        console.log(JSON.stringify(nftSellOffers,null,2))
+        console.log("***Buy Offers***")
+        let nftBuyOffers
+        try {
+        nftBuyOffers = await client.request({
+        method: "nft_buy_offers",
+        tokenid: values.tokenId })
+        } catch (err) {
+        console.log("No buy offers.")
+        }
+        console.log(JSON.stringify(nftBuyOffers,null,2))
+
+
+        // Check transaction results -------------------------------------------------
+        console.log("Transaction result:",
+        JSON.stringify(tx.result.meta.TransactionResult, null, 2))
+        console.log("Balance changes:",
+        JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+        client.disconnect()
+        // End of createBuyOffer()
+    } catch (error) {
+        console.log(error);
+    }
+    showWaitDialog(false);
+}
+
+//***************************
+//** Cancel Offer ***********
+//***************************
+async function cancelOffer(showWaitDialog, values) {
+    showWaitDialog(true);
+    try {
+        const wallet = xrpl.Wallet.fromSeed(values.secret)
+        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+        await client.connect()
+        console.log("Connected to Sandbox")
+
+        const tokenID = values.tokenOfferIndex
+        const tokenIDs = [tokenID]
+
+        // Prepare transaction -------------------------------------------------------
+        const transactionBlob = {
+            "TransactionType": "NFTokenCancelOffer",
+            "Account": wallet.classicAddress,
+            "TokenIDs": tokenIDs
+        }
+
+        // Submit signed blob --------------------------------------------------------
+        const tx = await client.submitAndWait(transactionBlob,{wallet})
+
+        console.log("***Sell Offers***")
+        let nftSellOffers
+        try {
+            nftSellOffers = await client.request({
+            method: "nft_sell_offers",
+            tokenid: values.tokenId
+            })
+            } catch (err) {
+            console.log("No sell offers.")
+        }
+        console.log(JSON.stringify(nftSellOffers,null,2))
+        console.log("***Buy Offers***")
+        let nftBuyOffers
+        try {
+            nftBuyOffers = await client.request({
+            method: "nft_buy_offers",
+            tokenid: values.tokenId })
+        } catch (err) {
+            console.log("No buy offers.")
+        }
+        console.log(JSON.stringify(nftBuyOffers,null,2))
+
+        // Check transaction results -------------------------------------------------
+
+        console.log("Transaction result:",
+        JSON.stringify(tx.result.meta.TransactionResult, null, 2))
+        console.log("Balance changes:",
+        JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+
+        client.disconnect()
+        // End of cancelOffer()
+    } catch (error) {
+        console.log(error);
+    }
+    showWaitDialog(false);
+}
+
+//***************************
+//** Get Offers *************
+//***************************
+async function getOffers(showWaitDialog, values) {
+    showWaitDialog(true);
+    try {
+        const wallet = xrpl.Wallet.fromSeed(values.secret)
+        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+        await client.connect()
+        console.log("Connected to Sandbox")
+        console.log("***Sell Offers***")
+        let nftSellOffers
+            try {
+            nftSellOffers = await client.request({
+            method: "nft_sell_offers",
+            tokenid: values.tokenId
+            })
+            } catch (err) {
+            console.log("No sell offers.")
+        }
+        console.log(JSON.stringify(nftSellOffers,null,2))
+        console.log("***Buy Offers***")
+        let nftBuyOffers
+        try {
+            nftBuyOffers = await client.request({
+            method: "nft_buy_offers",
+            tokenid: values.tokenId })
+        } catch (err) {
+            console.log("No buy offers.")
+        }
+        console.log(JSON.stringify(nftBuyOffers,null,2))
+        client.disconnect()
+        // End of getOffers()
+    } catch (error) {
+        console.log(error);
+    }
+    showWaitDialog(false);
+}
+
+//***************************
+//** Accept Sell Offer ******
+//***************************
+async function acceptSellOffer(showWaitDialog, values) {
+    showWaitDialog(true);
+    try {
+        const wallet = xrpl.Wallet.fromSeed(values.secret)
+        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+        await client.connect()
+        console.log("Connected to Sandbox")
+
+        // Prepare transaction -------------------------------------------------------
+        const transactionBlob = {
+            "TransactionType": "NFTokenAcceptOffer",
+            "Account": wallet.classicAddress,
+            "SellOffer": values.tokenOfferIndex,
+        }
+        // Submit signed blob --------------------------------------------------------
+        const tx = await client.submitAndWait(transactionBlob,{wallet})
+        const nfts = await client.request({
+            method: "account_nfts",
+            account: wallet.classicAddress
+        })
+        console.log(JSON.stringify(nfts,null,2))
+
+        // Check transaction results -------------------------------------------------
+        console.log("Transaction result:",
+        JSON.stringify(tx.result.meta.TransactionResult, null, 2))
+        console.log("Balance changes:",
+        JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+        client.disconnect()
+        // End of acceptSellOffer()
+    } catch (error) {
+        console.log(error);
+    }
+    showWaitDialog(false);
+}
+
+//***************************
+//** Accept Buy Offer ******
+//***************************
+async function acceptBuyOffer(showWaitDialog, values) {
+    showWaitDialog(true);
+    try {
+        const wallet = xrpl.Wallet.fromSeed(values.secret)
+        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+        await client.connect()
+        console.log("Connected to Sandbox")
+
+        // Prepare transaction -------------------------------------------------------
+        const transactionBlob = {
+            "TransactionType": "NFTokenAcceptOffer",
+            "Account": wallet.classicAddress,
+            "BuyOffer": values.tokenOfferIndex
+        }
+        // Submit signed blob --------------------------------------------------------
+        const tx = await client.submitAndWait(transactionBlob,{wallet})
+        const nfts = await client.request({
+        method: "account_nfts",
+        account: wallet.classicAddress
+        })
+        console.log(JSON.stringify(nfts,null,2))
+
+        // Check transaction results -------------------------------------------------
+        console.log("Transaction result:",
+            JSON.stringify(tx.result.meta.TransactionResult, null, 2))
+        console.log("Balance changes:",
+            JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+        client.disconnect()
+        // End of submitTransaction()
+    } catch (error) {
+        console.log(error);
+    }
+    showWaitDialog(false);
 }
 
 export default function TokenTester() {
+    const [loading, setLoading] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(1);
     const [values, setValues] = useState({
         account: accounts[0].key,
         secret: accounts[0].secret,
         showSecret: false,
         tokenUrl: 'ipfs://QmXSSpHaG9DH5U7zQNkL4BZrBZioGG3xmG54mqPqTCpddQ',
-        flags: '1',
+        flags: '12',
         tokenId: '',
-        amount: '1000000'
+        amount: '1000000',
+        tokenOfferIndex: '',
+        owner: ''
     });
     //useEffect(() => {
     //});
-
-    const onAccountInfo = () => {
-        getAccountInfo();
-    };
 
     const handleChooseAccount = (value) => {
         setSelectedIndex(value);
@@ -95,6 +495,14 @@ export default function TokenTester() {
     };
   return (
     <Page title="NFToken Tester">
+        <Backdrop
+            sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={loading}
+        >
+            <HashLoader
+                color={'#00AB55'}
+                size={80}/>
+        </Backdrop>
         <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={2} mb={1}>
           <Typography variant="h4" gutterBottom>
@@ -118,10 +526,10 @@ export default function TokenTester() {
         </Stack>
         
         <Card sx={{ pl: 3, pb: 2 }}>
-          <TesterControls
-            values={values}
-            setValues={setValues}
-            onAccountInfo={onAccountInfo}
+            <TesterControls
+                values={values}
+                setLoading={setLoading}
+                setValues={setValues}
             />
         </Card>
         

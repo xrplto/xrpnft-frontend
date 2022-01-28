@@ -7,6 +7,22 @@ if (typeof module !== "undefined") var xrpl = require('xrpl')
 //***************************
 //** Mint Token *************
 //***************************
+async function getAccountInfo() {
+    try {
+        const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233");
+        await client.connect();
+
+        const response = await client.request({
+            "command": "account_info",
+            "account": "rht9PFsHK2rds9dp5Nt9op4VWAceR63vWH",
+            "ledger_index": "validated"
+        });
+        console.log(response);
+        client.disconnect();
+    } catch (error) {
+        console.log(error);
+    }
+}
 
 async function mintToken() {
 	const wallet = xrpl.Wallet.fromSeed(secret.value)
@@ -364,6 +380,7 @@ async function acceptBuyOffer() {
 <h1>NFToken Tester</h1>
 <form id="theForm">
 <p>
+<button type="button" onClick="getAccountInfo()">Account Info</button>&nbsp;&nbsp;
 <button type="button" onClick="mintToken()">Mint Token</button>&nbsp;&nbsp;
 <button type="button" onClick="getTokens()">Get Tokens</button>&nbsp;&nbsp;
 <button type="button" onClick="burnToken()">Burn Token</button>&nbsp;&nbsp;

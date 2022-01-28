@@ -41,11 +41,11 @@ export default function TestReact() {
     return (
         <Page title="Test Page">
             <div className="App">
-            <h1>Search for Books on any Topic</h1>
+            <h2>Search for Books</h2>
             <form
                 onSubmit={e => {
-                e.preventDefault();
-                setQuery(search);
+                    e.preventDefault();
+                    setQuery(search);
                 }}
             >
                 <label>Search : </label>
@@ -54,12 +54,12 @@ export default function TestReact() {
             </form>
 
             {loading === "false" ? (
-                <h1>Search for Books</h1>
+                <h3>...</h3>
             ) : loading === "null" ? (
-                <h1>No Book Found</h1>
+                <h3>No Book Found</h3>
             ) : (
                 result.map(item => {
-                return <p>Book Title : {item}</p>;
+                    return <p>Title : {item}</p>;
                 })
             )}
             </div>
