@@ -1,5 +1,5 @@
 ## NFT marketplace built on XRP Ledger
-![RUNNING](./docs/bandicam 2022-01-29 16-22-44-206.gif)
+![RUNNING](./docs/2022-01-29_16-22-44-206.gif)
 ![Total](./docs/screenshot.png)
 ![Market Page](./docs/1token_market.png)
 ![Token List ](./docs/2token_list.png)
