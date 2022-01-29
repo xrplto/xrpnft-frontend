@@ -57,29 +57,6 @@ const accounts = [
 // JSON-RPC
 // http://xls20-sandbox.rippletest.net:51234
 // ====================================
-// Account info return
-// {
-//   "id": 0,
-//   "result": {
-//     "account_data": {
-//       "Account": "rht9PFsHK2rds9dp5Nt9op4VWAceR63vWH",
-//       "Balance": "9999999952",
-//       "Flags": 0,
-//       "LedgerEntryType": "AccountRoot",
-//       "MintedTokens": 4,
-//       "OwnerCount": 1,
-//       "PreviousTxnID": "FCD543B99DE4F6EEC520C94501031000415F67E2F1BC014151CCBF6556988DB7",
-//       "PreviousTxnLgrSeq": 258324,
-//       "Sequence": 257656,
-//       "index": "5F0609FDFA077F68ED7F5C2F38C16E2C7B16FFD3FD2DC17CB81C7E117E3C7C7E"
-//     },
-//     "ledger_hash": "AC48ABEB942844E2F084DA4D5BA8767B1CB480A8124A0EAD0CAC3294BD096EB5",
-//     "ledger_index": 382985,
-//     "validated": true
-//   },
-//   "type": "response"
-// }
-// There are one million drops per XRP.
 const xrpl = require("xrpl");
 async function mintToken(showWaitDialog, values) {
     showWaitDialog(true);
@@ -501,8 +478,8 @@ export default function TokenTester() {
         >
             <HashLoader
                 color={'#00AB55'}
-                size={80}/>
-        </Backdrop>
+                size={50}/>
+        </Backdrop >
         <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="flex-start" spacing={2} mb={1}>
           <Typography variant="h4" gutterBottom>

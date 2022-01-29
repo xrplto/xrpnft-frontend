@@ -9,9 +9,7 @@ import {
 
 import { Link as RouterLink } from 'react-router-dom';
 
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { Visibility, VisibilityOff, AccountBalanceWalletOutlined } from '@mui/icons-material';
 import AccountInfoDialog from './AccountInfoDialog';
 
 export default function TesterControls({ values, setValues, setLoading }) {
@@ -121,9 +119,9 @@ export default function TesterControls({ values, setValues, setLoading }) {
         </div>
       </Box>
       <Box component="form"
-      sx={{ flexWrap: 'wrap' }}
-      noValidate
-      autoComplete="off">
+        sx={{ flexWrap: 'wrap' }}
+        noValidate
+        autoComplete="off">
         <div>
             <TextField
                 label="Account"
@@ -139,7 +137,7 @@ export default function TesterControls({ values, setValues, setLoading }) {
                         setLoading = {setLoading}
                         render={(onAccountInfo) => (
                             <IconButton onClick={onAccountInfo}>
-                                <AccountBalanceWalletOutlinedIcon/>
+                                <AccountBalanceWalletOutlined />
                             </IconButton>
                             )}
                     />}}
