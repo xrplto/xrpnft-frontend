@@ -11,6 +11,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import { Visibility, VisibilityOff, AccountBalanceWalletOutlined } from '@mui/icons-material';
 import AccountInfoDialog from './AccountInfoDialog';
+import MintTokenDialog from './MintTokenDialog';
 
 export default function TesterControls({ values, setValues, setLoading }) {
     const handleChange = (prop) => (event) => {
@@ -36,19 +37,21 @@ export default function TesterControls({ values, setValues, setLoading }) {
   // >
   //   New
   // </Button>
-
   return (
     <Container>
       <Box>
         <div>
-          <Button
-            variant="contained"
-            component={RouterLink}
-            sx={{ m: 1 }}
-            to="#" >
-            Mint Token
-          </Button>
-
+            <MintTokenDialog
+                values = {values}
+                setLoading = {setLoading}
+                render={(onMintToken) => (
+                    <Button
+                        variant="contained"
+                        sx={{ m: 1 }}
+                        onClick={onMintToken}>
+                        Mint Token
+                    </Button>
+                )}/>
           <Button
             variant="contained"
             component={RouterLink}
