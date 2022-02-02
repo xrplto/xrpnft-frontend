@@ -1,30 +1,19 @@
 const WebSocket = require('ws');
 const streams = require('./streams');
-const log = require('./logger')({ name: 'xrpl ws' });
+const log = require('./logger')({ name: 'XRPL WS' });
 
 const RIPPLEDS = [
   {
     host: process.env.RIPPLED_HOST,
-    port: process.env.RIPPLED_WS_PORT,
     primary: true,
   },
 ];
 
 let connections = [];
 
-if (process.env.RIPPLED_SECONDARY) {
-  process.env.RIPPLED_SECONDARY.split(',').forEach(d => {
-    const rippled = d.split(':');
-    RIPPLEDS.push({
-      host: rippled[0],
-      port: rippled[1] || 51233,
-    });
-  });
-}
-
 const connect = rippled => {
-  log.info(`${rippled.host}:${rippled.port} connecting...`);
-  const ws = new WebSocket(`ws://${rippled.host}:${rippled.port}`);
+  log.info(`${rippled.host} Connecting...`);
+  const ws = new WebSocket(`ws://${rippled.host}`);
   ws.rippled = rippled;
 
   // handle close
