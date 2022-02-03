@@ -7,14 +7,14 @@ module.exports = async (req, res) => {
   const { currency: currencyCode, accountId: issuer } = req.params;
 
   try {
-    log.info('fetching gateway_balances from rippled');
+    log.info('Fetching gateway_balances from rippled (token.js)');
     const balances = await rippled.getBalances(issuer);
     const obligations = balances.obligations[currencyCode.toUpperCase()];
     if (!obligations) {
       throw new Error('Currency not issued by account');
     }
 
-    log.info('fetching account info from rippled');
+    log.info('Fetching account info from rippled (token.js)');
     const info = await rippled.getAccountInfo(issuer);
 
     const {

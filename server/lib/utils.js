@@ -1,5 +1,6 @@
 const moment = require('moment');
 const summarizeTransaction = require('./txSummary');
+const log = require('./logger')({ name: 'utils.js ' });
 
 const EPOCH_OFFSET = 946684800;
 const XRP_BASE = 1000000;
@@ -123,6 +124,8 @@ module.exports.summarizeLedger = (ledger, txDetails = false) => {
     total_fees: 0,
     transactions: [],
   };
+  
+  //log.info(`Ledger: ${JSON.stringify(summary)}`);
 
   ledger.transactions.forEach(tx => {
     const d = formatTransaction(tx);

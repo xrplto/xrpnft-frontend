@@ -1,7 +1,7 @@
 const rippled = require('../lib/rippled');
 const utils = require('../lib/utils');
 const summarize = require('../lib/txSummary');
-const log = require('../lib/logger')({ name: 'transactions' });
+const log = require('../lib/logger')({ name: 'Transactions: ' });
 
 module.exports = (req, res) => {
   log.info(`get tx: ${req.params.id}`);

@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
 const rippled = require('./rippled');
 const utils = require('./utils');
-const log = require('./logger')({ name: 'streams' });
+const log = require('./logger')({ name: 'streams.js ' });
 
 const PURGE_INTERVAL = 10 * 1000;
 const MAX_AGE = 120 * 1000;
@@ -38,6 +38,7 @@ const fetchLedger = (ledger, attempts = 0) => {
     .getLedger({ ledger_hash: ledger.ledger_hash })
     .then(utils.summarizeLedger)
     .then(summary => {
+    	//log.info(`Ledger: ${JSON.stringify(summary)}`);
       Object.assign(ledger, summary);
       emit('ledgerSummary', summary);
     })
@@ -139,7 +140,7 @@ module.exports.handleLedger = data => {
   const ledger = addLedger(data);
   const { ledger_hash: ledgerHash, ledger_index: ledgerIndex, txn_count: txnCount } = data;
 
-  log.info('new ledger', ledgerIndex);
+  log.info('New ledger', ledgerIndex);
   ledger.ledger_hash = ledgerHash;
   ledger.txn_count = txnCount;
   ledger.close_time = (data.ledger_time + utils.EPOCH_OFFSET) * 1000;

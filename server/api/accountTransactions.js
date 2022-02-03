@@ -49,7 +49,7 @@ module.exports = (req, res) => {
     res.status(error.code || 500).json({ message: error.message });
   }
 
-  log.info(`get transactions: ${account} -> ${classicAddress}`);
+  log.info(`get transactions: ${account} -> ${classicAddress} (accountTransactions.js)`);
   rippled
     .getAccountTransactions(classicAddress, limit, marker)
     .then(data => {

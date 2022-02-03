@@ -4,7 +4,7 @@ const { resolvePayId } = require('payid-lib');
 const log = require('../lib/logger')({ name: 'payString' });
 
 module.exports = (req, res) => {
-  log.info(`get paystring: ${req.params.id}`);
+  log.info(`get paystring: ${req.params.id} (payString.js)`);
 
   return resolvePayId(req.params.id)
     .then(result => {

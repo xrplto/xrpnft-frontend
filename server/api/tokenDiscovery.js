@@ -1,7 +1,7 @@
 const { BigQuery } = require('@google-cloud/bigquery');
 const rippled = require('../lib/rippled');
 
-const log = require('../lib/logger')({ name: 'token discovery' });
+const log = require('../lib/logger')({ name: 'tokenDiscovery.js ' });
 
 // Whether this is running in the prod environment (or in dev/staging)
 // For the purpose of running locally, this equals false if the env var doesn't exist
@@ -19,7 +19,7 @@ const NUM_TOKENS_FETCH_ALL = 10;
 
 const cachedTokensList = { tokens: [], time: null };
 
-let options = {
+let google_api_credentials = {
   projectId: process.env.GOOGLE_APP_PROJECT_ID,
   credentials: {
     client_email: process.env.GOOGLE_APP_CLIENT_EMAIL,
@@ -27,7 +27,7 @@ let options = {
   },
 };
 
-const bigQuery = new BigQuery(options);
+const bigQuery = new BigQuery(google_api_credentials);
 
 async function getAccountInfo(issuer, currencyCode) {
   const balances = await rippled.getBalances(issuer);
@@ -114,7 +114,7 @@ async function getTokensList() {
 
 async function cacheTokensList() {
   try {
-    log.info('caching tokens');
+    log.info('Caching tokens');
     const tokens = await getTokensList();
     cachedTokensList.tokens = tokens;
     cachedTokensList.time = Date.now();
@@ -155,7 +155,7 @@ function sleep(ms) {
 module.exports = async (req, res) => {
   // * * * * * * * * IMPORTANT * * * * * * * * * * * *
   // Running the BigQuery query costs money. Don't let it run if you don't need to.
-  log.info(`getting token discovery`);
+  log.info(`Getting token discovery`);
   try {
     // If it's been a while since caching happened in the non-prod envs, then restart the caching
     // (needed because `startCaching` turns off caching after TIME_TO_TEST for non-prod envs)

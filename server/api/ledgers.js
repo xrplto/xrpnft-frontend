@@ -1,6 +1,6 @@
 const utils = require('../lib/utils');
 const rippled = require('../lib/rippled');
-const log = require('../lib/logger')({ name: 'ledgers' });
+const log = require('../lib/logger')({ name: 'ledgers.js' });
 
 module.exports = (req, res) => {
   const parameters = {};
@@ -15,7 +15,7 @@ module.exports = (req, res) => {
     parameters.ledger_hash = req.params.id.toUpperCase();
   }
 
-  log.info(`get ledger: ${JSON.stringify(parameters)}`);
+  //log.info(`Get ledger: ${JSON.stringify(parameters)} `);
 
   rippled
     .getLedger(parameters)

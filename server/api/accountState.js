@@ -71,7 +71,7 @@ module.exports = (req, res) => {
     res.status(error.code || 500).json({ message: error.message });
   }
 
-  log.info(`get balances: ${account} -> ${classicAddress}`);
+  log.info(`get balances: ${account} -> ${classicAddress} (accountState.js)`);
   rippled
     .getAccountInfo(classicAddress)
     .then(info =>

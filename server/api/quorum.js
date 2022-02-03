@@ -3,7 +3,7 @@ const rippled = require('../lib/rippled');
 const log = require('../lib/logger')({ name: 'serverInfo' });
 
 module.exports = (req, res) => {
-  log.info(`fetching server_info from rippled`);
+  log.info(`fetching server_info from rippled (quorum.js)`);
 
   rippled
     .getServerInfo()

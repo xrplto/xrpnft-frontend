@@ -4,7 +4,7 @@ const log = require('../lib/logger')({ name: 'offers' });
 module.exports = async (req, res) => {
   const { currencyCode, issuerAddress, pairCurrencyCode, pairIssuerAddress } = req.params;
   try {
-    log.info('fetching book offers from rippled');
+    log.info('Fetching book offers from rippled (offers.js)');
     let orderBook = await rippled.getOffers(
       currencyCode,
       issuerAddress,

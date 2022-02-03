@@ -2,14 +2,15 @@ const os = require('os');
 const axios = require('axios');
 const moment = require('moment');
 const utils = require('./utils');
-const xrpl = require('xrpl');
+
+const log = require('../lib/logger')({ name: 'rippled.js ' });
 
 const HOSTNAME = os.hostname();
-const URL = `wss://${process.env.RIPPLED_HOST}`;
-const URL_HEALTH = `wss://${process.env.RIPPLED_HOST}/health`;
+const URL = `https://${process.env.RIPPLED_HOST}`;
+const URL_HEALTH = `https://${process.env.RIPPLED_HOST}/health`;
 // If there is a separate peer to peer server for admin requests, use it. Otherwise use the default url for everything.
 const P2P_URL = process.env.P2P_RIPPLED_HOST
-  ? `wss://${process.env.P2P_RIPPLED_HOST}`
+  ? `https://${process.env.P2P_RIPPLED_HOST}`
   : URL;
 
 const N_UNL_INDEX = '2E8A59AA9D3B5B186B0B9E0F62E6C02587CA74A4D778938E957B6357D364B244';
@@ -42,22 +43,10 @@ const formatPaychannel = d => ({
   balance: d.Balance / utils.XRP_BASE,
   settleDelay: d.SettleDelay,
 });
-  
-/*async function main() {
-  const api = new xrpl.Client('wss://xrplcluster.com');
-  await api.connect();
 
-  let response = await api.request({
-    "command": "ledger",
-    "ledger_index": "validated",
-    "transactions": true
-  });
-  console.log(response);
-}
-main();*/
-
-const executeQuery = (url, options) => {
+function executeQuery(url, options) {
   const params = { ...options, headers: { 'X-User': HOSTNAME } };
+  log.info(`executeQuery method:'${options.method}'`);
   return axios.post(url, params).catch(error => {
     const message = error.response && error.response.data ? error.response.data : error.toString();
     const code = error.response && error.response.status ? error.response.status : 500;

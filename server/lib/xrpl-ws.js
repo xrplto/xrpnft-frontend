@@ -1,46 +1,57 @@
 const WebSocket = require('ws');
 const streams = require('./streams');
-const log = require('./logger')({ name: 'XRPL WS' });
+const log = require('./logger')({ name: 'xrpl-ws.js ' });
 
-const RIPPLEDS = [
-  {
-    host: process.env.RIPPLED_HOST,
-    primary: true,
-  },
-];
+/*const WebSocket = require('ws')
 
-let connections = [];
+return await new Promise((resolve, reject) => {
+    console.log('Connecting')
+    const Client = new WebSocket('wss://xrplcluster.com')
+    
+    Client.on('open', e => {
+      console.log('Connected, request server_info')
+      Client.send(JSON.stringify({ command: 'server_info' }))
+    })
 
-const connect = rippled => {
-  log.info(`${rippled.host} Connecting...`);
-  const ws = new WebSocket(`ws://${rippled.host}`);
-  ws.rippled = rippled;
+    Client.on('message', data => {
+      console.log('Got response')
+      resolve(JSON.parse(data).result.info)
+      Client.close()
+    }) 
+})*/
+
+let connection;
+
+function Connect() {
+	const host = process.env.RIPPLED_HOST;
+  log.info(`Connecting to wss://${host} ...`);
+  const Client = new WebSocket(`wss://${host}`);
 
   // handle close
-  ws.on('close', () => {
-    log.info(`${rippled.host} closed`);
-    ws.last = Date.now();
+  Client.on('close', () => {
+    log.info(`${host} closed`);
+    Client.last = Date.now();
   });
 
   // handle error
-  ws.on('error', e => {
-    log.error(`${rippled.host} error - ${e.toString()}`);
+  Client.on('error', e => {
+    log.error(`${host} error - ${e.toString()}`);
   });
 
   // subscribe and save new connections
-  ws.on('open', () => {
-    log.info(`${rippled.host} connected`);
-    ws.send(
+  Client.on('open', () => {
+    log.info(`Connected to ${host}`);
+    Client.send(
       JSON.stringify({
         command: 'subscribe',
-        streams: rippled.primary ? ['ledger', 'validations', 'server'] : ['validations'],
+        streams: ['ledger', 'validations', 'server'],
       })
     );
   });
 
   // handle messages
-  ws.on('message', message => {
-    ws.last = Date.now();
+  Client.on('message', message => {
+    Client.last = Date.now();
     let data;
     try {
       data = JSON.parse(message);
@@ -58,21 +69,21 @@ const connect = rippled => {
     }
   });
 
-  return ws;
+  return Client;
 };
 
 const checkHeartbeat = () => {
-  connections.forEach((ws, i) => {
-    if (Date.now() - ws.last > 10000) {
-      ws.terminate();
-      log.info(`attempt reconnect ${ws.rippled.host}`);
-      connections[i] = connect(ws.rippled);
-    }
-  });
+	log.info('checkHeartbeat');
+	if (Date.now() - connection.last > 10000) {
+		connection.terminate();
+		log.info(`Attempting to reconnect`);
+		connection = Connect();
+	}
 };
 
 setInterval(checkHeartbeat, 2000);
 
 module.exports.start = () => {
-  connections = RIPPLEDS.map(connect);
+	log.info('START!!!!');
+	connection = Connect();
 };
