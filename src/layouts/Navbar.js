@@ -8,6 +8,7 @@ import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
 import MHidden from '../components/MHidden';
 //
 import AccountPopover from './AccountPopover';
+import WalletPopover from './WalletPopover';
 
 //import { createTheme } from '@mui/material/styles';
 
@@ -58,6 +59,7 @@ export default function Navbar({ onOpenSidebar }) {
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           <AccountPopover />
+          <WalletPopover/>
         </Stack>
       </ToolbarStyle>
     </RootStyle>
