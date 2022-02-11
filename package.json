@@ -6,7 +6,6 @@
   "private": false,
   "scripts": {
     "start": "react-scripts start",
-    "server": "node server|bunyan",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -87,17 +86,7 @@
     "web-vitals": "^2.1.0",
     "web3": "^1.7.0",
     "xrpl": "^2.1.1",
-    "yup": "^0.32.9",
-    "express": "^4.17.2",
-    "express-ws": "^5.0.2",
-    "ws": "^8.4.2",
-    "bunyan": "^1.8.15",
-    "body-parser": "^1.19.1",
-    "payid-lib": "^0.1.0",
-    "@google-cloud/bigquery": "^5.10.0",
-    "dotenv": "^15.0.0",
-    "morgan": "^1.10.0",
-    "helmet": "^5.0.2"
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
