@@ -25,7 +25,7 @@ async function mintToken(showResult, showWaitDialog, values) {
         const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
         await client.connect()
         console.log("Connected to Sandbox")
-
+        
         // Note that you must convert the token URL to a hexadecimal
         // value for this transaction.
         // ----------------------------------------------------------
