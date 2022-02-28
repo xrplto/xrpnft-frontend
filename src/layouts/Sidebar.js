@@ -9,7 +9,6 @@ import { Box, Drawer } from '@mui/material';
 import Logo from '../components/Logo';
 import Scrollbar from '../components/Scrollbar';
 import NavSection from '../components/NavSection';
-import MHidden from '../components/MHidden';
 //
 import sidebarConfig from './SidebarConfig';
 
@@ -18,10 +17,6 @@ import sidebarConfig from './SidebarConfig';
 const DRAWER_WIDTH = 280;
 
 const RootStyle = styled('div')(({ theme }) => ({
-  [theme.breakpoints.up('lg')]: {
-    flexShrink: 0,
-    width: DRAWER_WIDTH
-  }
 }));
 
 // ----------------------------------------------------------------------
@@ -63,7 +58,6 @@ export default function Sidebar({ isOpenSidebar, onCloseSidebar }) {
 
   return (
     <RootStyle>
-      <MHidden width="lgUp">
         <Drawer
           open={isOpenSidebar}
           onClose={onCloseSidebar}
@@ -73,22 +67,6 @@ export default function Sidebar({ isOpenSidebar, onCloseSidebar }) {
         >
           {renderContent}
         </Drawer>
-      </MHidden>
-
-      <MHidden width="lgDown">
-        <Drawer
-          open
-          variant="persistent"
-          PaperProps={{
-            sx: {
-              width: DRAWER_WIDTH,
-              bgcolor: 'background.default'
-            }
-          }}
-        >
-          {renderContent}
-        </Drawer>
-      </MHidden>
     </RootStyle>
   );
 }
