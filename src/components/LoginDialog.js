@@ -1,37 +1,31 @@
-import { useState, useEffect } from "react";
+import { /*useState,*/ useEffect } from "react";
 import axios from "axios";
-import useWebSocket, { ReadyState } from "react-use-websocket";
-import { Box, Dialog, DialogTitle, Divider } from '@mui/material';
+import useWebSocket/*, { ReadyState }*/ from "react-use-websocket";
+import { Box, Dialog/*, DialogTitle, Divider*/ } from '@mui/material';
+import { useContext } from 'react'
+import Context from '../Context'
 
 const SERVER_BASE_URL = 'http://127.0.0.1:81/api/xumm';
 
-{/* <a href={payload.data.next}>
-    <button>Open XUMM</button>
-</a>
-<p>account: {account}</p>
-{messageHistory &&
-    messageHistory.map((message, i) => <p key={i}>{message}</p>)} */}
-
 export default function LoginDialog(props) {
-    const payload = props.payload;
-    const socketUrl = props.socketUrl;
-    const log = props.log;
-    const { lastMessage, readyState } = useWebSocket(socketUrl, { share: true });
-    const [account, setAccount] = useState(null);
+    const { accountProfile } = useContext(Context);
+    //const log = props.log;
+    const { lastMessage/*, readyState */ } = useWebSocket(accountProfile.socketUrl, { share: true });
     
-    const connectionStatus = {
+    /*const connectionStatus = {
         [ReadyState.CONNECTING]: "Connecting",
         [ReadyState.OPEN]: "Open",
         [ReadyState.CLOSING]: "Closing",
         [ReadyState.CLOSED]: "Closed",
         [ReadyState.UNINSTANTIATED]: "Uninstantiated",
-    }[readyState];
+    }[readyState];*/
 
     const getAccountStatus = async () => {
         try {
-            const res = await axios.get(`${SERVER_BASE_URL}/payload/${payload.data.uuid}`);
-            if (res.status === 200)
-                setAccount(res.data.data.response.account);
+            const res = await axios.get(`${SERVER_BASE_URL}/payload/${accountProfile.payload.data.uuid}`);
+            if (res.status === 200) {
+                props.handleSetAccount(res.data.data.response.account);
+            }
         } catch (err) {
         }
     };
@@ -50,7 +44,7 @@ export default function LoginDialog(props) {
         <Dialog onClose={onClose} open={props.open}>
             {/* <DialogTitle>Scan the QR code from your XUMM app</DialogTitle> */}
             {/* <Divider /> */}
-            {payload && payload.status && (
+            {accountProfile && accountProfile.payload && accountProfile.payload.status && (
                 <div
                     style={{
                         display: "flex",
@@ -65,9 +59,9 @@ export default function LoginDialog(props) {
                         sx={{
                         }}
                         alt="QR"
-                        src={payload.data.qrUrl}
+                        src={accountProfile.payload.data.qrUrl}
                         />
-                </div>              
+                </div>
             )}
       </Dialog>
     );

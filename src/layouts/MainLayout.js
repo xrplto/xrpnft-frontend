@@ -5,11 +5,10 @@ import { styled } from '@mui/material/styles';
 //
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
-
 // ----------------------------------------------------------------------
 
 const APP_BAR_MOBILE = 64;
-const APP_BAR_DESKTOP = 92;
+//const APP_BAR_DESKTOP = 92;
 
 const RootStyle = styled('div')({
     display: 'flex',
@@ -28,15 +27,15 @@ const MainStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function MainLayout() {
-  const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
 
-  return (
-    <RootStyle>
-      <Navbar onOpenSidebar={() => setOpen(true)} />
-      <Sidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
-      <MainStyle>
-        <Outlet />
-      </MainStyle>
-    </RootStyle>
-  );
+    return (
+        <RootStyle>
+            <Navbar onOpenSidebar={() => setOpen(true)} />
+            <Sidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+            <MainStyle>
+                <Outlet />
+            </MainStyle>
+        </RootStyle>
+    );
 }
