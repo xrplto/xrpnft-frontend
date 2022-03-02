@@ -1,5 +1,5 @@
 //import { Icon } from '@iconify/react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 //import homeFill from '@iconify/icons-eva/home-fill';
 //import personFill from '@iconify/icons-eva/person-fill';
 //import settings2Fill from '@iconify/icons-eva/settings-2-fill';
@@ -24,14 +24,62 @@ export default function AccountPopover() {
     const anchorRef = useRef(null);
     const [open, setOpen] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
-    
+    const [uuid, setUuid] = useState(null);
+    //const [wsUrl, setWsUrl] = useState(null);
+    const [qrUrl, setQrUrl] = useState(null);
+
+    /*const connectionStatus = {
+        [ReadyState.CONNECTING]: "Connecting",
+        [ReadyState.OPEN]: "Open",
+        [ReadyState.CLOSING]: "Closing",
+        [ReadyState.CLOSED]: "Closed",
+        [ReadyState.UNINSTANTIATED]: "Uninstantiated",
+    }[readyState];*/
+    useEffect(() => {
+        var timer = null;
+        var isRunning = false;
+        var counter = 150;
+        if (openLogin) {
+            console.log("Set timer");
+            timer = setInterval(async () => {
+                console.log(counter + " " + isRunning, uuid);
+                if (isRunning) return;
+                isRunning = true;
+                try {
+                    const res = await axios.get(`${SERVER_BASE_URL}/payload/${uuid}`);
+                    const account = res.data.data.response.account;
+                    if (account) {
+                        setOpenLogin(false);
+                        setAccountProfile({account: account, uuid: uuid});
+                        return;
+                    }
+                } catch (err) {
+                }
+                isRunning = false;
+                counter--;
+                if (counter <= 0) {
+                    setOpenLogin(false);
+                }
+            }, 2000);
+        }
+        return () => {
+            if (timer) {
+                console.log("kill timer");
+                clearInterval(timer)
+            }
+        };
+    }, [openLogin, uuid, setAccountProfile]);
+
     const onConnectXumm = async () => {
         setLoading(true);
         try {
             const res = await axios.post(`${SERVER_BASE_URL}/login`);
             if (res.status === 200) {
-                //setLog(res.data.status ? "connect success" : "connect failed");
-                setAccountProfile({payload: res.data, socketUrl: res.data.data.wsUrl, account: null});
+                const uuid = res.data.data.uuid;
+                const qrlink = res.data.data.qrUrl;
+
+                setUuid(uuid);
+                setQrUrl(qrlink);
                 setOpenLogin(true);
             }
         } catch (err) {
@@ -40,13 +88,14 @@ export default function AccountPopover() {
         setLoading(false);
     };
 
-    const onDisconnectXumm = async () => {
+    const onDisconnectXumm = async (uuid) => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${SERVER_BASE_URL}/logout/${accountProfile.payload.data.uuid}`);
+            const res = await axios.delete(`${SERVER_BASE_URL}/logout/${uuid}`);
             if (res.status === 200) {
                 //setLog(res.data.status ? "disconnect success" : "disconnect failed");
-                setAccountProfile({payload: null, socketUrl: null, account: null});
+                setAccountProfile(null);
+                setUuid(null);
             }
         } catch(err) {
         }
@@ -65,15 +114,14 @@ export default function AccountPopover() {
         onConnectXumm();
     };
 
-    const handleLoginClose = () => {
-        onDisconnectXumm();
-        setOpenLogin(false);
-    };
+    const handleLogout = () => {
+        setOpen(false);
+        onDisconnectXumm(accountProfile.uuid);
+    }
 
-    const handleSetAccount = (account) => {
+    const handleLoginClose = () => {
         setOpenLogin(false);
-        let profile = {payload: accountProfile.payload, socketUrl: accountProfile.socketUrl, account: account}
-        setAccountProfile(profile);
+        onDisconnectXumm(uuid);
     };
 
     return (
@@ -119,7 +167,7 @@ export default function AccountPopover() {
                             </Typography>
                         </Box>
                         <Box sx={{ p: 2, pt: 1.5 }}>
-                        <Button fullWidth color="inherit" variant="outlined">
+                        <Button fullWidth color="inherit" variant="outlined" onClick={handleLogout}>
                             Logout
                         </Button>
                         </Box>
@@ -143,7 +191,7 @@ export default function AccountPopover() {
             <LoginDialog
                 open={openLogin}
                 handleClose={handleLoginClose}
-                handleSetAccount={handleSetAccount}
+                qrUrl={qrUrl}
             />
         </>
     );

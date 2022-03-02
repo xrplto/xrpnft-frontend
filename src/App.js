@@ -17,9 +17,9 @@ import { HashLoader } from "react-spinners";
 export default function App() {
     const [loading, setLoading] = useState(false);
     const key_darkmode = 'theme:isDarkMode'
-    const key_profile = 'account:profile1'
+    const key_profile = 'account:profile2'
     const [isDarkMode, setIsDarkMode] = useState(true);
-    const [accountProfile, setAccountProfile] = useState({payload: null, socketUrl: null, account: null});
+    const [accountProfile, setAccountProfile] = useState(null);
 
     const toggleThisTheme = (mode) => {
         if (mode === 'isDarkMode')
@@ -37,8 +37,11 @@ export default function App() {
 
     useEffect(() => {
         const profile = localStorage.getItem(key_profile)
-        if (profile)
-            setAccountProfile(profile);
+        //const profile = '{"account":"rDsRQWRTRrtzAgK8HH7rcCAZnWeCsJm28K","uuid":"4a3eb58c-aa97-4d48-9ab2-92d90df9a75f"}';
+        console.log('Profile: ' + profile);
+        if (profile) {
+            setAccountProfile(JSON.parse(profile));
+        }
     }, [key_profile])
 
     useEffect(() => {
@@ -50,10 +53,11 @@ export default function App() {
     }, [isDarkMode, key_darkmode])
 
     useEffect(() => {
+        console.log('Saving: ' + JSON.stringify(accountProfile));
         try {
-            localStorage.setItem(key_profile, accountProfile)
+            localStorage.setItem(key_profile, JSON.stringify(accountProfile));
         } catch (error) {
-            console.warn(error)
+            console.warn(error);
         }
     }, [accountProfile, key_profile])
 
