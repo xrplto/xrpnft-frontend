@@ -8,7 +8,6 @@ import Tokens from './pages/Token';
 import TokenTester from './pages/tester/TokenTester';
 import Spinner from './pages/spinner/Spinner';
 import ProgressPage from './pages/progress/ProgressPage';
-import TestPage from './pages/testpage/TestPage';
 import NotFound from './pages/Page404';
 
 // ----------------------------------------------------------------------
@@ -24,7 +23,6 @@ export default function Router() {
         { path: 'tester', element: <TokenTester /> },
         { path: 'spinners', element: <Spinner /> },
         { path: 'progress', element: <ProgressPage /> },
-        { path: 'test_page', element: <TestPage /> },
         { path: '*', element: <Navigate to="/404/NotFound" /> }
       ]
     },

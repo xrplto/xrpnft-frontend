@@ -8,7 +8,7 @@ import mint from '@iconify/icons-file-icons/mint';
 //import spin6Icon from '@iconify/icons-fontelico/spin6';
 import spinnerIcon from '@iconify/icons-fontisto/spinner';
 import progressBar from '@iconify/icons-carbon/progress-bar';
-import testReact from '@iconify/icons-file-icons/test-react';
+//import testReact from '@iconify/icons-file-icons/test-react';
 
 // ----------------------------------------------------------------------
 
@@ -39,11 +39,6 @@ const sidebarConfig = [
     title: 'Progress',
     path: '/progress',
     icon: getIcon(progressBar)
-  },
-  {
-    title: 'Test Page',
-    path: '/test_page',
-    icon: getIcon(testReact)
   }
 ];
 
