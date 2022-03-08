@@ -88,7 +88,9 @@
     "xrpl": "^2.1.1",
     "yup": "^0.32.9",
     "dotenv": "^15.0.0",
-    "react-use-websocket": "^3.0.0"
+    "react-use-websocket": "^3.0.0",
+    "bignumber.js": "^9.0.2",
+    "ripple-address-codec": "^4.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",

@@ -18,7 +18,7 @@ import profile from '../_mocks_/profile';
 import axios from 'axios';
 // ----------------------------------------------------------------------
 //const SERVER_BASE_URL = 'http://127.0.0.1/api/xumm';
-const SERVER_BASE_URL = 'https://ws.xrpl.to/api/xumm';
+const SERVER_BASE_URL = 'https://ws.xrpnft.com/api/xumm';
 // ----------------------------------------------------------------------
 export default function AccountPopover() {
     const { accountProfile, setAccountProfile, setLoading } = useContext(Context);
