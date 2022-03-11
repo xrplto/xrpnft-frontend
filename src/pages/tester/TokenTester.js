@@ -79,7 +79,7 @@ const xrpl = require("xrpl");
 //***************************
 //** Get Tokens *************
 //***************************
-async function getTokens(showWaitDialog, values) {
+/* async function getTokens(showWaitDialog, values) {
   showWaitDialog(true);
   try {
     const wallet = xrpl.Wallet.fromSeed(values.secret);
@@ -96,12 +96,12 @@ async function getTokens(showWaitDialog, values) {
     console.log(error);
   }
   showWaitDialog(false);
-} //End of getTokens
+} //End of getTokens */
 
 //***************************
 //** Burn Token *************
 //***************************
-async function burnToken(showWaitDialog, values) {
+/* async function burnToken(showWaitDialog, values) {
   showWaitDialog(true);
   try {
     const wallet = xrpl.Wallet.fromSeed(values.secret);
@@ -134,13 +134,13 @@ async function burnToken(showWaitDialog, values) {
     console.log(error);
   }
   showWaitDialog(false);
-}
+} */
 // End of burnToken()
 
 //********************************
 //** Create Sell Offer ***********
 //********************************
-async function createSellOffer(showWaitDialog, values) {
+/* async function createSellOffer(showWaitDialog, values) {
   showWaitDialog(true);
   try {
     const wallet = xrpl.Wallet.fromSeed(values.secret);
@@ -198,12 +198,12 @@ async function createSellOffer(showWaitDialog, values) {
     console.log(error);
   }
   showWaitDialog(false);
-}
+} */
 
 //********************************
 //** Create Buy Offer ***********
 //********************************
-async function createBuyOffer(showWaitDialog, values) {
+/* async function createBuyOffer(showWaitDialog, values) {
   showWaitDialog(true);
   try {
     const wallet = xrpl.Wallet.fromSeed(values.secret);
@@ -262,12 +262,12 @@ async function createBuyOffer(showWaitDialog, values) {
     console.log(error);
   }
   showWaitDialog(false);
-}
+} */
 
 //***************************
 //** Cancel Offer ***********
 //***************************
-async function cancelOffer(showWaitDialog, values) {
+/* async function cancelOffer(showWaitDialog, values) {
   showWaitDialog(true);
   try {
     const wallet = xrpl.Wallet.fromSeed(values.secret);
@@ -328,12 +328,12 @@ async function cancelOffer(showWaitDialog, values) {
     console.log(error);
   }
   showWaitDialog(false);
-}
+} */
 
 //***************************
 //** Get Offers *************
 //***************************
-async function getOffers(showWaitDialog, values) {
+/* async function getOffers(showWaitDialog, values) {
   showWaitDialog(true);
   try {
     const wallet = xrpl.Wallet.fromSeed(values.secret);
@@ -368,12 +368,12 @@ async function getOffers(showWaitDialog, values) {
     console.log(error);
   }
   showWaitDialog(false);
-}
+} */
 
 //***************************
 //** Accept Sell Offer ******
 //***************************
-async function acceptSellOffer(showWaitDialog, values) {
+/* async function acceptSellOffer(showWaitDialog, values) {
   showWaitDialog(true);
   try {
     const wallet = xrpl.Wallet.fromSeed(values.secret);
@@ -410,12 +410,12 @@ async function acceptSellOffer(showWaitDialog, values) {
     console.log(error);
   }
   showWaitDialog(false);
-}
+} */
 
 //***************************
 //** Accept Buy Offer ******
 //***************************
-async function acceptBuyOffer(showWaitDialog, values) {
+/*async function acceptBuyOffer(showWaitDialog, values) {
   showWaitDialog(true);
   try {
     const wallet = xrpl.Wallet.fromSeed(values.secret);
@@ -452,7 +452,7 @@ async function acceptBuyOffer(showWaitDialog, values) {
     console.log(error);
   }
   showWaitDialog(false);
-}
+} */
 
 export default function TokenTester() {
   const [loading, setLoading] = useState(false);

@@ -73,7 +73,9 @@
     "web3": "^1.7.1",
     "xrpl": "^2.1.1",
     "bignumber.js": "^9.0.2",
-    "ripple-address-codec": "^4.2.3"
+    "ripple-address-codec": "^4.2.3",
+    "crypto-js": "^4.1.1",
+    "toml": "^3.0.0"
   },
   "devDependencies": {
     "prettier": "^2.5.1"
