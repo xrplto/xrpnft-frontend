@@ -2,22 +2,32 @@
 import { useState, useEffect, useContext } from 'react';
 // components
 import Page from '../../components/Page';
-import NftList from './NftList';
 //import NftCartWidget from './NftCartWidget';
 //
-import NFTS from '../../_mocks_/nfts';
+//import NFTS from '../../_mocks_/nfts';
 import axios from 'axios'
 // Context
 import Context from '../../Context'
 import {
-    Card
+    Card,
+    Grid
 } from '@mui/material';
+
+import NftCard from './NftCard';
+import TokenListToolbar from './TokenListToolbar';
 // ----------------------------------------------------------------------
 
 export default function NFTMarketplace() {
     const { setLoading } = useContext(Context);
     // const [openFilter, setOpenFilter] = useState(false);
-    const [ offset, setOffset ] = useState(-1);
+    const [page, setPage] = useState(0);
+    const [order, setOrder] = useState('desc');
+    const [selected, setSelected] = useState([]);
+    const [orderBy, setOrderBy] = useState('trline');
+    const [filterName, setFilterName] = useState('');
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [labelRowsPerPage/*, setLabelRowsPerPage*/] = useState('Rows');
+    const [ offset, setOffset ] = useState(0);
     const [nfts, setNfts] = useState([]);
     // const formik = useFormik({
     //     initialValues: {
@@ -76,9 +86,50 @@ export default function NFTMarketplace() {
         }
     }, [offset, setLoading]);
 
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const handleFilterByName = (event) => {
+        setFilterName(event.target.value);
+    };
+
+    const handleCloudRefresh = (event) => {
+        //loadNfts(offset);
+    };
+
     return (
         <Page title="XRPL NFT Marketplace">
-            <NftList nfts={nfts} />
+            <TokenListToolbar
+                numSelected={selected.length}
+                filterName={filterName}
+                onFilterName={handleFilterByName}
+                count={nfts.length}
+                rowsPerPage={rowsPerPage}
+                labelRowsPerPage={labelRowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                onCloudRefresh={handleCloudRefresh}
+            />
+            <Grid container spacing={6} sx={{ p: 5 }}>
+                {nfts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((nftoken) => (
+                    <Grid key={nftoken.tokenID} item xs={12} sm={6} md={2.4}>
+                        <NftCard nftoken={nftoken} />
+                    </Grid>
+                ))}
+            </Grid>
             {/* <NftCartWidget /> */}
         </Page>
     );

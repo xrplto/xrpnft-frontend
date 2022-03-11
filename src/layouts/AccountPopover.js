@@ -1,12 +1,22 @@
-//import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react';
 import { useRef, useState, useEffect } from 'react';
+import userLock from '@iconify/icons-fa-solid/user-lock';
 //import homeFill from '@iconify/icons-eva/home-fill';
 //import personFill from '@iconify/icons-eva/person-fill';
 //import settings2Fill from '@iconify/icons-eva/settings-2-fill';
 //import { Link as RouterLink } from 'react-router-dom';
 // material
-import { alpha } from '@mui/material/styles';
-import { Box, Typography, Button, MenuItem, Avatar, IconButton, Stack } from '@mui/material';
+//import { alpha } from '@mui/material/styles';
+import { 
+    Box,
+    Typography,
+    Button,
+    MenuItem,
+    Avatar,
+    IconButton,
+    Stack
+} from '@mui/material';
+
 // components
 import MenuPopover from '../components/MenuPopover';
 import LoginDialog from '../components/LoginDialog';
@@ -14,8 +24,14 @@ import LoginDialog from '../components/LoginDialog';
 import { useContext } from 'react'
 import Context from '../Context'
 
-import profile from '../_mocks_/profile';
+//import profile from '../_mocks_/profile';
 import axios from 'axios';
+
+
+
+// import {
+//     SupervisorAccount as SupervisorAccountIcon
+// } from '@mui/icons-material'
 // ----------------------------------------------------------------------
 //const SERVER_BASE_URL = 'http://127.0.0.1/api/xumm';
 const SERVER_BASE_URL = 'https://ws.xrpnft.com/api/xumm';
@@ -50,6 +66,7 @@ export default function AccountPopover() {
                     const res = await axios.get(`${SERVER_BASE_URL}/payload/${uuid}`);
                     const account = res.data.data.response.account;
                     if (account) {
+                        setOpen(true);
                         setOpenLogin(false);
                         setAccountProfile({account: account, uuid: uuid});
                         return;
@@ -65,7 +82,6 @@ export default function AccountPopover() {
         }
         return () => {
             if (timer) {
-                console.log("kill timer");
                 clearInterval(timer)
             }
         };
@@ -125,29 +141,32 @@ export default function AccountPopover() {
         onDisconnectXumm(uuid);
     };
 
+    // <Alert
+    //     variant="outlined"
+    //     severity="success">
+    //     <AlertTitle>{accountProfile.account}</AlertTitle>
+    //     <br/>
+    //     Login successful!
+    //     <br/>
+    // </Alert>
+
+    // <Alert severity="success" color="info">
+    //     Login Successful!
+    // </Alert>
+
+    // <Snackbar open={true} autoHideDuration={2000} onClose={handleClose}>
+    //     <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+    //         Login Successful!
+    //     </Alert>
+    // </Snackbar>
+
     return (
         <>
             <IconButton
                 ref={anchorRef}
-                onClick={handleOpen}
-                sx={{
-                    padding: 0,
-                    width: 44,
-                    height: 44,
-                    ...(open && {
-                        '&:before': {
-                            zIndex: 1,
-                            content: "''",
-                            width: '100%',
-                            height: '100%',
-                            borderRadius: '50%',
-                            position: 'absolute',
-                            bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72)
-                        }
-                    })
-                }}
-            >
-                <Avatar src={profile.photoURL} alt="photoURL" />
+                onClick={handleOpen} >
+                {/* <SupervisorAccountIcon fontSize="medium"/> */}
+                <Icon icon={userLock}/>
             </IconButton>
 
             <MenuPopover
@@ -159,25 +178,23 @@ export default function AccountPopover() {
 
                 {accountProfile && accountProfile.account ? (
                         <>
-                        <Box sx={{ my: 1.5, px: 2.5 }}>
-                            <Typography variant="subtitle1" noWrap>
-                                Logged In
-                            </Typography>
-                            <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
+                        <Stack spacing={1} sx={{ pt: 2 }} alignItems='center'>
+                            <Avatar alt="xumm" src="/static/xumm.jpg"/>
+                            <Typography align="center" style={{ wordWrap: "break-word" }} variant="body2" sx={{ width: 180, color: 'text.secondary' }} >
                                 {accountProfile.account}
                             </Typography>
-                        </Box>
+                        </Stack>
                         <Box sx={{ p: 2, pt: 1.5 }}>
-                        <Button fullWidth color="inherit" variant="outlined" onClick={handleLogout}>
-                            Logout
-                        </Button>
+                            <Button fullWidth color="inherit" variant="outlined" onClick={handleLogout}>
+                                Logout
+                            </Button>
                         </Box>
                         </>
                     ) : (
                         <MenuItem
                             key="xumm"
                             onClick={handleLogin}
-                            sx={{ typography: 'body2', py: 1, px: 2.5 }}
+                            sx={{ typography: 'body2', py: 2, px: 2.5 }}
                         >
                             <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                 <Avatar alt="xumm" src="/static/xumm.jpg"/>

@@ -6,8 +6,16 @@ import { styled } from '@mui/material/styles';
 // utils
 import { fCurrency } from '../../utils/formatNumber';
 //
+import { red, green, blue } from '@mui/material/colors';
 import Label from '../../components/Label';
 import ColorPreview from '../../components/ColorPreview';
+
+import { Icon } from '@iconify/react';
+import roundTransferWithinAStation from '@iconify/icons-ic/round-transfer-within-a-station';
+import feedburnerIcon from '@iconify/icons-ps/feedburner';
+import xrpIcon from '@iconify/icons-cryptocurrency/xrp';
+import workspaceTrusted from '@iconify/icons-codicon/workspace-trusted';
+
 const AddressCodec = require('ripple-address-codec');
 const {BigNumber} = require('bignumber.js');
 
@@ -47,24 +55,36 @@ function cipheredTaxon(tokenSeq, taxon) {
 
 function parseNftFlag(flags_number){
     var flags = {
-      "tfBurnable": false,
-      "tfOnlyXRP": false,
-      "tfTrustLine": false,
-      "tfTransferable": false
+        "tfBurnable": false,
+        "tfOnlyXRP": false,
+        "tfTrustLine": false,
+        "tfTransferable": false,
+        "tfNoFlag": false
     };
-    
+    var noFlag = true;
     if ((flags_number & 0x00000001) !== 0) {
         flags["tfBurnable"] = true;
+        noFlag = false;
     }
     if ((flags_number & 0x00000002) >> 1 !== 0) {
         flags["tfOnlyXRP"] = true;
+        noFlag = false;
     }
     if ((flags_number & 0x00000004) >> 2 !== 0) {
         flags["tfTrustLine"] = true;
+        noFlag = false;
     }
     if ((flags_number & 0x00000008) >> 3 !== 0) {
         flags["tfTransferable"] = true;
-    }    
+        noFlag = false;
+    }
+    flags.tfNoFlag = noFlag;
+
+    /*flags["tfBurnable"] = true;
+    flags["tfOnlyXRP"] = true;
+    flags["tfTrustLine"] = true;
+    flags["tfTransferable"] = true;
+    flags.tfNoFlag = false;*/
     return flags;
 }
 
@@ -116,13 +136,63 @@ NftCard.propTypes = {
 };
 
 export default function NftCard({ nftoken }) {
-    const {tokenID, URI} = nftoken;
-    //const nft = parseNFT(nftoken);
-    //console.log(nft);
+    const {TokenID, URI} = nftoken;
+    // 000000000272ECED526CB9FB90275EC6196EC6C522CFFB938962EFA100000006
+    // 6D796E34333433667420637573746F6D206461746120455652
+    const nft = parseNFT(TokenID, URI);
+    const status = 'NEW';
+    const name = nft.issuer;
     return (
         <Card>
             <Box sx={{ pt: '100%', position: 'relative' }}>
+                {status && (
+                    <Label
+                      variant="filled"
+                      color={(status === 'sale' && 'error') || 'info'}
+                      sx={{
+                        zIndex: 9,
+                        top: 16,
+                        right: 16,
+                        position: 'absolute',
+                        textTransform: 'uppercase'
+                      }}
+                    >
+                        {status}
+                    </Label>
+                )}
+                <TokenImgStyle alt={name} src={'/static/cover.jpg'} />
             </Box>
+
+            <Stack spacing={2} sx={{ p: 3 }}>
+                <Stack direction="row" alignItems="center" justifyContent="space-around">
+                    {nft.flags.tfBurnable && (<Icon icon={feedburnerIcon} width="32" height="32" />)}
+                    {nft.flags.tfOnlyXRP && (<Icon icon={xrpIcon} width="32" height="32" />)}
+                    {nft.flags.tfTrustLine && (<Icon icon={workspaceTrusted} width="32" height="32" />)}
+                    {nft.flags.tfTransferable && (<Icon icon={roundTransferWithinAStation} width="32" height="32" />)}
+                    {nft.flags.tfNoFlag && (<Box sx={{ mx: "auto", width: 32, height:32 }}/>)}
+                    {/* <ColorPreview colors={[red,blue,green]} />
+                    <Typography variant="subtitle1">
+                        <Typography
+                            component="span"
+                            variant="body1"
+                            sx={{
+                                color: 'text.disabled',
+                                textDecoration: 'line-through'
+                            }}
+                        >
+                            {priceSale && fCurrency(priceSale)}
+                        </Typography>
+                        &nbsp;
+                        {fCurrency(0)}
+                    </Typography> */}
+                </Stack>
+
+                <Link to="#" color="inherit" underline="hover" component={RouterLink}>
+                    <Typography variant="subtitle2" noWrap>
+                      {name}
+                    </Typography>
+                </Link>
+            </Stack>
         </Card>
     );
 }
