@@ -24,7 +24,7 @@ export default function NFTMarketplace() {
     const [selected, setSelected] = useState([]);
     const [orderBy, setOrderBy] = useState('trline');
     const [filterName, setFilterName] = useState('');
-    const [rowsPerPage, setRowsPerPage] = useState(1); //10
+    const [rowsPerPage, setRowsPerPage] = useState(10); //10
     const [labelRowsPerPage/*, setLabelRowsPerPage*/] = useState('Rows');
     const [ offset, setOffset ] = useState(0);
     const [nfts, setNfts] = useState([]);
@@ -123,7 +123,7 @@ export default function NFTMarketplace() {
             />
             <Grid container spacing={6} sx={{ p: 5 }}>
                 {nfts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((nftoken) => (
-                    <Grid key={nftoken.TokenID} item xs={12} sm={6} md={2.4}>
+                    <Grid key={nftoken.tokenID} item xs={12} sm={6} md={2.4}>
                         <NftCard nftoken={nftoken} />
                     </Grid>
                 ))}

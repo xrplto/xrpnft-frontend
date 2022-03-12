@@ -32,10 +32,10 @@ NftCard.propTypes = {
 };
 
 export default function NftCard({ nftoken }) {
-    const {TokenID, URI} = nftoken;
+    const {tokenID, URI} = nftoken;
     // 000000000272ECED526CB9FB90275EC6196EC6C522CFFB938962EFA100000006
     // 6D796E34333433667420637573746F6D206461746120455652
-    const nft = utils.parseNFT(TokenID, URI);
+    const nft = utils.parseNFT(tokenID, URI);
     const status = 'NEW';
     const name = nft.issuer;
     let uri = nft.tokenURI;
@@ -53,7 +53,7 @@ export default function NftCard({ nftoken }) {
         //console.log(url);
     }
     //nftParser.doParseNFT('r3iKY5HKD2JbWqprgMXgx1VMLNn4dza2We', '00080000561CBEA25BB4B971F35526D45B32A7F8E4B2D3D90000099B00000000');
-    nftParser.doParseNFT(nft.issuer, nft.tokenID);
+    //nftParser.doParseNFT(nft.issuer, nft.tokenID);
 
     return (
         <Card>
@@ -74,10 +74,7 @@ export default function NftCard({ nftoken }) {
                     </Label>
                 )}
                 {!uri && (
-                    <TokenImgStyle id={TokenID} alt={name} src={'/static/cover.jpg'} />
-                )}
-                {uri && (
-                    <TokenImgStyle id={TokenID} alt={name} src={'/static/cover.jpg'} />
+                    <TokenImgStyle id={tokenID} alt={name} src={'/static/cover.jpg'} />
                 )}
             </Box>
 
