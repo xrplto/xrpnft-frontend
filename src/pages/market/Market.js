@@ -60,6 +60,7 @@ export default function NFTMarketplace() {
                             nftList.push(nft);
                         }
                         setNfts(nftList);
+                        console.log('nft List:',nftList)
                     }
                 } catch (error) {
                     console.log(error);

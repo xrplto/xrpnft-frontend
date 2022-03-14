@@ -8,6 +8,7 @@ import TokenTester from './pages/tester/TokenTester';
 import Spinner from './pages/spinner/Spinner';
 import ProgressPage from './pages/progress/ProgressPage';
 import NotFound from './pages/Page404';
+import { Collage } from './pages/market/InfiniteScroll';
 
 // ----------------------------------------------------------------------
 export default function Router() {
@@ -16,7 +17,7 @@ export default function Router() {
             path: '/',
             element: <MainLayout />,
             children: [
-                { path: '/', element: <Market /> },
+                { path: '/', element: <Collage /> },
                 { path: 'tester', element: <TokenTester /> },
                 { path: 'spinners', element: <Spinner /> },
                 { path: 'progress', element: <ProgressPage /> },
