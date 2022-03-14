@@ -26,7 +26,7 @@ const MainStyle = styled('div')(({ theme }) => ({
     paddingBottom: theme.spacing(10)
 }));
 
-const AppBarStyle = styled(AppBar)(({ theme }) => ({
+export const AppBarStyle = styled(AppBar)(({ theme }) => ({
     boxShadow: 'none',
     backdropFilter: 'blur(2px)',
     WebkitBackdropFilter: 'blur(2px)', // Fix on Mobile

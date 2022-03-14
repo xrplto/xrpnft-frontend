@@ -8,7 +8,8 @@ import TokenTester from './pages/tester/TokenTester';
 import Spinner from './pages/spinner/Spinner';
 import ProgressPage from './pages/progress/ProgressPage';
 import NotFound from './pages/Page404';
-import { Collage } from './pages/market/InfiniteScroll';
+import { NFTList } from './components/NFTList';
+import PersistentDrawerLeft from './pages/market/Drawer';
 
 // ----------------------------------------------------------------------
 export default function Router() {
@@ -17,7 +18,8 @@ export default function Router() {
             path: '/',
             element: <MainLayout />,
             children: [
-                { path: '/', element: <Collage /> },
+                // { path: '/', element: <NFTList /> },
+                { path: '/', element: <PersistentDrawerLeft /> },
                 { path: 'tester', element: <TokenTester /> },
                 { path: 'spinners', element: <Spinner /> },
                 { path: 'progress', element: <ProgressPage /> },
