@@ -37,14 +37,9 @@ export const NFTList = () => {
                 setOffset(offset + 1)
             });
     };
-    // useEffect(() => {
-    //     //setNftTokens([])
-    //     //fetchImages();
-    // }, [flags])
 
     useEffect(() => {
-        if (hasMore)
-            fetchImages();
+        fetchImages();
     }, []);
     const filteredTokens = applySortFilter(nftTokens, flags.flag);
     return (
@@ -52,7 +47,7 @@ export const NFTList = () => {
             <InfiniteScroll
                 dataLength={nftTokens}
                 next={() => fetchImages()}
-                hasMore={true}
+                hasMore={hasMore}
             >
                 <div className="image-grid" style={{ margin: "3vw" }}>
                     {loaded ?
