@@ -39,6 +39,7 @@ export default function NftCard({ nftoken }) {
     const status = 'NEW';
     const name = nft.issuer;
     let uri = nft.tokenURI;
+    console.log('uri:', uri)
     let url = null;
     if (uri) {
         if (uri.https) {

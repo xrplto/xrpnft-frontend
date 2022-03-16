@@ -4,7 +4,7 @@ import MainLayout from './layouts/MainLayout';
 import EmptyLayout from './layouts/EmptyLayout';
 //
 import Market from './pages/market/Market';
-import TokenTester from './pages/tester/TokenTester';
+import TokenTesterUpdated from './pages/tester/TokenTesterUpdated';
 import Spinner from './pages/spinner/Spinner';
 import ProgressPage from './pages/progress/ProgressPage';
 import NotFound from './pages/Page404';
@@ -20,7 +20,7 @@ export default function Router() {
             children: [
                 // { path: '/', element: <NFTList /> },
                 { path: '/', element: <PersistentDrawerLeft /> },
-                { path: 'tester', element: <TokenTester /> },
+                { path: 'tester', element: <TokenTesterUpdated /> },
                 { path: 'spinners', element: <Spinner /> },
                 { path: 'progress', element: <ProgressPage /> },
                 { path: '*', element: <Navigate to="/404/NotFound" /> }

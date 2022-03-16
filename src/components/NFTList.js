@@ -6,7 +6,6 @@ import NftCard from '../pages/market/NftCard';
 import '../App.css'
 import Page from './Page';
 import BigNumber from 'bignumber.js';
-// const { BigNumber } = require('bignumber.js');
 
 function getFlag(nft) {
     const flags = new BigNumber(nft.tokenID.slice(0, 4), 16).toNumber();
