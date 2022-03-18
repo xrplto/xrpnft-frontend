@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   Backdrop,
   Container,
@@ -8,7 +9,7 @@ import {
 } from "@mui/material";
 import { HashLoader } from "react-spinners";
 import Page from "../../components/Page";
-import NFTDescription from "components/NftDescription";
+import NFTDescription from "components/offpage/NftDescription";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -43,9 +44,9 @@ const accounts = [
   },
 ];
 
-export default function NFTInfo() {
+export default function NFTInfo(props) {
   const [loading, setLoading] = useState(false);
-
+  const token = useParams()
   return (
     <Page title="NFT Info">
       <Backdrop
@@ -84,7 +85,7 @@ export default function NFTInfo() {
             <Typography variant="h2" gutterBottom>
               Peaceful Ape
             </Typography>
-            <NFTDescription />
+            <NFTDescription  />
           </Grid>
         </Grid>
       </Container>

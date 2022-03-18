@@ -10,7 +10,7 @@ import ProgressPage from './pages/progress/ProgressPage';
 import NotFound from './pages/Page404';
 import { NFTList } from './components/NFTList';
 import NFTInfo from './pages/offpage'
-import PersistentDrawerLeft from './pages/market/Drawer';
+import NFTMarketplace from './pages/market/Drawer';
 
 // ----------------------------------------------------------------------
 export default function Router() {
@@ -20,7 +20,7 @@ export default function Router() {
             element: <MainLayout />,
             children: [
                 // { path: '/', element: <NFTList /> },
-                { path: '/', element: <PersistentDrawerLeft /> },
+                { path: '/', element: <NFTMarketplace /> },
                 { path: 'tester', element: <TokenTesterUpdated /> },
                 { path: 'spinners', element: <Spinner /> },
                 { path: 'progress', element: <ProgressPage /> },

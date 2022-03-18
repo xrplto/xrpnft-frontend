@@ -61,7 +61,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-export default function PersistentDrawerLeft() {
+export default function NFTMarketplace() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
 

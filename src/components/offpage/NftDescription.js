@@ -1,7 +1,7 @@
 import * as React from 'react';
 import List from '@mui/material/List';
-import { useDispatch } from 'react-redux'
-import { toggleBurnable, toggleOnlyXrp, toggleTrustline, toggleTransferable } from '../app/slices/filterSlice'
+import { useSelector } from 'react-redux'
+import { toggleBurnable, toggleOnlyXrp, toggleTrustline, toggleTransferable } from '../../app/slices/filterSlice'
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -13,35 +13,27 @@ import StarBorder from '@mui/icons-material/StarBorder';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import { Container, Grid, Typography, Link } from '@mui/material'
-import { IconBurnable } from './icons'
-import { IconOnlyXRP } from './icons'
-import { IconTrustline } from './icons'
-import { IconTransferable } from './icons'
+import { IconBurnable } from '../icons'
+import { IconOnlyXRP } from '../icons'
+import { IconTrustline } from '../icons'
+import { IconTransferable } from '../icons'
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { StyledBtn } from './StyledComponents';
-import TimePeriods from 'pages/offpage/TimePeriods';
+import { StyledBtn } from '../StyledComponents';
+import TimePeriods from 'components/offpage/TimePeriodsDropdown';
 import styled from "styled-components";
+import { current } from '@reduxjs/toolkit';
 
 
 export default function NFTDescription() {
-    const dispatch = useDispatch()
+    const currentToken = useSelector((state) => state.nfts.currenToken)
+    console.log('currentToken:',currentToken)
+
     const [openStatus, setOpenStatus] = React.useState(true);
     const [openPrice, setOpenPrice] = React.useState(false);
     const [openCollections, setOpenCollections] = React.useState(true);
-
-    // dropdown filters
-    const handleStatusClick = () => {
-        setOpenStatus(!openStatus);
-    };
-    const handlePriceClick = () => {
-        setOpenPrice(!openPrice);
-    };
-    const handleCollectionsClick = () => {
-        setOpenCollections(!openCollections);
-    };
 
     return (
         <div>
@@ -75,7 +67,7 @@ export default function NFTDescription() {
                         <Typography variant='subtitle' gutterBottom>
                             Token ID
                         </Typography>
-                        <Link >0...0272ECED...EFA10...06</Link>
+                        <Link >{currentToken.tokenID.slice(0, 30)}...</Link>
                     </DetailRow>
                     <DetailRow>
                         <Typography variant='subtitle'>

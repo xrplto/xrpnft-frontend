@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux'
+import { setCurrenToken } from 'app/slices/nftsSlice';
 // material
 import { Box, Card, Link, Typography, Stack/*, Avatar*/ } from '@mui/material';
 import { styled } from '@mui/material/styles';
-//
+import { useNavigate } from 'react-router-dom'
 //import { red, green, blue } from '@mui/material/colors';
 import Label from '../../components/Label';
 //import ColorPreview from '../../components/ColorPreview';
@@ -33,11 +35,13 @@ NftCard.propTypes = {
 
 export default function NftCard({ nftoken }) {
     const {tokenID, URI} = nftoken;
+    const dispatch = useDispatch()
     // 000000000272ECED526CB9FB90275EC6196EC6C522CFFB938962EFA100000006
     // 6D796E34333433667420637573746F6D206461746120455652
     const nft = utils.parseNFT(tokenID, URI);
     const status = 'NEW';
     const name = nft.issuer;
+    const navigate = useNavigate();
     let uri = nft.tokenURI;
     console.log('uri:', uri)
     let url = null;
@@ -55,9 +59,14 @@ export default function NftCard({ nftoken }) {
     }
     //nftParser.doParseNFT('r3iKY5HKD2JbWqprgMXgx1VMLNn4dza2We', '00080000561CBEA25BB4B971F35526D45B32A7F8E4B2D3D90000099B00000000');
     //nftParser.doParseNFT(nft.issuer, nft.tokenID);
+    const handleNFTClick = () => {
+        console.log(nftoken)
+        navigate(`/offpage`, {state: {value: 'nft string'}});
+        dispatch(setCurrenToken(nftoken))
+    }
 
     return (
-        <Card>
+        <Card onClick={handleNFTClick}>
             <Box sx={{ pt: '100%', position: 'relative' }}>
                 {status && (
                     <Label

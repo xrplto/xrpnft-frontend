@@ -45,7 +45,7 @@ export default function TimePeriods() {
                 }}
             >
                 {periods.map((period) => (
-                    <MenuItem onClick={handleClose}> {period > 90 ? period > 100 ? 'All time' : 'Last Year' : 'Last '+ period + 'days' } </MenuItem>
+                    <MenuItem onClick={handleClose} key={period}> {period > 90 ? period > 100 ? 'All time' : 'Last Year' : 'Last '+ period + 'days' } </MenuItem>
                 ))}
             </Menu>
         </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { addNfts, increaseOffset } from 'app/slices/nftsSlice';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import NftCard from '../pages/market/NftCard';
 import '../App.css'
@@ -18,10 +19,13 @@ function applySortFilter(tokens, flag) {
 
 export const NFTList = () => {
 
-    const [nftTokens, setNftTokens] = useState([]);
-    const [offset, setOffset] = useState(0)
+    const nfts = useSelector((state) => state.nfts)
+    const nftTokens = nfts.nfts
+    // const [nftTokens, setNftTokens] = useState(nfts.nfts);
+    const offset = nfts.offset
     const [hasMore, setHasMore] = useState(true)
     const flags = useSelector((state) => state.filter)
+    const dispatch = useDispatch()
     const [loaded, setIsLoaded] = useState(false);
     const BASE_URL = 'https://ws.xrpnft.com/api';
 
@@ -29,11 +33,15 @@ export const NFTList = () => {
         axios
             .get(`${BASE_URL}/nfts/${offset}`)
             .then(res => {
-                setNftTokens([...nftTokens, ...res.data.nfts]);
+                // setNftTokens([...nftTokens, ...res.data.nfts]);
                 setIsLoaded(true);
-                if (res.data.nfts.length < 10)
+                if (res.data.nfts.length < 10){
                     setHasMore(false)
-                setOffset(offset + 1)
+                }
+                // setOffset(offset + 1)
+                dispatch(addNfts(res.data.nfts))
+                dispatch(increaseOffset())
+
             });
     };
 
