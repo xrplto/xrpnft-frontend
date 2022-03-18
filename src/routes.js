@@ -9,6 +9,7 @@ import Spinner from './pages/spinner/Spinner';
 import ProgressPage from './pages/progress/ProgressPage';
 import NotFound from './pages/Page404';
 import { NFTList } from './components/NFTList';
+import NFTInfo from './pages/offpage'
 import PersistentDrawerLeft from './pages/market/Drawer';
 
 // ----------------------------------------------------------------------
@@ -23,6 +24,7 @@ export default function Router() {
                 { path: 'tester', element: <TokenTesterUpdated /> },
                 { path: 'spinners', element: <Spinner /> },
                 { path: 'progress', element: <ProgressPage /> },
+                { path: 'offpage', element: <NFTInfo /> },
                 { path: '*', element: <Navigate to="/404/NotFound" /> }
             ]
         },

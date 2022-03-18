@@ -34,7 +34,12 @@ const sidebarConfig = [
     title: 'Progress',
     path: '/progress',
     icon: getIcon(progressBar)
-  }
+  },
+  {
+    title: 'OffPage',
+    path: '/offpage',
+    icon: getIcon(progressBar)
+  },
 ];
 
 export default sidebarConfig;
