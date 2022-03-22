@@ -20,11 +20,13 @@ function applySortFilter(tokens, flag) {
 export const NFTList = () => {
 
     const nfts = useSelector((state) => state.nfts)
+    // const nfts = {nfts:[], offset: 0}
     const nftTokens = nfts.nfts
     // const [nftTokens, setNftTokens] = useState(nfts.nfts);
     const offset = nfts.offset
     const [hasMore, setHasMore] = useState(true)
     const flags = useSelector((state) => state.filter)
+    // const flags = {flag: 0x00000001}
     const dispatch = useDispatch()
     const [loaded, setIsLoaded] = useState(false);
     const BASE_URL = 'https://ws.xrpnft.com/api';

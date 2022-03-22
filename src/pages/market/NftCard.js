@@ -61,7 +61,7 @@ export default function NftCard({ nftoken }) {
     //nftParser.doParseNFT(nft.issuer, nft.tokenID);
     const handleNFTClick = () => {
         console.log(nftoken)
-        navigate(`/offpage`, {state: {value: 'nft string'}});
+        navigate('/offpage');
         dispatch(setCurrenToken(nftoken))
     }
 
