@@ -12,7 +12,7 @@ import {
     Grid
 } from '@mui/material';
 
-import NftCard from './NftCard';
+import NftCard from '../../components/nftList/NftCard';
 import TokenListToolbar from './TokenListToolbar';
 // ----------------------------------------------------------------------
 

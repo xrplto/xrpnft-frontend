@@ -10,9 +10,9 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { NFTList } from '../../components/NFTList';
+import { NFTList } from '../../components/nftList/NFTList';
 import { AppBarStyle } from '../../layouts/MainLayout';
-import FilterList from '../../components/FilterList';
+import FilterList from '../../components/nftList/FilterList';
 
 const drawerWidth = 300;
 

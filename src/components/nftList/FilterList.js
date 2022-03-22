@@ -1,7 +1,7 @@
 import * as React from 'react';
 import List from '@mui/material/List';
-import { useDispatch } from 'react-redux'
-import { toggleBurnable, toggleOnlyXrp, toggleTrustline, toggleTransferable } from '../app/slices/filterSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { toggleBurnable, toggleOnlyXrp, toggleTrustline, toggleTransferable, changeFilter } from '../../app/slices/filterSlice'
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -13,10 +13,10 @@ import StarBorder from '@mui/icons-material/StarBorder';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import { Grid } from '@mui/material'
-import { IconBurnable } from './icons'
-import { IconOnlyXRP } from './icons'
-import { IconTrustline } from './icons'
-import { IconTransferable } from './icons'
+import { IconBurnable } from '../icons'
+import { IconOnlyXRP } from '../icons'
+import { IconTrustline } from '../icons'
+import { IconTransferable } from '../icons'
 
 export default function FilterList() {
     const dispatch = useDispatch()
@@ -24,27 +24,10 @@ export default function FilterList() {
     const [openPrice, setOpenPrice] = React.useState(false);
     const [openCollections, setOpenCollections] = React.useState(false);
 
-    const [isBurnable, setBurnable] = React.useState(false)
-    const [isOnlyXrp, setOnlyXrp] = React.useState(false)
-    const [isTrustline, setTrustline] = React.useState(false)
-    const [isTransferable, setTransferable] = React.useState(false)
+    const flag = useSelector(state => state.filter.flag)
 
-    // set filters
-    const handleBurnableBtnClick = () => {
-        setBurnable(!isBurnable)
-        dispatch(toggleBurnable())
-    }
-    const handleOnlyXrpBtnClick = () => {
-        setOnlyXrp(!isOnlyXrp)
-        dispatch(toggleOnlyXrp())
-    }
-    const handleTrustlineBtnClick = () => {
-        setTrustline(!isTrustline)
-        dispatch(toggleTrustline())
-    }
-    const handleTransferableBtnClick = () => {
-        setTransferable(!isTransferable)
-        dispatch(toggleTransferable())
+    const handleFilterClick = (id) => {
+        dispatch(changeFilter(id))
     }
 
     // dropdown filters
@@ -77,8 +60,8 @@ export default function FilterList() {
                 <Grid container justifyContent='center' direction='row' spacing={1} margin={2} marginTop={1} width='auto'>
                     <Grid item md={6}>
                         <Button
-                            onClick={ handleBurnableBtnClick}
-                            variant={isBurnable ? 'contained' : 'outlined'}
+                            onClick={ () => handleFilterClick(0x0001)}
+                            variant={flag & 0x0001 ? 'contained' : 'outlined'}
                             sx={{ width: '100%' }}
                             startIcon={<IconBurnable />}
                         >
@@ -87,8 +70,8 @@ export default function FilterList() {
                     </Grid>
                     <Grid item md={6}>
                         <Button
-                            onClick={handleOnlyXrpBtnClick}
-                            variant={isOnlyXrp ? 'contained' : 'outlined'}
+                            onClick={() => handleFilterClick(0x0002)}
+                            variant={flag & 0x0002 ? 'contained' : 'outlined'}
                             sx={{ width: '100%' }}
                             startIcon={<IconOnlyXRP />}
                         >
@@ -97,8 +80,8 @@ export default function FilterList() {
                     </Grid>
                     <Grid item md={6}>
                         <Button
-                            onClick={handleTrustlineBtnClick}
-                            variant={isTrustline ? 'contained' : 'outlined'}
+                            onClick={() => handleFilterClick(0x0004)}
+                            variant={flag & 0x0004 ? 'contained' : 'outlined'}
                             sx={{ width: '100%' }}
                             startIcon={<IconTrustline />}
                         >
@@ -107,8 +90,8 @@ export default function FilterList() {
                     </Grid>
                     <Grid item md={6}>
                         <Button
-                            onClick={handleTransferableBtnClick}
-                            variant={isTransferable ? 'contained' : 'outlined'}
+                            onClick={() => handleFilterClick(0x0008)}
+                            variant={flag & 0x0008 ? 'contained' : 'outlined'}
                             sx={{ width: '100%' }}
                             startIcon={<IconTransferable />}
                         >

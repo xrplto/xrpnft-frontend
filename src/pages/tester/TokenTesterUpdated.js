@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { HashLoader } from "react-spinners";
 import { Box, TextField, IconButton } from "@mui/material";
-import { StyledBtn, StyledGrid } from "components/StyledComponents";
+import { StyledBtn, StyledGrid } from "components/atoms/StyledComponents";
 import { Link as RouterLink } from "react-router-dom";
 
 import {

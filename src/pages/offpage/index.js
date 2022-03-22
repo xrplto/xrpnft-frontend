@@ -9,12 +9,14 @@ import {
 } from "@mui/material";
 import { HashLoader } from "react-spinners";
 import Page from "../../components/Page";
-import NFTDescription from "components/offpage/NftDescription";
+import NFTDescription from "components/offpage/NftSalesInfo";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
+import { StyledLink } from "components/atoms/StyledComponents";
+import NFTDetails from "components/offpage/NftDetails";
 
 const accounts = [
   {
@@ -56,36 +58,12 @@ export default function NFTInfo(props) {
         <HashLoader color={"#00AB55"} size={50} />
       </Backdrop>
       <Container maxWidth="lg" sx={{ marginTop: '3vh' }}>
-        <Grid container spacing={1} justifyContent='center'>
+        <Grid container spacing={2} justifyContent='center'>
           <Grid item md={5}>
-            <Card sx={{ maxWidth: 440 }}>
-              <CardMedia
-                component="img"
-                height="400"
-                image="/static/cover.jpg"
-                alt="green iguana"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Lizard
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Lizards are a widespread group of squamate reptiles, with over 6,000
-                  species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="large">Share</Button>
-                <Button size="large">Learn More</Button>
-              </CardActions>
-            </Card>
-
+            <NFTDetails />
           </Grid>
           <Grid item md={7}>
-            <Typography variant="h2" gutterBottom>
-              Peaceful Ape
-            </Typography>
-            <NFTDescription  />
+            <NFTDescription />
           </Grid>
         </Grid>
       </Container>

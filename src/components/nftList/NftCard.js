@@ -7,7 +7,7 @@ import { Box, Card, Link, Typography, Stack/*, Avatar*/ } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom'
 //import { red, green, blue } from '@mui/material/colors';
-import Label from '../../components/Label';
+import Label from '../Label';
 //import ColorPreview from '../../components/ColorPreview';
 
 import { Icon } from '@iconify/react';
@@ -16,7 +16,7 @@ import feedburnerIcon from '@iconify/icons-ps/feedburner';
 import xrpIcon from '@iconify/icons-cryptocurrency/xrp';
 import workspaceTrusted from '@iconify/icons-codicon/workspace-trusted';
 
-const nftParser = require('./NftParser');
+const nftParser = require('../../pages/market/NftParser');
 
 const utils = require('../../utils');
 
@@ -34,7 +34,7 @@ NftCard.propTypes = {
 };
 
 export default function NftCard({ nftoken }) {
-    const {tokenID, URI} = nftoken;
+    const { tokenID, URI } = nftoken;
     const dispatch = useDispatch()
     // 000000000272ECED526CB9FB90275EC6196EC6C522CFFB938962EFA100000006
     // 6D796E34333433667420637573746F6D206461746120455652
@@ -43,7 +43,6 @@ export default function NftCard({ nftoken }) {
     const name = nft.issuer;
     const navigate = useNavigate();
     let uri = nft.tokenURI;
-    console.log('uri:', uri)
     let url = null;
     if (uri) {
         if (uri.https) {
@@ -60,25 +59,29 @@ export default function NftCard({ nftoken }) {
     //nftParser.doParseNFT('r3iKY5HKD2JbWqprgMXgx1VMLNn4dza2We', '00080000561CBEA25BB4B971F35526D45B32A7F8E4B2D3D90000099B00000000');
     //nftParser.doParseNFT(nft.issuer, nft.tokenID);
     const handleNFTClick = () => {
-        console.log(nftoken)
-        navigate('/offpage');
+        navigate(`/offpage/${nftoken.tokenID}?tokenURI=${nftoken.URI}`);
         dispatch(setCurrenToken(nftoken))
     }
 
     return (
-        <Card onClick={handleNFTClick}>
+        <Card onClick={handleNFTClick} sx={{
+            borderRadius: 1,
+            '&:hover': {
+                cursor: 'pointer'
+            },
+        }}>
             <Box sx={{ pt: '100%', position: 'relative' }}>
                 {status && (
                     <Label
-                      variant="filled"
-                      color={(status === 'sale' && 'error') || 'info'}
-                      sx={{
-                        zIndex: 9,
-                        top: 16,
-                        right: 16,
-                        position: 'absolute',
-                        textTransform: 'uppercase'
-                      }}
+                        variant="filled"
+                        color={(status === 'sale' && 'error') || 'info'}
+                        sx={{
+                            zIndex: 9,
+                            top: 16,
+                            right: 16,
+                            position: 'absolute',
+                            textTransform: 'uppercase'
+                        }}
                     >
                         {status}
                     </Label>
@@ -94,7 +97,7 @@ export default function NftCard({ nftoken }) {
                     {nft.flags.tfOnlyXRP && (<Icon icon={xrpIcon} width="32" height="32" />)}
                     {nft.flags.tfTrustLine && (<Icon icon={workspaceTrusted} width="32" height="32" />)}
                     {nft.flags.tfTransferable && (<Icon icon={roundTransferWithinAStation} width="32" height="32" />)}
-                    {nft.flags.tfNoFlag && (<Box sx={{ mx: "auto", width: 32, height:32 }}/>)}
+                    {nft.flags.tfNoFlag && (<Box sx={{ mx: "auto", width: 32, height: 32 }} />)}
                     {/* <ColorPreview colors={[red,blue,green]} />
                     <Typography variant="subtitle1">
                         <Typography
@@ -114,7 +117,7 @@ export default function NftCard({ nftoken }) {
 
                 <Link to="#" color="inherit" underline="hover" component={RouterLink}>
                     <Typography variant="subtitle2" noWrap>
-                      {name}
+                        {name}
                     </Typography>
                 </Link>
             </Stack>

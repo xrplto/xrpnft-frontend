@@ -3,12 +3,13 @@ import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { addNfts, increaseOffset } from 'app/slices/nftsSlice';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import NftCard from '../pages/market/NftCard';
-import '../App.css'
-import Page from './Page';
+import NftCard from './NftCard';
+import '../../App.css'
+import Page from '../Page';
 import BigNumber from 'bignumber.js';
 
 function getFlag(nft) {
+    console.log(nft.tokenID)
     const flags = new BigNumber(nft.tokenID.slice(0, 4), 16).toNumber();
     return flags;
 }
@@ -49,6 +50,7 @@ export const NFTList = () => {
 
     useEffect(() => {
         fetchImages();
+        localStorage.clear();
     }, []);
     const filteredTokens = applySortFilter(nftTokens, flags.flag);
     return (
@@ -61,7 +63,7 @@ export const NFTList = () => {
                 <div className="image-grid" style={{ margin: "3vw" }}>
                     {loaded ?
                         filteredTokens.map((nftToken) => (
-                            <NftCard nftoken={nftToken} key={nftToken.tokenID} />
+                            <NftCard nftoken={nftToken} key={nftToken.tokenID}  />
                         )) : ""}
                 </div>
             </InfiniteScroll>

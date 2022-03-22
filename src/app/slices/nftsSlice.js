@@ -5,7 +5,8 @@ export const nftsSlice = createSlice({
   initialState: {
     offset: 0,
     nfts:[],
-    currenToken: {}
+    currenToken: {},
+    currentScrollY: 0
   },
   reducers: {
     addNfts: (state, action) => {
@@ -16,11 +17,14 @@ export const nftsSlice = createSlice({
     },
     setCurrenToken: (state, action) => {
       state.currenToken = action.payload
-    }
+    },
+    setCurrenScrollY: (state, action) => {
+      state.currentScrollY = action.payload
+    },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { addNfts, increaseOffset, setCurrenToken } = nftsSlice.actions
+export const { addNfts, increaseOffset, setCurrenToken, setCurrenScrollY } = nftsSlice.actions
 
 export default nftsSlice.reducer
