@@ -2,13 +2,11 @@ import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
 import MainLayout from './layouts/MainLayout';
 import EmptyLayout from './layouts/EmptyLayout';
-//
-import Market from './pages/market/Market';
 import TokenTesterUpdated from './pages/tester/TokenTesterUpdated';
 import Spinner from './pages/spinner/Spinner';
 import ProgressPage from './pages/progress/ProgressPage';
 import NotFound from './pages/Page404';
-import { NFTList } from './components/nftList/NFTList';
+import Minting from './pages/mintpage'
 import NFTInfo from './pages/offpage'
 import NFTMarketplace from './pages/market/Drawer';
 
@@ -25,6 +23,7 @@ export default function Router() {
                 { path: 'spinners', element: <Spinner /> },
                 { path: 'progress', element: <ProgressPage /> },
                 { path: 'offpage/:tokenID', element: <NFTInfo /> },
+                { path: 'create', element: <Minting /> },
                 { path: '*', element: <Navigate to="/404/NotFound" /> }
             ]
         },

@@ -19,7 +19,6 @@ import { parseNFT } from 'utils';
 import { StyledLink, DetailRow } from 'components/atoms/StyledComponents'
 import { styled } from '@mui/material/styles';
 import NFTImgCard from './NFTImgCard';
-import { Icon } from '@iconify/react';
 import InfoIcon from '@mui/icons-material/Info';
 
 const Accordion = styled((props) => (

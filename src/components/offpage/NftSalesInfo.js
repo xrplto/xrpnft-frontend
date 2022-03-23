@@ -24,6 +24,7 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import { CountdownTimer } from './CountDownTimer';
 import ListIcon from '@mui/icons-material/List';
 import activity from '../../assets/activity.png'
+import { ExpandLess } from '@mui/icons-material';
 
 
 const Accordion = styled((props) => (
@@ -71,13 +72,16 @@ export default function NFTDescription() {
     const NOW_IN_MS = new Date().getTime()
 
     const [expanded, setExpanded] = React.useState('panel1')
+    const [expandedPrice, setExpandedPrice] = React.useState(true)
+    const [expandedListing, setExpandedListing] = React.useState(true)
+    const [expandedOffers, setExpandedOffers] = React.useState(true)
 
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
     return (
         <div>
-            <Stack>
+            <Stack spacing={2} marginTop={1}>
                 <StyledLink underline='none'>
                     NFTKings
                 </StyledLink>
@@ -107,9 +111,9 @@ export default function NFTDescription() {
                     </Stack>
                 </AccordionSummary>
                 <Divider />
-                <AccordionDetails>
+                <AccordionDetails >
                     <Typography variant='string'>Current Price</Typography>
-                    <Typography variant='h4' gutterBottom>
+                    <Typography variant='h4' gutterBottom margin={2}>
                         20.5 XRP
                         <Typography variant='caption'>({20.5 * 0.7973} USD)</Typography>
                     </Typography>
@@ -117,7 +121,7 @@ export default function NFTDescription() {
                     <StyledBtn variant="outlined" sx={{ marginLeft: 3 }} startIcon={<LocalOfferIcon />}>Make Offer</StyledBtn>
                 </AccordionDetails>
             </Accordion>
-            <Accordion>
+            <Accordion expanded={expandedPrice} onChange={() => setExpandedPrice(!expandedPrice)} >
                 <AccordionSummary
                     // expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel2a-content"
@@ -131,12 +135,13 @@ export default function NFTDescription() {
                 <Divider />
                 <AccordionDetails>
                     <TimePeriods />
+                    {/* <img src={activity} /> */}
                     <Typography sx={{ margin: 3, textAlign: 'center' }}>
                         No item activity yet
                     </Typography>
                 </AccordionDetails>
             </Accordion>
-            <Accordion >
+            <Accordion expanded={expandedListing} onChange={() => setExpandedListing(!expandedListing)}>
                 <AccordionSummary
                     // expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel3a-content"
@@ -154,7 +159,7 @@ export default function NFTDescription() {
                     </Typography>
                 </AccordionDetails>
             </Accordion>
-            <Accordion >
+            <Accordion expanded={expandedOffers} onChange={() => setExpandedOffers(!expandedOffers)}>
                 <AccordionSummary
                     // expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel3a-content"

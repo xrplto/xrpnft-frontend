@@ -7,8 +7,8 @@ import { styled } from '@mui/material/styles';
 import { Box, Drawer } from '@mui/material';
 // components
 import Logo from '../components/Logo';
-import Scrollbar from '../components/Scrollbar';
-import NavSection from '../components/NavSection';
+import Scrollbar from '../components/common/Scrollbar';
+import NavSection from '../components/common/NavSection';
 //
 import sidebarConfig from './SidebarConfig';
 

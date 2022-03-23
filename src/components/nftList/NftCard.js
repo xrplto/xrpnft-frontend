@@ -66,6 +66,7 @@ export default function NftCard({ nftoken }) {
     return (
         <Card onClick={handleNFTClick} sx={{
             borderRadius: 1,
+            maxWidth: 300,
             '&:hover': {
                 cursor: 'pointer'
             },

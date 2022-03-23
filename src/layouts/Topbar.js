@@ -4,14 +4,15 @@ import { useEffect } from 'react';
 //import Context from '../Context'
 // material
 import { alpha, styled/*, useTheme*/ } from '@mui/material/styles';
-import { Box, Stack } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 // components
-//
+import AddIcon from '@mui/icons-material/Add';
 import { Icon } from '@iconify/react';
 import roundTransferWithinAStation from '@iconify/icons-ic/round-transfer-within-a-station';
 import feedburnerIcon from '@iconify/icons-ps/feedburner';
 import xrpIcon from '@iconify/icons-cryptocurrency/xrp';
 import workspaceTrusted from '@iconify/icons-codicon/workspace-trusted';
+import { NavLink } from 'react-router-dom';
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 const StackStyle = styled(Stack)(({ theme }) => ({
@@ -30,7 +31,7 @@ export default function Topbar() {
 
     return (
         <>
-            <StackStyle direction="row" spacing={2} sx={{pl:10, pr:10, pt:1, pb:0.5}} alignItems="center">
+            <StackStyle direction="row" spacing={2} sx={{ pl: 10, pr: 10, pt: 1, pb: 0.5 }} alignItems="center">
                 <Box sx={{ flexGrow: 1 }} />
                 <Icon icon={feedburnerIcon} width="24" height="24" />
                 <h5>Burnable</h5>
@@ -40,6 +41,9 @@ export default function Topbar() {
                 <h5>Trustline</h5>
                 <Icon icon={roundTransferWithinAStation} width="24" height="24" />
                 <h5>Transferable</h5>
+                <NavLink to='/create'>
+                    <Button startIcon={<AddIcon />}>Create</Button>
+                </NavLink>
             </StackStyle>
         </>
     );
