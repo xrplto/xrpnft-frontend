@@ -1,7 +1,7 @@
 import * as React from 'react';
 import List from '@mui/material/List';
 import { useDispatch, useSelector } from 'react-redux'
-import { toggleBurnable, toggleOnlyXrp, toggleTrustline, toggleTransferable, changeFilter } from '../../app/slices/filterSlice'
+import { changeFilter } from 'app/slices/filterSlice'
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -13,10 +13,10 @@ import StarBorder from '@mui/icons-material/StarBorder';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import { Grid } from '@mui/material'
-import { IconBurnable } from '../icons'
-import { IconOnlyXRP } from '../icons'
-import { IconTrustline } from '../icons'
-import { IconTransferable } from '../icons'
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import SpokeIcon from '@mui/icons-material/Spoke';
 
 export default function FilterList() {
     const dispatch = useDispatch()
@@ -63,7 +63,7 @@ export default function FilterList() {
                             onClick={ () => handleFilterClick(0x0001)}
                             variant={flag & 0x0001 ? 'contained' : 'outlined'}
                             sx={{ width: '100%' }}
-                            startIcon={<IconBurnable />}
+                            startIcon={<LocalFireDepartmentIcon />}
                         >
                             Burnable
                         </Button>
@@ -73,7 +73,7 @@ export default function FilterList() {
                             onClick={() => handleFilterClick(0x0002)}
                             variant={flag & 0x0002 ? 'contained' : 'outlined'}
                             sx={{ width: '100%' }}
-                            startIcon={<IconOnlyXRP />}
+                            startIcon={<SpokeIcon />}
                         >
                             Only XRP
                         </Button>
@@ -83,7 +83,7 @@ export default function FilterList() {
                             onClick={() => handleFilterClick(0x0004)}
                             variant={flag & 0x0004 ? 'contained' : 'outlined'}
                             sx={{ width: '100%' }}
-                            startIcon={<IconTrustline />}
+                            startIcon={<VerifiedUserIcon />}
                         >
                             Trustline
                         </Button>
@@ -93,7 +93,7 @@ export default function FilterList() {
                             onClick={() => handleFilterClick(0x0008)}
                             variant={flag & 0x0008 ? 'contained' : 'outlined'}
                             sx={{ width: '100%' }}
-                            startIcon={<IconTransferable />}
+                            startIcon={<TransferWithinAStationIcon />}
                         >
                             Transferable
                         </Button>

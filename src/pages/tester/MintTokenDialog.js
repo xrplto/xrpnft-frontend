@@ -4,12 +4,12 @@ import { useState } from 'react';
 //import { Icon } from '@iconify/react';
 // material
 //import { alpha, useTheme, styled } from '@mui/material/styles';
-import { 
-//    Button, 
-//    Paper, 
-    Dialog, 
-//    DialogTitle, 
-//    DialogActions, 
+import {
+//    Button,
+//    Paper,
+    Dialog,
+//    DialogTitle,
+//    DialogActions,
 //    Divider,
     Alert,
     AlertTitle
@@ -22,10 +22,13 @@ async function mintToken(showResult, showWaitDialog, values) {
     let tmp;
     try {
         const wallet = xrpl.Wallet.fromSeed(values.secret)
+        console.log('values:', values)
+        console.log('secret:', values.secret)
+        console.log('wallet:', wallet)
         const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
         await client.connect()
         console.log("Connected to Sandbox")
-        
+
         // Note that you must convert the token URL to a hexadecimal
         // value for this transaction.
         // ----------------------------------------------------------
@@ -126,7 +129,7 @@ async function mintToken(showResult, showWaitDialog, values) {
 export default function MintTokenDialog({ values, setLoading, render }) {
     const [open, setOpen] = useState(false);
     const [res, setRes] = useState();
-    
+
     const onMintToken = () => {
         mintToken(showResult, setLoading, values);
      };
@@ -135,7 +138,7 @@ export default function MintTokenDialog({ values, setLoading, render }) {
         setOpen(true);
         setRes(response);
      };
-    
+
     const handleClose = () => {
         setOpen(false);
     };
@@ -168,4 +171,3 @@ export default function MintTokenDialog({ values, setLoading, render }) {
 }
 
 
-    

@@ -2,12 +2,6 @@ import * as React from 'react';
 import { useSelector } from 'react-redux'
 import Divider from '@mui/material/Divider';
 import { Typography, Link, Stack } from '@mui/material'
-import {
-    IconBurnable,
-    IconTransferable,
-    IconOnlyXRP,
-    IconTrustline
-} from '../icons'
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
@@ -20,6 +14,10 @@ import { StyledLink, DetailRow } from 'components/atoms/StyledComponents'
 import { styled } from '@mui/material/styles';
 import NFTImgCard from './NFTImgCard';
 import InfoIcon from '@mui/icons-material/Info';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import SpokeIcon from '@mui/icons-material/Spoke';
 
 const Accordion = styled((props) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -138,10 +136,10 @@ export default function NFTDetails() {
                             Flags
                         </Typography>
                         <Stack direction='row' spacing={1} divider={<Divider orientation="vertical" flexItem />}>
-                            {nft.flags.tfBurnable && (<IconBurnable />)}
-                            {nft.flags.tfOnlyXRP && (<IconOnlyXRP />)}
-                            {nft.flags.tfTrustLine && (<IconTrustline />)}
-                            {nft.flags.tfTransferable && (<IconTransferable />)}
+                            {nft.flags.tfBurnable && (<LocalFireDepartmentIcon />)}
+                            {nft.flags.tfOnlyXRP && (<SpokeIcon />)}
+                            {nft.flags.tfTrustLine && (<VerifiedUserIcon />)}
+                            {nft.flags.tfTransferable && (<TransferWithinAStationIcon />)}
                             {nft.flags.tfNoFlag && <p>No flag</p>}
                         </Stack>
                     </DetailRow>

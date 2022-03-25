@@ -1,18 +1,27 @@
-import { Icon } from '@iconify/react';
-import roundTransferWithinAStation from '@iconify/icons-ic/round-transfer-within-a-station';
-import feedburnerIcon from '@iconify/icons-ps/feedburner';
-import xrpIcon from '@iconify/icons-cryptocurrency/xrp';
-import workspaceTrusted from '@iconify/icons-codicon/workspace-trusted';
-
+import { Icon } from '@mui/material'
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import SpokeIcon from '@mui/icons-material/Spoke';
+// import { ReactComponent as XrpSvg } from 'assets/xrp-logo.svg'
 export const IconBurnable = () => (
-    <Icon icon={feedburnerIcon}  />
+    <Icon>
+        <LocalFireDepartmentIcon />
+    </Icon>
 )
 export const IconOnlyXRP = () => (
-    <Icon icon={xrpIcon} />
+
+    <Icon>
+        <SpokeIcon />
+    </Icon>
 )
 export const IconTrustline = () => (
-    <Icon icon={workspaceTrusted}  />
+    <Icon>
+        <VerifiedUserIcon />
+    </Icon>
 )
 export const IconTransferable = () => (
-    <Icon icon={roundTransferWithinAStation} />
+    <Icon>
+        <TransferWithinAStationIcon />
+    </Icon>
 )

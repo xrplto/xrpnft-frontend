@@ -1,20 +1,12 @@
 import * as React from 'react';
 import { useSelector } from 'react-redux'
 import Divider from '@mui/material/Divider';
-import { Typography, Link, Stack } from '@mui/material'
-import {
-    IconBurnable,
-    IconTransferable,
-    IconOnlyXRP,
-    IconTrustline
-} from '../icons'
+import { Typography, Stack } from '@mui/material'
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { StyledBtn } from '../atoms/StyledComponents';
 import TimePeriods from 'components/offpage/TimePeriodsDropdown';
-// import styled from "styled-components";
 import { parseNFT } from 'utils';
 import { StyledLink } from 'components/atoms/StyledComponents'
 import { styled } from '@mui/material/styles';
@@ -23,8 +15,6 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import { CountdownTimer } from './CountDownTimer';
 import ListIcon from '@mui/icons-material/List';
-import activity from '../../assets/activity.png'
-import { ExpandLess } from '@mui/icons-material';
 
 
 const Accordion = styled((props) => (

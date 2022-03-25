@@ -19,7 +19,8 @@ import { Link as RouterLink/*, useLocation*/ } from 'react-router-dom';
 //     BrightnessHigh as BrightnessHighIcon,
 // } from '@mui/icons-material'
 
-import { Icon } from '@iconify/react'; 
+import {Icon} from '@mui/material'
+// import { Icon } from '@iconify/react';
 import baselineBrightnessHigh from '@iconify/icons-ic/baseline-brightness-high';
 import baselineBrightness4 from '@iconify/icons-ic/baseline-brightness-4';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
@@ -43,7 +44,7 @@ export default function Navbar({onOpenSidebar}) {
             <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
                 <Icon icon={menu2Fill} />
             </IconButton>
-            
+
             <Box component={RouterLink} to="/" sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
                 <Logo />
             </Box>

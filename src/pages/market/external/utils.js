@@ -1,8 +1,8 @@
 export const getObjectHTML = function(_object){
   const _prefix = "getObjectHTML: ";
-  
+
   const _object_fields = Object.getOwnPropertyNames(_object);
-  
+
   var _date;
   var _obj;
   var HTML_to_return = "";
@@ -12,7 +12,7 @@ export const getObjectHTML = function(_object){
     if(isUndefinedOrNull(_field_value)){
       continue;
     }
-    
+
     HTML_to_return += _field + ": ";
     if(_field.startsWith("ts_")){//if it's a timestamp field
       _date = _field_value;//firebaseTimestampToDate(_field_value);
@@ -26,7 +26,7 @@ export const getObjectHTML = function(_object){
     }
     HTML_to_return += "<br>";
   }
-  
+
   return HTML_to_return;
 }
 
@@ -42,7 +42,7 @@ export const getRadioButtonValue = function(_radio_buttons_name){
 export const restoreRadioButton = function(_radio_buttons_name, value_to_restore){
   const _radio_buttons = document.getElementsByName(_radio_buttons_name);
   for (let i = 0; i < _radio_buttons.length; i++) {
-    if(value_to_restore == _radio_buttons[i].value){
+    if(value_to_restore === _radio_buttons[i].value){
       _radio_buttons[i].checked = true;
     }
   }
@@ -111,16 +111,16 @@ export const isUndefinedOrNull = function(_value){
 
 export const getFieldValues = function(ids_list){
   var values_list = [];
-  
+
   for(let i = 0; i < ids_list.length; i++){
     let _element = null;
-    
+
     if(ids_list[i].startsWith("radio_")){ //input type radio
       let radio_button_value = getRadioButtonValue(ids_list[i]);
       if(radio_button_value === null){
         console.log("getFieldValues(): " + ids_list[i] + " has no radio selected");
         return null;
-      }      
+      }
       values_list.push(radio_button_value);
       continue;
     }
@@ -129,7 +129,7 @@ export const getFieldValues = function(ids_list){
       values_list.push(checkbox_element.checked);
       continue;
     }
-    
+
     //if it's not a radio
     //fetch the element by id
     _element = document.getElementById(ids_list[i]);
@@ -137,23 +137,23 @@ export const getFieldValues = function(ids_list){
       console.log("getFieldValues(): " + ids_list[i] + " is empty");
       return null;
     }
-    
+
     if(ids_list[i].startsWith("file_")){ //input type file
-      if(_element.files.length == 0){
+      if(_element.files.length === 0){
         console.log("getFieldValues(): " + ids_list[i] + " has no files");
         return null;
       }
       values_list.push(_element.files[0]);
     }
     else{
-      if(_element.value.length == 0){
+      if(_element.value.length === 0){
         console.log("getFieldValues(): " + ids_list[i] + " is empty");
         return null;
       }
       values_list.push(_element.value);
     }
   }
-  
+
   return values_list;
 }
 
@@ -162,23 +162,23 @@ var text_files_index = 0;
 const TEXT_FILES_NUM = 10;
 export function createTextFile(text){
   var data = new Blob([text], {type: 'text/plain'});
-  
+
   if(text_files_index < text_files.length){ //if the wanted file slot has already been created (2nd+ run of the array)
     //if we are replacing a previously generated file we need to manually revoke the object URL to avoid memory leaks
     window.URL.revokeObjectURL(text_files[text_files_index]);
   }
-  
+
   let _text_file = window.URL.createObjectURL(data);
-  
+
   if(text_files_index >= text_files.length){ //if the wanted file slot has not yet been created (1st run of the array)
     text_files.push(_text_file);
   }
   else{ //if the wanted file slot has already been created (2nd+ run of the array)
     text_files[text_files_index] = _text_file;
   }
-  
+
   text_files_index = (text_files_index + 1) % TEXT_FILES_NUM;
-  
+
   // returns a URL you can use as a href
   return _text_file;
 }
@@ -193,11 +193,11 @@ export function deserializeFile(file_type , _file, callback, callback_data){
     else{
       parsed_obj = this.result;
     }
-    
+
     //console.log("deserializeFile(): parsed_obj: ", parsed_obj);
     callback(callback_data);
   }
-  
+
   if(file_type === "JSON" || file_type === "text"){
     reader.readAsText(_file);
   }
@@ -261,7 +261,7 @@ export const convertToHttp = function(url_to_convert){
     const ipfs_gateway_url = "https://ipfs.io/ipfs/";
     return ipfs_gateway_url + splitted_url[1];
   }
-  
+
   return null;
 }
 export const isValidHttpUrl = function(string) {
@@ -269,7 +269,7 @@ export const isValidHttpUrl = function(string) {
   try {
     url = new URL(string);
   } catch (_) {
-    return false;  
+    return false;
   }
   return url.protocol === "http:" || url.protocol === "https:";
 }
@@ -281,19 +281,19 @@ export const fetchWithTimeout = async function(resource, options = {}) {
     timeout = options["timeout"];
   }
   //console.log("fetchWithTimeout(): timeout = " + timeout + ", resource = " + resource);
-  
+
   const controller = new AbortController();
   const id = setTimeout(() => {
     //console.log("fetch of the resource " + resource + " aborted");
     controller.abort();
   }, timeout);
-  
+
   const request_object = {
     ...options,
     signal: controller.signal,
     //mode: "no-cors"
   };
-  
+
   const response = await fetch(resource, request_object)
   .then((_response) => {
     clearTimeout(id);
@@ -303,7 +303,7 @@ export const fetchWithTimeout = async function(resource, options = {}) {
     clearTimeout(id);
     throw error;
   });
-  
+
   return response;
 }
 
@@ -312,10 +312,10 @@ const fetchRecursive = async function(resources_list, resource_index, options){
   if(resource_index >= resources_list.length){
     return null;
   }
-  
-  var response = null;  
+
+  var response = null;
   const url = resources_list[resource_index];
-  
+
   try{
     const _response = await fetchWithTimeout(url, options);
     //console.log("fetchRecursive(): _response: ", _response);
@@ -329,7 +329,7 @@ const fetchRecursive = async function(resources_list, resource_index, options){
     //console.log("fetchRecursive(): " + url + " KO");
     return fetchRecursive(resources_list, resource_index + 1, options);
   }
-  
+
   return {
     response: response,
     url: url,
@@ -362,7 +362,7 @@ export const JSONBeautify = function(_object){
 export const JSONBeautifyForHTML = function(_object){
   const _object_beautified = JSON.stringify(_object, null, 4);
   const string_to_return = _object_beautified.replaceAll('\n', "<br>");
-  
+
   return string_to_return;
 }
 
@@ -371,7 +371,7 @@ function extractExtremesFromIntervalString(interval_string){
   if(interval_string_splitted.length !== 2){
     throw new Error("malformed interval");
   }
-  
+
   return{
     min: Number(interval_string_splitted[0]),
     max: Number(interval_string_splitted[1])
@@ -385,9 +385,9 @@ function reduceNumberInterval(number, interval_string, reduceFunction, accumulat
       equal: Number(interval_string)
     };
     return reduceFunction(number, interval_obj, accumulator_obj);
-  } 
-  
-  //if there's more than one extreme 
+  }
+
+  //if there's more than one extreme
   //console.log("reduceNumberInterval(): interval_string: ", interval_string);
   let interval_obj = extractExtremesFromIntervalString(interval_string);
   //console.log("reduceNumberInterval(): interval_obj: ", interval_obj);
@@ -399,7 +399,7 @@ function reduceNumberIntervals(number, interval_string, reduceFunction, accumula
   if(index_of_comma < 0){ //if there's only one interval
     return reduceNumberInterval(number, interval_string, reduceFunction, accumulator_obj);
   }
-  
+
   //if there's more than one interval
   let intervals_strings = interval_string.split(',');
   for(let i = 0; i < intervals_strings.length; i++){ //for each interval
@@ -408,7 +408,7 @@ function reduceNumberIntervals(number, interval_string, reduceFunction, accumula
       break;
     }
   }
-  
+
   return accumulator_obj;
 }
 
@@ -418,7 +418,7 @@ function reduceNumberGroups(number, interval_string, reduceFunction, accumulator
   if(index_of_slash < 0){ //if there's no groups
     return reduceNumberIntervals(number, interval_string, reduceFunction, accumulator_obj);
   }
-  
+
   //if there are groups
   const groups_strings = interval_string.split('/');
   for(let i = 0; i < groups_strings.length; i++){ //for each group
@@ -427,7 +427,7 @@ function reduceNumberGroups(number, interval_string, reduceFunction, accumulator
       break;
     }
   }
-  
+
   return accumulator_obj;
 }
 
@@ -435,7 +435,7 @@ const isNumberIncludedReduce = function(number, interval_obj, accumulator_obj){
   var return_obj = {
     exit: false
   };
-  
+
   const equal = interval_obj["equal"];
   if(!isUndefinedOrNull(equal)){ //if it's a single number
     if(accumulator_obj["previous_max"] < equal && equal >= 0){ //if the actual interval is well formed
@@ -466,7 +466,7 @@ const isNumberIncludedReduce = function(number, interval_obj, accumulator_obj){
       throw new Error("malformed interval");
     }
   }
-  
+
   return return_obj;
 }
 
@@ -477,7 +477,7 @@ export const isNumberIncluded = function(number, interval_string){
     "is_included": false
   };
   var return_obj = null;
-  
+
   try{
     return_obj = reduceNumberGroups(number, interval_string, isNumberIncludedReduce, accumulator_obj);
     delete return_obj["previous_max"];
@@ -490,7 +490,7 @@ export const isNumberIncluded = function(number, interval_string){
       error: error.message
     };
   }
-  
+
   return return_obj;
 }
 
@@ -499,7 +499,7 @@ export const countGroups = function(interval_string){
   if(index_of_slash < 0){ //if there's no groups
     return 0;
   }
-  
+
   //if there are groups
   const groups_strings = interval_string.split('/');
   return groups_strings.length;
@@ -527,7 +527,7 @@ export const arrayMatches = function(regex_array, _element){
       return true;
     }
   }
-  
+
   return false;
 }
 
@@ -537,7 +537,7 @@ export const arrayMatchesAll = function(regex_array, _elements){
       return false;
     }
   }
-  
+
   return true;
 }
 
@@ -554,15 +554,15 @@ export const isValidEmail = function(_email_string){
   return regexp.test(_email_string);
 }
 
-export const sortObjectKeys = function(unordered_object){  
+export const sortObjectKeys = function(unordered_object){
   const ordered_object = Object.keys(unordered_object).sort().reduce(
-    (obj, key) => { 
-      obj[key] = unordered_object[key]; 
+    (obj, key) => {
+      obj[key] = unordered_object[key];
       return obj;
-    }, 
+    },
     {}
   );
-  
+
   return ordered_object;
 }
 
@@ -571,12 +571,12 @@ export const extractFromObject = function(_object, _path){
   if(_path_splitted.length <= 0){
     return null;
   }
-  
+
   var field_to_return = _object;
   for(let i = 0; i < _path_splitted.length; i++){
     field_to_return = field_to_return[_path_splitted[i]];
   }
-  
+
   return field_to_return;
 }
 
@@ -584,7 +584,7 @@ function writeIntoObjectRecursive(obj_to_write_into, path_array, to_write){
   //console.log("writeIntoObjectRecursive(): obj_to_write_into START: ", obj_to_write_into);
   //console.log("writeIntoObjectRecursive(): path_array START: ", path_array);
   const path_array_0 = path_array[0];
-  
+
   if(path_array.length === 1){ //if you are dealing with the field to update
     if(to_write === null){
       delete obj_to_write_into[path_array_0];
@@ -595,15 +595,15 @@ function writeIntoObjectRecursive(obj_to_write_into, path_array, to_write){
     return sortObjectKeys(obj_to_write_into);
   }
   //if you are not dealing with the field to update
-  
+
   const _obj_to_write_into = obj_to_write_into[path_array_0];
   path_array.shift();
   //console.log("writeIntoObjectRecursive(): _obj_to_write_into BEFORE: ", obj_to_write_into);
   //console.log("writeIntoObjectRecursive(): path_array BEFORE: ", path_array);
-  
+
   const updated_subobject = writeIntoObjectRecursive(_obj_to_write_into, path_array, to_write);
   //console.log("writeIntoObjectRecursive(): updated_subobject AFTER: ", updated_subobject);
-  
+
   obj_to_write_into[path_array_0] = updated_subobject;
   return sortObjectKeys(obj_to_write_into);
 }
@@ -612,7 +612,7 @@ export const writeIntoObject = function(_object, path, to_write){
   if(_path_splitted.length <= 0){
     return null;
   }
-  
+
   return writeIntoObjectRecursive(_object, _path_splitted, to_write);
 }
 
@@ -626,7 +626,7 @@ export const objectToBlob = function(_object){
   const blob = new Blob([_object], {
     type: "application/json"
   });
-  
+
   return blob;
 }
 

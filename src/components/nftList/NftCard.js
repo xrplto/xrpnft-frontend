@@ -10,11 +10,12 @@ import { useNavigate } from 'react-router-dom'
 import Label from '../Label';
 //import ColorPreview from '../../components/ColorPreview';
 
-import { Icon } from '@iconify/react';
-import roundTransferWithinAStation from '@iconify/icons-ic/round-transfer-within-a-station';
-import feedburnerIcon from '@iconify/icons-ps/feedburner';
-import xrpIcon from '@iconify/icons-cryptocurrency/xrp';
-import workspaceTrusted from '@iconify/icons-codicon/workspace-trusted';
+import {Icon} from '@mui/material'
+// import { Icon } from '@iconify/react';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import SpokeIcon from '@mui/icons-material/Spoke';
 
 const nftParser = require('../../pages/market/NftParser');
 
@@ -94,10 +95,10 @@ export default function NftCard({ nftoken }) {
 
             <Stack spacing={2} sx={{ p: 3 }}>
                 <Stack direction="row" alignItems="center" justifyContent="space-around">
-                    {nft.flags.tfBurnable && (<Icon icon={feedburnerIcon} width="32" height="32" />)}
-                    {nft.flags.tfOnlyXRP && (<Icon icon={xrpIcon} width="32" height="32" />)}
-                    {nft.flags.tfTrustLine && (<Icon icon={workspaceTrusted} width="32" height="32" />)}
-                    {nft.flags.tfTransferable && (<Icon icon={roundTransferWithinAStation} width="32" height="32" />)}
+                    {nft.flags.tfBurnable && (<LocalFireDepartmentIcon width="32" height="32" />)}
+                    {nft.flags.tfOnlyXRP && (<SpokeIcon width="32" height="32" />)}
+                    {nft.flags.tfTrustLine && (<VerifiedUserIcon width="32" height="32" />)}
+                    {nft.flags.tfTransferable && (<TransferWithinAStationIcon width="32" height="32" />)}
                     {nft.flags.tfNoFlag && (<Box sx={{ mx: "auto", width: 32, height: 32 }} />)}
                     {/* <ColorPreview colors={[red,blue,green]} />
                     <Typography variant="subtitle1">
