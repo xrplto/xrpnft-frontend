@@ -1,5 +1,4 @@
-import {Icon} from '@mui/material'
-// import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react';
 import { useRef, useState, useEffect } from 'react';
 import userLock from '@iconify/icons-fa-solid/user-lock';
 //import homeFill from '@iconify/icons-eva/home-fill';
@@ -70,6 +69,8 @@ export default function AccountPopover() {
                         setOpen(true);
                         setOpenLogin(false);
                         setAccountProfile({account: account, uuid: uuid});
+                        //  TODO-- Navigat to select account page.
+
                         return;
                     }
                 } catch (err) {

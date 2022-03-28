@@ -21,8 +21,8 @@ import SpokeIcon from '@mui/icons-material/Spoke';
 export default function FilterList() {
     const dispatch = useDispatch()
     const [openStatus, setOpenStatus] = React.useState(true);
-    const [openPrice, setOpenPrice] = React.useState(false);
-    const [openCollections, setOpenCollections] = React.useState(false);
+    const [openPrice, setOpenPrice] = React.useState(true);
+    const [openCollections, setOpenCollections] = React.useState(true);
 
     const flag = useSelector(state => state.filter.flag)
 
@@ -43,7 +43,7 @@ export default function FilterList() {
 
     return (
         <List
-            sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', padding: 0 }}
+            sx={{ width: '100%', maxWidth: 360, padding: 0 }}
             component="nav"
             aria-labelledby="nested-list-subheader"
         >
@@ -115,7 +115,7 @@ export default function FilterList() {
                         <ListItemIcon>
                             <StarBorder />
                         </ListItemIcon>
-                        <ListItemText primary="Starred" />
+                        <ListItemText primary="Incoming contents" />
                     </ListItemButton>
                 </List>
             </Collapse>
@@ -133,7 +133,7 @@ export default function FilterList() {
                         <ListItemIcon>
                             <StarBorder />
                         </ListItemIcon>
-                        <ListItemText primary="Starred" />
+                        <ListItemText primary="Incoming contents" />
                     </ListItemButton>
                 </List>
             </Collapse>

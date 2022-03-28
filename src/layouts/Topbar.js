@@ -6,14 +6,13 @@ import { useEffect } from 'react';
 import { alpha, styled/*, useTheme*/ } from '@mui/material/styles';
 import { Box, Button, Stack } from '@mui/material';
 // components
-import AddIcon from '@mui/icons-material/Add';
-import {Icon} from '@mui/material'
-// import { Icon } from '@iconify/react';
+// import {Icon} from '@mui/material'
+import { Icon } from '@iconify/react';
 import roundTransferWithinAStation from '@iconify/icons-ic/round-transfer-within-a-station';
 import feedburnerIcon from '@iconify/icons-ps/feedburner';
 import xrpIcon from '@iconify/icons-cryptocurrency/xrp';
 import workspaceTrusted from '@iconify/icons-codicon/workspace-trusted';
-import { NavLink } from 'react-router-dom';
+
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
 const StackStyle = styled(Stack)(({ theme }) => ({
@@ -42,9 +41,7 @@ export default function Topbar() {
                 <h5>Trustline</h5>
                 <Icon icon={roundTransferWithinAStation} width="24" height="24" />
                 <h5>Transferable</h5>
-                <NavLink to='/create'>
-                    <Button startIcon={<AddIcon />}>Create</Button>
-                </NavLink>
+
             </StackStyle>
         </>
     );

@@ -10,8 +10,8 @@ import { useNavigate } from 'react-router-dom'
 import Label from '../Label';
 //import ColorPreview from '../../components/ColorPreview';
 
-import {Icon} from '@mui/material'
-// import { Icon } from '@iconify/react';
+// import {Icon} from '@mui/material'
+import { Icon } from '@iconify/react';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';

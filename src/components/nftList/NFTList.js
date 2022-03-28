@@ -7,6 +7,7 @@ import NftCard from './NftCard';
 import '../../App.css'
 import Page from '../Page';
 import BigNumber from 'bignumber.js';
+import { BASE_URL } from 'utils/constants';
 
 function getFlag(nft) {
     console.log(nft.tokenID)
@@ -30,7 +31,6 @@ export const NFTList = () => {
     // const flags = {flag: 0x00000001}
     const dispatch = useDispatch()
     const [loaded, setIsLoaded] = useState(false);
-    const BASE_URL = 'https://ws.xrpnft.com/api';
 
     const fetchImages = () => {
         axios

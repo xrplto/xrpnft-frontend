@@ -1,15 +1,15 @@
 //import { useEffect, useState } from 'react';
 import { useState } from 'react';
 //import PropTypes from 'prop-types';
-//import { Icon } from '@iconify/react';
+import { Icon } from '@iconify/react';
 // material
 //import { alpha, useTheme, styled } from '@mui/material/styles';
-import { 
-//    Button, 
-//    Paper, 
-    Dialog, 
-//    DialogTitle, 
-//    DialogActions, 
+import {
+//    Button,
+//    Paper,
+    Dialog,
+//    DialogTitle,
+//    DialogActions,
 //    Divider,
     Alert,
     AlertTitle
@@ -37,7 +37,7 @@ async function getAccountInfo(showResult, showWaitDialog, values) {
     }
     showWaitDialog(false);
 
-    
+
     // res = { // Account info return
     //     "id": 0,
     //     "result": {
@@ -66,7 +66,7 @@ async function getAccountInfo(showResult, showWaitDialog, values) {
 export default function AccountInfoDialog({ values, setLoading, render }) {
     const [open, setOpen] = useState(false);
     const [res, setRes] = useState([]);
-    
+
     const onAccountInfo = () => {
         getAccountInfo(showResult, setLoading, values);
      };
@@ -75,7 +75,7 @@ export default function AccountInfoDialog({ values, setLoading, render }) {
         setOpen(true);
         setRes(response);
      };
-    
+
     const handleClose = () => {
         setOpen(false);
     };
@@ -108,4 +108,3 @@ export default function AccountInfoDialog({ values, setLoading, render }) {
 }
 
 
-    

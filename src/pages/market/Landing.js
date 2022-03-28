@@ -13,6 +13,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { NFTList } from '../../components/nftList/NFTList';
 import { AppBarStyle } from '../../layouts/MainLayout';
 import FilterList from '../../components/nftList/FilterList';
+import Filter from 'components/common/Filter';
 
 const drawerWidth = 300;
 
@@ -76,6 +77,7 @@ export default function NFTMarketplace() {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
+      {/* <Filter /> */}
       <AppBarStyle position="fixed" open={open} sx={!open ? { top: 'auto', width: 'auto', height: '100%', right: 'auto' } : { display: 'none' }} >
         <Toolbar sx={open ? {} : { '&.MuiToolbar-root': { padding: 0 } }}>
           <IconButton

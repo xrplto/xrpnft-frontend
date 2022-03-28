@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-// import { Icon } from '@iconify/react';
-import {Icon} from '@mui/material'
+import { Icon } from '@iconify/react';
 
 import { NavLink as RouterLink, matchPath, useLocation } from 'react-router-dom';
 import arrowIosForwardFill from '@iconify/icons-eva/arrow-ios-forward-fill';

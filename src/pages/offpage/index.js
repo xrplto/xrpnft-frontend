@@ -21,7 +21,7 @@ export default function NFTInfo(props) {
       >
         <HashLoader color={"#00AB55"} size={50} />
       </Backdrop>
-      <Container maxWidth="lg" sx={{ marginTop: '3vh' }}>
+      <Container maxWidth="lg" sx={{ marginTop: '1vh' }}>
         <Grid container spacing={2} justifyContent='center'>
           <Grid item md={5}>
             <NFTDetails />

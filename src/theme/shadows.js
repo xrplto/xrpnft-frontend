@@ -43,13 +43,13 @@ const createCustomShadow = (color) => {
   const transparent = alpha(color, 0.24);
 
   return {
-    z0: `0 0.5px 0.5px 0 ${transparent}`,
-    z1: `0 1px 2px 0 ${transparent}`,
-    z8: `0 2px 10px 0 ${transparent}`,
-    z12: `0 0 2px 0 ${transparent}, 0 12px 12px 0 ${transparent}`,
-    z16: `0 0 2px 0 ${transparent}, 0 16px 16px -4px ${transparent}`,
-    z20: `0 0 2px 0 ${transparent}, 0 20px 20px -4px ${transparent}`,
-    z24: `0 0 4px 0 ${transparent}, 0 24px 48px 0 ${transparent}`,
+    // z0: `0 0.5px 0.5px 0 ${transparent}`,
+    // z1: `0 1px 2px 0 ${transparent}`,
+    // z8: `0 2px 10px 0 ${transparent}`,
+    // z12: `0 0 2px 0 ${transparent}, 0 12px 12px 0 ${transparent}`,
+    // z16: `0 0 2px 0 ${transparent}, 0 16px 16px -4px ${transparent}`,
+    // z20: `0 0 2px 0 ${transparent}, 0 20px 20px -4px ${transparent}`,
+    // z24: `0 0 4px 0 ${transparent}, 0 24px 48px 0 ${transparent}`,
     primary: `0 8px 10px 0 ${alpha(palette.primary.main, 0.24)}`,
     secondary: `0 8px 10px 0 ${alpha(palette.secondary.main, 0.24)}`,
     info: `0 8px 10px 0 ${alpha(palette.info.main, 0.24)}`,
