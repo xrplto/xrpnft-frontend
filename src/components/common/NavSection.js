@@ -8,7 +8,7 @@ import arrowIosDownwardFill from '@iconify/icons-eva/arrow-ios-downward-fill';
 // material
 import { alpha, useTheme, styled } from '@mui/material/styles';
 import { Box, List, Collapse, ListItemText, ListItemIcon, ListItemButton } from '@mui/material';
-
+import sidebarConfig from 'components/layouts/SidebarConfig'
 // ----------------------------------------------------------------------
 
 const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props} />)(
@@ -154,14 +154,16 @@ NavSection.propTypes = {
   navConfig: PropTypes.array
 };
 
-export default function NavSection({ navConfig, ...other }) {
+// export default function NavSection({ navConfig, ...other }) {
+export default function NavSection() {
   const { pathname } = useLocation();
   const match = (path) => (path ? !!matchPath({ path, end: false }, pathname) : false);
 
   return (
-    <Box {...other}>
+    // <Box {...other}>
+    <Box >
       <List disablePadding>
-        {navConfig.map((item) => (
+        {sidebarConfig.map((item) => (
           <NavItem key={item.title} item={item} active={match} />
         ))}
       </List>

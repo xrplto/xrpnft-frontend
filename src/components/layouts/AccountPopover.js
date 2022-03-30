@@ -18,11 +18,11 @@ import {
 } from '@mui/material';
 
 // components
-import MenuPopover from '../components/MenuPopover';
-import LoginDialog from '../components/LoginDialog';
+import MenuPopover from '../MenuPopover';
+import LoginDialog from '../LoginDialog';
 //
 import { useContext } from 'react'
-import Context from '../Context'
+import Context from '../../Context'
 
 //import profile from '../_mocks_/profile';
 import axios from 'axios';

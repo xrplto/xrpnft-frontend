@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useDispatch } from 'react-redux'
 import { useState, useRef } from 'react'
 import { create } from 'ipfs-http-client'
-import Fab from '@mui/material/Fab'
+import ImageIcon from '@mui/icons-material/Image';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import { setImgUrl } from 'app/slices/ipfSlice'
 import { LoadingButton } from "@mui/lab";
@@ -53,26 +53,26 @@ export const NFTUploader = () => {
 
     return (
         <CardWrapper>
-            <Card sx={{ width: 300, maxHeight: 400, justifyContent: 'space-between', overflowY: 'auto' }} >
+            <input
+                ref={fileRef}
+                style={{ display: 'none' }}
+                accept="image/*,video/*,audio/*,webgl/*,.glb,.gltf"
+                id="contained-button-file"
+                multiple
+                type="file"
+                onChange={handleUploadClick}
+            />
+            <Card sx={{ width: 350, height: 257, justifyContent: 'space-between', overflowY: 'auto' }}
+                onClick={() => fileRef.current.click()}
+            >
                 <img src={selectedFile} style={{ maxHeight: 300 }} />
+                <ImageIcon fontSize="large" />
                 <Divider />
                 <Stack direction='row' justifyContent='space-evenly'>
-                    <input
-                        ref={fileRef}
-                        style={{ display: 'none' }}
-                        accept="image/*"
-                        id="contained-button-file"
-                        multiple
-                        type="file"
-                        onChange={handleUploadClick}
-                    />
                     <ButtonGroup variant="text" fullWidth aria-label="outlined primary button group">
-
-                        {/* <label htmlFor="contained-button-file"> */}
-                        <Button onClick={() => fileRef.current.click()} fullWidth startIcon={<AddPhotoAlternateIcon />}>
+                        {/* <Button fullWidth startIcon={<AddPhotoAlternateIcon />}>
                             Add
-                        </Button>
-                        {/* </label> */}
+                        </Button> */}
                         <LoadingButton
                             loading={loading}
                             loadingPosition="start"

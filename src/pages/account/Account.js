@@ -11,6 +11,7 @@ import { HashLoader } from "react-spinners";
 import NftCard from "components/nftList/NftCard";
 import { BASE_URL } from "utils/constants";
 import Page from "components/Page";
+import AccountNfts from "components/account/AccountNfts";
 
 const drawerWidth = 300;
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -69,21 +70,7 @@ export default function Account(props) {
       <Container maxWidth="lg" >
         {/* <Filter isMarket={false} /> */}
         <Main open={true}>
-          <DrawerHeader />
-          <p>You have {userNfts.length} items</p>
-          {
-            userNfts.length > 0 && (
-              <Grid container spacing={1}>
-                {
-                  userNfts.map((nft) => (
-                    <Grid item xs={12} sm={6} md={3} lg={3}>
-                      <NftCard nftoken={{tokenID: nft.TokenID, URI: nft.URI}} key={nft.TokenID}/>
-                    </Grid>
-                  ))
-                }
-              </Grid>
-            )
-          }
+          <AccountNfts />
         </Main>
       </Container>
     </Page>

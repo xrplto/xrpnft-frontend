@@ -18,7 +18,7 @@ import { HashLoader } from "react-spinners";
 // components
 import Page from "../../components/Page";
 import TesterControls from "./TesterControls";
-import ChooseAccountDialog from "./ChooseAccountDialog";
+import ChooseAccountDialog from "../../components/dialog/ChooseAccountDialog";
 
 const accounts = [
   {

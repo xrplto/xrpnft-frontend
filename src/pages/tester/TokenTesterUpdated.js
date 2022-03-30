@@ -21,7 +21,7 @@ import AccountInfoDialog from "./AccountInfoDialog";
 import MintTokenDialog from "./MintTokenDialog";
 // components
 import Page from "../../components/Page";
-import ChooseAccountDialog from "./ChooseAccountDialog";
+import ChooseAccountDialog from "../../components/dialog/ChooseAccountDialog";
 
 const accounts = [
   {

@@ -1,6 +1,6 @@
 import { Navigate, useRoutes } from 'react-router-dom';
-import MainLayout from 'layouts/MainLayout';
-import EmptyLayout from 'layouts/EmptyLayout';
+import MainLayout from 'components/layouts/MainLayout';
+import EmptyLayout from 'components/layouts/EmptyLayout';
 import TokenTesterUpdated from 'pages/tester/TokenTesterUpdated';
 import Spinner from 'pages/spinner/Spinner';
 import ProgressPage from 'pages/progress/ProgressPage';

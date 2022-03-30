@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { create } from 'ipfs-http-client'
 import React from 'react';
-// import { useParams } from 'react-router-dom';
 import { resetIpfsState } from 'app/slices/ipfSlice'
 import { Dialog, Alert, AlertTitle } from '@mui/material';
 import {
@@ -17,13 +16,12 @@ import { Heading } from 'components/atoms/Heading';
 import { NFTUploader } from 'components/miniting/NFTUploader';
 import { Caption } from 'components/atoms/Caption';
 import { TypoDescription } from 'components/atoms/Description';
-import { SUPPORTED_FILE_TYPES } from '../constants';
+import { SUPPORTED_FILE_TYPES } from 'utils/constants';
 import { useDispatch, useSelector } from 'react-redux'
-import FormHelperText from '@mui/material/FormHelperText';
-import { useFormControl } from '@mui/material/FormControl';
 import { LoadingButton } from '@mui/lab';
 import SendIcon from '@mui/icons-material/Send';
 import { mintToken } from 'utils/tokenActions'
+import { testPinata } from 'utils/pinata'
 
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
@@ -31,6 +29,7 @@ export default function Minting(props) {
   const dispatch = useDispatch()
 
   const [result, setResult] = useState(null)
+  // const [pinataActive, setPinataActive] = useState(false)
 
   const [account, setAccount] = useState({
     key: "rGS2zSMwHP3j6Rqm9D5r4iTwoucHwAfAM9",
@@ -60,16 +59,19 @@ export default function Minting(props) {
     setDescription(e.target.value)
   }
 
-  const sendNftMetadata = async () => {
-    setLoading(true)
-
-    const metadata = {
+  const getMetadata = () => {
+    return {
       imageUrl: ipfs.metadata.imageUrl,
       name: nftName,
       description: description,
       externalLink: extLink
     }
-    console.log(metadata)
+  }
+
+  const sendNftMetadata = async () => {
+    setLoading(true)
+
+    const metadata = getMetadata()
     try {
       const added = await client.add(JSON.stringify(metadata))
       const url = `https://ipfs.infura.io/ipfs/${added.path}`
@@ -78,12 +80,13 @@ export default function Minting(props) {
       const nfts = await mintToken(account.secret, url, 12)
       setResult(nfts)
       setOpen(true)
-    } catch(e) {
-      console.log('error while uploading file to ipfs:',e)
+    } catch (e) {
+      console.log('error while uploading file to ipfs:', e)
     }
     setLoading(false)
 
   }
+
 
   const mintNft = async (secret, tokenUrl) => {
     try {
@@ -97,8 +100,10 @@ export default function Minting(props) {
     }
   }
 
+
   useEffect(() => {
-    console.log('reload')
+    testPinata()
+    // setPinataActive(testPinata().authenticated)
     dispatch(resetIpfsState())
   }, [])
   return (
@@ -196,17 +201,17 @@ export default function Minting(props) {
                 <AlertTitle>{result.result.account}</AlertTitle>
                 <AlertTitle>Your nfts are:</AlertTitle>
                 {
-                  result.result.account_nfts?
-                  result.result.account_nfts.map((nft) => (
-                    <>
-                      <p>Issure:</p>
-                      <p>{nft.Issuer}</p>
-                      <p>TokenId</p>
-                      <p>{nft.TokenID}</p>
-                      <p>TokenUri</p>
-                      <p>{nft.URI}</p>
-                    </>
-                  )):<p>No data</p>
+                  result.result.account_nfts ?
+                    result.result.account_nfts.map((nft) => (
+                      <>
+                        <p>Issure:</p>
+                        <p>{nft.Issuer}</p>
+                        <p>TokenId</p>
+                        <p>{nft.TokenID}</p>
+                        <p>TokenUri</p>
+                        <p>{nft.URI}</p>
+                      </>
+                    )) : <p>No data</p>
                 }
                 <br />
                 Minting successful!
