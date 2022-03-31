@@ -56,7 +56,7 @@ export const NFTList = () => {
     return (
         <Page title="XRPL NFT Marketplace">
             <InfiniteScroll
-                dataLength={nftTokens}
+                dataLength={nftTokens.length}
                 next={() => fetchImages()}
                 hasMore={hasMore}
             >

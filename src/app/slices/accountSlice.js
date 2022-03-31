@@ -1,18 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+const initialState = {
+  account: {
+    key: null,
+    secret: null
+  },
+}
+
 export const accountSlice = createSlice({
   name: 'filter',
-  initialState: {
-    key: '',
-  },
+  initialState,
   reducers: {
     select: (state, action) => {
-      state.key = action.payload;
+      state.account = {...action.payload};
     },
+    reset: () => initialState
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { select } = accountSlice.actions
+export const { select, reset } = accountSlice.actions
 
 export default accountSlice.reducer

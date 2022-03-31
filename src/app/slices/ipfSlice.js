@@ -1,17 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+const initialState = {
+  pickedFile: null,
+  ipfsFileUrl: '',
+  metadata: {
+    imageUrl: '',
+    name: '',
+    description: '',
+    externalLink: ''
+  }
+}
 export const ipfSlice = createSlice({
   name: 'ipfs',
-  initialState: {
-    ipfsFileUrl: '',
-    metadata: {
-      imageUrl: '',
-      name:'',
-      description:'',
-      externalLink:''
-    }
-  },
+  initialState,
   reducers: {
+    setPickedFile: (state, action) => {
+      state.pickedFile = action.payload
+    },
     setIpfsFileUrl: (state, action) => {
       state.ipfsFileUrl = action.payload
     },
@@ -19,25 +24,15 @@ export const ipfSlice = createSlice({
       state.metadata.imageUrl = action.payload
     },
     setMetadata: (state, action) => {
-      state.metadata = {...state.metadata, ...action.payload}
+      state.metadata = { ...state.metadata, ...action.payload }
     },
-    resetIpfsState: (state) => {
-      // state = undefined
-      state.metadata.imageUrl = ''
-      // state =  {
-      //   ipfsFileUrl:'',
-      //   metadata: {
-      //     imageUrl: '',
-      //     description: '',
-      //     name: '',
-      //     externalLink: ''
-      //   }
-      // }
-    }
+    resetIpfsState: () => initialState,
+    resetPickedFile: (state) => {
+      state.pickedFile = initialState.pickedFile}
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setIpfsFileUrl, setImgUrl, resetIpfsState } = ipfSlice.actions
+export const { setIpfsFileUrl, setImgUrl, resetIpfsState, setPickedFile, resetPickedFile } = ipfSlice.actions
 
 export default ipfSlice.reducer

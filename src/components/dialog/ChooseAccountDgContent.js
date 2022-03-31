@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import { alpha, useTheme, styled } from '@mui/material/styles';
 import roundAccountCircle from '@iconify/icons-ic/round-account-circle';
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { select } from 'app/slices/accountSlice';
 import { NavLink } from 'react-router-dom';
 import {
@@ -54,7 +54,7 @@ ChooseAccountDgContent.propTypes = {
 // export default function ChooseAccountDgContent({ onClose, accounts, selectedIdx, render }) {
 export default function ChooseAccountDgContent({ close }) {
     const dispatch = useDispatch()
-    const [key, setKey] = useState('');
+    const [account, setAccount] = useState({key: null, secret: null});
 
     const theme = useTheme();
     const icon = <Icon icon={roundAccountCircle} width={48} height={48} />;
@@ -66,15 +66,15 @@ export default function ChooseAccountDgContent({ close }) {
         '&:before': { display: 'block' }
     };
 
-    const handleListItemClick = (event, key) => {
+    const handleListItemClick = (event, account) => {
         event.preventDefault()
-        setKey(key);
+        setAccount({...account});
     };
 
     const handleOk = () => {
         close();
         // TODO: Open a new page with selected account
-        dispatch(select(key))
+        dispatch(select(account))
     };
 
     return (
@@ -83,10 +83,10 @@ export default function ChooseAccountDgContent({ close }) {
                 <List disablePadding>
                     {ACCOUNTS.map((item) => (
                         <ListItemStyle
-                            onClick={(event) => handleListItemClick(event, item.key)}
+                            onClick={(event) => handleListItemClick(event, item)}
                             key={item.key}
                             sx={{
-                                ...((key === item.key) && selectedStyle)
+                                ...((account.key === item.key) && selectedStyle)
                             }}
                         >
                             <ListItemIconStyle>{icon}</ListItemIconStyle>

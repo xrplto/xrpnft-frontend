@@ -19,13 +19,12 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 export default function AccountNfts() {
     const [loading, setLoading] = useState(false);
     const token = useParams()
-    const account = useSelector(state => state.account.key)
-    // const account = 'rH6jr16vArKBneg2Hzy1bgC9ewdMReYavH'
+    const account = useSelector(state => state.account.account)
     const [userNfts, setUserNfts] = useState([])
 
     const fetchImages = () => {
         axios
-            .get(`${BASE_URL}/account/nfts/${account}`)
+            .get(`${BASE_URL}/account/nfts/${account.key}`)
             .then(res => {
                 console.log(res.data)
                 setUserNfts(res.data.nfts)

@@ -102,6 +102,7 @@ export default function Minting(props) {
 
 
   useEffect(() => {
+
     testPinata()
     // setPinataActive(testPinata().authenticated)
     dispatch(resetIpfsState())

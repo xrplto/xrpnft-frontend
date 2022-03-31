@@ -7,7 +7,6 @@ import { styled/*, alpha, useTheme*/ } from '@mui/material/styles';
 import { Button, Stack, Toolbar, IconButton, Box } from '@mui/material';
 import AccountPopover from './AccountPopover';
 import { NavLink } from 'react-router-dom';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import Logo from '../Logo';
 import { Link as RouterLink/*, useLocation*/ } from 'react-router-dom';
 import baselineBrightnessHigh from '@iconify/icons-ic/baseline-brightness-high';
@@ -15,7 +14,10 @@ import baselineBrightness4 from '@iconify/icons-ic/baseline-brightness-4';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
 import BaseDialog from 'components/dialog/BaseDialog';
 import ChooseAccountDgContent from 'components/dialog/ChooseAccountDgContent';
-
+import { useSelector, useDispatch } from 'react-redux'
+import { reset } from 'app/slices/accountSlice';
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
 // ----------------------------------------------------------------------
 //const APPBAR_MOBILE = 64;
 const APPBAR_DESKTOP = 72;
@@ -25,13 +27,18 @@ const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
     minHeight: APPBAR_DESKTOP
 }));
 
+const StyledNavLink = styled(NavLink)(({ theme }) => ({
+    textDecoration: 'none'
+}));
+
 // ----------------------------------------------------------------------
 export default function Navbar({ onOpenSidebar }) {
     const { toggleThisTheme, isDarkMode } = useContext(Context);
+    const account = useSelector(state => state.account.account)
+    const dispatch = useDispatch()
 
     // state to open & close account select dialog
     const [open, setOpen] = React.useState(false);
-    // const [selectedValue, setSelectedValue] = React.useState(emails[1]);
 
     // open dialog
     const handleClickOpen = () => {
@@ -39,14 +46,17 @@ export default function Navbar({ onOpenSidebar }) {
     };
 
     // close dialog
-    const handleClose = (value) => {
+    const handleClose = () => {
         setOpen(false);
-        // setSelectedValue(value);
+    };
+
+    // disconnect current account
+    const handleDisconnect = () => {
+        dispatch(reset())
     };
 
     return (
         <ToolbarStyle>
-
             <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
                 <Icon icon={menu2Fill} />
             </IconButton>
@@ -56,16 +66,25 @@ export default function Navbar({ onOpenSidebar }) {
             </Box>
 
             <Box sx={{ flexGrow: 1 }} />
-            <NavLink to='/create'>
+
+            <Box sx={{ flexGrow: 1 }} />
+            {account.key && <StyledNavLink to='/create' sx={{textDecoration: 'none'}}>
                 <Button startIcon={<AddIcon />}>Create</Button>
-            </NavLink>
-            <Button
+            </StyledNavLink>}
+            {account.key && <StyledNavLink to='/'>
+                <Button
+                    onClick={handleDisconnect}
+                    startIcon={<LogoutIcon />}
+                >Disconnect
+                </Button>
+            </StyledNavLink>}
+            {!account.key && <Button
                 variant="outlined"
                 onClick={handleClickOpen}
-                startIcon={<AccountBalanceWalletIcon />}
+                startIcon={<LoginIcon />}
             >
-                Accounts
-            </Button>
+                Connect
+            </Button>}
             <BaseDialog
                 isOpen={open}
                 close={handleClose}
