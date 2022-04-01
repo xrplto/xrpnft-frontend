@@ -16,6 +16,7 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import SpokeIcon from '@mui/icons-material/Spoke';
+import { ImgLoadingBg } from './ImgLoadingBg';
 
 const nftParser = require('../../pages/market/NftParser');
 
@@ -41,9 +42,9 @@ export default function NftCard({ nftoken }) {
     // 6D796E34333433667420637573746F6D206461746120455652
     const nft = utils.parseNFT(tokenID, URI);
     const status = 'NEW';
-    const name = nft.issuer;
+    const name = nft?.issuer
     const navigate = useNavigate();
-    let uri = nft.tokenURI;
+    let uri = nft?.tokenURI;
     let url = null;
     if (uri) {
         if (uri.https) {
@@ -89,7 +90,8 @@ export default function NftCard({ nftoken }) {
                     </Label>
                 )}
                 {!uri && (
-                    <TokenImgStyle id={tokenID} alt={name} src={'/static/cover.jpg'} />
+                    // <TokenImgStyle id={tokenID} alt={name} src={'/static/cover.jpg'} />
+                    <ImgLoadingBg />
                 )}
             </Box>
 
@@ -119,7 +121,7 @@ export default function NftCard({ nftoken }) {
 
                 <Link to="#" color="inherit" underline="hover" component={RouterLink}>
                     <Typography variant="subtitle2" noWrap>
-                        {name}
+                        {name?name:'Unknown'}
                     </Typography>
                 </Link>
             </Stack>

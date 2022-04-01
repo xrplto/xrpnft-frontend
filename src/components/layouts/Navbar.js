@@ -18,13 +18,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import { reset } from 'app/slices/accountSlice';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import { TOP_BAR_HEIGHT_DESKTOP } from 'utils/constants';
 // ----------------------------------------------------------------------
-//const APPBAR_MOBILE = 64;
-const APPBAR_DESKTOP = 72;
-// boxShadow: theme.customShadows.z1,
 
 const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
-    minHeight: APPBAR_DESKTOP
+    minHeight: TOP_BAR_HEIGHT_DESKTOP
 }));
 
 const StyledNavLink = styled(NavLink)(({ theme }) => ({
@@ -61,7 +60,7 @@ export default function Navbar({ onOpenSidebar }) {
                 <Icon icon={menu2Fill} />
             </IconButton>
 
-            <Box component={RouterLink} to="/" sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
+            <Box component={RouterLink} to="/" sx={{ px: 2.5, display: 'inline-flex' }}>
                 <Logo />
             </Box>
 
@@ -71,11 +70,14 @@ export default function Navbar({ onOpenSidebar }) {
             {account.key && <StyledNavLink to='/create' sx={{textDecoration: 'none'}}>
                 <Button startIcon={<AddIcon />}>Create</Button>
             </StyledNavLink>}
+            {account.key && <StyledNavLink to='/account' sx={{textDecoration: 'none'}}>
+                <Button startIcon={<Icon icon='mdi:postage-stamp' />}>My NFTs</Button>
+            </StyledNavLink>}
             {account.key && <StyledNavLink to='/'>
                 <Button
                     onClick={handleDisconnect}
                     startIcon={<LogoutIcon />}
-                >Disconnect
+                >Log Out
                 </Button>
             </StyledNavLink>}
             {!account.key && <Button
@@ -83,7 +85,7 @@ export default function Navbar({ onOpenSidebar }) {
                 onClick={handleClickOpen}
                 startIcon={<LoginIcon />}
             >
-                Connect
+                Log In
             </Button>}
             <BaseDialog
                 isOpen={open}

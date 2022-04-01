@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  pickedFile: null,
+  pickedFile: '',
   ipfsFileUrl: '',
+  pinnedFileHash:'',
   metadata: {
     imageUrl: '',
     name: '',
@@ -14,6 +15,9 @@ export const ipfSlice = createSlice({
   name: 'ipfs',
   initialState,
   reducers: {
+    setPinnedFileHash: (state, action) => {
+      state.pinnedFileHash = action.payload
+    },
     setPickedFile: (state, action) => {
       state.pickedFile = action.payload
     },
@@ -33,6 +37,6 @@ export const ipfSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { setIpfsFileUrl, setImgUrl, resetIpfsState, setPickedFile, resetPickedFile } = ipfSlice.actions
+export const { setIpfsFileUrl, setImgUrl, resetIpfsState, setPickedFile, resetPickedFile, setPinnedFileHash } = ipfSlice.actions
 
 export default ipfSlice.reducer

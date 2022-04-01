@@ -1,17 +1,11 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-// material
-import { alpha, styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { AppBar } from '@mui/material';
-//
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
-// ----------------------------------------------------------------------
-
-const APP_BAR_MOBILE = 64;
-const APP_BAR_DESKTOP = 92;
-const APP_BAR = 52;
+import { TOP_BAR_HEIGHT_DESKTOP } from 'utils/constants';
 
 const RootStyle = styled('div')({
     display: 'flex',
@@ -23,7 +17,7 @@ const MainStyle = styled('div')(({ theme }) => ({
     flexGrow: 1,
     overflow: 'auto',
     minHeight: '100%',
-    paddingTop: APP_BAR + 50,
+    paddingTop: TOP_BAR_HEIGHT_DESKTOP,
     paddingBottom: theme.spacing(10)
 }));
 

@@ -3,11 +3,13 @@ import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { addNfts, increaseOffset } from 'app/slices/nftsSlice';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { resetNFTs } from 'app/slices/nftsSlice'
 import NftCard from './NftCard';
 import '../../App.css'
 import Page from '../Page';
 import BigNumber from 'bignumber.js';
 import { BASE_URL } from 'utils/constants';
+import { Grid } from "@mui/material";
 
 function getFlag(nft) {
     console.log(nft.tokenID)
@@ -38,7 +40,7 @@ export const NFTList = () => {
             .then(res => {
                 // setNftTokens([...nftTokens, ...res.data.nfts]);
                 setIsLoaded(true);
-                if (res.data.nfts.length < 10){
+                if (res.data.nfts.length < 10) {
                     setHasMore(false)
                 }
                 // setOffset(offset + 1)
@@ -50,6 +52,7 @@ export const NFTList = () => {
 
     useEffect(() => {
         fetchImages();
+        dispatch(resetNFTs())
         localStorage.clear();
     }, []);
     const filteredTokens = applySortFilter(nftTokens, flags.flag);
@@ -60,12 +63,23 @@ export const NFTList = () => {
                 next={() => fetchImages()}
                 hasMore={hasMore}
             >
-                <div className="image-grid" style={{ margin: "3vw" }}>
+                {/* <div className="image-grid" style={{ margin: "3vw" }}>
                     {loaded ?
                         filteredTokens.map((nftToken) => (
                             <NftCard nftoken={nftToken} key={nftToken.tokenID}  />
                         )) : ""}
-                </div>
+                </div> */}
+                <Grid container spacing={1}>
+                    {loaded ?
+                        filteredTokens.map((nft) => (
+                            <Grid item xs={12} sm={6} md={3} lg={3}
+                                key={nft.TokenID}
+                            >
+                                <NftCard nftoken={nft} key={nft.TokenID} />
+                            </Grid>
+                        )) : null
+                    }
+                </Grid>
             </InfiniteScroll>
         </Page>
     );

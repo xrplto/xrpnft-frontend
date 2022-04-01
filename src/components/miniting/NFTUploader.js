@@ -11,7 +11,11 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import { useDispatch } from 'react-redux'
-import { resetPickedFile, setPickedFile } from 'app/slices/ipfSlice';
+import { resetPickedFile, setPickedFile, setPinnedFileHash } from 'app/slices/ipfSlice';
+import { testPinata, pinFileToIPFS } from 'utils/pinata'
+import axios from 'axios'
+import FormData from 'form-data';
+import { PINATA_PINNING_FILE_URL } from 'utils/constants';
 
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
@@ -21,7 +25,10 @@ export const NFTUploader = () => {
     const [fileUrl, setFileUrl] = useState(null)
     const dispatch = useDispatch()
     const [file, setFile] = useState(null)
+    const [ipfsHash, setIpfsHash] = useState('')
+    const [fileReadableStream, setFileReadableStream] = useState(null)
     const [loading, setLoading] = useState(false)
+
 
 
     const handleFileSelect = (e) => {
@@ -29,8 +36,12 @@ export const NFTUploader = () => {
 
         const reader = new FileReader()
         if (pickedFile) {
-            console.log('Picked File',pickedFile)
-            // setFile(pickedFile)
+            console.log('type of pickedFile:', typeof pickedFile)
+            setFileReadableStream(pickedFile.stream())
+            console.log('streamm:', pickedFile.stream())
+            console.log('Picked File', pickedFile)
+            console.log('name: ', pickedFile.name)
+            setFile(pickedFile)
             reader.readAsDataURL(pickedFile)
             reader.onloadend = function (e) {
                 setFileUrl(reader.result)
@@ -43,13 +54,42 @@ export const NFTUploader = () => {
         setLoading(true)
         if (file) {
             try {
-                const added = await client.add(file)
-                const url = `https://ipfs.infura.io/ipfs/${added.path}`
-                dispatch(setImgUrl(url))
-                console.log('ipfs-upload:', url)
-            } catch (error) {
-                console.log('Error uploading files:', error)
+                const formData = new FormData()
+                formData.append("file", file)
+                const response = await axios.post(
+                    PINATA_PINNING_FILE_URL,
+                    formData,
+                    {
+                        maxContentLength: "Infinity",
+                        headers: {
+                            "Content-Type": `multipart/form-data;boundary=${formData._boundary}`,
+                            'pinata_api_key': process.env.REACT_APP_PINATA_API_KEY,
+                            'pinata_secret_api_key': process.env.REACT_APP_PINATA_SECRET_KEY
+
+                        }
+                    }
+                )
+
+                console.log(response)
+
+                setIpfsHash(response.data.IpfsHash)
+                dispatch(setPinnedFileHash(response.data.IpfsHash))
+
+            } catch (e) {
+                console.log(e)
             }
+            //     try {
+            //         const added = await client.add(file)
+            //         const url = `https://ipfs.infura.io/ipfs/${added.path}`
+            //         dispatch(setImgUrl(url))
+            //         console.log('ipfs-upload:', url)
+            //     } catch (error) {
+            //         console.log('Error uploading files:', error)
+            //     }
+            //     console.log('pinning to ipfs....', file)
+            // console.log('fileReadableStream', fileReadableStream)
+            // await pinFileToIPFS(fileReadableStream)
+
         }
         setLoading(false)
     }
@@ -65,10 +105,10 @@ export const NFTUploader = () => {
         <CardWrapper>
             <CardOverlay
                 onClick={() => fileRef.current.click()}
-                >
+            >
                 <IconButton
                     aria-label='close' onClick={(e) => handleResetImage(e)}
-                    sx={fileUrl ? { position: 'absolute', right: '1vw', top: '1vh'} : { display: 'none' }}
+                    sx={fileUrl ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
                 >
                     <CloseIcon color='white' />
                 </IconButton>
@@ -91,28 +131,29 @@ export const NFTUploader = () => {
                     height: 240,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    overflow: 'hidden',
+                    overflow: 'auto',
                 }}
                 onClick={() => fileRef.current.click()}
             >
                 <img src={fileUrl} />
                 <ImageIcon fontSize='large' sx={fileUrl ? { display: 'none' } : {}} />
-                <Stack direction='row' justifyContent='space-evenly'>
-                    <ButtonGroup variant='text' fullWidth aria-label='outlined primary button group' sx={{ display: 'none' }}>
-                        <Button fullWidth startIcon={<AddPhotoAlternateIcon />}>
-                            Add
-                        </Button>
-                        <LoadingButton
-                            loading={loading}
-                            loadingPosition='start'
-                            startIcon={<SendIcon />}
-                            onClick={upLoadIPFS}
-                        >
-                            Upload
-                        </LoadingButton>
-                    </ButtonGroup>
-                </Stack>
+
             </Card>
+            <Stack direction='row' justifyContent='space-evenly'>
+                <ButtonGroup variant='text' fullWidth aria-label='outlined primary button group' sx={{ zIndex: 10 }}>
+                    {/* <Button fullWidth startIcon={<AddPhotoAlternateIcon />}>
+                            Add
+                        </Button> */}
+                    <LoadingButton
+                        loading={loading}
+                        loadingPosition='start'
+                        startIcon={<SendIcon />}
+                        onClick={upLoadIPFS}
+                    >
+                        Upload
+                    </LoadingButton>
+                </ButtonGroup>
+            </Stack>
         </CardWrapper>
     )
 }

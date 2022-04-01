@@ -19,11 +19,11 @@ function extractUrisFromString(uris_string){
             uris_obj[uri_line.substring(0, uri_fieldname_length)] = uri_line.substring(uri_fieldname_length + 1, uri_line.length);
         }
     } catch(err) {
-    }    
+    }
     return uris_obj;
 }
 
-function parseURI(nftoken_uri_hex){
+export function parseURI(nftoken_uri_hex){
     if (!nftoken_uri_hex) return null;
 
     var uris_obj = {};
@@ -35,16 +35,16 @@ function parseURI(nftoken_uri_hex){
                 let first_colon_index = remaining_nftoken_uri_hex.indexOf(convertStringToHex(':'));
                 let key_hex = remaining_nftoken_uri_hex.substring(0, first_colon_index);
                 let key = convertHexToString(key_hex);
-                
+
                 let remaining_key = key.substring(2, key.length);
                 let first_key_underscore_index = remaining_key.indexOf('_');
                 let value_length = Number(remaining_key.substring(0, first_key_underscore_index));
                 if(isNaN(value_length) || value_length < 0) {
                     throw new Error("Malformed URI");
                 }
-            
+
                 let value = remaining_nftoken_uri_hex.substring(first_colon_index + 2 , first_colon_index + 2 + value_length);
-            
+
                 uris_obj[key] = value;
                 remaining_nftoken_uri_hex = remaining_nftoken_uri_hex.substring(
                     first_colon_index + 2 + value_length + 2,
@@ -55,19 +55,19 @@ function parseURI(nftoken_uri_hex){
                 if (first_endline_index < 0) {
                     first_endline_index = remaining_nftoken_uri_hex.length;
                 }
-            
+
                 let pair_hex = remaining_nftoken_uri_hex.substring(0, first_endline_index);
-                
+
                 let pair = convertHexToString(pair_hex);
-            
+
                 let extracted_uris = extractUrisFromString(pair);
                 uris_obj = {
                     ...uris_obj,
                     ...extracted_uris
                 };
-            
+
                 remaining_nftoken_uri_hex = remaining_nftoken_uri_hex.substring(
-                    (first_endline_index === remaining_nftoken_uri_hex.length ? 
+                    (first_endline_index === remaining_nftoken_uri_hex.length ?
                         first_endline_index :
                         first_endline_index + 2),
                     remaining_nftoken_uri_hex.length
@@ -83,7 +83,7 @@ function parseURI(nftoken_uri_hex){
 }
 
 // ----------------------------------------------------------------------
-function cipheredTaxon(tokenSeq, taxon) {
+export function cipheredTaxon(tokenSeq, taxon) {
     // An issuer may issue several NFTs with the same taxon; to ensure that NFTs
     // are spread across multiple pages we lightly mix the taxon up by using the
     // sequence (which is not under the issuer's direct control) as the seed for
@@ -106,7 +106,7 @@ function cipheredTaxon(tokenSeq, taxon) {
     return taxon ^ (384160001 * tokenSeq + 2459);
 }
 
-function parseNftFlag(flags_number){
+export function parseNftFlag(flags_number){
     var flags = {
         "tfBurnable": false,
         "tfOnlyXRP": false,
@@ -153,7 +153,7 @@ export function parseNFT(tokenID, tokenURI) {
     if (typeof tokenID !== "string" || tokenID.length !== 64) {
         return null;
     }
-  
+
     const flags = new BigNumber(tokenID.slice(0, 4), 16).toNumber();
     const transferFee = new BigNumber(tokenID.slice(4, 8), 16).toNumber();
     const issuer = AddressCodec.encodeAccountID(Buffer.from(tokenID.slice(8, 48), "hex"));
@@ -166,7 +166,7 @@ export function parseNFT(tokenID, tokenURI) {
         "tfTrustLine": false, // Issuer wants a trustline to be automatically created.
         "tfTransferable": false // Indicates that this NFT can be transferred.
     };*/
-  
+
     return {
         issuer: issuer,
         flags: parseNftFlag(flags),

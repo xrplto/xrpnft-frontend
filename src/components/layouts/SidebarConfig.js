@@ -15,7 +15,7 @@ const sidebarConfig = [
   {
     title: 'NFToken Tester',
     path: '/tester',
-    icon: getIcon(mint)
+    icon: getIcon('mdi:postage-stamp')
   },
   {
     title: 'Spinners',
@@ -25,11 +25,6 @@ const sidebarConfig = [
   {
     title: 'Progress',
     path: '/progress',
-    icon: getIcon(progressBar)
-  },
-  {
-    title: 'OffPage',
-    path: '/offpage',
     icon: getIcon(progressBar)
   },
 ];
