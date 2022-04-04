@@ -5,20 +5,23 @@ const initialState = {
     key: null,
     secret: null
   },
+  login: false
 }
 
 export const accountSlice = createSlice({
   name: 'filter',
   initialState,
   reducers: {
-    select: (state, action) => {
-      state.account = {...action.payload};
+    doSetAccount: (state, action) => {
+      state.account = { ...action.payload };
     },
-    reset: () => initialState
+    login: (state) => { state.login = true },
+    logout: (state) => { state.login = false },
+    resetAccount: () => initialState
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { select, reset } = accountSlice.actions
+export const { doSetAccount, resetAccount, login, logout } = accountSlice.actions
 
 export default accountSlice.reducer
