@@ -38,8 +38,6 @@ NftCard.propTypes = {
 export default function NftCard({ nftoken }) {
     const { tokenID, URI } = nftoken;
     const dispatch = useDispatch()
-    // 000000000272ECED526CB9FB90275EC6196EC6C522CFFB938962EFA100000006
-    // 6D796E34333433667420637573746F6D206461746120455652
     const nft = utils.parseNFT(tokenID, URI);
     const status = 'NEW';
     const name = nft?.issuer
@@ -58,10 +56,9 @@ export default function NftCard({ nftoken }) {
     if (url) {
         //console.log(url);
     }
-    //nftParser.doParseNFT('r3iKY5HKD2JbWqprgMXgx1VMLNn4dza2We', '00080000561CBEA25BB4B971F35526D45B32A7F8E4B2D3D90000099B00000000');
-    //nftParser.doParseNFT(nft.issuer, nft.tokenID);
+
     const handleNFTClick = () => {
-        navigate(`/offpage/${nftoken.tokenID}?tokenURI=${nftoken.URI}`);
+        navigate(`/offpage/${nftoken.tokenID}/${nftoken.URI}`);
         dispatch(setCurrenToken(nftoken))
     }
 

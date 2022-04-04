@@ -1,5 +1,5 @@
 import pinataSDK from '@pinata/sdk'
-import { parseURI, cipheredTaxon, parseNftFlag } from 'utils'
+import { cipheredTaxon, parseNftFlag } from 'utils'
 import BigNumber from 'bignumber.js'
 import axios from 'axios';
 // import parsePinataNFTUrl from 'utils/pinata'
@@ -34,16 +34,16 @@ const options = {
     }
 }
 
-export const pinFileToIPFS = async (readibleStream) => {
-    console.log('pinning file to ipfs...')
-    try {
-        const res = await pinata.pinFileToIPFS(readibleStream, options)
-        console.log('response', res)
-    } catch (e) {
-        console.log(e)
+/**
+ * Send JSON to Pinata for direct pinning to IPFS.
+ * @param {Object} body Javascript object or Valid JSON you wish to pin to IPFS
+ * @returns {Object} { success : true | false,
+ * response ? : {
+        IpfsHash : This is the IPFS multi-hash provided back for your content,
+        PinSize : This is how large (in bytes) the content you just pinned is,
+        Timestamp : This is the timestamp for your content pinning (represented in ISO 8601 format)
     }
-}
-
+ */
 export const pinJsonToIPFS = async (body) => {
     console.log('Pinning JSON to pinata')
     try {
@@ -58,7 +58,7 @@ export const pinJsonToIPFS = async (body) => {
 
 export const getMetadataFromURI = async (uri) => {
     const res = await axios.get(uri)
-    console.log('metadata from axios',res)
+    console.log('metadata from axios', res)
 }
 
 export const parsePinataNFTUrl = (tokenURL) => {

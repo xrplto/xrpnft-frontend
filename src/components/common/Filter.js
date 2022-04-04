@@ -76,12 +76,6 @@ export default function Filter({ isMarket }) {
         setOpen(false);
     };
 
-    React.useEffect(() => {
-        if(!isMarket){
-            setOpen(false)
-        }
-    })
-
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />

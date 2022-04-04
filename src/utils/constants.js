@@ -41,3 +41,4 @@ export const ACCOUNTS = [
     },
 ];
 export const TOP_BAR_HEIGHT_DESKTOP = 60
+export const BASIC_COLOR = '#00AB55'

@@ -1,11 +1,7 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-    Button,
-    Paper,
     Dialog,
     DialogTitle,
-    DialogActions,
     Divider,
 } from '@mui/material';
 

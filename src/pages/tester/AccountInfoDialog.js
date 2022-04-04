@@ -1,21 +1,11 @@
-//import { useEffect, useState } from 'react';
 import { useState } from 'react';
-//import PropTypes from 'prop-types';
-import { Icon } from '@iconify/react';
-// material
-//import { alpha, useTheme, styled } from '@mui/material/styles';
 import {
-//    Button,
-//    Paper,
     Dialog,
-//    DialogTitle,
-//    DialogActions,
-//    Divider,
     Alert,
     AlertTitle
 } from '@mui/material';
-// ----------------------------------------------------------------------
 const xrpl = require("xrpl");
+
 async function getAccountInfo(showResult, showWaitDialog, values) {
     showWaitDialog(true);
     let res=null;

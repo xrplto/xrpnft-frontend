@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
 import { styled } from '@mui/material/styles';
-import { useParams } from "react-router-dom";
-import axios from 'axios'
+import { useSelector } from 'react-redux'
 import {
   Backdrop,
   Container,
-  Grid,
 } from "@mui/material";
 import { HashLoader } from "react-spinners";
-import NftCard from "components/nftList/NftCard";
-import { BASE_URL } from "utils/constants";
 import Page from "components/Page";
 import AccountNfts from "components/account/AccountNfts";
+import { useNavigate } from 'react-router-dom'
 
 const drawerWidth = 300;
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -43,22 +40,13 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
 
 export default function Account(props) {
   const [loading, setLoading] = useState(false);
-  const token = useParams()
-  const account = 'rH6jr16vArKBneg2Hzy1bgC9ewdMReYavH'
-  const [userNfts, setUserNfts] = useState([])
-
-  const fetchImages = () => {
-    axios
-      .get(`${BASE_URL}/account/nfts/${account}`)
-      .then(res => {
-        console.log(res.data)
-        setUserNfts(res.data.nfts)
-      });
-  };
+  const login = useSelector(state => state.account.login)
+  const navigate = useNavigate()
 
   useEffect(() => {
-    fetchImages()
-  }, [])
+    if (!login)
+      navigate('/');
+  })
   return (
     <Page title="My NFTs">
       <Backdrop
@@ -68,7 +56,6 @@ export default function Account(props) {
         <HashLoader color={"#00AB55"} size={50} />
       </Backdrop>
       <Container maxWidth="lg" >
-        {/* <Filter isMarket={false} /> */}
         <Main open={true}>
           <AccountNfts />
         </Main>

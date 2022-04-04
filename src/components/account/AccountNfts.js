@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { styled } from '@mui/material/styles';
 import { useParams } from "react-router-dom";
 import axios from 'axios'
-import { Grid } from "@mui/material";
-import NftCard from "components/nftList/NftCard";
-import { BASE_URL } from "utils/constants";
+import { Grid,Backdrop } from "@mui/material";
+import { BASE_URL, BASIC_COLOR } from "utils/constants";
 import PinataNFTCard from 'components/nftList/PinataNFTCard';
+import { FadeLoader } from 'react-spinners';
 
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -23,24 +23,38 @@ export default function AccountNfts() {
     const account = useSelector(state => state.account.account)
     const [userNfts, setUserNfts] = useState([])
 
-    const fetchAccountNFTs = () => {
-        axios
-            .get(`${BASE_URL}/account/nfts/${account.key}`)
-            .then(res => {
-                setUserNfts(res.data.nfts)
-            });
+    const fetchAccountNFTs = async () => {
+        setLoading(true)
+        try {
+            const res = await axios.get(`${BASE_URL}/account/nfts/${account.key}`)
+            setUserNfts(res.data.nfts)
+        } catch (e) {
+            console.log('Error fetching account NFTs', e)
+        }
+        setLoading(false)
     };
 
     useEffect(() => {
-        fetchAccountNFTs()
-    }, [account])
+        let mounted = true
+        if (mounted)
+            fetchAccountNFTs()
+        return () => {
+            mounted = false
+        }
+    },[])
     return (
         <>
+            <Backdrop
+                sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <FadeLoader color={BASIC_COLOR} size={50} />
+            </Backdrop>
             <DrawerHeader />
             <p>This account has {userNfts.length} items</p>
             {
                 userNfts.length > 0 && (
-                    <Grid container spacing={1}>
+                    <Grid container spacing={2}>
                         {
                             userNfts.map((nft) => (
                                 <Grid item xs={12} sm={6} md={3} lg={3}

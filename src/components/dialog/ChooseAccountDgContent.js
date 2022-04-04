@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Icon } from '@iconify/react';
-import { alpha, useTheme, styled } from '@mui/material/styles';
-import roundAccountCircle from '@iconify/icons-ic/round-account-circle';
+import { useState } from 'react'
+import PropTypes from 'prop-types'
+import { Icon } from '@iconify/react'
+import { alpha, useTheme, styled } from '@mui/material/styles'
+import roundAccountCircle from '@iconify/icons-ic/round-account-circle'
 import { useDispatch } from 'react-redux'
-import { select } from 'app/slices/accountSlice';
-import { NavLink } from 'react-router-dom';
+import { doSetAccount, login } from 'app/slices/accountSlice'
+import { useNavigate } from 'react-router-dom'
 import {
     Button,
     Paper,
@@ -15,8 +15,8 @@ import {
     ListItemText,
     ListItemIcon,
     ListItemButton,
-} from '@mui/material';
-import { ACCOUNTS } from 'utils/constants';
+} from '@mui/material'
+import { ACCOUNTS } from 'utils/constants'
 
 
 const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props} />)(
@@ -37,7 +37,7 @@ const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props
             backgroundColor: theme.palette.primary.main
         }
     })
-);
+)
 
 const ListItemIconStyle = styled(ListItemIcon)({
     width: 48,
@@ -45,37 +45,44 @@ const ListItemIconStyle = styled(ListItemIcon)({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
-});
+})
 
 ChooseAccountDgContent.propTypes = {
     close: PropTypes.func.isRequired,
-};
+}
 
-// export default function ChooseAccountDgContent({ onClose, accounts, selectedIdx, render }) {
 export default function ChooseAccountDgContent({ close }) {
+    const theme = useTheme()
+    const navigate = useNavigate()
     const dispatch = useDispatch()
-    const [account, setAccount] = useState({key: null, secret: null});
+    const [account, setAccount] = useState({ key: null, secret: null })
 
-    const theme = useTheme();
-    const icon = <Icon icon={roundAccountCircle} width={48} height={48} />;
+    const icon = <Icon icon={roundAccountCircle} width={48} height={48} />
 
     const selectedStyle = {
         color: 'primary.main',
         fontWeight: 'fontWeightMedium',
         bgcolor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
         '&:before': { display: 'block' }
-    };
+    }
 
     const handleListItemClick = (event, account) => {
         event.preventDefault()
-        setAccount({...account});
-    };
+        setAccount({ ...account })
+    }
 
     const handleOk = () => {
-        close();
         // TODO: Open a new page with selected account
-        dispatch(select(account))
-    };
+        // navigate(`/account/${nftoken.tokenID}?tokenURI=${nftoken.URI}`)
+        if (account.key) {
+            navigate(`/account`)
+            dispatch(doSetAccount(account))
+            dispatch(login())
+            close()
+        } else{
+            console.log('select account!')
+        }
+    }
 
     return (
         <>
@@ -98,11 +105,8 @@ export default function ChooseAccountDgContent({ close }) {
             <Divider />
             <DialogActions>
                 <Button autoFocus onClick={close}>Cancel</Button>
-                <NavLink to='/account'>
-                    {/* <Button startIcon={<AccountBalanceWalletIcon />}>Account</Button> */}
-                    <Button onClick={handleOk}>Ok</Button>
-                </NavLink>
+                <Button onClick={handleOk}>Ok</Button>
             </DialogActions>
         </>
-    );
+    )
 }

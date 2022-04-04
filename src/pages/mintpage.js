@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux'
-import { create } from 'ipfs-http-client'
+import { useSelector } from 'react-redux'
 import React from 'react';
-import { resetIpfsState } from 'app/slices/ipfSlice'
-import axios from 'axios'
-import { Dialog, Alert, AlertTitle, Button } from '@mui/material';
+import { Alert, AlertTitle } from '@mui/material';
 import {
   Backdrop,
   Container,
@@ -22,40 +19,29 @@ import { SUPPORTED_FILE_TYPES } from 'utils/constants';
 import { LoadingButton } from '@mui/lab';
 import SendIcon from '@mui/icons-material/Send';
 import { mintToken } from 'utils/tokenActions'
-import { testPinata, pinFileToIPFS, pinJsonToIPFS } from 'utils/pinata'
-import { BASE_URL } from 'utils/constants';
+import { testPinata, pinJsonToIPFS } from 'utils/pinata'
+import { useNavigate } from 'react-router-dom'
+import BaseDialog from 'components/dialog/BaseDialog';
 
-export default function Minting(props) {
-  const dispatch = useDispatch()
+export default function Minting() {
 
   const [result, setResult] = useState(null)
-  const [usernfts, setUserNfts] = useState(null)
-
   const account = useSelector(state => state.account.account)
   const pinnedFileHash = useSelector(state => state.ipfs.pinnedFileHash)
-
-  const fetchAccountNFTs = () => {
-    axios
-      .get(`${BASE_URL}/account/nfts/${account.key}`)
-      .then(res => {
-        console.log(res.data)
-        setUserNfts(res.data.nfts)
-      });
-  };
-
   const [flags, setFlags] = useState(12)
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [nftName, setNftName] = useState('')
+  const [extLink, setExtLink] = useState('xrpnft.com')
+  const [description, setDescription] = useState('')
+  const [tokenUrl, seTokenUrl] = useState('')
+  const ipfs = useSelector(state => state.ipfs)
+  const login = useSelector(state => state.account.login)
+  const navigate = useNavigate()
 
   const handleClose = () => {
     setOpen(false);
   };
-  const [nftName, setNftName] = useState('')
-  const [extLink, setExtLink] = useState('')
-  const [description, setDescription] = useState('')
-  const [tokenUrl, seTokenUrl] = useState('')
-  const ipfs = useSelector(state => state.ipfs)
-
   const handleNameFieldChange = (e) => {
     setNftName(e.target.value)
   }
@@ -68,29 +54,21 @@ export default function Minting(props) {
     setDescription(e.target.value)
   }
 
-  useEffect(() => {
-    fetchAccountNFTs()
-  }, [account])
+  const handleCreate = async () => {
+    setLoading(true)
 
-  const getMetadata = () => {
-    return {
+    const metadata = {
       fileUrl: pinnedFileHash,
       name: nftName,
       type: 'image',
       description: description,
       externalLink: extLink
     }
-  }
 
-  const sendNftMetadata = async () => {
-    setLoading(true)
-
-    const metadata = getMetadata()
     const res = await pinJsonToIPFS(metadata)
     if (res.success) {
       const nftMetadataUrl = res.response.IpfsHash
       try {
-
         const nfts = await mintToken(account.secret, nftMetadataUrl, 12)
         setResult(nfts)
         setOpen(true)
@@ -101,27 +79,12 @@ export default function Minting(props) {
       console.log('Json Not pinned to Pinata.')
     }
     setLoading(false)
-
   }
 
-
-  // const mintNft = async (secret, tokenUrl) => {
-  //   try {
-  //     await sendNftMetadata()
-  //     const nfts = await mintToken(account.secret, tokenUrl, flags)
-  //     console.log(nfts)
-  //     setResult(nfts)
-  //     setOpen(true)
-  //   } catch (e) {
-  //     console.log('error on minting:', e)
-  //   }
-  // }
-
-
   useEffect(() => {
-
+    if (!login)
+      navigate('/');
     testPinata()
-    // dispatch(resetIpfsState())
   }, [])
   return (
     <Page title='Create - XRPL NFT'>
@@ -153,7 +116,9 @@ export default function Minting(props) {
         <Stack spacing={2} marginBottom={3}>
           <Caption caption={'External link'} />
           <TypoDescription description={'This site will include a link to this URL on this item\'s detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.'} />
-          <TextField placeholder='https://yoursite.com/item/123' margin='dense'
+          <TextField
+            placeholder={extLink}
+            margin='dense'
             onChange={handleExtLinkFieldChange}
             value={extLink}
             sx={{
@@ -190,39 +155,29 @@ export default function Minting(props) {
             loading={loading}
             loadingPosition='start'
             startIcon={<SendIcon />}
-            onClick={sendNftMetadata}
-            // onClick={handleCreate}
+            onClick={handleCreate}
             variant='contained'
           >
             Create
           </LoadingButton>
-          {/* <Button onClick={() => setOpen(true)}>See My NFTs</Button> */}
           <Divider />
-          {/* <LoadingButton
-            sx={{ marginTop: 1 }}
-            loading={loading}
-            loadingPosition='start'
-            startIcon={<SendIcon />}
-            onClick={mintNft}
-            variant='contained'
-          >
-            Mint
-          </LoadingButton> */}
-          <Dialog onClose={handleClose} open={open}>
-            {result === null
-              ? <Alert severity="error" variant="outlined">
-                <AlertTitle>Error</AlertTitle>
-                Please check your address
-              </Alert>
-              : <Alert
-                variant="outlined"
-                severity="success">
-                <AlertTitle>{result.result.account}</AlertTitle>
-                Minting successful!
-                <br />
-              </Alert>
+          <BaseDialog
+            close={handleClose}
+            isOpen={open}
+            render={
+              result === null
+                ? <Alert severity="error" variant="outlined">
+                  <AlertTitle>Error</AlertTitle>
+                  Please check your address
+                </Alert>
+                : <Alert
+                  variant="outlined"
+                  severity="success">
+                  <AlertTitle>{result.result.account}</AlertTitle>
+                  Minting successful!
+                </Alert>
             }
-          </Dialog>
+          />
         </Stack>
       </Container>
     </Page>

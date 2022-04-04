@@ -12,7 +12,6 @@ import { BASE_URL } from 'utils/constants';
 import { Grid } from "@mui/material";
 
 function getFlag(nft) {
-    console.log(nft.tokenID)
     const flags = new BigNumber(nft.tokenID.slice(0, 4), 16).toNumber();
     return flags;
 }

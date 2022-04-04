@@ -3,7 +3,7 @@ import { useContext } from 'react'
 import Context from '../../Context'
 import { Icon } from '@iconify/react';
 import AddIcon from '@mui/icons-material/Add';
-import { styled/*, alpha, useTheme*/ } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { Button, Stack, Toolbar, IconButton, Box } from '@mui/material';
 import AccountPopover from './AccountPopover';
 import { NavLink } from 'react-router-dom';
@@ -15,12 +15,13 @@ import menu2Fill from '@iconify/icons-eva/menu-2-fill';
 import BaseDialog from 'components/dialog/BaseDialog';
 import ChooseAccountDgContent from 'components/dialog/ChooseAccountDgContent';
 import { useSelector, useDispatch } from 'react-redux'
-import { reset } from 'app/slices/accountSlice';
+import { resetAccount } from 'app/slices/accountSlice';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { TOP_BAR_HEIGHT_DESKTOP } from 'utils/constants';
-// ----------------------------------------------------------------------
+import { resetIpfsState } from 'app/slices/ipfSlice'
+
 
 const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
     minHeight: TOP_BAR_HEIGHT_DESKTOP
@@ -30,10 +31,9 @@ const StyledNavLink = styled(NavLink)(({ theme }) => ({
     textDecoration: 'none'
 }));
 
-// ----------------------------------------------------------------------
 export default function Navbar({ onOpenSidebar }) {
     const { toggleThisTheme, isDarkMode } = useContext(Context);
-    const account = useSelector(state => state.account.account)
+    const login = useSelector(state => state.account.login)
     const dispatch = useDispatch()
 
     // state to open & close account select dialog
@@ -51,7 +51,8 @@ export default function Navbar({ onOpenSidebar }) {
 
     // disconnect current account
     const handleDisconnect = () => {
-        dispatch(reset())
+        dispatch(resetAccount())
+        dispatch(resetIpfsState())
     };
 
     return (
@@ -59,34 +60,37 @@ export default function Navbar({ onOpenSidebar }) {
             <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
                 <Icon icon={menu2Fill} />
             </IconButton>
-
             <Box component={RouterLink} to="/" sx={{ px: 2.5, display: 'inline-flex' }}>
                 <Logo />
             </Box>
-
             <Box sx={{ flexGrow: 1 }} />
-
             <Box sx={{ flexGrow: 1 }} />
-            {account.key && <StyledNavLink to='/create' sx={{textDecoration: 'none'}}>
-                <Button startIcon={<AddIcon />}>Create</Button>
-            </StyledNavLink>}
-            {account.key && <StyledNavLink to='/account' sx={{textDecoration: 'none'}}>
-                <Button startIcon={<Icon icon='mdi:postage-stamp' />}>My NFTs</Button>
-            </StyledNavLink>}
-            {account.key && <StyledNavLink to='/'>
-                <Button
-                    onClick={handleDisconnect}
-                    startIcon={<LogoutIcon />}
-                >Log Out
-                </Button>
-            </StyledNavLink>}
-            {!account.key && <Button
-                variant="outlined"
-                onClick={handleClickOpen}
-                startIcon={<LoginIcon />}
-            >
-                Log In
-            </Button>}
+            {
+                login ?
+                    <>
+                        <StyledNavLink to='/create' sx={{ textDecoration: 'none' }}>
+                            <Button startIcon={<AddIcon />}>Create</Button>
+                        </StyledNavLink>
+                        <StyledNavLink to='/account' sx={{ textDecoration: 'none' }}>
+                            <Button startIcon={<Icon icon='mdi:postage-stamp' />}>My NFTs</Button>
+                        </StyledNavLink>
+                        <StyledNavLink to='/'>
+                            <Button
+                                onClick={handleDisconnect}
+                                startIcon={<LogoutIcon />}
+                            >Log Out
+                            </Button>
+                        </StyledNavLink>
+                    </>
+                    :
+                    <Button
+                        variant="outlined"
+                        onClick={handleClickOpen}
+                        startIcon={<LoginIcon />}
+                    >
+                        Log In
+                    </Button>
+            }
             <BaseDialog
                 isOpen={open}
                 close={handleClose}

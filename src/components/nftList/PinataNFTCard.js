@@ -39,8 +39,6 @@ export default function PinataNFTCard({ nftoken }) {
     const { tokenID, URI } = nftoken;
     const [imgUrl, setImgUrl] = useState('')
     const dispatch = useDispatch()
-    // 000000000272ECED526CB9FB90275EC6196EC6C522CFFB938962EFA100000006
-    // 6D796E34333433667420637573746F6D206461746120455652
     const nft = parsePinataNFT(tokenID, URI);
     const status = 'NEW';
     const name = nft.issuer;
