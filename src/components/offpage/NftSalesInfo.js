@@ -14,6 +14,7 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import { CountdownTimer } from './CountDownTimer';
+import {NFTokenProps} from 'types/types'
 import ListIcon from '@mui/icons-material/List';
 
 
@@ -55,9 +56,11 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
     borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-export default function NFTDescription() {
-    const currentToken = useSelector((state) => state.nfts.currenToken)
-    const nft = parseNFT(currentToken.tokenID, currentToken.URI);
+
+NFTDescription.propTypes = NFTokenProps
+
+export default function NFTDescription({tokenID, URI}) {
+    const nft = parseNFT(tokenID, URI);
     const THREE_DAYS_IN_MS = 3 * 24 * 60 * 60 * 1000
     const NOW_IN_MS = new Date().getTime()
 

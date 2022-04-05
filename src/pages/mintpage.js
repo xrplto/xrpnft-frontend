@@ -22,21 +22,21 @@ import { mintToken } from 'utils/tokenActions'
 import { testPinata, pinJsonToIPFS } from 'utils/pinata'
 import { useNavigate } from 'react-router-dom'
 import BaseDialog from 'components/dialog/BaseDialog';
+import TokenFlagsForm from 'components/miniting/TokenFlagsForm';
 
 export default function Minting() {
 
   const [result, setResult] = useState(null)
   const account = useSelector(state => state.account.account)
   const pinnedFileHash = useSelector(state => state.ipfs.pinnedFileHash)
-  const [flags, setFlags] = useState(12)
+  const login = useSelector(state => state.account.login)
+  const flags = useSelector(state => state.ipfs.flags)
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [nftName, setNftName] = useState('')
   const [extLink, setExtLink] = useState('xrpnft.com')
   const [description, setDescription] = useState('')
   const [tokenUrl, seTokenUrl] = useState('')
-  const ipfs = useSelector(state => state.ipfs)
-  const login = useSelector(state => state.account.login)
   const navigate = useNavigate()
 
   const handleClose = () => {
@@ -69,9 +69,10 @@ export default function Minting() {
     if (res.success) {
       const nftMetadataUrl = res.response.IpfsHash
       try {
-        const nfts = await mintToken(account.secret, nftMetadataUrl, 12)
+        const nfts = await mintToken(account.secret, nftMetadataUrl, flags)
         setResult(nfts)
         setOpen(true)
+        // TODO: reset ipfs slice when minting succeed
       } catch (e) {
         console.log('Error on Minting: ', e)
       }
@@ -100,7 +101,11 @@ export default function Minting() {
           <Caption caption={'Image, Video, Audio, or 3D Model'} />
           <TypoDescription description={'File types supported: ' + SUPPORTED_FILE_TYPES.join(', ') + '. Max size: 100MB'} />
           <NFTUploader />
-          <TypoDescription description={'Image on IPFS: ' + ipfs.metadata.imageUrl} />
+          <TypoDescription description={'Image on IPFS: ' + pinnedFileHash} />
+        </Stack>
+        <Stack spacing={2} marginBottom={3}>
+          <Caption caption={'Set Flags'} />
+          <TokenFlagsForm />
         </Stack>
         <Stack spacing={2} marginBottom={3}>
           <Caption caption={'Name'} />
@@ -180,6 +185,6 @@ export default function Minting() {
           />
         </Stack>
       </Container>
-    </Page>
+    </Page >
   );
 }

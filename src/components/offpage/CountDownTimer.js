@@ -1,7 +1,7 @@
 import React from 'react';
 import { useCountdown } from './useCountDown';
 import styled from 'styled-components';
-import { Typography, Link, Stack } from '@mui/material'
+import { Typography } from '@mui/material'
 
 const ExpiredNotice = () => {
     return (

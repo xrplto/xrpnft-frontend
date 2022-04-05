@@ -10,7 +10,8 @@ import Page from 'components/Page';
 import NFTDescription from 'components/offpage/NftSalesInfo';
 import NFTDetails from 'components/offpage/NftDetails';
 
-export default function NFTInfo(props) {
+
+export default function NFTInfo() {
   const [loading, setLoading] = useState(false);
   const {tokenID, tokenURI} = useParams()
   return (
@@ -25,7 +26,7 @@ export default function NFTInfo(props) {
       <Container maxWidth='lg' sx={{ marginTop: '1vh' }}>
         <Grid container spacing={2} justifyContent='center'>
           <Grid item md={5}>
-            <NFTDetails />
+            <NFTDetails tokenID={tokenID} URI={tokenURI}/>
           </Grid>
           <Grid item md={7}>
             <NFTDescription />

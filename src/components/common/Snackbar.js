@@ -1,18 +1,13 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { SnackbarProps } from 'types/types';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
 });
 
-XSnackbar.propTypes = {
-    isOpen: PropTypes.bool,
-    close: PropTypes.func,
-    message: PropTypes.string,
-    variant: PropTypes.string
-};
+XSnackbar.propTypes = SnackbarProps
 
 export default function XSnackbar({ isOpen, close, message, variant }) {
 

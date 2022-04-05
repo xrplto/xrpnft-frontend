@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
 import { setCurrenToken } from 'app/slices/nftsSlice';
@@ -6,11 +5,7 @@ import { setCurrenToken } from 'app/slices/nftsSlice';
 import { Box, Card, Link, Typography, Stack/*, Avatar*/ } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom'
-//import { red, green, blue } from '@mui/material/colors';
 import Label from '../Label';
-//import ColorPreview from '../../components/ColorPreview';
-
-// import {Icon} from '@mui/material'
 import { Icon } from '@iconify/react';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
@@ -21,6 +16,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { PINATA_GATEWAY } from 'utils/constants';
 import { ImgLoadingBg } from './ImgLoadingBg';
+import { PinataNFTCardProps } from 'types/types';
 
 
 const TokenImgStyle = styled('img')({
@@ -31,9 +27,7 @@ const TokenImgStyle = styled('img')({
     position: 'absolute'
 });
 
-PinataNFTCard.propTypes = {
-    nftoken: PropTypes.object
-};
+PinataNFTCard.propTypes = PinataNFTCardProps
 
 export default function PinataNFTCard({ nftoken }) {
     const { tokenID, URI } = nftoken;
@@ -44,7 +38,7 @@ export default function PinataNFTCard({ nftoken }) {
     const name = nft.issuer;
     const navigate = useNavigate();
     const handleNFTClick = () => {
-        navigate(`/offpage/${nftoken.tokenID}?tokenURI=${nftoken.URI}`);
+        navigate(`/offpage/${tokenID}/${URI}`);
         dispatch(setCurrenToken(nftoken))
     }
 

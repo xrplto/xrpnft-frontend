@@ -18,6 +18,7 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import SpokeIcon from '@mui/icons-material/Spoke';
+import {NFTokenProps} from 'types/types'
 
 const Accordion = styled((props) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -60,9 +61,10 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
     borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-export default function NFTDetails() {
-    const currentToken = useSelector((state) => state.nfts.currenToken)
-    const nft = parseNFT(currentToken.tokenID, currentToken.URI);
+NFTDetails.propTypes = NFTokenProps
+
+export default function NFTDetails({tokenID, URI}) {
+    const nft = parseNFT(tokenID, URI);
 
     const [expanded, setExpanded] = React.useState('panel1')
 
@@ -129,7 +131,7 @@ export default function NFTDetails() {
                         <Typography variant='subtitle' gutterBottom marginBottom={1}>
                             Token ID
                         </Typography>
-                        <StyledLink >{currentToken.tokenID.slice(0, 30)}...</StyledLink>
+                        <StyledLink >{tokenID.slice(0, 30)}...</StyledLink>
                     </DetailRow>
                     <DetailRow>
                         <Typography variant='subtitle' marginBottom={1}>

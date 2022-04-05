@@ -42,3 +42,24 @@ export const ACCOUNTS = [
 ];
 export const TOP_BAR_HEIGHT_DESKTOP = 60
 export const BASIC_COLOR = '#00AB55'
+
+export const TOKEN_FLAGS = [
+    {
+        label: 'Burnable',
+        value: 1,
+    },
+    {
+        label: 'OnlyXRP',
+        value: 2,
+    },
+    {
+        label: 'TrustLine',
+        value: 4,
+    },
+    {
+        label: 'Transferable',
+        value: 8,
+    },
+]
+
+export const NON_FLAGS = [6, 7, 14, 15]
