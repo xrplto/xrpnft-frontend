@@ -3,7 +3,7 @@ import {useState, useEffect} from 'react'
 export const useSnackbar = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [msg, setMsg] = useState('')
-    const [variant, setVariant] = useState('')
+    const [variant, setVariant] = useState('success')
 
     const openSnackbar = (msg, variant) => {
         setMsg(msg)

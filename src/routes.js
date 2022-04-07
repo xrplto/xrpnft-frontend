@@ -9,6 +9,7 @@ import Minting from 'pages/mintpage'
 import NFTInfo from 'pages/offpage/OffPage'
 import Account from 'pages/account/Account'
 import NFTMarketplace from 'pages/market/Landing';
+import LoginPage from 'pages/LoginPage';
 
 export default function Router() {
     return useRoutes([
@@ -22,6 +23,7 @@ export default function Router() {
                 { path: 'progress', element: <ProgressPage /> },
                 { path: 'offpage/:tokenID/:tokenURI', element: <NFTInfo /> },
                 { path: 'create', element: <Minting /> },
+                { path: 'login', element: <LoginPage /> },
                 { path: 'account', element: <Account /> },
                 { path: '*', element: <Navigate to="/404/NotFound" /> }
             ]

@@ -13,7 +13,8 @@ export const nftsSlice = createSlice({
   reducers: {
     resetNFTs: () => initialState,
     addNfts: (state, action) => {
-      state.nfts.push(...action.payload)
+      // state.nfts.push(...action.payload)
+      state.nfts = [...state.nfts, ...action.payload]
     },
     increaseOffset: (state) => {
       state.offset ++

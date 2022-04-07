@@ -12,8 +12,6 @@ import { Link as RouterLink/*, useLocation*/ } from 'react-router-dom';
 import baselineBrightnessHigh from '@iconify/icons-ic/baseline-brightness-high';
 import baselineBrightness4 from '@iconify/icons-ic/baseline-brightness-4';
 import menu2Fill from '@iconify/icons-eva/menu-2-fill';
-import BaseDialog from 'components/dialog/BaseDialog';
-import ChooseAccountDgContent from 'components/dialog/ChooseAccountDgContent';
 import { useSelector, useDispatch } from 'react-redux'
 import { resetAccount } from 'app/slices/accountSlice';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -34,20 +32,8 @@ const StyledNavLink = styled(NavLink)(({ theme }) => ({
 export default function Navbar({ onOpenSidebar }) {
     const { toggleThisTheme, isDarkMode } = useContext(Context);
     const login = useSelector(state => state.account.login)
+    const key = useSelector(state => state.account.account.key)
     const dispatch = useDispatch()
-
-    // state to open & close account select dialog
-    const [open, setOpen] = React.useState(false);
-
-    // open dialog
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    // close dialog
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     // disconnect current account
     const handleDisconnect = () => {
@@ -77,30 +63,19 @@ export default function Navbar({ onOpenSidebar }) {
                         <StyledNavLink to='/'>
                             <Button
                                 onClick={handleDisconnect}
-                                startIcon={<LogoutIcon />}
-                            >Log Out
+                                endIcon={<LogoutIcon />}
+                            >Connected: {key.slice(0,4) + '...' + key.slice(-4)}
                             </Button>
                         </StyledNavLink>
                     </>
                     :
-                    <Button
-                        variant="outlined"
-                        onClick={handleClickOpen}
-                        startIcon={<LoginIcon />}
-                    >
-                        Log In
-                    </Button>
+                    <StyledNavLink to='/login'>
+                        <Button
+                            startIcon={<LoginIcon />}
+                        >Log In
+                        </Button>
+                    </StyledNavLink>
             }
-            <BaseDialog
-                isOpen={open}
-                close={handleClose}
-                title='Select Account'
-                render={
-                    <ChooseAccountDgContent
-                        close={handleClose}
-                    />
-                }
-            />
 
             <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
                 <AccountPopover />

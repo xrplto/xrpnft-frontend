@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import PropTypes from 'prop-types'
 import { Icon } from '@iconify/react'
 import { alpha, useTheme, styled } from '@mui/material/styles'
 import roundAccountCircle from '@iconify/icons-ic/round-account-circle'
@@ -17,7 +16,8 @@ import {
     ListItemButton,
 } from '@mui/material'
 import { ACCOUNTS } from 'utils/constants'
-
+import XSnackbar from 'components/common/Snackbar';
+import { useSnackbar } from 'hooks/useSnackbar';
 
 const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props} />)(
     ({ theme }) => ({
@@ -47,11 +47,8 @@ const ListItemIconStyle = styled(ListItemIcon)({
     justifyContent: 'center'
 })
 
-ChooseAccountDgContent.propTypes = {
-    close: PropTypes.func.isRequired,
-}
-
-export default function ChooseAccountDgContent({ close }) {
+export default function ChooseAccountDgContent() {
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const theme = useTheme()
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -78,10 +75,15 @@ export default function ChooseAccountDgContent({ close }) {
             navigate(`/account`)
             dispatch(doSetAccount(account))
             dispatch(login())
-            close()
-        } else{
-            console.log('select account!')
+        } else {
+            openSnackbar('Select an account!', 'error')
         }
+    }
+
+    const handleCancel = () => {
+        // TODO: Open a new page with selected account
+        // navigate(`/account/${nftoken.tokenID}?tokenURI=${nftoken.URI}`)
+        navigate(`/`)
     }
 
     return (
@@ -104,9 +106,10 @@ export default function ChooseAccountDgContent({ close }) {
             </Paper>
             <Divider />
             <DialogActions>
-                <Button autoFocus onClick={close}>Cancel</Button>
-                <Button onClick={handleOk}>Ok</Button>
+                <Button onClick={handleOk}>Login</Button>
+                <Button autoFocus onClick={handleCancel}>Cancel</Button>
             </DialogActions>
+            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     )
 }

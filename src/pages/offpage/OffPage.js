@@ -16,7 +16,6 @@ export default function NFTInfo() {
   const {tokenID, tokenURI} = useParams()
   return (
     <Page title='NFT Info'>
-      {console.log(tokenID, tokenURI)}
       <Backdrop
         sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
@@ -29,7 +28,7 @@ export default function NFTInfo() {
             <NFTDetails tokenID={tokenID} URI={tokenURI}/>
           </Grid>
           <Grid item md={7}>
-            <NFTDescription />
+            <NFTDescription tokenID={tokenID} URI={tokenURI}/>
           </Grid>
         </Grid>
       </Container>
