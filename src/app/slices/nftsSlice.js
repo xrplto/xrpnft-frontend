@@ -2,8 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   offset: 0,
-  nfts:[],
-  currenToken: {},
+  nfts: [],
   currentScrollY: 0
 }
 
@@ -13,14 +12,10 @@ export const nftsSlice = createSlice({
   reducers: {
     resetNFTs: () => initialState,
     addNfts: (state, action) => {
-      // state.nfts.push(...action.payload)
       state.nfts = [...state.nfts, ...action.payload]
     },
     increaseOffset: (state) => {
-      state.offset ++
-    },
-    setCurrenToken: (state, action) => {
-      state.currenToken = action.payload
+      state.offset++
     },
     setCurrenScrollY: (state, action) => {
       state.currentScrollY = action.payload
@@ -29,6 +24,6 @@ export const nftsSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { addNfts, increaseOffset, setCurrenToken, setCurrenScrollY, resetNFTs } = nftsSlice.actions
+export const { addNfts, increaseOffset, setCurrenScrollY, resetNFTs } = nftsSlice.actions
 
 export default nftsSlice.reducer

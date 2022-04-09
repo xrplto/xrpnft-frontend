@@ -11,7 +11,7 @@ export default function TokenFlagsForm() {
     const dispatch = useDispatch()
     const flags = useSelector(state => state.ipfs.flags)
     const handleFlagChange = (e) => {
-        if (NON_FLAGS.indexOf(flags ^ e.target.value) === -1)
+        // if (NON_FLAGS.indexOf(flags ^ e.target.value) === -1)
             dispatch(setFlags(flags ^ e.target.value))
     }
     return (

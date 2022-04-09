@@ -1,5 +1,6 @@
 import { styled } from '@mui/system';
 import { PuffLoader } from "react-spinners";
+import Skeleton from '@mui/material/Skeleton';
 
 const LoaderContainer = styled('div')({
     top: 0,
@@ -14,8 +15,7 @@ const LoaderContainer = styled('div')({
 
 export function ImgLoadingBg() {
     return (
-        <LoaderContainer>
-            <PuffLoader color={"#00AB55"} size={50} />
-        </LoaderContainer>
+            <Skeleton animation="wave" width='100%' height='100%' />
+
     )
 }

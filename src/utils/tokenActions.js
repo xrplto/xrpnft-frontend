@@ -79,8 +79,8 @@ export const burnToken = async (secret, tokenId) => {
 
 /**
  * Create Sell offer
- * @param {string} secret 
- * @param {string} tokenId NFT token id want to sell 
+ * @param {string} secret
+ * @param {string} tokenId NFT token id want to sell
  * @param {string} amount the sale price in drops(millionths of an xrp) 1 xrp = 1000000 drop
  * @param {number} flags if 1 then sell offer, otherwise buy offer
  */
@@ -140,49 +140,13 @@ export const createSellOffer = async (secret, tokenId, amount, flags) => {
 	}
 }
 
-
-export const getSellAndBuyOffers = async (tokenId) => {
-	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
-	await client.connect()
-	console.log("Connected to Sandbox")
-	console.log("***Sell Offers***")
-	let nftSellOffers
-	try {
-		nftSellOffers = await client.request({
-			method: "nft_sell_offers",
-			tokenid: tokenId
-		})
-	} catch (err) {
-		console.log("No sell offers.")
-	}
-	console.log(JSON.stringify(nftSellOffers, null, 2))
-	console.log("***Buy Offers***")
-	let nftBuyOffers
-	try {
-		nftBuyOffers = await client.request({
-			method: "nft_buy_offers",
-			tokenid: tokenId
-		})
-	} catch (err) {
-		console.log("No buy offers.")
-	}
-	console.log(JSON.stringify(nftBuyOffers, null, 2))
-
-	client.disconnect()
-	// End of createSellOffer()
-	return {
-		sellOffers: nftSellOffers,
-		buyOffers: nftBuyOffers
-	}
-}
-
 /**
  * Create Buy Offer
- * @param {string} secret 
- * @param {string} tokenId 
- * @param {number} amount 
- * @param {number} flags 
- * @param {string} owner 
+ * @param {string} secret
+ * @param {string} tokenId
+ * @param {number} amount
+ * @param {number} flags
+ * @param {string} owner
  * @returns {object} sell and buy offers for this token
  */
 export const createBuyOffer = async (secret, tokenId, amount, flags, owner) => {
@@ -191,6 +155,7 @@ export const createBuyOffer = async (secret, tokenId, amount, flags, owner) => {
 	const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
 	await client.connect()
 	console.log("Connected to Sandbox")
+	console.log(wallet.classicAddress, tokenId, amount, flags, owner)
 
 	// Prepare transaction -------------------------------------------------------
 	const transactionBlob = {
@@ -240,4 +205,243 @@ export const createBuyOffer = async (secret, tokenId, amount, flags, owner) => {
 		buyOffers: nftBuyOffers
 	}
 	// End of createBuyOffer()
+}
+
+/**
+ * Send cancel offer
+ * @param {string} secret
+ * @param {string} tokenOfferIndex
+ * @param {string} tokenId
+ * @returns {object} sellOffers:[] buyOffers:[]
+ */
+export const cancelOffer = async (secret, tokenOfferIndex, tokenId) => {
+	const wallet = xrpl.Wallet.fromSeed(secret)
+	const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+	await client.connect()
+	console.log("Connected to Sandbox")
+
+	// const tokenOfferID = tokenOfferIndex
+	// Prepare a transaction blob. The tokenID argument requires an array rather than a single string.
+	const tokenOffers = [tokenOfferIndex]
+
+	const transactionBlob = {
+		"TransactionType": "NFTokenCancelOffer",
+		"Account": wallet.classicAddress,
+		"TokenOffers": tokenOffers
+	}
+
+	// Submit the transaction and wait for the results.
+	const tx = await client.submitAndWait(transactionBlob, { wallet })
+
+	// Request lists of current Sell Offers and Buy Offers.
+	console.log("***Sell Offers***")
+	let nftSellOffers
+	try {
+		nftSellOffers = await client.request({
+			method: "nft_sell_offers",
+			tokenid: tokenId
+		})
+	} catch (err) {
+		console.log("No sell offers.")
+	}
+	console.log(JSON.stringify(nftSellOffers, null, 2))
+	console.log("***Buy Offers***")
+	let nftBuyOffers
+	try {
+		nftBuyOffers = await client.request({
+			method: "nft_buy_offers",
+			tokenid: tokenId
+		})
+	} catch (err) {
+		console.log("No buy offers.")
+	}
+
+	console.log(JSON.stringify(nftBuyOffers, null, 2))
+	console.log("Transaction result:",
+		JSON.stringify(tx.result.meta.TransactionResult, null, 2))
+	console.log("Balance changes:",
+		JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+
+	client.disconnect()
+	return {
+		sellOffers: nftSellOffers,
+		buyOffers: nftBuyOffers
+	}
+	// End of cancelOffer()
+}
+
+
+/**
+ * Accept Buy Offer
+ * Another account holder can create a buy offer for one of your NFTokens.
+ * If you agree with the purchase price offered,
+ * 	you can use the acceptBuyOffer() function to complete the transaction.
+ * @param {string} secret
+ * @param {string} tokenOfferIndex
+ * @returns {Array} nfts[]
+ */
+export const acceptBuyOffer = async (secret, tokenOfferIndex) => {
+
+	// Connect to the devnet server.
+	const wallet = xrpl.Wallet.fromSeed(secret)
+	const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+	await client.connect()
+	console.log("Connected to Sandbox")
+
+	// Prepare a transaction blob.
+	const transactionBlob = {
+		"TransactionType": "NFTokenAcceptOffer",
+		"Account": wallet.classicAddress,
+		"BuyOffer": tokenOfferIndex
+	}
+
+	// Submit the transaction and wait for the results.
+	const tx = await client.submitAndWait(transactionBlob, { wallet })
+
+	// Display the results in your console log.
+	const nfts = await client.request({
+		method: "account_nfts",
+		account: wallet.classicAddress
+	})
+	console.log(JSON.stringify(nfts, null, 2))
+	console.log("Transaction result:",
+		JSON.stringify(tx.result.meta.TransactionResult, null, 2))
+	console.log("Balance changes:",
+		JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+
+	// Disconnect from the server.
+	client.disconnect()
+	// End of submitTransaction()
+	return nfts
+}
+
+/**
+ * Another account on your ledger can create an offer to sell a NFToken.
+ * If you agree with the price, you can purchase the NFToken by accepting the sell offer.
+ * The transaction completes immediately, debiting your XRP account and crediting the seller account.
+ * @param {string} secret
+ * @param {string} tokenOfferIndex
+ * @returns
+ */
+export const acceptSellOffer = async (secret, tokenOfferIndex) => {
+
+	// Connect to the devnet server.
+	const wallet = xrpl.Wallet.fromSeed(secret)
+	const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+	await client.connect()
+	console.log("Connected to Sandbox")
+
+	// Prepare a transaction blob.
+	const transactionBlob = {
+		"TransactionType": "NFTokenAcceptOffer",
+		"Account": wallet.classicAddress,
+		"SellOffer": tokenOfferIndex,
+	}
+
+	// Submit the transaction and wait for the results.
+	const tx = await client.submitAndWait(transactionBlob, { wallet })
+
+	// Display the results in your console log.
+	const nfts = await client.request({
+		method: "account_nfts",
+		account: wallet.classicAddress
+	})
+	console.log(JSON.stringify(nfts, null, 2))
+	console.log("Transaction result:",
+		JSON.stringify(tx.result.meta.TransactionResult, null, 2))
+	console.log("Balance changes:",
+		JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+
+	// Disconnect from the server.
+	client.disconnect()
+	// End of submitTransaction()
+	return nfts
+}
+
+/**
+ * Get sell and buy offers for a given token
+ * @param {string} tokenId
+ * @returns {object} {
+		sellOffers: nftSellOffers,
+		buyOffers: nftBuyOffers
+	}
+ */
+export const getSellAndBuyOffers = async (tokenId) => {
+	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
+	await client.connect()
+	console.log("Connected to Sandbox")
+	console.log("***Sell Offers***")
+	let nftSellOffers
+	try {
+		nftSellOffers = await client.request({
+			method: "nft_sell_offers",
+			tokenid: tokenId
+		})
+	} catch (err) {
+		console.log("No sell offers.")
+	}
+	console.log(JSON.stringify(nftSellOffers, null, 2))
+	console.log("***Buy Offers***")
+	let nftBuyOffers
+	try {
+		nftBuyOffers = await client.request({
+			method: "nft_buy_offers",
+			tokenid: tokenId
+		})
+	} catch (err) {
+		console.log("No buy offers.")
+	}
+	console.log(JSON.stringify(nftBuyOffers, null, 2))
+
+	client.disconnect()
+	// End of createSellOffer()
+	return {
+		sellOffers: nftSellOffers,
+		buyOffers: nftBuyOffers
+	}
+}
+
+export const getSellOffers = async (tokenId) => {
+	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
+	await client.connect()
+	console.log("Connected to Sandbox")
+	console.log("***Sell Offers***")
+	let nftSellOffers
+	try {
+		nftSellOffers = await client.request({
+			method: "nft_sell_offers",
+			tokenid: tokenId
+		})
+	} catch (err) {
+		console.log("No sell offers.")
+	}
+	console.log(JSON.stringify(nftSellOffers, null, 2))
+
+	client.disconnect()
+	// End of createSellOffer()
+	return nftSellOffers
+}
+
+
+export const getBuyOffers = async (tokenId) => {
+	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
+	await client.connect()
+	console.log("Connected to Sandbox")
+	console.log("***Sell Offers***")
+
+	console.log("***Buy Offers***")
+	let nftBuyOffers
+	try {
+		nftBuyOffers = await client.request({
+			method: "nft_buy_offers",
+			tokenid: tokenId
+		})
+	} catch (err) {
+		console.log("No buy offers.")
+	}
+	console.log(JSON.stringify(nftBuyOffers, null, 2))
+
+	client.disconnect()
+	// End of createSellOffer()
+	return nftBuyOffers
 }

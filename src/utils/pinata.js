@@ -1,5 +1,5 @@
 import pinataSDK from '@pinata/sdk'
-import { cipheredTaxon, parseNftFlag } from 'utils'
+import { cipheredTaxon, parseNftFlag } from 'utils/utils'
 import BigNumber from 'bignumber.js'
 import axios from 'axios';
 // import parsePinataNFTUrl from 'utils/pinata'

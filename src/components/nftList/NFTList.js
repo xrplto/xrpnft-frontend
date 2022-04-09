@@ -36,7 +36,7 @@ export const NFTList = () => {
 
     const fetchImages = () => {
         axios
-            .get(`${BASE_URL}/nfts/${offset}`)
+            .get(`${BASE_URL}/nfts?page=${offset}&limit=100`)
             .then(res => {
                 setIsLoaded(true);
                 if (res.data.nfts.length < 10) {
@@ -49,7 +49,8 @@ export const NFTList = () => {
 
     const fetchNFTokens = async () => {
         try {
-            const res = await axios.get(`${BASE_URL}/nfts/${offset}`)
+            // const res = await axios.get(`${BASE_URL}/nfts/${offset}`)
+            const res = await axios.get(`${BASE_URL}/nfts?page=${offset}&limit=100`)
             setIsLoaded(true);
             if (res.data.nfts.length < 10) // if this is the last page, no more request to server
                 setHasMore(false)
@@ -63,7 +64,7 @@ export const NFTList = () => {
     }
 
     useEffect(() => {
-        fetchImages();
+        fetchNFTokens();
         return () => {
             dispatch(resetNFTs())
         }

@@ -276,3 +276,12 @@ export function fShortenNumber(number) {
 export function fData(number) {
     return numeral(number).format('0.0 b');
 }
+
+/**
+ *
+ * @param {string} tokenId
+ * @returns {string | null} issuer of token
+ */
+export const getIssuer = (tokenId) => {
+    return tokenId ? AddressCodec.encodeAccountID(Buffer.from(tokenId.slice(8, 48), "hex")) : null;
+}

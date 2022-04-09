@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { FadeLoader } from 'react-spinners';
 import Page from 'components/Page';
-import NFTDescription from 'components/offpage/NftSalesInfo';
+import NFTDescription from 'components/offpage/NFTOffersDetail';
 import NFTDetails from 'components/offpage/NftDetails';
 
 

@@ -1,35 +1,14 @@
 import PropTypes from 'prop-types';
-import { Link as RouterLink } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux'
-import { setCurrenToken } from 'app/slices/nftsSlice';
-// material
-import { Box, Card, Link, Typography, Stack/*, Avatar*/ } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom'
-//import { red, green, blue } from '@mui/material/colors';
-import Label from '../Label';
-//import ColorPreview from '../../components/ColorPreview';
-
-// import {Icon} from '@mui/material'
+import Skeleton from '@mui/material/Skeleton';
+import { Card, Link, Stack, CardContent, Divider} from '@mui/material';
 import { Icon } from '@iconify/react';
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import SpokeIcon from '@mui/icons-material/Spoke';
-import { ImgLoadingBg } from './ImgLoadingBg';
+import CardMedia from '@mui/material/CardMedia';
+import CardActions from '@mui/material/CardActions';
+import IconButton from '@mui/material/IconButton';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShareIcon from '@mui/icons-material/Share';
 
-const nftParser = require('../../pages/market/NftParser');
-
-const utils = require('../../utils');
-
-// ----------------------------------------------------------------------
-const TokenImgStyle = styled('img')({
-    top: 0,
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    position: 'absolute'
-});
+const utils = require('../../utils/utils');
 
 NftCard.propTypes = {
     nftoken: PropTypes.object
@@ -37,11 +16,7 @@ NftCard.propTypes = {
 
 export default function NftCard({ nftoken }) {
     const { tokenID, URI } = nftoken;
-    const dispatch = useDispatch()
     const nft = utils.parseNFT(tokenID, URI);
-    const status = 'NEW';
-    const name = nft?.issuer
-    const navigate = useNavigate();
     let uri = nft?.tokenURI;
     let url = null;
     if (uri) {
@@ -57,72 +32,84 @@ export default function NftCard({ nftoken }) {
         //console.log(url);
     }
 
-    const handleNFTClick = () => {
-        navigate(`/offpage/${nftoken.tokenID}/${nftoken.URI}`);
-        dispatch(setCurrenToken(nftoken))
-    }
-
     return (
-        <Card onClick={handleNFTClick} sx={{
-            borderRadius: 1,
-            maxWidth: 300,
-            '&:hover': {
-                cursor: 'pointer'
-            },
-        }}>
-            <Box sx={{ pt: '100%', position: 'relative' }}>
-                {status && (
-                    <Label
-                        variant="filled"
-                        color={(status === 'sale' && 'error') || 'info'}
-                        sx={{
-                            zIndex: 9,
-                            top: 16,
-                            right: 16,
-                            position: 'absolute',
-                            textTransform: 'uppercase'
-                        }}
-                    >
-                        {status}
-                    </Label>
-                )}
-                {!uri && (
-                    // <TokenImgStyle id={tokenID} alt={name} src={'/static/cover.jpg'} />
-                    <ImgLoadingBg />
-                )}
-            </Box>
+        <Link href={`/offpage/${nftoken.tokenID}/${nftoken.URI}`} underline="none">
+            <Card >
+                {
+                    uri ?
+                        <CardMedia
+                            component='img'
+                            // image={uri}
+                            image='/static/cover.jpg'
+                            alt='nft-image'
+                            sx={{ height: 300, width: 300 }}
+                        /> :
+                        <Skeleton animation='wave' variant='rectangular' width={300} height={300} />
+                }
+                <CardContent>
+                    <Stack direction='row' alignItems='center' justifyContent='space-around' sx={{ fontSize: 25 }}>
+                        {nft.flags.tfBurnable && <Icon icon="ps:feedburner" />}
+                        {nft.flags.tfOnlyXRP && <Icon icon="cryptocurrency:xrp" />}
+                        {nft.flags.tfTrustLine && <Icon icon="codicon:workspace-trusted" />}
+                        {nft.flags.tfTransferable && <Icon icon="mdi:transit-transfer" />}
+                        {nft.flags.tfNoFlag && <Icon icon="carbon:not-available" />}
+                    </Stack>
+                </CardContent>
+                <Divider />
+                <CardActions >
+                    <IconButton aria-label='add to favorites'>
+                        <FavoriteIcon />
+                    </IconButton>
+                    <IconButton aria-label='share'>
+                        <ShareIcon />
+                    </IconButton>
+                </CardActions>
+            </Card>
+        </Link>
+        // <Card onClick={handleNFTClick} sx={{
+        //     borderRadius: 1,
+        //     maxWidth: 300,
+        //     '&:hover': {
+        //         cursor: 'pointer'
+        //     },
+        // }}>
+        //     <Box sx={{ pt: '100%', position: 'relative' }}>
+        //         {status && (
+        //             <Label
+        //                 variant='filled'
+        //                 color={(status === 'sale' && 'error') || 'info'}
+        //                 sx={{
+        //                     zIndex: 9,
+        //                     top: 16,
+        //                     right: 16,
+        //                     position: 'absolute',
+        //                     textTransform: 'uppercase'
+        //                 }}
+        //             >
+        //                 {status}
+        //             </Label>
+        //         )}
+        //         {!uri && (
+        //             <Skeleton animation='wave' variant='rectangular'  width={250} height='100%' />
+        //         )}
+        //     </Box>
 
-            <Stack spacing={2} sx={{ p: 3 }}>
-                <Stack direction="row" alignItems="center" justifyContent="space-around">
-                    {nft.flags.tfBurnable && (<LocalFireDepartmentIcon width="32" height="32" />)}
-                    {nft.flags.tfOnlyXRP && (<SpokeIcon width="32" height="32" />)}
-                    {nft.flags.tfTrustLine && (<VerifiedUserIcon width="32" height="32" />)}
-                    {nft.flags.tfTransferable && (<TransferWithinAStationIcon width="32" height="32" />)}
-                    {nft.flags.tfNoFlag && (<Box sx={{ mx: "auto", width: 32, height: 32 }} />)}
-                    {/* <ColorPreview colors={[red,blue,green]} />
-                    <Typography variant="subtitle1">
-                        <Typography
-                            component="span"
-                            variant="body1"
-                            sx={{
-                                color: 'text.disabled',
-                                textDecoration: 'line-through'
-                            }}
-                        >
-                            {priceSale && fCurrency(priceSale)}
-                        </Typography>
-                        &nbsp;
-                        {fCurrency(0)}
-                    </Typography> */}
-                </Stack>
+        //     <Stack spacing={2} sx={{ p: 3 }}>
+        //         <Stack direction='row' alignItems='center' justifyContent='space-around'>
+        //             {nft.flags.tfBurnable && (<LocalFireDepartmentIcon width='32' height='32' />)}
+        //             {nft.flags.tfOnlyXRP && (<SpokeIcon width='32' height='32' />)}
+        //             {nft.flags.tfTrustLine && (<VerifiedUserIcon width='32' height='32' />)}
+        //             {nft.flags.tfTransferable && (<TransferWithinAStationIcon width='32' height='32' />)}
+        //             {nft.flags.tfNoFlag && (<Box sx={{ mx: 'auto', width: 32, height: 32 }} />)}
+        //         </Stack>
 
-                <Link to="#" color="inherit" underline="hover" component={RouterLink}>
-                    <Typography variant="subtitle2" noWrap>
-                        {name?name:'Unknown'}
-                    </Typography>
-                </Link>
-            </Stack>
-        </Card>
+        //         {/* <Link to='#' color='inherit' underline='hover' component={RouterLink}>
+        //             <Typography variant='subtitle2' noWrap>
+        //                 {name?name:'Unknown'}
+        //             </Typography>
+        //         </Link> */}
+        //     </Stack>
+        // </Card>
     );
 }
 
@@ -133,7 +120,7 @@ export default function NftCard({ nftoken }) {
 //             <Box sx={{ pt: '100%', position: 'relative' }}>
 //                 {status && (
 //                     <Label
-//                       variant="filled"
+//                       variant='filled'
 //                       color={(status === 'sale' && 'error') || 'info'}
 //                       sx={{
 //                         zIndex: 9,
@@ -150,18 +137,18 @@ export default function NftCard({ nftoken }) {
 //             </Box>
 
 //             <Stack spacing={2} sx={{ p: 3 }}>
-//                 <Link to="#" color="inherit" underline="hover" component={RouterLink}>
-//                     <Typography variant="subtitle2" noWrap>
+//                 <Link to='#' color='inherit' underline='hover' component={RouterLink}>
+//                     <Typography variant='subtitle2' noWrap>
 //                       {name}
 //                     </Typography>
 //                 </Link>
 
-//                 <Stack direction="row" alignItems="center" justifyContent="space-between">
+//                 <Stack direction='row' alignItems='center' justifyContent='space-between'>
 //                     <ColorPreview colors={colors} />
-//                     <Typography variant="subtitle1">
+//                     <Typography variant='subtitle1'>
 //                         <Typography
-//                             component="span"
-//                             variant="body1"
+//                             component='span'
+//                             variant='body1'
 //                             sx={{
 //                                 color: 'text.disabled',
 //                                 textDecoration: 'line-through'

@@ -15,3 +15,9 @@ export const SnackbarProps = {
 export const PinataNFTCardProps = {
     nftoken: PropTypes.object
 }
+
+export const ListingsListProps = {
+    tokenID: PropTypes.string,
+    listings: PropTypes.object,
+    owner: PropTypes.string
+}
