@@ -21,12 +21,17 @@ export default function SellOffersList({ tokenID, listings, owner }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const [loading, setLoading] = useState(false)
     const account = useSelector(state => state.account.account)
+    const login = useSelector(state => state.account.login)
     const [offers, setOffers] = useState([])
     const handleCancelOffer = async (index) => {
         setLoading(true)
         try {
             const res = await cancelOffer(account.secret, index, tokenID)
-            setOffers(res.result.offers)
+            if (res.sellOffers) {
+                setOffers(res.sellOffers)
+            }
+            else // if undefined, there are no sell offers for this nft token.
+                setOffers([])
             openSnackbar('Cancel offer success:' + index.slice(0, 10) + '...', 'success')
         } catch (e) {
             // TODO: snack bar error
@@ -116,8 +121,9 @@ export default function SellOffersList({ tokenID, listings, owner }) {
                                                             // Can't accept
                                                             // when account is owner of offer
                                                             // or account is owner of nft
-                                                            account.key === offer.owner ||
-                                                            owner === account.key
+                                                            // account.key === offer.owner ||
+                                                            // owner === account.key
+                                                            !login
                                                         }
                                                         startIcon={<Icon icon='akar-icons:check' />}
                                                     >
@@ -130,7 +136,8 @@ export default function SellOffersList({ tokenID, listings, owner }) {
                                                         disabled={
                                                             // Cant cancel offer when
                                                             // account is not owner of offer
-                                                            account.key !== offer.owner
+                                                            // account.key !== offer.owner
+                                                            !login
                                                         }
                                                         startIcon={<Icon icon='iconoir:cancel' />}
                                                     >

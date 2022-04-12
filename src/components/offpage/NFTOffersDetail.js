@@ -128,12 +128,18 @@ export default function NFTOffersDetail({ tokenID, URI }) {
         try {
             const res = await getSellAndBuyOffers(tokenID)
             if (mounted) {
-                console.log(res.sellOffers.result.offers)
-                if (res.sellOffers.result.offers.length > 0) {
-                    setOwner(res.sellOffers.result.offers[0].owner)
-                    setPrice(+res.sellOffers.result.offers[0].amount / 10 ** 6)
-                    setSellOffers(res.sellOffers.result)
-                    setOffers(res.buyOffers.result)
+                if (res.sellOffers || res.buyOffers) {
+                    if (res.sellOffers) {
+                        // if it has sell offers, then the last offer owner is the owner of nft
+                        setOwner(res.sellOffers.result.offers[0].owner)
+                        setSellOffers(res.sellOffers.result)
+                        // the price of nft is from the offer
+                        setPrice(+res.sellOffers.result.offers[0].amount / 10 ** 6)
+                    }
+                    if (res.buyOffers) {// in case no sell offer
+                        setOffers(res.buyOffers.result)
+                        setOwner(getIssuer(tokenID))
+                    }
                 }
                 else setOwner(getIssuer(tokenID))
             }
@@ -203,7 +209,8 @@ export default function NFTOffersDetail({ tokenID, URI }) {
                             variant='outlined'
                             startIcon={<LocalOfferIcon />}
                             onClick={handleSellOffer}
-                            disabled={account.key !== owner || owner === null}
+                            // disabled={account.key !== owner || owner === null}
+                            disabled={!login}
                         >
                             Sell Offer
                         </LoadingButton>
@@ -213,7 +220,8 @@ export default function NFTOffersDetail({ tokenID, URI }) {
                             loadingPosition='start'
                             variant='outlined'
                             onClick={handleBuyOfferBtnClick}
-                            disabled={account.key === owner || owner === null}
+                            // disabled={account.key === owner || owner === null}
+                            disabled={!login}
                             startIcon={<AccountBalanceWalletIcon />}>
                             Buy Offer
                         </LoadingButton>

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -13,7 +13,10 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { NFTList } from 'components/nftList/NFTList';
 import { AppBarStyle } from 'components/layouts/MainLayout';
 import FilterList from 'components/nftList/FilterList';
-import Filter from 'components/common/Filter';
+import { resetFlags } from 'app/slices/filterSlice';
+import { useDispatch } from 'react-redux'
+import { resetNFTs } from 'app/slices/nftsSlice'
+
 
 const drawerWidth = 300;
 
@@ -36,23 +39,6 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   }),
 );
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(['margin', 'width'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -64,7 +50,8 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function NFTMarketplace() {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const dispatch = useDispatch()
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -73,6 +60,12 @@ export default function NFTMarketplace() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    // TODO: reset filter, nfts redux states
+    dispatch(resetFlags())
+    dispatch(resetNFTs())
+  }, [])
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -111,7 +104,7 @@ export default function NFTMarketplace() {
         anchor="left"
         open={open}
       >
-        <DrawerHeader sx={{justifyContent: 'space-between', paddingLeft: '1vw'}}>
+        <DrawerHeader sx={{ justifyContent: 'space-between', paddingLeft: '1vw' }}>
           <Typography variant="h6" noWrap component="div">
             Filter
           </Typography>

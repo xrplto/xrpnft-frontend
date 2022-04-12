@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios'
-import { useSelector, useDispatch } from 'react-redux'
-import { addNfts, increaseOffset } from 'app/slices/nftsSlice';
+import { useSelector } from 'react-redux'
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { resetNFTs } from 'app/slices/nftsSlice'
 import NftCard from './NftCard';
 import '../../App.css'
-import Page from '../Page';
 import BigNumber from 'bignumber.js';
 import { BASE_URL } from 'utils/constants';
 import { Grid } from "@mui/material";
@@ -26,59 +23,59 @@ function applySortFilter(tokens, flag) {
 export const NFTList = () => {
 
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
-    const nfts = useSelector((state) => state.nfts)
-    const nftTokens = nfts.nfts
-    const offset = nfts.offset
+    const [nfTokens, setNfTokens] = useState([])
+    const [offset, setOffset] = useState(0)
     const [hasMore, setHasMore] = useState(true)
-    const flags = useSelector((state) => state.filter)
-    const dispatch = useDispatch()
-    const [loaded, setIsLoaded] = useState(false);
+    const flags = useSelector((state) => state.filter.flag)
 
-    const fetchImages = () => {
+    const fetchImages = (nfTokensParam, offsetParam) => {
+        const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
+        const _offset = offsetParam ? offsetParam: offset
         axios
-            .get(`${BASE_URL}/nfts?page=${offset}&limit=100`)
+            .get(`${BASE_URL}/nfts?page=${_offset}&limit=20&flag=${flags}`)
             .then(res => {
-                setIsLoaded(true);
                 if (res.data.nfts.length < 10) {
                     setHasMore(false)
                 }
-                dispatch(addNfts(res.data.nfts))
-                dispatch(increaseOffset())
+                setNfTokens([..._nfTokens, ...res.data.nfts])
+                openSnackbar('Fetch:' + _offset, 'success')
+                setOffset(_offset + 1)
             });
     };
 
-    const fetchNFTokens = async () => {
-        try {
-            // const res = await axios.get(`${BASE_URL}/nfts/${offset}`)
-            const res = await axios.get(`${BASE_URL}/nfts?page=${offset}&limit=100`)
-            setIsLoaded(true);
-            if (res.data.nfts.length < 10) // if this is the last page, no more request to server
-                setHasMore(false)
-            dispatch(addNfts(res.data.nfts))
-            dispatch(increaseOffset())
-            openSnackbar('Fetch:' + offset, 'success')
-        } catch (e) {
-            // use snack bar here
-            openSnackbar(e.message, 'error')
-        }
+    // const fetchNFTokens = async () => {
+    //     try {
+    //         // const res = await axios.get(`${BASE_URL}/nfts/${offset}`)
+    //         const res = await axios.get(`${BASE_URL}/nfts?page=${offset}&limit=20&flag=${flags}`)
+    //         // setIsLoaded(true);
+    //         if (res.data.nfts.length < 10) // if this is the last page, no more request to server
+    //             setHasMore(false)
+    //         dispatch(addNfts(res.data.nfts))
+    //         dispatch(increaseOffset())
+    //         openSnackbar('Fetch:' + offset, 'success')
+    //     } catch (e) {
+    //         // use snack bar here
+    //         openSnackbar(e.message, 'error')
+    //     }
+    // }
+
+    const reset = () => {
+        // setNfTokens([])
+        // setOffset(0)
+        fetchImages([], 0)
     }
-
     useEffect(() => {
-        fetchNFTokens();
-        return () => {
-            dispatch(resetNFTs())
-        }
-    }, []);
+        reset()
+    }, [flags]);
 
-    // useEffect(() => {
-    // }, []);
-    const filteredTokens = applySortFilter(nftTokens, flags.flag);
+    const filteredTokens = applySortFilter(nfTokens, flags);
     return (
-        <Page title="XRPL NFT Marketplace">
+        <div>
             <InfiniteScroll
                 dataLength={filteredTokens.length}
-                next={() => fetchNFTokens()}
+                next={() => fetchImages()}
                 hasMore={hasMore}
+                loader={<p>loading...</p>}
             >
                 <Grid container spacing={2} justifyContent='center'>
                     {
@@ -92,6 +89,6 @@ export const NFTList = () => {
                 </Grid>
             </InfiniteScroll>
             <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
-        </Page>
+        </div>
     );
 };

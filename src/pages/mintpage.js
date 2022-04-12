@@ -36,7 +36,6 @@ export default function Minting() {
   const [nftName, setNftName] = useState('')
   const [extLink, setExtLink] = useState('xrpnft.com')
   const [description, setDescription] = useState('')
-  const [tokenUrl, seTokenUrl] = useState('')
   const navigate = useNavigate()
 
   const handleClose = () => {
@@ -86,7 +85,7 @@ export default function Minting() {
     if (!login)
       navigate('/');
     testPinata()
-  }, [])
+  }, [login])
   return (
     <Page title='Create - XRPL NFT'>
       <Backdrop
@@ -155,7 +154,6 @@ export default function Minting() {
             }} />
         </Stack>
         <Stack>
-          <TypoDescription description={'Metadata on IPFS: ' + tokenUrl} />
           <LoadingButton
             loading={loading}
             loadingPosition='start'
