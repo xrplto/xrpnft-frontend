@@ -42,7 +42,7 @@ export const ACCOUNTS = [
         secret: "shv9PZhrNpoJVeF9kbnjra94FKduX",
     },
 ];
-export const TOP_BAR_HEIGHT_DESKTOP = 60
+export const TOP_BAR_HEIGHT_DESKTOP = 50
 export const BASIC_COLOR = '#00AB55'
 
 export const TOKEN_FLAGS = [

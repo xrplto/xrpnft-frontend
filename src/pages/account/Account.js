@@ -19,27 +19,26 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
   justifyContent: 'flex-end',
 }));
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: `-${drawerWidth}px`,
-    ...(open && {
-      transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginLeft: 0,
-    }),
-  }),
-);
+// const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
+//   ({ theme, open }) => ({
+//     flexGrow: 1,
+//     padding: theme.spacing(3),
+//     transition: theme.transitions.create('margin', {
+//       easing: theme.transitions.easing.sharp,
+//       duration: theme.transitions.duration.leavingScreen,
+//     }),
+//     marginLeft: `-${drawerWidth}px`,
+//     ...(open && {
+//       transition: theme.transitions.create('margin', {
+//         easing: theme.transitions.easing.easeOut,
+//         duration: theme.transitions.duration.enteringScreen,
+//       }),
+//       marginLeft: 0,
+//     }),
+//   }),
+// );
 
 export default function Account(props) {
-  const [loading, setLoading] = useState(false);
   const login = useSelector(state => state.account.login)
   const navigate = useNavigate()
 
@@ -49,17 +48,9 @@ export default function Account(props) {
   })
   return (
     <Page title="My NFTs">
-      <Backdrop
-        sx={{ color: "#000", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
-        <HashLoader color={"#00AB55"} size={50} />
-      </Backdrop>
-      <Container maxWidth="lg" >
-        <Main open={true}>
-          <AccountNfts />
-        </Main>
-      </Container>
+      {/* <Main open={true}> */}
+      <AccountNfts />
+      {/* </Main> */}
     </Page>
   );
 }

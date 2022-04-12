@@ -3,32 +3,18 @@ import { useContext } from 'react'
 import Context from '../../Context'
 import { Icon } from '@iconify/react';
 import AddIcon from '@mui/icons-material/Add';
-import { styled } from '@mui/material/styles';
-import { Button, Stack, Toolbar, IconButton, Box } from '@mui/material';
+import { Button, Stack, Toolbar, IconButton, Box, Link, Container } from '@mui/material';
 import AccountPopover from './AccountPopover';
-import { NavLink } from 'react-router-dom';
 import Logo from '../Logo';
-import { Link as RouterLink/*, useLocation*/ } from 'react-router-dom';
+// import { Link as RouterLink/*, useLocation*/ } from 'react-router-dom';
 import baselineBrightnessHigh from '@iconify/icons-ic/baseline-brightness-high';
 import baselineBrightness4 from '@iconify/icons-ic/baseline-brightness-4';
-import menu2Fill from '@iconify/icons-eva/menu-2-fill';
 import { useSelector, useDispatch } from 'react-redux'
 import { resetAccount } from 'app/slices/accountSlice';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import { TOP_BAR_HEIGHT_DESKTOP } from 'utils/constants';
 import { resetIpfsState } from 'app/slices/ipfSlice'
 import MenuIcon from '@mui/icons-material/Menu';
-
-
-const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
-    minHeight: TOP_BAR_HEIGHT_DESKTOP
-}));
-
-const StyledNavLink = styled(NavLink)(({ theme }) => ({
-    textDecoration: 'none'
-}));
 
 export default function Navbar({ onOpenSidebar }) {
     const { toggleThisTheme, isDarkMode } = useContext(Context);
@@ -43,42 +29,45 @@ export default function Navbar({ onOpenSidebar }) {
     };
 
     return (
-        <ToolbarStyle>
+        <Toolbar>
             <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
                 <MenuIcon />
             </IconButton>
-            <Box component={RouterLink} to="/" sx={{ px: 2.5, display: 'inline-flex' }}>
+            <Box to="/" sx={{ px: 2.5, display: 'inline-flex' }}>
                 <Logo />
             </Box>
             <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ flexGrow: 1 }} />
-            {
-                login ?
-                    <>
-                        <StyledNavLink to='/create' sx={{ textDecoration: 'none' }}>
-                            <Button startIcon={<AddIcon />}>Create</Button>
-                        </StyledNavLink>
-                        <StyledNavLink to='/account' sx={{ textDecoration: 'none' }}>
-                            <Button startIcon={<Icon icon='mdi:postage-stamp' />}>My NFTs</Button>
-                        </StyledNavLink>
-                        <StyledNavLink to='/'>
-                            <Button
-                                onClick={handleDisconnect}
-                                endIcon={<LogoutIcon />}
-                            >Connected: {key.slice(0, 4) + '...' + key.slice(-4)}
-                            </Button>
-                        </StyledNavLink>
-                    </>
-                    :
-                    <StyledNavLink to='/login'>
-                        <Button
-                            startIcon={<LoginIcon />}
-                        >Log In
-                        </Button>
-                    </StyledNavLink>
-            }
-
             <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
+                <Container sx={{gap: 5, display:'flex'}}>
+                    {
+                        login ?
+                            <>
+                                {/* <Link href='/create' underline='none'>
+                            <Button startIcon={<AddIcon />}>Create</Button>
+                        </Link> */}
+                                <Link href='/create' underline='none' sx={{ color: 'text.primary' }}>
+                                    {/* <AddIcon /> */}
+                                    Create
+                                </Link>
+                                <Link href='/account' underline='none' sx={{ color: 'text.primary' }}>
+                                    {/* <Button startIcon={<Icon icon='mdi:postage-stamp' />}>My NFTs</Button> */}
+                                    My NFTs
+                                </Link>
+                                <Link href='/' underline='none'
+                                    component='button'
+                                    onClick={handleDisconnect}
+                                    // endIcon={<LogoutIcon />}
+                                    sx={{ color: 'text.primary' }}
+                                >
+                                    Connected: {key.slice(0, 4) + '...' + key.slice(-4)}
+                                </Link>
+                            </>
+                            :
+                            <Link href='/login' underline='none' sx={{ color: 'text.primary' }}>
+                                Log In
+                            </Link>
+                    }
+                </Container>
                 <AccountPopover />
                 <IconButton onClick={() => { toggleThisTheme('isDarkMode') }} >
                     {isDarkMode ? (
@@ -88,6 +77,6 @@ export default function Navbar({ onOpenSidebar }) {
                     )}
                 </IconButton>
             </Stack>
-        </ToolbarStyle>
+        </Toolbar>
     );
 }

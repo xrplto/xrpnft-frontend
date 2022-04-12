@@ -64,16 +64,16 @@ export default function App() {
                 setLoading
             }}
         >
-            <Backdrop
+            {/* <Backdrop
                 sx={{ color: "#000", zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={loading}
             >
                 <CircleLoader color={"#00AB55"} size={50} />
-            </Backdrop>
+            </Backdrop> */}
             <ThemeConfig>
-              <ScrollToTop />
-            <GlobalStyles />
-            <Router />
+                {/* <ScrollToTop /> */}
+                {/* <GlobalStyles /> */}
+                <Router />
             </ThemeConfig>
         </Context.Provider>
     );

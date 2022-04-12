@@ -28,6 +28,7 @@ export default function AccountNfts() {
         try {
             const res = await axios.get(`${BASE_URL}/account/nfts/${account.key}`)
             setUserNfts(res.data.nfts)
+            console.log(res.data.nfts)
         } catch (e) {
             console.log('Error fetching account NFTs', e)
         }
@@ -50,7 +51,7 @@ export default function AccountNfts() {
             >
                 <FadeLoader color={BASIC_COLOR} size={50} />
             </Backdrop>
-            <DrawerHeader />
+            {/* <DrawerHeader /> */}
             <p>This account has {userNfts.length} items</p>
             {
                 userNfts.length > 0 && (
@@ -60,7 +61,7 @@ export default function AccountNfts() {
                                 <Grid item xs={12} sm={6} md={3} lg={3}
                                     key={nft.TokenID}
                                 >
-                                    <PinataNFTCard nftoken={{ tokenID: nft.TokenID, URI: nft.URI }} key={nft.TokenID} />
+                                    <PinataNFTCard nftoken={{ tid: nft.TokenID, uri: nft.URI }} key={nft.TokenID} />
                                 </Grid>
                             ))
                         }

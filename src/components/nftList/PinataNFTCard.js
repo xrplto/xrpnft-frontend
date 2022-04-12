@@ -15,14 +15,14 @@ import ShareIcon from '@mui/icons-material/Share';
 PinataNFTCard.propTypes = PinataNFTCardProps
 
 export default function PinataNFTCard({ nftoken }) {
-    const { tokenID, URI } = nftoken;
+    const { tid, uri } = nftoken;
     const [imgUrl, setImgUrl] = useState('')
     const [loading, setLoading] = useState(false)
-    const nft = parsePinataNFT(tokenID, URI);
+    const nft = parsePinataNFT(tid, uri);
 
     const getNFTMetadata = async () => {
         setLoading(true)
-        let metadataUrl = parsePinataNFTUrl(URI);
+        let metadataUrl = parsePinataNFTUrl(uri);
         if (metadataUrl.slice(0, 10) === 'xrpnft.com') metadataUrl = metadataUrl.slice(11)
         try {
             const res = await axios.get(PINATA_GATEWAY + metadataUrl)
@@ -39,7 +39,7 @@ export default function PinataNFTCard({ nftoken }) {
     }, [])
 
     return (
-        <Link href={`/offpage/${nftoken.tokenID}/${nftoken.URI}`} underline='none'>
+        <Link href={`/offpage/${nftoken.tid}/${nftoken.uri}`} underline='none'>
             <Card >
                 {
                     !loading

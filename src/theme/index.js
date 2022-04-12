@@ -23,13 +23,20 @@ export default function ThemeConfig({ children }) {
     const palette = isDarkMode ? palette_dark : palette_light;
 
     const themeOptions = {
-        palette: { ...palette, mode: isDarkMode ? 'dark' : 'light' },
+        palette: isDarkMode ? {
+            mode: 'dark',
+            ...palette
+        } : {
+            mode: 'light',
+            ...palette
+        },
+        // palette: palette,
         shape,
         typography,
-        shadows,
+        // shadows,
         customShadows
     };
-    
+
     const theme = createTheme(themeOptions);
     theme.components = componentsOverride(theme);
 

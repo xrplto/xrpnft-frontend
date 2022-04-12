@@ -5,14 +5,14 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import '../../App.css'
 import BigNumber from 'bignumber.js';
 import { BASE_URL } from 'utils/constants';
-import { Container, Grid } from "@mui/material";
+import { Box, Container, Grid } from "@mui/material";
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
 import PinataNFTCard from './PinataNFTCard';
 
 
 function getFlag(nft) {
-    const flags = new BigNumber(nft.tokenID.slice(0, 4), 16).toNumber();
+    const flags = new BigNumber(nft.tid.slice(0, 4), 16).toNumber();
     return flags;
 }
 
@@ -56,7 +56,7 @@ export const XRPNFTList = () => {
 
     const filteredTokens = applySortFilter(nfTokens, flags);
     return (
-        <Container sx={{ mt: 1 }} maxWidth={1200}>
+        <Box sx={{ mt: 1 }}>
             <InfiniteScroll
                 dataLength={filteredTokens.length}
                 next={() => fetchImages()}
@@ -66,7 +66,7 @@ export const XRPNFTList = () => {
                 <Grid container spacing={2} justifyContent='center'>
                     {
                         filteredTokens.map((nft) => (
-                            <Grid item key={nft.tokenID}
+                            <Grid item key={nft.tid}
                             >
                                 <PinataNFTCard nftoken={nft} />
                             </Grid>
@@ -75,6 +75,6 @@ export const XRPNFTList = () => {
                 </Grid>
             </InfiniteScroll>
             <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
-        </Container>
+        </Box>
     );
 };

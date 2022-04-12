@@ -31,9 +31,15 @@ const GREY = {
 const PRIMARY = {
     lighter: '#C8FACD',
     light: '#5BE584',
-    main: '#00AB55',
+    main: '#dddddd',
     dark: '#007B55',
     darker: '#005249',
+    contrastText: '#fff'
+};
+const PRIMARY_DARK = {
+    light: '#5BE584',
+    main: '#efefef',
+    dark: '#007B55',
     contrastText: '#fff'
 };
 const SECONDARY = {
@@ -94,7 +100,7 @@ const CHART_COLORS = {
 };
 
 export const palette_light = {
-    common: { black: '#000', white: '#fff' },
+    // common: { black: '#000', white: '#fff' },
     primary: { ...PRIMARY },
     secondary: { ...SECONDARY },
     info: { ...INFO },
@@ -105,8 +111,8 @@ export const palette_light = {
     gradients: GRADIENTS,
     chart: CHART_COLORS,
     divider: GREY[500_24],
-    text: { primary: GREY[800], secondary: GREY[600], disabled: GREY[500] },
-    background: { paper: GREY[200], default: GREY[200], neutral: GREY[300] },
+    // text: { primary: GREY[800], secondary: GREY[600], disabled: GREY[500] },
+    // background: { paper: GREY[200], default: GREY[200], neutral: GREY[300] },
     action: {
         active: GREY[600],
         hover: GREY[500_8],
@@ -120,8 +126,8 @@ export const palette_light = {
 };
 
 export const palette_dark = {
-    common: { black: '#000', white: '#fff' },
-    primary: { ...PRIMARY },
+    // common: { black: '#000', white: '#fff' },
+    primary: { ...PRIMARY_DARK },
     secondary: { ...SECONDARY },
     info: { ...INFO },
     success: { ...SUCCESS },
@@ -132,7 +138,7 @@ export const palette_dark = {
     chart: CHART_COLORS,
     divider: GREY[500_24],
     text: { primary: GREY[300], secondary: GREY[100], disabled: GREY[500] },
-    background: { paper: '#191F3A', default: '#0c1023', neutral: GREY[200] },
+    background: { paper: '#04111d', default: '#0c1023', neutral: GREY[200] },
     action: {
         active: GREY[600],
         hover: GREY[500_8],

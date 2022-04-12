@@ -160,7 +160,7 @@ export default function NFTOffersDetail({ tokenID, URI }) {
     return (
         <div>
             <Stack spacing={2} marginTop={1}>
-                <Link underline='none'>
+                <Link underline='none' color={'text.primary'}>
                     NFTKings
                 </Link>
                 <Typography variant='subtitle' gutterBottom fontSize={30} overflow='hidden' fontWeight={600}>
@@ -172,7 +172,7 @@ export default function NFTOffersDetail({ tokenID, URI }) {
                     </Typography>
                     {
                         !pageLoading ?
-                            <Link href='#' underline='none'>
+                            <Link href='#' underline='none' color={'text.primary'}>
                                 {owner}
                             </Link> :
                             <Skeleton animation='wave' height={40} width='100%' />
