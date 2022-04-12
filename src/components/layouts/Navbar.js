@@ -19,6 +19,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { TOP_BAR_HEIGHT_DESKTOP } from 'utils/constants';
 import { resetIpfsState } from 'app/slices/ipfSlice'
+import MenuIcon from '@mui/icons-material/Menu';
 
 
 const ToolbarStyle = styled(Toolbar)(({ theme }) => ({
@@ -44,7 +45,7 @@ export default function Navbar({ onOpenSidebar }) {
     return (
         <ToolbarStyle>
             <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
-                <Icon icon={menu2Fill} />
+                <MenuIcon />
             </IconButton>
             <Box component={RouterLink} to="/" sx={{ px: 2.5, display: 'inline-flex' }}>
                 <Logo />
@@ -64,7 +65,7 @@ export default function Navbar({ onOpenSidebar }) {
                             <Button
                                 onClick={handleDisconnect}
                                 endIcon={<LogoutIcon />}
-                            >Connected: {key.slice(0,4) + '...' + key.slice(-4)}
+                            >Connected: {key.slice(0, 4) + '...' + key.slice(-4)}
                             </Button>
                         </StyledNavLink>
                     </>

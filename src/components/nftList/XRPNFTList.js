@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import InfiniteScroll from 'react-infinite-scroll-component';
-import NftCard from './NftCard';
 import '../../App.css'
 import BigNumber from 'bignumber.js';
 import { BASE_URL } from 'utils/constants';
-import { Grid } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
+import PinataNFTCard from './PinataNFTCard';
 
 
 function getFlag(nft) {
@@ -20,7 +20,7 @@ function applySortFilter(tokens, flag) {
     return tokens.filter(nft => (getFlag(nft) & flag) === flag);
 }
 
-export const NFTList = () => {
+export const XRPNFTList = () => {
 
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const [nfTokens, setNfTokens] = useState([])
@@ -31,8 +31,9 @@ export const NFTList = () => {
     const fetchImages = (nfTokensParam, offsetParam) => {
         const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
         const _offset = offsetParam === 0 ? offsetParam : offset
+        console.log(_nfTokens, _offset)
         axios
-            .get(`${BASE_URL}/nfts?page=${_offset}&limit=20&flag=${flags}&self=false`)
+            .get(`${BASE_URL}/nfts?page=${_offset}&limit=20&flag=${flags}&self=true`)
             .then(res => {
                 if (res.data.nfts.length < 10) {
                     setHasMore(false)
@@ -41,23 +42,8 @@ export const NFTList = () => {
                 openSnackbar('Fetch:' + _offset, 'success')
                 setOffset(_offset + 1)
             });
+        console.log(_nfTokens, _offset)
     };
-
-    // const fetchNFTokens = async () => {
-    //     try {
-    //         // const res = await axios.get(`${BASE_URL}/nfts/${offset}`)
-    //         const res = await axios.get(`${BASE_URL}/nfts?page=${offset}&limit=20&flag=${flags}`)
-    //         // setIsLoaded(true);
-    //         if (res.data.nfts.length < 10) // if this is the last page, no more request to server
-    //             setHasMore(false)
-    //         dispatch(addNfts(res.data.nfts))
-    //         dispatch(increaseOffset())
-    //         openSnackbar('Fetch:' + offset, 'success')
-    //     } catch (e) {
-    //         // use snack bar here
-    //         openSnackbar(e.message, 'error')
-    //     }
-    // }
 
     const reset = () => {
         setNfTokens([])
@@ -65,13 +51,12 @@ export const NFTList = () => {
         fetchImages([], 0)
     }
     useEffect(() => {
-        console.log('requesting...')
         reset()
     }, [flags]);
 
     const filteredTokens = applySortFilter(nfTokens, flags);
     return (
-        <div>
+        <Container sx={{ mt: 1 }} maxWidth={1200}>
             <InfiniteScroll
                 dataLength={filteredTokens.length}
                 next={() => fetchImages()}
@@ -83,13 +68,13 @@ export const NFTList = () => {
                         filteredTokens.map((nft) => (
                             <Grid item key={nft.tokenID}
                             >
-                                <NftCard nftoken={nft} />
+                                <PinataNFTCard nftoken={nft} />
                             </Grid>
                         ))
                     }
                 </Grid>
             </InfiniteScroll>
             <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
-        </div>
+        </Container>
     );
 };

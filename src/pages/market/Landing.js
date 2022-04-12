@@ -11,7 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { NFTList } from 'components/nftList/NFTList';
-import { AppBarStyle } from 'components/layouts/MainLayout';
+import { StyledAppBar } from 'components/layouts/MainLayout';
 import FilterList from 'components/nftList/FilterList';
 import { resetFlags } from 'app/slices/filterSlice';
 import { useDispatch } from 'react-redux'
@@ -71,7 +71,7 @@ export default function NFTMarketplace() {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       {/* <Filter /> */}
-      <AppBarStyle position="fixed" open={open} sx={!open ? { top: 'auto', width: 'auto', height: '100%', right: 'auto' } : { display: 'none' }} >
+      <StyledAppBar position="fixed" open={open} sx={!open ? { top: 'auto', width: 'auto', height: '100%', right: 'auto' } : { display: 'none' }} >
         <Toolbar sx={open ? {} : { '&.MuiToolbar-root': { padding: 0 } }}>
           <IconButton
             color="inherit"
@@ -83,7 +83,7 @@ export default function NFTMarketplace() {
             <ChevronRightIcon />
           </IconButton>
         </Toolbar>
-      </AppBarStyle>
+      </StyledAppBar>
       <Drawer
         sx={{
           width: drawerWidth,

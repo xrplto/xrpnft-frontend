@@ -1,4 +1,4 @@
-import { Card, Stack, Alert } from '@mui/material';
+import { Card, Stack } from '@mui/material';
 import styled from 'styled-components';
 import { useState, useRef } from 'react'
 import ImageIcon from '@mui/icons-material/Image';
@@ -18,7 +18,7 @@ import { useSnackbar } from 'hooks/useSnackbar';
 
 export const NFTUploader = () => {
 
-    const {isOpen, msg, variant, openSnackbar, closeSnackbar} = useSnackbar()
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const fileRef = useRef();
     const [fileUrl, setFileUrl] = useState(null)
     const dispatch = useDispatch()
@@ -60,10 +60,10 @@ export const NFTUploader = () => {
                     }
                 )
                 dispatch(setPinnedFileHash(response.data.IpfsHash))
-                openSnackbar('IPFSHash: '+ response.data.IpfsHash , 'success')
+                openSnackbar('IPFSHash: ' + response.data.IpfsHash, 'success')
             } catch (e) {
                 console.log(e)
-                openSnackbar(e.message , 'error')
+                openSnackbar(e.message, 'error')
             }
         }
         setLoading(false)

@@ -22,11 +22,11 @@ export default function PinataNFTCard({ nftoken }) {
 
     const getNFTMetadata = async () => {
         setLoading(true)
-        const metadataUrl = parsePinataNFTUrl(nftoken.URI);
+        let metadataUrl = parsePinataNFTUrl(URI);
+        if (metadataUrl.slice(0, 10) === 'xrpnft.com') metadataUrl = metadataUrl.slice(11)
         try {
             const res = await axios.get(PINATA_GATEWAY + metadataUrl)
-            setImgUrl(PINATA_GATEWAY + res.data.fileUrl)
-            console.log('requestURL: ', PINATA_GATEWAY + metadataUrl, 'metadataURL', res)
+            setImgUrl(PINATA_GATEWAY + res.data.fileUrl.slice(11))
         } catch (e) {
             console.log(e)
         }

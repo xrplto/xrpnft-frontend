@@ -1,46 +1,40 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux'
 import React from 'react';
-import { Alert, AlertTitle } from '@mui/material';
 import {
-  Backdrop,
   Container,
   Divider,
   Stack,
   TextField,
 } from '@mui/material';
-import { HashLoader } from 'react-spinners';
 import Page from 'components/Page';
 import { Heading } from 'components/atoms/Heading';
 import { NFTUploader } from 'components/miniting/NFTUploader';
 import { Caption } from 'components/atoms/Caption';
 import { TypoDescription } from 'components/atoms/Description';
-import { SUPPORTED_FILE_TYPES } from 'utils/constants';
+import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN } from 'utils/constants';
 import { LoadingButton } from '@mui/lab';
 import SendIcon from '@mui/icons-material/Send';
 import { mintToken } from 'utils/tokenActions'
 import { testPinata, pinJsonToIPFS } from 'utils/pinata'
 import { useNavigate } from 'react-router-dom'
-import BaseDialog from 'components/dialog/BaseDialog';
 import TokenFlagsForm from 'components/miniting/TokenFlagsForm';
+import XSnackbar from 'components/common/Snackbar';
+import { useSnackbar } from 'hooks/useSnackbar';
 
 export default function Minting() {
 
-  const [result, setResult] = useState(null)
+  const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
   const account = useSelector(state => state.account.account)
   const pinnedFileHash = useSelector(state => state.ipfs.pinnedFileHash)
   const login = useSelector(state => state.account.login)
   const flags = useSelector(state => state.ipfs.flags)
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [nftName, setNftName] = useState('')
   const [extLink, setExtLink] = useState('xrpnft.com')
-  const [description, setDescription] = useState('')
+  const [description, setDescription] = useState('You can create an NFTokenOffer to sell the NFToken, creating an entry to the XRP Ledger. Another account can accept the NFTokenOffer, transferring the NFToken to the accepting account’s NFTokenPage.')
   const navigate = useNavigate()
 
-  const handleClose = () => {
-    setOpen(false);
-  };
   const handleNameFieldChange = (e) => {
     setNftName(e.target.value)
   }
@@ -57,7 +51,7 @@ export default function Minting() {
     setLoading(true)
 
     const metadata = {
-      fileUrl: pinnedFileHash,
+      fileUrl: XRPNFT_DOMAIN + pinnedFileHash,
       name: nftName,
       type: 'image',
       description: description,
@@ -66,17 +60,19 @@ export default function Minting() {
 
     const res = await pinJsonToIPFS(metadata)
     if (res.success) {
-      const nftMetadataUrl = res.response.IpfsHash
+      const nftMetadataUrl = XRPNFT_DOMAIN + res.response.IpfsHash
       try {
         const nfts = await mintToken(account.secret, nftMetadataUrl, flags)
-        setResult(nfts)
-        setOpen(true)
+        openSnackbar(nfts.result.account, 'success')
         // TODO: reset ipfs slice when minting succeed
+
       } catch (e) {
         console.log('Error on Minting: ', e)
+        openSnackbar(e.message, 'error')
       }
     } else {
       console.log('Json Not pinned to Pinata.')
+      openSnackbar('Json Not pinned to Pinata.', 'error')
     }
     setLoading(false)
   }
@@ -88,12 +84,6 @@ export default function Minting() {
   }, [login])
   return (
     <Page title='Create - XRPL NFT'>
-      <Backdrop
-        sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
-        <HashLoader color={'#00AB55'} size={50} />
-      </Backdrop>
       <Container maxWidth='md' sx={{ marginTop: '3vh' }}>
         <Stack spacing={2} marginBottom={3}>
           <Heading title={'Create New Item'} />
@@ -133,7 +123,6 @@ export default function Minting() {
         </Stack>
         <Stack spacing={2} marginBottom={3}>
           <Caption caption={'Description'} />
-          {/* <Divider /> */}
           <TypoDescription description={'The description will be included on the item\'s detail page underneath its image. Markdown syntax is supported.'} />
           <TextField
             placeholder='provide a detailed description of your item'
@@ -164,24 +153,8 @@ export default function Minting() {
             Create
           </LoadingButton>
           <Divider />
-          <BaseDialog
-            close={handleClose}
-            isOpen={open}
-            render={
-              result === null
-                ? <Alert severity="error" variant="outlined">
-                  <AlertTitle>Error</AlertTitle>
-                  Please check your address
-                </Alert>
-                : <Alert
-                  variant="outlined"
-                  severity="success">
-                  <AlertTitle>{result.result.account}</AlertTitle>
-                  Minting successful!
-                </Alert>
-            }
-          />
         </Stack>
+        <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
       </Container>
     </Page >
   );

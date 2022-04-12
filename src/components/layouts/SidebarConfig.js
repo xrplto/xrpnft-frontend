@@ -23,6 +23,11 @@ const sidebarConfig = [
     icon: getIcon(spinnerIcon)
   },
   {
+    title: 'LedgerNFTs',
+    path: '/ledger',
+    icon: getIcon(mint)
+  },
+  {
     title: 'Progress',
     path: '/progress',
     icon: getIcon(progressBar)
