@@ -39,16 +39,17 @@ const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 // ----------------------------------------------------------------------
 
 export default function MainLayout() {
-    const [open, setOpen] = useState(false);
+    // const [open, setOpen] = useState(false);
 
     return (
         <Box>
             <AppBar>
                 {/* <Topbar /> */}
-                <Navbar onOpenSidebar={() => setOpen(true)} />
+                {/* <Navbar onOpenSidebar={() => setOpen(true)} /> */}
+                <Navbar />
             </AppBar>
             <Offset />
-            <Sidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+            {/* <Sidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} /> */}
             <Container  maxWidth="lg">
                 <Outlet />
             </Container>

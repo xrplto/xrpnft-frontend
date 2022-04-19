@@ -406,6 +406,7 @@ export const getSellOffers = async (tokenId) => {
 	await client.connect()
 	console.log("Connected to Sandbox")
 	console.log("***Sell Offers***")
+	console.log('tokenID:', tokenId)
 	let nftSellOffers
 	try {
 		nftSellOffers = await client.request({
