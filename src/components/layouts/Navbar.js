@@ -75,7 +75,7 @@ export default function Navbar({ onOpenSidebar }) {
     };
 
     return (
-        <Toolbar sx={{gap: 5}}>
+        <Toolbar sx={{ gap: 5 }}>
             {/* <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
                 <MenuIcon />
             </IconButton> */}
@@ -94,46 +94,36 @@ export default function Navbar({ onOpenSidebar }) {
                 />
             </Search>
             <DropdownExpore />
-            {/* <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}> */}
-                {/* <Container sx={{ gap: 5, display: 'flex' }}> */}
-                    {
-                        login ?
-                            <>
-                                {/* <Link href='/create' underline='none'>
+            {
+                login ?
+                    <>
+                        <Link href='/create' underline='none'>
                             <Button startIcon={<AddIcon />}>Create</Button>
-                        </Link> */}
-                                <Link href='/create' underline='none' sx={{ color: 'text.primary' }}>
-                                    {/* <AddIcon /> */}
-                                    Create
-                                </Link>
-                                <Link href='/account' underline='none' sx={{ color: 'text.primary' }}>
-                                    {/* <Button startIcon={<Icon icon='mdi:postage-stamp' />}>My NFTs</Button> */}
-                                    My NFTs
-                                </Link>
-                                <Link href='/' underline='none'
-                                    component='button'
-                                    onClick={handleDisconnect}
-                                    // endIcon={<LogoutIcon />}
-                                    sx={{ color: 'text.primary' }}
-                                >
-                                    Connected: {key.slice(0, 4) + '...' + key.slice(-4)}
-                                </Link>
-                            </>
-                            :
-                            <Link href='/login' underline='none' sx={{ color: 'text.primary' }}>
-                                Log In
-                            </Link>
-                    }
-                {/* </Container> */}
-                <AccountPopover />
-                <IconButton onClick={() => { toggleThisTheme('isDarkMode') }} >
-                    {isDarkMode ? (
-                        <Icon icon={baselineBrightnessHigh} />
-                    ) : (
-                        <Icon icon={baselineBrightness4} />
-                    )}
-                </IconButton>
-            {/* </Stack> */}
+                        </Link>
+                        <Link href='/account' underline='none' >
+                            <Button startIcon={<Icon icon="ic:round-account-balance-wallet" />}>My NFTs</Button>
+                        </Link>
+                        <Link href='/' underline='none'
+                            component='button'
+                        >
+                            <Button endIcon={<LogoutIcon />} onClick={handleDisconnect}>
+                                {key.slice(0, 4) + '...' + key.slice(-2)}
+                            </Button>
+                        </Link>
+                    </>
+                    :
+                    <Link href='/login' underline='none' component={'button'}>
+                        Log In
+                    </Link>
+            }
+            <AccountPopover />
+            <IconButton onClick={() => { toggleThisTheme('isDarkMode') }} >
+                {isDarkMode ? (
+                    <Icon icon={baselineBrightnessHigh} />
+                ) : (
+                    <Icon icon={baselineBrightness4} />
+                )}
+            </IconButton>
         </Toolbar>
     );
 }

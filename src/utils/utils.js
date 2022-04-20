@@ -1,29 +1,30 @@
 import { format, formatDistanceToNow } from 'date-fns';
 import { replace } from 'lodash';
 import numeral from 'numeral';
+const xrpl = require("xrpl");
 const AddressCodec = require('ripple-address-codec');
-const {BigNumber} = require('bignumber.js');
+const { BigNumber } = require('bignumber.js');
 
 // ----------------------------------------------------------------------
-function extractUrisFromString(uris_string){
+function extractUrisFromString(uris_string) {
     var uris_obj = {};
     try {
         const uri_lines = uris_string.match(/[^\r\n]+/g);
         if (!uri_lines) return uris_obj;
-        for (let i = 0; i < uri_lines.length; i++){ //for each line of the URI
+        for (let i = 0; i < uri_lines.length; i++) { //for each line of the URI
             let uri_line = uri_lines[i];
             let uri_fieldname_length = uri_line.indexOf(':'); //match the first ':'
-            if(uri_fieldname_length < 1){
+            if (uri_fieldname_length < 1) {
                 continue;
             }
             uris_obj[uri_line.substring(0, uri_fieldname_length)] = uri_line.substring(uri_fieldname_length + 1, uri_line.length);
         }
-    } catch(err) {
+    } catch (err) {
     }
     return uris_obj;
 }
 
-export function parseURI(nftoken_uri_hex){
+export function parseURI(nftoken_uri_hex) {
     if (!nftoken_uri_hex) return null;
 
     var uris_obj = {};
@@ -39,11 +40,11 @@ export function parseURI(nftoken_uri_hex){
                 let remaining_key = key.substring(2, key.length);
                 let first_key_underscore_index = remaining_key.indexOf('_');
                 let value_length = Number(remaining_key.substring(0, first_key_underscore_index));
-                if(isNaN(value_length) || value_length < 0) {
+                if (isNaN(value_length) || value_length < 0) {
                     throw new Error("Malformed URI");
                 }
 
-                let value = remaining_nftoken_uri_hex.substring(first_colon_index + 2 , first_colon_index + 2 + value_length);
+                let value = remaining_nftoken_uri_hex.substring(first_colon_index + 2, first_colon_index + 2 + value_length);
 
                 uris_obj[key] = value;
                 remaining_nftoken_uri_hex = remaining_nftoken_uri_hex.substring(
@@ -74,12 +75,38 @@ export function parseURI(nftoken_uri_hex){
                 );
             }
         }
-    } catch(err) {
+    } catch (err) {
 
     }
     if (isObjectEmpty(uris_obj))
         uris_obj = null;
     return uris_obj;
+}
+
+export const parseNFTUri = (tokenURI) => {
+    const regex = /^[a-z0-9]+$/i
+    const regex_uri = /^[a-z0-9:/]+$/i
+    if (!tokenURI) return null
+    if (tokenURI.length > 256) return null
+    if (regex.test(tokenURI)) {
+        console.log('test passed: ', tokenURI)
+        const uriString = xrpl.convertHexToString(tokenURI)
+        if(regex_uri.test(uriString)) {
+            console.log('uri string: ', uriString)
+
+            if (uriString.slice(0, 10) === 'xrpnft.com') // the tokenURI minted from this site
+                return {
+                    header: 'xrpnft.com',
+                    main: uriString.slice(11)
+                }
+            else return {
+                header: 'common',
+                main: uriString
+            }
+        }
+        else return null
+    }
+
 }
 
 // ----------------------------------------------------------------------
@@ -106,7 +133,7 @@ export function cipheredTaxon(tokenSeq, taxon) {
     return taxon ^ (384160001 * tokenSeq + 2459);
 }
 
-export function parseNftFlag(flags_number){
+export function parseNftFlag(flags_number) {
     var flags = {
         "tfBurnable": false,
         "tfOnlyXRP": false,
@@ -218,8 +245,8 @@ export function isObjectEmpty(obj) {
 
     // Assume if it has a length property with a non-zero value
     // that that property is correct.
-    if (obj.length > 0)    return false;
-    if (obj.length === 0)  return true;
+    if (obj.length > 0) return false;
+    if (obj.length === 0) return true;
 
     // If it isn't an object at this point
     // it is empty, but it can't be anything *but* empty

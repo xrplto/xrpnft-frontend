@@ -9,16 +9,10 @@ import { BASE_URL } from 'utils/constants';
 import { Grid } from "@mui/material";
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
+import NFTCard from 'components/NFTCard/NFTCard';
+import { string } from 'prop-types';
+import { NFTokenProps } from 'types/types';
 
-
-function getFlag(nft) {
-    const flags = new BigNumber(nft.tokenID.slice(0, 4), 16).toNumber();
-    return flags;
-}
-
-function applySortFilter(tokens, flag) {
-    return tokens.filter(nft => (getFlag(nft) & flag) === flag);
-}
 
 export const NFTList = () => {
 
@@ -69,21 +63,20 @@ export const NFTList = () => {
         reset()
     }, [flags]);
 
-    const filteredTokens = applySortFilter(nfTokens, flags);
     return (
         <div>
             <InfiniteScroll
-                dataLength={filteredTokens.length}
+                dataLength={nfTokens.length}
                 next={() => fetchImages()}
                 hasMore={hasMore}
                 loader={<p>loading...</p>}
             >
                 <Grid container spacing={2} justifyContent='center'>
                     {
-                        filteredTokens.map((nft) => (
-                            <Grid item key={nft.tokenID}
+                        nfTokens.map((nft) => (
+                            <Grid item key={nft.tid}
                             >
-                                <NftCard nftoken={nft} />
+                                <NFTCard nftoken={nft} />
                             </Grid>
                         ))
                     }

@@ -11,6 +11,7 @@ import typography from './typography';
 import componentsOverride from './overrides';
 import shadows, { customShadows } from './shadows';
 import * as React from 'react';
+import { blueGrey, grey } from '@mui/material/colors';
 // ----------------------------------------------------------------------
 
 ThemeConfig.propTypes = {
@@ -20,25 +21,49 @@ ThemeConfig.propTypes = {
 export default function ThemeConfig({ children }) {
     const { isDarkMode } = useContext(Context);
 
-    const palette = isDarkMode ? palette_dark : palette_light;
+    // const palette = isDarkMode ? palette_dark : palette_light;
 
     const themeOptions = {
         palette: isDarkMode ? {
             mode: 'dark',
-            ...palette
+            primary: {
+                main: grey[100],
+                light: grey[50],
+                dark: grey[200],
+                contrastText: 'black'
+            },
+            secondary: {
+                main: blueGrey[700],
+                light: blueGrey[500],
+                dark: blueGrey[900],
+                contrastText: 'white'
+            },
+            background: {
+                paper: grey[900]
+            }
         } : {
             mode: 'light',
-            ...palette
+            primary: {
+                main: grey[700],
+                light: grey[500],
+                dark: grey[900],
+                contrastText: 'white'
+            },
+            secondary: {
+                main: blueGrey[500],
+                light: blueGrey[300],
+                dark: blueGrey[500],
+                contrastText: 'white'
+            }
         },
-        // palette: palette,
-        shape,
-        typography,
-        // shadows,
-        customShadows
+        // shape,
+        // typography,
+        // // shadows,
+        // customShadows
     };
 
     const theme = createTheme(themeOptions);
-    theme.components = componentsOverride(theme);
+    // theme.components = componentsOverride(theme);
 
     return (
         <StyledEngineProvider injectFirst>

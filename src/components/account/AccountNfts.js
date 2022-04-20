@@ -5,8 +5,8 @@ import { useParams } from "react-router-dom";
 import axios from 'axios'
 import { Grid,Backdrop } from "@mui/material";
 import { BASE_URL, BASIC_COLOR } from "utils/constants";
-import PinataNFTCard from 'components/nftList/PinataNFTCard';
 import { FadeLoader } from 'react-spinners';
+import NFTCard from 'components/NFTCard/NFTCard';
 
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
@@ -61,7 +61,7 @@ export default function AccountNfts() {
                                 <Grid item xs={12} sm={6} md={3} lg={3}
                                     key={nft.TokenID}
                                 >
-                                    <PinataNFTCard nftoken={{ tid: nft.TokenID, uri: nft.URI }} key={nft.TokenID} />
+                                    <NFTCard nftoken={{ tid: nft.TokenID, uri: nft.URI }} key={nft.TokenID} />
                                 </Grid>
                             ))
                         }

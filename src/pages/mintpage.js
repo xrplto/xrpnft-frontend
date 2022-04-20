@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux'
 import React from 'react';
+import { Icon } from '@iconify/react';
 import {
   Container,
   Divider,
@@ -32,7 +33,7 @@ export default function Minting() {
   const [loading, setLoading] = useState(false);
   const [nftName, setNftName] = useState('')
   const [extLink, setExtLink] = useState('xrpnft.com')
-  const [description, setDescription] = useState('You can create an NFTokenOffer to sell the NFToken, creating an entry to the XRP Ledger. Another account can accept the NFTokenOffer, transferring the NFToken to the accepting account’s NFTokenPage.')
+  const [description, setDescription] = useState('')
   const navigate = useNavigate()
 
   const handleNameFieldChange = (e) => {
@@ -84,7 +85,7 @@ export default function Minting() {
   }, [login])
   return (
     <Page title='Create - XRPL NFT'>
-      <Container maxWidth='md' sx={{ marginTop: '3vh' }}>
+      <Container maxWidth='md' sx={{ marginBottom: '3vh' }}>
         <Stack spacing={2} marginBottom={3}>
           <Heading title={'Create New Item'} />
           <Caption caption={'Image, Video, Audio, or 3D Model'} />
@@ -125,7 +126,7 @@ export default function Minting() {
           <Caption caption={'Description'} />
           <TypoDescription description={'The description will be included on the item\'s detail page underneath its image. Markdown syntax is supported.'} />
           <TextField
-            placeholder='provide a detailed description of your item'
+            placeholder='Provide a detailed description of your item'
             margin='dense'
             multiline
             maxRows={4}
@@ -142,18 +143,17 @@ export default function Minting() {
               }
             }} />
         </Stack>
-        <Stack>
-          <LoadingButton
-            loading={loading}
-            loadingPosition='start'
-            startIcon={<SendIcon />}
-            onClick={handleCreate}
-            variant='contained'
-          >
-            Create
-          </LoadingButton>
-          <Divider />
-        </Stack>
+        {/* <Stack> */}
+        <LoadingButton
+          loading={loading}
+          loadingPosition='start'
+          startIcon={<Icon icon="logos:linux-mint" />}
+          onClick={handleCreate}
+          variant='contained'
+        >
+          Create
+        </LoadingButton>
+        {/* </Stack> */}
         <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
       </Container>
     </Page >

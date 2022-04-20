@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 
-export const NFTokenProps = {
-    tokenID : PropTypes.string,
-    URI: PropTypes.string
-}
+// export const NFTokenProps = {
+//     tokenID : PropTypes.string,
+//     URI: PropTypes.string
+// }
 
 export const SnackbarProps = {
     isOpen: PropTypes.bool,
@@ -14,6 +14,17 @@ export const SnackbarProps = {
 
 export const PinataNFTCardProps = {
     nftoken: PropTypes.object
+}
+
+export const NFTCardProps = {
+    nftoken: PropTypes.object
+}
+
+export const NFTokenProps = {
+    tid: PropTypes.string,
+    flag: PropTypes.number,
+    issuer: PropTypes.string,
+    uri: PropTypes.string | null
 }
 
 export const ListingsListProps = {

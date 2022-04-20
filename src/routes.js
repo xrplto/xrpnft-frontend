@@ -18,7 +18,7 @@ export default function Router() {
             path: '/',
             element: <MainLayout />,
             children: [
-                { path: 'ledger', element: <NFTMarketplace /> },
+                { path: '/', element: <NFTMarketplace /> },
                 { path: 'tester', element: <TokenTesterUpdated /> },
                 { path: 'spinners', element: <Spinner /> },
                 { path: 'progress', element: <ProgressPage /> },
@@ -26,7 +26,7 @@ export default function Router() {
                 { path: 'create', element: <Minting /> },
                 { path: 'login', element: <LoginPage /> },
                 { path: 'account', element: <Account /> },
-                { path: '/', element: <XRPNFTList /> },
+                { path: '/xrpnfts', element: <XRPNFTList /> },
                 { path: '*', element: <Navigate to="/404/NotFound" /> }
             ]
         },

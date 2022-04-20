@@ -8,17 +8,7 @@ import { BASE_URL } from 'utils/constants';
 import { Box, Container, Grid } from "@mui/material";
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
-import PinataNFTCard from './PinataNFTCard';
-
-
-function getFlag(nft) {
-    const flags = new BigNumber(nft.tid.slice(0, 4), 16).toNumber();
-    return flags;
-}
-
-function applySortFilter(tokens, flag) {
-    return tokens.filter(nft => (getFlag(nft) & flag) === flag);
-}
+import NFTCard from 'components/NFTCard/NFTCard';
 
 export const XRPNFTList = () => {
 
@@ -54,21 +44,20 @@ export const XRPNFTList = () => {
         reset()
     }, [flags]);
 
-    const filteredTokens = applySortFilter(nfTokens, flags);
     return (
         <Box sx={{ mt: 1 }}>
             <InfiniteScroll
-                dataLength={filteredTokens.length}
+                dataLength={nfTokens.length}
                 next={() => fetchImages()}
                 hasMore={hasMore}
                 loader={<p>loading...</p>}
             >
                 <Grid container spacing={2} justifyContent='center'>
                     {
-                        filteredTokens.map((nft) => (
+                        nfTokens.map((nft) => (
                             <Grid item key={nft.tid}
                             >
-                                <PinataNFTCard nftoken={nft} />
+                                <NFTCard nftoken={nft} />
                             </Grid>
                         ))
                     }

@@ -66,6 +66,8 @@ export const parsePinataNFTUrl = (tokenURL) => {
     else return xrpl.convertHexToString(tokenURL)
 }
 
+
+
 export function parsePinataNFT(tokenID, tokenURI) {
 
     if (typeof tokenID !== "string" || tokenID.length !== 64) {

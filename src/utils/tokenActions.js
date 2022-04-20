@@ -402,7 +402,10 @@ export const getSellAndBuyOffers = async (tokenId) => {
 }
 
 export const getSellOffers = async (tokenId) => {
-	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
+	console.log('calling client....')
+	const client = new xrpl.Client(RIPPLE_TEST_NET_URL, {
+		connectionTimeout: 10000
+	})
 	await client.connect()
 	console.log("Connected to Sandbox")
 	console.log("***Sell Offers***")

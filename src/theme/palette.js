@@ -50,6 +50,12 @@ const SECONDARY = {
     darker: '#091A7A',
     contrastText: '#fff'
 };
+const SECONDARY_DARK = {
+    light: '#84A9FF',
+    main: '#3366FF',
+    dark: '#1939B7',
+    contrastText: '#fff'
+};
 const INFO = {
     lighter: '#D0F2FF',
     light: '#74CAFF',
@@ -128,7 +134,7 @@ export const palette_light = {
 export const palette_dark = {
     // common: { black: '#000', white: '#fff' },
     primary: { ...PRIMARY_DARK },
-    secondary: { ...SECONDARY },
+    secondary: { ...SECONDARY_DARK },
     info: { ...INFO },
     success: { ...SUCCESS },
     warning: { ...WARNING },

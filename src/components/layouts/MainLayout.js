@@ -26,15 +26,15 @@ const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 //     paddingBottom: theme.spacing(10)
 // }));
 
-// export const StyledAppBar = styled(AppBar)(({ theme }) => ({
-//     backdropFilter: 'blur(2px)',
-//     WebkitBackdropFilter: 'blur(2px)', // Fix on Mobile
-//     backgroundColor: theme.palette.background.paper,
-//     // backgroundColor: alpha(theme.palette.background.paper, 0.0),
-//     borderRadius: '0px',
-//     color: theme.palette.text.primary
-//     //backgroundColor: alpha("#00AB88", 0.7),
-// }));
+export const StyledAppBar = styled(AppBar)(({ theme }) => ({
+    backdropFilter: 'blur(2px)',
+    WebkitBackdropFilter: 'blur(2px)', // Fix on Mobile
+    backgroundColor: theme.palette.background.paper,
+    // backgroundColor: alpha(theme.palette.background.paper, 0.0),
+    borderRadius: '0px',
+    color: theme.palette.text.primary
+    //backgroundColor: alpha("#00AB88", 0.7),
+}));
 
 // ----------------------------------------------------------------------
 
@@ -43,14 +43,14 @@ export default function MainLayout() {
 
     return (
         <Box>
-            <AppBar>
+            <StyledAppBar>
                 {/* <Topbar /> */}
                 {/* <Navbar onOpenSidebar={() => setOpen(true)} /> */}
                 <Navbar />
-            </AppBar>
+            </StyledAppBar>
             <Offset />
             {/* <Sidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} /> */}
-            <Container  maxWidth="lg">
+            <Container  maxWidth={false}>
                 <Outlet />
             </Container>
         </Box>
