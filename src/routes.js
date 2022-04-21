@@ -11,6 +11,8 @@ import Account from 'pages/account/Account'
 import NFTMarketplace from 'pages/market/Landing';
 import LoginPage from 'pages/LoginPage';
 import { XRPNFTList } from 'components/nftList/XRPNFTList';
+import PersistentDrawerLeft from 'components/common/Drawer';
+import XrplNFTList from 'pages/market/LandingPage';
 
 export default function Router() {
     return useRoutes([
@@ -18,7 +20,8 @@ export default function Router() {
             path: '/',
             element: <MainLayout />,
             children: [
-                { path: '/', element: <NFTMarketplace /> },
+                { path: '/', element: <XrplNFTList /> },
+                // { path: '/', element: <NFTMarketplace /> },
                 { path: 'tester', element: <TokenTesterUpdated /> },
                 { path: 'spinners', element: <Spinner /> },
                 { path: 'progress', element: <ProgressPage /> },
@@ -27,6 +30,7 @@ export default function Router() {
                 { path: 'login', element: <LoginPage /> },
                 { path: 'account', element: <Account /> },
                 { path: '/xrpnfts', element: <XRPNFTList /> },
+                { path: '/drawer', element: <PersistentDrawerLeft /> },
                 { path: '*', element: <Navigate to="/404/NotFound" /> }
             ]
         },

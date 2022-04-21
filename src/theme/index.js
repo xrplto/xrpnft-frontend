@@ -21,9 +21,14 @@ ThemeConfig.propTypes = {
 export default function ThemeConfig({ children }) {
     const { isDarkMode } = useContext(Context);
 
-    // const palette = isDarkMode ? palette_dark : palette_light;
-
-    const themeOptions = {
+    const theme = createTheme({
+        components: {
+            MuiAppBar: {
+                root: {
+                    minHeight: 48,
+                }
+            }
+        },
         palette: isDarkMode ? {
             mode: 'dark',
             primary: {
@@ -39,7 +44,8 @@ export default function ThemeConfig({ children }) {
                 contrastText: 'white'
             },
             background: {
-                paper: grey[900]
+                paper: grey[900],
+                light: '#212121'
             }
         } : {
             mode: 'light',
@@ -56,14 +62,7 @@ export default function ThemeConfig({ children }) {
                 contrastText: 'white'
             }
         },
-        // shape,
-        // typography,
-        // // shadows,
-        // customShadows
-    };
-
-    const theme = createTheme(themeOptions);
-    // theme.components = componentsOverride(theme);
+    });
 
     return (
         <StyledEngineProvider injectFirst>

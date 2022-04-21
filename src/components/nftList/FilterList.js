@@ -13,10 +13,7 @@ import StarBorder from '@mui/icons-material/StarBorder';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
 import { Grid } from '@mui/material'
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import SpokeIcon from '@mui/icons-material/Spoke';
+import { Icon } from '@iconify/react';
 
 export default function FilterList() {
     const dispatch = useDispatch()
@@ -52,48 +49,48 @@ export default function FilterList() {
                 <ListItemIcon>
                     <InboxIcon />
                 </ListItemIcon>
-                <ListItemText primary="Status" />
+                <ListItemText primary="Flags" />
                 {openStatus ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={openStatus} timeout="auto" unmountOnExit>
                 {/* <List component="div" disablePadding> */}
                 <Grid container justifyContent='center' direction='row' spacing={1} margin={2} marginTop={1} width='auto'>
-                    <Grid item md={6}>
+                    <Grid item >
                         <Button
-                            onClick={ () => handleFilterClick(0x0001)}
+                            onClick={() => handleFilterClick(0x0001)}
                             variant={flag & 0x0001 ? 'contained' : 'outlined'}
                             sx={{ width: '100%' }}
-                            startIcon={<LocalFireDepartmentIcon />}
+                            startIcon={<Icon icon='ps:feedburner' />}
                         >
                             Burnable
                         </Button>
                     </Grid>
-                    <Grid item md={6}>
+                    <Grid item >
                         <Button
                             onClick={() => handleFilterClick(0x0002)}
                             variant={flag & 0x0002 ? 'contained' : 'outlined'}
                             sx={{ width: '100%' }}
-                            startIcon={<SpokeIcon />}
+                            startIcon={<Icon icon="teenyicons:ripple-solid" />}
                         >
                             Only XRP
                         </Button>
                     </Grid>
-                    <Grid item md={6}>
+                    <Grid item >
                         <Button
                             onClick={() => handleFilterClick(0x0004)}
                             variant={flag & 0x0004 ? 'contained' : 'outlined'}
                             sx={{ width: '100%' }}
-                            startIcon={<VerifiedUserIcon />}
+                            startIcon={<Icon icon='codicon:workspace-trusted' />}
                         >
                             Trustline
                         </Button>
                     </Grid>
-                    <Grid item md={6}>
+                    <Grid item >
                         <Button
                             onClick={() => handleFilterClick(0x0008)}
                             variant={flag & 0x0008 ? 'contained' : 'outlined'}
                             sx={{ width: '100%' }}
-                            startIcon={<TransferWithinAStationIcon />}
+                            startIcon={<Icon icon='mdi:transit-transfer' />}
                         >
                             Transferable
                         </Button>

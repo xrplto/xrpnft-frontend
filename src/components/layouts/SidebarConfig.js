@@ -9,12 +9,12 @@ const getIcon = (name) => <Icon icon={name} width={22} height={22} />;
 const sidebarConfig = [
   {
     title: 'All NFTs',
-    path: '/xrpnfts',
+    path: '/',
     icon: getIcon(mint)
   },
   {
     title: 'SiteNFTs',
-    path: '/',
+    path: '/xrpnfts',
     icon: getIcon(shoppingBagFill)
   },
   {

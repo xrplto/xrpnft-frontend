@@ -1,8 +1,5 @@
 import { useContext } from 'react'
-import PropTypes from 'prop-types';
-// material
 import { Box } from '@mui/material';
-// Context
 import Context from '../Context'
 import { TOP_BAR_HEIGHT_DESKTOP } from 'utils/constants';
 

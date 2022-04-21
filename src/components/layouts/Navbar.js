@@ -62,7 +62,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-export default function Navbar({ onOpenSidebar }) {
+export default function Navbar() {
     const { toggleThisTheme, isDarkMode } = useContext(Context);
     const login = useSelector(state => state.account.login)
     const key = useSelector(state => state.account.account.key)
@@ -76,12 +76,9 @@ export default function Navbar({ onOpenSidebar }) {
 
     return (
         <Toolbar sx={{ gap: 5 }}>
-            {/* <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
-                <MenuIcon />
-            </IconButton> */}
-            <Box to="/" sx={{ px: 2.5, display: 'inline-flex' }}>
+            <Link href='/' sx={{ px: 2.5, display: 'inline-flex' }}>
                 <Logo />
-            </Box>
+            </Link>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ flexGrow: 1 }} />
             <Search>
@@ -113,7 +110,9 @@ export default function Navbar({ onOpenSidebar }) {
                     </>
                     :
                     <Link href='/login' underline='none' component={'button'}>
-                        Log In
+                        <Button startIcon={<LoginIcon />} >
+                            Log In
+                        </Button>
                     </Link>
             }
             <AccountPopover />
