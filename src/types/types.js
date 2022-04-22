@@ -32,3 +32,9 @@ export const ListingsListProps = {
     listings: PropTypes.object,
     owner: PropTypes.string
 }
+
+export const TraitProps = {
+    id: PropTypes.string,
+    type: PropTypes.string,
+    value: PropTypes.string
+}

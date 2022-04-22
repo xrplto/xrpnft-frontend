@@ -15,13 +15,11 @@ BaseDialog.propTypes = {
 export default function BaseDialog({ close, render, isOpen, title }) {
 
     return (
-        <>
         <Dialog open={isOpen} onClose={close} scroll='body'>
-            <DialogTitle sx={{textAlign:'center'}} >{title}</DialogTitle>
+            <DialogTitle sx={{ textAlign: 'center' }} >{title}</DialogTitle>
             <Divider />
-                {render}
+            {render}
             <Divider />
         </Dialog>
-        </>
     );
 }

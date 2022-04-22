@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import React from 'react';
+import { useState } from 'react';
 import {
   Box,
   Container,
   Divider,
+  Grid,
   IconButton,
   List,
   ListItem,
@@ -17,18 +17,44 @@ import { Caption } from 'components/atoms/Caption';
 import { AddCircleOutlined } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import FolderIcon from '@mui/icons-material/Folder';
+import Trait from './Trait';
+import AddTraitDgContent from './AddTraitDgContent'
+import BaseDialog from 'components/dialog/BaseDialog';
 
 
 const Demo = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
+const properties = [
+  {
+    id: 1,
+    type: 'arm',
+    value: 'big',
+  },
+  {
+    id: 2,
+    type: 'leg',
+    value: 'short',
+  },
+  {
+    id: 3,
+    type: 'body',
+    value: 'strong',
+  },
+]
+
 export default function CollectionAndPropertis() {
 
-  const [secondary, setSecondary] = React.useState(false);
+  const [secondary, setSecondary] = useState(false);
+  const [isOpenTraitAddDg, setIsOpenTraitAddDg] = useState(false)
   const [collectionName, setCollectionName] = useState('')
   const handleCollectionFieldChange = (e) => {
     setCollectionName(e.target.value)
+  }
+
+  const openTraitAddDg = () => {
+    setIsOpenTraitAddDg(!isOpenTraitAddDg)
   }
 
   return (
@@ -50,7 +76,9 @@ export default function CollectionAndPropertis() {
           <Box>
             <ListItem
               secondaryAction={
-                <IconButton edge="end" aria-label="delete">
+                <IconButton edge="end" aria-label="delete"
+                  onClick={openTraitAddDg}
+                >
                   <AddCircleOutlined />
                 </IconButton>
               }
@@ -64,27 +92,24 @@ export default function CollectionAndPropertis() {
               />
             </ListItem>
             <Container>
-              <p>This is content</p>
+              <Grid container spacing={2} >
+                {properties.map((property) => (
+                  <Grid item key={property.id}>
+                    <Trait type={property.type} value={property.value} />
+                  </Grid>
+                ))}
+              </Grid>
             </Container>
           </Box>
           <Divider />
-          <ListItem
-            secondaryAction={
-              <IconButton edge="end" aria-label="delete">
-                <AddCircleOutlined />
-              </IconButton>
-            }
-          >
-            <ListItemIcon>
-              <FolderIcon />
-            </ListItemIcon>
-            <ListItemText
-              primary="Single-line item"
-              secondary={secondary ? 'Secondary text' : null}
-            />
-          </ListItem>
         </List>
       </Demo>
+      <BaseDialog
+        isOpen={isOpenTraitAddDg}
+        close={openTraitAddDg}
+        title={'Add Properties'}
+        render={<AddTraitDgContent />}
+      />
     </Stack>
   );
 }

@@ -36,10 +36,20 @@ export default function ThemeConfig({ children }) {
                         props: { variant: 'body1' },
                         style: {
                             color: 'rgb(138, 147, 155)',
-                            fontSize: 12
+                            fontSize: 14,
+                            fontWeight: 500,
                         }
                     }
                 ]
+            },
+            MuiDialog: {
+                styleOverrides: {
+                    root: {
+                        '& .MuiDialog-paper' : {
+                            minWidth: 400
+                        }
+                    }
+                }
             },
             MuiLink: {
                 variants: [
@@ -51,12 +61,6 @@ export default function ThemeConfig({ children }) {
                         }
                     }
                 ],
-                styleOverrides: {
-
-                    root: {
-                        // textTransform: 'uppercase'
-                    }
-                }
             }
         },
         palette: isDarkMode ? {
