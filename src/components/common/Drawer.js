@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -19,6 +19,9 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import PropTypes from 'prop-types';
 import FilterList from 'components/nftList/FilterList';
+import axios from 'axios';
+import { Icon } from '@iconify/react';
+import { BASE_URL } from 'utils/constants';
 
 const drawerWidth = 240;
 
@@ -81,7 +84,8 @@ PersistentDrawerLeft.propTypes = {
 
 export default function PersistentDrawerLeft({ children }) {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
+  const [total, setTotal] = useState(0)
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -90,6 +94,16 @@ export default function PersistentDrawerLeft({ children }) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const fetchTotalCount = () => {
+    axios.get(`${BASE_URL}/status`)
+      .then(res => {
+        setTotal(res.data.total)
+      })
+  }
+  useEffect(() => {
+    fetchTotalCount()
+  })
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -106,7 +120,7 @@ export default function PersistentDrawerLeft({ children }) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Persistent drawer
+            {total} items
           </Typography>
         </Toolbar>
       </AppBar>
@@ -124,10 +138,14 @@ export default function PersistentDrawerLeft({ children }) {
         anchor="left"
         open={open}
       >
-        <DrawerHeader sx={{ justifyContent: 'space-between', paddingLeft: '1vw' }}>
-          <Typography variant="h6" noWrap component="div">
-            Filter
-          </Typography>
+        <DrawerHeader sx={{ justifyContent: 'space-between', paddingLeft: '1vw' }}
+        >
+          <Box sx={{display: 'flex', alignItems:'center', gap: 2}}>
+            <Icon icon="bi:filter" fontSize={25}/>
+            <Typography variant="h6" noWrap component="div">
+              Filter
+            </Typography>
+          </Box>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>

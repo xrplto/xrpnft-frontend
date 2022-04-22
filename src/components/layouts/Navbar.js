@@ -103,17 +103,19 @@ export default function Navbar() {
                         <Link href='/' underline='none'
                             component='button'
                         >
-                            <Button endIcon={<LogoutIcon />} onClick={handleDisconnect}>
+                            <Button endIcon={<LogoutIcon />} onClick={handleDisconnect} >
                                 {key.slice(0, 4) + '...' + key.slice(-2)}
                             </Button>
                         </Link>
                     </>
                     :
-                    <Link href='/login' underline='none' component={'button'}>
-                        <Button startIcon={<LoginIcon />} >
-                            Log In
-                        </Button>
-                    </Link>
+                    <>
+                        <Link href='/login' underline='none' variant='menu-item'>
+                            <Button >
+                                Connect
+                            </Button>
+                        </Link>
+                    </>
             }
             <AccountPopover />
             <IconButton onClick={() => { toggleThisTheme('isDarkMode') }} >

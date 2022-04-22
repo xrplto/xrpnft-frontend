@@ -7,12 +7,12 @@ import {
   Divider,
   Stack,
   TextField,
+  Typography,
 } from '@mui/material';
 import Page from 'components/Page';
 import { Heading } from 'components/atoms/Heading';
 import { NFTUploader } from 'components/miniting/NFTUploader';
 import { Caption } from 'components/atoms/Caption';
-import { TypoDescription } from 'components/atoms/Description';
 import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN } from 'utils/constants';
 import { LoadingButton } from '@mui/lab';
 import SendIcon from '@mui/icons-material/Send';
@@ -22,6 +22,8 @@ import { useNavigate } from 'react-router-dom'
 import TokenFlagsForm from 'components/miniting/TokenFlagsForm';
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
+import TextFieldDropdown from 'components/miniting/CollectionPopOverMenu';
+import CollectionAndPropertis from 'components/miniting/CollectionAndProperties';
 
 export default function Minting() {
 
@@ -34,6 +36,7 @@ export default function Minting() {
   const [nftName, setNftName] = useState('')
   const [extLink, setExtLink] = useState('xrpnft.com')
   const [description, setDescription] = useState('')
+  const [collectionName, setCollectionName] = useState('')
   const navigate = useNavigate()
 
   const handleNameFieldChange = (e) => {
@@ -46,6 +49,9 @@ export default function Minting() {
 
   const handleDescriptionFieldChange = (e) => {
     setDescription(e.target.value)
+  }
+  const handleCollectionFieldChange = (e) => {
+    setCollectionName(e.target.value)
   }
 
   const handleCreate = async () => {
@@ -89,9 +95,13 @@ export default function Minting() {
         <Stack spacing={2} marginBottom={3}>
           <Heading title={'Create New Item'} />
           <Caption caption={'Image, Video, Audio, or 3D Model'} />
-          <TypoDescription description={'File types supported: ' + SUPPORTED_FILE_TYPES.join(', ') + '. Max size: 100MB'} />
+          <Typography variant='body1'>
+            File types supported: ' + {SUPPORTED_FILE_TYPES.join(', ')} + '. Max size: 100MB'
+          </Typography>
           <NFTUploader />
-          <TypoDescription description={'Image on IPFS: ' + pinnedFileHash} />
+          <Typography variant='body1'>
+            {'Image on IPFS: ' + pinnedFileHash}
+          </Typography>
         </Stack>
         <Stack spacing={2} marginBottom={3}>
           <Caption caption={'Set Flags'} />
@@ -110,7 +120,9 @@ export default function Minting() {
         </Stack>
         <Stack spacing={2} marginBottom={3}>
           <Caption caption={'External link'} />
-          <TypoDescription description={'This site will include a link to this URL on this item\'s detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.'} />
+          <Typography variant='body1'>
+            {'This site will include a link to this URL on this item\'s detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.'}
+          </Typography>
           <TextField
             placeholder={extLink}
             margin='dense'
@@ -124,7 +136,9 @@ export default function Minting() {
         </Stack>
         <Stack spacing={2} marginBottom={3}>
           <Caption caption={'Description'} />
-          <TypoDescription description={'The description will be included on the item\'s detail page underneath its image. Markdown syntax is supported.'} />
+          <Typography variant='body1'>
+            {'The description will be included on the item\'s detail page underneath its image. Markdown syntax is supported.'}
+          </Typography>
           <TextField
             placeholder='Provide a detailed description of your item'
             margin='dense'
@@ -143,7 +157,7 @@ export default function Minting() {
               }
             }} />
         </Stack>
-        {/* <Stack> */}
+        <CollectionAndPropertis />
         <LoadingButton
           loading={loading}
           loadingPosition='start'

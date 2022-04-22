@@ -23,9 +23,39 @@ export default function ThemeConfig({ children }) {
 
     const theme = createTheme({
         components: {
-            MuiAppBar: {
-                root: {
-                    minHeight: 48,
+            MuiToolbar: {
+                styleOverrides: {
+                    root: {
+                        minHeight: 'auto',
+                    }
+                }
+            },
+            MuiTypography: {
+                variants: [
+                    {
+                        props: { variant: 'body1' },
+                        style: {
+                            color: 'rgb(138, 147, 155)',
+                            fontSize: 12
+                        }
+                    }
+                ]
+            },
+            MuiLink: {
+                variants: [
+                    {
+                        props: { variant: 'menu-item' },
+                        style: {
+                            textTransform: 'uppercase'
+
+                        }
+                    }
+                ],
+                styleOverrides: {
+
+                    root: {
+                        // textTransform: 'uppercase'
+                    }
                 }
             }
         },

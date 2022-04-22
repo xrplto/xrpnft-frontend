@@ -86,7 +86,7 @@ export function parseURI(nftoken_uri_hex) {
 export const parseNFTUri = (tokenURI) => {
     const regex_hex = /^[a-z0-9]+$/i
     const regex_uri = /^[a-z0-9:./]+$/i
-    if (!tokenURI || tokenURI.length > 256 ) return null
+    if (!tokenURI ) return null
     if (regex_hex.test(tokenURI)) {
         const uriString = xrpl.convertHexToString(tokenURI)
         if (regex_uri.test(uriString) && uriString.length > 45) { // min length of ipfs hash is 46
@@ -96,6 +96,18 @@ export const parseNFTUri = (tokenURI) => {
                     header: 'xrpnft.com',
                     main: uriString.slice(11)
                 }
+            else if (uriString.slice(0, 2) === 'Qm' || uriString.slice(0, 4) === 'bafy') {
+                return {
+                    header: 'ipfs',
+                    main: uriString
+                }
+            }
+            else if (uriString.slice(0, 7) === 'ipfs://') {
+                return {
+                    header: 'ipfs',
+                    main: uriString.slice(7)
+                }
+            }
             else return {
                 header: 'common',
                 main: uriString

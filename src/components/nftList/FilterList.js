@@ -46,9 +46,6 @@ export default function FilterList() {
         >
             <Divider />
             <ListItemButton onClick={handleStatusClick}>
-                <ListItemIcon>
-                    <InboxIcon />
-                </ListItemIcon>
                 <ListItemText primary="Flags" />
                 {openStatus ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
@@ -100,36 +97,24 @@ export default function FilterList() {
             </Collapse>
             <Divider />
             <ListItemButton onClick={handlePriceClick}>
-                <ListItemIcon>
-                    <InboxIcon />
-                </ListItemIcon>
                 <ListItemText primary="Price" />
                 {openPrice ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={openPrice} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                     <ListItemButton sx={{ pl: 4 }}>
-                        <ListItemIcon>
-                            <StarBorder />
-                        </ListItemIcon>
                         <ListItemText primary="Incoming contents" />
                     </ListItemButton>
                 </List>
             </Collapse>
             <Divider />
             <ListItemButton onClick={handleCollectionsClick}>
-                <ListItemIcon>
-                    <InboxIcon />
-                </ListItemIcon>
                 <ListItemText primary="Collections" />
                 {openCollections ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={openCollections} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                     <ListItemButton sx={{ pl: 4 }}>
-                        <ListItemIcon>
-                            <StarBorder />
-                        </ListItemIcon>
                         <ListItemText primary="Incoming contents" />
                     </ListItemButton>
                 </List>
