@@ -5,11 +5,11 @@ import PropTypes from 'prop-types';
 import { CssBaseline } from '@mui/material';
 import { /*useTheme, */ThemeProvider, createTheme, StyledEngineProvider } from '@mui/material/styles';
 //
-import shape from './shape';
-import { palette_light, palette_dark } from './palette';
-import typography from './typography';
-import componentsOverride from './overrides';
-import shadows, { customShadows } from './shadows';
+// import shape from './shape';
+// import { palette_light, palette_dark } from './palette';
+// import typography from './typography';
+// import componentsOverride from './overrides';
+// import shadows, { customShadows } from './shadows';
 import * as React from 'react';
 import { blueGrey, grey } from '@mui/material/colors';
 // ----------------------------------------------------------------------
@@ -35,11 +35,18 @@ export default function ThemeConfig({ children }) {
                     {
                         props: { variant: 'body1' },
                         style: {
-                            color: 'rgb(138, 147, 155)',
+                            color: 'rgb(190, 190, 190)',
                             fontSize: 14,
                             fontWeight: 500,
                         }
-                    }
+                    },
+                    {
+                        props: { variant: 'caption' },
+                        style: {
+                            fontSize: 16,
+                            fontWeight: 600,
+                        }
+                    },
                 ]
             },
             MuiDialog: {

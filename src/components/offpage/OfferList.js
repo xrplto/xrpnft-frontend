@@ -6,7 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
-import { deepOrange, deepPurple } from '@mui/material/colors';
+import { deepOrange } from '@mui/material/colors';
 
 
 export default function OfferList({ props }) {

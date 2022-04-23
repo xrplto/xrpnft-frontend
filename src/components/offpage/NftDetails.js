@@ -1,13 +1,10 @@
 import * as React from 'react';
-import { useSelector } from 'react-redux'
 import Divider from '@mui/material/Divider';
 import { Typography, Link, Stack } from '@mui/material'
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DescriptionIcon from '@mui/icons-material/Description';
-import TimePeriods from 'components/offpage/TimePeriodsDropdown';
 // import styled from "styled-components";
 import { parseNFT } from 'utils/utils';
 import { DetailRow } from 'components/atoms/StyledComponents'
@@ -66,11 +63,11 @@ NFTDetails.propTypes = NFTokenProps
 export default function NFTDetails({ tokenID, URI }) {
     const nft = parseNFT(tokenID, URI);
 
-    const [expanded, setExpanded] = React.useState('panel1')
+    // const [expanded, setExpanded] = React.useState('panel1')
 
-    const handleChange = (panel) => (event, newExpanded) => {
-        setExpanded(newExpanded ? panel : false);
-    };
+    // const handleChange = (panel) => (event, newExpanded) => {
+    //     setExpanded(newExpanded ? panel : false);
+    // };
     return (
         <div>
             <NFTImgCard />

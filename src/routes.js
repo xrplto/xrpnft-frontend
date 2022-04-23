@@ -8,7 +8,6 @@ import NotFound from 'pages/Page404';
 import Minting from 'pages/mintpage'
 import NFTInfo from 'pages/offpage/OffPage'
 import Account from 'pages/account/Account'
-import NFTMarketplace from 'pages/market/Landing';
 import LoginPage from 'pages/LoginPage';
 import { XRPNFTList } from 'components/nftList/XRPNFTList';
 import PersistentDrawerLeft from 'components/common/Drawer';

@@ -38,3 +38,9 @@ export const TraitProps = {
     type: PropTypes.string,
     value: PropTypes.string
 }
+
+export const AddTraitDgProp = {
+    save: PropTypes.func,
+    close: PropTypes.func,
+    properties: PropTypes.array
+}

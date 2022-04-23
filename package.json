@@ -84,6 +84,7 @@
     "simplebar-react": "^2.3.6",
     "styled-components": "^5.3.5",
     "toml": "^3.0.0",
+    "uuidv4": "^6.2.13",
     "web3": "^1.7.1",
     "xrpl": "^2.1.1"
   },

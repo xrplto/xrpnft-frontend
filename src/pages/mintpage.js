@@ -4,7 +4,6 @@ import React from 'react';
 import { Icon } from '@iconify/react';
 import {
   Container,
-  Divider,
   Stack,
   TextField,
   Typography,
@@ -15,14 +14,12 @@ import { NFTUploader } from 'components/miniting/NFTUploader';
 import { Caption } from 'components/atoms/Caption';
 import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN } from 'utils/constants';
 import { LoadingButton } from '@mui/lab';
-import SendIcon from '@mui/icons-material/Send';
 import { mintToken } from 'utils/tokenActions'
 import { testPinata, pinJsonToIPFS } from 'utils/pinata'
 import { useNavigate } from 'react-router-dom'
 import TokenFlagsForm from 'components/miniting/TokenFlagsForm';
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
-import TextFieldDropdown from 'components/miniting/CollectionPopOverMenu';
 import CollectionAndPropertis from 'components/miniting/CollectionAndProperties';
 
 export default function Minting() {
@@ -36,7 +33,6 @@ export default function Minting() {
   const [nftName, setNftName] = useState('')
   const [extLink, setExtLink] = useState('xrpnft.com')
   const [description, setDescription] = useState('')
-  const [collectionName, setCollectionName] = useState('')
   const navigate = useNavigate()
 
   const handleNameFieldChange = (e) => {
@@ -49,9 +45,6 @@ export default function Minting() {
 
   const handleDescriptionFieldChange = (e) => {
     setDescription(e.target.value)
-  }
-  const handleCollectionFieldChange = (e) => {
-    setCollectionName(e.target.value)
   }
 
   const handleCreate = async () => {
@@ -88,7 +81,7 @@ export default function Minting() {
     if (!login)
       navigate('/');
     testPinata()
-  }, [login])
+  }, [login, navigate])
   return (
     <Page title='Create - XRPL NFT'>
       <Container maxWidth='md' sx={{ marginBottom: '3vh' }}>
@@ -159,6 +152,7 @@ export default function Minting() {
         </Stack>
         <CollectionAndPropertis />
         <LoadingButton
+          sx={{ margin: 1, padding: 1 }}
           loading={loading}
           loadingPosition='start'
           startIcon={<Icon icon="logos:linux-mint" />}
