@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import InfiniteScroll from 'react-infinite-scroll-component';
-import NftCard from './NftCard';
 import '../../App.css'
 import BigNumber from 'bignumber.js';
 import { BASE_URL } from 'utils/constants';

@@ -4,7 +4,7 @@ import Router from './routes';
 import ThemeConfig from './theme';
 
 export default function App() {
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const key_darkmode = 'theme:isDarkMode'
     const key_profile = 'account:profile2'
     const [isDarkMode, setIsDarkMode] = useState(true);
@@ -57,7 +57,7 @@ export default function App() {
                 toggleThisTheme,
                 accountProfile,
                 setAccountProfile,
-                setLoading
+                // setLoading
             }}
         >
             {/* <Backdrop

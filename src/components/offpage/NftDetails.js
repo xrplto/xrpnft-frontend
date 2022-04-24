@@ -12,7 +12,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import { parseNFT } from 'utils/utils';
 import { DetailRow } from 'components/atoms/StyledComponents'
 import { styled } from '@mui/material/styles';
-import NFTImgCard from './NFTImgCard';
+import NFTImgCard from './NFTPreview';
 import InfoIcon from '@mui/icons-material/Info';
 import { NFTokenProps } from 'types/types'
 import { Icon } from '@iconify/react';

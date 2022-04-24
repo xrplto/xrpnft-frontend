@@ -2,10 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import InfiniteScroll from 'react-infinite-scroll-component';
-import '../../App.css'
-import BigNumber from 'bignumber.js';
 import { BASE_URL } from 'utils/constants';
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
 import NFTCard from 'components/NFTCard/NFTCard';
@@ -21,7 +19,7 @@ export const XRPNFTList = () => {
     const fetchImages = (nfTokensParam, offsetParam) => {
         const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
         const _offset = offsetParam === 0 ? offsetParam : offset
-        console.log(_nfTokens, _offset)
+
         axios
             .get(`${BASE_URL}/nfts?page=${_offset}&limit=20&flag=${flags}&self=true`)
             .then(res => {

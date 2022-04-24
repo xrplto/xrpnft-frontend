@@ -19,7 +19,6 @@ import { createBuyOffer, createSellOffer, getSellAndBuyOffers } from 'utils/toke
 import XSnackbar from 'components/common/Snackbar'
 import { useSnackbar } from 'hooks/useSnackbar'
 import SellOffersList from './SellOffersList'
-import OfferList from './OfferList'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BuyOffersList from './BuyOffersList'
 import { getIssuer } from 'utils/utils'

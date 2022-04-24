@@ -12,7 +12,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import PropTypes from 'prop-types';
-import FilterList from 'components/nftList/FilterList';
+import FilterList from 'components/filter/FilterList';
 import axios from 'axios';
 import { Icon } from '@iconify/react';
 import { BASE_URL } from 'utils/constants';
