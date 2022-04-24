@@ -52,7 +52,7 @@ export default function ThemeConfig({ children }) {
             MuiDialog: {
                 styleOverrides: {
                     root: {
-                        '& .MuiDialog-paper' : {
+                        '& .MuiDialog-paper': {
                             minWidth: 400
                         }
                     }
@@ -64,7 +64,6 @@ export default function ThemeConfig({ children }) {
                         props: { variant: 'menu-item' },
                         style: {
                             textTransform: 'uppercase'
-
                         }
                     }
                 ],

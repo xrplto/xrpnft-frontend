@@ -1,21 +1,21 @@
 import * as React from 'react';
-import Divider from '@mui/material/Divider';
-import { Typography, Link, Stack } from '@mui/material'
+import {
+    Divider,
+    Link,
+    Stack,
+    Typography,
+} from '@mui/material'
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import DescriptionIcon from '@mui/icons-material/Description';
-// import styled from "styled-components";
 import { parseNFT } from 'utils/utils';
 import { DetailRow } from 'components/atoms/StyledComponents'
 import { styled } from '@mui/material/styles';
 import NFTImgCard from './NFTImgCard';
 import InfoIcon from '@mui/icons-material/Info';
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import SpokeIcon from '@mui/icons-material/Spoke';
 import { NFTokenProps } from 'types/types'
+import { Icon } from '@iconify/react';
 
 const Accordion = styled((props) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -138,12 +138,16 @@ export default function NFTDetails({ tokenID, URI }) {
                         <Typography variant='subtitle' marginBottom={1}>
                             Flags
                         </Typography>
-                        <Stack direction='row' spacing={1} divider={<Divider orientation="vertical" flexItem />}>
-                            {nft.flags.tfBurnable && (<LocalFireDepartmentIcon />)}
-                            {nft.flags.tfOnlyXRP && (<SpokeIcon />)}
-                            {nft.flags.tfTrustLine && (<VerifiedUserIcon />)}
-                            {nft.flags.tfTransferable && (<TransferWithinAStationIcon />)}
-                            {nft.flags.tfNoFlag && <p>No flag</p>}
+                        <Stack
+                            direction='row'
+                            spacing={1}
+                            sx={{ fontSize: 20, gap: 2 }}
+                            divider={<Divider orientation="vertical" flexItem />}>
+                            {nft.flags.tfBurnable && <Icon icon='ps:feedburner' />}
+                            {nft.flags.tfOnlyXRP && <Icon icon="teenyicons:ripple-solid" />}
+                            {nft.flags.tfTrustLine && <Icon icon='codicon:workspace-trusted' />}
+                            {nft.flags.tfTransferable && <Icon icon='mdi:transit-transfer' />}
+                            {nft.flags.tfNoFlag && <Icon icon='carbon:not-available' />}
                         </Stack>
                     </DetailRow>
                 </AccordionDetails>

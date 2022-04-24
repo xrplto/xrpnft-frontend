@@ -3,18 +3,15 @@ import { useContext } from 'react'
 import Context from '../../Context'
 import { Icon } from '@iconify/react';
 import AddIcon from '@mui/icons-material/Add';
-import { Button, Stack, Toolbar, IconButton, Box, Link, Container } from '@mui/material';
+import { Button, Toolbar, IconButton, Box, Link } from '@mui/material';
 import AccountPopover from './AccountPopover';
 import Logo from '../Logo';
-// import { Link as RouterLink/*, useLocation*/ } from 'react-router-dom';
 import baselineBrightnessHigh from '@iconify/icons-ic/baseline-brightness-high';
 import baselineBrightness4 from '@iconify/icons-ic/baseline-brightness-4';
 import { useSelector, useDispatch } from 'react-redux'
 import { resetAccount } from 'app/slices/accountSlice';
 import LogoutIcon from '@mui/icons-material/Logout';
-import LoginIcon from '@mui/icons-material/Login';
 import { resetIpfsState } from 'app/slices/ipfSlice'
-import MenuIcon from '@mui/icons-material/Menu';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';

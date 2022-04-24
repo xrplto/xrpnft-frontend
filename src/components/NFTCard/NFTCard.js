@@ -1,4 +1,4 @@
-import { parsePinataNFT, parsePinataNFTUrl } from 'utils/pinata';
+import { parsePinataNFT } from 'utils/pinata';
 import { parseNFTUri } from 'utils/utils';
 import { useEffect, useState } from 'react';
 import axios from 'axios';

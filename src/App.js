@@ -1,11 +1,7 @@
-import { /*useContext, useMemo,*/ useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Context from './Context'
 import Router from './routes';
 import ThemeConfig from './theme';
-import GlobalStyles from './theme/globalStyles';
-import ScrollToTop from './components/ScrollToTop';
-import { Backdrop } from "@mui/material";
-import { CircleLoader } from "react-spinners";
 
 export default function App() {
     const [loading, setLoading] = useState(false);

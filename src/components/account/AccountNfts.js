@@ -1,25 +1,13 @@
 import { useSelector } from 'react-redux'
 import { useEffect, useState } from "react";
-import { styled } from '@mui/material/styles';
-import { useParams } from "react-router-dom";
 import axios from 'axios'
 import { Grid,Backdrop } from "@mui/material";
 import { BASE_URL, BASIC_COLOR } from "utils/constants";
 import { FadeLoader } from 'react-spinners';
 import NFTCard from 'components/NFTCard/NFTCard';
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
-}));
-
 export default function AccountNfts() {
     const [loading, setLoading] = useState(false);
-    const token = useParams()
     const account = useSelector(state => state.account.account)
     const [userNfts, setUserNfts] = useState([])
 
@@ -51,7 +39,6 @@ export default function AccountNfts() {
             >
                 <FadeLoader color={BASIC_COLOR} size={50} />
             </Backdrop>
-            {/* <DrawerHeader /> */}
             <p>This account has {userNfts.length} items</p>
             {
                 userNfts.length > 0 && (

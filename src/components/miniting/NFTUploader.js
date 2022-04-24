@@ -41,6 +41,8 @@ export const NFTUploader = () => {
     }
 
     const pinFileToIPFS = async () => {
+
+        // TODO: Called only when the file is uploaded to site.
         setLoading(true)
         if (file) {
             try {

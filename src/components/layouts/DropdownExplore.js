@@ -4,8 +4,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import sidebarConfig from './SidebarConfig';
 import { Divider, Link } from '@mui/material';
-import ListItemText from '@mui/material/ListItemText';
-import { Typography } from '@mui/material';
 import ListItemIcon from '@mui/material/ListItemIcon';
 
 export default function DropdownExpore() {
@@ -40,21 +38,15 @@ export default function DropdownExpore() {
       >
         {
           sidebarConfig.map((item) => (
-            // <NavItem key={item.title} item={item} active={match} />
             <MenuItem onClick={handleClose}>
               <ListItemIcon>
                 {item.icon}
               </ListItemIcon>
               <Link href={item.path} underline='none' color={'text.secondary'}>{item.title}</Link>
-              {/* <Typography variant="body2" color="text.secondary">
-                ⌘X
-              </Typography> */}
               <Divider />
             </MenuItem>
           ))
         }
-        {/* <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem> */}
       </Menu>
     </div>
   );
