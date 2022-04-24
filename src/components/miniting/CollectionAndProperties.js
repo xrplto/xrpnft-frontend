@@ -13,7 +13,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Caption } from 'components/atoms/Caption';
 import Trait from './Trait';
 import AddTraitDgContent from './AddTraitDgContent'
 import BaseDialog from 'components/dialog/BaseDialog';
@@ -33,7 +32,7 @@ export default function CollectionAndPropertis() {
 
   return (
     <Stack>
-      <Caption caption={'Collection'} />
+      <Typography variant='caption' >Collection</Typography>
       <Typography variant='body1'>
         This is the collection where your item will appear.
       </Typography>
@@ -77,7 +76,6 @@ export default function CollectionAndPropertis() {
         </Box>
         <Divider />
       </List>
-      {/* </Demo> */}
       <BaseDialog
         isOpen={isOpenTraitAddDg}
         close={openTraitAddDg}

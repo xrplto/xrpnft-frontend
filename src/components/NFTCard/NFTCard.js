@@ -20,7 +20,6 @@ export default function NFTCard({ nftoken }) {
   const [imgUrl, setImgUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const nft = parsePinataNFT(tid, uri);
-  const [tokenURI, setTokenURI] = useState()
   // const [sellOffered, setSellOffered] = useState(false)
 
   // const getOffers = () => {
@@ -34,8 +33,7 @@ export default function NFTCard({ nftoken }) {
   const getNFTMetadata = async () => {
     setLoading(true)
 
-    let tokenURI = parseNFTUri(uri);
-    setTokenURI(parseNFTUri(uri))
+    const tokenURI = parseNFTUri(uri);
     if (tokenURI) {
       if (tokenURI.header === 'xrpnft.com') {
         try {
@@ -47,16 +45,13 @@ export default function NFTCard({ nftoken }) {
       }
       else if (tokenURI.header === 'common') setImgUrl(tokenURI.main)
       else if (tokenURI.header === 'ipfs') {
-        // const res = await axios.get('https://ipfs.infura.io/ipfs/' + tokenURI.main)
-        setImgUrl('https://ipfs.infura.io/ipfs/' + tokenURI.main)
+        setImgUrl('https://ipfs.io/ipfs/' + tokenURI.main)
       }
     }
     setLoading(false)
   }
 
   useEffect(() => {
-    // getOffers()
-    // https://ipfs.io/ipfs/<CID>
     getNFTMetadata()
   }, [])
 

@@ -2,7 +2,6 @@ import { Card, Stack } from '@mui/material';
 import styled from 'styled-components';
 import { useState, useRef } from 'react'
 import ImageIcon from '@mui/icons-material/Image';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import { LoadingButton } from '@mui/lab';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
@@ -109,7 +108,7 @@ export const NFTUploader = () => {
                         <CloseIcon color='white' />
                     </IconButton>
                 </CardOverlay>
-                <img src={fileUrl} />
+                <img src={fileUrl} alt='' style={fileUrl ? {} : { display: 'none' }} />
                 <ImageIcon fontSize='large' sx={fileUrl ? { display: 'none' } : {}} />
 
             </Card>

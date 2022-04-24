@@ -8,31 +8,37 @@ const getIcon = (name) => <Icon icon={name} width={22} height={22} />;
 
 const sidebarConfig = [
   {
+    id: 'all',
     title: 'All NFTs',
     path: '/',
     icon: getIcon(mint)
   },
   {
+    id: 'xrpnft',
     title: 'SiteNFTs',
     path: '/xrpnfts',
     icon: getIcon(shoppingBagFill)
   },
   {
+    id: 'all',
     title: 'Collections',
     path: '/#',
     icon: getIcon('ep:collection')
   },
   {
+    id: 'token-tester',
     title: 'NFToken Tester',
     path: '/tester',
     icon: getIcon('mdi:postage-stamp')
   },
   {
+    id: 'spinners',
     title: 'Spinners',
     path: '/spinners',
     icon: getIcon(spinnerIcon)
   },
   {
+    id: 'progress',
     title: 'Progress',
     path: '/progress',
     icon: getIcon(progressBar)

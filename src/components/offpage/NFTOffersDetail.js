@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useEffect, useState } from 'react'
 import Divider from '@mui/material/Divider'
 import { Typography, Stack, ButtonGroup, Link, Skeleton } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
@@ -65,21 +65,21 @@ NFTOffersDetail.propTypes = NFTokenProps
 
 export default function NFTOffersDetail({ tokenID, URI }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
-    const [pageLoading, setPageLoading] = React.useState(false)
-    const [loading, setLoading] = React.useState(false)
-    const [sellOffers, setSellOffers] = React.useState({})
-    const [offers, setOffers] = React.useState({})
+    const [pageLoading, setPageLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [sellOffers, setSellOffers] = useState({})
+    const [offers, setOffers] = useState({})
     const THREE_DAYS_IN_MS = 3 * 24 * 60 * 60 * 1000
     const NOW_IN_MS = new Date().getTime()
     const login = useSelector(state => state.account.login)
     const account = useSelector(state => state.account.account)
     const navigate = useNavigate()
-    const [owner, setOwner] = React.useState(null)
-    const [price, setPrice] = React.useState(0)
-    const [expanded, setExpanded] = React.useState('panel1')
-    const [expandedPrice, setExpandedPrice] = React.useState(true)
-    const [expandedListing, setExpandedListing] = React.useState(true)
-    const [expandedOffers, setExpandedOffers] = React.useState(true)
+    const [owner, setOwner] = useState(null)
+    const [price, setPrice] = useState(0)
+    const [expanded, setExpanded] = useState('panel1')
+    const [expandedPrice, setExpandedPrice] = useState(true)
+    const [expandedListing, setExpandedListing] = useState(true)
+    const [expandedOffers, setExpandedOffers] = useState(true)
 
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false)
@@ -149,7 +149,7 @@ export default function NFTOffersDetail({ tokenID, URI }) {
         setPageLoading(false)
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         let mounted = true
         fetchListingAndOffers(mounted)
         return () => {
@@ -182,7 +182,6 @@ export default function NFTOffersDetail({ tokenID, URI }) {
                 <AccordionSummary
                     aria-controls='panel1a-content'
                     id='panel1a-header'
-                    expandIcon={<ExpandMoreIcon />}
                 >
                     <Stack spacing={2}>
                         <Typography>Sale ends {new Date(THREE_DAYS_IN_MS + NOW_IN_MS).toUTCString()}</Typography>
@@ -227,7 +226,7 @@ export default function NFTOffersDetail({ tokenID, URI }) {
                     </ButtonGroup>
                 </AccordionDetails>
             </Accordion>
-            <Accordion expanded={expandedPrice} onChange={() => setExpandedPrice(!expandedPrice)} >
+            <Accordion onChange={() => setExpandedPrice(!expandedPrice)} >
                 <AccordionSummary
                     aria-controls='panel2a-content'
                     id='panel2a-header'

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Context from './Context'
-import Router from './routes';
+import Router from './Routes';
 import ThemeConfig from './theme';
 
 export default function App() {

@@ -98,7 +98,7 @@ export default function Navbar() {
                             <Button startIcon={<Icon icon="ic:round-account-balance-wallet" />}>My NFTs</Button>
                         </Link>
                         <Link href='/' underline='none'
-                            component='button'
+                            // component='button'
                         >
                             <Button endIcon={<LogoutIcon />} onClick={handleDisconnect} >
                                 {key.slice(0, 4) + '...' + key.slice(-2)}

@@ -1,12 +1,6 @@
 import { Icon } from '@iconify/react';
 import { useRef, useState, useEffect } from 'react';
 import userLock from '@iconify/icons-fa-solid/user-lock';
-//import homeFill from '@iconify/icons-eva/home-fill';
-//import personFill from '@iconify/icons-eva/person-fill';
-//import settings2Fill from '@iconify/icons-eva/settings-2-fill';
-//import { Link as RouterLink } from 'react-router-dom';
-// material
-//import { alpha } from '@mui/material/styles';
 import {
     Box,
     Typography,
@@ -17,7 +11,6 @@ import {
     Stack
 } from '@mui/material';
 
-// components
 import MenuPopover from '../MenuPopover';
 import LoginDialog from '../LoginDialog';
 //
@@ -37,7 +30,7 @@ import axios from 'axios';
 const SERVER_BASE_URL = 'https://ws.xrpnft.com/api/xumm';
 // ----------------------------------------------------------------------
 export default function AccountPopover() {
-    const { accountProfile, setAccountProfile, setLoading } = useContext(Context);
+    const { accountProfile, setAccountProfile } = useContext(Context);
     const anchorRef = useRef(null);
     const [open, setOpen] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
@@ -90,7 +83,7 @@ export default function AccountPopover() {
     }, [openLogin, uuid, setAccountProfile]);
 
     const onConnectXumm = async () => {
-        setLoading(true);
+        // setLoading(true);
         try {
             const res = await axios.post(`${SERVER_BASE_URL}/login`);
             if (res.status === 200) {
@@ -104,11 +97,11 @@ export default function AccountPopover() {
         } catch (err) {
             alert(err);
         }
-        setLoading(false);
+        // setLoading(false);
     };
 
     const onDisconnectXumm = async (uuid) => {
-        setLoading(true);
+        // setLoading(true);
         try {
             const res = await axios.delete(`${SERVER_BASE_URL}/logout/${uuid}`);
             if (res.status === 200) {
@@ -118,7 +111,7 @@ export default function AccountPopover() {
             }
         } catch(err) {
         }
-        setLoading(false);
+        // setLoading(false);
     };
 
     const handleOpen = () => {

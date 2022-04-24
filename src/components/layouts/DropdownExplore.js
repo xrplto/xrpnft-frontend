@@ -38,7 +38,7 @@ export default function DropdownExpore() {
       >
         {
           sidebarConfig.map((item) => (
-            <MenuItem onClick={handleClose}>
+            <MenuItem onClick={handleClose} key={item.id}>
               <ListItemIcon>
                 {item.icon}
               </ListItemIcon>

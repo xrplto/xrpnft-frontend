@@ -4,7 +4,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { setFlags } from 'app/slices/ipfSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { TOKEN_FLAGS, NON_FLAGS } from 'utils/constants';
+import { TOKEN_FLAGS } from 'utils/constants';
 
 export default function TokenFlagsForm() {
 
@@ -23,7 +23,7 @@ export default function TokenFlagsForm() {
                         label={flag.label}
                         value={flag.value}
                         control={
-                            <Checkbox checked={flags & flag.value} onChange={handleFlagChange} />
+                            <Checkbox checked={(flags & flag.value) !== 0} onChange={handleFlagChange} />
                         }
                     />
                 ))

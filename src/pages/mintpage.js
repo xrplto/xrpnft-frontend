@@ -9,9 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import Page from 'components/Page';
-import { Heading } from 'components/atoms/Heading';
 import { NFTUploader } from 'components/miniting/NFTUploader';
-import { Caption } from 'components/atoms/Caption';
 import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN } from 'utils/constants';
 import { LoadingButton } from '@mui/lab';
 import { mintToken } from 'utils/tokenActions'
@@ -86,8 +84,12 @@ export default function Minting() {
     <Page title='Create - XRPL NFT'>
       <Container maxWidth='md' sx={{ marginBottom: '3vh' }}>
         <Stack spacing={2} marginBottom={3}>
-          <Heading title={'Create New Item'} />
-          <Caption caption={'Image, Video, Audio, or 3D Model'} />
+          <Typography variant="h4" >
+            Create New Item
+          </Typography>
+          <Typography variant='caption'>
+            {'Image, Video, Audio, or 3D Model'}
+          </Typography>
           <Typography variant='body1'>
             File types supported: ' + {SUPPORTED_FILE_TYPES.join(', ')} + '. Max size: 100MB'
           </Typography>
@@ -97,11 +99,13 @@ export default function Minting() {
           </Typography>
         </Stack>
         <Stack spacing={2} marginBottom={3}>
-          <Caption caption={'Set Flags'} />
+          <Typography variant='caption' >
+            {'Set Flags'}
+          </Typography>
           <TokenFlagsForm />
         </Stack>
         <Stack spacing={2} marginBottom={3}>
-          <Caption caption={'Name'} />
+          <Typography variant='caption'>Name</Typography>
           <TextField required placeholder='Item name' margin='dense'
             onChange={handleNameFieldChange}
             value={nftName}
@@ -112,7 +116,7 @@ export default function Minting() {
             }} />
         </Stack>
         <Stack spacing={2} marginBottom={3}>
-          <Caption caption={'External link'} />
+          <Typography variant='caption'>External link</Typography>
           <Typography variant='body1'>
             {'This site will include a link to this URL on this item\'s detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.'}
           </Typography>
@@ -128,7 +132,7 @@ export default function Minting() {
             }} />
         </Stack>
         <Stack spacing={2} marginBottom={3}>
-          <Caption caption={'Description'} />
+          <Typography variant='caption' >Description</Typography>
           <Typography variant='body1'>
             {'The description will be included on the item\'s detail page underneath its image. Markdown syntax is supported.'}
           </Typography>
