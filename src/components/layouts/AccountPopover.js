@@ -13,22 +13,12 @@ import {
 
 import MenuPopover from '../MenuPopover';
 import LoginDialog from '../LoginDialog';
-//
 import { useContext } from 'react'
-import Context from '../../Context'
-
-//import profile from '../_mocks_/profile';
+import Context from 'Context'
 import axios from 'axios';
 
-
-
-// import {
-//     SupervisorAccount as SupervisorAccountIcon
-// } from '@mui/icons-material'
-// ----------------------------------------------------------------------
-//const SERVER_BASE_URL = 'http://127.0.0.1/api/xumm';
 const SERVER_BASE_URL = 'https://ws.xrpnft.com/api/xumm';
-// ----------------------------------------------------------------------
+
 export default function AccountPopover() {
     const { accountProfile, setAccountProfile } = useContext(Context);
     const anchorRef = useRef(null);
@@ -83,7 +73,6 @@ export default function AccountPopover() {
     }, [openLogin, uuid, setAccountProfile]);
 
     const onConnectXumm = async () => {
-        // setLoading(true);
         try {
             const res = await axios.post(`${SERVER_BASE_URL}/login`);
             if (res.status === 200) {
@@ -97,11 +86,9 @@ export default function AccountPopover() {
         } catch (err) {
             alert(err);
         }
-        // setLoading(false);
     };
 
     const onDisconnectXumm = async (uuid) => {
-        // setLoading(true);
         try {
             const res = await axios.delete(`${SERVER_BASE_URL}/logout/${uuid}`);
             if (res.status === 200) {
@@ -111,7 +98,6 @@ export default function AccountPopover() {
             }
         } catch(err) {
         }
-        // setLoading(false);
     };
 
     const handleOpen = () => {
@@ -136,31 +122,11 @@ export default function AccountPopover() {
         onDisconnectXumm(uuid);
     };
 
-    // <Alert
-    //     variant="outlined"
-    //     severity="success">
-    //     <AlertTitle>{accountProfile.account}</AlertTitle>
-    //     <br/>
-    //     Login successful!
-    //     <br/>
-    // </Alert>
-
-    // <Alert severity="success" color="info">
-    //     Login Successful!
-    // </Alert>
-
-    // <Snackbar open={true} autoHideDuration={2000} onClose={handleClose}>
-    //     <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-    //         Login Successful!
-    //     </Alert>
-    // </Snackbar>
-
     return (
         <>
             <IconButton
                 ref={anchorRef}
                 onClick={handleOpen} >
-                {/* <SupervisorAccountIcon fontSize="medium"/> */}
                 <Icon icon={userLock}/>
             </IconButton>
 

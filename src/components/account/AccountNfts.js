@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { useEffect, useState } from "react";
 import axios from 'axios'
-import { Grid,Backdrop } from "@mui/material";
+import { Grid, Backdrop } from "@mui/material";
 import { BASE_URL, BASIC_COLOR } from "utils/constants";
 import { FadeLoader } from 'react-spinners';
 import NFTCard from 'components/NFTCard/NFTCard';
@@ -30,7 +30,7 @@ export default function AccountNfts() {
         return () => {
             mounted = false
         }
-    },[])
+    }, [])
     return (
         <>
             <Backdrop
@@ -42,10 +42,10 @@ export default function AccountNfts() {
             <p>This account has {userNfts.length} items</p>
             {
                 userNfts.length > 0 && (
-                    <Grid container spacing={2}>
+                    <Grid container spacing={2} justifyContent='center'>
                         {
                             userNfts.map((nft) => (
-                                <Grid item xs={12} sm={6} md={3} lg={3}
+                                <Grid item
                                     key={nft.TokenID}
                                 >
                                     <NFTCard nftoken={{ tid: nft.TokenID, uri: nft.URI }} key={nft.TokenID} />

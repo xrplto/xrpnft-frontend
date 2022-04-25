@@ -18,15 +18,6 @@ export const StyledBtn = styled(Button)`
 }
 `
 
-// export const StyledLink = styled(Link)`
-//   &.MuiLink-root {
-//     text-decoration: none;
-//     &:hover {
-//       cursor: pointer;
-//     }
-//   }
-// `
-
 export const DetailRow = muiStyled('div')({
   display: 'flex',
   justifyContent: 'space-between',

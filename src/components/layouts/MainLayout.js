@@ -23,7 +23,7 @@ export default function MainLayout() {
                 <Navbar />
             </StyledAppBar>
             <Offset />
-            <Container maxWidth={false}>
+            <Container maxWidth={false} sx={{marginBottom: 5}}>
                 <Outlet />
             </Container>
         </Box>
