@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import { useState } from 'react'
 
 export const useSnackbar = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -15,5 +15,5 @@ export const useSnackbar = () => {
         setIsOpen(false)
     }
 
-    return {isOpen, msg, variant, openSnackbar, closeSnackbar}
+    return { isOpen, msg, variant, openSnackbar, closeSnackbar }
 }

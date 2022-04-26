@@ -7,7 +7,7 @@ import ProgressPage from 'pages/progress/ProgressPage';
 import NotFound from 'pages/Page404';
 import Minting from 'pages/mintpage'
 import NFTInfo from 'pages/offpage/OffPage'
-import Account from 'pages/account/Account'
+import Account from 'pages/account/MyNFTs'
 import LoginPage from 'pages/LoginPage';
 import { XRPNFTList } from 'components/nftList/XRPNFTList';
 import PersistentDrawerLeft from 'components/common/Drawer';
@@ -28,8 +28,7 @@ export default function Router() {
                 { path: 'create', element: <Minting /> },
                 { path: 'login', element: <LoginPage /> },
                 { path: 'account', element: <Account /> },
-                { path: '/xrpnfts', element: <XRPNFTList /> },
-                { path: '/drawer', element: <PersistentDrawerLeft /> },
+                { path: 'xrpnfts', element: <XRPNFTList /> },
                 { path: '*', element: <Navigate to="/404/NotFound" /> }
             ]
         },

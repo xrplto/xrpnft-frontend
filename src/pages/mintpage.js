@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom'
 import TokenFlagsForm from 'components/miniting/TokenFlagsForm';
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
-import CollectionAndPropertis from 'components/miniting/CollectionAndProperties';
+import CollectionAndProperties from 'components/miniting/CollectionAndProperties';
 
 export default function Minting() {
 
@@ -154,7 +154,7 @@ export default function Minting() {
               }
             }} />
         </Stack>
-        <CollectionAndPropertis />
+        <CollectionAndProperties />
         <LoadingButton
           sx={{ margin: 1, padding: 1 }}
           loading={loading}

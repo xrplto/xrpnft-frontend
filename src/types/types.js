@@ -1,10 +1,5 @@
 import PropTypes from 'prop-types';
 
-// export const NFTokenProps = {
-//     tokenID : PropTypes.string,
-//     URI: PropTypes.string
-// }
-
 export const SnackbarProps = {
     isOpen: PropTypes.bool,
     close: PropTypes.func,
@@ -36,10 +31,17 @@ export const ListingsListProps = {
 export const TraitProps = {
     id: PropTypes.string,
     type: PropTypes.string,
-    value: PropTypes.string
+    value: PropTypes.number,
+    total: PropTypes.number,
 }
 
 export const AddTraitDgProp = {
+    save: PropTypes.func,
+    close: PropTypes.func,
+    properties: PropTypes.array
+}
+
+export const AddLevelDgProp = {
     save: PropTypes.func,
     close: PropTypes.func,
     properties: PropTypes.array

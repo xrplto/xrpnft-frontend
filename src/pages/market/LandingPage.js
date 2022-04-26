@@ -3,7 +3,7 @@ import { resetFlags } from 'app/slices/filterSlice';
 import { useDispatch } from 'react-redux'
 import { resetNFTs } from 'app/slices/nftsSlice'
 import PersistentDrawerLeft from 'components/common/Drawer';
-import { NFTList } from 'components/nftList/NFTList';
+import { AllNFTs } from 'components/nftList/AllNFTs';
 
 
 export default function XrplNFTList() {
@@ -17,7 +17,7 @@ export default function XrplNFTList() {
 
   return (
     <PersistentDrawerLeft>
-      <NFTList />
+      <AllNFTs />
     </PersistentDrawerLeft>
   );
 }
