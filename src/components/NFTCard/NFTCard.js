@@ -1,5 +1,5 @@
 import { parsePinataNFT } from 'utils/pinata';
-import { parseNFTUri } from 'utils/utils';
+import { parseNFTUri, getNFTMetadata } from 'utils/utils';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { PINATA_GATEWAY } from 'utils/constants';
@@ -30,29 +30,17 @@ export default function NFTCard({ nftoken }) {
   //     // if(offers) setSellOffered(true)
   // }
 
-  const getNFTMetadata = async () => {
+  const getImgUrl = async () => {
     setLoading(true)
 
     const tokenURI = parseNFTUri(uri);
-    if (tokenURI) {
-      if (tokenURI.header === 'xrpnft.com') {
-        try {
-          const res = await axios.get(PINATA_GATEWAY + tokenURI.main)
-          setImgUrl(PINATA_GATEWAY + res.data.fileUrl.slice(11))
-        } catch (e) {
-          console.log(e)
-        }
-      }
-      else if (tokenURI.header === 'common') setImgUrl(tokenURI.main)
-      else if (tokenURI.header === 'ipfs') {
-        setImgUrl('https://ipfs.io/ipfs/' + tokenURI.main)
-      }
-    }
+    const imgurl = await getNFTMetadata(tokenURI)
+    setImgUrl(imgurl)
     setLoading(false)
   }
 
   useEffect(() => {
-    getNFTMetadata()
+    getImgUrl()
   }, [])
 
   return (

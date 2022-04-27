@@ -1,5 +1,7 @@
 import { format, formatDistanceToNow } from 'date-fns';
 import { replace } from 'lodash';
+import axios from 'axios';
+import { PINATA_GATEWAY } from 'utils/constants';
 import numeral from 'numeral';
 const xrpl = require("xrpl");
 const AddressCodec = require('ripple-address-codec');
@@ -86,7 +88,7 @@ export function parseURI(nftoken_uri_hex) {
 export const parseNFTUri = (tokenURI) => {
     const regex_hex = /^[a-z0-9]+$/i
     const regex_uri = /^[a-z0-9:./]+$/i
-    if (!tokenURI ) return null
+    if (!tokenURI) return null
     if (regex_hex.test(tokenURI)) {
         const uriString = xrpl.convertHexToString(tokenURI)
         if (regex_uri.test(uriString) && uriString.length > 45) { // min length of ipfs hash is 46
@@ -110,12 +112,67 @@ export const parseNFTUri = (tokenURI) => {
             }
             else return {
                 header: 'common',
-                main: uriString
+                main: uriString.replace('infura.','')
             }
         }
         else return null
     }
     else return null
+}
+
+export const getNFTMetadata = async (tokenURI) => {
+
+    let imgurl
+
+    if (tokenURI) {
+        if (tokenURI.header === 'xrpnft.com') {
+            try {
+                const res = await axios.get(PINATA_GATEWAY + tokenURI.main)
+                const type = res.headers['content-type']
+                if (type.slice(0, 5) === 'image')
+                    imgurl = PINATA_GATEWAY + res.data.fileUrl.slice(11)
+                else {
+                    imgurl = PINATA_GATEWAY + tokenURI.main
+                }
+
+            } catch (e) {
+                console.log(e)
+            }
+        }
+        else if (tokenURI.header === 'common') {
+            try {
+                const res = await axios.get(tokenURI.main)
+                const type = res.headers['content-type']
+                if (type.slice(0, 5) === 'image')
+                    imgurl = tokenURI.main
+                else {
+                    if (res.data.image)
+                        imgurl = res.data.image
+                    else
+                        imgurl = tokenURI.main
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        else if (tokenURI.header === 'ipfs') {
+            try {
+                const res = await axios.get('https://ipfs.io/ipfs/' + tokenURI.main)
+                const type = res.headers['content-type']
+                if (type.slice(0, 5) === 'image')
+                    imgurl = 'https://ipfs.io/ipfs/' + tokenURI.main
+                else {
+                    if (res.data.image)
+                        imgurl = res.data.image
+                    else
+                        imgurl = 'https://ipfs.io/ipfs/' + tokenURI.main
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    }
+    return imgurl
 }
 
 // ----------------------------------------------------------------------

@@ -11,7 +11,6 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
 import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 import TimelineIcon from '@mui/icons-material/Timeline'
 import { CountdownTimer } from './CountDownTimer'
-import { NFTokenProps } from 'types/types'
 import ListIcon from '@mui/icons-material/List'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -61,9 +60,8 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 }))
 
 
-NFTOffersDetail.propTypes = NFTokenProps
 
-export default function NFTOffersDetail({ tokenID, URI }) {
+export default function NFTOffersDetail({ tokenID }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const [pageLoading, setPageLoading] = useState(false)
     const [loading, setLoading] = useState(false)

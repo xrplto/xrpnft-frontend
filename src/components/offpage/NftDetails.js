@@ -14,8 +14,8 @@ import { DetailRow } from 'components/atoms/StyledComponents'
 import { styled } from '@mui/material/styles';
 import NFTImgCard from './NFTPreview';
 import InfoIcon from '@mui/icons-material/Info';
-import { NFTokenProps } from 'types/types'
 import { Icon } from '@iconify/react';
+import { parseNFTUri, getNFTMetadata } from 'utils/utils';
 
 const Accordion = styled((props) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -58,10 +58,20 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
     borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-NFTDetails.propTypes = NFTokenProps
 
 export default function NFTDetails({ tokenID, URI }) {
+    const [imgUri, setImgUri] = React.useState('')
     const nft = parseNFT(tokenID, URI);
+    const getImgUrl = async () => {
+
+        const tokenURI = parseNFTUri(URI);
+        const imgurl = await getNFTMetadata(tokenURI)
+        setImgUri(imgurl)
+    }
+
+    React.useEffect(() => {
+        getImgUrl()
+    },[])
 
     // const [expanded, setExpanded] = React.useState('panel1')
 
@@ -70,7 +80,7 @@ export default function NFTDetails({ tokenID, URI }) {
     // };
     return (
         <div>
-            <NFTImgCard />
+            <NFTImgCard uri={imgUri} />
             <Accordion expanded={true} sx={{ marginTop: 2 }}>
                 <AccordionSummary
                     // expandIcon={<ExpandMoreIcon />}

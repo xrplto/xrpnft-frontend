@@ -15,13 +15,6 @@ export const NFTCardProps = {
     nftoken: PropTypes.object
 }
 
-export const NFTokenProps = {
-    tid: PropTypes.string,
-    flag: PropTypes.number,
-    issuer: PropTypes.string,
-    uri: PropTypes.string | null
-}
-
 export const ListingsListProps = {
     tokenID: PropTypes.string,
     listings: PropTypes.object,

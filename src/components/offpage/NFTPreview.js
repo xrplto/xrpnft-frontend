@@ -8,7 +8,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-export default function NFTPreview() {
+export default function NFTPreview({uri}) {
   return (
   <Card sx={{ boxShadow: 'none' }}>
       <CardHeader
@@ -22,7 +22,7 @@ export default function NFTPreview() {
       />
       <CardMedia
         component='img'
-        image='/static/cover.jpg'
+        image={uri}
         alt='Paella dish'
       />
       <CardActions disableSpacing>
