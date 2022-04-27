@@ -28,6 +28,12 @@ export const TraitProps = {
     total: PropTypes.number,
 }
 
+export const NFTPreviewProps = {
+    uri: PropTypes.string,
+    title: PropTypes.string,
+    favorites: PropTypes.number,
+}
+
 export const AddTraitDgProp = {
     save: PropTypes.func,
     close: PropTypes.func,

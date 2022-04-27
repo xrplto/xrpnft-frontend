@@ -1,15 +1,8 @@
 import { useContext } from 'react'
 import Context from '../Context'
 import PropTypes from 'prop-types';
-// material
 import { CssBaseline } from '@mui/material';
-import { /*useTheme, */ThemeProvider, createTheme, StyledEngineProvider } from '@mui/material/styles';
-//
-// import shape from './shape';
-// import { palette_light, palette_dark } from './palette';
-// import typography from './typography';
-// import componentsOverride from './overrides';
-// import shadows, { customShadows } from './shadows';
+import { ThemeProvider, createTheme, StyledEngineProvider } from '@mui/material/styles';
 import * as React from 'react';
 import { blueGrey, grey } from '@mui/material/colors';
 // ----------------------------------------------------------------------
@@ -21,13 +14,41 @@ ThemeConfig.propTypes = {
 export default function ThemeConfig({ children }) {
     const { isDarkMode } = useContext(Context);
 
-    const theme = createTheme({
+    const xrpltheme = createTheme({
         components: {
             MuiToolbar: {
                 styleOverrides: {
                     root: {
                         minHeight: 'auto',
                     }
+                }
+            },
+            MuiAccordion: {
+                defaultProps: {
+                    elevation: 0,
+                    defaultExpanded: true,
+                    disableGutters: true,
+                },
+                styleOverrides: {
+                    root: ({ theme }) => ({
+                        border: `1px solid ${theme.palette.divider}`,
+                    })
+                }
+            },
+            MuiAccordionSummary: {
+                styleOverrides: {
+                    root: ({ theme }) => (
+                        {
+                            backgroundColor:
+                                theme.palette.mode === 'dark'
+                                    ? 'rgba(255, 255, 255, .05)'
+                                    : 'rgba(0, 0, 0, .03)',
+                            '& .MuiAccordionSummary-content': {
+                                marginLeft: theme.spacing(1),
+                            },
+                            borderBottom: `1px solid ${theme.palette.divider}`,
+                        }
+                    )
                 }
             },
             MuiTypography: {
@@ -106,7 +127,7 @@ export default function ThemeConfig({ children }) {
 
     return (
         <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={xrpltheme}>
                 <CssBaseline />
                 {children}
             </ThemeProvider>

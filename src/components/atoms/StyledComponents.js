@@ -21,5 +21,5 @@ export const StyledBtn = styled(Button)`
 export const DetailRow = muiStyled('div')({
   display: 'flex',
   justifyContent: 'space-between',
-  alignItems: 'center'
+  alignItems: 'center',
 })

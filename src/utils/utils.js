@@ -253,17 +253,9 @@ export function parseNFT(tokenID, tokenURI) {
     const scrambledTaxon = new BigNumber(tokenID.slice(48, 56), 16).toNumber();
     const sequence = new BigNumber(tokenID.slice(56, 64), 16).toNumber();
 
-    /*var flags = {
-        "tfBurnable": false, // Issuer can destroy the object.
-        "tfOnlyXRP": false,  // The tokens can only be offered or sold for XRP
-        "tfTrustLine": false, // Issuer wants a trustline to be automatically created.
-        "tfTransferable": false // Indicates that this NFT can be transferred.
-    };*/
-
     return {
         issuer: issuer,
         flags: parseNftFlag(flags),
-        tokenID: tokenID,
         tokenURI: parseURI(tokenURI),
         transferFee: transferFee,
         tokenTaxon: cipheredTaxon(sequence, scrambledTaxon),
