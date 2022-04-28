@@ -6,7 +6,8 @@ const initialState = {
   metadata: {
     name: '',
     description: '',
-    externalLink: ''
+    externalLink: '',
+    properties: []
   }
 }
 export const ipfSlice = createSlice({

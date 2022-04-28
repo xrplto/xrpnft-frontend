@@ -16,13 +16,6 @@ export default function ThemeConfig({ children }) {
 
     const xrpltheme = createTheme({
         components: {
-            MuiToolbar: {
-                styleOverrides: {
-                    root: {
-                        minHeight: 'auto',
-                    }
-                }
-            },
             MuiAccordion: {
                 defaultProps: {
                     elevation: 0,
@@ -46,9 +39,50 @@ export default function ThemeConfig({ children }) {
                             '& .MuiAccordionSummary-content': {
                                 marginLeft: theme.spacing(1),
                             },
-                            borderBottom: `1px solid ${theme.palette.divider}`,
                         }
                     )
+                }
+            },
+            MuiDialog: {
+                styleOverrides: {
+                    root: {
+                        '& .MuiDialog-paper': {
+                            minWidth: 400
+                        }
+                    }
+                }
+            },
+            MuiLink: {
+                variants: [
+                    {
+                        props: { variant: 'menu-item' },
+                        style: {
+                            textTransform: 'uppercase',
+                        }
+                    },
+                ],
+
+            },
+            MuiListItemText: {
+                styleOverrides: {
+                    root: {
+                        overflowWrap: 'anywhere',
+                    }
+                }
+            },
+            MuiListSubheader: {
+                styleOverrides: {
+                    root: {
+                        minWidth: 120,
+                        overflowWrap: 'anywhere'
+                    }
+                }
+            },
+            MuiToolbar: {
+                styleOverrides: {
+                    root: {
+                        minHeight: 'auto',
+                    }
                 }
             },
             MuiTypography: {
@@ -70,25 +104,6 @@ export default function ThemeConfig({ children }) {
                     },
                 ]
             },
-            MuiDialog: {
-                styleOverrides: {
-                    root: {
-                        '& .MuiDialog-paper': {
-                            minWidth: 400
-                        }
-                    }
-                }
-            },
-            MuiLink: {
-                variants: [
-                    {
-                        props: { variant: 'menu-item' },
-                        style: {
-                            textTransform: 'uppercase'
-                        }
-                    }
-                ],
-            }
         },
         palette: isDarkMode ? {
             mode: 'dark',

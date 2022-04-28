@@ -3,43 +3,141 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
+    Box,
+    Container,
     Divider,
+    Grid,
     Link,
+    List,
+    ListItem,
+    ListItemText,
+    ListSubheader,
     Stack,
     Typography,
 } from '@mui/material'
 import DescriptionIcon from '@mui/icons-material/Description';
-import InfoIcon from '@mui/icons-material/Info';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ArticleIcon from '@mui/icons-material/Article';
 import { Icon } from '@iconify/react';
-import { DetailRow } from 'components/atoms/StyledComponents'
-import MoreIcon from '@mui/icons-material/More';
 import NFTPreview from './NFTPreview';
-import { parseNFT, parseNFTUri, getNFTMetadata } from 'utils/utils';
+import { parseNFT, parseNFTUri, getNFTMetadata, parseNFTokenId, parseURI } from 'utils/utils';
+import Trait from 'components/miniting/NFTProperties/Trait';
+
+
+const properties = [
+    {
+        id: 1,
+        type: 'head',
+        value: 'gold',
+    },
+    {
+        id: 2,
+        type: 'arms',
+        value: 'thin',
+    },
+]
 
 export default function NFTDetails({ tokenID, URI }) {
     const [imgUri, setImgUri] = useState('')
-    const nft = parseNFT(tokenID, URI);
-    const getImgUrl = async () => {
-
-        const tokenURI = parseNFTUri(URI);
-        const imgurl = await getNFTMetadata(tokenURI)
-        setImgUri(imgurl)
-    }
+    const nft = parseNFTokenId(tokenID)
+    const uri = parseNFTUri(URI)
 
     useEffect(() => {
-        getImgUrl()
+        if (uri)
+            setImgUri(uri.main)
     }, [])
 
     return (
-        <div>
-            <NFTPreview uri={imgUri} title='Test title' favorites={0} />
-            <Accordion
-                sx={{
-                    marginTop: 2,
-                    border: '1px solid palette.divider'
-                }}
-            >
+        <Box >
+            {/* NFT Previe image start--- */}
+            {imgUri &&
+                <NFTPreview uri={imgUri} title='Test title' favorites={0} />
+            }
+            {/* NFT Previe image end--- */}
+
+            {/* NFT Detail info start--- */}
+            <Accordion sx={{ marginTop: 2 }}>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls='panel3a-content'
+                    id='panel3a-header'
+                >
+                    <Stack spacing={2} direction='row'>
+                        <ArticleIcon />
+                        <Typography variant='string' >Details</Typography>
+                    </Stack>
+                </AccordionSummary>
+                <AccordionDetails
+                    sx={{
+                        overflow: 'hidden'
+                    }}
+                >
+                    <List>
+                        <ListItem disablePadding>
+                            <ListSubheader>
+                                TokenId
+                            </ListSubheader>
+                            <ListItemText primary={tokenID} />
+                        </ListItem>
+                        <ListItem disablePadding >
+                            <ListSubheader>
+                                Flags
+                            </ListSubheader>
+                            <Stack
+                                direction='row'
+                                spacing={1}
+                                sx={{ fontSize: 20, gap: 2 }}
+                                divider={<Divider orientation='vertical' flexItem />}>
+                                {nft.flags.tfBurnable && <Icon icon='ps:feedburner' />}
+                                {nft.flags.tfOnlyXRP && <Icon icon='teenyicons:ripple-solid' />}
+                                {nft.flags.tfTrustLine && <Icon icon='codicon:workspace-trusted' />}
+                                {nft.flags.tfTransferable && <Icon icon='mdi:transit-transfer' />}
+                                {nft.flags.tfNoFlag && <Icon icon='carbon:not-available' />}
+                            </Stack>
+                        </ListItem>
+                        <ListItem disablePadding disableGutters >
+                            <ListSubheader>
+                                Issuer
+                            </ListSubheader>
+                            <Link underline='none'
+                                href='#'
+                                variant='info'
+                                sx={{ marginRight: 0, overflowWrap: 'anywhere' }}
+                            >
+                                {nft.issuer}
+                            </Link>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListSubheader>
+                                Transfer Fee
+                            </ListSubheader>
+                            <ListItemText primary={nft.transferFee} />
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListSubheader>
+                                Taxon
+                            </ListSubheader>
+                            <ListItemText primary={nft.tokenTaxon} />
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListSubheader>
+                                Sequence
+                            </ListSubheader>
+                            <ListItemText primary={nft.sequence} />
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListSubheader>
+                                URI
+                            </ListSubheader>
+                            <ListItemText primary={JSON.stringify(uri)} />
+                        </ListItem>
+                    </List>
+                </AccordionDetails>
+            </Accordion>
+            {/* NFT Detail info end--- */}
+
+            {/* NFT Description start--- */}
+            <Accordion>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls='description-content'
@@ -57,6 +155,9 @@ export default function NFTDetails({ tokenID, URI }) {
                     </Typography>
                 </AccordionDetails>
             </Accordion>
+            {/* NFT Description end--- */}
+
+            {/* NFT Properties start--- */}
             <Accordion>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -70,67 +171,19 @@ export default function NFTDetails({ tokenID, URI }) {
                     </Stack>
                 </AccordionSummary>
                 <AccordionDetails>
+                    <Container>
+                        <Grid container spacing={2} >
+                            {properties.map((property) => (
+                                <Grid item key={property.id}>
+                                    <Trait type={property.type} value={property.value} />
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Container>
                 </AccordionDetails>
             </Accordion>
-            <Accordion
-            >
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls='panel3a-content'
-                    id='panel3a-header'
-                >
-                    <Stack spacing={2} direction='row'>
-                        <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                        <Typography variant='string' >Details</Typography>
-                    </Stack>
-                </AccordionSummary>
-                <AccordionDetails>
-                    {
-                        Object.keys(nft).map((key) => (
-                            <DetailRow>
-                                <Typography variant='subtitle' >
-                                    {key}
-                                </Typography>
-                                <Link href='#' underline='none'>
-                                    {nft[key]}
-                                </Link>
-                            </DetailRow>
-                        ))
-                    }
-                    <DetailRow>
-                        <Typography variant='subtitle' >
-                            Issuer
-                        </Typography>
-                        <Link href='#' underline='none'>
-                            {nft.issuer}
-                        </Link>
-                    </DetailRow>
-                    <DetailRow>
-                        <Typography variant='subtitle' gutterBottom marginBottom={1}>
-                            Token ID
-                        </Typography>
-                        <Link href='#' underline='none'>
-                            {tokenID.slice(0, 30)}...
-                        </Link>
-                    </DetailRow>
-                    <DetailRow>
-                        <Typography variant='subtitle' marginBottom={1}>
-                            Flags
-                        </Typography>
-                        <Stack
-                            direction='row'
-                            spacing={1}
-                            sx={{ fontSize: 20, gap: 2 }}
-                            divider={<Divider orientation='vertical' flexItem />}>
-                            {nft.flags.tfBurnable && <Icon icon='ps:feedburner' />}
-                            {nft.flags.tfOnlyXRP && <Icon icon='teenyicons:ripple-solid' />}
-                            {nft.flags.tfTrustLine && <Icon icon='codicon:workspace-trusted' />}
-                            {nft.flags.tfTransferable && <Icon icon='mdi:transit-transfer' />}
-                            {nft.flags.tfNoFlag && <Icon icon='carbon:not-available' />}
-                        </Stack>
-                    </DetailRow>
-                </AccordionDetails>
-            </Accordion>
-        </div>
+            {/* NFT Properties end--- */}
+
+        </Box>
     );
 }

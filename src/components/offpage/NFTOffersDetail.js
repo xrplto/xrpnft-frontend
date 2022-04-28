@@ -169,7 +169,7 @@ export default function NFTOffersDetail({ tokenID }) {
                     </Typography>
                     {
                         !pageLoading ?
-                            <Link href='#' underline='none' color={'text.primary'}>
+                            <Link href='#' underline='none' variant='info'>
                                 {owner}
                             </Link> :
                             <Skeleton animation='wave' height={40} width='100%' />

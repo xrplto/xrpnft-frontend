@@ -17,9 +17,3 @@ export const StyledBtn = styled(Button)`
   margin: 1vw;
 }
 `
-
-export const DetailRow = muiStyled('div')({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-})
