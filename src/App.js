@@ -5,14 +5,13 @@ import ThemeConfig from './theme';
 
 export default function App() {
     // const [loading, setLoading] = useState(false);
-    const key_darkmode = 'theme:isDarkMode'
+    const key_darkmode = 'theme:dark'
     const key_profile = 'account:profile2'
     const [isDarkMode, setIsDarkMode] = useState(true);
     const [accountProfile, setAccountProfile] = useState(null);
 
-    const toggleThisTheme = (mode) => {
-        if (mode === 'isDarkMode')
-            setIsDarkMode(!isDarkMode)
+    const toggleThisTheme = () => {
+        setIsDarkMode(!isDarkMode)
     }
 
     useEffect(() => {

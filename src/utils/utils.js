@@ -90,6 +90,31 @@ export const getResponseType = (res) => {
     return res.headers['content-type']
 }
 
+const convertToHttpLink = (uriString) => {
+    if(uriString) {
+        if (uriString.slice(0, 10) === 'xrpnft.com') // the tokenURI minted from this site
+            return process.env.REACT_APP_PINATA_GATEWAY + uriString.slice(11)
+        else if (uriString.slice(0, 5) === 'https') {
+            return uriString.replace('infura.', '')
+        }
+        else if (uriString.slice(0, 4) === 'cid:') {
+            return process.env.REACT_APP_IFPS_GATEWAY + uriString.slice(4)
+        }
+        else if (uriString.slice(0, 7) === 'ipfs://') {
+            return process.env.REACT_APP_IFPS_GATEWAY + uriString.slice(7)
+        }
+        else if (uriString.slice(0, 2) === 'Qm' || uriString.slice(0, 2) === 'ba') {
+            return process.env.REACT_APP_IFPS_GATEWAY + uriString
+        }
+        else {
+            console.log(uriString)
+            return uriString
+        }
+    } else {
+        return null
+    }
+}
+
 export const parseNFTUri = (tokenURI) => {
     const regex_hex = /^[a-z0-9]+$/i
     const regex_uri = /^[a-z0-9:./]+$/i
@@ -97,87 +122,15 @@ export const parseNFTUri = (tokenURI) => {
     if (regex_hex.test(tokenURI)) {
         const uriString = xrpl.convertHexToString(tokenURI)
         if (regex_uri.test(uriString) && uriString.length > 45) { // min length of ipfs hash is 46
-
-            if (uriString.slice(0, 10) === 'xrpnft.com') // the tokenURI minted from this site
-                return {
-                    header: 'xrpnft.com',
-                    main: uriString.slice(11)
-                }
-            else if (uriString.slice(0, 2) === 'Qm' || uriString.slice(0, 4) === 'bafy') {
-                return {
-                    header: 'ipfs',
-                    main: uriString
-                }
-            }
-            else if (uriString.slice(0, 7) === 'ipfs://') {
-                return {
-                    header: 'ipfs',
-                    main: uriString.slice(7)
-                }
-            }
-            else return {
-                header: 'common',
-                main: uriString
-            }
+            return convertToHttpLink(uriString)
         }
         else return null
     }
     else return null
 }
 
-export const getNFTMetadata = async (tokenURI) => {
-
-    let imgurl
-
-    if (tokenURI) {
-        if (tokenURI.header === 'xrpnft.com') {
-            try {
-                const res = await axios.get(PINATA_GATEWAY + tokenURI.main)
-                const type = res.headers['content-type']
-                if (type.slice(0, 5) === 'image')
-                    imgurl = PINATA_GATEWAY + res.data.fileUrl.slice(11)
-                else {
-                    imgurl = PINATA_GATEWAY + tokenURI.main
-                }
-
-            } catch (e) {
-                console.log(e)
-            }
-        }
-        else if (tokenURI.header === 'common') {
-            try {
-                const res = await axios.get(tokenURI.main)
-                const type = res.headers['content-type']
-                if (type.slice(0, 5) === 'image')
-                    imgurl = tokenURI.main
-                else {
-                    if (res.data.image)
-                        imgurl = res.data.image
-                    else
-                        imgurl = tokenURI.main
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        }
-        else if (tokenURI.header === 'ipfs') {
-            try {
-                const res = await axios.get('https://ipfs.io/ipfs/' + tokenURI.main)
-                const type = res.headers['content-type']
-                if (type.slice(0, 5) === 'image')
-                    imgurl = 'https://ipfs.io/ipfs/' + tokenURI.main
-                else {
-                    if (res.data.image)
-                        imgurl = res.data.image
-                    else
-                        imgurl = 'https://ipfs.io/ipfs/' + tokenURI.main
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        }
-    }
-    return imgurl
+export const getImgUrlFromJSONResponse = (_param) => {
+    return convertToHttpLink(_param?.content)
 }
 
 // ----------------------------------------------------------------------

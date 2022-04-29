@@ -43,6 +43,27 @@ export default function ThemeConfig({ children }) {
                     )
                 }
             },
+            MuiAppBar: {
+                variants: [
+                    {
+                        props: { variant: 'drawer-app-bar' },
+                        style: ({ theme }) => ({
+                            zIndex: 100,
+                        })
+                    },
+                ],
+                styleOverrides: {
+                    root: ({ theme }) => (
+                        {
+                            top: 'auto',
+                            backgroundColor: theme.palette.background.paper,
+                            boxShadow: 'rgba(4, 17, 29, 0.25) 0px 0px 8px 0px',
+                            color: theme.palette.text.primary,
+                            zIndex: 120,
+                        }
+                    )
+                },
+            },
             MuiDialog: {
                 styleOverrides: {
                     root: {
@@ -114,9 +135,9 @@ export default function ThemeConfig({ children }) {
                 contrastText: 'black'
             },
             secondary: {
-                main: blueGrey[700],
-                light: blueGrey[500],
-                dark: blueGrey[900],
+                main: grey[700],
+                light: grey[500],
+                dark: grey[900],
                 contrastText: 'white'
             },
             background: {
@@ -126,15 +147,15 @@ export default function ThemeConfig({ children }) {
         } : {
             mode: 'light',
             primary: {
-                main: grey[700],
+                main: '#000000',
                 light: grey[500],
                 dark: grey[900],
                 contrastText: 'white'
             },
             secondary: {
-                main: blueGrey[500],
-                light: blueGrey[300],
-                dark: blueGrey[500],
+                main: grey[100],
+                light: grey[50],
+                dark: grey[200],
                 contrastText: 'white'
             }
         },

@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import CssBaseline from '@mui/material/CssBaseline';
+import {
+  Box,
+  CssBaseline,
+  Divider,
+  Drawer,
+  IconButton,
+  Toolbar,
+  Typography,
+} from '@mui/material';
+
 import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -18,8 +21,6 @@ import { Icon } from '@iconify/react';
 import { BASE_URL } from 'utils/constants';
 
 const drawerWidth = 240;
-
-
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
@@ -45,8 +46,6 @@ const AppBar = styled(MuiAppBar, {
 
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
-  top: 'auto',
-  background: theme.palette.grey[900],
   transition: theme.transitions.create(['margin', 'width'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -102,7 +101,7 @@ export default function PersistentDrawerLeft({ children }) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar open={open}>
+      <AppBar open={open} variant='drawer-app-bar'>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -122,6 +121,7 @@ export default function PersistentDrawerLeft({ children }) {
         sx={{
           width: drawerWidth,
           flexShrink: 0,
+          zIndex: 100,
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
@@ -134,8 +134,8 @@ export default function PersistentDrawerLeft({ children }) {
       >
         <DrawerHeader sx={{ justifyContent: 'space-between', paddingLeft: '1vw' }}
         >
-          <Box sx={{display: 'flex', alignItems:'center', gap: 2}}>
-            <Icon icon="bi:filter" fontSize={25}/>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Icon icon="bi:filter" fontSize={25} />
             <Typography variant="h6" noWrap component="div">
               Filter
             </Typography>

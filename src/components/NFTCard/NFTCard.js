@@ -1,8 +1,7 @@
 import { parsePinataNFT } from 'utils/pinata';
-import { parseNFTUri, getNFTMetadata } from 'utils/utils';
+import { parseNFTUri, getImgUrlFromJSONResponse } from 'utils/utils';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { PINATA_GATEWAY } from 'utils/constants';
 import { NFTCardProps } from 'types/types';
 import Skeleton from '@mui/material/Skeleton';
 import { Card, Link, Stack, CardContent, Divider, Box, Typography } from '@mui/material';
@@ -34,8 +33,20 @@ export default function NFTCard({ nftoken }) {
     setLoading(true)
 
     const tokenURI = parseNFTUri(uri);
-    const imgurl = await getNFTMetadata(tokenURI)
-    setImgUrl(imgurl)
+
+    const res = await axios.get(tokenURI)
+    const type = res.headers['content-type']
+
+    if (type === 'application/json') {
+      setImgUrl(getImgUrlFromJSONResponse(res.data))
+    }
+    else if (type.slice(0, 5) === 'image')
+      setImgUrl(tokenURI)
+
+    else {
+      console.log('response: ', res)
+    }
+
     setLoading(false)
   }
 
@@ -44,7 +55,7 @@ export default function NFTCard({ nftoken }) {
   }, [])
 
   return (
-    <Link href={`/offpage/${nftoken.tid}/${nftoken.uri}`} underline='none'>
+    <Link href={`/nft/${nftoken.tid}/${nftoken.uri}`} underline='none'>
       <Card sx={{ width: 300 }}>
         {
           !loading

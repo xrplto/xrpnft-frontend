@@ -3,7 +3,13 @@ import { useContext } from 'react'
 import Context from '../../Context'
 import { Icon } from '@iconify/react';
 import AddIcon from '@mui/icons-material/Add';
-import { Button, Toolbar, IconButton, Box, Link } from '@mui/material';
+import {
+    Button,
+    Toolbar,
+    IconButton,
+    Box,
+    Link
+} from '@mui/material';
 import AccountPopover from './AccountPopover';
 import Logo from '../Logo';
 import baselineBrightnessHigh from '@iconify/icons-ic/baseline-brightness-high';
@@ -98,7 +104,7 @@ export default function Navbar() {
                             <Button startIcon={<Icon icon="ic:round-account-balance-wallet" />}>My NFTs</Button>
                         </Link>
                         <Link href='/' underline='none'
-                            // component='button'
+                        // component='button'
                         >
                             <Button endIcon={<LogoutIcon />} onClick={handleDisconnect} >
                                 {key.slice(0, 4) + '...' + key.slice(-2)}

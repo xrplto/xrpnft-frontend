@@ -10,8 +10,7 @@ import NFTInfo from 'pages/offpage/OffPage'
 import Account from 'pages/account/MyNFTs'
 import LoginPage from 'pages/LoginPage';
 import { XRPNFTList } from 'components/nftList/XRPNFTList';
-import PersistentDrawerLeft from 'components/common/Drawer';
-import XrplNFTList from 'pages/market/LandingPage';
+import LedgerNFTList from 'pages/market/LandingPage';
 
 export default function Router() {
     return useRoutes([
@@ -19,12 +18,11 @@ export default function Router() {
             path: '/',
             element: <MainLayout />,
             children: [
-                { path: '/', element: <XrplNFTList /> },
-                // { path: '/', element: <NFTMarketplace /> },
+                { path: '/', element: <LedgerNFTList /> },
                 { path: 'tester', element: <TokenTesterUpdated /> },
                 { path: 'spinners', element: <Spinner /> },
                 { path: 'progress', element: <ProgressPage /> },
-                { path: 'offpage/:tokenID/:tokenURI', element: <NFTInfo /> },
+                { path: 'nft/:tokenID/:tokenURI', element: <NFTInfo /> },
                 { path: 'create', element: <Minting /> },
                 { path: 'login', element: <LoginPage /> },
                 { path: 'account', element: <Account /> },

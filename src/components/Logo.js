@@ -7,7 +7,6 @@ export default function Logo() {
     const { isDarkMode } = useContext(Context);
     const img_black = "/xrpnft.com/logo-cropped-dark.svg";
     const img_white = "/xrpnft.com/logo-cropped-light.svg";
-    const img = isDarkMode ? img_white : img_black;
 
-    return <Box component="img" src={img} sx={{ height: TOP_BAR_HEIGHT_DESKTOP }} />;
+    return <Box component="img" src={isDarkMode ? img_white : img_black} sx={{ height: TOP_BAR_HEIGHT_DESKTOP }} />;
 }
