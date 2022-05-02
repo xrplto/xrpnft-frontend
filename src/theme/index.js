@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme, StyledEngineProvider } from '@mui/material/styles';
 import * as React from 'react';
-import { blueGrey, grey } from '@mui/material/colors';
-// ----------------------------------------------------------------------
+import { grey } from '@mui/material/colors';
 
 ThemeConfig.propTypes = {
     children: PropTypes.node

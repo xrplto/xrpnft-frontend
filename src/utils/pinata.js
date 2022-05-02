@@ -1,12 +1,8 @@
 import pinataSDK from '@pinata/sdk'
-import { cipheredTaxon, parseNftFlag } from 'utils/utils'
-import BigNumber from 'bignumber.js'
 import axios from 'axios';
-// import parsePinataNFTUrl from 'utils/pinata'
-// import xrpl from 'xrpl'
+
 const xrpl = require("xrpl");
 
-const AddressCodec = require('ripple-address-codec');
 
 const pinata = pinataSDK(process.env.REACT_APP_PINATA_API_KEY, process.env.REACT_APP_PINATA_SECRET_KEY)
 
@@ -66,27 +62,3 @@ export const parsePinataNFTUrl = (tokenURL) => {
     else return xrpl.convertHexToString(tokenURL)
 }
 
-
-
-export function parsePinataNFT(tokenID, tokenURI) {
-
-    if (typeof tokenID !== "string" || tokenID.length !== 64) {
-        return null;
-    }
-
-    const flags = new BigNumber(tokenID.slice(0, 4), 16).toNumber();
-    const transferFee = new BigNumber(tokenID.slice(4, 8), 16).toNumber();
-    const issuer = AddressCodec.encodeAccountID(Buffer.from(tokenID.slice(8, 48), "hex"));
-    const scrambledTaxon = new BigNumber(tokenID.slice(48, 56), 16).toNumber();
-    const sequence = new BigNumber(tokenID.slice(56, 64), 16).toNumber();
-
-    return {
-        issuer: issuer,
-        flags: parseNftFlag(flags),
-        tokenID: tokenID,
-        tokenURI: parsePinataNFTUrl(tokenURI),
-        transferFee: transferFee,
-        tokenTaxon: cipheredTaxon(sequence, scrambledTaxon),
-        sequence: sequence,
-    };
-}

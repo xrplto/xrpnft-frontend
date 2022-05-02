@@ -449,3 +449,24 @@ export const getBuyOffers = async (tokenId) => {
 	// End of createSellOffer()
 	return nftBuyOffers
 }
+
+/**
+ * Get Account NFTs
+ * @param {string} key account address
+ * @returns
+ */
+export async function getTokens(key) {
+	// Connect to the devnet server.
+	const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+	await client.connect()
+
+	console.log("Connected to Sandbox")
+	const nfts = await client.request({
+		method: "account_nfts",
+		account: key
+	})
+
+
+	client.disconnect()
+	return nfts
+} //End of getTokens

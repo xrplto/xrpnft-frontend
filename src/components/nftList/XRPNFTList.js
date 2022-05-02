@@ -53,9 +53,14 @@ export const XRPNFTList = () => {
                 <Grid container spacing={2} justifyContent='center'>
                     {
                         nfTokens.map((nft) => (
-                            <Grid item key={nft.tid}
+                            <Grid item key={nft.NFTokenID}
                             >
-                                <NFTCard nftoken={nft} />
+                                <NFTCard
+                                    Flags={nft.Flags}
+                                    Issuer={nft.Issuer}
+                                    URI={nft.URI}
+                                    NFTokenID={nft.NFTokenID}
+                                />
                             </Grid>
                         ))
                     }

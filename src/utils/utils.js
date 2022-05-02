@@ -1,7 +1,6 @@
 import { format, formatDistanceToNow } from 'date-fns';
 import { replace } from 'lodash';
 import axios from 'axios';
-import { PINATA_GATEWAY } from 'utils/constants';
 import numeral from 'numeral';
 const xrpl = require("xrpl");
 const AddressCodec = require('ripple-address-codec');
@@ -91,9 +90,11 @@ export const getResponseType = (res) => {
 }
 
 const convertToHttpLink = (uriString) => {
-    if(uriString) {
+    const regex_uri = /^[a-z0-9:./]+$/i
+
+    if (regex_uri.test(uriString) && uriString.length > 45) {
         if (uriString.slice(0, 10) === 'xrpnft.com') // the tokenURI minted from this site
-            return process.env.REACT_APP_PINATA_GATEWAY + uriString.slice(11)
+            return process.env.REACT_APP_PINATA_GATEWAY + uriString.slice(16)
         else if (uriString.slice(0, 5) === 'https') {
             return uriString.replace('infura.', '')
         }
@@ -117,20 +118,21 @@ const convertToHttpLink = (uriString) => {
 
 export const parseNFTUri = (tokenURI) => {
     const regex_hex = /^[a-z0-9]+$/i
-    const regex_uri = /^[a-z0-9:./]+$/i
     if (!tokenURI) return null
     if (regex_hex.test(tokenURI)) {
         const uriString = xrpl.convertHexToString(tokenURI)
-        if (regex_uri.test(uriString) && uriString.length > 45) { // min length of ipfs hash is 46
-            return convertToHttpLink(uriString)
-        }
-        else return null
+        return convertToHttpLink(uriString)
     }
     else return null
 }
 
 export const getImgUrlFromJSONResponse = (_param) => {
-    return convertToHttpLink(_param?.content)
+    const uri = _param.fileUrl
+        ? _param.fileUrl
+        : _param.content
+            ? _param.content
+            : _param.image
+    return convertToHttpLink(uri)
 }
 
 // ----------------------------------------------------------------------
@@ -248,7 +250,8 @@ export function parseNFTokenId(tokenID) {
 
     return {
         issuer: issuer,
-        flags: parseNftFlag(flags),
+        // flags: parseNftFlag(flags),
+        flags: flags,
         transferFee: transferFee,
         tokenTaxon: cipheredTaxon(sequence, scrambledTaxon),
         sequence: sequence,
@@ -361,4 +364,43 @@ export function fData(number) {
  */
 export const getIssuer = (tokenId) => {
     return tokenId ? AddressCodec.encodeAccountID(Buffer.from(tokenId.slice(8, 48), "hex")) : null;
+}
+
+/**
+ * get image link from token URI, hex_uri
+ * @param {string} URI
+ */
+export const getImgUriFromTokenURI = async (URI) => {
+    const tokenURI = parseNFTUri(URI);
+
+    try {
+        const res = await axios.get(tokenURI)
+        const type = res.headers['content-type']
+
+        if (type === 'application/json') { // if the response data is JSON object
+            return {
+                description: res.data,
+                image: getImgUrlFromJSONResponse(res.data)
+            }
+        }
+        else if (type.slice(0, 5) === 'image') { // if the response is image
+            return {
+                description: null,
+                image: tokenURI
+            }
+        }
+        else {
+            console.log('Unknown file type: ', res)
+            return {
+                description: null,
+                image: null
+            }
+        }
+    } catch (e) {
+        console.log(e.message)
+        return {
+            description: null,
+            image: null
+        }
+    }
 }

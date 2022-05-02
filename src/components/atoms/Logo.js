@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { Box } from '@mui/material';
-import Context from '../Context'
+import Context from '../../Context'
 import { TOP_BAR_HEIGHT_DESKTOP } from 'utils/constants';
 
 export default function Logo() {

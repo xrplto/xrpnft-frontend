@@ -25,6 +25,7 @@ export const AllNFTs = () => {
                 if (res.data.nfts.length < 10) {
                     setHasMore(false)
                 }
+                console.log('10 NFTS:', res)
                 setNfTokens([..._nfTokens, ...res.data.nfts])
                 openSnackbar('Fetch:' + _offset, 'success')
                 setOffset(_offset + 1)
@@ -68,9 +69,14 @@ export const AllNFTs = () => {
                 <Grid container spacing={2} justifyContent='center'>
                     {
                         nfTokens.map((nft) => (
-                            <Grid item key={nft.tid}
+                            <Grid item key={nft.NFTokenID}
                             >
-                                <NFTCard nftoken={nft} />
+                                <NFTCard
+                                    Flags={nft.Flags}
+                                    Issuer={nft.Issuer}
+                                    URI={nft.URI}
+                                    NFTokenID={nft.NFTokenID}
+                                />
                             </Grid>
                         ))
                     }

@@ -20,7 +20,7 @@ const sidebarConfig = [
     icon: getIcon(shoppingBagFill)
   },
   {
-    id: 'all',
+    id: 'collections',
     title: 'Collections',
     path: '/#',
     icon: getIcon('ep:collection')

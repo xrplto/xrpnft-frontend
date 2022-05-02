@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import { deepOrange } from '@mui/material/colors';
 import { Icon } from '@iconify/react';
 import { acceptSellOffer, cancelOffer } from 'utils/tokenActions';
-import { ListingsListProps } from 'types/types';
+import { ListingsListProps } from 'utils/types';
 import XSnackbar from 'components/common/Snackbar'
 import { useSnackbar } from 'hooks/useSnackbar'
 import { FadeLoader } from 'react-spinners';

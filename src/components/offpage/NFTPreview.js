@@ -9,7 +9,7 @@ import {
   Typography
 } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { NFTPreviewProps } from 'types/types';
+import { NFTPreviewProps } from 'utils/types';
 
 NFTPreview.prototype = NFTPreviewProps
 
