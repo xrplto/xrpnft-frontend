@@ -9,21 +9,22 @@ export default function AccountNfts() {
     const account = useSelector(state => state.account.account)
     const [userNfts, setUserNfts] = useState([])
 
-    const getAccountNFTs = async () => {
-        setLoading(true)
-        const res = await getTokens(account.key)
-        setUserNfts(res?.result.account_nfts)
-        setLoading(false)
-    }
+
     useEffect(() => {
         let mounted = true
-        if (mounted) {
-            getAccountNFTs()
+
+        const getAccountNFTs = async () => {
+            setLoading(true)
+            const res = await getTokens(account.key)
+            if (mounted)
+                setUserNfts(res?.result.account_nfts)
+            setLoading(false)
         }
+        getAccountNFTs()
         return () => {
             mounted = false
         }
-    }, [])
+    }, [account.key])
     return (
         <>
             {

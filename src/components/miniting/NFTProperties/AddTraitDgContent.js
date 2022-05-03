@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Icon } from '@iconify/react';
-import { AddTraitDgProp } from 'types/types';
+import { AddTraitDgProp } from 'utils/types';
 
 AddTraitDgContent.propTypes = AddTraitDgProp
 

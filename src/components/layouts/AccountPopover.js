@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 
 import MenuPopover from '../MenuPopover';
-import LoginDialog from '../LoginDialog';
+import LoginDialog from '../dialog/LoginDialog';
 import { useContext } from 'react'
 import Context from 'Context'
 import axios from 'axios';

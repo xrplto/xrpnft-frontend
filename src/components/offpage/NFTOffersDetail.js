@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react'
-import Divider from '@mui/material/Divider'
-import { Typography, Stack, ButtonGroup, Link, Skeleton } from '@mui/material'
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    ButtonGroup,
+    Divider,
+    Link,
+    Skeleton,
+    Stack,
+    Typography,
+} from '@mui/material'
 import { LoadingButton } from '@mui/lab'
-import MuiAccordion from '@mui/material/Accordion'
-import MuiAccordionSummary from '@mui/material/AccordionSummary'
-import MuiAccordionDetails from '@mui/material/AccordionDetails'
 import TimePeriods from 'components/offpage/TimePeriodsDropdown'
-import { styled } from '@mui/material/styles'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
 import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 import TimelineIcon from '@mui/icons-material/Timeline'
@@ -22,46 +27,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BuyOffersList from './BuyOffersList'
 import { getIssuer } from 'utils/utils'
 
-const Accordion = styled((props) => (
-    <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-    border: `1px solid ${theme.palette.divider}`,
-    '&:not(:last-child)': {
-        borderBottom: 0,
-    },
-    borderRadius: 5,
-    marginTop: theme.spacing(2),
-    '&:before': {
-        display: 'none',
-    },
-}))
-
-const AccordionSummary = styled((props) => (
-    <MuiAccordionSummary
-        //   expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
-        {...props}
-    />
-))(({ theme }) => ({
-    backgroundColor:
-        theme.palette.mode === 'dark'
-            ? 'rgba(255, 255, 255, .05)'
-            : 'rgba(0, 0, 0, .03)',
-    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-        transform: 'rotate(90deg)',
-    },
-    '& .MuiAccordionSummary-content': {
-        marginLeft: theme.spacing(1),
-    },
-}))
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-    padding: theme.spacing(2),
-    borderTop: '1px solid rgba(0, 0, 0, .125)',
-}))
-
-
-
-export default function NFTOffersDetail({ tokenID }) {
+export default function NFTOffersDetail({ NFTokenID }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const [pageLoading, setPageLoading] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -74,21 +40,16 @@ export default function NFTOffersDetail({ tokenID }) {
     const navigate = useNavigate()
     const [owner, setOwner] = useState(null)
     const [price, setPrice] = useState(0)
-    const [expanded, setExpanded] = useState('panel1')
     const [expandedPrice, setExpandedPrice] = useState(true)
     const [expandedListing, setExpandedListing] = useState(true)
     const [expandedOffers, setExpandedOffers] = useState(true)
-
-    const handleChange = (panel) => (event, newExpanded) => {
-        setExpanded(newExpanded ? panel : false)
-    }
 
     const handleSellOffer = async () => {
         if (login) {
             setLoading(true)
             console.log('Making offer...')
             try {
-                const res = await createSellOffer(account.secret, tokenID, '20000', 1)
+                const res = await createSellOffer(account.secret, NFTokenID, '20000', 1)
                 setSellOffers(res.sellOffers.result)
                 const lastIndex = res.sellOffers.result.offers.length - 1
                 setPrice(+res.sellOffers.result.offers[lastIndex].amount / 10 ** 6)
@@ -108,7 +69,7 @@ export default function NFTOffersDetail({ tokenID }) {
             setLoading(true)
             console.log('Making offer...')
             try {
-                const res = await createBuyOffer(account.secret, tokenID, '1000', 0, owner)
+                const res = await createBuyOffer(account.secret, NFTokenID, '1000', 0, owner)
                 setOffers(res.buyOffers.result)
                 openSnackbar('Offer succeed!', 'success')
             } catch (e) {
@@ -123,7 +84,7 @@ export default function NFTOffersDetail({ tokenID }) {
     const fetchListingAndOffers = async (mounted) => {
         setPageLoading(true)
         try {
-            const res = await getSellAndBuyOffers(tokenID)
+            const res = await getSellAndBuyOffers(NFTokenID)
             if (mounted) {
                 if (res.sellOffers || res.buyOffers) {
                     if (res.sellOffers) {
@@ -135,10 +96,10 @@ export default function NFTOffersDetail({ tokenID }) {
                     }
                     if (res.buyOffers) {// in case no sell offer
                         setOffers(res.buyOffers.result)
-                        setOwner(getIssuer(tokenID))
+                        // setOwner(getIssuer(NFTokenID))
                     }
                 }
-                else setOwner(getIssuer(tokenID))
+                // else setOwner(getIssuer(NFTokenID))
             }
         } catch (e) {
             // console.log(e)
@@ -153,6 +114,7 @@ export default function NFTOffersDetail({ tokenID }) {
         return () => {
             mounted = false
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     return (
         <div>
@@ -165,12 +127,12 @@ export default function NFTOffersDetail({ tokenID }) {
                 </Typography>
                 <Stack spacing={1}>
                     <Typography variant='subtitle1' >
-                        Owned by
+                        Owner
                     </Typography>
                     {
                         !pageLoading ?
                             <Link href='#' underline='none' variant='info'>
-                                {owner}
+                                {owner?owner:'Unknown'}
                             </Link> :
                             <Skeleton animation='wave' height={40} width='100%' />
                     }
@@ -259,7 +221,7 @@ export default function NFTOffersDetail({ tokenID }) {
                     {
                         !pageLoading ?
                             sellOffers &&
-                            <SellOffersList listings={sellOffers} tokenID={tokenID} owner={owner} />
+                            <SellOffersList listings={sellOffers} NFTokenID={NFTokenID} owner={owner} />
                             :
                             <Skeleton animation='wave' height={100} width='100%' />
                     }
@@ -281,7 +243,7 @@ export default function NFTOffersDetail({ tokenID }) {
                     {
                         !pageLoading ?
                             offers &&
-                            <BuyOffersList listings={offers} tokenID={tokenID} owner={owner} />
+                            <BuyOffersList listings={offers} NFTokenID={NFTokenID} owner={owner} />
                             :
                             <Skeleton animation='wave' height={100} width='100%' />
                     }

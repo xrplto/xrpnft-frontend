@@ -19,11 +19,13 @@ export default function ThemeConfig({ children }) {
                 defaultProps: {
                     elevation: 0,
                     defaultExpanded: true,
-                    disableGutters: true,
                 },
                 styleOverrides: {
                     root: ({ theme }) => ({
                         border: `1px solid ${theme.palette.divider}`,
+                        '&:not(:last-child)': {
+                            borderBottom: 0,
+                        },
                     })
                 }
             },
@@ -32,6 +34,7 @@ export default function ThemeConfig({ children }) {
                     root: ({ theme }) => (
                         {
                             backgroundColor:
+                                // theme.palette.background.paper,
                                 theme.palette.mode === 'dark'
                                     ? 'rgba(255, 255, 255, .05)'
                                     : 'rgba(0, 0, 0, .03)',

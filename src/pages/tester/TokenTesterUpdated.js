@@ -2,6 +2,7 @@ import { useState } from "react";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import {
   Backdrop,
+  Button,
   Stack,
   Container,
   Typography,
@@ -9,7 +10,7 @@ import {
 } from "@mui/material";
 import { HashLoader } from "react-spinners";
 import { Box, TextField, IconButton } from "@mui/material";
-import { StyledBtn, StyledGrid } from "components/atoms/StyledComponents";
+import { StyledGrid } from "components/atoms/StyledComponents";
 import { Link as RouterLink } from "react-router-dom";
 
 import {
@@ -157,14 +158,14 @@ export default function TokenTesterUpdated() {
                   selectedIdx={selectedIndex}
                   onClose={handleChooseAccount}
                   render={(open) => (
-                    <StyledBtn
+                    <Button
                       variant="contained"
                       onClick={open}
                       sx={{ height: 'auto' }}
                       startIcon={<ManageAccountsOutlinedIcon />}
                     >
                       Account {accounts[selectedIndex - 1].id}
-                    </StyledBtn>
+                    </Button>
                   )}
                 />
                 <TextField
@@ -218,77 +219,77 @@ export default function TokenTesterUpdated() {
                     values={values}
                     setLoading={setLoading}
                     render={(onMintToken) => (
-                      <StyledBtn variant="contained" onClick={onMintToken}>
+                      <Button variant="contained" onClick={onMintToken}>
                         Mint Token
-                      </StyledBtn>
+                      </Button>
                     )}
                   />
-                  <StyledBtn
+                  <Button
                     variant="contained"
                     component={RouterLink}
                     sx={{ m: 1 }}
                     to="#"
                   >
                     Get Tokens
-                  </StyledBtn>
-                  <StyledBtn
+                  </Button>
+                  <Button
                     variant="contained"
                     component={RouterLink}
                     sx={{ m: 1 }}
                     to="#"
                   >
                     Burn Token
-                  </StyledBtn>
-                  <StyledBtn
+                  </Button>
+                  <Button
                     variant="contained"
                     component={RouterLink}
                     sx={{ m: 1 }}
                     to="#"
                   >
                     Create Sell Offer
-                  </StyledBtn>
-                  <StyledBtn
+                  </Button>
+                  <Button
                     variant="contained"
                     component={RouterLink}
                     sx={{ m: 1 }}
                     to="#"
                   >
                     Create Buy Offer
-                  </StyledBtn>
-                  <StyledBtn
+                  </Button>
+                  <Button
                     variant="contained"
                     component={RouterLink}
                     sx={{ m: 1 }}
                     to="#"
                   >
                     Get Offers
-                  </StyledBtn>
-                  <StyledBtn
+                  </Button>
+                  <Button
                     variant="contained"
                     component={RouterLink}
                     sx={{ m: 1 }}
                     to="#"
                   >
                     Accept Sell Offer
-                  </StyledBtn>
+                  </Button>
 
-                  <StyledBtn
+                  <Button
                     variant="contained"
                     component={RouterLink}
                     sx={{ m: 1 }}
                     to="#"
                   >
                     Accept Buy Offer
-                  </StyledBtn>
+                  </Button>
 
-                  <StyledBtn
+                  <Button
                     variant="contained"
                     component={RouterLink}
                     sx={{ m: 1 }}
                     to="#"
                   >
                     Cancel Offer
-                  </StyledBtn>
+                  </Button>
                 </StyledGrid>
               </Stack>
 

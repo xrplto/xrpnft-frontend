@@ -25,7 +25,6 @@ export default function App() {
 
     useEffect(() => {
         const profile = localStorage.getItem(key_profile)
-        //const profile = '{"account":"rDsRQWRTRrtzAgK8HH7rcCAZnWeCsJm28K","uuid":"4a3eb58c-aa97-4d48-9ab2-92d90df9a75f"}';
         console.log('Profile: ' + profile);
         if (profile) {
             setAccountProfile(JSON.parse(profile));
@@ -59,15 +58,7 @@ export default function App() {
                 // setLoading
             }}
         >
-            {/* <Backdrop
-                sx={{ color: "#000", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={loading}
-            >
-                <CircleLoader color={"#00AB55"} size={50} />
-            </Backdrop> */}
             <ThemeConfig>
-                {/* <ScrollToTop /> */}
-                {/* <GlobalStyles /> */}
                 <Router />
             </ThemeConfig>
         </Context.Provider>

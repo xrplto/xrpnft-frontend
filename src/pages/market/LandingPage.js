@@ -10,9 +10,11 @@ export default function LedgerNFTList() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    // @description : reset filter, nfts redux states
+    // reset filter, nfts redux states
     dispatch(resetFlags())
     dispatch(resetNFTs())
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

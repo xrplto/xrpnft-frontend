@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Icon } from '@iconify/react';
-import { AddLevelDgProp } from 'types/types';
+import { AddLevelDgProp } from 'utils/types';
 
 AddLevelDgContent.propTypes = AddLevelDgProp
 

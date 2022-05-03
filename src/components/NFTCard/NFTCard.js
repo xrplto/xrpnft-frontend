@@ -1,61 +1,56 @@
-import { parsePinataNFT } from 'utils/pinata';
-import { parseNFTUri, getImgUrlFromJSONResponse } from 'utils/utils';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { NFTCardProps } from 'types/types';
-import Skeleton from '@mui/material/Skeleton';
-import { Card, Link, Stack, CardContent, Divider, Box, Typography } from '@mui/material';
+import { NFTCardProps } from 'utils/types';
+import {
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Divider,
+  IconButton,
+  Link,
+  Skeleton,
+} from '@mui/material';
 import { Icon } from '@iconify/react';
-import CardMedia from '@mui/material/CardMedia';
-import CardActions from '@mui/material/CardActions';
-import IconButton from '@mui/material/IconButton';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import FlagsContainer from './Flags';
+import { getNFTokenInfo } from 'utils/utils';
+import PriceContainer from './Price';
 
 
 NFTCard.propTypes = NFTCardProps
 
-export default function NFTCard({ nftoken }) {
-  const { tid, uri } = nftoken;
+export default function NFTCard({
+  Flags,
+  Issuer,
+  NFTokenID,
+  URI,
+}) {
   const [imgUrl, setImgUrl] = useState('')
   const [loading, setLoading] = useState(false)
-  const nft = parsePinataNFT(tid, uri);
-  // const [sellOffered, setSellOffered] = useState(false)
 
-  // const getOffers = () => {
-  //     getSellOffers(tid).then(res => {
 
-  //         console.log('offers:', res)
-  //     })
-  //     // if(offers) setSellOffered(true)
-  // }
-
-  const getImgUrl = async () => {
-    setLoading(true)
-
-    const tokenURI = parseNFTUri(uri);
-
-    const res = await axios.get(tokenURI)
-    const type = res.headers['content-type']
-
-    if (type === 'application/json') {
-      setImgUrl(getImgUrlFromJSONResponse(res.data))
-    }
-    else if (type.slice(0, 5) === 'image')
-      setImgUrl(tokenURI)
-
-    else {
-      console.log('response: ', res)
-    }
-
-    setLoading(false)
-  }
 
   useEffect(() => {
+    let mounted = true
+
+    const getImgUrl = async () => {
+      setLoading(true)
+
+      const res = await getNFTokenInfo(URI)
+      if (mounted)
+        setImgUrl(res.image)
+
+      setLoading(false)
+    }
     getImgUrl()
-  }, [])
+
+    return () => {
+      mounted = false
+    }
+  }, [URI])
 
   return (
-    <Link href={`/nft/${nftoken.tid}/${nftoken.uri}`} underline='none'>
+    <Link href={`/nft/${NFTokenID}/${URI}`} underline='none'>
       <Card sx={{ width: 300 }}>
         {
           !loading
@@ -71,17 +66,8 @@ export default function NFTCard({ nftoken }) {
             <Skeleton animation='wave' variant='rectangular' width={300} height={300} />
         }
         <CardContent sx={{ padding: 1, flexDirection: 'row', display: 'flex', justifyContent: 'space-between' }}>
-          <Stack direction='row' alignItems='center' justifyContent='start' sx={{ fontSize: 20, gap: 2 }}>
-            {nft.flags.tfBurnable && <Icon icon='ps:feedburner' />}
-            {nft.flags.tfOnlyXRP && <Icon icon="teenyicons:ripple-solid" />}
-            {nft.flags.tfTrustLine && <Icon icon='codicon:workspace-trusted' />}
-            {nft.flags.tfTransferable && <Icon icon='mdi:transit-transfer' />}
-            {nft.flags.tfNoFlag && <Icon icon='carbon:not-available' />}
-          </Stack>
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
-            <Icon icon="teenyicons:ripple-solid" />
-            <Typography sx={{ color: 'lightblue' }}>3000</Typography>
-          </Box>
+          <FlagsContainer Flags={Flags} />
+          <PriceContainer price={2000} />
         </CardContent>
         <Divider />
         <CardActions sx={{ alignItems: 'space-evenly' }}>

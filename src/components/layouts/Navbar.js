@@ -11,7 +11,7 @@ import {
     Link
 } from '@mui/material';
 import AccountPopover from './AccountPopover';
-import Logo from '../Logo';
+import Logo from 'components/atoms/Logo'
 import baselineBrightnessHigh from '@iconify/icons-ic/baseline-brightness-high';
 import baselineBrightness4 from '@iconify/icons-ic/baseline-brightness-4';
 import { useSelector, useDispatch } from 'react-redux'
