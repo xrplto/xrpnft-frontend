@@ -370,7 +370,7 @@ export const getIssuer = (tokenId) => {
  * get image link from token URI, hex_uri
  * @param {string} URI
  */
-export const getImgUriFromTokenURI = async (URI) => {
+export const getNFTokenInfo = async (URI) => {
     const tokenURI = parseNFTUri(URI);
 
     try {
@@ -404,3 +404,42 @@ export const getImgUriFromTokenURI = async (URI) => {
         }
     }
 }
+/**
+ * get image link from token URI, hex_uri
+ * @param {string} URI
+ */
+export const getNFTokenInfoNew = (res, tokenURI) => {
+
+    if (!res) return {
+        description: null,
+        image: null
+    }
+    const type = res.headers['content-type']
+
+    if (type === 'application/json') { // if the response data is JSON object
+        return {
+            description: res.data,
+            image: getImgUrlFromJSONResponse(res.data)
+        }
+    }
+    else if (type.slice(0, 5) === 'image') { // if the response is image
+        return {
+            description: null,
+            image: tokenURI
+        }
+    }
+    else {
+        console.log('Unknown file type: ', res)
+        return {
+            description: null,
+            image: null
+        }
+    }
+}
+
+/**
+ * used as fetcher for SWR
+ * @param {string} url
+ * @returns
+ */
+export const fetcher = url => axios.get(url).then(res => res)

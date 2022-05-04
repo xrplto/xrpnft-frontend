@@ -12,12 +12,18 @@ import {
 } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { AddTraitDgProp } from 'utils/types';
+import { setMetadata } from 'app/slices/ipfSlice';
+import { useDispatch } from 'react-redux'
 
 AddTraitDgContent.propTypes = AddTraitDgProp
 
-export default function AddTraitDgContent({ save, close, properties }) {
+export default function AddTraitDgContent({
+  // save,
+  close,
+  properties }) {
 
   const [traits, setTraits] = useState(properties)
+  const dispatch = useDispatch()
 
   const addTraitItem = () => {
 
@@ -35,7 +41,9 @@ export default function AddTraitDgContent({ save, close, properties }) {
   }
   const saveItems = () => {
     const final = [...traits]
-    save(final.filter(item => item.type !== '' && item.value !== ''))
+    // save(final.filter(item => item.type !== '' && item.value !== ''))
+    dispatch(setMetadata({ properties: final.filter(item => item.type !== '' && item.value !== '') }))
+
     close()
   }
   const deleteItem = (id) => {

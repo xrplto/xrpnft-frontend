@@ -96,6 +96,7 @@ export const NFTUploader = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     overflow: 'auto',
+                    position: 'relative'
                 }}
             >
                 <CardOverlay
@@ -108,9 +109,8 @@ export const NFTUploader = () => {
                         <CloseIcon color='white' />
                     </IconButton>
                 </CardOverlay>
-                <img src={fileUrl} alt='' style={fileUrl ? {} : { display: 'none' }} />
-                <ImageIcon fontSize='large' sx={fileUrl ? { display: 'none' } : {}} />
-
+                <img src={fileUrl} alt='' style={fileUrl ? {objectFit:'cover', height: '100%', overflow:'hidden'} : { display: 'none' }} />
+                <ImageIcon fontSize='large' sx={fileUrl ? { display: 'none' } : {width: 100, height: 100}} />
             </Card>
             <Stack>
                 <LoadingButton
@@ -131,7 +131,6 @@ const CardWrapper = styled.div`
     border: dashed 3px;
     border-radius: 5px;
     padding: 5px;
-    position: relative;
     width: fit-content;
     &:hover {
         cursor: pointer;

@@ -49,29 +49,30 @@ export default function Minting() {
     setLoading(true)
 
     const metadata = {
-      fileUrl: XRPNFT_DOMAIN + pinnedFileHash,
+      image: XRPNFT_DOMAIN + pinnedFileHash,
       name: nftName,
       type: 'image',
       description: description,
       externalLink: extLink
     }
 
-    const res = await pinJsonToIPFS(metadata)
-    if (res.success) {
-      const nftMetadataUrl = XRPNFT_DOMAIN + res.response.IpfsHash
-      try {
-        const nfts = await mintToken(account.secret, nftMetadataUrl, flags)
-        openSnackbar(nfts.result.account, 'success')
-        // TODO: reset ipfs slice when minting succeed
+    console.log({metadata})
+    // const res = await pinJsonToIPFS(metadata)
+    // if (res.success) {
+    //   const nftMetadataUrl = XRPNFT_DOMAIN + res.response.IpfsHash
+    //   try {
+    //     const nfts = await mintToken(account.secret, nftMetadataUrl, flags)
+    //     openSnackbar(nfts.result.account, 'success')
+    //     // TODO: reset ipfs slice when minting succeed
 
-      } catch (e) {
-        console.log('Error on Minting: ', e)
-        openSnackbar(e.message, 'error')
-      }
-    } else {
-      console.log('Json Not pinned to Pinata.')
-      openSnackbar('Json Not pinned to Pinata.', 'error')
-    }
+    //   } catch (e) {
+    //     console.log('Error on Minting: ', e)
+    //     openSnackbar(e.message, 'error')
+    //   }
+    // } else {
+    //   console.log('Json Not pinned to Pinata.')
+    //   openSnackbar('Json Not pinned to Pinata.', 'error')
+    // }
     setLoading(false)
   }
 
@@ -88,19 +89,19 @@ export default function Minting() {
             Create New Item
           </Typography>
           <Typography variant='caption'>
-            {'Image, Video, Audio, or 3D Model'}
+            Image, Video, Audio, or 3D Model
           </Typography>
           <Typography variant='body1'>
-            File types supported: ' + {SUPPORTED_FILE_TYPES.join(', ')} + '. Max size: 100MB'
+            File types supported: {SUPPORTED_FILE_TYPES.join(', ')}. Max size: 100MB
           </Typography>
           <NFTUploader />
           <Typography variant='body1'>
-            {'Image on IPFS: ' + pinnedFileHash}
+            Image on IPFS:  {pinnedFileHash}
           </Typography>
         </Stack>
         <Stack spacing={2} marginBottom={3}>
           <Typography variant='caption' >
-            {'Set Flags'}
+            Set Flags
           </Typography>
           <TokenFlagsForm />
         </Stack>

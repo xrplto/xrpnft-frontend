@@ -94,14 +94,18 @@ export const createSellOffer = async (secret, tokenId, amount, flags) => {
 	const transactionBlob = {
 		"TransactionType": "NFTokenCreateOffer",
 		"Account": wallet.classicAddress,
-		"TokenID": tokenId,
+		"NFTokenID": tokenId,
 		"Amount": amount,
 		"Flags": flags
 	}
 
 	// Submit signed blob --------------------------------------------------------
+	try{
 
-	const tx = await client.submitAndWait(transactionBlob, { wallet })//AndWait
+		const tx = await client.submitAndWait(transactionBlob, { wallet })//AndWait
+	} catch(e){
+		console.log({e})
+	}
 
 
 	console.log("***Sell Offers***")
@@ -128,10 +132,10 @@ export const createSellOffer = async (secret, tokenId, amount, flags) => {
 	console.log(JSON.stringify(nftBuyOffers, null, 2))
 
 	// Check transaction results -------------------------------------------------
-	console.log("Transaction result:",
-		JSON.stringify(tx.result.meta.TransactionResult, null, 2))
-	console.log("Balance changes:",
-		JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+	// console.log("Transaction result:",
+	// 	JSON.stringify(tx.result.meta.TransactionResult, null, 2))
+	// console.log("Balance changes:",
+	// 	JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
 	client.disconnect()
 	// End of createSellOffer()
 	return {
@@ -428,26 +432,27 @@ export const getSellOffers = async (tokenId) => {
 
 
 export const getBuyOffers = async (tokenId) => {
+
+	console.log("Connecting to sandbox.......")
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
 	await client.connect()
-	console.log("Connected to Sandbox")
-	console.log("***Sell Offers***")
-
-	console.log("***Buy Offers***")
-	let nftBuyOffers
+	console.log("Connected to sandbox")
+	console.log('requesting buy offers...')
+	console.log({tokenId})
+	let offers
 	try {
-		nftBuyOffers = await client.request({
+		offers = await client.request({
 			method: "nft_buy_offers",
-			tokenid: tokenId
+			nft_id: tokenId
 		})
 	} catch (err) {
-		console.log("No buy offers.")
+		console.log({err})
 	}
-	console.log(JSON.stringify(nftBuyOffers, null, 2))
+	console.log(JSON.stringify(offers, null, 2))
 
 	client.disconnect()
 	// End of createSellOffer()
-	return nftBuyOffers
+	return offers
 }
 
 /**

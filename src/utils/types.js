@@ -40,20 +40,22 @@ export const NFTPreviewProps = {
 }
 
 export const AddTraitDgProp = {
-    save: PropTypes.func,
+    // save: PropTypes.func,
     close: PropTypes.func,
     properties: PropTypes.array
 }
 
 export const AddLevelDgProp = {
-    save: PropTypes.func,
+    // save: PropTypes.func,
     close: PropTypes.func,
     properties: PropTypes.array
 }
 
 export const NFTDetailsProps = {
     NFTokenID: PropTypes.string,
-    URI: PropTypes.string,
+    NFToken: PropTypes.object,
+    ParsedURI: PropTypes.string,
+    data: PropTypes.object
 }
 
 

@@ -1,5 +1,6 @@
 export const BASE_URL = 'https://ws.xrpnft.com/api';
 export const RIPPLE_TEST_NET_URL = 'wss://xls20-sandbox.rippletest.net:51233'
+export const NEW_RIPPLE_TEST_NET_URL = 'wss://s.altnet.rippletest.net:51233'
 export const PINATA_PINNING_FILE_URL = 'https://api.pinata.cloud/pinning/pinFileToIPFS'
 export const PINATA_GATEWAY = 'https://xrpnft.mypinata.cloud/'
 export const XRPNFT_DOMAIN = 'xrpnft.com/ipfs/'
@@ -18,28 +19,21 @@ export const SUPPORTED_FILE_TYPES = [
 export const ACCOUNTS = [
     {
         id: 1,
-        key: "r4tW44mCjTy9SNUEouNpQ7SadNFqq91aXu",
-        secret: "saNACi43487jpBYQ8UzcmCzD31qyt",
+        key: "rPPfyzxWCXo2FhL6j7LQ3JC5kWCaBs4pvZ",
+        secret: "ssjNJ1kqi3cuWES8FZVmSmY9pVCdC",
+        sequence: 1824352
     },
     {
         id: 2,
-        key: "rJALMduvLzb9ae76snVgdaFBZtjxQ7KKZF",
-        secret: "sapazEvhrcsg8PkoPJKJPucfDnFAr",
+        key: "rNZ8EFNxCTf2sZTVExQgayqPRsGZK9AgQ8",
+        secret: "shh665kVoKGJzwjWmHdp1p3aqYCbQ",
+        sequence: 1824368
     },
     {
         id: 3,
-        key: "rahPAzF2znC1iHPzeXQBUNJGeh2Yhj59N5",
-        secret: "snRbUzEEirhHYy43svjQDhD7mKQy8",
-    },
-    {
-        id: 4,
-        key: "rNodZQRQbUeVD4LvrwLnMF9JooVPHFCsmU",
-        secret: "sp1koYYF7nCAo4cydiJuGwTTmHpra",
-    },
-    {
-        id: 5,
-        key: "r3SAt6wwuatPVHTtftuLs46DhQcjbWUuJy",
-        secret: "shv9PZhrNpoJVeF9kbnjra94FKduX",
+        key: "rpRSDXFztBAsgAyFvSBqXF8B8CJXGu6DbZ",
+        secret: "ssSEzKkkK57yePdHU4jTt7DjfXSX5",
+        sequence: 1824374
     },
 ];
 export const TOP_BAR_HEIGHT_DESKTOP = 50

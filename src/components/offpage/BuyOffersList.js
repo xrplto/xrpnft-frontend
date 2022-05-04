@@ -7,7 +7,7 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Icon } from '@iconify/react';
 import { acceptBuyOffer, cancelOffer } from 'utils/tokenActions';
-import { ListingsListProps } from 'types/types';
+import { ListingsListProps } from 'utils/types';
 import XSnackbar from 'components/common/Snackbar'
 import { useSnackbar } from 'hooks/useSnackbar'
 import { useSelector } from 'react-redux'

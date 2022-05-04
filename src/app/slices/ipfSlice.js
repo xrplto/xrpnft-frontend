@@ -7,7 +7,8 @@ const initialState = {
     name: '',
     description: '',
     externalLink: '',
-    properties: []
+    properties: [],
+    levels: [],
   }
 }
 export const ipfSlice = createSlice({
@@ -23,11 +24,14 @@ export const ipfSlice = createSlice({
     setMetadata: (state, action) => {
       state.metadata = { ...state.metadata, ...action.payload }
     },
+    setLevels: (state, action) => {
+      state.metadata.levels = [...action.payload]
+    },
     resetIpfsState: () => initialState,
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setIpfsFileUrl, resetIpfsState, setPinnedFileHash, setFlags } = ipfSlice.actions
+export const { setMetadata, resetIpfsState, setPinnedFileHash, setFlags, setLevels } = ipfSlice.actions
 
 export default ipfSlice.reducer

@@ -25,7 +25,7 @@ import { useSnackbar } from 'hooks/useSnackbar'
 import SellOffersList from './SellOffersList'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BuyOffersList from './BuyOffersList'
-import { getIssuer } from 'utils/utils'
+// import { getIssuer } from 'utils/utils'
 
 export default function NFTOffersDetail({ NFTokenID }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
@@ -110,7 +110,7 @@ export default function NFTOffersDetail({ NFTokenID }) {
 
     useEffect(() => {
         let mounted = true
-        fetchListingAndOffers(mounted)
+        // fetchListingAndOffers(mounted)
         return () => {
             mounted = false
         }

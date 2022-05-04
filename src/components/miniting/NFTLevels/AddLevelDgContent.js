@@ -12,12 +12,19 @@ import {
 } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { AddLevelDgProp } from 'utils/types';
+import { setLevels } from 'app/slices/ipfSlice';
+import { useDispatch } from 'react-redux'
+
 
 AddLevelDgContent.propTypes = AddLevelDgProp
 
-export default function AddLevelDgContent({ save, close, properties }) {
+export default function AddLevelDgContent({
+  // save,
+  close,
+  properties }) {
 
-  const [traits, setTraits] = useState(properties)
+  const dispatch = useDispatch()
+  const [traits, setTraits] = useState(properties ? [...properties] : [])
 
   const addTraitItem = () => {
 
@@ -36,7 +43,9 @@ export default function AddLevelDgContent({ save, close, properties }) {
   }
   const saveItems = () => {
     const final = [...traits]
-    save(final.filter(item => item.type !== '' && item.value !== ''))
+    // save(final.filter(item => item.type !== '' && item.value !== ''))
+    console.log(final.filter(item => item.type !== '' && item.value !== ''))
+    dispatch(setLevels(final.filter(item => item.type !== '' && item.value !== '')))
     close()
   }
   const deleteItem = (id) => {
@@ -44,16 +53,18 @@ export default function AddLevelDgContent({ save, close, properties }) {
   }
 
   const handleValueChange = (e, id) => {
+
+    console.log({ e, id })
     const temp = [...traits]
     const idx = temp.findIndex(item => item.id === id)
-    temp[idx].value = e.target.value
+    temp[idx].value = +e.target.value
     setTraits(temp)
   }
 
   const handleTotalChange = (e, id) => {
     const temp = [...traits]
     const idx = temp.findIndex(item => item.id === id)
-    temp[idx].total = e.target.value
+    temp[idx].total = +e.target.value
     setTraits(temp)
   }
 
@@ -74,7 +85,7 @@ export default function AddLevelDgContent({ save, close, properties }) {
           <Typography variant='caption' sx={{ marginRight: 10 }}>Value</Typography>
         </ListItem>
         {
-          traits.map((trait) => (
+          traits && traits.map((trait) => (
             <ListItem sx={{ justifyContent: 'space-between', gap: 1 }} key={trait.id}>
               <IconButton edge='start' aria-label='delete'
                 onClick={() => { deleteItem(trait.id) }}

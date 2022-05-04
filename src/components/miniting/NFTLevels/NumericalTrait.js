@@ -4,7 +4,7 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import { TraitProps } from 'types/types';
+import { TraitProps } from 'utils/types';
 import LinearProgress from '@mui/material/LinearProgress';
 
 NumericalTrait.propTypes = TraitProps

@@ -15,10 +15,12 @@ import Trait from './Trait';
 import AddTraitDgContent from './AddTraitDgContent'
 import BaseDialog from 'components/dialog/BaseDialog';
 import { Icon } from '@iconify/react';
+import { useSelector } from 'react-redux'
 
 export default function Properties() {
-  const [properties, setProperties] = useState([])
+  // const [properties, setProperties] = useState([])
   const [isOpenTraitAddDg, setIsOpenTraitAddDg] = useState(false)
+  const properties = useSelector(state => state.ipfs.metadata.properties)
 
   const openTraitAddDg = () => {
     setIsOpenTraitAddDg(!isOpenTraitAddDg)
@@ -62,7 +64,11 @@ export default function Properties() {
         isOpen={isOpenTraitAddDg}
         close={openTraitAddDg}
         title={'Add Properties'}
-        render={<AddTraitDgContent save={setProperties} close={openTraitAddDg} properties={properties} />}
+        render={<AddTraitDgContent
+          // save={setProperties}
+          close={openTraitAddDg}
+          properties={properties}
+        />}
       />
     </Stack>
   );

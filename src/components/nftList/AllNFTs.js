@@ -54,8 +54,8 @@ export const AllNFTs = () => {
         fetchImages([], 0)
     }
     useEffect(() => {
-        console.log('requesting...')
         reset()
+        setHasMore(true)
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [flags]);

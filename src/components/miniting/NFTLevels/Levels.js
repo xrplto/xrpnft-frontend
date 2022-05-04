@@ -15,10 +15,12 @@ import NumericalTrait from './NumericalTrait';
 import BaseDialog from 'components/dialog/BaseDialog';
 import { Icon } from '@iconify/react';
 import AddLevelDgContent from './AddLevelDgContent';
+import { useSelector } from 'react-redux'
 
 export default function Levels() {
-  const [properties, setProperties] = useState([])
+  // const [properties, setProperties] = useState([])
   const [isOpen, setIsOpen] = useState(false)
+  const levels = useSelector(state => state.ipfs.metadata.levels)
 
   const openDg = () => {
     setIsOpen(!isOpen)
@@ -47,7 +49,7 @@ export default function Levels() {
           </ListItem>
           <Container>
             <Grid container spacing={2} >
-              {properties.map((property) => (
+              {levels && levels.map((property) => (
                 <Grid item key={property.id} sx={{ width: '60%' }}>
                   <NumericalTrait type={property.type} value={property.value} total={property.total} />
                 </Grid>
@@ -61,7 +63,11 @@ export default function Levels() {
         isOpen={isOpen}
         close={openDg}
         title={'Add Levels'}
-        render={<AddLevelDgContent save={setProperties} close={openDg} properties={properties} />}
+        render={
+          <AddLevelDgContent
+            // save={setProperties}
+            close={openDg}
+            properties={levels} />}
       />
     </Stack>
   );
