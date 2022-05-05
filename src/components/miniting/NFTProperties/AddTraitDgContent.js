@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import {
   Box,
@@ -12,18 +11,17 @@ import {
 } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { AddTraitDgProp } from 'utils/types';
-import { setMetadata } from 'app/slices/ipfSlice';
-import { useDispatch } from 'react-redux'
+import { setMetadata, updateProperty } from 'app/slices/ipfSlice';
+import { useDispatch, useSelector } from 'react-redux'
 
 AddTraitDgContent.propTypes = AddTraitDgProp
 
 export default function AddTraitDgContent({
-  // save,
   close,
-  properties }) {
+}) {
 
-  const [traits, setTraits] = useState(properties)
   const dispatch = useDispatch()
+  const properties = useSelector(state => state.ipfs.metadata.properties)
 
   const addTraitItem = () => {
 
@@ -32,36 +30,22 @@ export default function AddTraitDgContent({
       type: '',
       value: '',
     }
-    setTraits(
-      [
-        ...traits,
-        item
-      ]
-    )
-  }
-  const saveItems = () => {
-    const final = [...traits]
-    // save(final.filter(item => item.type !== '' && item.value !== ''))
-    dispatch(setMetadata({ properties: final.filter(item => item.type !== '' && item.value !== '') }))
-
-    close()
+    dispatch(setMetadata({ properties: [...properties, item] }))
   }
   const deleteItem = (id) => {
-    setTraits(traits.filter((item => item.id !== id)))
+    dispatch(setMetadata({ properties: properties.filter((item => item.id !== id)) }))
   }
 
   const handleValueChange = (e, id) => {
-    const temp = [...traits]
-    const idx = temp.findIndex(item => item.id === id)
-    temp[idx].value = e.target.value
-    setTraits(temp)
+
+    const idx = properties.findIndex(item => item.id === id)
+    dispatch(updateProperty({ value: { value: e.target.value }, idx }))
   }
 
   const handleTypeChange = (e, id) => {
-    const temp = [...traits]
-    const idx = temp.findIndex(item => item.id === id)
-    temp[idx].type = e.target.value
-    setTraits(temp)
+
+    const idx = properties.findIndex(item => item.id === id)
+    dispatch(updateProperty({ value: { type: e.target.value }, idx }))
   }
   return (
     <Container >
@@ -74,7 +58,7 @@ export default function AddTraitDgContent({
           <Typography variant='caption'>Name</Typography>
         </ListItem>
         {
-          traits.map((trait) => (
+          properties && properties.map((trait) => (
             <ListItem sx={{ justifyContent: 'space-between' }} key={trait.id}>
               <IconButton edge="start" aria-label="delete"
                 onClick={() => { deleteItem(trait.id) }}
@@ -112,9 +96,9 @@ export default function AddTraitDgContent({
             background: 'springgreen',
             height: 50
           }}
-          onClick={saveItems}
+          onClick={close}
         >
-          Save
+          Close
         </Button>
       </Box>
     </Container>

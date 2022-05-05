@@ -67,7 +67,7 @@ export default function Levels() {
           <AddLevelDgContent
             // save={setProperties}
             close={openDg}
-            properties={levels} />}
+          />}
       />
     </Stack>
   );

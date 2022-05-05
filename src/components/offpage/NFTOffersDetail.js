@@ -11,7 +11,7 @@ import {
     Typography,
 } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
-import TimePeriods from 'components/offpage/TimePeriodsDropdown'
+import TimePeriods from 'components/OffPage/TimePeriodsDropdown'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
 import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 import TimelineIcon from '@mui/icons-material/Timeline'

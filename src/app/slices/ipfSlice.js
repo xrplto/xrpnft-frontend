@@ -24,14 +24,21 @@ export const ipfSlice = createSlice({
     setMetadata: (state, action) => {
       state.metadata = { ...state.metadata, ...action.payload }
     },
-    setLevels: (state, action) => {
-      state.metadata.levels = [...action.payload]
+    updateLevel: (state, action) => {
+      const { value, idx } = action.payload
+      if (idx > -1)
+        state.metadata.levels[idx] = { ...state.metadata.levels[idx], ...value }
+    },
+    updateProperty: (state, action) => {
+      const { value, idx } = action.payload
+      if (idx > -1)
+        state.metadata.properties[idx] = { ...state.metadata.properties[idx], ...value }
     },
     resetIpfsState: () => initialState,
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setMetadata, resetIpfsState, setPinnedFileHash, setFlags, setLevels } = ipfSlice.actions
+export const { setMetadata, resetIpfsState, setPinnedFileHash, setFlags, updateLevel, updateProperty } = ipfSlice.actions
 
 export default ipfSlice.reducer

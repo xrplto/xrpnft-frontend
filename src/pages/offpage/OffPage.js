@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { Container, Grid } from '@mui/material';
 import Page from 'components/Page';
-import NFTOffersDetail from 'components/offpage/NFTOffersDetail';
-import NFTDetails from 'components/offpage/NftDetails';
+import NFTOffersDetail from 'components/OffPage/NFTOffersDetail';
+import NFTDetails from 'components/OffPage/NftDetails';
 import { fetcher, parseNFTokenId, parseNFTUri } from 'utils/utils';
 import useSWR from 'swr'
 import Page404 from 'pages/Page404';

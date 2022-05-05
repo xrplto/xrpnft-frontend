@@ -19,10 +19,13 @@ import TokenFlagsForm from 'components/miniting/TokenFlagsForm';
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
 import CollectionAndProperties from 'components/miniting/CollectionAndProperties';
+import BaseDialog from 'components/dialog/BaseDialog';
+import NFTokenMintDgContent from 'components/dialog/NFTokenMintDgContent';
 
 export default function Minting() {
 
   const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
+  const [open, setOpen] = useState(false)
   const account = useSelector(state => state.account.account)
   const pinnedFileHash = useSelector(state => state.ipfs.pinnedFileHash)
   const login = useSelector(state => state.account.login)
@@ -32,6 +35,8 @@ export default function Minting() {
   const [extLink, setExtLink] = useState('xrpnft.com')
   const [description, setDescription] = useState('')
   const navigate = useNavigate()
+  const levels = useSelector(state => state.ipfs.metadata.levels)
+  const properties = useSelector(state => state.ipfs.metadata.properties)
 
   const handleNameFieldChange = (e) => {
     setNftName(e.target.value)
@@ -53,34 +58,36 @@ export default function Minting() {
       name: nftName,
       type: 'image',
       description: description,
-      externalLink: extLink
+      externalLink: extLink.at,
+      levels: levels,
+      properties: properties,
     }
 
-    console.log({metadata})
-    // const res = await pinJsonToIPFS(metadata)
-    // if (res.success) {
-    //   const nftMetadataUrl = XRPNFT_DOMAIN + res.response.IpfsHash
-    //   try {
-    //     const nfts = await mintToken(account.secret, nftMetadataUrl, flags)
-    //     openSnackbar(nfts.result.account, 'success')
-    //     // TODO: reset ipfs slice when minting succeed
+    console.log({ metadata })
+    const res = await pinJsonToIPFS(metadata)
+    if (res.success) {
+      const nftMetadataUrl = XRPNFT_DOMAIN + res.response.IpfsHash
+      try {
+        const nfts = await mintToken(account.secret, nftMetadataUrl, flags)
+        openSnackbar(nfts.result.account, 'success')
+        // TODO: reset ipfs slice when minting succeed
 
-    //   } catch (e) {
-    //     console.log('Error on Minting: ', e)
-    //     openSnackbar(e.message, 'error')
-    //   }
-    // } else {
-    //   console.log('Json Not pinned to Pinata.')
-    //   openSnackbar('Json Not pinned to Pinata.', 'error')
-    // }
+      } catch (e) {
+        console.log('Error on Minting: ', e)
+        openSnackbar(e.message, 'error')
+      }
+    } else {
+      console.log('Json Not pinned to Pinata.')
+      openSnackbar('Json Not pinned to Pinata.', 'error')
+    }
     setLoading(false)
   }
 
   useEffect(() => {
     if (!login)
       navigate('/');
-    testPinata()
-  }, [login, navigate])
+    // testPinata()
+  }, [login])
   return (
     <Page title='Create - XRPL NFT'>
       <Container maxWidth='md' sx={{ marginBottom: '3vh' }}>
@@ -158,10 +165,11 @@ export default function Minting() {
         <CollectionAndProperties />
         <LoadingButton
           sx={{ margin: 1, padding: 1 }}
-          loading={loading}
-          loadingPosition='start'
-          startIcon={<Icon icon="logos:linux-mint" />}
-          onClick={handleCreate}
+          // loading={loading}
+          // loadingPosition='start'
+          // startIcon={<Icon icon="logos:linux-mint" />}
+          // onClick={handleCreate}
+          onClick={() => setOpen(true)}
           variant='contained'
         >
           Create
@@ -169,6 +177,25 @@ export default function Minting() {
         {/* </Stack> */}
         <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
       </Container>
+      <BaseDialog
+        isOpen={open}
+        close={() => { setOpen(false) }}
+        title={'Mint New NFT'}
+        render={<NFTokenMintDgContent
+          close={() => { setOpen(false) }}
+          metadata={
+            {
+              image: XRPNFT_DOMAIN + pinnedFileHash,
+              name: nftName,
+              type: 'image',
+              description: description,
+              externalLink: extLink,
+              levels: levels,
+              properties: properties,
+            }
+          }
+        />}
+      />
     </Page >
   );
 }

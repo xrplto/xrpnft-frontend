@@ -4,10 +4,10 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import { TraitProps } from 'utils/types';
+import { LevelProps } from 'utils/types';
 import LinearProgress from '@mui/material/LinearProgress';
 
-NumericalTrait.propTypes = TraitProps
+NumericalTrait.propTypes = LevelProps
 
 export default function NumericalTrait({ type, value, total }) {
   return (

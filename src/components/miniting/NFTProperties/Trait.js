@@ -3,9 +3,6 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import { TraitProps } from 'utils/types';
-
-Trait.propTypes = TraitProps
 
 export default function Trait({ type, value }) {
   return (

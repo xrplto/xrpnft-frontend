@@ -2,15 +2,30 @@ import { RIPPLE_TEST_NET_URL } from "./constants";
 const xrpl = require("xrpl");
 
 /**
- * Mint nft.
- * @param {string} secret
- * @param {string} tokenUrl
- * @param {number} flags
- * @returns user account nfts when succeed.
+ *
+ * @param {string} secret account secret key
+ * @param {string} tokenUrl url of ipfs JSON
+ * @param {number} flags token flags
+ * @param {string} issuer (Optional) The issuer of the token,
+ * 												if the sender of the account is issuing it on behalf of another account.
+ * 											  This field must be omitted if the account sending the transaction is
+ * 												the issuer of the NFToken.
+ * 												If provided, the issuer's AccountRoot object must have the
+ * 												NFTokenMinter field set to the sender of this transaction
+ * 												(this transaction's Account field).
+ * @param {number} transferFee (Optional) The value specifies the fee charged by the issuer for secondary sales of the NFToken,
+ * 											  if such sales are allowed.
+ * 												Valid values for this field are between 0 and 9999 inclusive,
+ * 												 allowing transfer rates of between 0.00% and 99.99% in increments of 0.01.
+ * 												If this field is provided, the transaction MUST have the
+ * 												tfTransferable flag enabled.
+ * @param {number} taxon  The taxon associated with the token.
+ * 												The taxon is generally a value chosen by the minter of the token.
+ * 												A given taxon can be used for multiple tokens.
+ * 												Taxon identifiers greater than 0xFFFF'FFFF are disallowed.
  */
-export const mintToken = async (secret, tokenUrl, flags) => {
-	// const wallet = xrpl.Wallet.fromSeed(secret.value)
-	console.log('Minting started...', secret, tokenUrl, flags)
+export const mintToken = async (secret, tokenUrl, flags, issuer, transferFee, taxon) => {
+	console.log('Minting started...')
 	const wallet = xrpl.Wallet.fromSeed(secret)
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
 	await client.connect()
@@ -24,23 +39,27 @@ export const mintToken = async (secret, tokenUrl, flags) => {
 		Account: wallet.classicAddress,
 		URI: xrpl.convertStringToHex(tokenUrl),
 		Flags: parseInt(flags),
-		TokenTaxon: 0 //Required, but if you have no use for it, set to zero.
+		...(issuer && { Issuer: issuer }),
+		TransferFee: transferFee,
+		NFTokenTaxon: taxon ? taxon : 0 //Required, but if you have no use for it, set to zero.
 	}
+	console.log({ transactionBlob })
 	// Submit signed blob --------------------------------------------------------
 	const tx = await client.submitAndWait(transactionBlob, { wallet })
 
-	const nfts = await client.request({
-		method: "account_nfts",
-		account: wallet.classicAddress
-	})
-	console.log(nfts)
+	// const nfts = await client.request({
+	// 	method: "account_nfts",
+	// 	account: wallet.classicAddress
+	// })
+	// console.log(nfts)
 
-	// Check transaction results -------------------------------------------------
-	console.log("Transaction result:", tx.result.meta.TransactionResult)
+	// // Check transaction results -------------------------------------------------
+	console.log("Transaction result:", tx)
+
 	console.log("Balance changes:",
 		JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
 	client.disconnect()
-	return nfts
+	return tx.result.meta
 } //End of mintToken
 
 /**
@@ -100,11 +119,11 @@ export const createSellOffer = async (secret, tokenId, amount, flags) => {
 	}
 
 	// Submit signed blob --------------------------------------------------------
-	try{
+	try {
 
 		const tx = await client.submitAndWait(transactionBlob, { wallet })//AndWait
-	} catch(e){
-		console.log({e})
+	} catch (e) {
+		console.log({ e })
 	}
 
 
@@ -438,7 +457,7 @@ export const getBuyOffers = async (tokenId) => {
 	await client.connect()
 	console.log("Connected to sandbox")
 	console.log('requesting buy offers...')
-	console.log({tokenId})
+	console.log({ tokenId })
 	let offers
 	try {
 		offers = await client.request({
@@ -446,7 +465,7 @@ export const getBuyOffers = async (tokenId) => {
 			nft_id: tokenId
 		})
 	} catch (err) {
-		console.log({err})
+		console.log({ err })
 	}
 	console.log(JSON.stringify(offers, null, 2))
 

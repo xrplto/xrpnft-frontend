@@ -26,7 +26,7 @@ export const ListingsListProps = {
     owner: PropTypes.string
 }
 
-export const TraitProps = {
+export const LevelProps = {
     id: PropTypes.string,
     type: PropTypes.string,
     value: PropTypes.number,

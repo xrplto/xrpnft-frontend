@@ -38,7 +38,10 @@ export const ACCOUNTS = [
 ];
 export const TOP_BAR_HEIGHT_DESKTOP = 50
 export const BASIC_COLOR = '#00AB55'
-
+export const tfTransferable = 0x00000008
+export const tfTrustLine = 0x00000004
+export const tfOnlyXRP = 0x00000002
+export const tfBurnable = 0x00000001
 export const TOKEN_FLAGS = [
     {
         label: 'Burnable',

@@ -3,7 +3,7 @@ import { resetFlags } from 'app/slices/filterSlice';
 import { useDispatch } from 'react-redux'
 import { resetNFTs } from 'app/slices/nftsSlice'
 import PersistentDrawerLeft from 'components/layouts/Drawer';
-import { AllNFTs } from 'components/nftList/AllNFTs';
+import { AllNFTs } from 'components/NFTLists/AllNFTs';
 
 
 export default function LedgerNFTList() {

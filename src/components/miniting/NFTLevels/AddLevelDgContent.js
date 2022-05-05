@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import {
   Box,
@@ -12,68 +11,51 @@ import {
 } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { AddLevelDgProp } from 'utils/types';
-import { setLevels } from 'app/slices/ipfSlice';
-import { useDispatch } from 'react-redux'
+import { setMetadata, updateLevel } from 'app/slices/ipfSlice';
+import { useDispatch, useSelector } from 'react-redux'
 
 
 AddLevelDgContent.propTypes = AddLevelDgProp
 
 export default function AddLevelDgContent({
-  // save,
   close,
-  properties }) {
-
+}) {
   const dispatch = useDispatch()
-  const [traits, setTraits] = useState(properties ? [...properties] : [])
+  const levels = useSelector(state => state.ipfs.metadata.levels)
 
   const addTraitItem = () => {
-
     const item = {
       id: uuidv4(),
       type: '',
       value: 2,
       total: 5,
     }
-    setTraits(
-      [
-        ...traits,
-        item
-      ]
-    )
+    dispatch(setMetadata({ levels: [...levels, item] }))
   }
-  const saveItems = () => {
-    const final = [...traits]
-    // save(final.filter(item => item.type !== '' && item.value !== ''))
-    console.log(final.filter(item => item.type !== '' && item.value !== ''))
-    dispatch(setLevels(final.filter(item => item.type !== '' && item.value !== '')))
-    close()
-  }
+
   const deleteItem = (id) => {
-    setTraits(traits.filter((item => item.id !== id)))
+    dispatch(setMetadata({ levels: levels.filter((item => item.id !== id)) }))
   }
 
   const handleValueChange = (e, id) => {
-
-    console.log({ e, id })
-    const temp = [...traits]
-    const idx = temp.findIndex(item => item.id === id)
-    temp[idx].value = +e.target.value
-    setTraits(temp)
+    const idx = levels.findIndex(item => item.id === id)
+    if (!isNaN(+e.target.value) && +e.target.value <= levels[idx].total) // only number and smaller than total
+      dispatch(updateLevel({ value: { value: +e.target.value }, idx }))
   }
 
   const handleTotalChange = (e, id) => {
-    const temp = [...traits]
-    const idx = temp.findIndex(item => item.id === id)
-    temp[idx].total = +e.target.value
-    setTraits(temp)
+    const idx = levels.findIndex(item => item.id === id)
+    if (!isNaN(+e.target.value)) // only number
+      dispatch(updateLevel({ value: { total: +e.target.value }, idx }))
   }
 
   const handleTypeChange = (e, id) => {
-    const temp = [...traits]
-    const idx = temp.findIndex(item => item.id === id)
-    temp[idx].type = e.target.value
-    setTraits(temp)
+    const idx = levels.findIndex(item => item.id === id)
+    dispatch(updateLevel({ value: { type: e.target.value }, idx }))
   }
+
+
+
   return (
     <Container >
       <Typography variant='body1'>
@@ -85,7 +67,7 @@ export default function AddLevelDgContent({
           <Typography variant='caption' sx={{ marginRight: 10 }}>Value</Typography>
         </ListItem>
         {
-          traits && traits.map((trait) => (
+          levels && levels.map((trait) => (
             <ListItem sx={{ justifyContent: 'space-between', gap: 1 }} key={trait.id}>
               <IconButton edge='start' aria-label='delete'
                 onClick={() => { deleteItem(trait.id) }}
@@ -133,9 +115,9 @@ export default function AddLevelDgContent({
             background: 'springgreen',
             height: 50
           }}
-          onClick={saveItems}
+          onClick={close}
         >
-          Save
+          Close
         </Button>
       </Box>
     </Container>

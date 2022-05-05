@@ -97,7 +97,8 @@ export default function ThemeConfig({ children }) {
                 styleOverrides: {
                     root: {
                         minWidth: 120,
-                        overflowWrap: 'anywhere'
+                        overflowWrap: 'anywhere',
+                        background: 'none'
                     }
                 }
             },

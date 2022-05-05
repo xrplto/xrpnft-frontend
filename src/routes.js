@@ -9,7 +9,7 @@ import Minting from 'pages/Mintpage'
 import NFTInfo from 'pages/offpage/OffPage'
 import Account from 'pages/account/MyNFTs'
 import LoginPage from 'pages/LoginPage';
-import { XRPNFTList } from 'components/nftList/XRPNFTList';
+import { XRPNFTList } from 'components/NFTLists/XRPNFTList';
 import LedgerNFTList from 'pages/market/LandingPage';
 
 export default function Router() {
