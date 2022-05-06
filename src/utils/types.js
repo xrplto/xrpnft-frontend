@@ -33,6 +33,10 @@ export const LevelProps = {
     total: PropTypes.number,
 }
 
+export const LevelsProp = {
+    levels: PropTypes.arrayOf(LevelProps)
+}
+
 export const NFTPreviewProps = {
     uri: PropTypes.string,
     title: PropTypes.string,
@@ -51,11 +55,21 @@ export const AddLevelDgProp = {
     properties: PropTypes.array
 }
 
+export const MetaDataProps = {
+    description: PropTypes.any,
+    image: PropTypes.string
+}
+
 export const NFTDetailsProps = {
     NFTokenID: PropTypes.string,
     NFToken: PropTypes.object,
     ParsedURI: PropTypes.string,
-    data: PropTypes.object
+    data: MetaDataProps
+}
+
+export const NFTOffersDetailProps = {
+    NFTokenID: PropTypes.string,
+    name: PropTypes.string,
 }
 
 

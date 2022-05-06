@@ -4,8 +4,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import Properties from './NFTProperties/Properties';
-import Levels from './NFTLevels/Levels';
+import PropertySection from './NFTProperties/PropertySection';
+import LevelsSection from './NFTLevels/LevelSection';
 
 export default function CollectionAndProperties() {
   const [collectionName, setCollectionName] = useState('')
@@ -28,8 +28,8 @@ export default function CollectionAndProperties() {
             marginTop: 1
           }
         }} />
-      <Properties />
-      <Levels />
+      <PropertySection />
+      <LevelsSection />
     </Stack>
   );
 }

@@ -1,44 +1,26 @@
 import { useSelector } from 'react-redux'
-import { useEffect, useState } from "react";
-import { Grid, Typography } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 import NFTCard from 'components/NFTCard/NFTCard';
 import { getTokens } from 'utils/tokenActions';
+import useSWR from 'swr'
 
 export default function AccountNfts() {
-    const [loading, setLoading] = useState(false);
     const account = useSelector(state => state.account.account)
-    const [userNfts, setUserNfts] = useState([])
+    const { data, error } = useSWR(account.key, getTokens)
 
-
-    useEffect(() => {
-        let mounted = true
-
-        const getAccountNFTs = async () => {
-            setLoading(true)
-            const res = await getTokens(account.key)
-            if (mounted)
-                setUserNfts(res?.result.account_nfts)
-            setLoading(false)
-        }
-        getAccountNFTs()
-        return () => {
-            mounted = false
-        }
-    }, [account.key])
     return (
-        <>
+        <Container sx={{marginTop: 2}}>
             {
-                loading ?
-                    <Typography>
-                        Loading...
-                    </Typography>
-                    : <Typography>This account has {userNfts.length} items</Typography>
+                !data &&
+                <Typography>
+                    Loading...
+                </Typography>
             }
             {
-                userNfts && (
+                data.account_nfts && (
                     <Grid container spacing={2} justifyContent='center'>
                         {
-                            userNfts.map((nft) => (
+                            data.account_nfts.map((nft) => (
                                 <Grid item
                                     key={nft.NFTokenID}
                                 >
@@ -60,6 +42,6 @@ export default function AccountNfts() {
                     </Grid>
                 )
             }
-        </>
+        </Container>
     );
 }

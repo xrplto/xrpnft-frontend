@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux'
 import React from 'react';
-import { Icon } from '@iconify/react';
 import {
+  Button,
   Container,
   Stack,
   TextField,
@@ -11,82 +11,30 @@ import {
 import Page from 'components/Page';
 import { NFTUploader } from 'components/miniting/NFTUploader';
 import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN } from 'utils/constants';
-import { LoadingButton } from '@mui/lab';
-import { mintToken } from 'utils/tokenActions'
-import { testPinata, pinJsonToIPFS } from 'utils/pinata'
 import { useNavigate } from 'react-router-dom'
-import TokenFlagsForm from 'components/miniting/TokenFlagsForm';
-import XSnackbar from 'components/common/Snackbar';
-import { useSnackbar } from 'hooks/useSnackbar';
 import CollectionAndProperties from 'components/miniting/CollectionAndProperties';
 import BaseDialog from 'components/dialog/BaseDialog';
 import NFTokenMintDgContent from 'components/dialog/NFTokenMintDgContent';
 
 export default function Minting() {
 
-  const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
-  const [open, setOpen] = useState(false)
-  const account = useSelector(state => state.account.account)
-  const pinnedFileHash = useSelector(state => state.ipfs.pinnedFileHash)
-  const login = useSelector(state => state.account.login)
-  const flags = useSelector(state => state.ipfs.flags)
-  const [loading, setLoading] = useState(false);
-  const [nftName, setNftName] = useState('')
-  const [extLink, setExtLink] = useState('xrpnft.com')
-  const [description, setDescription] = useState('')
   const navigate = useNavigate()
   const levels = useSelector(state => state.ipfs.metadata.levels)
   const properties = useSelector(state => state.ipfs.metadata.properties)
+  const [open, setOpen] = useState(false)
+  const pinnedFileHash = useSelector(state => state.ipfs.pinnedFileHash)
+  const login = useSelector(state => state.account.login)
+  const [nftName, setNftName] = useState('')
+  const [extLink, setExtLink] = useState('xrpnft.com')
+  const [description, setDescription] = useState('')
 
-  const handleNameFieldChange = (e) => {
-    setNftName(e.target.value)
-  }
 
-  const handleExtLinkFieldChange = (e) => {
-    setExtLink(e.target.value)
-  }
-
-  const handleDescriptionFieldChange = (e) => {
-    setDescription(e.target.value)
-  }
-
-  const handleCreate = async () => {
-    setLoading(true)
-
-    const metadata = {
-      image: XRPNFT_DOMAIN + pinnedFileHash,
-      name: nftName,
-      type: 'image',
-      description: description,
-      externalLink: extLink.at,
-      levels: levels,
-      properties: properties,
-    }
-
-    console.log({ metadata })
-    const res = await pinJsonToIPFS(metadata)
-    if (res.success) {
-      const nftMetadataUrl = XRPNFT_DOMAIN + res.response.IpfsHash
-      try {
-        const nfts = await mintToken(account.secret, nftMetadataUrl, flags)
-        openSnackbar(nfts.result.account, 'success')
-        // TODO: reset ipfs slice when minting succeed
-
-      } catch (e) {
-        console.log('Error on Minting: ', e)
-        openSnackbar(e.message, 'error')
-      }
-    } else {
-      console.log('Json Not pinned to Pinata.')
-      openSnackbar('Json Not pinned to Pinata.', 'error')
-    }
-    setLoading(false)
-  }
 
   useEffect(() => {
     if (!login)
       navigate('/');
-    // testPinata()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [login])
   return (
     <Page title='Create - XRPL NFT'>
@@ -107,15 +55,11 @@ export default function Minting() {
           </Typography>
         </Stack>
         <Stack spacing={2} marginBottom={3}>
-          <Typography variant='caption' >
-            Set Flags
-          </Typography>
-          <TokenFlagsForm />
-        </Stack>
-        <Stack spacing={2} marginBottom={3}>
           <Typography variant='caption'>Name</Typography>
           <TextField required placeholder='Item name' margin='dense'
-            onChange={handleNameFieldChange}
+            onChange={(e) => {
+              setNftName(e.target.value)
+            }}
             value={nftName}
             sx={{
               '&.MuiTextField-root': {
@@ -131,7 +75,9 @@ export default function Minting() {
           <TextField
             placeholder={extLink}
             margin='dense'
-            onChange={handleExtLinkFieldChange}
+            onChange={(e) => {
+              setExtLink(e.target.value)
+            }}
             value={extLink}
             sx={{
               '&.MuiTextField-root': {
@@ -150,7 +96,9 @@ export default function Minting() {
             multiline
             maxRows={4}
             value={description}
-            onChange={handleDescriptionFieldChange}
+            onChange={(e) => {
+              setDescription(e.target.value)
+            }}
             sx={{
               '&.MuiTextField-root': {
                 marginTop: 1,
@@ -163,24 +111,19 @@ export default function Minting() {
             }} />
         </Stack>
         <CollectionAndProperties />
-        <LoadingButton
+        <Button
           sx={{ margin: 1, padding: 1 }}
-          // loading={loading}
-          // loadingPosition='start'
-          // startIcon={<Icon icon="logos:linux-mint" />}
-          // onClick={handleCreate}
           onClick={() => setOpen(true)}
           variant='contained'
         >
           Create
-        </LoadingButton>
-        {/* </Stack> */}
-        <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
+        </Button>
       </Container>
       <BaseDialog
         isOpen={open}
         close={() => { setOpen(false) }}
         title={'Mint New NFT'}
+        maxWidth={'md'}
         render={<NFTokenMintDgContent
           close={() => { setOpen(false) }}
           metadata={

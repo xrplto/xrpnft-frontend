@@ -3,8 +3,6 @@ import {
     AccordionSummary,
     AccordionDetails,
     Box,
-    Container,
-    Grid,
     Link,
     List,
     ListItem,
@@ -18,24 +16,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ArticleIcon from '@mui/icons-material/Article';
 import { Icon } from '@iconify/react';
 import NFTPreview from './NFTPreview';
-import Trait from 'components/miniting/NFTProperties/Trait';
 import { NFTDetailsProps } from 'utils/types';
 import FlagsContainer from 'components/NFTCard/Flags';
 import NFTDetailsDescription from './NftDetailsDescription';
+import Properties from 'components/miniting/NFTProperties/Properties';
+import Levels from 'components/miniting/NFTLevels/Levels';
 
-
-const properties = [
-    {
-        id: 1,
-        type: 'head',
-        value: 'gold',
-    },
-    {
-        id: 2,
-        type: 'arms',
-        value: 'thin',
-    },
-]
 
 NFTDetails.propTypes = NFTDetailsProps
 
@@ -50,7 +36,7 @@ export default function NFTDetails({
         <Box >
             {/* NFT Preview image start--- */}
             {data.image &&
-                <NFTPreview uri={data.image} title='Test title' favorites={0} />
+                <NFTPreview uri={data.image} title={data.description?.name} favorites={0} />
             }
             {/* NFT Preview image end--- */}
 
@@ -138,6 +124,51 @@ export default function NFTDetails({
             </Accordion>
             {/* NFT Detail info end--- */}
 
+
+            {/* NFT Properties start--- */}
+            {
+                data.description?.properties &&
+                <Accordion>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls='panel2a-content'
+                        id='panel2a-header'
+                    >
+                        <Stack spacing={2} direction='row'>
+                            <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
+                            {/* <MoreIcon /> */}
+                            <Typography variant='string' >Properties</Typography>
+                        </Stack>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Properties properties={data.description?.properties} />
+                    </AccordionDetails>
+                </Accordion>
+            }
+            {/* NFT Properties end--- */}
+
+            {/* NFT Leveled Properties start--- */}
+            {
+                data.description?.levels &&
+                <Accordion>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls='panel2a-content'
+                        id='panel2a-header'
+                    >
+                        <Stack spacing={2} direction='row'>
+                            <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
+                            {/* <MoreIcon /> */}
+                            <Typography variant='string' >Level Properties</Typography>
+                        </Stack>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Levels levels={data.description?.levels} />
+                    </AccordionDetails>
+                </Accordion>
+            }
+            {/* NFT Leveled Properties end--- */}
+
             {/* NFT Description start--- */}
             <Accordion>
                 <AccordionSummary
@@ -158,32 +189,6 @@ export default function NFTDetails({
             </Accordion>
             {/* NFT Description end--- */}
 
-            {/* NFT Properties start--- */}
-            <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls='panel2a-content'
-                    id='panel2a-header'
-                >
-                    <Stack spacing={2} direction='row'>
-                        <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                        {/* <MoreIcon /> */}
-                        <Typography variant='string' >Properties</Typography>
-                    </Stack>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Container>
-                        <Grid container spacing={2} >
-                            {properties.map((property) => (
-                                <Grid item key={property.id}>
-                                    <Trait type={property.type} value={property.value} />
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </Container>
-                </AccordionDetails>
-            </Accordion>
-            {/* NFT Properties end--- */}
         </Box>
     );
 }

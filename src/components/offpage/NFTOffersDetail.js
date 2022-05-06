@@ -25,9 +25,11 @@ import { useSnackbar } from 'hooks/useSnackbar'
 import SellOffersList from './SellOffersList'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BuyOffersList from './BuyOffersList'
-// import { getIssuer } from 'utils/utils'
+import { NFTOffersDetailProps } from 'utils/types'
 
-export default function NFTOffersDetail({ NFTokenID }) {
+NFTOffersDetail.prototype = NFTOffersDetailProps
+
+export default function NFTOffersDetail({ NFTokenID, name }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const [pageLoading, setPageLoading] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -40,9 +42,6 @@ export default function NFTOffersDetail({ NFTokenID }) {
     const navigate = useNavigate()
     const [owner, setOwner] = useState(null)
     const [price, setPrice] = useState(0)
-    const [expandedPrice, setExpandedPrice] = useState(true)
-    const [expandedListing, setExpandedListing] = useState(true)
-    const [expandedOffers, setExpandedOffers] = useState(true)
 
     const handleSellOffer = async () => {
         if (login) {
@@ -123,7 +122,7 @@ export default function NFTOffersDetail({ NFTokenID }) {
                     NFTKings
                 </Link>
                 <Typography variant='subtitle' gutterBottom fontSize={30} overflow='hidden' fontWeight={600}>
-                    Peaceful Ape
+                    {name ? name : 'Unknown'}
                 </Typography>
                 <Stack spacing={1}>
                     <Typography variant='subtitle1' >
@@ -132,7 +131,7 @@ export default function NFTOffersDetail({ NFTokenID }) {
                     {
                         !pageLoading ?
                             <Link href='#' underline='none' variant='info'>
-                                {owner?owner:'Unknown'}
+                                {owner ? owner : 'Unknown'}
                             </Link> :
                             <Skeleton animation='wave' height={40} width='100%' />
                     }
@@ -186,7 +185,7 @@ export default function NFTOffersDetail({ NFTokenID }) {
                     </ButtonGroup>
                 </AccordionDetails>
             </Accordion>
-            <Accordion onChange={() => setExpandedPrice(!expandedPrice)} >
+            <Accordion defaultExpanded >
                 <AccordionSummary
                     aria-controls='panel2a-content'
                     id='panel2a-header'
@@ -205,7 +204,7 @@ export default function NFTOffersDetail({ NFTokenID }) {
                     </Typography>
                 </AccordionDetails>
             </Accordion>
-            <Accordion expanded={expandedListing} onChange={() => setExpandedListing(!expandedListing)}>
+            <Accordion >
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls='panel3a-content'
@@ -227,7 +226,7 @@ export default function NFTOffersDetail({ NFTokenID }) {
                     }
                 </AccordionDetails>
             </Accordion>
-            <Accordion expanded={expandedOffers} onChange={() => setExpandedOffers(!expandedOffers)}>
+            <Accordion >
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls='panel3a-content'

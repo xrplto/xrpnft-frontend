@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Context from './Context'
 import Router from './Routes';
-import ThemeConfig from './theme';
+import ThemeConfig from './Theme';
 
 export default function App() {
     // const [loading, setLoading] = useState(false);

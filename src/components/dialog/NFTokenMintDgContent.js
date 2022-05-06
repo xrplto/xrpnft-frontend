@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
+    Box,
     Button,
-    Container,
     DialogActions,
+    DialogContent,
     Grid,
-    Paper,
+    InputAdornment,
     TextField,
     Tooltip,
     Typography,
@@ -27,7 +28,7 @@ export default function NFTokenMintDgContent({ close, metadata }) {
     const flags = useSelector(state => state.ipfs.flags)
     const [loading, setLoading] = useState(false)
     const [issuer, setIssuer] = useState('')
-    const [tFee, setFee] = useState(300) //transfer fee
+    const [tFee, setFee] = useState(3) //transfer fee
     const [NFTokenTaxon, setNFTokenTaxon] = useState(0) //NFTokenTaxon
     const account = useSelector(state => state.account.account)
 
@@ -38,7 +39,7 @@ export default function NFTokenMintDgContent({ close, metadata }) {
             if (res.success) {
                 const nftMetadataUrl = XRPNFT_DOMAIN + res.response.IpfsHash
                 try {
-                    const nfts = await mintToken(account.secret, nftMetadataUrl, flags, issuer, tFee)
+                    const nfts = await mintToken(account.secret, nftMetadataUrl, flags, issuer, tFee * 100)
                     openSnackbar(nfts.result.account, 'success')
                     // TODO: reset ipfs slice when minting succeed
                     dispatch(resetIpfsState())
@@ -57,34 +58,37 @@ export default function NFTokenMintDgContent({ close, metadata }) {
     }
 
     const handleCancel = () => {
-        // TODO: Open a new page with selected account
-        // navigate(`/account/${nftoken.tokenID}?tokenURI=${nftoken.URI}`)
         close()
     }
 
     return (
         <>
-            <Paper>
-                <Container sx={{ paddingBottom: 2 }}>
+            <DialogContent dividers sx={{ backgroundColor: 'theme.palette.background.paper' }}>
+                <Box sx={{ paddingBottom: 2 }}>
                     <Grid container alignItems={'center'} spacing={3}>
-                        <Grid item md={3}>
+                        <Grid item md={4} justifyContent='flex-end' sx={{ display: 'flex' }}>
                             <Typography variant='caption' >
                                 Set Flags
                             </Typography>
                         </Grid>
-                        <Grid item md={9}>
+                        <Grid item md={8}>
                             <TokenFlagsForm />
                         </Grid>
-                        <Grid item md={3}>
+                        <Grid item md={4} justifyContent='flex-end' sx={{ display: 'flex' }}>
                             <Typography variant='caption' >
                                 Issuer
                             </Typography>
-                            <Tooltip title='(Optional) The issuer of the token, if the sender of the account is issuing it on behalf of another account. This field must be omitted if your account is the issuer of the NFToken.'>
-                                <InfoIcon fontSize='small' />
+                            <Tooltip
+                                title={
+                                    <Typography sx={{ color: 'white' }}>
+                                        (Optional) The issuer of the token, if the sender of the account is issuing it on behalf of another account. This field must be omitted if your account is the issuer of the NFToken.
+                                    </Typography>}>
+                                <InfoIcon fontSize={'8px'} />
                             </Tooltip>
                         </Grid>
-                        <Grid item md={9}>
+                        <Grid item md={8}>
                             <TextField
+                                placeholder='Account Address, do not set this field if you are the issuer of this NFT.'
                                 variant='standard'
                                 fullWidth
                                 value={issuer}
@@ -93,37 +97,53 @@ export default function NFTokenMintDgContent({ close, metadata }) {
                                 }}
                             />
                         </Grid>
-                        <Grid item md={3}>
+                        <Grid item md={4} justifyContent='flex-end' sx={{ display: 'flex' }}>
                             <Typography variant='caption' >
                                 Transfer Fee
                             </Typography>
-                            <Tooltip title='(Optional) The value specifies the tFee charged by the issuer for secondary sales of the NFToken, if such sales are allowed. Valid values for this field are between 0 and 9999 inclusive, allowing transfer rates of between 0.00% and 99.99% in increments of 0.01. If this field is provided, the transaction MUST have the tfTransferable flag enabled.'>
-                                <InfoIcon fontSize='small' />
+                            <Tooltip
+                                title={
+                                    <Typography sx={{ color: 'white' }}>
+                                        (Optional) The value specifies the tFee charged by the issuer for secondary sales of the NFToken, if such sales are allowed. Valid values for this field are between 0 and 9999 inclusive, allowing transfer rates of between 0.00% and 99.99% in increments of 0.01. If this field is provided, the transaction MUST have the tfTransferable flag enabled.
+                                    </Typography>
+                                }
+                            >
+                                <InfoIcon fontSize={'8px'} />
                             </Tooltip>
                         </Grid>
-                        <Grid item md={9}>
+                        <Grid item md={8}>
                             <TextField
                                 variant='standard'
+                                label='Royalty fee of secondary sales.'
                                 fullWidth
                                 value={tFee}
+                                InputProps={{
+                                    endAdornment: <InputAdornment position="start">%</InputAdornment>,
+                                }}
                                 disabled={ // possible only tfTransferable is set
                                     (flags & tfTransferable) === 0
                                 }
                                 onChange={(e) => {
-                                    if (!isNaN(+e.target.value) && +e.target.value < 10000)
-                                        setFee(+e.target.value)
+                                    if (!isNaN(+e.target.value) && +e.target.value < 100)
+                                        setFee(e.target.value)
                                 }}
                             />
                         </Grid>
-                        <Grid item md={3}>
+                        <Grid item md={4} justifyContent='flex-end' sx={{ display: 'flex' }}>
                             <Typography variant='caption' >
                                 NFToken Taxon
                             </Typography>
-                            <Tooltip title='The taxon associated with the token. The taxon is generally a value chosen by the minter of the token. A given taxon can be used for multiple tokens. Taxon identifiers greater than 0xFFFFFFFF are disallowed.'>
-                                <InfoIcon fontSize='small' />
+                            <Tooltip
+                                title={
+                                    <Typography sx={{ color: 'white' }}>
+                                        The taxon associated with the token. The taxon is generally a value chosen by the minter of the token. A given taxon can be used for multiple tokens. Taxon identifiers greater than 0xFFFFFFFF are disallowed.
+                                    </Typography>
+                                }
+                            >
+                                <InfoIcon fontSize={'8px'} />
                             </Tooltip>
                         </Grid>
-                        <Grid item md={9}>
+                        <Grid item md={8}>
                             <TextField
                                 variant='standard'
                                 fullWidth
@@ -135,8 +155,8 @@ export default function NFTokenMintDgContent({ close, metadata }) {
                             />
                         </Grid>
                     </Grid>
-                </Container>
-            </Paper>
+                </Box>
+            </DialogContent>
             <DialogActions>
                 <LoadingButton
                     sx={{ padding: 1 }}

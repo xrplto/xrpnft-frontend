@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useContext } from 'react'
 import Context from '../../Context'
 import { Icon } from '@iconify/react';
-import AddIcon from '@mui/icons-material/Add';
 import {
     Button,
     Toolbar,
@@ -98,14 +97,12 @@ export default function Navbar() {
                 login ?
                     <>
                         <Link href='/create' underline='none'>
-                            <Button startIcon={<AddIcon />}>Create</Button>
+                            <Button >Create</Button>
                         </Link>
                         <Link href='/account' underline='none' >
-                            <Button startIcon={<Icon icon="ic:round-account-balance-wallet" />}>My NFTs</Button>
+                            <Button >My NFTs</Button>
                         </Link>
-                        <Link href='/' underline='none'
-                        // component='button'
-                        >
+                        <Link href='/' underline='none'>
                             <Button endIcon={<LogoutIcon />} onClick={handleDisconnect} >
                                 {key.slice(0, 4) + '...' + key.slice(-2)}
                             </Button>
