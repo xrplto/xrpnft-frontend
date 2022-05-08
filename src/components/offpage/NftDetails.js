@@ -10,6 +10,7 @@ import {
     ListSubheader,
     Stack,
     Typography,
+    Divider,
 } from '@mui/material'
 import DescriptionIcon from '@mui/icons-material/Description';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -58,66 +59,90 @@ export default function NFTDetails({
                     }}
                 >
                     <List>
-                        <ListItem disablePadding>
-                            <ListSubheader>
-                                TokenId
-                            </ListSubheader>
-                            <ListItemText primary={NFTokenID} />
+                        <ListItem >
+                            <ListItemText primary={
+                                <Typography variant='caption'>
+                                    TokenId
+                                </Typography>
+                            }
+                                secondary={NFTokenID}
+                            />
                         </ListItem>
-                        <ListItem disablePadding >
-                            <ListSubheader>
-                                Flags
-                            </ListSubheader>
+                        <Divider component="li" />
+                        <ListItem >
+                            <ListItemText primary={
+                                <Typography variant='caption'>
+                                    Flags
+                                </Typography>
+                            }
+                            />
                             <FlagsContainer Flags={NFToken.flags} />
                         </ListItem>
-                        <ListItem disablePadding disableGutters >
-                            <ListSubheader>
-                                Issuer
-                            </ListSubheader>
-                            <ListItemText >
-                                <Link
+                        <Divider component="li" />
+                        <ListItem >
+                            <ListItemText primary={
+                                <Typography variant='caption'>
+                                    Issuer
+                                </Typography>
+                            }
+                                secondary={<Link
                                     underline='hover'
                                     href='#'
                                     variant='info'
                                     sx={{ marginRight: 0, overflowWrap: 'anywhere' }}
                                 >
                                     {NFToken.issuer}
-                                </Link>
-                            </ListItemText>
+                                </Link>}
+                            />
                         </ListItem>
-                        <ListItem disablePadding>
-                            <ListSubheader>
-                                Transfer Fee
-                            </ListSubheader>
-                            <ListItemText primary={NFToken.transferFee} />
+                        <Divider component="li" />
+                        <ListItem >
+                            <ListItemText primary={
+                                <Typography variant='caption'>
+                                    Transfer Fee
+                                </Typography>
+                            }
+                                secondary={+NFToken.transferFee / 100 + '%'}
+                            />
                         </ListItem>
-                        <ListItem disablePadding>
-                            <ListSubheader>
-                                Taxon
-                            </ListSubheader>
-                            <ListItemText primary={NFToken.tokenTaxon} />
+                        <Divider component="li" />
+                        <ListItem >
+                            <ListItemText primary={
+                                <Typography variant='caption'>
+                                    Taxon
+                                </Typography>
+                            }
+                                secondary={NFToken.tokenTaxon}
+                            />
                         </ListItem>
-                        <ListItem disablePadding>
-                            <ListSubheader>
-                                Sequence
-                            </ListSubheader>
-                            <ListItemText primary={NFToken.sequence} />
+                        <Divider component="li" />
+
+                        <ListItem >
+                            <ListItemText primary={
+                                <Typography variant='caption'>
+                                    Sequence
+                                </Typography>
+                            }
+                                secondary={NFToken.sequence}
+                            />
                         </ListItem>
-                        <ListItem disablePadding>
-                            <ListSubheader>
-                                URI
-                            </ListSubheader>
-                            {/* <ListItemText primary={ParsedURI} /> */}
-                            <ListItemText >
-                                <Link underline='hover'
-                                    href={ParsedURI}
-                                    variant='info'
-                                    id='uri-link'
-                                    sx={{ marginRight: 0, overflowWrap: 'anywhere' }}
-                                >
-                                    {ParsedURI}
-                                </Link>
-                            </ListItemText>
+                        <Divider component="li" />
+                        <ListItem >
+                            <ListItemText primary={
+                                <Typography variant='caption'>
+                                    URI
+                                </Typography>
+                            }
+                                secondary={
+                                    <Link underline='hover'
+                                        href={ParsedURI}
+                                        variant='info'
+                                        id='uri-link'
+                                        sx={{ marginRight: 0, overflowWrap: 'anywhere' }}
+                                    >
+                                        {ParsedURI}
+                                    </Link>}
+                            />
                         </ListItem>
                     </List>
                 </AccordionDetails>

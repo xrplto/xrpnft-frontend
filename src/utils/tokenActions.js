@@ -122,6 +122,7 @@ export const createSellOffer = async (secret, tokenId, amount, flags) => {
 	try {
 
 		const tx = await client.submitAndWait(transactionBlob, { wallet })//AndWait
+		console.log({ tx })
 	} catch (e) {
 		console.log({ e })
 	}
@@ -450,28 +451,29 @@ export const getSellOffers = async (tokenId) => {
 }
 
 
-export const getBuyOffers = async (tokenId) => {
+// export const getBuyOffers = async (tokenId) => {
+export async function getBuyOffers(tokenId) {
 
-	console.log("Connecting to sandbox.......")
-	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
-	await client.connect()
-	console.log("Connected to sandbox")
-	console.log('requesting buy offers...')
-	console.log({ tokenId })
-	let offers
-	try {
-		offers = await client.request({
+	// try {
+		console.log("Connecting to sandbox.......")
+		const client = new xrpl.Client(RIPPLE_TEST_NET_URL, {
+			connectionTimeout: 10000
+		})
+		await client.connect()
+		console.log("Connected to sandbox")
+		console.log('requesting buy offers...')
+		const offers = await client.request({
 			method: "nft_buy_offers",
 			nft_id: tokenId
 		})
-	} catch (err) {
-		console.log({ err })
-	}
-	console.log(JSON.stringify(offers, null, 2))
+		console.log({ offers })
+		client.disconnect()
+		return offers
+	// } catch (err) {
+	// 	console.log({ err })
+	// 	return null
+	// }
 
-	client.disconnect()
-	// End of createSellOffer()
-	return offers
 }
 
 /**
@@ -480,17 +482,20 @@ export const getBuyOffers = async (tokenId) => {
  * @returns
  */
 export async function getTokens(key) {
-	// Connect to the devnet server.
-	const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
-	await client.connect()
-
-	console.log("Connected to Sandbox")
-	const nfts = await client.request({
-		method: "account_nfts",
-		account: key
-	})
-
-
-	client.disconnect()
-	return nfts
+	try {
+		// Connect to the devnet server.
+		const client = new xrpl.Client(RIPPLE_TEST_NET_URL, {
+			connectionTimeout: 10000
+		})
+		await client.connect()
+		const res = await client.request({
+			method: "account_nfts",
+			account: key
+		})
+		client.disconnect()
+		return res.result
+	} catch (e) {
+		console.log({ e })
+		return null
+	}
 } //End of getTokens

@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import PropTypes, { string } from 'prop-types';
 
 export const SnackbarProps = {
     isOpen: PropTypes.bool,
@@ -20,10 +20,15 @@ export const NFTCardProps = {
     // nft_serial: PropTypes.number
 }
 
-export const ListingsListProps = {
-    tokenID: PropTypes.string,
-    listings: PropTypes.object,
-    owner: PropTypes.string
+const buyOfferProps = {
+    nft_id: PropTypes.string,
+    offers: PropTypes.array
+}
+
+export const BuyOffersProps = {
+    id: PropTypes.number,
+    result: PropTypes.exact(buyOfferProps),
+    type: PropTypes.string
 }
 
 export const LevelProps = {
@@ -64,7 +69,7 @@ export const NFTDetailsProps = {
     NFTokenID: PropTypes.string,
     NFToken: PropTypes.object,
     ParsedURI: PropTypes.string,
-    data: MetaDataProps
+    data: PropTypes.exact(MetaDataProps)
 }
 
 export const NFTOffersDetailProps = {

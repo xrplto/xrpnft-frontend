@@ -19,12 +19,13 @@ import { CountdownTimer } from './CountDownTimer'
 import ListIcon from '@mui/icons-material/List'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { createBuyOffer, createSellOffer, getSellAndBuyOffers } from 'utils/tokenActions'
+import { createBuyOffer, createSellOffer, getSellAndBuyOffers, getBuyOffers } from 'utils/tokenActions'
 import XSnackbar from 'components/common/Snackbar'
 import { useSnackbar } from 'hooks/useSnackbar'
 import SellOffersList from './SellOffersList'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BuyOffersList from './BuyOffersList'
+import useSWR from 'swr'
 import { NFTOffersDetailProps } from 'utils/types'
 
 NFTOffersDetail.prototype = NFTOffersDetailProps
@@ -42,6 +43,7 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
     const navigate = useNavigate()
     const [owner, setOwner] = useState(null)
     const [price, setPrice] = useState(0)
+    const buyOffers = useSWR(NFTokenID, getBuyOffers)
 
     const handleSellOffer = async () => {
         if (login) {
@@ -63,7 +65,7 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
         }
     }
 
-    const handleBuyOfferBtnClick = async () => {
+    const makeBuyOffer = async () => {
         if (login) {
             setLoading(true)
             console.log('Making offer...')
@@ -76,7 +78,8 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
             }
             setLoading(false)
         } else {
-            navigate('/login')
+            openSnackbar('You have to login first to make an offer.', 'error')
+            // navigate('/login')
         }
     }
 
@@ -107,14 +110,14 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
         setPageLoading(false)
     }
 
-    useEffect(() => {
-        let mounted = true
-        // fetchListingAndOffers(mounted)
-        return () => {
-            mounted = false
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    // useEffect(() => {
+    //     let mounted = true
+    //     // fetchListingAndOffers(mounted)
+    //     return () => {
+    //         mounted = false
+    //     }
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [])
     return (
         <div>
             <Stack spacing={2} marginTop={1}>
@@ -176,7 +179,7 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                             loading={loading}
                             loadingPosition='start'
                             variant='outlined'
-                            onClick={handleBuyOfferBtnClick}
+                            onClick={makeBuyOffer}
                             // disabled={account.key === owner || owner === null}
                             disabled={!login}
                             startIcon={<AccountBalanceWalletIcon />}>
@@ -187,6 +190,7 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
             </Accordion>
             <Accordion defaultExpanded >
                 <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
                     aria-controls='panel2a-content'
                     id='panel2a-header'
                 >
@@ -218,6 +222,7 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                 <Divider />
                 <AccordionDetails sx={{ margin: 3, textAlign: 'center' }}>
                     {
+
                         !pageLoading ?
                             sellOffers &&
                             <SellOffersList listings={sellOffers} NFTokenID={NFTokenID} owner={owner} />
@@ -240,11 +245,9 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                 <Divider />
                 <AccordionDetails sx={{ margin: 3, textAlign: 'center' }}>
                     {
-                        !pageLoading ?
-                            offers &&
-                            <BuyOffersList listings={offers} NFTokenID={NFTokenID} owner={owner} />
-                            :
-                            <Skeleton animation='wave' height={100} width='100%' />
+                        buyOffers.error ? <Typography>Error: {buyOffers.error.message}</Typography> :
+                            !buyOffers.data ? <Skeleton animation='wave' height={100} width='100%' /> :
+                                <BuyOffersList id={buyOffers.data.id} result={buyOffers.data.result} />
                     }
                 </AccordionDetails>
             </Accordion>

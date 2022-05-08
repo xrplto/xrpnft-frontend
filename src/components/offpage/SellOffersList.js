@@ -15,7 +15,7 @@ import { FadeLoader } from 'react-spinners';
 import { useSelector } from 'react-redux'
 
 
-SellOffersList.propTypes = ListingsListProps
+// SellOffersList.propTypes = ListingsListProps
 
 export default function SellOffersList({ tokenID, listings, owner }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()

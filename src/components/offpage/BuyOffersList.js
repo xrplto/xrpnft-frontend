@@ -7,28 +7,29 @@ import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import { Icon } from '@iconify/react';
 import { acceptBuyOffer, cancelOffer } from 'utils/tokenActions';
-import { ListingsListProps } from 'utils/types';
+import { BuyOffersProps } from 'utils/types';
 import XSnackbar from 'components/common/Snackbar'
 import { useSnackbar } from 'hooks/useSnackbar'
 import { useSelector } from 'react-redux'
 import { FadeLoader } from 'react-spinners';
 
 
-BuyOffersList.propTypes = ListingsListProps
+BuyOffersList.propTypes = BuyOffersProps
 
-export default function BuyOffersList({ tokenID, listings, owner }) {
+export default function BuyOffersList({ id, result }) {
+    console.log({id, result})
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const [loading, setLoading] = useState(false)
     const account = useSelector(state => state.account.account)
     const login = useSelector(state => state.account.login)
-    const [offers, setOffers] = useState([])
+    // const [offers, setOffers] = useState([])
     const handleCancelOffer = async (index) => {
         setLoading(true)
         try {
-            const res = await cancelOffer(account.secret, index, tokenID)
-            if(res.buyOffers)
-            setOffers(res.result.offers)
-            else setOffers([])
+            const res = await cancelOffer(account.secret, index, id)
+            // if (res.buyOffers)
+            //     setOffers(res.result.offers)
+            // else setOffers([])
             openSnackbar('Cancel offer success:' + index.slice(0, 10) + '...', 'success')
         } catch (e) {
             // TODO: snack bar error
@@ -50,9 +51,9 @@ export default function BuyOffersList({ tokenID, listings, owner }) {
         setLoading(false)
     }
 
-    useEffect(() => {
-        setOffers(listings.offers)
-    }, [listings])
+    // useEffect(() => {
+    //     setOffers(listings.offers)
+    // }, [listings])
 
     return (
         <>
@@ -64,14 +65,14 @@ export default function BuyOffersList({ tokenID, listings, owner }) {
             </Backdrop>
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 {
-                    offers ?
-                        offers.map((offer) => (
-                            <div key={offer.index}>
+                    result ?
+                        result.offers.map((offer) => (
+                            <div key={offer.nft_offer_index}>
                                 <ListItem alignItems='center' >
                                     <ListItemAvatar>
                                         <Avatar sx={{ bgcolor: 'lightseagreen' }}>
                                             <Typography>
-                                                {offer.index.slice(0, 2)}
+                                                {offer.nft_offer_index.slice(0, 2)}
                                             </Typography>
                                         </Avatar>
                                     </ListItemAvatar>
@@ -108,7 +109,7 @@ export default function BuyOffersList({ tokenID, listings, owner }) {
                                             <Grid item xs={12} >
                                                 <ButtonGroup variant="outlined">
                                                     <Button aria-label="accept"
-                                                        onClick={() => handleAccept(offer.index)}
+                                                        onClick={() => handleAccept(offer.nft_offer_index)}
                                                         color="success"
                                                         disabled={
                                                             !login
@@ -125,7 +126,7 @@ export default function BuyOffersList({ tokenID, listings, owner }) {
                                                         Accept
                                                     </Button>
                                                     <Button aria-label="cancel"
-                                                        onClick={() => handleCancelOffer(offer.index)}
+                                                        onClick={() => handleCancelOffer(offer.nft_offer_index)}
                                                         color="error"
                                                         disabled={
                                                             // Can't cancel buy offer

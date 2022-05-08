@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import Context from '../Context'
+import Context from './Context'
 import PropTypes from 'prop-types';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme, StyledEngineProvider } from '@mui/material/styles';
@@ -23,9 +23,9 @@ export default function ThemeConfig({ children }) {
                 styleOverrides: {
                     root: ({ theme }) => ({
                         border: `1px solid ${theme.palette.divider}`,
-                        '&:not(:last-child)': {
-                            borderBottom: 0,
-                        },
+                        // '&:not(:last-child)': {
+                        //     borderBottom: 0,
+                        // },
                     })
                 }
             },
@@ -34,10 +34,10 @@ export default function ThemeConfig({ children }) {
                     root: ({ theme }) => (
                         {
                             backgroundColor:
-                                // theme.palette.background.paper,
-                                theme.palette.mode === 'dark'
-                                    ? 'rgba(255, 255, 255, .05)'
-                                    : 'rgba(0, 0, 0, .03)',
+                                theme.palette.background.paper,
+                            // theme.palette.mode === 'dark'
+                            //     ? 'rgba(255, 255, 255, .05)'
+                            //     : 'rgba(0, 0, 0, .03)',
                             '& .MuiAccordionSummary-content': {
                                 marginLeft: theme.spacing(1),
                             },
@@ -160,6 +160,10 @@ export default function ThemeConfig({ children }) {
                 light: grey[50],
                 dark: grey[200],
                 contrastText: 'white'
+            },
+            background: {
+                paper: 'rgba(250, 250, 250)',
+                light: '#212121'
             }
         },
     });

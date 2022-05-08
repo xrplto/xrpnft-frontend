@@ -1,4 +1,6 @@
 import {
+    Box,
+    Divider,
     List,
     ListItem,
     ListItemText,
@@ -15,20 +17,22 @@ export default function NFTDetailsDescription({
             <List>
                 {
                     Object.keys(description).map((item, index) => (
-                        <ListItem disablePadding key={item + '-' + index}>
-                            <ListSubheader>
-                                {item}
-                            </ListSubheader>
-                            <ListItemText
-                                primary={
-                                    JSON.stringify(description[item])
-                                    // .replace('"', '')
-                                } />
-                        </ListItem>
+                        <Box key={item + '-' + index}>
+                            <ListItem >
+                                <ListItemText primary={
+                                    <Typography variant='caption'>
+                                        {item}
+                                    </Typography>
+                                }
+                                    secondary={JSON.stringify(description[item])}
+                                />
+                            </ListItem>
+                            <Divider component='li' orientation='horizontal' />
+                        </Box>
                     ))
                 }
             </List>
             :
-            <Typography sx={{textAlign: 'center'}}>No description for this item</Typography>
+            <Typography sx={{ textAlign: 'center' }}>No description for this item</Typography>
     );
 }
