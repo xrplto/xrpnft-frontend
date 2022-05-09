@@ -319,6 +319,14 @@ export function isObjectEmpty(obj) {
     return true;
 }
 
+export function getCurrentRippleEpoch() {
+    return Math.round((new Date()).getTime() / 1000) - 946684800 //946684800 is unix time epoch of 2000-1-1:00:00:00
+}
+
+export function getUnixTimeEpochFromRippleEpoch(rippleEpoch) {
+    return (rippleEpoch + 946684800) * 1000
+}
+
 export function fDate(date) {
     return format(new Date(date), 'dd MMMM yyyy');
 }

@@ -13,11 +13,16 @@ import { useSnackbar } from 'hooks/useSnackbar'
 import { useSelector } from 'react-redux'
 import { FadeLoader } from 'react-spinners';
 
+// cannot accept buy offer if you are not the owner of token.
+// cannot accept sell offer if seller is not the owner of token.
+// cannot accept sell offer if recepient account is not you.
+// cannot accept offer if the expiration time and the closing time of the parent ledger has passed.
+// cannot accept an offer made by you.
 
 BuyOffersList.propTypes = BuyOffersProps
 
 export default function BuyOffersList({ id, result }) {
-    console.log({id, result})
+    // console.log({id, result})
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const [loading, setLoading] = useState(false)
     const account = useSelector(state => state.account.account)
@@ -72,7 +77,7 @@ export default function BuyOffersList({ id, result }) {
                                     <ListItemAvatar>
                                         <Avatar sx={{ bgcolor: 'lightseagreen' }}>
                                             <Typography>
-                                                {offer.nft_offer_index.slice(0, 2)}
+                                                {offer.nft_offer_index.slice(0, 3)}
                                             </Typography>
                                         </Avatar>
                                     </ListItemAvatar>
@@ -145,7 +150,7 @@ export default function BuyOffersList({ id, result }) {
                                         </Grid>
                                     </Container>
                                 </ListItem>
-                                <Divider variant='inset' component='li' />
+                                <Divider component='li' />
                             </div>
                         ))
                         :

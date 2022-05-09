@@ -1,32 +1,55 @@
 import { useState, useEffect } from 'react';
-import { List, Container, Grid, ButtonGroup, Backdrop, Button } from '@mui/material';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
+import {
+    Avatar,
+    Backdrop,
+    Box,
+    Button,
+    ButtonGroup,
+    Container,
+    Divider,
+    Grid,
+    List,
+    ListItem,
+    ListItemAvatar,
+    Typography
+} from '@mui/material';
 import { deepOrange } from '@mui/material/colors';
 import { Icon } from '@iconify/react';
 import { acceptSellOffer, cancelOffer } from 'utils/tokenActions';
-import { ListingsListProps } from 'utils/types';
+import { BuyOffersProps } from 'utils/types';
 import XSnackbar from 'components/common/Snackbar'
 import { useSnackbar } from 'hooks/useSnackbar'
 import { FadeLoader } from 'react-spinners';
 import { useSelector } from 'react-redux'
+import CountdownTimer from './CountDownTimer';
+import { getUnixTimeEpochFromRippleEpoch } from 'utils/utils';
+import QRCode from "react-qr-code";
 
+SellOffersList.propTypes = BuyOffersProps
 
-// SellOffersList.propTypes = ListingsListProps
+// cannot accept buy offer if you are not the owner of token.
+// cannot accept sell offer if seller is not the owner of token.
+// cannot accept sell offer if recepient account is not you.
+// cannot accept offer if the expiration time and the closing time of the parent ledger has passed.
+// cannot accept an offer made by you.
 
-export default function SellOffersList({ tokenID, listings, owner }) {
+export default function SellOffersList({ id, result, NFTokenID }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const [loading, setLoading] = useState(false)
     const account = useSelector(state => state.account.account)
     const login = useSelector(state => state.account.login)
-    const [offers, setOffers] = useState([])
+    const [offers, setOffers] = useState(result.offers)
+    const [openQR, setOpenQR] = useState(false)
+    const [qrCode, setQRCode] = useState('')
+
+    const openQRCode = (index) => {
+        setQRCode(index)
+        setOpenQR(true)
+    }
     const handleCancelOffer = async (index) => {
         setLoading(true)
         try {
-            const res = await cancelOffer(account.secret, index, tokenID)
+            const res = await cancelOffer(account.secret, index, NFTokenID)
             if (res.sellOffers) {
                 setOffers(res.sellOffers)
             }
@@ -53,9 +76,9 @@ export default function SellOffersList({ tokenID, listings, owner }) {
         setLoading(false)
     }
 
-    useEffect(() => {
-        setOffers(listings.offers)
-    }, [listings])
+    // useEffect(() => {
+    //     setOffers(listings.offers)
+    // }, [listings])
 
     return (
         <>
@@ -66,29 +89,50 @@ export default function SellOffersList({ tokenID, listings, owner }) {
                 <FadeLoader color='lightGreen' size={50} />
                 <Typography>loading...</Typography>
             </Backdrop>
+            <Backdrop
+                sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={openQR}
+                onClick={() => {
+                    setOpenQR(false)
+                }}
+            >
+                <div style={{ background: 'white', padding: '16px' }}>
+                    <QRCode
+                        // value={'hello, peter'}
+                        value={qrCode}
+                        size={256}
+                    />
+                </div>
+            </Backdrop>
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 {
-                    offers ?
+                    offers.length ?
                         offers.map((offer) => (
-                            <div key={offer.index}>
+                            <div key={offer.nft_offer_index}>
                                 <ListItem alignItems='center' >
-                                    <ListItemAvatar>
-                                        <Avatar sx={{ bgcolor: deepOrange[500] }}>
-                                            <Typography>
-                                                {offer.index.slice(0, 2)}
+                                    <ListItemAvatar sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
+                                        <Typography variant='caption'>
+                                            Index
+                                        </Typography>
+                                        <Avatar sx={{ bgcolor: 'orange', cursor: 'pointer' }}
+                                            onClick={() => openQRCode(offer.nft_offer_index)}
+                                        >
+                                            <Typography variant='string'>
+                                                {offer.nft_offer_index.slice(0, 3)}
                                             </Typography>
                                         </Avatar>
+
                                     </ListItemAvatar>
                                     <Container sx={{ overflowWrap: 'anywhere' }}>
-                                        <Grid container>
-                                            <Grid item xs={2}>
+                                        <Grid container columnSpacing={3} alignItems='center'>
+                                            <Grid item >
                                                 <Typography
-                                                    variant='subtitle1'
+                                                    variant='caption'
                                                 >
                                                     Price
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={10}>
+                                            <Grid item >
                                                 <Typography
                                                     variant='string'
                                                 >
@@ -96,25 +140,66 @@ export default function SellOffersList({ tokenID, listings, owner }) {
                                                 </Typography>
                                             </Grid>
                                         </Grid>
-                                        <Grid container>
-                                            <Grid item xs={2}>
+                                        <Grid container columnSpacing={3} alignItems='center'>
+                                            <Grid item >
                                                 <Typography
-                                                    variant='subtitle1'
+                                                    variant='caption'
                                                 >
                                                     Owner:
                                                 </Typography>
                                             </Grid>
-                                            <Grid item xs={10}>
+                                            <Grid item >
                                                 <Typography
                                                     variant='string'
                                                 >
                                                     {offer.owner}
                                                 </Typography>
                                             </Grid>
+                                        </Grid>
+                                        <Grid container columnSpacing={3} alignItems='center'>
+                                            {
+                                                offer.destination &&
+                                                <>
+                                                    <Grid item>
+                                                        <Typography
+                                                            variant='caption'
+                                                        >
+                                                            Destination:
+                                                        </Typography>
+                                                    </Grid>
+                                                    <Grid item >
+                                                        <Typography
+                                                            variant='string'
+                                                        >
+                                                            {offer.destination}
+                                                        </Typography>
+                                                    </Grid>
+                                                </>
+                                            }
+                                        </Grid>
+                                        {
+                                            offer.expiration ?
+                                                <Grid container columnSpacing={3}>
+                                                    <Grid item>
+                                                        <Typography variant='caption'>Expires by {new Date(getUnixTimeEpochFromRippleEpoch(offer.expiration)).toLocaleString()}</Typography>
+                                                    </Grid>
+                                                    <Grid item>
+                                                        <CountdownTimer targetDate={getUnixTimeEpochFromRippleEpoch(offer.expiration)} />
+                                                    </Grid>
+                                                </Grid>
+                                                :
+                                                <Grid container>
+
+                                                    <Grid item>
+                                                        <Typography variant='string'>No Expiration</Typography>
+                                                    </Grid>
+                                                </Grid>
+                                        }
+                                        <Grid container >
                                             <Grid item xs={12} >
                                                 <ButtonGroup variant="outlined" >
                                                     <Button aria-label="accept"
-                                                        onClick={() => handleAccept(offer.index)}
+                                                        onClick={() => handleAccept(offer.nft_offer_index)}
                                                         sx={{ borderRadius: 10 }}
                                                         color="success"
                                                         disabled={
@@ -130,7 +215,7 @@ export default function SellOffersList({ tokenID, listings, owner }) {
                                                         Accept
                                                     </Button>
                                                     <Button aria-label="cancel"
-                                                        onClick={() => handleCancelOffer(offer.index)}
+                                                        onClick={() => handleCancelOffer(offer.nft_offer_index)}
                                                         sx={{ borderRadius: 10 }}
                                                         color="error"
                                                         disabled={
@@ -148,7 +233,7 @@ export default function SellOffersList({ tokenID, listings, owner }) {
                                         </Grid>
                                     </Container>
                                 </ListItem>
-                                <Divider variant='inset' component='li' />
+                                <Divider component='li' />
                             </div>
                         ))
                         :
