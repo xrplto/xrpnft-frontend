@@ -4,7 +4,6 @@ import {
     AccordionDetails,
     AccordionSummary,
     ButtonGroup,
-    Box,
     Divider,
     Link,
     Skeleton,
@@ -18,7 +17,6 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 import TimelineIcon from '@mui/icons-material/Timeline'
 import ListIcon from '@mui/icons-material/List'
 import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import { createBuyOffer, getSellAndBuyOffers } from 'utils/tokenActions'
 import XSnackbar from 'components/common/Snackbar'
 import { useSnackbar } from 'hooks/useSnackbar'
@@ -37,17 +35,19 @@ NFTOffersDetail.prototype = NFTOffersDetailProps
 export default function NFTOffersDetail({ NFTokenID, name }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const offers = useSWR(NFTokenID, getSellAndBuyOffers)
+    const [sellOffers, setSellOffers] = useState(
+        offers.error ? offers.error.message :
+            !offers.data ? [] :
+                offers.data.buyOffers?.result
+    )
+    console.log({ sellOffers })
     const [isOpenSellDg, setIsOpenSellDg] = useState(false)
     const [isOpenBurnDg, setIsOpenBurnDg] = useState(false)
 
-    const [pageLoading, setPageLoading] = useState(false)
     const [loading, setLoading] = useState(false)
     const login = useSelector(state => state.account.login)
     const account = useSelector(state => state.account.account)
-    const navigate = useNavigate()
-    const [owner, setOwner] = useState(null)
     // const [isOwner, setIsOwner] = useState(true)
-    const [price, setPrice] = useState(0)
 
     // const makeSellOffer = async () => {
     //     if (login) {
@@ -70,50 +70,50 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
     //     }
     // }
 
-    const makeBuyOffer = async () => {
-        if (login) {
-            setLoading(true)
-            console.log('Making offer...')
-            try {
-                const res = await createBuyOffer(account.secret, NFTokenID, '1000', 0, owner)
-                // setOffers(res.buyOffers.result)
-                openSnackbar('Offer succeed!', 'success')
-            } catch (e) {
-                openSnackbar(e.message, 'error')
-            }
-            setLoading(false)
-        } else {
-            openSnackbar('You have to login first to make an offer.', 'error')
-            // navigate('/login')
-        }
-    }
+    // const makeBuyOffer = async () => {
+    //     if (login) {
+    //         setLoading(true)
+    //         console.log('Making offer...')
+    //         try {
+    //             const res = await createBuyOffer(account.secret, NFTokenID, '1000', 0, owner)
+    //             // setOffers(res.buyOffers.result)
+    //             openSnackbar('Offer succeed!', 'success')
+    //         } catch (e) {
+    //             openSnackbar(e.message, 'error')
+    //         }
+    //         setLoading(false)
+    //     } else {
+    //         openSnackbar('You have to login first to make an offer.', 'error')
+    //         // navigate('/login')
+    //     }
+    // }
 
-    const fetchListingAndOffers = async (mounted) => {
-        setPageLoading(true)
-        try {
-            const res = await getSellAndBuyOffers(NFTokenID)
-            if (mounted) {
-                if (res.sellOffers || res.buyOffers) {
-                    if (res.sellOffers) {
-                        // if it has sell offers, then the last offer owner is the owner of nft
-                        setOwner(res.sellOffers.result.offers[0].owner)
-                        // setSellOffers(res.sellOffers.result)
-                        // the price of nft is from the offer
-                        setPrice(+res.sellOffers.result.offers[0].amount / 10 ** 6)
-                    }
-                    if (res.buyOffers) {// in case no sell offer
-                        // setOffers(res.buyOffers.result)
-                        // setOwner(getIssuer(NFTokenID))
-                    }
-                }
-                // else setOwner(getIssuer(NFTokenID))
-            }
-        } catch (e) {
-            // console.log(e)
-            openSnackbar(e.message, 'error')
-        }
-        setPageLoading(false)
-    }
+    // const fetchListingAndOffers = async (mounted) => {
+    //     setPageLoading(true)
+    //     try {
+    //         const res = await getSellAndBuyOffers(NFTokenID)
+    //         if (mounted) {
+    //             if (res.sellOffers || res.buyOffers) {
+    //                 if (res.sellOffers) {
+    //                     // if it has sell offers, then the last offer owner is the owner of nft
+    //                     setOwner(res.sellOffers.result.offers[0].owner)
+    //                     // setSellOffers(res.sellOffers.result)
+    //                     // the price of nft is from the offer
+    //                     setPrice(+res.sellOffers.result.offers[0].amount / 10 ** 6)
+    //                 }
+    //                 if (res.buyOffers) {// in case no sell offer
+    //                     // setOffers(res.buyOffers.result)
+    //                     // setOwner(getIssuer(NFTokenID))
+    //                 }
+    //             }
+    //             // else setOwner(getIssuer(NFTokenID))
+    //         }
+    //     } catch (e) {
+    //         // console.log(e)
+    //         openSnackbar(e.message, 'error')
+    //     }
+    //     setPageLoading(false)
+    // }
 
     return (
         <div>
@@ -128,13 +128,13 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                     <Typography variant='subtitle1' >
                         Owner
                     </Typography>
-                    {
+                    {/* {
                         !pageLoading ?
                             <Link href='#' underline='none' variant='info'>
                                 {owner ? owner : 'Unknown'}
                             </Link> :
                             <Skeleton animation='wave' height={40} width='100%' />
-                    }
+                    } */}
                 </Stack>
             </Stack>
 
@@ -151,8 +151,8 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                     <ButtonGroup disableElevation variant='outlined' >
                         <Button
                             sx={{ borderRadius: 10 }}
-                            loading={loading}
-                            loadingPosition='start'
+                            // loading={loading.toString()}
+                            // loadingPosition='start'
                             variant='outlined'
                             startIcon={<LocalOfferIcon />}
                             onClick={() => setIsOpenSellDg(true)}
@@ -163,10 +163,10 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                         </Button>
                         <Button
                             sx={{ borderRadius: 10 }}
-                            loading={loading}
-                            loadingPosition='start'
+                            // loading={loading.toString()}
+                            // loadingPosition='start'
                             variant='outlined'
-                            onClick={makeBuyOffer}
+                            // onClick={makeBuyOffer}
                             // disabled={account.key === owner || owner === null}
                             disabled={!login}
                             startIcon={<AccountBalanceWalletIcon />}>
@@ -202,15 +202,15 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                     {
                         offers.error ? <Typography>Error: {offers.error.message}</Typography> :
                             !offers.data ? <Skeleton animation='wave' height={100} width='100%' /> :
-                             offers.data.sellOffers ?
-                                <SellOffersList
-                                    id={offers.data.sellOffers.id}
-                                    result={offers.data.sellOffers.result}
-                                    NFTokenID={NFTokenID}
-                                />:
-                                <Typography variant='string'>
-                                    No sell offers yet!
-                                </Typography>
+                                offers.data.sellOffers ?
+                                    <SellOffersList
+                                        id={offers.data.sellOffers.id}
+                                        result={offers.data.sellOffers.result}
+                                        NFTokenID={NFTokenID}
+                                    /> :
+                                    <Typography variant='string'>
+                                        No sell offers yet!
+                                    </Typography>
 
                     }
                 </AccordionDetails>

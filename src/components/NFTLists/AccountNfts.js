@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { Container, Grid, Typography } from "@mui/material";
 import NFTCard from 'components/NFTCard/NFTCard';
-import { getBuyOffers, getTokens } from 'utils/tokenActions';
+import { getTokens } from 'utils/tokenActions';
 import useSWR from 'swr'
 
 export default function AccountNfts() {

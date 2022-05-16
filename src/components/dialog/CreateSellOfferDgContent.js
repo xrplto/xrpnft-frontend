@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import {
     Box,
     Button,
@@ -16,21 +16,15 @@ import {
 } from '@mui/material'
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
+import InfoIcon from '@mui/icons-material/Info';
 import { LoadingButton } from '@mui/lab';
 import { Icon } from '@iconify/react';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import TokenFlagsForm from 'components/miniting/TokenFlagsForm'
-import { tfTransferable, XRPNFT_DOMAIN } from 'utils/constants'
-import InfoIcon from '@mui/icons-material/Info';
-import { mintToken } from 'utils/tokenActions'
-import { resetIpfsState } from 'app/slices/ipfSlice'
-import { createBuyOffer, createSellOffer, getSellAndBuyOffers, getBuyOffers, getSellOffers } from 'utils/tokenActions'
-import { pinJsonToIPFS } from 'utils/pinata'
+import { createSellOffer } from 'utils/tokenActions'
 import { getCurrentRippleEpoch } from 'utils/utils';
 
 export default function CreateSellOfferDgContent({ close, NFTokenID }) {
-    const dispatch = useDispatch()
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const account = useSelector(state => state.account.account)
     const login = useSelector(state => state.account.login)

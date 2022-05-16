@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
     Avatar,
     Backdrop,
-    Box,
     Button,
     ButtonGroup,
     Container,
@@ -13,7 +12,7 @@ import {
     ListItemAvatar,
     Typography
 } from '@mui/material';
-import { deepOrange } from '@mui/material/colors';
+// import { deepOrange } from '@mui/material/colors';
 import { Icon } from '@iconify/react';
 import { acceptSellOffer, cancelOffer } from 'utils/tokenActions';
 import { BuyOffersProps } from 'utils/types';
