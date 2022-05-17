@@ -437,20 +437,16 @@ export const getBuyOffers = async (tokenId) => {
  * @returns
  */
 export async function getTokens(key) {
-	try {
-		// Connect to the devnet server.
-		const client = new xrpl.Client(RIPPLE_TEST_NET_URL, {
-			connectionTimeout: 10000
-		})
-		await client.connect()
-		const res = await client.request({
-			method: "account_nfts",
-			account: key
-		})
-		client.disconnect()
-		return res.result
-	} catch (e) {
-		console.log({ e })
-		return null
-	}
+
+	// Connect to the devnet server.
+	const client = new xrpl.Client(RIPPLE_TEST_NET_URL, {
+		connectionTimeout: 10000
+	})
+	await client.connect()
+	const res = await client.request({
+		method: "account_nfts",
+		account: key
+	})
+	client.disconnect()
+	return res.result
 } //End of getTokens

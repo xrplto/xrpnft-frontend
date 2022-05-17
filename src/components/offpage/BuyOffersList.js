@@ -21,7 +21,7 @@ import { FadeLoader } from 'react-spinners';
 
 BuyOffersList.propTypes = BuyOffersProps
 
-export default function BuyOffersList({ id, result }) {
+export default function BuyOffersList({ id, result, isOwner }) {
     // console.log({id, result})
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const [loading, setLoading] = useState(false)
@@ -116,14 +116,12 @@ export default function BuyOffersList({ id, result }) {
                                                     <Button aria-label="accept"
                                                         onClick={() => handleAccept(offer.nft_offer_index)}
                                                         color="success"
-                                                        disabled={
-                                                            !login
-                                                            // Can't accept Buy offer when
-                                                            // account is not owner of nft
-                                                            // or account is owner of offer
+                                                        disabled={      // Can't accept Buy offer when
+                                                            !login      // not connected
+                                                            || !isOwner  // account is not owner of nft
+                                                            || offer.owner === account.key  // or account is owner of offer
                                                             // account.key === offer.owner
-                                                            // ||
-                                                            // owner === offer.owner
+                                                            // || owner === offer.owner
                                                         }
                                                         sx={{ borderRadius: 10 }}
                                                         startIcon={<Icon icon='akar-icons:check' />}
@@ -137,8 +135,8 @@ export default function BuyOffersList({ id, result }) {
                                                             // Can't cancel buy offer
                                                             // when the account is not
                                                             // owner of offer
-                                                            // account.key !== offer.owner
-                                                            !login
+                                                            account.key !== offer.owner
+                                                            || !login
                                                         }
                                                         sx={{ borderRadius: 10 }}
                                                         startIcon={<Icon icon='iconoir:cancel' />}

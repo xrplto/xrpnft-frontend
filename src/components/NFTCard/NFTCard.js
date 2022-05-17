@@ -67,7 +67,7 @@ export default function NFTCard({
         }
         <CardContent sx={{ padding: 1, flexDirection: 'row', display: 'flex', justifyContent: 'space-between' }}>
           <FlagsContainer Flags={Flags} />
-          <PriceContainer price={2000} />
+          {/* <PriceContainer price={2000} /> */}
         </CardContent>
         <Divider />
         <CardActions sx={{ alignItems: 'space-evenly' }}>

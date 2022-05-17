@@ -3,7 +3,7 @@ import { Icon } from '@iconify/react'
 import { alpha, useTheme, styled } from '@mui/material/styles'
 import roundAccountCircle from '@iconify/icons-ic/round-account-circle'
 import { useDispatch } from 'react-redux'
-import { doSetAccount, login } from 'app/slices/accountSlice'
+import { doSetAccount, login, setNFTs } from 'app/slices/accountSlice'
 import { useNavigate } from 'react-router-dom'
 import {
     Button,
@@ -18,6 +18,7 @@ import {
 import { ACCOUNTS } from 'utils/constants'
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
+import { getTokens } from 'utils/tokenActions'
 
 const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props} />)(
     ({ theme }) => ({
@@ -68,13 +69,19 @@ export default function ChooseAccountDgContent() {
         setAccount({ ...account })
     }
 
-    const handleOk = () => {
+    const handleOk = async () => {
         // TODO: Open a new page with selected account
         // navigate(`/account/${nftoken.tokenID}?tokenURI=${nftoken.URI}`)
         if (account.key) {
-            navigate(`/account`)
             dispatch(doSetAccount(account))
+            try {
+                const res = await getTokens(account.key)
+                dispatch(setNFTs(res.account_nfts))
+            } catch (e) {
+                openSnackbar(e.message, 'error')
+            }
             dispatch(login())
+            navigate(`/account`)
         } else {
             openSnackbar('Select an account!', 'error')
         }

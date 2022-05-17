@@ -36,20 +36,17 @@ export default function CreateSellOfferDgContent({ close, NFTokenID }) {
     const handleCreate = async () => {
         if (login) {
             setLoading(true)
-            try {
-                await createSellOffer(
-                    account.secret,
-                    NFTokenID,
-                    Math.floor(price * 10 ** 6).toString(),
-                    expiration ? getCurrentRippleEpoch() + 24 * 60 * 60 * expiration : 0,
-                    destination
-                )
-                openSnackbar('Offer succeed!', 'success')
-                close()
-            } catch (e) {
-                openSnackbar(e.message, 'error')
+            const res = await createSellOffer(
+                account.secret,
+                NFTokenID,
+                Math.floor(price * 10 ** 6).toString(),
+                expiration ? getCurrentRippleEpoch() + 24 * 60 * 60 * expiration : 0,
+                destination
+            )
+            if (res) console.log({ res })
+            openSnackbar('Offer succeed!', 'success')
+            // close()
 
-            }
             setLoading(false)
         } else {
             openSnackbar('You have to log in first!', 'error')

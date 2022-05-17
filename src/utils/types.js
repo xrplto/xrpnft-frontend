@@ -29,7 +29,8 @@ export const BuyOffersProps = {
     id: PropTypes.number,
     result: PropTypes.exact(buyOfferProps),
     type: PropTypes.string,
-    NFTokenID: PropTypes.string
+    NFTokenID: PropTypes.string,
+    isOwner: PropTypes.bool
 }
 
 export const LevelProps = {
@@ -76,6 +77,10 @@ export const NFTDetailsProps = {
 export const NFTOffersDetailProps = {
     NFTokenID: PropTypes.string,
     name: PropTypes.string,
+}
+
+export const ErrorPageProps = {
+    message: PropTypes.string
 }
 
 

@@ -10,6 +10,7 @@ import {
     Stack,
     Typography,
     Button,
+    Paper,
 } from '@mui/material'
 import TimePeriods from 'components/OffPage/TimePeriodsDropdown'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
@@ -35,14 +36,11 @@ NFTOffersDetail.prototype = NFTOffersDetailProps
 export default function NFTOffersDetail({ NFTokenID, name }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const offers = useSWR(NFTokenID, getSellAndBuyOffers)
-    const [sellOffers, setSellOffers] = useState(
-        offers.error ? offers.error.message :
-            !offers.data ? [] :
-                offers.data.buyOffers?.result
-    )
-    console.log({ sellOffers })
     const [isOpenSellDg, setIsOpenSellDg] = useState(false)
     const [isOpenBurnDg, setIsOpenBurnDg] = useState(false)
+    const account_nfts = useSelector(state => state.account.nfts)
+    const isOwner = account_nfts.findIndex((nft) => nft.NFTokenID === NFTokenID) > -1
+
 
     const [loading, setLoading] = useState(false)
     const login = useSelector(state => state.account.login)
@@ -118,71 +116,55 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
     return (
         <div>
             <Stack spacing={2} marginTop={1}>
-                <Link underline='none' color={'text.primary'}>
+                {/* <Link underline='none' color={'text.primary'}>
                     Name
-                </Link>
+                </Link> */}
                 <Typography variant='subtitle' gutterBottom fontSize={30} overflow='hidden' fontWeight={600}>
                     {name ? name : 'Unknown'}
                 </Typography>
-                <Stack spacing={1}>
-                    <Typography variant='subtitle1' >
-                        Owner
-                    </Typography>
-                    {/* {
-                        !pageLoading ?
-                            <Link href='#' underline='none' variant='info'>
-                                {owner ? owner : 'Unknown'}
-                            </Link> :
-                            <Skeleton animation='wave' height={40} width='100%' />
-                    } */}
-                </Stack>
             </Stack>
 
             {/* Make offer start */}
-            <Accordion expanded={true} >
-                <AccordionSummary
-                    aria-controls='panel1a-content'
-                    id='panel1a-header'
-                >
-                    Make Offer
-                </AccordionSummary>
-                <Divider />
-                <AccordionDetails sx={{ justifyContent: 'space-between', display: 'flex' }}>
-                    <ButtonGroup disableElevation variant='outlined' >
+            <Paper sx={{
+                padding: 2,
+                display: 'flex',
+                justifyContent: 'space-around'
+            }}>
+                {
+                    isOwner && login && <>
                         <Button
                             sx={{ borderRadius: 10 }}
-                            // loading={loading.toString()}
-                            // loadingPosition='start'
                             variant='outlined'
                             startIcon={<LocalOfferIcon />}
                             onClick={() => setIsOpenSellDg(true)}
-                            // disabled={account.key !== owner || owner === null}
-                            disabled={!login}
+                            color='success'
                         >
                             Sell
                         </Button>
                         <Button
-                            sx={{ borderRadius: 10 }}
-                            // loading={loading.toString()}
-                            // loadingPosition='start'
                             variant='outlined'
-                            // onClick={makeBuyOffer}
-                            // disabled={account.key === owner || owner === null}
-                            disabled={!login}
-                            startIcon={<AccountBalanceWalletIcon />}>
-                            Buy
+                            color='warning'
+                            startIcon={<Icon icon='ps:feedburner' />}
+                            onClick={() => setIsOpenBurnDg(true)}
+                            disabled={!isOwner} // you cannot burn NFToken if you are not owner
+                            sx={{ borderRadius: 10 }}
+                        >
+                            Burn
                         </Button>
-                    </ButtonGroup>
+                    </>
+                }
+                {
+                    !isOwner && login &&
                     <Button
+                        sx={{ borderRadius: 10 }}
                         variant='outlined'
-                        color='warning'
-                        startIcon={<Icon icon='ps:feedburner' />}
-                        onClick={() => setIsOpenBurnDg(true)}
+                        // onClick={makeBuyOffer}
+                        startIcon={<LocalOfferIcon />}
                     >
-                        Burn
+                        Make offer
                     </Button>
-                </AccordionDetails>
-            </Accordion>
+                }
+            </Paper>
             {/* Make offer end */}
 
             {/* Sell Offers start */}
@@ -207,6 +189,7 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                                         id={offers.data.sellOffers.id}
                                         result={offers.data.sellOffers.result}
                                         NFTokenID={NFTokenID}
+                                        isOwner={isOwner}
                                     /> :
                                     <Typography variant='string'>
                                         No sell offers yet!
@@ -234,7 +217,7 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                     {
                         offers.error ? <Typography>Error: {offers.error.message}</Typography> :
                             !offers.data ? <Skeleton animation='wave' height={100} width='100%' /> :
-                                <BuyOffersList id={offers.data.buyOffers?.id} result={offers.data.buyOffers?.result} />
+                                <BuyOffersList id={offers.data.buyOffers?.id} result={offers.data.buyOffers?.result} isOwner={isOwner} />
                     }
                 </AccordionDetails>
             </Accordion>

@@ -3,13 +3,14 @@ import { Container, Grid, Typography } from "@mui/material";
 import NFTCard from 'components/NFTCard/NFTCard';
 import { getTokens } from 'utils/tokenActions';
 import useSWR from 'swr'
+import PageError from 'pages/PageError';
 
 export default function AccountNfts() {
     const account = useSelector(state => state.account.account)
     const { data, error } = useSWR(account.key, getTokens)
 
 
-    if (error) return <Typography variant='body1'>Failed to load: {error}</Typography>
+    if (error) return <PageError message={error.message} />
     if (!data) return <Typography variant='body1'>Loading...</Typography>
     return (
         <Container sx={{ marginTop: 2 }}>

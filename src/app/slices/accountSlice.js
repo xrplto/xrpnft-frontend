@@ -5,7 +5,8 @@ const initialState = {
     key: null,
     secret: null
   },
-  login: false
+  login: false,
+  nfts: []
 }
 
 export const accountSlice = createSlice({
@@ -15,6 +16,9 @@ export const accountSlice = createSlice({
     doSetAccount: (state, action) => {
       state.account = { ...action.payload };
     },
+    setNFTs: (state, action) => {
+      state.nfts = action.payload
+    },
     login: (state) => { state.login = true },
     logout: (state) => { state.login = false },
     resetAccount: () => initialState
@@ -22,6 +26,6 @@ export const accountSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { doSetAccount, resetAccount, login, logout } = accountSlice.actions
+export const { doSetAccount, resetAccount, login, logout, setNFTs } = accountSlice.actions
 
 export default accountSlice.reducer
