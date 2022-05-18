@@ -14,7 +14,7 @@ import { Icon } from '@iconify/react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FlagsContainer from './Flags';
 import { getNFTokenInfo } from 'utils/utils';
-import PriceContainer from './Price';
+// import PriceContainer from './Price';
 
 
 NFTCard.propTypes = NFTCardProps

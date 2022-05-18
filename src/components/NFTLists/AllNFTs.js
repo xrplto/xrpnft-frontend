@@ -4,13 +4,12 @@ import { useSelector } from 'react-redux'
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { BASE_URL } from 'utils/constants';
 import { Grid } from "@mui/material";
-import XSnackbar from 'components/common/Snackbar';
-import { useSnackbar } from 'hooks/useSnackbar';
+import { useSnackbar } from 'notistack';
 import NFTCard from 'components/NFTCard/NFTCard';
 
 export const AllNFTs = () => {
 
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
+    const { enqueueSnackbar } = useSnackbar();
     const [nfTokens, setNfTokens] = useState([])
     const [offset, setOffset] = useState(0)
     const [hasMore, setHasMore] = useState(true)
@@ -25,9 +24,10 @@ export const AllNFTs = () => {
                 if (res.data.nfts.length < 10) {
                     setHasMore(false)
                 }
-                console.log('10 NFTS:', res)
                 setNfTokens([..._nfTokens, ...res.data.nfts])
-                openSnackbar('Fetch:' + _offset, 'success')
+                enqueueSnackbar('Fetch:' + _offset, {
+                    variant: 'success'
+                })
                 setOffset(_offset + 1)
             });
     };
@@ -84,7 +84,6 @@ export const AllNFTs = () => {
                     }
                 </Grid>
             </InfiniteScroll>
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </div>
     );
 };

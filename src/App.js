@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Context from './Context'
 import Router from './Routes';
 import ThemeConfig from './Theme';
+import { SnackbarProvider } from 'notistack';
 
 export default function App() {
     // const [loading, setLoading] = useState(false);
@@ -59,7 +60,9 @@ export default function App() {
             }}
         >
             <ThemeConfig>
-                <Router />
+                <SnackbarProvider maxSnack={3}>
+                    <Router />
+                </SnackbarProvider>
             </ThemeConfig>
         </Context.Provider>
     );

@@ -16,13 +16,15 @@ import {
 import { Icon } from '@iconify/react';
 import { acceptSellOffer, cancelOffer } from 'utils/tokenActions';
 import { BuyOffersProps } from 'utils/types';
-import XSnackbar from 'components/common/Snackbar'
-import { useSnackbar } from 'hooks/useSnackbar'
 import { FadeLoader } from 'react-spinners';
 import { useSelector } from 'react-redux'
 import CountdownTimer from './CountDownTimer';
 import { getUnixTimeEpochFromRippleEpoch } from 'utils/utils';
 import QRCode from "react-qr-code";
+import { useDispatch } from 'react-redux'
+import { setNFTs } from 'app/slices/accountSlice'
+import { useSnackbar } from 'notistack'
+
 
 SellOffersList.propTypes = BuyOffersProps
 
@@ -33,13 +35,15 @@ SellOffersList.propTypes = BuyOffersProps
 // cannot accept an offer made by you.
 
 export default function SellOffersList({ id, result, NFTokenID, isOwner }) {
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
+    const { enqueueSnackbar } = useSnackbar()
     const [loading, setLoading] = useState(false)
     const account = useSelector(state => state.account.account)
     const login = useSelector(state => state.account.login)
     const [offers, setOffers] = useState(result.offers)
     const [openQR, setOpenQR] = useState(false)
     const [qrCode, setQRCode] = useState('')
+    // const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const openQRCode = (index) => {
         setQRCode(index)
@@ -54,10 +58,14 @@ export default function SellOffersList({ id, result, NFTokenID, isOwner }) {
             }
             else // if undefined, there are no sell offers for this nft token.
                 setOffers([])
-            openSnackbar('Cancel offer success:' + index.slice(0, 10) + '...', 'success')
+            enqueueSnackbar('Cancel offer success:' + index.slice(0, 10) + '...', {
+                variant: 'success'
+            })
         } catch (e) {
             // TODO: snack bar error
-            openSnackbar(e.message, 'error')
+            enqueueSnackbar(e.message, {
+                variant: 'error'
+            })
         }
         setLoading(false)
     }
@@ -66,18 +74,20 @@ export default function SellOffersList({ id, result, NFTokenID, isOwner }) {
         setLoading(true)
         try {
             const res = await acceptSellOffer(account.secret, index)
-            console.log('sellOffers', res)
-            openSnackbar('Accept offer success:' + index.slice(0, 10) + '...', 'success')
+            // useN
+            enqueueSnackbar('Accept offer success:' + index.slice(0, 10) + '...', {
+                variant: 'success'
+            })
+            dispatch(setNFTs(res.account_nfts))
         } catch (e) {
             // TODO: snack bar error
-            openSnackbar(e.message, 'error')
+            enqueueSnackbar(e.message, {
+                variant: 'error'
+            })
         }
         setLoading(false)
     }
 
-    // useEffect(() => {
-    //     setOffers(listings.offers)
-    // }, [listings])
 
     return (
         <>
@@ -239,7 +249,6 @@ export default function SellOffersList({ id, result, NFTokenID, isOwner }) {
                         <Typography>No Offers yet</Typography>
                 }
             </List>
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     );
 }

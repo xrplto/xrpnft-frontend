@@ -3,24 +3,20 @@ import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
-    ButtonGroup,
     Divider,
-    Link,
     Skeleton,
     Stack,
     Typography,
     Button,
     Paper,
+    Box,
 } from '@mui/material'
 import TimePeriods from 'components/OffPage/TimePeriodsDropdown'
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet'
 import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 import TimelineIcon from '@mui/icons-material/Timeline'
 import ListIcon from '@mui/icons-material/List'
 import { useSelector } from 'react-redux'
-import { createBuyOffer, getSellAndBuyOffers } from 'utils/tokenActions'
-import XSnackbar from 'components/common/Snackbar'
-import { useSnackbar } from 'hooks/useSnackbar'
+import { getSellAndBuyOffers } from 'utils/tokenActions'
 import SellOffersList from './SellOffersList'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BuyOffersList from './BuyOffersList'
@@ -30,22 +26,18 @@ import BaseDialog from 'components/dialog/BaseDialog';
 import CreateSellOfferDgContent from 'components/dialog/CreateSellOfferDgContent'
 import { Icon } from '@iconify/react';
 import BurnNFTDgContent from 'components/dialog/BurnNFTDgContent'
+import CreateBuyOfferDgContent from 'components/dialog/CreateBuyOfferDgContent'
 
 NFTOffersDetail.prototype = NFTOffersDetailProps
 
 export default function NFTOffersDetail({ NFTokenID, name }) {
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const offers = useSWR(NFTokenID, getSellAndBuyOffers)
     const [isOpenSellDg, setIsOpenSellDg] = useState(false)
+    const [isOpenBuyDg, setIsOpenBuyDg] = useState(false)
     const [isOpenBurnDg, setIsOpenBurnDg] = useState(false)
     const account_nfts = useSelector(state => state.account.nfts)
     const isOwner = account_nfts.findIndex((nft) => nft.NFTokenID === NFTokenID) > -1
-
-
-    const [loading, setLoading] = useState(false)
     const login = useSelector(state => state.account.login)
-    const account = useSelector(state => state.account.account)
-    // const [isOwner, setIsOwner] = useState(true)
 
     // const makeSellOffer = async () => {
     //     if (login) {
@@ -127,11 +119,13 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
             {/* Make offer start */}
             <Paper sx={{
                 padding: 2,
-                display: 'flex',
-                justifyContent: 'space-around'
+
             }}>
                 {
-                    isOwner && login && <>
+                    isOwner && login && <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'space-around'
+                    }}>
                         <Button
                             sx={{ borderRadius: 10 }}
                             variant='outlined'
@@ -151,7 +145,7 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                         >
                             Burn
                         </Button>
-                    </>
+                    </Box>
                 }
                 {
                     !isOwner && login &&
@@ -159,6 +153,7 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                         sx={{ borderRadius: 10 }}
                         variant='outlined'
                         // onClick={makeBuyOffer}
+                        onClick={() => setIsOpenBuyDg(true)}
                         startIcon={<LocalOfferIcon />}
                     >
                         Make offer
@@ -247,7 +242,6 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
             </Accordion>
             {/* Price History end */}
 
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
             <BaseDialog
                 isOpen={isOpenSellDg}
                 close={() => {
@@ -272,6 +266,20 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                     <BurnNFTDgContent
                         close={() => {
                             setIsOpenBurnDg(false)
+                        }}
+                        NFTokenID={NFTokenID}
+                    />}
+            />
+            <BaseDialog
+                isOpen={isOpenBuyDg}
+                close={() => {
+                    setIsOpenBuyDg(false)
+                }}
+                title={'Make Buy Offer'}
+                render={
+                    <CreateBuyOfferDgContent
+                        close={() => {
+                            setIsOpenBuyDg(false)
                         }}
                         NFTokenID={NFTokenID}
                     />}

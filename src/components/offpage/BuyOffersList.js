@@ -8,10 +8,11 @@ import Typography from '@mui/material/Typography';
 import { Icon } from '@iconify/react';
 import { acceptBuyOffer, cancelOffer } from 'utils/tokenActions';
 import { BuyOffersProps } from 'utils/types';
-import XSnackbar from 'components/common/Snackbar'
-import { useSnackbar } from 'hooks/useSnackbar'
 import { useSelector } from 'react-redux'
+import { useSnackbar } from 'notistack'
 import { FadeLoader } from 'react-spinners';
+import { setNFTs } from 'app/slices/accountSlice'
+import { useDispatch } from 'react-redux'
 
 // cannot accept buy offer if you are not the owner of token.
 // cannot accept sell offer if seller is not the owner of token.
@@ -22,23 +23,28 @@ import { FadeLoader } from 'react-spinners';
 BuyOffersList.propTypes = BuyOffersProps
 
 export default function BuyOffersList({ id, result, isOwner }) {
-    // console.log({id, result})
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
+    const { enqueueSnackbar } = useSnackbar()
+    const dispatch = useDispatch()
     const [loading, setLoading] = useState(false)
     const account = useSelector(state => state.account.account)
     const login = useSelector(state => state.account.login)
-    // const [offers, setOffers] = useState([])
+    const [offers, setOffers] = useState(result.offers)
     const handleCancelOffer = async (index) => {
         setLoading(true)
         try {
             const res = await cancelOffer(account.secret, index, id)
-            // if (res.buyOffers)
-            //     setOffers(res.result.offers)
-            // else setOffers([])
-            openSnackbar('Cancel offer success:' + index.slice(0, 10) + '...', 'success')
+            console.log({ res })
+            if (res.nftBuyOffers)
+                setOffers(res.nftBuyOffers.result.offers)
+            else setOffers([])
+            enqueueSnackbar('Cancel offer success:' + index.slice(0, 10) + '...', {
+                variant: 'success'
+            })
         } catch (e) {
             // TODO: snack bar error
-            openSnackbar(e.message, 'error')
+            enqueueSnackbar(e.message, {
+                variant: 'error'
+            })
         }
         setLoading(false)
     }
@@ -47,11 +53,16 @@ export default function BuyOffersList({ id, result, isOwner }) {
         setLoading(true)
         try {
             const res = await acceptBuyOffer(account.secret, index)
-            console.log('buyOffers:', res)
-            openSnackbar('Success, Offer index:' + index.slice(0, 10) + '...', 'success')
+            enqueueSnackbar('Accept offer success:' + index.slice(0, 10) + '...', {
+                variant: 'success'
+            })
+            dispatch(setNFTs(res.account_nfts))
+
         } catch (e) {
             // TODO: snack bar error
-            openSnackbar(e.message, 'error')
+            enqueueSnackbar(e.message, {
+                variant: 'error'
+            })
         }
         setLoading(false)
     }
@@ -70,8 +81,8 @@ export default function BuyOffersList({ id, result, isOwner }) {
             </Backdrop>
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 {
-                    result ?
-                        result.offers.map((offer) => (
+                    offers ?
+                        offers.map((offer) => (
                             <div key={offer.nft_offer_index}>
                                 <ListItem alignItems='center' >
                                     <ListItemAvatar>
@@ -101,7 +112,7 @@ export default function BuyOffersList({ id, result, isOwner }) {
                                                 <Typography
                                                     variant='subtitle1'
                                                 >
-                                                    Owner:
+                                                    Offerer:
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={10}>
@@ -155,7 +166,6 @@ export default function BuyOffersList({ id, result, isOwner }) {
                         <Typography>No Offers yet</Typography>
                 }
             </List>
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     );
 }
