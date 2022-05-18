@@ -147,8 +147,11 @@ export const createSellOffer = async (secret, tokenId, amount, expiration, desti
  */
 export const createBuyOffer = async (secret, tokenId, amount, owner) => {
 
+	console.log('connecting to sandbox...')
 	const wallet = xrpl.Wallet.fromSeed(secret)
-	const client = new xrpl.Client("wss://xls20-sandbox.rippletest.net:51233")
+	const client = new xrpl.Client(RIPPLE_TEST_NET_URL, {
+		connectionTimeout: 10000
+	})
 	await client.connect()
 	console.log("Connected to Sandbox")
 
@@ -330,13 +333,14 @@ export const acceptSellOffer = async (secret, tokenOfferIndex) => {
 	}
  */
 export const getSellAndBuyOffers = async (tokenId) => {
+	console.log("Connecting to Sandbox...")
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL, {
 		connectionTimeout: 10000
 	})
 	await client.connect()
 	console.log("Connected to Sandbox")
-	console.log("***Sell Offers***")
-	let nftSellOffers
+	console.log("Requesting sell offers...")
+	let nftSellOffers, nftBuyOffers
 	try {
 		nftSellOffers = await client.request({
 			method: "nft_sell_offers",
@@ -345,9 +349,7 @@ export const getSellAndBuyOffers = async (tokenId) => {
 	} catch (err) {
 		console.log("No sell offers.")
 	}
-	console.log(JSON.stringify(nftSellOffers, null, 2))
-	console.log("***Buy Offers***")
-	let nftBuyOffers
+	console.log("Requesting sell offers...")
 	try {
 		nftBuyOffers = await client.request({
 			method: "nft_buy_offers",
@@ -356,13 +358,12 @@ export const getSellAndBuyOffers = async (tokenId) => {
 	} catch (err) {
 		console.log("No buy offers.")
 	}
-	console.log(JSON.stringify(nftBuyOffers, null, 2))
 
 	client.disconnect()
 	// End of createSellOffer()
 	return {
-		sellOffers: nftSellOffers,
-		buyOffers: nftBuyOffers
+		sellOffers: nftSellOffers ? nftSellOffers.result.offers : [],
+		buyOffers: nftBuyOffers ? nftBuyOffers.result.offers : []
 	}
 }
 

@@ -34,12 +34,12 @@ SellOffersList.propTypes = BuyOffersProps
 // cannot accept offer if the expiration time and the closing time of the parent ledger has passed.
 // cannot accept an offer made by you.
 
-export default function SellOffersList({ id, result, NFTokenID, isOwner }) {
+export default function SellOffersList({ _offers, _NFTokenID, _isOwner }) {
     const { enqueueSnackbar } = useSnackbar()
     const [loading, setLoading] = useState(false)
     const account = useSelector(state => state.account.account)
     const login = useSelector(state => state.account.login)
-    const [offers, setOffers] = useState(result.offers)
+    const [offers, setOffers] = useState([..._offers])
     const [openQR, setOpenQR] = useState(false)
     const [qrCode, setQRCode] = useState('')
     // const navigate = useNavigate()
@@ -52,7 +52,7 @@ export default function SellOffersList({ id, result, NFTokenID, isOwner }) {
     const handleCancelOffer = async (index) => {
         setLoading(true)
         try {
-            const res = await cancelOffer(account.secret, index, NFTokenID)
+            const res = await cancelOffer(account.secret, index, _NFTokenID)
             if (res.sellOffers) {
                 setOffers(res.sellOffers)
             }
@@ -217,7 +217,7 @@ export default function SellOffersList({ id, result, NFTokenID, isOwner }) {
                                                             // or account is owner of nft
                                                             // account.key === offer.owner ||
                                                             // owner === account.key
-                                                            !login || isOwner || offer.owner === account.key
+                                                            !login || _isOwner || offer.owner === account.key
                                                         }
                                                         startIcon={<Icon icon='akar-icons:check' />}
                                                     >
@@ -231,7 +231,7 @@ export default function SellOffersList({ id, result, NFTokenID, isOwner }) {
                                                             // Cant cancel offer when
                                                             // account is not owner of offer
                                                             // account.key !== offer.owner
-                                                            !login || !isOwner || offer.owner !== account.key
+                                                            !login || !_isOwner || offer.owner !== account.key
                                                         }
                                                         startIcon={<Icon icon='iconoir:cancel' />}
                                                     >

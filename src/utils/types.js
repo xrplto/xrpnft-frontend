@@ -26,11 +26,12 @@ const buyOfferProps = {
 }
 
 export const BuyOffersProps = {
-    id: PropTypes.number,
-    result: PropTypes.exact(buyOfferProps),
-    type: PropTypes.string,
-    NFTokenID: PropTypes.string,
-    isOwner: PropTypes.bool
+    // id: PropTypes.number,
+    // result: PropTypes.exact(buyOfferProps),
+    _offers: PropTypes.array,
+    // type: PropTypes.string,
+    _NFTokenID: PropTypes.string,
+    _isOwner: PropTypes.bool
 }
 
 export const LevelProps = {

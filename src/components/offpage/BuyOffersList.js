@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { List, Container, Grid, ButtonGroup, Backdrop, Button } from '@mui/material';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
@@ -22,17 +22,17 @@ import { useDispatch } from 'react-redux'
 
 BuyOffersList.propTypes = BuyOffersProps
 
-export default function BuyOffersList({ id, result, isOwner }) {
+export default function BuyOffersList({ _NFTokenID, _offers, _isOwner }) {
     const { enqueueSnackbar } = useSnackbar()
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(false)
     const account = useSelector(state => state.account.account)
     const login = useSelector(state => state.account.login)
-    const [offers, setOffers] = useState(result.offers)
+    const [offers, setOffers] = useState([..._offers])
     const handleCancelOffer = async (index) => {
         setLoading(true)
         try {
-            const res = await cancelOffer(account.secret, index, id)
+            const res = await cancelOffer(account.secret, index, _NFTokenID)
             console.log({ res })
             if (res.nftBuyOffers)
                 setOffers(res.nftBuyOffers.result.offers)
@@ -66,10 +66,12 @@ export default function BuyOffersList({ id, result, isOwner }) {
         }
         setLoading(false)
     }
+    console.log({ offers, _offers })
 
-    // useEffect(() => {
-    //     setOffers(listings.offers)
-    // }, [listings])
+    useEffect(() => {
+        console.log('refreshing...')
+        setOffers([..._offers])
+    }, [_offers])
 
     return (
         <>
@@ -81,7 +83,7 @@ export default function BuyOffersList({ id, result, isOwner }) {
             </Backdrop>
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 {
-                    offers ?
+                    offers.length ?
                         offers.map((offer) => (
                             <div key={offer.nft_offer_index}>
                                 <ListItem alignItems='center' >
@@ -129,7 +131,7 @@ export default function BuyOffersList({ id, result, isOwner }) {
                                                         color="success"
                                                         disabled={      // Can't accept Buy offer when
                                                             !login      // not connected
-                                                            || !isOwner  // account is not owner of nft
+                                                            || !_isOwner  // account is not owner of nft
                                                             || offer.owner === account.key  // or account is owner of offer
                                                             // account.key === offer.owner
                                                             // || owner === offer.owner

@@ -19,7 +19,7 @@ import { useSnackbar } from 'notistack'
 import { createBuyOffer } from 'utils/tokenActions'
 const rippleAPI = require('ripple-address-codec')
 
-export default function CreateBuyOfferDgContent({ close, NFTokenID }) {
+export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers }) {
     const { enqueueSnackbar } = useSnackbar()
     const account = useSelector(state => state.account.account)
     const login = useSelector(state => state.account.login)
@@ -34,16 +34,27 @@ export default function CreateBuyOfferDgContent({ close, NFTokenID }) {
             if (rippleAPI.isValidClassicAddress(destination)) {
                 setError(false)
                 setLoading(true)
-                const res = await createBuyOffer(
-                    account.secret,
-                    NFTokenID,
-                    Math.floor(price * 10 ** 6).toString(),
-                    destination
-                )
-                console.log(res)
-                enqueueSnackbar('Offer success!', {
-                    variant: 'success'
-                })
+                try {
+                    const res = await createBuyOffer(
+                        account.secret,
+                        NFTokenID,
+                        Math.floor(price * 10 ** 6).toString(),
+                        destination
+                    )
+                    if (res) {
+                        console.log({ res })
+                        setOffers(res)
+                    }
+                    enqueueSnackbar('Offer success!', {
+                        variant: 'success'
+                    })
+                    close()
+                } catch (e) {
+                    enqueueSnackbar(e.message, {
+                        variant: 'error'
+                    })
+                }
+
                 setLoading(false)
             } else {
                 setError(true)

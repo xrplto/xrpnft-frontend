@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
     Accordion,
     AccordionDetails,
@@ -31,14 +31,16 @@ import CreateBuyOfferDgContent from 'components/dialog/CreateBuyOfferDgContent'
 NFTOffersDetail.prototype = NFTOffersDetailProps
 
 export default function NFTOffersDetail({ NFTokenID, name }) {
-    const offers = useSWR(NFTokenID, getSellAndBuyOffers)
+    // const offers = useSWR(NFTokenID, getSellAndBuyOffers)
     const [isOpenSellDg, setIsOpenSellDg] = useState(false)
     const [isOpenBuyDg, setIsOpenBuyDg] = useState(false)
     const [isOpenBurnDg, setIsOpenBurnDg] = useState(false)
     const account_nfts = useSelector(state => state.account.nfts)
     const isOwner = account_nfts.findIndex((nft) => nft.NFTokenID === NFTokenID) > -1
     const login = useSelector(state => state.account.login)
-
+    const [isPageLoading, setPageLoading] = useState(false)
+    const [sellOffers, setSellOffers] = useState([])
+    const [buyOffers, setBuyOffers] = useState([])
     // const makeSellOffer = async () => {
     //     if (login) {
     //         setLoading(true)
@@ -78,32 +80,31 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
     //     }
     // }
 
-    // const fetchListingAndOffers = async (mounted) => {
-    //     setPageLoading(true)
-    //     try {
-    //         const res = await getSellAndBuyOffers(NFTokenID)
-    //         if (mounted) {
-    //             if (res.sellOffers || res.buyOffers) {
-    //                 if (res.sellOffers) {
-    //                     // if it has sell offers, then the last offer owner is the owner of nft
-    //                     setOwner(res.sellOffers.result.offers[0].owner)
-    //                     // setSellOffers(res.sellOffers.result)
-    //                     // the price of nft is from the offer
-    //                     setPrice(+res.sellOffers.result.offers[0].amount / 10 ** 6)
-    //                 }
-    //                 if (res.buyOffers) {// in case no sell offer
-    //                     // setOffers(res.buyOffers.result)
-    //                     // setOwner(getIssuer(NFTokenID))
-    //                 }
-    //             }
-    //             // else setOwner(getIssuer(NFTokenID))
-    //         }
-    //     } catch (e) {
-    //         // console.log(e)
-    //         openSnackbar(e.message, 'error')
-    //     }
-    //     setPageLoading(false)
-    // }
+    const fetchOffers = async (mounted) => {
+        setPageLoading(true)
+        try {
+            console.log('fetching offers...')
+            const res = await getSellAndBuyOffers(NFTokenID)
+            if (mounted) {
+                console.log({ res })
+                setBuyOffers(res.buyOffers)
+                setSellOffers(res.sellOffers)
+            }
+        } catch (e) {
+            console.log(e)
+            // openSnackbar(e.message, 'error')
+        }
+        setPageLoading(false)
+    }
+
+    useEffect(() => {
+        let mounted = true
+        fetchOffers(mounted)
+
+        return () => {
+            mounted = false
+        }
+    }, [])
 
     return (
         <div>
@@ -176,7 +177,7 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                 </AccordionSummary>
                 <Divider />
                 <AccordionDetails sx={{ margin: 3, textAlign: 'center' }}>
-                    {
+                    {/* {
                         offers.error ? <Typography>Error: {offers.error.message}</Typography> :
                             !offers.data ? <Skeleton animation='wave' height={100} width='100%' /> :
                                 offers.data.sellOffers ?
@@ -190,6 +191,15 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                                         No sell offers yet!
                                     </Typography>
 
+                    } */}
+                    {isPageLoading ?
+                        <Skeleton animation='wave' height={100} width='100%' />
+                        :
+                        <SellOffersList
+                            _offers={sellOffers}
+                            _NFTokenID={NFTokenID}
+                            _isOwner={isOwner}
+                        />
                     }
                 </AccordionDetails>
             </Accordion>
@@ -209,11 +219,19 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                 </AccordionSummary>
                 <Divider />
                 <AccordionDetails sx={{ margin: 3, textAlign: 'center' }}>
-                    {
+                    {isPageLoading ?
+                        <Skeleton animation='wave' height={100} width='100%' />
+                        :
+                        <BuyOffersList
+                            _offers={buyOffers}
+                            _NFTokenID={NFTokenID}
+                            _isOwner={isOwner}
+                        />}
+                    {/* {
                         offers.error ? <Typography>Error: {offers.error.message}</Typography> :
                             !offers.data ? <Skeleton animation='wave' height={100} width='100%' /> :
                                 <BuyOffersList id={offers.data.buyOffers?.id} result={offers.data.buyOffers?.result} isOwner={isOwner} />
-                    }
+                    } */}
                 </AccordionDetails>
             </Accordion>
             {/* Buy Offers end */}
@@ -282,6 +300,7 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                             setIsOpenBuyDg(false)
                         }}
                         NFTokenID={NFTokenID}
+                        setOffers={(offers) => setBuyOffers(offers)}
                     />}
             />
         </div>
