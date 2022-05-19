@@ -9,7 +9,6 @@ import {
     ListItemText,
     Stack,
     Typography,
-    Divider,
 } from '@mui/material'
 import DescriptionIcon from '@mui/icons-material/Description';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -17,7 +16,7 @@ import ArticleIcon from '@mui/icons-material/Article';
 import { Icon } from '@iconify/react';
 import NFTPreview from './NFTPreview';
 import { NFTDetailsProps } from 'utils/types';
-import FlagsContainer from 'components/NFTCard/Flags';
+import FlagsContainer from 'components/nftcard/Flags';
 import NFTDetailsDescription from './NftDetailsDescription';
 import Properties from 'components/miniting/NFTProperties/Properties';
 import Levels from 'components/miniting/NFTLevels/Levels';
@@ -58,75 +57,39 @@ export default function NFTDetails({
                     }}
                 >
                     <List>
-                        <ListItem >
-                            <ListItemText primary={
-                                <Typography variant='caption'>
-                                    TokenId
-                                </Typography>
-                            }
-                                secondary={NFTokenID}
-                            />
-                        </ListItem>
-                        <Divider component="li" />
-                        <ListItem >
-                            <ListItemText primary={
-                                <Typography variant='caption'>
-                                    Flags
-                                </Typography>
-                            }
-                            />
-                            <FlagsContainer Flags={NFToken.flags} />
-                        </ListItem>
-                        <Divider component="li" />
-                        <ListItem >
-                            <ListItemText primary={
-                                <Typography variant='caption'>
-                                    Issuer
-                                </Typography>
-                            }
-                                secondary={<Link
-                                    underline='hover'
-                                    href='#'
-                                    variant='info'
-                                    sx={{ marginRight: 0, overflowWrap: 'anywhere' }}
-                                >
-                                    {NFToken.issuer}
-                                </Link>}
-                            />
-                        </ListItem>
-                        <Divider component="li" />
-                        <ListItem >
-                            <ListItemText primary={
-                                <Typography variant='caption'>
-                                    Transfer Fee
-                                </Typography>
-                            }
-                                secondary={+NFToken.transferFee / 100 + '%'}
-                            />
-                        </ListItem>
-                        <Divider component="li" />
-                        <ListItem >
-                            <ListItemText primary={
-                                <Typography variant='caption'>
-                                    Taxon
-                                </Typography>
-                            }
-                                secondary={NFToken.tokenTaxon}
-                            />
-                        </ListItem>
-                        <Divider component="li" />
+                        {
+                            Object.keys(NFToken).map((key, idx) => (
 
-                        <ListItem >
-                            <ListItemText primary={
-                                <Typography variant='caption'>
-                                    Sequence
-                                </Typography>
-                            }
-                                secondary={NFToken.sequence}
-                            />
-                        </ListItem>
-                        <Divider component="li" />
-                        <ListItem >
+                                <ListItem key={idx} divider>
+                                    {
+                                        key === 'Flags' ?
+                                            <Box>
+                                                <Typography variant='caption'>Flags</Typography>
+                                                <FlagsContainer Flags={NFToken[key]} />
+                                            </Box> :
+                                            <ListItemText primary={
+                                                <Typography variant='caption'>
+                                                    {key}
+                                                </Typography>
+                                            }
+                                                secondary={
+                                                    key === 'Issuer' ?
+                                                        <Link
+                                                            underline='hover'
+                                                            href={`/account/${NFToken.Issuer}`}
+                                                            variant='info'
+                                                            sx={{ marginRight: 0, overflowWrap: 'anywhere' }}
+                                                        >
+                                                            {NFToken.Issuer}
+                                                        </Link> :
+                                                        JSON.stringify(NFToken[key])
+                                                }
+                                            />
+                                    }
+                                </ListItem>
+                            ))
+                        }
+                        <ListItem divider>
                             <ListItemText primary={
                                 <Typography variant='caption'>
                                     URI

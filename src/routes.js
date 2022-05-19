@@ -7,7 +7,7 @@ import ProgressPage from 'pages/progress/ProgressPage';
 import NotFound from 'pages/Page404';
 import Minting from 'pages/Mintpage'
 import NFTInfo from 'pages/offpage/OffPage'
-import Account from 'pages/account/MyNFTs'
+import Account from 'pages/account/Account'
 import LoginPage from 'pages/LoginPage';
 import { XRPNFTList } from 'components/NFTLists/XRPNFTList';
 import LedgerNFTList from 'pages/market/LandingPage';
@@ -25,7 +25,7 @@ export default function Router() {
                 { path: 'nft/:tokenID/:tokenURI', element: <NFTInfo /> },
                 { path: 'create', element: <Minting /> },
                 { path: 'login', element: <LoginPage /> },
-                { path: 'account', element: <Account /> },
+                { path: 'account/:key', element: <Account /> },
                 { path: 'xrpnfts', element: <XRPNFTList /> },
                 { path: '*', element: <Navigate to="/404/NotFound" /> }
             ]

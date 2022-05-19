@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Avatar,
     Backdrop,
@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 // import { deepOrange } from '@mui/material/colors';
 import { Icon } from '@iconify/react';
-import { acceptSellOffer, cancelOffer } from 'utils/tokenActions';
+import { acceptSellOffer, cancelOffer, getSellAndBuyOffers } from 'utils/tokenActions';
 import { BuyOffersProps } from 'utils/types';
 import { FadeLoader } from 'react-spinners';
 import { useSelector } from 'react-redux'
@@ -53,11 +53,8 @@ export default function SellOffersList({ _offers, _NFTokenID, _isOwner }) {
         setLoading(true)
         try {
             const res = await cancelOffer(account.secret, index, _NFTokenID)
-            if (res.sellOffers) {
-                setOffers(res.sellOffers)
-            }
-            else // if undefined, there are no sell offers for this nft token.
-                setOffers([])
+            setOffers(res.sellOffers)
+
             enqueueSnackbar('Cancel offer success:' + index.slice(0, 10) + '...', {
                 variant: 'success'
             })
@@ -74,11 +71,12 @@ export default function SellOffersList({ _offers, _NFTokenID, _isOwner }) {
         setLoading(true)
         try {
             const res = await acceptSellOffer(account.secret, index)
-            // useN
             enqueueSnackbar('Accept offer success:' + index.slice(0, 10) + '...', {
                 variant: 'success'
             })
-            dispatch(setNFTs(res.account_nfts))
+            dispatch(setNFTs(res ?? []))
+            const offers = await getSellAndBuyOffers(_NFTokenID)
+            setOffers(offers.sellOffers)
         } catch (e) {
             // TODO: snack bar error
             enqueueSnackbar(e.message, {
@@ -88,7 +86,9 @@ export default function SellOffersList({ _offers, _NFTokenID, _isOwner }) {
         setLoading(false)
     }
 
-
+    useEffect(() => {
+        setOffers([..._offers])
+    }, [_offers])
     return (
         <>
             <Backdrop
@@ -96,7 +96,7 @@ export default function SellOffersList({ _offers, _NFTokenID, _isOwner }) {
                 open={loading}
             >
                 <FadeLoader color='lightGreen' size={50} />
-                <Typography>loading...</Typography>
+                {/* <Typography>loading...</Typography> */}
             </Backdrop>
             <Backdrop
                 sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -231,7 +231,7 @@ export default function SellOffersList({ _offers, _NFTokenID, _isOwner }) {
                                                             // Cant cancel offer when
                                                             // account is not owner of offer
                                                             // account.key !== offer.owner
-                                                            !login || !_isOwner || offer.owner !== account.key
+                                                            !login || offer.owner !== account.key
                                                         }
                                                         startIcon={<Icon icon='iconoir:cancel' />}
                                                     >

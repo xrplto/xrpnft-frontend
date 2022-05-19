@@ -9,8 +9,8 @@ BaseDialog.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     render: PropTypes.node,
     title: PropTypes.string,
-    maxWidth: PropTypes.oneOf(
-        ['xs' | 'sm' | 'md' | 'lg' | 'xl', false, PropTypes.string]
+    maxWidth: PropTypes.oneOfType(
+        [PropTypes.bool, PropTypes.string]
     )
 };
 

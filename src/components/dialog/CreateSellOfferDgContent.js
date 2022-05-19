@@ -14,8 +14,6 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material'
-import XSnackbar from 'components/common/Snackbar';
-import { useSnackbar } from 'hooks/useSnackbar';
 import InfoIcon from '@mui/icons-material/Info';
 import { LoadingButton } from '@mui/lab';
 import { Icon } from '@iconify/react';
@@ -23,9 +21,10 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import { createSellOffer } from 'utils/tokenActions'
 import { getCurrentRippleEpoch } from 'utils/utils';
+import { useSnackbar } from 'notistack'
 
-export default function CreateSellOfferDgContent({ close, NFTokenID }) {
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
+export default function CreateSellOfferDgContent({ close, NFTokenID, setOffers }) {
+    const { enqueueSnackbar } = useSnackbar()
     const account = useSelector(state => state.account.account)
     const login = useSelector(state => state.account.login)
     const [price, setPrice] = useState(0)
@@ -36,21 +35,31 @@ export default function CreateSellOfferDgContent({ close, NFTokenID }) {
     const handleCreate = async () => {
         if (login) {
             setLoading(true)
-            const res = await createSellOffer(
-                account.secret,
-                NFTokenID,
-                Math.floor(price * 10 ** 6).toString(),
-                expiration ? getCurrentRippleEpoch() + 24 * 60 * 60 * expiration : 0,
-                destination
-            )
-            if (res) console.log({ res })
-            openSnackbar('Offer succeed!', 'success')
-            // close()
-
+            try {
+                const res = await createSellOffer(
+                    account.secret,
+                    NFTokenID,
+                    Math.floor(price * 10 ** 6).toString(),
+                    expiration ? getCurrentRippleEpoch() + 24 * 60 * 60 * expiration : 0,
+                    destination
+                )
+                // if (res) {
+                setOffers(res)
+                // }
+                enqueueSnackbar('Offer success!', {
+                    variant: 'success'
+                })
+            } catch (e) {
+                enqueueSnackbar(e.message, {
+                    variant: 'error'
+                })
+            }
             setLoading(false)
+            close()
         } else {
-            openSnackbar('You have to log in first!', 'error')
-            // navigate('/login')
+            enqueueSnackbar('You have to log in first!', {
+                variant: 'error'
+            })
         }
     }
 
@@ -177,7 +186,6 @@ export default function CreateSellOfferDgContent({ close, NFTokenID }) {
                 </LoadingButton>
                 <Button autoFocus onClick={handleCancel}>Cancel</Button>
             </DialogActions>
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     )
 }

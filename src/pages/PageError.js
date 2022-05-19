@@ -25,7 +25,7 @@ export default function PageError({ message }) {
     <RootStyle title="Error">
       <Container>
         <Box sx={{ maxWidth: 480, margin: 'auto', textAlign: 'center' }}>
-          <Typography variant="h3" paragraph>
+          <Typography variant="h6" paragraph>
             {message}
           </Typography>
 

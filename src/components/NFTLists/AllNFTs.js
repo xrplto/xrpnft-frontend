@@ -5,7 +5,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { BASE_URL } from 'utils/constants';
 import { Grid } from "@mui/material";
 import { useSnackbar } from 'notistack';
-import NFTCard from 'components/NFTCard/NFTCard';
+import NFTCard from 'components/nftcard/NFTCard';
 
 export const AllNFTs = () => {
 

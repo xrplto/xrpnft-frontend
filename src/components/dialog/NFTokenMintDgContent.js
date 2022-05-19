@@ -11,8 +11,6 @@ import {
     Tooltip,
     Typography,
 } from '@mui/material'
-import XSnackbar from 'components/common/Snackbar';
-import { useSnackbar } from 'hooks/useSnackbar';
 import { LoadingButton } from '@mui/lab';
 import { Icon } from '@iconify/react';
 import TokenFlagsForm from 'components/miniting/TokenFlagsForm'
@@ -21,10 +19,12 @@ import InfoIcon from '@mui/icons-material/Info';
 import { mintToken } from 'utils/tokenActions'
 import { resetIpfsState } from 'app/slices/ipfSlice'
 import { pinJsonToIPFS } from 'utils/pinata'
+import { setNFTs } from 'app/slices/accountSlice'
+import { useSnackbar } from 'notistack'
 
 export default function NFTokenMintDgContent({ close, metadata }) {
+    const { enqueueSnackbar } = useSnackbar()
     const dispatch = useDispatch()
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const flags = useSelector(state => state.ipfs.flags)
     const [loading, setLoading] = useState(false)
     const [issuer, setIssuer] = useState('')
@@ -39,20 +39,28 @@ export default function NFTokenMintDgContent({ close, metadata }) {
             if (res.success) {
                 const nftMetadataUrl = XRPNFT_DOMAIN + res.response.IpfsHash
                 try {
-                    const nfts = await mintToken(account.secret, nftMetadataUrl, flags, issuer, tFee * 100)
-                    openSnackbar(nfts.result.account, 'success')
+                    const res = await mintToken(account.secret, nftMetadataUrl, flags, issuer, tFee * 100)
+                    dispatch(setNFTs(res.account_nfts))
+                    enqueueSnackbar('Minting success, ' + JSON.stringify(res.account ?? ''), {
+                        variant: 'success'
+                    })
                     // TODO: reset ipfs slice when minting succeed
                     dispatch(resetIpfsState())
+                    close()
                 } catch (e) {
-                    openSnackbar(e.message, 'error')
-                    console.log({ e })
+                    enqueueSnackbar(e.message, {
+                        variant: 'error'
+                    })
                 }
             } else {
-                openSnackbar('Json Not pinned to Pinata.', 'error')
+                enqueueSnackbar('Json Not pinned to Pinata.', {
+                    variant: 'error'
+                })
             }
         } catch (e) {
-            openSnackbar(e.message, 'error')
-            console.log('error:', { e })
+            enqueueSnackbar(e.message, {
+                variant: 'error'
+            })
         }
         setLoading(false)
     }
@@ -169,7 +177,6 @@ export default function NFTokenMintDgContent({ close, metadata }) {
                 </LoadingButton>
                 <Button autoFocus onClick={handleCancel}>Cancel</Button>
             </DialogActions>
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     )
 }

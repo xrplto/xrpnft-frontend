@@ -42,7 +42,6 @@ export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers })
                         destination
                     )
                     if (res) {
-                        console.log({ res })
                         setOffers(res)
                     }
                     enqueueSnackbar('Offer success!', {
@@ -54,8 +53,8 @@ export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers })
                         variant: 'error'
                     })
                 }
-
                 setLoading(false)
+
             } else {
                 setError(true)
             }

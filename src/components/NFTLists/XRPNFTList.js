@@ -6,7 +6,7 @@ import { BASE_URL } from 'utils/constants';
 import { Box, Grid } from "@mui/material";
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
-import NFTCard from 'components/NFTCard/NFTCard';
+import NFTCard from 'components/nftcard/NFTCard';
 
 export const XRPNFTList = () => {
 

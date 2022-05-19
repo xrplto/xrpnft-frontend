@@ -33,10 +33,7 @@ export default function BuyOffersList({ _NFTokenID, _offers, _isOwner }) {
         setLoading(true)
         try {
             const res = await cancelOffer(account.secret, index, _NFTokenID)
-            console.log({ res })
-            if (res.nftBuyOffers)
-                setOffers(res.nftBuyOffers.result.offers)
-            else setOffers([])
+            setOffers(res.buyOffers)
             enqueueSnackbar('Cancel offer success:' + index.slice(0, 10) + '...', {
                 variant: 'success'
             })
@@ -66,10 +63,8 @@ export default function BuyOffersList({ _NFTokenID, _offers, _isOwner }) {
         }
         setLoading(false)
     }
-    console.log({ offers, _offers })
 
     useEffect(() => {
-        console.log('refreshing...')
         setOffers([..._offers])
     }, [_offers])
 

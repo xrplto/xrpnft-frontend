@@ -20,7 +20,6 @@ import { getSellAndBuyOffers } from 'utils/tokenActions'
 import SellOffersList from './SellOffersList'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import BuyOffersList from './BuyOffersList'
-import useSWR from 'swr'
 import { NFTOffersDetailProps } from 'utils/types'
 import BaseDialog from 'components/dialog/BaseDialog';
 import CreateSellOfferDgContent from 'components/dialog/CreateSellOfferDgContent'
@@ -30,8 +29,7 @@ import CreateBuyOfferDgContent from 'components/dialog/CreateBuyOfferDgContent'
 
 NFTOffersDetail.prototype = NFTOffersDetailProps
 
-export default function NFTOffersDetail({ NFTokenID, name }) {
-    // const offers = useSWR(NFTokenID, getSellAndBuyOffers)
+export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
     const [isOpenSellDg, setIsOpenSellDg] = useState(false)
     const [isOpenBuyDg, setIsOpenBuyDg] = useState(false)
     const [isOpenBurnDg, setIsOpenBurnDg] = useState(false)
@@ -41,49 +39,10 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
     const [isPageLoading, setPageLoading] = useState(false)
     const [sellOffers, setSellOffers] = useState([])
     const [buyOffers, setBuyOffers] = useState([])
-    // const makeSellOffer = async () => {
-    //     if (login) {
-    //         setLoading(true)
-    //         console.log('Making offer...')
-    //         try {
-    //             await createSellOffer(account.secret, NFTokenID, '20000', 1)
-    //             // const res = await createSellOffer(account.secret, NFTokenID, '20000', 1)
-    //             // const lastIndex = res.sellOffers.result.offers.length - 1
-    //             // setPrice(+res.sellOffers.result.offers[lastIndex].amount / 10 ** 6)
-    //             openSnackbar('Offer succeed!', 'success')
-    //         } catch (e) {
-    //             openSnackbar(e.message, 'error')
-
-    //         }
-    //         setLoading(false)
-    //     } else {
-    //         openSnackbar('You have to log in first!', 'error')
-    //         // navigate('/login')
-    //     }
-    // }
-
-    // const makeBuyOffer = async () => {
-    //     if (login) {
-    //         setLoading(true)
-    //         console.log('Making offer...')
-    //         try {
-    //             const res = await createBuyOffer(account.secret, NFTokenID, '1000', 0, owner)
-    //             // setOffers(res.buyOffers.result)
-    //             openSnackbar('Offer succeed!', 'success')
-    //         } catch (e) {
-    //             openSnackbar(e.message, 'error')
-    //         }
-    //         setLoading(false)
-    //     } else {
-    //         openSnackbar('You have to login first to make an offer.', 'error')
-    //         // navigate('/login')
-    //     }
-    // }
 
     const fetchOffers = async (mounted) => {
         setPageLoading(true)
         try {
-            console.log('fetching offers...')
             const res = await getSellAndBuyOffers(NFTokenID)
             if (mounted) {
                 console.log({ res })
@@ -104,6 +63,8 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
         return () => {
             mounted = false
         }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
@@ -123,35 +84,37 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
 
             }}>
                 {
-                    isOwner && login && <Box sx={{
+                    isOwner && <Box sx={{
                         display: 'flex',
                         justifyContent: 'space-around'
                     }}>
                         <Button
-                            sx={{ borderRadius: 10 }}
+                            sx={{ borderRadius: 10, width: 200 }}
                             variant='outlined'
                             startIcon={<LocalOfferIcon />}
                             onClick={() => setIsOpenSellDg(true)}
                             color='success'
+                            disabled={!login}
                         >
                             Sell
                         </Button>
                         <Button
                             variant='outlined'
+                            sx={{ borderRadius: 10, width: 200 }}
                             color='warning'
                             startIcon={<Icon icon='ps:feedburner' />}
                             onClick={() => setIsOpenBurnDg(true)}
-                            disabled={!isOwner} // you cannot burn NFToken if you are not owner
-                            sx={{ borderRadius: 10 }}
+                            disabled={!isOwner || !login} // you cannot burn NFToken if you are not owner
                         >
                             Burn
                         </Button>
                     </Box>
                 }
                 {
-                    !isOwner && login &&
+                    !isOwner &&
                     <Button
                         sx={{ borderRadius: 10 }}
+                        disabled={!login}
                         variant='outlined'
                         // onClick={makeBuyOffer}
                         onClick={() => setIsOpenBuyDg(true)}
@@ -272,6 +235,7 @@ export default function NFTOffersDetail({ NFTokenID, name }) {
                             setIsOpenSellDg(false)
                         }}
                         NFTokenID={NFTokenID}
+                        setOffers={(offers) => setSellOffers(offers)}
                     />}
             />
             <BaseDialog

@@ -1,23 +1,21 @@
 import { useSelector } from 'react-redux'
 import { Container, Grid, Typography } from "@mui/material";
-import NFTCard from 'components/NFTCard/NFTCard';
+import NFTCard from 'components/nftcard/NFTCard';
 import { getTokens } from 'utils/tokenActions';
 import useSWR from 'swr'
 import PageError from 'pages/PageError';
 
-export default function AccountNfts() {
-    const account = useSelector(state => state.account.account)
-    const { data, error } = useSWR(account.key, getTokens)
+export default function AccountNfts({nfts}) {
 
 
-    if (error) return <PageError message={error.message} />
-    if (!data) return <Typography variant='body1'>Loading...</Typography>
+
+
     return (
         <Container sx={{ marginTop: 2 }}>
             {
                 <Grid container spacing={2} justifyContent='center'>
                     {
-                        data.account_nfts.map((nft) => (
+                        nfts.account_nfts.map((nft) => (
                             <Grid item
                                 key={nft.NFTokenID}
                             >
@@ -29,12 +27,6 @@ export default function AccountNfts() {
                                 />
                             </Grid>
                         ))
-                        // Flags: 14
-                        // Issuer: "rahPAzF2znC1iHPzeXQBUNJGeh2Yhj59N5"
-                        // NFTokenID: "000E0000377D0873B7552D8C9CEFA06D50287F7F33EBA51A0000099B00000000"
-                        // NFTokenTaxon: 0
-                        // URI: "7872706E66742E636F6D2F697066732F516D5439706B6B46387642716941315144595173485A726B50526E44744C64523133437A5A7670715A7A58507076"
-                        // nft_serial: 0
                     }
                 </Grid>
             }

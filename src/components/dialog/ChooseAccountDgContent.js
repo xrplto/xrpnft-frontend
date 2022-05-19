@@ -81,7 +81,7 @@ export default function ChooseAccountDgContent() {
                 openSnackbar(e.message, 'error')
             }
             dispatch(login())
-            navigate(`/account`)
+            navigate(`/account/${account.key}`)
         } else {
             openSnackbar('Select an account!', 'error')
         }
