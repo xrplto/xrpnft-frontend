@@ -1,5 +1,5 @@
-import { RIPPLE_TEST_NET_URL } from "./constants";
-const xrpl = require("xrpl");
+import { RIPPLE_TEST_NET_URL } from './constants';
+const xrpl = require('xrpl');
 
 /**
  *
@@ -25,17 +25,16 @@ const xrpl = require("xrpl");
  * 												Taxon identifiers greater than 0xFFFF'FFFF are disallowed.
  */
 export const mintToken = async (secret, tokenUrl, flags, issuer, transferFee, taxon) => {
-	console.log('Minting started...')
 	const wallet = xrpl.Wallet.fromSeed(secret)
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
+	console.log('Minting started...')
 	await client.connect()
-	console.log("Connected to Devnet")
 
 	// Note that you must convert the token URL to a hexadecimal
 	// value for this transaction.
 	// ----------------------------------------------------------
 	const transactionBlob = {
-		TransactionType: "NFTokenMint",
+		TransactionType: 'NFTokenMint',
 		Account: wallet.classicAddress,
 		URI: xrpl.convertStringToHex(tokenUrl),
 		Flags: parseInt(flags),
@@ -43,23 +42,17 @@ export const mintToken = async (secret, tokenUrl, flags, issuer, transferFee, ta
 		TransferFee: transferFee,
 		NFTokenTaxon: taxon ? taxon : 0 //Required, but if you have no use for it, set to zero.
 	}
-	console.log({ transactionBlob })
+	console.log('Connected to Devnet, sending TxBlob', transactionBlob)
 	// Submit signed blob --------------------------------------------------------
 	const tx = await client.submitAndWait(transactionBlob, { wallet })
-
-	// const nfts = await client.request({
-	// 	method: "account_nfts",
-	// 	account: wallet.classicAddress
-	// })
-	// console.log(nfts)
-
-	// // Check transaction results -------------------------------------------------
-	console.log("Transaction result:", tx)
-
-	console.log("Balance changes:",
-		JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
+	console.log('Minting was successful:', tx)
+	const nfts = await client.request({
+		method: 'account_nfts',
+		account: wallet.classicAddress
+	})
+	console.log(nfts)
 	client.disconnect()
-	return tx.result.meta
+	return nfts.result
 } //End of mintToken
 
 /**
@@ -71,20 +64,20 @@ export const burnToken = async (secret, tokenId) => {
 	const wallet = xrpl.Wallet.fromSeed(secret)
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
 	await client.connect()
-	console.log("Connected to Sandbox")
+	console.log('Connected to Sandbox')
 
 	// Prepare transaction -------------------------------------------------------
 	const transactionBlob = {
-		"TransactionType": "NFTokenBurn",
-		"Account": wallet.classicAddress,
-		"NFTokenID": tokenId
+		'TransactionType': 'NFTokenBurn',
+		'Account': wallet.classicAddress,
+		'NFTokenID': tokenId
 	}
 
 	// Submit signed blob --------------------------------------------------------
 	const tx = await client.submitAndWait(transactionBlob, { wallet })
 	// Check transaction results -------------------------------------------------
-	console.log("Transaction result:", tx.result.meta.TransactionResult)
-	console.log("Balance changes:",
+	console.log('Transaction result:', tx.result.meta.TransactionResult)
+	console.log('Balance changes:',
 		JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
 	client.disconnect()
 }
@@ -103,49 +96,50 @@ export const burnToken = async (secret, tokenId) => {
 export const createSellOffer = async (secret, tokenId, amount, expiration, destination) => {
 	const wallet = xrpl.Wallet.fromSeed(secret)
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
+	console.log('Connecting to Sandbox')
 	await client.connect()
-	console.log("Connected to Sandbox")
 
 	// Prepare transaction -------------------------------------------------------
 	const transactionBlob = {
-		"TransactionType": "NFTokenCreateOffer",
-		"Account": wallet.classicAddress,
-		"NFTokenID": tokenId,
-		"Amount": amount,
-		"Flags": 1, // Always 1: for sell offer
+		'TransactionType': 'NFTokenCreateOffer',
+		'Account': wallet.classicAddress,
+		'NFTokenID': tokenId,
+		'Amount': amount,
+		'Flags': 1, // Always 1: for sell offer
 		...(expiration && { Expiration: expiration }),
 		...(destination && { Destination: destination }),
 	}
 
-	console.log({ transactionBlob })
-	let nftSellOffers
+	console.log('Connected to Sandbox, sending tx blob', transactionBlob)
+	const tx = await client.submitAndWait(transactionBlob, { wallet })//AndWait
+	console.log('sell offer succeed', tx)
 
 	// Submit signed blob --------------------------------------------------------
+	console.log('requesting sell offers...')
+	let nftSellOffers
 	try {
-		await client.submitAndWait(transactionBlob, { wallet })//AndWait
-		console.log('Offer succeed')
 		nftSellOffers = await client.request({
-			method: "nft_sell_offers",
+			method: 'nft_sell_offers',
 			nft_id: tokenId
 		})
-		client.disconnect()
 	} catch (e) {
 		console.log({ e })
 	}
+	client.disconnect()
 
-	return nftSellOffers ? nftSellOffers.result : null
+	return nftSellOffers ? nftSellOffers.result.offers : []
 }
 
 /**
  * Create Buy Offer
  * @param {string} secret
- * @param {string} tokenId
+ * @param {string} NFTokenID
  * @param {number} amount
  * @param {number} flags
  * @param {string} owner
  * @returns {object} sell and buy offers for this token
  */
-export const createBuyOffer = async (secret, tokenId, amount, owner) => {
+export const createBuyOffer = async (secret, NFTokenID, amount, owner) => {
 
 	console.log('connecting to sandbox...')
 	const wallet = xrpl.Wallet.fromSeed(secret)
@@ -153,30 +147,31 @@ export const createBuyOffer = async (secret, tokenId, amount, owner) => {
 		connectionTimeout: 10000
 	})
 	await client.connect()
-	console.log("Connected to Sandbox")
 
 	// Prepare transaction -------------------------------------------------------
 	const transactionBlob = {
-		"TransactionType": "NFTokenCreateOffer",
-		"Account": wallet.classicAddress,
-		"Owner": owner,
-		"NFTokenID": tokenId,
-		"Amount": amount,
-		"Flags": 0
+		'TransactionType': 'NFTokenCreateOffer',
+		'Account': wallet.classicAddress,
+		'Owner': owner,
+		'NFTokenID': NFTokenID,
+		'Amount': amount,
+		'Flags': 0
 	}
+	console.log('Connected to Sandbox, sending transaction blob:', transactionBlob)
 
 	// Submit signed blob --------------------------------------------------------
 	const tx = await client.submitAndWait(transactionBlob, { wallet })
+	console.log('offer succeed!', tx)
 
-	console.log({ tx })
+	console.log('Requesting buy offers...')
 	let nftBuyOffers
 	try {
 		nftBuyOffers = await client.request({
-			method: "nft_buy_offers",
-			tokenid: tokenId
+			method: 'nft_buy_offers',
+			nft_id: NFTokenID
 		})
 	} catch (err) {
-		console.log("No buy offers.")
+		console.log('No buy offers.')
 	}
 
 	console.log({ nftBuyOffers })
@@ -194,52 +189,57 @@ export const createBuyOffer = async (secret, tokenId, amount, owner) => {
  * @returns {object} sellOffers:[] buyOffers:[]
  */
 export const cancelOffer = async (secret, tokenOfferIndex, tokenId) => {
+
 	const wallet = xrpl.Wallet.fromSeed(secret)
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL, {
 		connectionTimeout: 10000
 	})
+	console.log('Connecting to Sandbox...')
 	await client.connect()
-	console.log("Connected to Sandbox")
 
 	// const tokenOfferID = tokenOfferIndex
 	// Prepare a transaction blob. The tokenID argument requires an array rather than a single string.
 	const tokenOffers = [tokenOfferIndex]
 
 	const transactionBlob = {
-		"TransactionType": "NFTokenCancelOffer",
-		"Account": wallet.classicAddress,
-		"NFTokenOffers": tokenOffers
+		'TransactionType': 'NFTokenCancelOffer',
+		'Account': wallet.classicAddress,
+		'NFTokenOffers': tokenOffers
 	}
 
 	// Submit the transaction and wait for the results.
+	console.log('Connected to Sandbox, sending txBlob', transactionBlob)
 	const tx = await client.submitAndWait(transactionBlob, { wallet })
-	console.log({ tx })
+	console.log('cancel offer succeed', tx)
 
 	// Request lists of current Sell Offers and Buy Offers.
-	console.log("***Sell Offers***")
+	console.log('Requesting sell offers...')
 	let nftSellOffers
 	try {
 		nftSellOffers = await client.request({
-			method: "nft_sell_offers",
+			method: 'nft_sell_offers',
 			nft_id: tokenId
 		})
+		console.log(JSON.stringify(nftSellOffers, null, 2))
 	} catch (err) {
-		console.log("No sell offers.")
+		console.log('No sell offers.')
 	}
-	console.log(JSON.stringify(nftSellOffers, null, 2))
-	console.log("***Buy Offers***")
+	console.log('Requesting buy offers...')
 	let nftBuyOffers
 	try {
 		nftBuyOffers = await client.request({
-			method: "nft_buy_offers",
+			method: 'nft_buy_offers',
 			nft_id: tokenId
 		})
+		console.log(JSON.stringify(nftBuyOffers, null, 2))
 	} catch (err) {
-		console.log("No buy offers.")
+		console.log('No buy offers.')
 	}
-	console.log(JSON.stringify(nftBuyOffers, null, 2))
 	client.disconnect()
-	return { nftSellOffers, nftBuyOffers }
+	return {
+		sellOffers: nftSellOffers ? nftSellOffers.result.offers : [],
+		buyOffers: nftBuyOffers ? nftBuyOffers.result.offers : [],
+	}
 
 	// End of cancelOffer()
 }
@@ -260,13 +260,13 @@ export const acceptBuyOffer = async (secret, tokenOfferIndex) => {
 	const wallet = xrpl.Wallet.fromSeed(secret)
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
 	await client.connect()
-	console.log("Connected to Sandbox")
+	console.log('Connected to Sandbox')
 
 	// Prepare a transaction blob.
 	const transactionBlob = {
-		"TransactionType": "NFTokenAcceptOffer",
-		"Account": wallet.classicAddress,
-		"NFTokenBuyOffer": tokenOfferIndex
+		'TransactionType': 'NFTokenAcceptOffer',
+		'Account': wallet.classicAddress,
+		'NFTokenBuyOffer': tokenOfferIndex
 	}
 
 	// Submit the transaction and wait for the results.
@@ -274,12 +274,12 @@ export const acceptBuyOffer = async (secret, tokenOfferIndex) => {
 
 	// Display the results in your console log.
 	const nfts = await client.request({
-		method: "account_nfts",
+		method: 'account_nfts',
 		account: wallet.classicAddress
 	})
-	console.log("Transaction result:",
+	console.log('Transaction result:',
 		JSON.stringify(tx.result.meta.TransactionResult, null, 2))
-	console.log("Balance changes:",
+	console.log('Balance changes:',
 		JSON.stringify(xrpl.getBalanceChanges(tx.result.meta), null, 2))
 
 	// Disconnect from the server.
@@ -301,27 +301,29 @@ export const acceptSellOffer = async (secret, tokenOfferIndex) => {
 	// Connect to the devnet server.
 	const wallet = xrpl.Wallet.fromSeed(secret)
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
+	console.log('Connecting to Sandbox')
 	await client.connect()
-	console.log("Connected to Sandbox")
 
 	// Prepare a transaction blob.
 	const transactionBlob = {
-		"TransactionType": "NFTokenAcceptOffer",
-		"Account": wallet.classicAddress,
-		"NFTokenSellOffer": tokenOfferIndex,
+		'TransactionType': 'NFTokenAcceptOffer',
+		'Account': wallet.classicAddress,
+		'NFTokenSellOffer': tokenOfferIndex,
 	}
 
+	console.log('Connected to Sandbox, sending txBlob', transactionBlob)
 	const tx = await client.submitAndWait(transactionBlob, { wallet })
-	console.log(tx)
+	console.log('offer accepted', tx)
 	const nfts = await client.request({
-		method: "account_nfts",
+		method: 'account_nfts',
 		account: wallet.classicAddress
 	})
 
 	// Disconnect from the server.
 	client.disconnect()
 	// End of submitTransaction()
-	return nfts.result
+	console.log({ nfts })
+	return nfts.result.account_nfts
 }
 
 /**
@@ -333,30 +335,30 @@ export const acceptSellOffer = async (secret, tokenOfferIndex) => {
 	}
  */
 export const getSellAndBuyOffers = async (tokenId) => {
-	console.log("Connecting to Sandbox...")
+	console.log('Connecting to Sandbox...')
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL, {
 		connectionTimeout: 10000
 	})
 	await client.connect()
-	console.log("Connected to Sandbox")
-	console.log("Requesting sell offers...")
+	console.log('Connected to Sandbox')
+	console.log('Requesting sell offers...')
 	let nftSellOffers, nftBuyOffers
 	try {
 		nftSellOffers = await client.request({
-			method: "nft_sell_offers",
+			method: 'nft_sell_offers',
 			nft_id: tokenId
 		})
 	} catch (err) {
-		console.log("No sell offers.")
+		console.log('No sell offers.')
 	}
-	console.log("Requesting sell offers...")
+	console.log('Requesting buy offers...')
 	try {
 		nftBuyOffers = await client.request({
-			method: "nft_buy_offers",
+			method: 'nft_buy_offers',
 			nft_id: tokenId
 		})
 	} catch (err) {
-		console.log("No buy offers.")
+		console.log('No buy offers.')
 	}
 
 	client.disconnect()
@@ -373,12 +375,12 @@ export const getSellOffers = async (tokenId) => {
 		connectionTimeout: 10000
 	})
 	await client.connect()
-	console.log("Connected to Sandbox")
+	console.log('Connected to Sandbox')
 
 	try {
 
 		const nftSellOffers = await client.request({
-			method: "nft_sell_offers",
+			method: 'nft_sell_offers',
 			nft_id: tokenId
 		})
 		console.log({ nftSellOffers })
@@ -393,15 +395,15 @@ export const getSellOffers = async (tokenId) => {
 
 export const getBuyOffers = async (tokenId) => {
 
-	console.log("Connecting to sandbox.......")
+	console.log('Connecting to sandbox.......')
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL, {
 		connectionTimeout: 10000
 	})
 	await client.connect()
-	console.log("Connected to sandbox")
+	console.log('Connected to sandbox')
 	console.log('requesting buy offers...')
 	const offers = await client.request({
-		method: "nft_buy_offers",
+		method: 'nft_buy_offers',
 		nft_id: tokenId
 	})
 	console.log({ offers })
@@ -422,9 +424,41 @@ export async function getTokens(key) {
 	})
 	await client.connect()
 	const res = await client.request({
-		method: "account_nfts",
+		method: 'account_nfts',
 		account: key
 	})
 	client.disconnect()
 	return res.result
 } //End of getTokens
+
+
+/**
+ *
+ * @param {string} key account address
+ */
+export const getAccountTxHistory = async (key) => {
+
+	// Connect to the devnet server.
+	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
+	console.log('Connecting to Sandbox')
+	await client.connect()
+
+	// Prepare a transaction blob.
+	const transactionBlob =
+	{
+		// "id": 2,
+		"command": "account_tx",
+		"account": key,
+		"ledger_index_min": -1,
+		"ledger_index_max": -1,
+		"binary": false,
+		// "limit": 2,
+		"forward": false
+	}
+	console.log('Connected to Sandbox, requesting Account tx history', transactionBlob)
+	const txHistory = await client.request(transactionBlob)
+
+	// Disconnect from the server.
+	client.disconnect()
+	return txHistory.result.transactions
+}

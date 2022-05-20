@@ -20,11 +20,6 @@ export const NFTCardProps = {
     // nft_serial: PropTypes.number
 }
 
-const buyOfferProps = {
-    nft_id: PropTypes.string,
-    offers: PropTypes.array
-}
-
 export const BuyOffersProps = {
     // id: PropTypes.number,
     // result: PropTypes.exact(buyOfferProps),
@@ -78,6 +73,7 @@ export const NFTDetailsProps = {
 export const NFTOffersDetailProps = {
     NFTokenID: PropTypes.string,
     name: PropTypes.string,
+    Issuer: PropTypes.string,
 }
 
 export const ErrorPageProps = {

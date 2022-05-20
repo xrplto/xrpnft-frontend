@@ -4,7 +4,6 @@ import axios from 'axios';
 import numeral from 'numeral';
 const xrpl = require("xrpl");
 const AddressCodec = require('ripple-address-codec');
-const { BigNumber } = require('bignumber.js');
 
 // ----------------------------------------------------------------------
 function extractUrisFromString(uris_string) {
@@ -186,76 +185,6 @@ export function parseNftFlag(flags_number) {
     }
     flags.tfNoFlag = noFlag;
     return flags;
-}
-
-/**
- * 000B 0C44 95F14B0E44F78A264E41713C64B5F89242540EE2 BC8B858E 00000D65
- * +--- +--- +--------------------------------------- +------- +-------
- * |    |    |                                        |        |
- * |    |    |                                        |        `---> Sequence: 3,429
- * |    |    |                                        |
- * |    |    |                                        `---> Taxon: 146,999,694
- * |    |    |
- * |    |    `---> Issuer: rNCFjv8Ek5oDrNiMJ3pw6eLLFtMjZLJnf2
- * |    |
- * |    `---> TransferFee: 314.0 bps or 3.140%
- * |
- * `---> Flags: 11 -> lsfBurnable, lsfOnlyXRP and lsfTransferable
- */
-export function parseNFT(tokenID, tokenURI) {
-    if (typeof tokenID !== "string" || tokenID.length !== 64) {
-        return null;
-    }
-
-    const flags = new BigNumber(tokenID.slice(0, 4), 16).toNumber();
-    const transferFee = new BigNumber(tokenID.slice(4, 8), 16).toNumber();
-    const issuer = AddressCodec.encodeAccountID(Buffer.from(tokenID.slice(8, 48), "hex"));
-    const scrambledTaxon = new BigNumber(tokenID.slice(48, 56), 16).toNumber();
-    const sequence = new BigNumber(tokenID.slice(56, 64), 16).toNumber();
-
-    return {
-        issuer: issuer,
-        flags: parseNftFlag(flags),
-        tokenURI: parseURI(tokenURI),
-        transferFee: transferFee,
-        tokenTaxon: cipheredTaxon(sequence, scrambledTaxon),
-        sequence: sequence,
-    };
-}
-
-/**
- * 000B 0C44 95F14B0E44F78A264E41713C64B5F89242540EE2 BC8B858E 00000D65
- * +--- +--- +--------------------------------------- +------- +-------
- * |    |    |                                        |        |
- * |    |    |                                        |        `---> Sequence: 3,429
- * |    |    |                                        |
- * |    |    |                                        `---> Taxon: 146,999,694
- * |    |    |
- * |    |    `---> Issuer: rNCFjv8Ek5oDrNiMJ3pw6eLLFtMjZLJnf2
- * |    |
- * |    `---> TransferFee: 314.0 bps or 3.140%
- * |
- * `---> Flags: 11 -> lsfBurnable, lsfOnlyXRP and lsfTransferable
- */
-export function parseNFTokenId(tokenID) {
-    if (typeof tokenID !== "string" || tokenID.length !== 64) {
-        return null;
-    }
-
-    const flags = new BigNumber(tokenID.slice(0, 4), 16).toNumber();
-    const transferFee = new BigNumber(tokenID.slice(4, 8), 16).toNumber();
-    const issuer = AddressCodec.encodeAccountID(Buffer.from(tokenID.slice(8, 48), "hex"));
-    const scrambledTaxon = new BigNumber(tokenID.slice(48, 56), 16).toNumber();
-    const sequence = new BigNumber(tokenID.slice(56, 64), 16).toNumber();
-
-    return {
-        issuer: issuer,
-        // flags: parseNftFlag(flags),
-        flags: flags,
-        transferFee: transferFee,
-        tokenTaxon: cipheredTaxon(sequence, scrambledTaxon),
-        sequence: sequence,
-    };
 }
 
 /**
