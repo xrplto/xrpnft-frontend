@@ -439,7 +439,9 @@ export async function getTokens(key) {
 export const getAccountTxHistory = async (key) => {
 
 	// Connect to the devnet server.
-	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
+	const client = new xrpl.Client(RIPPLE_TEST_NET_URL, {
+		connectionTimeout: 10000
+	})
 	console.log('Connecting to Sandbox')
 	await client.connect()
 
