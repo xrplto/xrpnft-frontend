@@ -19,7 +19,7 @@ export const AllNFTs = () => {
         const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
         const _offset = offsetParam === 0 ? offsetParam : offset
         axios
-            .get(`${BASE_URL}/nfts?page=${_offset}&limit=20&flag=${flags}&self=false`)
+            .get(`${BASE_URL}/nfts?page=${_offset}&limit=50&flag=${flags}&self=false`)
             .then(res => {
                 if (res.data.nfts.length < 10) {
                     setHasMore(false)
@@ -68,7 +68,7 @@ export const AllNFTs = () => {
                 hasMore={hasMore}
                 loader={<p>loading...</p>}
             >
-                <Grid container spacing={2} justifyContent='center'>
+                <Grid container spacing={{xs:1, sm:2, md:3, lg:4}} justifyContent='justify-center'>
                     {
                         nfTokens.map((nft) => (
                             <Grid item key={nft.NFTokenID}

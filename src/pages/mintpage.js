@@ -25,7 +25,7 @@ export default function Minting() {
   const pinnedFileHash = useSelector(state => state.ipfs.pinnedFileHash)
   const login = useSelector(state => state.account.login)
   const [nftName, setNftName] = useState('')
-  const [extLink, setExtLink] = useState('xrpnft.com')
+  const [extLink, setExtLink] = useState('')
   const [description, setDescription] = useState('')
 
 
@@ -73,7 +73,7 @@ export default function Minting() {
             {'This site will include a link to this URL on this item\'s detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.'}
           </Typography>
           <TextField
-            placeholder={extLink}
+            required placeholder='External link'
             margin='dense'
             onChange={(e) => {
               setExtLink(e.target.value)

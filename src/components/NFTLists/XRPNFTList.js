@@ -52,7 +52,7 @@ export const XRPNFTList = () => {
                 hasMore={hasMore}
                 loader={<p>loading...</p>}
             >
-                <Grid container spacing={2} justifyContent='center'>
+                <Grid container spacing={2} justifyContent='justify-center'>
                     {
                         nfTokens.map((nft) => (
                             <Grid item key={nft.NFTokenID}

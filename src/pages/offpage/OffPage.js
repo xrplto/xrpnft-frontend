@@ -23,7 +23,7 @@ export default function NFTInfo() {
   return (
     <Page title='NFT Info'>
       <Container maxWidth='lg' sx={{ marginTop: '1vh' }}>
-        <Grid container spacing={2} justifyContent='center'>
+        <Grid container spacing={2} justifyContent='justify-center'>
           <Grid item md={5}>
             {
               metadata &&
