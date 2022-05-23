@@ -67,8 +67,16 @@ export const AllNFTs = () => {
                 next={() => fetchImages()}
                 hasMore={hasMore}
                 loader={<p>loading...</p>}
-            >
-                <Grid container spacing={{xs:1, sm:2, md:3, lg:4}} justifyContent='justify-center'>
+            >               
+                <Grid container spacing={{xs:1, sm:2, md:3, lg:4}}
+                    style={{
+                        display: 'grid',
+                        justifyContent: 'center',
+                        alignContent: 'flex-start',
+                        gridGap: '10px',
+                        gridTemplateColumns: 'repeat(auto-fill, 300px)'
+                    }}
+                >
                     {
                         nfTokens.map((nft) => (
                             <Grid item key={nft.NFTokenID}
@@ -81,6 +89,7 @@ export const AllNFTs = () => {
                                 />
                             </Grid>
                         ))
+                            
                     }
                 </Grid>
             </InfiniteScroll>

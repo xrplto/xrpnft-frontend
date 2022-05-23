@@ -11,7 +11,7 @@ import {
     Paper,
     Box,
 } from '@mui/material'
-import TimePeriods from 'components/OffPage/TimePeriodsDropdown'
+import TimePeriods from 'components/offpage/TimePeriodsDropdown'
 import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 import TimelineIcon from '@mui/icons-material/Timeline'
 import ListIcon from '@mui/icons-material/List'

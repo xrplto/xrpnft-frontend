@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { Container, Grid, Typography } from '@mui/material';
 import Page from 'components/Page';
-import NFTOffersDetail from 'components/OffPage/NFTOffersDetail';
-import NFTDetails from 'components/OffPage/NftDetails';
+import NFTOffersDetail from 'components/offpage/NFTOffersDetail';
+import NFTDetails from 'components/offpage/NftDetails';
 import { fetcher, parseNFTUri } from 'utils/utils';
 import useSWR from 'swr'
 import Page404 from 'pages/Page404';
@@ -23,7 +23,7 @@ export default function NFTInfo() {
   return (
     <Page title='NFT Info'>
       <Container maxWidth='lg' sx={{ marginTop: '1vh' }}>
-        <Grid container spacing={2} justifyContent='justify-center'>
+        <Grid container spacing={2} justifyContent='center'>
           <Grid item md={5}>
             {
               metadata &&

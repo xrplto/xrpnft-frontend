@@ -5,7 +5,7 @@ import TokenTesterUpdated from 'pages/tester/TokenTesterUpdated';
 import Spinner from 'pages/spinner/Spinner';
 import ProgressPage from 'pages/progress/ProgressPage';
 import NotFound from 'pages/Page404';
-import Minting from 'pages/Mintpage'
+import Minting from 'pages/mintpage'
 import NFTInfo from 'pages/offpage/OffPage'
 import Account from 'pages/account/Account'
 import LoginPage from 'pages/LoginPage';
