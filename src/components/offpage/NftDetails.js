@@ -16,7 +16,7 @@ import ArticleIcon from '@mui/icons-material/Article';
 import { Icon } from '@iconify/react';
 import NFTPreview from './NFTPreview';
 import { NFTDetailsProps } from 'utils/types';
-import FlagsContainer from 'components/nftcard/Flags';
+import FlagsContainer from 'components/NFTCard/Flags';
 import NFTDetailsDescription from './NftDetailsDescription';
 import Properties from 'components/miniting/NFTProperties/Properties';
 import Levels from 'components/miniting/NFTLevels/Levels';

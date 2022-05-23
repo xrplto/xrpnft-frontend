@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Container, Grid, Typography } from "@mui/material";
-import NFTCard from 'components/nftcard/NFTCard';
+import NFTCard from 'components/NFTCard/NFTCard';
 import { getTokens } from 'utils/tokenActions';
 import { useSnackbar } from 'notistack';
 import useSWR from 'swr';

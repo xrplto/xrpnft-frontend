@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Context from './Context'
-import Router from './Routes';
+import Router from './routes';
 import ThemeConfig from './Theme';
 import { SnackbarProvider } from 'notistack';
 
