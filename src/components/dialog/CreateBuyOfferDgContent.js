@@ -120,7 +120,7 @@ export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers })
                             <TextField
                                 error={error}
                                 helperText={error ? 'Incorrect Account' : ''}
-                                placeholder='Account Address'
+                                placeholder='rrpr7KNaEzHSd3GcXHkmK7PtdNEdnfULG3'
                                 variant='standard'
                                 fullWidth
                                 value={destination}

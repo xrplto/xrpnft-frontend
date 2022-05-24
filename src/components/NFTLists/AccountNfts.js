@@ -39,7 +39,14 @@ export default function AccountNfts({ account }) {
     return (
         <Container sx={{ marginTop: 2 }} maxWidth={false}>
             {
-                <Grid container spacing={2} justifyContent='center'>
+                <Grid container spacing={2} justifyContent='center'
+                style={{
+                    display: 'grid',
+                    justifyContent: 'center',
+                    alignContent: 'flex-start',
+                    gridGap: '50px',
+                    gridTemplateColumns: 'repeat(auto-fill, 300px)'
+                }}>
                     {
                         data.data.nfts.map((nft) => (
                             <Grid item

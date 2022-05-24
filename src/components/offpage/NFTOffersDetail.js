@@ -78,7 +78,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                 </Typography>
             </Stack>
 
-            {/* Make offer start */}
+            {/* Make offer start
             <Paper sx={{
                 padding: 2,
 
@@ -123,7 +123,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                         Make offer
                     </Button>
                 }
-            </Paper>
+            </Paper> */}
             {/* Make offer end */}
 
             {/* Sell Offers start */}

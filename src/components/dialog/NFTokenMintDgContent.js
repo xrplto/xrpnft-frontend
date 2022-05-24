@@ -96,7 +96,7 @@ export default function NFTokenMintDgContent({ close, metadata }) {
                         </Grid>
                         <Grid item md={8}>
                             <TextField
-                                placeholder='Account Address, do not set this field if you are the issuer of this NFT.'
+                                placeholder=', do not set this field if you are the issuer of this NFT.'
                                 variant='standard'
                                 fullWidth
                                 value={issuer}

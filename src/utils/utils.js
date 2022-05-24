@@ -330,14 +330,14 @@ export const getNFTokenInfo = async (URI) => {
             console.log('Unknown file type: ', res)
             return {
                 description: null,
-                image: null
+                image: "https://ipfs.io/ipfs/QmbUnQryXKZk37uyS3yhSCSCM7VaSTWxCc4zS6GeNQVU1c"
             }
         }
     } catch (e) {
         console.log(e.message)
         return {
             description: null,
-            image: null
+            image: "https://ipfs.io/ipfs/QmbUnQryXKZk37uyS3yhSCSCM7VaSTWxCc4zS6GeNQVU1c"
         }
     }
 }
