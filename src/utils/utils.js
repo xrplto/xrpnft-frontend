@@ -309,8 +309,10 @@ export const getIssuer = (tokenId) => {
  */
 export const getNFTokenInfo = async (URI) => {
     const tokenURI = parseNFTUri(URI);
+    console.log({URI, tokenURI})
 
     try {
+        console.log(tokenURI)
         const res = await axios.get(tokenURI)
         const type = res.headers['content-type']
 
@@ -330,14 +332,14 @@ export const getNFTokenInfo = async (URI) => {
             console.log('Unknown file type: ', res)
             return {
                 description: null,
-                image: "https://ipfs.io/ipfs/QmbUnQryXKZk37uyS3yhSCSCM7VaSTWxCc4zS6GeNQVU1c"
+                image: tokenURI
             }
         }
     } catch (e) {
         console.log(e.message)
         return {
             description: null,
-            image: "https://ipfs.io/ipfs/QmbUnQryXKZk37uyS3yhSCSCM7VaSTWxCc4zS6GeNQVU1c"
+            image: null
         }
     }
 }

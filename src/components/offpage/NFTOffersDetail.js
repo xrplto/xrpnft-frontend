@@ -39,6 +39,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
     const [isPageLoading, setPageLoading] = useState(false)
     const [sellOffers, setSellOffers] = useState([])
     const [buyOffers, setBuyOffers] = useState([])
+    const [owner, setOwner] = useState('')
 
     const fetchOffers = async (mounted) => {
         setPageLoading(true)
@@ -48,6 +49,13 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                 console.log({ res })
                 setBuyOffers(res.buyOffers)
                 setSellOffers(res.sellOffers)
+                if (res.sellOffers.length) {
+                    const owner = res.sellOffers[0].owner
+                    setOwner(owner)
+                }
+                else {
+                    console.log('No sell Offer.')
+                }
             }
         } catch (e) {
             console.log(e)
@@ -78,7 +86,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                 </Typography>
             </Stack>
 
-            {/* Make offer start
+            {/* Make offer start */}
             <Paper sx={{
                 padding: 2,
 
@@ -120,11 +128,11 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                         onClick={() => setIsOpenBuyDg(true)}
                         startIcon={<LocalOfferIcon />}
                     >
-                        Make offer
+                        Best offer
                     </Button>
                 }
-            </Paper> */}
-            {/* Make offer end */}
+            </Paper>
+            {/* /* Make offer end */}
 
             {/* Sell Offers start */}
             <Accordion >
@@ -265,6 +273,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                         }}
                         NFTokenID={NFTokenID}
                         setOffers={(offers) => setBuyOffers(offers)}
+                        owner={owner}
                     />}
             />
         </div>

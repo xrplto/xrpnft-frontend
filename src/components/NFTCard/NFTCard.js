@@ -35,6 +35,7 @@ export default function NFTCard({
 
     const getImgUrl = async () => {
       setLoading(true)
+      console.log('uri:', URI)
 
       const res = await getNFTokenInfo(URI)
       if (mounted)

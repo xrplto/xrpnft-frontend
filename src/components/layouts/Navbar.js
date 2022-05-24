@@ -99,7 +99,7 @@ export default function Navbar() {
                         <Link href='/create' underline='none'>
                             <Button >Create</Button>
                         </Link>
-                        <Link href='/account' underline='none' >
+                        <Link href={'/account/' + key} underline='none' >
                             <Button >My NFTs</Button>
                         </Link>
                         <Link href='/' underline='none'>

@@ -19,12 +19,12 @@ import { useSnackbar } from 'notistack'
 import { createBuyOffer } from 'utils/tokenActions'
 const rippleAPI = require('ripple-address-codec')
 
-export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers }) {
+export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers, owner }) {
     const { enqueueSnackbar } = useSnackbar()
     const account = useSelector(state => state.account.account)
     const login = useSelector(state => state.account.login)
     const [price, setPrice] = useState(0)
-    const [destination, setDestination] = useState('')
+    const [destination, setDestination] = useState(owner)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
 
@@ -119,8 +119,7 @@ export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers })
                         <Grid item md={8}>
                             <TextField
                                 error={error}
-                                helperText={error ? 'Incorrect Account' : ''}
-                                placeholder='rrpr7KNaEzHSd3GcXHkmK7PtdNEdnfULG3'
+                                helperText={error ? 'Incorrect Account' : ''}                              
                                 variant='standard'
                                 fullWidth
                                 value={destination}

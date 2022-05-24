@@ -24,6 +24,7 @@ export const AllNFTs = () => {
                 if (res.data.nfts.length < 10) {
                     setHasMore(false)
                 }
+                 
                 setNfTokens([..._nfTokens, ...res.data.nfts])
                 enqueueSnackbar('Fetch:' + _offset, {
                     variant: 'success'
