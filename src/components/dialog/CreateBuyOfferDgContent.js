@@ -33,6 +33,11 @@ export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers, o
         if (login) {
             if (rippleAPI.isValidClassicAddress(destination)) {
                 setError(false)
+                {
+                    enqueueSnackbar('Offer failed. You can’t create a buy offer. The owner address is incorrect. May be the NFT’s owner is changed', {
+                        variant: 'error'
+                    })
+                }
                 setLoading(true)
                 try {
                     const res = await createBuyOffer(
@@ -119,13 +124,13 @@ export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers, o
                         <Grid item md={8}>
                             <TextField
                                 error={error}
-                                helperText={error ? 'Incorrect Account' : ''}                              
+                                helperText={error ? 'Incorrect Account' : ''}
                                 variant='standard'
                                 fullWidth
                                 value={destination}
-                                onChange={(e) => {
-                                    setDestination(e.target.value)
-                                }}
+                                // onChange={(e) => {
+                                //     setDestination(e.target.value)
+                                // }}
                             />
                         </Grid>
                     </Grid>

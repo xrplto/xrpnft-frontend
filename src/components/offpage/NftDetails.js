@@ -174,6 +174,16 @@ export default function NFTDetails({
                     }
                 </AccordionDetails>
             </Accordion>
+            {/* <Stack spacing={2} direction='row'>
+                        <DescriptionIcon />
+                        <Typography variant='string' >Description</Typography>
+                    </Stack>
+                </AccordionSummary>
+                <AccordionDetails sx={{ overflow: 'auto' }}>
+                    {
+                        <NFTDetailsDescription description={data.description} />
+                    }
+                </AccordionDetails> */}
             {/* NFT Description end--- */}
 
         </Box>

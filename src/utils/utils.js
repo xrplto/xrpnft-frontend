@@ -90,6 +90,7 @@ export const getResponseType = (res) => {
 
 const convertToHttpLink = (uriString) => {
     const regex_uri = /^[a-z0-9:./]+$/i
+    console.log("uristring", uriString)
 
     if (regex_uri.test(uriString) && uriString.length > 45) {
         if (uriString.slice(0, 10) === 'xrpnft.com') // the tokenURI minted from this site
