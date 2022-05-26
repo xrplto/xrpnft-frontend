@@ -34,9 +34,9 @@ export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers, o
             if (rippleAPI.isValidClassicAddress(destination)) {
                 setError(false)
                 {
-                    enqueueSnackbar('Offer failed. You can’t create a buy offer. The owner address is incorrect. May be the NFT’s owner is changed', {
-                        variant: 'error'
-                    })
+                    // enqueueSnackbar('', {
+                    //     variant: 'error'
+                    // })
                 }
                 setLoading(true)
                 try {
@@ -48,13 +48,18 @@ export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers, o
                     )
                     if (res) {
                         setOffers(res)
+                        enqueueSnackbar('Offer success!', {
+                            variant: 'success'
+                        })
                     }
-                    enqueueSnackbar('Offer success!', {
-                        variant: 'success'
+                   else {
+                    enqueueSnackbar('Offer failed. You can’t create a buy offer. The owner address is incorrect. May be the NFT’s owner is changed', {
+                        variant: 'error'
                     })
+                   }
                     close()
                 } catch (e) {
-                    enqueueSnackbar(e.message, {
+                    enqueueSnackbar('Offer failed. You can’t create a buy offer. The owner address is incorrect. May be the NFT’s owner is changed', {
                         variant: 'error'
                     })
                 }
@@ -123,11 +128,12 @@ export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers, o
                         </Grid>
                         <Grid item md={8}>
                             <TextField
-                                error={error}
-                                helperText={error ? 'Incorrect Account' : ''}
+                                // error={error}
+                                // helperText={error ? 'Incorrect Account' : ''}
                                 variant='standard'
                                 fullWidth
-                                value={destination}
+                                defaultValue={destination}
+                                disabled
                                 // onChange={(e) => {
                                 //     setDestination(e.target.value)
                                 // }}

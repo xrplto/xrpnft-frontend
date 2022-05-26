@@ -70,19 +70,19 @@ export default function SellOffersList({ _offers, _NFTokenID, _isOwner }) {
     const handleAccept = async (index) => {
         setLoading(true)
         try {
-            const res = await acceptSellOffer(account.secret, index)
-            // if(accptSellOfeer)
-            enqueueSnackbar('Accept offer success:' + index.slice(0, 10) + '...', {
-                variant: 'success'
-            }
-            // else{
-            // enqueueSnackbar('Accept offer failed. The owner address is incorrect. May be the NFT’s owner is changed'){
-            //     variant: 'error'
-            // }}
-            )
+            const res = await acceptSellOffer(account.secret, index)           
             dispatch(setNFTs(res ?? []))
             const offers = await getSellAndBuyOffers(_NFTokenID)
+            if(offers){
             setOffers(offers.sellOffers)
+            enqueueSnackbar('Accept offer success:' + index.slice(0, 10) + '...', {
+                variant: 'success'
+            })}
+            else {
+                enqueueSnackbar('Offer failed. You can’t create a buy offer. The owner address is incorrect. May be the NFT’s owner is changed', {
+                    variant: 'error'
+                })
+               }
         } catch (e) {
             // TODO: snack bar error
             enqueueSnackbar(e.message, {

@@ -6,6 +6,17 @@ import { BASE_URL } from 'utils/constants';
 import { Grid } from "@mui/material";
 import { useSnackbar } from 'notistack';
 import NFTCard from 'components/NFTCard/NFTCard';
+// import { getNFTokenInfo } from 'utils/utils';
+// import getNFTimage_info from 'components/NFTCard/NFTimage_info'
+
+// export const [imageurl, setImageurl] = useState('')
+
+// export const getNFTimage_info = async(URI) =>{
+//   const res = await getNFTokenInfo(URI)
+//   console.log("filter image", imageurl)
+//   const imageurl = res.image
+//   setImageurl(imageurl)
+// }
 
 export const AllNFTs = () => {
 
@@ -19,7 +30,7 @@ export const AllNFTs = () => {
         const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
         const _offset = offsetParam === 0 ? offsetParam : offset
         axios
-            .get(`${BASE_URL}/nfts?page=${_offset}&limit=30&flag=${flags}&self=false`)
+            .get(`${BASE_URL}/nfts?page=${_offset}&limit=100&flag=${flags}&self=false`)
             .then(res => {
                 if (res.data.nfts.length < 10) {
                     setHasMore(false)
@@ -68,7 +79,10 @@ export const AllNFTs = () => {
                 next={() => fetchImages()}
                 hasMore={hasMore}
                 loader={<p>loading...</p>}
-            >               
+            >   
+            {/* {nfTokens.map((nft)=>(
+                getNFTimage_info(nft.URI)
+            ))}        */}
                 <Grid container spacing={2}
                     style={{
                         display: 'grid',
@@ -78,20 +92,29 @@ export const AllNFTs = () => {
                         gridTemplateColumns: 'repeat(auto-fill, 300px)'
                     }}
                 >
-                    {
+                    {   
+                    // imageurl ?
                         nfTokens.map((nft) => (
-                            <Grid item key={nft.NFTokenID}
-                            >
+                            // {console.log("image info", getNFTimage_info(nft.URI))}
+                            // {
+                            //     const imageurl=getNFTimage_info(nft.URI))
+                            //     setImageurl(imageurl)}
+                            // getNFTimage_info(nft.URI) ?
+                            // <Grid item key={nft.NFTokenID}
+                            // >
                                 <NFTCard
                                     Flags={nft.Flags}
                                     Issuer={nft.Issuer}
                                     URI={nft.URI}
                                     NFTokenID={nft.NFTokenID}
                                 />
-                            </Grid>
+                            // </Grid>
+                            // : null
                         ))
-                            
+                        // :null
+                        // .filter(getNFTimage_info(URI)!==null)      
                     }
+                    {/* console.log("image info", imageurl) */}
                 </Grid>
             </InfiniteScroll>
         </div>

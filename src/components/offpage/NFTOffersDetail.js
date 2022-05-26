@@ -53,10 +53,10 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                     const owner = res.sellOffers[0].owner
                     setOwner(owner)
                 }
-                else {
+                else if(res.sellOffers.length===0) {
                     console.log('No sell Offer.')
-                    // setOwner(res.sellOffers[1].owner)
-                    setOwner("Input Issuer address")
+                    const owner = Issuer
+                    setOwner(owner)
                 }
             }
         } catch (e) {
@@ -276,7 +276,6 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                         NFTokenID={NFTokenID}
                         setOffers={(offers) => setBuyOffers(offers)}
                         owner={owner}
-                        // owner={Issuer}
                     />}
             />
         </div>

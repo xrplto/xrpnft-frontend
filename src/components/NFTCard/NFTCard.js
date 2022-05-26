@@ -38,8 +38,10 @@ export default function NFTCard({
       console.log('uri:', URI)
 
       const res = await getNFTokenInfo(URI)
+      
       if (mounted)
         setImgUrl(res.image)
+        console.log("image url", res.image)
 
       setLoading(false)
     }
@@ -51,6 +53,7 @@ export default function NFTCard({
   }, [URI])
 
   return (
+    imgUrl ?
     <Link href={`/nft/${NFTokenID}/${URI}`} underline='none'>
       <Card sx={{ width: 300 }}>
         {
@@ -81,5 +84,6 @@ export default function NFTCard({
         </CardActions>
       </Card>
     </Link>
+    : null
   );
 }

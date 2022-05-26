@@ -49,16 +49,16 @@ export default function AccountNfts({ account }) {
                 }}>
                     {
                         data.data.nfts.map((nft) => (
-                            <Grid item
-                                key={nft.NFTokenID}
-                            >
+                            // <Grid item
+                            //     key={nft.NFTokenID}
+                            // >
                                 <NFTCard
                                     Flags={nft.Flags}
                                     Issuer={nft.Issuer}
                                     URI={nft.URI}
                                     NFTokenID={nft.NFTokenID}
                                 />
-                            </Grid>
+                            // </Grid>
                         ))
                     }
                 </Grid>
