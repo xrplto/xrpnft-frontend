@@ -90,6 +90,7 @@ export const getResponseType = (res) => {
 
 const convertToHttpLink = (uriString) => {
     const regex_uri = /^[a-z0-9:./]+$/i
+    console.log("uristring:", uriString)
 
     if (regex_uri.test(uriString) && uriString.length > 45) {
         if (uriString.slice(0, 10) === 'xrpnft.com') // the tokenURI minted from this site
@@ -98,12 +99,15 @@ const convertToHttpLink = (uriString) => {
             return uriString.replace('infura.', '')
         }
         else if (uriString.slice(0, 4) === 'cid:') {
+            if (uriString.slice(5,12) === 'QmRxrbq'){
+                return null
+            }
             return process.env.REACT_APP_IFPS_GATEWAY + uriString.slice(4)
         }
         else if (uriString.slice(0, 7) === 'ipfs://') {
-            if (uriString.slice(8,15) === 'bafybei'){
-                return null                
-            }
+            // if (uriString.slice(8,15) === 'bafybei'){
+            //     return null                
+            // }
             return process.env.REACT_APP_IFPS_GATEWAY + uriString.slice(7)
         }
         else if (uriString.slice(0, 2) === 'Qm' || uriString.slice(0, 2) === 'ba') {
@@ -318,6 +322,7 @@ export const getNFTokenInfo = async (URI) => {
         console.log(tokenURI)
         const res = await axios.get(tokenURI)
         const type = res.headers['content-type']
+        console.log("type:", type)
 
         if (type === 'application/json') { // if the response data is JSON object
             return {

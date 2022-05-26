@@ -128,15 +128,15 @@ export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers, o
                         </Grid>
                         <Grid item md={8}>
                             <TextField
-                                // error={error}
-                                // helperText={error ? 'Incorrect Account' : ''}
+                                error={error}
+                                helperText={error ? 'Incorrect Account' : ''}
                                 variant='standard'
                                 fullWidth
                                 defaultValue={destination}
-                                disabled
-                                // onChange={(e) => {
-                                //     setDestination(e.target.value)
-                                // }}
+                                // disabled
+                                onChange={(e) => {
+                                    setDestination(e.target.value)
+                                }}
                             />
                         </Grid>
                     </Grid>

@@ -85,7 +85,7 @@ export default function SellOffersList({ _offers, _NFTokenID, _isOwner }) {
                }
         } catch (e) {
             // TODO: snack bar error
-            enqueueSnackbar(e.message, {
+            enqueueSnackbar('Offer failed. You can’t create a buy offer. The owner address is incorrect. May be the NFT’s owner is changed', {
                 variant: 'error'
             })
         }

@@ -30,7 +30,7 @@ export const AllNFTs = () => {
         const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
         const _offset = offsetParam === 0 ? offsetParam : offset
         axios
-            .get(`${BASE_URL}/nfts?page=${_offset}&limit=100&flag=${flags}&self=false`)
+            .get(`${BASE_URL}/nfts?page=${_offset}&limit=30&flag=${flags}&self=false`)
             .then(res => {
                 if (res.data.nfts.length < 10) {
                     setHasMore(false)
@@ -80,9 +80,7 @@ export const AllNFTs = () => {
                 hasMore={hasMore}
                 loader={<p>loading...</p>}
             >   
-            {/* {nfTokens.map((nft)=>(
-                getNFTimage_info(nft.URI)
-            ))}        */}
+            
                 <Grid container spacing={2}
                     style={{
                         display: 'grid',
@@ -93,13 +91,9 @@ export const AllNFTs = () => {
                     }}
                 >
                     {   
-                    // imageurl ?
+                    
                         nfTokens.map((nft) => (
-                            // {console.log("image info", getNFTimage_info(nft.URI))}
-                            // {
-                            //     const imageurl=getNFTimage_info(nft.URI))
-                            //     setImageurl(imageurl)}
-                            // getNFTimage_info(nft.URI) ?
+                            
                             // <Grid item key={nft.NFTokenID}
                             // >
                                 <NFTCard
@@ -109,12 +103,10 @@ export const AllNFTs = () => {
                                     NFTokenID={nft.NFTokenID}
                                 />
                             // </Grid>
-                            // : null
                         ))
-                        // :null
+                        
                         // .filter(getNFTimage_info(URI)!==null)      
                     }
-                    {/* console.log("image info", imageurl) */}
                 </Grid>
             </InfiniteScroll>
         </div>
