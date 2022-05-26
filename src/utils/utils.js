@@ -336,6 +336,12 @@ export const getNFTokenInfo = async (URI) => {
                 image: tokenURI
             }
         }
+        // else if (type.slice(0, 4))==='html'){
+        //     return {
+        //         description: res.data,
+        //         image: getImgUrlFromHTMLResponse(res.data)
+        //     }
+        // }
         else {
             console.log('Unknown file type: ', res)
             return {
