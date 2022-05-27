@@ -2,6 +2,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 import { replace } from 'lodash';
 import axios from 'axios';
 import numeral from 'numeral';
+// import { useEffect, useState } from 'react';
 const xrpl = require("xrpl");
 const AddressCodec = require('ripple-address-codec');
 
@@ -140,9 +141,20 @@ export const getImgUrlFromJSONResponse = (_param) => {
             : _param.image
     return convertToHttpLink(uri)
 }
-export const getImgUrlFromHTMLResponse = (tokenuri)=>{
-    const image = tokenuri + "/data.jpeg"
+export const getImgUrlFromHTMLResponse = (res, tokenuri)=>{
     const metadata = tokenuri + "/metadata.json"
+    // const [imageurl, setImageurl] = useState(null) 
+    // if(res.jpeg){
+    const image = tokenuri + "/data.jpeg"
+    // setImageurl(tokenuri + "/data.jpeg")
+
+    // else if(res.png ){
+    // const image = tokenuri + "/data.png"
+    // setImageurl(tokenuri + "/data.png")
+// }
+    // if(!image){
+    //     const image =tokenuri + "/data.png"
+    // }
     return(
         {
             image: image,
@@ -323,14 +335,14 @@ export const getIssuer = (tokenId) => {
  * get image link from token URI, hex_uri
  * @param {string} URI
  */
-export const getNFTokenInfo = async (URI) => {
-    const tokenURI = parseNFTUri(URI);
-    console.log({URI, tokenURI})
+export const getNFTokenInfo = async (tokenURI) => {
+    const uri = parseNFTUri(tokenURI);
+    console.log({tokenURI, uri})
 
     try {
-        console.log(tokenURI)
-        const res = await axios.get(tokenURI)
-        // console.log("res", res)
+        // console.log(uri)
+        const res = await axios.get(uri)
+        // console.log("res", res.data)
         const type = res.headers['content-type']
         console.log("type:", type)
 
@@ -343,16 +355,27 @@ export const getNFTokenInfo = async (URI) => {
         else if (type.slice(0, 5) === 'image') { // if the response is image
             return {
                 description: null,
-                image: tokenURI
+                image: uri
             }
         }
         else if (type.slice(0, 4)==='text'){ //if the response is HTML/text
-            const NFTinfo = getImgUrlFromHTMLResponse(tokenURI)
+            const NFTinfo = getImgUrlFromHTMLResponse(res.data, uri)
             const des = await axios.get(NFTinfo.metadata)
             console.log("text description:", des.data)
             return {
                 description: des.data,
                 image: NFTinfo.image
+            }
+        }
+        // else if (type.slice==='application/pdf'){
+
+
+        // }
+        else if(type==='application/x-dbf')
+        {
+            return {
+            description: res.data,
+            image:getImgUrlFromJSONResponse(res.data)
             }
         }
         else {

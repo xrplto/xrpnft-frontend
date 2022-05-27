@@ -20,6 +20,7 @@ import FlagsContainer from 'components/NFTCard/Flags';
 import NFTDetailsDescription from './NftDetailsDescription';
 import Properties from 'components/miniting/NFTProperties/Properties';
 import Levels from 'components/miniting/NFTLevels/Levels';
+import axios from 'axios';
 
 
 NFTDetails.propTypes = NFTDetailsProps
@@ -30,6 +31,10 @@ export default function NFTDetails({
     ParsedURI,
     data
 }) {
+//     setTimeout(async()=>{
+//     const res = await axios.get(ParsedURI)
+// }, 0)
+// const type = res.headers['content-type']
 
     return (
         <Box >
@@ -96,7 +101,7 @@ export default function NFTDetails({
                                 </Typography>
                             }
                                 secondary={
-                                    <Link underline='hover'
+                                    <Link underline='hover' 
                                         href={ParsedURI}
                                         variant='info'
                                         id='uri-link'
