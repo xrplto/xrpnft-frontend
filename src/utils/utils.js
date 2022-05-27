@@ -95,7 +95,7 @@ const convertToHttpLink = (uriString) => {
     if (regex_uri.test(uriString) && uriString.length > 45) {
         if (uriString.slice(0, 10) === 'xrpnft.com') // the tokenURI minted from this site
             return process.env.REACT_APP_PINATA_GATEWAY + uriString.slice(16)
-        else if (uriString === 'cid:QmRxrbqTqK8Y6GN3NojSFdteihWeFA7fgDHQ1imfmhDPTA'&&'QmQzK5KFg7p3nkUf6jmLDPmbGvrBJTfTqjNwzoFEziRFtB'&&'cid:QmT6pJndq5jqTpwLby64T74ERH9bYDbcJgM14ziVo5K7nP'&&'cid:QmbkgGS15BN1bi6Fv1MniMgkRBqQs5XPX4RS2STEfsHTqj'){
+        else if (uriString === 'cid:QmRxrbqTqK8Y6GN3NojSFdteihWeFA7fgDHQ1imfmhDPTA' || uriString ==='cid:QmPZrV3Vzoiuan2tLjkxUxwEGsg6ZLg8WwsPCvDRoEyBkS' || uriString ==='cid:QmbkgGS15BN1bi6Fv1MniMgkRBqQs5XPX4RS2STEfsHTqj'){
                 return null
             }
         else if (uriString.slice(0, 5) === 'https') {
@@ -359,7 +359,7 @@ export const getNFTokenInfo = async (URI) => {
             console.log('Unknown file type: ', res)
             return {
                 description: null,
-                image: tokenURI
+                image: null
             }
         }
     } catch (e) {
