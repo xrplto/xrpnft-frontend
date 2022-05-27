@@ -6,35 +6,44 @@ import NFTDetails from 'components/offpage/NftDetails';
 import { fetcher, parseNFTUri } from 'utils/utils';
 import useSWR from 'swr'
 import Page404 from 'pages/Page404';
-import { getNFTokenInfoNew } from 'utils/utils';
+import { getNFTokenInfo } from 'utils/utils';
+import { useEffect, useState } from 'react';
 const xrpl = require("xrpl");
 
 export default function NFTInfo() {
   const { tokenID, tokenURI } = useParams()
-
   const nft = xrpl.parseNFTokenID(tokenID)
   const uri = parseNFTUri(tokenURI)
   const { data, error } = useSWR(uri, fetcher)
-
-  const metadata = getNFTokenInfoNew(data, uri)
-
+  const [nftdata, setNftdata] = useState(null)
+  console.log("data", data)
+  useEffect(()=>{
+    setTimeout(async()=>{
+      setNftdata(await getNFTokenInfo(tokenURI))
+    }, 0)
+  },[])
   if (error) return <Page404 />
   if (!data) return <Typography variant='body1'>Loading...</Typography>
+  console.log("nftdata", nftdata?.image)
   return (
+    nftdata ?
     <Page title='NFT Info'>
       <Container maxWidth='lg' sx={{ marginTop: '1vh' }}>
         <Grid container spacing={2} justifyContent='center'>
           <Grid item md={5}>
-            {
-              metadata &&
-              <NFTDetails NFTokenID={tokenID} NFToken={nft} ParsedURI={uri} data={metadata} />
+            { 
+              nftdata &&
+              <NFTDetails NFTokenID={tokenID} NFToken={nft} ParsedURI={uri} data={nftdata} />
+              
             }
           </Grid>
           <Grid item md={7}>
-            <NFTOffersDetail NFTokenID={tokenID} name={metadata.description?.name} Issuer={nft.Issuer} />
+            <NFTOffersDetail NFTokenID={tokenID} name={nftdata?.description?.name} Issuer={nft.Issuer} />
           </Grid>
         </Grid>
       </Container>
     </Page>
+    : null
   );
-}
+  
+  }

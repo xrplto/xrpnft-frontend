@@ -95,13 +95,13 @@ const convertToHttpLink = (uriString) => {
     if (regex_uri.test(uriString) && uriString.length > 45) {
         if (uriString.slice(0, 10) === 'xrpnft.com') // the tokenURI minted from this site
             return process.env.REACT_APP_PINATA_GATEWAY + uriString.slice(16)
+        else if (uriString === 'cid:QmRxrbqTqK8Y6GN3NojSFdteihWeFA7fgDHQ1imfmhDPTA'&&'QmQzK5KFg7p3nkUf6jmLDPmbGvrBJTfTqjNwzoFEziRFtB'&&'cid:QmT6pJndq5jqTpwLby64T74ERH9bYDbcJgM14ziVo5K7nP'&&'cid:QmbkgGS15BN1bi6Fv1MniMgkRBqQs5XPX4RS2STEfsHTqj'){
+                return null
+            }
         else if (uriString.slice(0, 5) === 'https') {
             return uriString.replace('infura.', '')
         }
         else if (uriString.slice(0, 4) === 'cid:') {
-            if (uriString.slice(5,12) === 'QmRxrbq'){
-                return null
-            }
             return process.env.REACT_APP_IFPS_GATEWAY + uriString.slice(4)
         }
         else if (uriString.slice(0, 7) === 'ipfs://') {
@@ -140,7 +140,16 @@ export const getImgUrlFromJSONResponse = (_param) => {
             : _param.image
     return convertToHttpLink(uri)
 }
-
+export const getImgUrlFromHTMLResponse = (tokenuri)=>{
+    const image = tokenuri + "/data.jpeg"
+    const metadata = tokenuri + "/metadata.json"
+    return(
+        {
+            image: image,
+            metadata: metadata
+        }
+    )
+}
 // ----------------------------------------------------------------------
 export function cipheredTaxon(tokenSeq, taxon) {
     // An issuer may issue several NFTs with the same taxon; to ensure that NFTs
@@ -321,6 +330,7 @@ export const getNFTokenInfo = async (URI) => {
     try {
         console.log(tokenURI)
         const res = await axios.get(tokenURI)
+        // console.log("res", res)
         const type = res.headers['content-type']
         console.log("type:", type)
 
@@ -336,17 +346,20 @@ export const getNFTokenInfo = async (URI) => {
                 image: tokenURI
             }
         }
-        // else if (type.slice(0, 4))==='html'){
-        //     return {
-        //         description: res.data,
-        //         image: getImgUrlFromHTMLResponse(res.data)
-        //     }
-        // }
+        else if (type.slice(0, 4)==='text'){ //if the response is HTML/text
+            const NFTinfo = getImgUrlFromHTMLResponse(tokenURI)
+            const des = await axios.get(NFTinfo.metadata)
+            console.log("text description:", des.data)
+            return {
+                description: des.data,
+                image: NFTinfo.image
+            }
+        }
         else {
             console.log('Unknown file type: ', res)
             return {
                 description: null,
-                image: null
+                image: tokenURI
             }
         }
     } catch (e) {
@@ -361,34 +374,52 @@ export const getNFTokenInfo = async (URI) => {
  * get image link from token URI, hex_uri
  * @param {string} URI
  */
-export const getNFTokenInfoNew = (res, tokenURI) => {
+// export const getNFTokenInfoNew = async (tokenURI) => {
 
-    if (!res) return {
-        description: null,
-        image: null
-    }
-    const type = res.headers['content-type']
+//     // if (!res) return {
+//     //     description: null,
+//     //     image: null
+//     // }
+//     try {
+//         const res = await axios.get(tokenURI)
+//         const type = res.headers['content-type']
 
-    if (type === 'application/json') { // if the response data is JSON object
-        return {
-            description: res.data,
-            image: getImgUrlFromJSONResponse(res.data)
-        }
-    }
-    else if (type.slice(0, 5) === 'image') { // if the response is image
-        return {
-            description: null,
-            image: tokenURI
-        }
-    }
-    else {
-        console.log('Unknown file type: ', res)
-        return {
-            description: null,
-            image: null
-        }
-    }
-}
+//     if (type === 'application/json') { // if the response data is JSON object
+//         return {
+//             description: res.data,
+//             image: getImgUrlFromJSONResponse(res.data)
+//         }
+//     }
+//     else if (type.slice(0, 5) === 'image') { // if the response is image
+//         return {
+//             description: null,
+//             image: tokenURI
+//         }
+//     }
+//     else if (type.slice(0, 4)==='text') { //if the response is HTML/text
+//         const NFTinfo = getImgUrlFromHTMLResponse(tokenURI)
+//         const des = await axios.get(NFTinfo.metadata)
+//         return {
+//             description: des.data,
+//             image: NFTinfo.image
+//         }
+//     }
+//     else {
+//         console.log('Unknown file type: ', res)
+//         return {
+//             description: null,
+//             image: null
+//         }
+//     }
+// }
+//     catch (e) {
+//         console.log(e.message)
+//         return {
+//             description: null,
+//             image: null
+//         }
+//     }
+// }
 
 /**
  * used as fetcher for SWR
