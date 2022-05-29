@@ -2,10 +2,10 @@ import { format, formatDistanceToNow } from 'date-fns';
 import { replace } from 'lodash';
 import axios from 'axios';
 import numeral from 'numeral';
-// import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 const xrpl = require("xrpl");
 const AddressCodec = require('ripple-address-codec');
-
+// const {convert} = require('html-to-text')
 // ----------------------------------------------------------------------
 function extractUrisFromString(uris_string) {
     var uris_obj = {};
@@ -24,6 +24,7 @@ function extractUrisFromString(uris_string) {
     }
     return uris_obj;
 }
+
 
 export function parseURI(nftoken_uri_hex) {
     if (!nftoken_uri_hex) return null;
@@ -84,6 +85,10 @@ export function parseURI(nftoken_uri_hex) {
     return uris_obj;
 }
 
+export const getdataFromjosn= async(tokenURI)=>{
+    const data= await axios.get(tokenURI)
+    return(data)
+}
 
 export const getResponseType = (res) => {
     return res.headers['content-type']
@@ -141,23 +146,32 @@ export const getImgUrlFromJSONResponse = (_param) => {
             : _param.image
     return convertToHttpLink(uri)
 }
-export const getImgUrlFromHTMLResponse = (res, tokenuri)=>{
+export const GetImgUrlFromHTMLResponse = (res, tokenuri)=>{
     const metadata = tokenuri + "/metadata.json"
-    // const [imageurl, setImageurl] = useState(null) 
-    // if(res.jpeg){
-    const image = tokenuri + "/data.jpeg"
-    // setImageurl(tokenuri + "/data.jpeg")
-
-    // else if(res.png ){
-    // const image = tokenuri + "/data.png"
-    // setImageurl(tokenuri + "/data.png")
-// }
+    const imageurl = tokenuri + "/data.jpeg"
+    // const text = convert(res,{
+    //     wordwrap:130
+    // }) 
+    // const [imageurl, setImageurl] = useState("")
+    // try{
+    //     if(text.jpeg){
+    //         // const image = tokenuri + "/data.jpeg"
+    //     setImageurl(tokenuri + "/data.jpeg")
+    //     }
+    //     else if(text.png ){
+    //     // const image = tokenuri + "/data.png"
+    //     setImageurl(tokenuri + "/data.png")
+    //     }
+    //     console.log("html imgurl:", imageurl)
+    // }
+    // catch(e){
+    // }
     // if(!image){
     //     const image =tokenuri + "/data.png"
     // }
     return(
         {
-            image: image,
+            image: imageurl,
             metadata: metadata
         }
     )
@@ -359,9 +373,9 @@ export const getNFTokenInfo = async (tokenURI) => {
             }
         }
         else if (type.slice(0, 4)==='text'){ //if the response is HTML/text
-            const NFTinfo = getImgUrlFromHTMLResponse(res.data, uri)
-            const des = await axios.get(NFTinfo.metadata)
-            console.log("text description:", des.data)
+            const NFTinfo = GetImgUrlFromHTMLResponse(res.data, uri)
+            const des = getdataFromjosn(NFTinfo.metadata)
+            // console.log("text description:", des.data)
             return {
                 description: des.data,
                 image: NFTinfo.image
@@ -397,52 +411,59 @@ export const getNFTokenInfo = async (tokenURI) => {
  * get image link from token URI, hex_uri
  * @param {string} URI
  */
-// export const getNFTokenInfoNew = async (tokenURI) => {
+export const getNFTokenInfoNew = (res, tokenURI) => {
 
-//     // if (!res) return {
-//     //     description: null,
-//     //     image: null
-//     // }
-//     try {
-//         const res = await axios.get(tokenURI)
-//         const type = res.headers['content-type']
+    if (!res) return {
+        description: null,
+        image: null
+    }
+    try {
+        // const res = await axios.get(tokenURI)
+        const type = res.headers['content-type']
 
-//     if (type === 'application/json') { // if the response data is JSON object
-//         return {
-//             description: res.data,
-//             image: getImgUrlFromJSONResponse(res.data)
-//         }
-//     }
-//     else if (type.slice(0, 5) === 'image') { // if the response is image
-//         return {
-//             description: null,
-//             image: tokenURI
-//         }
-//     }
-//     else if (type.slice(0, 4)==='text') { //if the response is HTML/text
-//         const NFTinfo = getImgUrlFromHTMLResponse(tokenURI)
-//         const des = await axios.get(NFTinfo.metadata)
-//         return {
-//             description: des.data,
-//             image: NFTinfo.image
-//         }
-//     }
-//     else {
-//         console.log('Unknown file type: ', res)
-//         return {
-//             description: null,
-//             image: null
-//         }
-//     }
-// }
-//     catch (e) {
-//         console.log(e.message)
-//         return {
-//             description: null,
-//             image: null
-//         }
-//     }
-// }
+    if (type === 'application/json') { // if the response data is JSON object
+        return {
+            description: res.data,
+            image: getImgUrlFromJSONResponse(res.data)
+        }
+    }
+    else if (type.slice(0, 5) === 'image') { // if the response is image
+        return {
+            description: null,
+            image: tokenURI
+        }
+    }
+    else if (type.slice(0, 4)==='text') { //if the response is HTML/text
+        const NFTinfo = GetImgUrlFromHTMLResponse(res.data, tokenURI)
+        const des = getdataFromjosn(NFTinfo.metadata)
+        return {
+            description: des.data,
+            image: NFTinfo.image
+        }
+    }
+    else if(type==='application/x-dbf')
+        {
+            return {
+            description: res.data,
+            image:getImgUrlFromJSONResponse(res.data)
+            }
+        }
+    else {
+        console.log('Unknown file type: ', res)
+        return {
+            description: null,
+            image: null
+        }
+    }
+}
+    catch (e) {
+        console.log(e.message)
+        return {
+            description: null,
+            image: null
+        }
+    }
+}
 
 /**
  * used as fetcher for SWR

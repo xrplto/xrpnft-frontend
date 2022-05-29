@@ -6,8 +6,8 @@ import NFTDetails from 'components/offpage/NftDetails';
 import { fetcher, parseNFTUri } from 'utils/utils';
 import useSWR from 'swr'
 import Page404 from 'pages/Page404';
-import { getNFTokenInfo } from 'utils/utils';
-import { useEffect, useState } from 'react';
+import { getNFTokenInfoNew } from 'utils/utils';
+// import { useEffect, useState } from 'react';
 const xrpl = require("xrpl");
 
 export default function NFTInfo() {
@@ -15,13 +15,14 @@ export default function NFTInfo() {
   const nft = xrpl.parseNFTokenID(tokenID)
   const uri = parseNFTUri(tokenURI)
   const { data, error } = useSWR(uri, fetcher)
-  const [nftdata, setNftdata] = useState(null)
-  console.log("data", data)
-  useEffect(()=>{
-    setTimeout(async()=>{
-      setNftdata(await getNFTokenInfo(tokenURI))
-    }, 0)
-  },[])
+  const nftdata = getNFTokenInfoNew(data, uri)
+  // const [nftdata, setNftdata] = useState(null)
+  // console.log("data", data)
+  // useEffect(()=>{
+  //   setTimeout(async()=>{
+  //     setNftdata(await getNFTokenInfo(tokenURI))
+  //   }, 0)
+  // },[])
   if (error) return <Page404 />
   if (!data) return <Typography variant='body1'>Loading...</Typography>
   console.log("nftdata", nftdata?.image)

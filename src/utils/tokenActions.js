@@ -298,6 +298,8 @@ export const acceptBuyOffer = async (secret, tokenOfferIndex) => {
  */
 export const acceptSellOffer = async (secret, tokenOfferIndex) => {
 
+	// try{
+
 	// Connect to the devnet server.
 	const wallet = xrpl.Wallet.fromSeed(secret)
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL)
@@ -324,6 +326,11 @@ export const acceptSellOffer = async (secret, tokenOfferIndex) => {
 	// End of submitTransaction()
 	console.log({ nfts })
 	return nfts.result.account_nfts
+	// }
+	// catch(e){
+	// 	enqueueSnackbar('Accept offer failed. The owner address is incorrect. May be the NFT’s owner is changed')
+	// } 
+
 }
 
 /**
