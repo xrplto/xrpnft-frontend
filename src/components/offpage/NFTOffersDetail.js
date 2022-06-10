@@ -34,7 +34,9 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
     const [isOpenBuyDg, setIsOpenBuyDg] = useState(false)
     const [isOpenBurnDg, setIsOpenBurnDg] = useState(false)
     const account_nfts = useSelector(state => state.account.nfts)
+    console.log("account nfts", account_nfts)
     const isOwner = account_nfts.findIndex((nft) => nft.NFTokenID === NFTokenID) > -1
+    console.log("account token ID", isOwner)
     const login = useSelector(state => state.account.login)
     const [isPageLoading, setPageLoading] = useState(false)
     const [sellOffers, setSellOffers] = useState([])
@@ -76,7 +78,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
+    // console.log("owner", NFTokenID)
     return (
         <div>
             <Stack spacing={2} marginTop={1}>

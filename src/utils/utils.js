@@ -411,59 +411,59 @@ export const getNFTokenInfo = async (tokenURI) => {
  * get image link from token URI, hex_uri
  * @param {string} URI
  */
-export const getNFTokenInfoNew = (res, tokenURI) => {
+// export const getNFTokenInfoNew = (res, tokenURI) => {
 
-    if (!res) return {
-        description: null,
-        image: null
-    }
-    try {
-        // const res = await axios.get(tokenURI)
-        const type = res.headers['content-type']
+//     if (!res) return {
+//         description: null,
+//         image: null
+//     }
+//     try {
+//         // const res = await axios.get(tokenURI)
+//         const type = res.headers['content-type']
 
-    if (type === 'application/json') { // if the response data is JSON object
-        return {
-            description: res.data,
-            image: getImgUrlFromJSONResponse(res.data)
-        }
-    }
-    else if (type.slice(0, 5) === 'image') { // if the response is image
-        return {
-            description: null,
-            image: tokenURI
-        }
-    }
-    else if (type.slice(0, 4)==='text') { //if the response is HTML/text
-        const NFTinfo = GetImgUrlFromHTMLResponse(res.data, tokenURI)
-        const des = getdataFromjosn(NFTinfo.metadata)
-        return {
-            description: des.data,
-            image: NFTinfo.image
-        }
-    }
-    else if(type==='application/x-dbf')
-        {
-            return {
-            description: res.data,
-            image:getImgUrlFromJSONResponse(res.data)
-            }
-        }
-    else {
-        console.log('Unknown file type: ', res)
-        return {
-            description: null,
-            image: null
-        }
-    }
-}
-    catch (e) {
-        console.log(e.message)
-        return {
-            description: null,
-            image: null
-        }
-    }
-}
+//     if (type === 'application/json') { // if the response data is JSON object
+//         return {
+//             description: res.data,
+//             image: getImgUrlFromJSONResponse(res.data)
+//         }
+//     }
+//     else if (type.slice(0, 5) === 'image') { // if the response is image
+//         return {
+//             description: null,
+//             image: tokenURI
+//         }
+//     }
+//     else if (type.slice(0, 4)==='text') { //if the response is HTML/text
+//         const NFTinfo = GetImgUrlFromHTMLResponse(res.data, tokenURI)
+//         const des = getdataFromjosn(NFTinfo.metadata)
+//         return {
+//             description: des.data,
+//             image: NFTinfo.image
+//         }
+//     }
+//     else if(type==='application/x-dbf')
+//         {
+//             return {
+//             description: res.data,
+//             image:getImgUrlFromJSONResponse(res.data)
+//             }
+//         }
+//     else {
+//         console.log('Unknown file type: ', res)
+//         return {
+//             description: null,
+//             image: null
+//         }
+//     }
+// }
+//     catch (e) {
+//         console.log(e.message)
+//         return {
+//             description: null,
+//             image: null
+//         }
+//     }
+// }
 
 /**
  * used as fetcher for SWR

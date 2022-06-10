@@ -54,7 +54,7 @@ export default function SellOffersList({ _offers, _NFTokenID, _isOwner }) {
         try {
             const res = await cancelOffer(account.secret, index, _NFTokenID)
             setOffers(res.sellOffers)
-
+            console.log('selloffer', res.selloffers)
             enqueueSnackbar('Cancel offer success:' + index.slice(0, 10) + '...', {
                 variant: 'success'
             })

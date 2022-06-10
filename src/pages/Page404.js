@@ -31,7 +31,7 @@ export default function Page404() {
               src="/static/404.svg"
               sx={{ height: 260, mx: 'auto', my: { xs: 5, sm: 10 } }}
             />
-            <Button to="/" size="large" variant="contained" component={RouterLink}>
+            <Button to="/" size="100" variant="contained" component={RouterLink}>
               Home
             </Button>
           </Box>

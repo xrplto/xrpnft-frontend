@@ -29,6 +29,7 @@ export default function App() {
         console.log('Profile: ' + profile);
         if (profile) {
             setAccountProfile(JSON.parse(profile));
+            console.log('Accounprofile')
         }
     }, [key_profile])
 

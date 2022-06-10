@@ -71,17 +71,26 @@ export default function ChooseAccountDgContent() {
 
     const handleOk = async () => {
         // TODO: Open a new page with selected account
+        console.log('sendgindsdfsdf')
+        // console.log('account key', account.key)
         // navigate(`/account/${nftoken.tokenID}?tokenURI=${nftoken.URI}`)
         if (account.key) {
             dispatch(doSetAccount(account))
+            const res = await getTokens(account.key)
             try {
-                const res = await getTokens(account.key)
+                // console.log('dhkjshdiojol')
+                console.log("gettoken",res)
                 dispatch(setNFTs(res.account_nfts))
             } catch (e) {
                 openSnackbar(e.message, 'error')
             }
+            if(res){
             dispatch(login())
             navigate(`/account/${account.key}`)
+            }
+            else{
+                openSnackbar('Network is unstable','error')
+            }
         } else {
             openSnackbar('Select an account!', 'error')
         }

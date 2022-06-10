@@ -20,8 +20,8 @@ import FlagsContainer from 'components/NFTCard/Flags';
 import NFTDetailsDescription from './NftDetailsDescription';
 import Properties from 'components/miniting/NFTProperties/Properties';
 import Levels from 'components/miniting/NFTLevels/Levels';
-// import axios from 'axios';
-// import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 
 NFTDetails.propTypes = NFTDetailsProps
@@ -32,18 +32,18 @@ export default function NFTDetails({
     ParsedURI,
     data
 }) {
-    // const res = axios.get(ParsedURI)
-    // const type = res.headers['content-type']
-//     setTimeout(async()=>{
-// }, 0)
-// const [paruri, setParuri] = useState(null)
-// if(type.slice(0,4)==="text")
-// {
-//     setParuri(res.data)
-// }
-// else{
-//     setParuri(ParsedURI)
-// }
+    const res = axios.get(ParsedURI)
+    const type = res.headers['content-type']
+    setTimeout(async()=>{
+}, 0)
+const [paruri, setParuri] = useState(null)
+if(type.slice(0,4)==="text")
+{
+    setParuri(res.data)
+}
+else{
+    setParuri(ParsedURI)
+}
     return (
         <Box >
             {/* NFT Preview image start--- */}

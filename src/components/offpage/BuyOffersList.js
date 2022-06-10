@@ -50,6 +50,7 @@ export default function BuyOffersList({ _NFTokenID, _offers, _isOwner }) {
         setLoading(true)
         try {
             const res = await acceptBuyOffer(account.secret, index)
+            console.log(res)
             if(res){
             dispatch(setNFTs(res.account_nfts))
             enqueueSnackbar('Accept offer success:' + index.slice(0, 10) + '...', {

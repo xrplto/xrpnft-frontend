@@ -56,7 +56,9 @@ export const getMetadataFromURI = async (uri) => {
     const res = await axios.get(uri)
     console.log('metadata from axios', res)
 }
-
+// export const getdescriptionFromMetadata = async (metadatauri) => {
+//     const res = await axios.get(metadatauri)
+// }
 export const parsePinataNFTUrl = (tokenURL) => {
     if (!tokenURL) return null;
     else return xrpl.convertHexToString(tokenURL)

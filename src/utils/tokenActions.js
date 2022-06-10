@@ -429,13 +429,24 @@ export async function getTokens(key) {
 	const client = new xrpl.Client(RIPPLE_TEST_NET_URL, {
 		connectionTimeout: 10000
 	})
+	console.log('etwetw')
+	try{
+		console.log('qwert')
 	await client.connect()
+	console.log('ljkjoij')
 	const res = await client.request({
 		method: 'account_nfts',
 		account: key
 	})
+	
 	client.disconnect()
+	console.log('res', res.result)
 	return res.result
+	}
+	catch(e){
+		console.log(e)
+
+	}
 } //End of getTokens
 
 
