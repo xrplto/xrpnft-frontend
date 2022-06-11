@@ -60,7 +60,7 @@ export default function AccountTxHistory({ account }) {
     console.log({ data })
 
     if (error) return <Typography variant='caption'>{JSON.stringify(error)}</Typography>
-    if (!data) return <Typography variant='caption'>Loading...</Typography>
+    // if (!data) return <Typography variant='caption'>Loading...</Typography>
     // useEffect(() => {
     //     const fetchData = async () => {
     //         setLoading(true)

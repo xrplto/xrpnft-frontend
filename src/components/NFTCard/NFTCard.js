@@ -14,7 +14,8 @@ import { Icon } from '@iconify/react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FlagsContainer from './Flags';
 import { getNFTokenInfo } from 'utils/utils';
-// import PriceContainer from './Price';
+import PriceContainer from './Price';
+import {getSellOffers} from 'utils/tokenActions'
 
 
 NFTCard.propTypes = NFTCardProps
@@ -27,21 +28,36 @@ export default function NFTCard({
 }) {
   const [imgUrl, setImgUrl] = useState('')
   const [loading, setLoading] = useState(false)
-
+  const [name, setName] = useState('Unknown')
+  const [price, setPrice] = useState('0')
+  // const [sellprice, setSellprice] = useState('')
 
 
   useEffect(() => {
     let mounted = true
-
+    // const getName = async() =>{
+    //   const res=await getNFTokenInfo(URI)
+    // }
     const getImgUrl = async () => {
       setLoading(true)
       console.log('uri:', URI)
 
       const res = await getNFTokenInfo(URI)
-      
+      const offers = await getSellOffers(NFTokenID)
+      if(offers.length)
+         {offers.map((offer) => (
+          //  const price =offer.amount / (10 ** 6)
+          price<(offer.amount /(10**6))?
+           setPrice(offer.amount / (10 ** 6))
+           :console.log('price')
+         ))
+
+        }
       if (mounted)
-        setImgUrl(res.image)
+        {setImgUrl(res.image)
         console.log("image url", res.image)
+        setName(res.description.name)
+      }
 
       setLoading(false)
     }
@@ -70,18 +86,23 @@ export default function NFTCard({
             <Skeleton animation='wave' variant='rectangular' width={300} height={300} />
         }
         <CardContent sx={{ padding: 1, flexDirection: 'row', display: 'flex', justifyContent: 'space-between' }}>
-          <FlagsContainer Flags={Flags} />
-          {/* <PriceContainer price={2000} /> */}
+          <children >Collection</children>
+          <children >Price</children>
+        </CardContent>
+        <CardContent sx={{ padding: 1, flexDirection: 'row', display: 'flex', justifyContent: 'space-between' }}>
+          <children >{name}</children>
+          <PriceContainer price={price} />
         </CardContent>
         <Divider />
-        <CardActions sx={{ alignItems: 'space-evenly' }}>
-          <IconButton aria-label='buy'>
-            <Icon icon="bxs:cart-alt" />
-          </IconButton>
-          <IconButton aria-label='share'>
+        <CardContent sx={{ padding: 1, flexDirection: 'row', display: 'flex', justifyContent: 'space-between' }}>
+          <FlagsContainer Flags={Flags} />
+          {/* <IconButton aria-label='buy'> */}
+            {/* <Icon icon="bxs:cart-alt" /> */}
+          {/* </IconButton> */}
+          {/* <IconButton aria-label='share'> */}
             <FavoriteIcon />
-          </IconButton>
-        </CardActions>
+          {/* </IconButton> */}
+        </CardContent>
       </Card>
     </Link>
     : null

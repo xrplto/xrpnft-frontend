@@ -50,7 +50,7 @@ export const XRPNFTList = () => {
                 dataLength={nfTokens.length}
                 next={() => fetchImages()}
                 hasMore={hasMore}
-                loader={<p>loading...</p>}
+                // loader={<p>loading...</p>}
             >
                 <Grid container spacing={2} justifyContent='center'
                 style={{

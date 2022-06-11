@@ -25,7 +25,7 @@ export default function NFTInfo() {
     }, 0)
   },[])
   if (error) return <Page404 />
-  if (!data) return <Typography variant='body1'>Loading...</Typography>
+  // if (!data) return <Typography variant='body1'>Loading...</Typography>
   console.log("nftdata", nftdata?.image)
   return (
     nftdata ?

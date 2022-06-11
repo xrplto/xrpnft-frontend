@@ -86,7 +86,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                     Name
                 </Link> */}
                 <Typography variant='subtitle' gutterBottom fontSize={30} overflow='hidden' fontWeight={600}>
-                    {name ? name : 'Unknown'}
+                    {name}
                 </Typography>
             </Stack>
 

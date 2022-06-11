@@ -78,7 +78,7 @@ export const AllNFTs = () => {
                 dataLength={nfTokens.length}
                 next={() => fetchImages()}
                 hasMore={hasMore}
-                loader={<p>loading...</p>}
+                // loader={<p>loading...</p>}
             >   
             
                 <Grid container spacing={2}
@@ -101,6 +101,7 @@ export const AllNFTs = () => {
                                     Issuer={nft.Issuer}
                                     URI={nft.URI}
                                     NFTokenID={nft.NFTokenID}
+                                    
                                 />
                             // </Grid>
                         ))

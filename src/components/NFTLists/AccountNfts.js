@@ -35,7 +35,7 @@ export default function AccountNfts({ account }) {
     //     // eslint-disable-next-line react-hooks/exhaustive-deps
     // }, [account])
     if (error) return <Typography variant='caption'>{JSON.stringify(error)}</Typography>
-    if (!data) return <Typography variant='caption'>Loading...</Typography>
+    // if (!data) return <Typography variant='caption'>Loading...</Typography>
     return (
         <Container sx={{ marginTop: 2 }} maxWidth={false}>
             {
