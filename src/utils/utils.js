@@ -472,95 +472,95 @@ export const getNFTokenInfo = async (tokenURI) => {
  */
 export const fetcher = url => axios.get(url).then(res => res)
 
-export const assetFromJSON = (asset: any): Asset => {
-    const isAnimated = asset.image_url && asset.image_url.endsWith(".gif");
-    const isSvg = asset.image_url && asset.image_url.endsWith(".svg");
-    const fromJSON: Asset = {
-      tokenId: asset.token_id.toString(),
-      tokenAddress: asset.asset_contract.address,
-      name: asset.name,
-      description: asset.description,
-      owner: asset.owner,
-      assetContract: assetContractFromJSON(asset.asset_contract),
-      collection: collectionFromJSON(asset.collection),
-      orders: asset.orders ? asset.orders.map(orderFromJSON) : null,
-      sellOrders: asset.sell_orders ? asset.sell_orders.map(orderFromJSON) : null,
-      buyOrders: asset.buy_orders ? asset.buy_orders.map(orderFromJSON) : null,
+// export const assetFromJSON = (asset: any): Asset => {
+//     const isAnimated = asset.image_url && asset.image_url.endsWith(".gif");
+//     const isSvg = asset.image_url && asset.image_url.endsWith(".svg");
+//     const fromJSON: Asset = {
+//       tokenId: asset.token_id.toString(),
+//       tokenAddress: asset.asset_contract.address,
+//       name: asset.name,
+//       description: asset.description,
+//       owner: asset.owner,
+//       assetContract: assetContractFromJSON(asset.asset_contract),
+//       collection: collectionFromJSON(asset.collection),
+//       orders: asset.orders ? asset.orders.map(orderFromJSON) : null,
+//       sellOrders: asset.sell_orders ? asset.sell_orders.map(orderFromJSON) : null,
+//       buyOrders: asset.buy_orders ? asset.buy_orders.map(orderFromJSON) : null,
   
-      isPresale: asset.is_presale,
-      // Don't use previews if it's a special image
-      imageUrl:
-        isAnimated || isSvg
-          ? asset.image_url
-          : asset.image_preview_url || asset.image_url,
-      imagePreviewUrl: asset.image_preview_url,
-      imageUrlOriginal: asset.image_original_url,
-      imageUrlThumbnail: asset.image_thumbnail_url,
+//       isPresale: asset.is_presale,
+//       // Don't use previews if it's a special image
+//       imageUrl:
+//         isAnimated || isSvg
+//           ? asset.image_url
+//           : asset.image_preview_url || asset.image_url,
+//       imagePreviewUrl: asset.image_preview_url,
+//       imageUrlOriginal: asset.image_original_url,
+//       imageUrlThumbnail: asset.image_thumbnail_url,
   
-      externalLink: asset.external_link,
-      Link: asset.permalink,
-      traits: asset.traits,
-      numSales: asset.num_sales,
-      lastSale: asset.last_sale ? assetEventFromJSON(asset.last_sale) : null,
-      backgroundColor: asset.background_color
-        ? `#${asset.background_color}`
-        : null,
+//       externalLink: asset.external_link,
+//       Link: asset.permalink,
+//       traits: asset.traits,
+//       numSales: asset.num_sales,
+//       lastSale: asset.last_sale ? assetEventFromJSON(asset.last_sale) : null,
+//       backgroundColor: asset.background_color
+//         ? `#${asset.background_color}`
+//         : null,
   
-      transferFee: asset.transfer_fee ? makeBigNumber(asset.transfer_fee) : null,
-      transferFeePaymentToken: asset.transfer_fee_payment_token
-        ? tokenFromJSON(asset.transfer_fee_payment_token)
-        : null,
-    };
-    // If orders were included, put them in sell/buy order groups
-    if (fromJSON.orders && !fromJSON.sellOrders) {
-      fromJSON.sellOrders = fromJSON.orders.filter(
-        (o) => o.side == OrderSide.Sell
-      );
-    }
-    if (fromJSON.orders && !fromJSON.buyOrders) {
-      fromJSON.buyOrders = fromJSON.orders.filter((o) => o.side == OrderSide.Buy);
-    }
-    return fromJSON;
-  };
+//       transferFee: asset.transfer_fee ? makeBigNumber(asset.transfer_fee) : null,
+//       transferFeePaymentToken: asset.transfer_fee_payment_token
+//         ? tokenFromJSON(asset.transfer_fee_payment_token)
+//         : null,
+//     };
+//     // If orders were included, put them in sell/buy order groups
+//     if (fromJSON.orders && !fromJSON.sellOrders) {
+//       fromJSON.sellOrders = fromJSON.orders.filter(
+//         (o) => o.side == OrderSide.Sell
+//       );
+//     }
+//     if (fromJSON.orders && !fromJSON.buyOrders) {
+//       fromJSON.buyOrders = fromJSON.orders.filter((o) => o.side == OrderSide.Buy);
+//     }
+//     return fromJSON;
+//   };
   
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export const assetEventFromJSON = (assetEvent: any): AssetEvent => {
-    return {
-      eventType: assetEvent.event_type,
-      eventTimestamp: assetEvent.event_timestamp,
-      auctionType: assetEvent.auction_type,
-      totalPrice: assetEvent.total_price,
-      transaction: assetEvent.transaction
-        ? transactionFromJSON(assetEvent.transaction)
-        : null,
-      paymentToken: assetEvent.payment_token
-        ? tokenFromJSON(assetEvent.payment_token)
-        : null,
-    };
-  };
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   export const assetEventFromJSON = (assetEvent: any): AssetEvent => {
+//     return {
+//       eventType: assetEvent.event_type,
+//       eventTimestamp: assetEvent.event_timestamp,
+//       auctionType: assetEvent.auction_type,
+//       totalPrice: assetEvent.total_price,
+//       transaction: assetEvent.transaction
+//         ? transactionFromJSON(assetEvent.transaction)
+//         : null,
+//       paymentToken: assetEvent.payment_token
+//         ? tokenFromJSON(assetEvent.payment_token)
+//         : null,
+//     };
+//   };
   
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export const transactionFromJSON = (transaction: any): Transaction => {
-    return {
-      fromAccount: accountFromJSON(transaction.from_account),
-      toAccount: accountFromJSON(transaction.to_account),
-      createdDate: new Date(`${transaction.created_date}Z`),
-      modifiedDate: new Date(`${transaction.modified_date}Z`),
-      transactionHash: transaction.transaction_hash,
-      transactionIndex: transaction.transaction_index,
-      blockNumber: transaction.block_number,
-      blockHash: transaction.block_hash,
-      timestamp: new Date(`${transaction.timestamp}Z`),
-    };
-  };
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   export const transactionFromJSON = (transaction: any): Transaction => {
+//     return {
+//       fromAccount: accountFromJSON(transaction.from_account),
+//       toAccount: accountFromJSON(transaction.to_account),
+//       createdDate: new Date(`${transaction.created_date}Z`),
+//       modifiedDate: new Date(`${transaction.modified_date}Z`),
+//       transactionHash: transaction.transaction_hash,
+//       transactionIndex: transaction.transaction_index,
+//       blockNumber: transaction.block_number,
+//       blockHash: transaction.block_hash,
+//       timestamp: new Date(`${transaction.timestamp}Z`),
+//     };
+//   };
   
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  export const accountFromJSON = (account: any): Account => {
-    return {
-      address: account.address,
-      config: account.config,
-      profileImgUrl: account.profile_img_url,
-      user: account.user ? userFromJSON(account.user) : null,
-    };
-  };
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   export const accountFromJSON = (account: any): Account => {
+//     return {
+//       address: account.address,
+//       config: account.config,
+//       profileImgUrl: account.profile_img_url,
+//       user: account.user ? userFromJSON(account.user) : null,
+//     };
+//   };
   

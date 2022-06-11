@@ -29,7 +29,7 @@ export default function NFTCard({
   const [imgUrl, setImgUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const [name, setName] = useState('Unknown')
-  const [price, setPrice] = useState('0')
+  const [price, setPrice] = useState('null')
   // const [sellprice, setSellprice] = useState('')
 
 
@@ -43,25 +43,30 @@ export default function NFTCard({
       console.log('uri:', URI)
 
       const res = await getNFTokenInfo(URI)
-      const offers = await getSellOffers(NFTokenID)
-      if(offers.length)
-         {offers.map((offer) => (
-          //  const price =offer.amount / (10 ** 6)
-          price<(offer.amount /(10**6))?
-           setPrice(offer.amount / (10 ** 6))
-           :console.log('price')
-         ))
-
-        }
+      
       if (mounted)
         {setImgUrl(res.image)
         console.log("image url", res.image)
-        setName(res.description.name)
+        
       }
+      setName(res.description.name)
 
       setLoading(false)
     }
+    // const getPrice = async() =>{
+    //   const offers = await getSellOffers(NFTokenID)
+    //   // if(offers.length)
+    //   //    {offers.map((offer) => (
+    //   //     //  const price =offer.amount / (10 ** 6)
+    //   //     price<(offer.amount /(10**6))?
+    //   //      setPrice(offer.amount / (10 ** 6))
+    //   //      :console.log('price')
+    //   //    ))
+
+    //   //   }
+    // }
     getImgUrl()
+    // getPrice()
 
     return () => {
       mounted = false

@@ -36,7 +36,7 @@ export const ACCOUNTS = [
         sequence: 1824374
     },
 ];
-export const TOP_BAR_HEIGHT_DESKTOP = 50
+export const TOP_BAR_HEIGHT_DESKTOP = 33
 export const BASIC_COLOR = '#00AB55'
 export const tfTransferable = 0x00000008
 export const tfTrustLine = 0x00000004
