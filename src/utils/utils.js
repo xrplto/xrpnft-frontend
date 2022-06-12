@@ -367,8 +367,9 @@ export const getNFTokenInfo = async (tokenURI) => {
             }
         }
         else if (type.slice(0, 5) === 'image') { // if the response is image
+            // console.log("image description",)
             return {
-                description: null,
+                description: res.data,
                 image: uri
             }
         }

@@ -13,6 +13,8 @@ import {
   Box,
   Link
 } from '@mui/material';
+import { hotDropsData } from "./base/MockupData";
+import CardList from "./CardList";
 // import { create } from 'lodash';
 // import create from 'create'
 
@@ -53,6 +55,7 @@ import {
   // }
   
   return (
+    <div id="home">
     <div id="hero">
       {/* <img id='hero-background' src={list[0].src}/> */}
 
@@ -73,6 +76,12 @@ import {
       </Link>                 
      </div>
     </div>
+    <p id="card-list-header-text"> Hot Drops </p>
+    <div id="list-container">
+      <CardList list={hotDropsData} />
+    </div>
+    </div>
+     
     // <div id="home">
     //   <Hero list={hotDropsData} />
 

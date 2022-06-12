@@ -171,3 +171,20 @@ button#create {
   }
 
 }
+#card-list-header-text {
+  color: #ffffff;
+  font-family: "Rock Salt", cursive;
+  font-size: 24px;
+  margin-top: 80px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+}
+#list-container {
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content:center;
+  margin-bottom: 100px;
+}
