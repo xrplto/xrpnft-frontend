@@ -164,8 +164,7 @@ button#create {
   }
 
   #hero {
-   
-    height: 600px;
+    height: 100vh;
     /* border: 1px solid cyan; */
     text-align: center;
   }
@@ -175,7 +174,7 @@ button#create {
   color: #ffffff;
   font-family: "Rock Salt", cursive;
   font-size: 24px;
-  margin-top: 80px;
+  margin-top: 50px;
   padding-top: 20px;
   padding-bottom: 20px;
   text-align: center;
@@ -187,4 +186,19 @@ button#create {
   align-items: center;
   justify-content:center;
   margin-bottom: 100px;
+}
+#preview {
+  
+  /* border: 1px solid cyan; */
+  align-items: center;
+  position: relative;
+  background-size: cover;
+  /* z-index: 1; */
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  /* margin-left: 50px;
+  margin-right: 20px; */
+  /* width : 530px;
+  height: 570px; */
 }

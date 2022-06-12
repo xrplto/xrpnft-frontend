@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import "./styles/base/Card.css";
+import "../styles/base/Card.css";
 
 const Card = React.forwardRef(
   (
     {
-      width = "250px",
-      height = "300px",
+      width = "280px",
+      height = "380px",
       child,
       blurColor = "rgba(48,118,234,0.2)",
       onClick,
@@ -17,6 +17,7 @@ const Card = React.forwardRef(
       style={{
         width: `${width}`,
         height: `${height}`,
+        marginBottom: '70px',
         background: `radial-gradient(
                 circle,
                 rgba(255, 255, 255, 0.05) 0%,

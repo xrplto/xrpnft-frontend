@@ -1,11 +1,10 @@
 .card {
-  margin-top: 50px;
   margin-left:15px;
   margin-right: 15px;
-  width: 250px;
+  width: 350px;
   /* box-shadow: 0 15px 25px rgba(129, 124, 124, 0.2); */
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  height: 300px;
+  height: 350px;
   border-radius: 30px;
   backdrop-filter: blur(50px);
   /* filter:blur(4px); */
@@ -22,8 +21,8 @@
   cursor: pointer;
 }
 .nft-image {
-  width: 240px;
-  height: 170px;
+  width: 250px;
+  height: 220px;
   margin-top: 5px;
   border-radius: 20px;
 }
@@ -68,7 +67,7 @@
     font-size: 18px;
     font-weight: bold;
     color: #ffffff;
-    padding-top:10px;
+    padding-top:5px;
 }
 
 
@@ -90,14 +89,16 @@
     font-size: 18px;
     font-weight: bold;
     color: #ffffff;
-    padding-top:10px;
+    padding-top:5px;
 }
 
 .buttons{
     display:flex;
     flex-direction: row;
     justify-content: space-between;
-    margin-top: 35px;
+    margin-right:5px;
+    margin-left:5px;
+    margin-top: 3px;
 }
 
 .buy-now {

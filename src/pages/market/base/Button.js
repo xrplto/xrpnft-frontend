@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/base/Button.css";
+import "../styles/base/Button.css";
 
 const Button = ({
   width = "80px",
