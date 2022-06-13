@@ -77,7 +77,7 @@ PersistentDrawerLeft.propTypes = {
 
 export default function PersistentDrawerLeft({ children }) {
   const theme = useTheme();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [total, setTotal] = useState(0)
 
   const handleDrawerOpen = () => {

@@ -28,7 +28,7 @@ export default function NFTCard({
 }) {
   const [imgUrl, setImgUrl] = useState('')
   const [loading, setLoading] = useState(false)
-  const [name, setName] = useState('Unknown')
+  const [name, setName] = useState(null)
   const [price, setPrice] = useState('0')
   // const [sellprice, setSellprice] = useState('')
 

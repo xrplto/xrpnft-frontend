@@ -23,7 +23,7 @@ export default function DropdownExpore() {
         aria-controls={open ? 'basic-menu' : undefined}
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
+        onMouseOver={handleClick}
       >
         Explore
       </Button>

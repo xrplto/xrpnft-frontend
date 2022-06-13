@@ -103,7 +103,7 @@ export default function Navbar() {
                             <Button >My NFTs</Button>
                         </Link>
                         <Link href='/' underline='none'>
-                            <Button endIcon={<LogoutIcon />} onClick={handleDisconnect} >
+                            <Button endIcon={<LogoutIcon />} onClick={handleDisconnect} sx={{textTransform: 'none'}} >
                                 {key.slice(0, 4) + '...' + key.slice(-2)}
                             </Button>
                         </Link>
@@ -118,7 +118,7 @@ export default function Navbar() {
                     </>
             }
             <AccountPopover />
-            <IconButton onClick={() => { toggleThisTheme('isDarkMode') }} >
+            <IconButton onClick={() => { /*toggleThisTheme('isDarkMode')*/ }} >
                 {isDarkMode ? (
                     <Icon icon={baselineBrightnessHigh} />
                 ) : (

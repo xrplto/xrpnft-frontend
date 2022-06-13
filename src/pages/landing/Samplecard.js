@@ -11,7 +11,7 @@ import { useARStatus } from "../../hooks/isARStatus";
 
 
 
-const NFTCard = ({ username, nftName, price, nftSrc, likeCount, gradient, onClick }) => {
+const NFTCard = ({ nftname, title, price, nftSrc, likeCount, gradient, onClick }) => {
   const [isLike, setIsLike] = useState(false);
   const [colors, setColors] = useState([]);
 
@@ -42,8 +42,8 @@ const NFTCard = ({ username, nftName, price, nftSrc, likeCount, gradient, onClic
         </ColorExtractor></>}
         <div className="wrapper">
           <div className="info-container">
-            <p className="owner"> LEJOURN.DARK.NFT</p>
-            <p className="name">{username}</p>
+            <p className="owner">{title} </p>
+            <p className="name">{nftname}</p>
           </div>
           <div className="price-container">
             <p className="price-label">Price</p>

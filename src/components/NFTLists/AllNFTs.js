@@ -37,9 +37,9 @@ export const AllNFTs = () => {
                 }
                  
                 setNfTokens([..._nfTokens, ...res.data.nfts])
-                enqueueSnackbar('Fetch:' + _offset, {
-                    variant: 'success'
-                })
+                // enqueueSnackbar('Fetch:' + _offset, {
+                //     variant: 'success'
+                // })
                 setOffset(_offset + 1)
             });
     };

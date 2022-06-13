@@ -59,12 +59,12 @@
 .info-container > .owner {
     font-size:12px;
     font-weight: bold;
-    color:#C6C2C6;
+    color:#cfcacf;
     padding-top: 5px;
 }
 
 .info-container > .name {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     color: #ffffff;
     padding-top:5px;
@@ -86,7 +86,7 @@
 }
 
 .price-container > .price {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     color: #ffffff;
     padding-top:5px;

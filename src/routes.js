@@ -10,7 +10,7 @@ import NFTInfo from 'pages/offpage/OffPage'
 import Account from 'pages/account/Account'
 import LoginPage from 'pages/LoginPage';
 import { XRPNFTList } from 'components/NFTLists/XRPNFTList';
-import Hero from 'pages/market/LandingPage';
+import LandingPage from 'pages/LandingPage';
 import LedgerNFTList from 'pages/market/Explore'
 
 export default function Router() {
@@ -19,7 +19,7 @@ export default function Router() {
             path: '/',
             element: <MainLayout />,
             children: [
-                { path: '/', element: <Hero /> },
+                { path: '/', element: <LandingPage /> },
                 { path: 'tester', element: <TokenTesterUpdated /> },
                 { path: 'spinners', element: <Spinner /> },
                 { path: 'progress', element: <ProgressPage /> },
