@@ -1,19 +1,30 @@
 import { useState } from 'react';
+
+// Material
 import {
-  Box,
-  Divider,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Stack,
+    Box,
+    Divider,
+    IconButton,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Stack
 } from '@mui/material';
+
+
+// Iconify
+import { Icon } from '@iconify/react';
+
+// Redux
+import { useSelector } from 'react-redux'
+
+// Components
 import AddTraitDgContent from './AddTraitDgContent'
 import BaseDialog from 'components/dialog/BaseDialog';
-import { Icon } from '@iconify/react';
-import { useSelector } from 'react-redux'
+
 import Properties from './Properties';
+
 
 export default function PropertySection() {
   // const [properties, setProperties] = useState([])

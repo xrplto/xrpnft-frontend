@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { NFTCardProps } from 'utils/types';
+
+// Material
 import {
   Card,
   CardActions,
@@ -10,13 +11,16 @@ import {
   Link,
   Skeleton,
 } from '@mui/material';
-import { Icon } from '@iconify/react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import FlagsContainer from './Flags';
+
+// Utils
+import { NFTCardProps } from 'utils/types';
 import { getNFTokenInfo } from 'utils/utils';
-import PriceContainer from './Price';
 import {getSellOffers} from 'utils/tokenActions'
 
+// Components
+import FlagsContainer from './Flags';
+import PriceContainer from './Price';
 
 NFTCard.propTypes = NFTCardProps
 
@@ -59,7 +63,7 @@ export default function NFTCard({
       if(offers.length)
          {offers.map((offer) => (
          
-          price<(offer.amount /(10**6))?
+          price<(offer.amount / (10**6))?
            setPrice(offer.amount / (10 ** 6))
            :price=0? setPrice(offer.amount / (10 ** 6)):console.log('No selloffer')
          ))

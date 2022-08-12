@@ -1,18 +1,32 @@
 import { useState, useEffect } from 'react';
-import { List, Container, Grid, ButtonGroup, Backdrop, Button } from '@mui/material';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import { Icon } from '@iconify/react';
-import { acceptBuyOffer, cancelOffer } from 'utils/tokenActions';
-import { BuyOffersProps } from 'utils/types';
-import { useSelector } from 'react-redux'
 import { useSnackbar } from 'notistack'
 import { FadeLoader } from 'react-spinners';
+
+// Material
+import {
+    Avatar,
+    Backdrop,
+    Button,
+    ButtonGroup,
+    Container,
+    Divider,
+    Grid,
+    List,
+    ListItem,
+    ListItemAvatar,
+    Typography
+} from '@mui/material';
+
+// Components
+import { Icon } from '@iconify/react';
 import { setNFTs } from 'app/slices/accountSlice'
-import { useDispatch } from 'react-redux'
+
+// Utils
+import { acceptBuyOffer, cancelOffer } from 'utils/tokenActions';
+import { BuyOffersProps } from 'utils/types';
+
+// Redux
+import { useSelector, useDispatch } from 'react-redux'
 
 // cannot accept buy offer if you are not the owner of token.
 // cannot accept sell offer if seller is not the owner of token.

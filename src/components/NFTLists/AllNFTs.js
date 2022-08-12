@@ -1,11 +1,23 @@
-import { useState, useEffect } from 'react';
 import axios from 'axios'
-import { useSelector } from 'react-redux'
-import InfiniteScroll from 'react-infinite-scroll-component';
-import { BASE_URL } from 'utils/constants';
-import { Grid } from "@mui/material";
 import { useSnackbar } from 'notistack';
+import { useState, useEffect } from 'react';
+
+import InfiniteScroll from 'react-infinite-scroll-component';
+
+// Material
+import {
+    Grid
+} from "@mui/material";
+
+// Redux
+import { useSelector } from 'react-redux'
+
+// Utils
+import { BASE_URL } from 'utils/constants';
+
+// Components
 import NFTCard from 'components/NFTCard/NFTCard';
+
 // import { getNFTokenInfo } from 'utils/utils';
 // import getNFTimage_info from 'components/NFTCard/NFTimage_info'
 
@@ -29,8 +41,8 @@ export const AllNFTs = () => {
     const fetchImages = (nfTokensParam, offsetParam) => {
         const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
         const _offset = offsetParam === 0 ? offsetParam : offset
-        axios
-            .get(`${BASE_URL}/nfts?page=${_offset}&limit=30&flag=${flags}&self=false`)
+        
+        axios.get(`${BASE_URL}/nfts?page=${_offset}&limit=30&flag=${flags}&self=false`)
             .then(res => {
                 if (res.data.nfts.length < 10) {
                     setHasMore(false)

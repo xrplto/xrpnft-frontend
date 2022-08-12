@@ -1,4 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
+
+// Material
 import {
   Box,
   Button,
@@ -9,10 +11,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+
+// Iconify
 import { Icon } from '@iconify/react';
+
+// Utils
 import { AddLevelDgProp } from 'utils/types';
-import { setMetadata, updateLevel } from 'app/slices/ipfSlice';
+
+// Redux
 import { useDispatch, useSelector } from 'react-redux'
+import { setMetadata, updateLevel } from 'app/slices/ipfSlice';
 
 
 AddLevelDgContent.propTypes = AddLevelDgProp

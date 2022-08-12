@@ -1,7 +1,13 @@
 import React from 'react';
-import { useCountdown } from './useCountDown';
 import styled from 'styled-components';
-import { Typography } from '@mui/material'
+
+// Material
+import {
+    Typography
+} from '@mui/material'
+
+// Components
+import { useCountdown } from './useCountDown';
 
 const ExpiredNotice = () => {
     return (

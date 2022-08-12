@@ -1,17 +1,23 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { styled, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
+
+// Material
+import {
+    Box,
+    CssBaseline,
+    Divider,
+    Drawer,
+    IconButton,
+    MuiAppBar,
+    Toolbar,
+    Typography,
+} from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+
+// Components
 import FilterList from '../filter/FilterList';
-import PropTypes from 'prop-types';
 
 const drawerWidth = 300;
 

@@ -1,10 +1,19 @@
-import { useState, useEffect } from 'react'
-import { Container, Grid, Typography } from "@mui/material";
-import NFTCard from 'components/NFTCard/NFTCard';
-import { getTokens } from 'utils/tokenActions';
-import { useSnackbar } from 'notistack';
 import useSWR from 'swr';
+import { useSnackbar } from 'notistack';
+
+// Material
+import {
+    Container,
+    Grid,
+    Typography
+} from "@mui/material";
+
+// Utils
 import { fetcher } from 'utils/utils';
+import { getTokens } from 'utils/tokenActions';
+
+// Components
+import NFTCard from 'components/NFTCard/NFTCard';
 
 // https://api.xrpnft.com/api/account/nfts/rH6jr16vArKBneg2Hzy1bgC9ewdMReYavH
 
@@ -34,7 +43,8 @@ export default function AccountNfts({ account }) {
     //     fetchData()
     //     // eslint-disable-next-line react-hooks/exhaustive-deps
     // }, [account])
-    if (error) return <Typography variant='caption'>{JSON.stringify(error)}</Typography>
+    if (error)
+        return <Typography variant='caption'>{JSON.stringify(error)}</Typography>
     // if (!data) return <Typography variant='caption'>Loading...</Typography>
     return (
         <Container sx={{ marginTop: 2 }} maxWidth={false}>

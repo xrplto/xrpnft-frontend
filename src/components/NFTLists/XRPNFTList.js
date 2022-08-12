@@ -1,14 +1,25 @@
-import { useState, useEffect } from 'react';
 import axios from 'axios'
-import { useSelector } from 'react-redux'
+import { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+
+// Material
+import {
+    Box,
+    Grid
+} from "@mui/material";
+
+// Redux
+import { useSelector } from 'react-redux'
+
+// Utils
 import { BASE_URL } from 'utils/constants';
-import { Box, Grid } from "@mui/material";
+
+// Components
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
 import NFTCard from 'components/NFTCard/NFTCard';
 
-export const XRPNFTList = () => {
+export default function XRPNFTList() {
 
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const [nfTokens, setNfTokens] = useState([])

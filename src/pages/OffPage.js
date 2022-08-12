@@ -1,8 +1,7 @@
 import useSWR from 'swr'
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-
-const xrpl = require("xrpl");
+import {parseNFTokenID} from 'xrpl';
 
 // Material
 import {
@@ -15,7 +14,7 @@ import Page from 'components/Page';
 import Page404 from 'pages/Page404';
 
 import NFTOffersDetail from '../components/offpage/NFTOffersDetail';
-import NFTDetails from 'components/offpage/NftDetails';
+import NFTDetails from '../components/offpage/NftDetails';
 
 // Utils
 import { fetcher, parseNFTUri } from 'utils/utils';
@@ -24,7 +23,7 @@ import { getNFTokenInfo } from 'utils/utils';
 export default function OffPage() {
     const { tokenID, tokenURI } = useParams()
     console.log("tokenID", tokenID)
-    const nft = xrpl.parseNFTokenID(tokenID)
+    const nft = parseNFTokenID(tokenID)
     const uri = parseNFTUri(tokenURI)
     const { data, error } = useSWR(uri, fetcher)
     // const nftdata = getNFTokenInfo(tokenURI)

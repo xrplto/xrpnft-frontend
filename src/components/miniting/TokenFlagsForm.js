@@ -1,10 +1,19 @@
 import * as React from 'react';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import { setFlags } from 'app/slices/ipfSlice';
+
+import {
+    Checkbox,
+    FormControlLabel,
+    FormGroup
+} from '@mui/material';
+
+// Redux
 import { useDispatch, useSelector } from 'react-redux';
+
+// Utils
 import { TOKEN_FLAGS } from 'utils/constants';
+
+// Components
+import { setFlags } from 'app/slices/ipfSlice';
 
 export default function TokenFlagsForm() {
 

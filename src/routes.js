@@ -1,17 +1,19 @@
 import { Navigate, useRoutes } from 'react-router-dom';
-import MainLayout from 'components/layouts/MainLayout';
-import EmptyLayout from 'components/layouts/EmptyLayout';
-import TokenTesterUpdated from 'pages/tester/TokenTesterUpdated';
-import Spinner from 'pages/spinner/Spinner';
-import ProgressPage from 'pages/progress/ProgressPage';
-import NotFound from 'pages/Page404';
-import Minting from 'pages/mintpage'
-import OffPage from 'pages/OffPage'
-import Account from 'pages/account/Account'
-import LoginPage from 'pages/LoginPage';
-import { XRPNFTList } from 'components/NFTLists/XRPNFTList';
-import LandingPage from 'pages/LandingPage';
-import LedgerNFTList from 'pages/market/Explore'
+
+// Components
+import MainLayout from './components/layouts/MainLayout';
+import EmptyLayout from './components/layouts/EmptyLayout';
+import TokenTesterUpdated from './pages/tester/TokenTesterUpdated';
+import Spinner from './pages/spinner/Spinner';
+import ProgressPage from './pages/progress/ProgressPage';
+import NotFound from './pages/Page404';
+import Minting from './pages/mintpage'
+import OffPage from './pages/OffPage'
+import Account from './pages/account/Account'
+import LoginPage from './pages/LoginPage';
+import XRPNFTList from './components/NFTLists/XRPNFTList';
+import LandingPage from './pages/LandingPage';
+import LedgerNFTList from './pages/market/Explore'
 
 export default function Router() {
     return useRoutes([

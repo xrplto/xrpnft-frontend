@@ -1,7 +1,9 @@
+import useSWR from 'swr';
 import { useEffect, useState } from 'react'
+import { useSnackbar } from 'notistack';
+
+// Material
 import {
-    Container,
-    Grid,
     Paper,
     Table,
     TableBody,
@@ -12,9 +14,9 @@ import {
     TableRow,
     Typography,
 } from "@mui/material";
+
+// Utils
 import { getAccountTxHistory } from 'utils/tokenActions';
-import { useSnackbar } from 'notistack';
-import useSWR from 'swr';
 import { getUnixTimeEpochFromRippleEpoch } from 'utils/utils';
 
 const columns = [

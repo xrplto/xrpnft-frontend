@@ -1,22 +1,32 @@
-import { Card, Stack } from '@mui/material';
-import styled from 'styled-components';
+import axios from 'axios'
+import FormData from 'form-data';
 import { useState, useRef } from 'react'
-import ImageIcon from '@mui/icons-material/Image';
+import styled from 'styled-components';
+
+// Material
+import {
+    Card,
+    Stack
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+
+import ImageIcon from '@mui/icons-material/Image';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
+
+// Redux
 import { useDispatch } from 'react-redux'
 import { setPinnedFileHash } from 'app/slices/ipfSlice';
-import axios from 'axios'
-import FormData from 'form-data';
+
+// Utils
 import { PINATA_PINNING_FILE_URL } from 'utils/constants';
+
+// Components
 import XSnackbar from 'components/common/Snackbar';
 import { useSnackbar } from 'hooks/useSnackbar';
 
-
 export const NFTUploader = () => {
-
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const fileRef = useRef();
     const [fileUrl, setFileUrl] = useState(null)
@@ -40,7 +50,6 @@ export const NFTUploader = () => {
     }
 
     const pinFileToIPFS = async () => {
-
         // TODO: Called only when the file is uploaded to site.
         setLoading(true)
         if (file) {

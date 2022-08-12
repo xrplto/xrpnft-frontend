@@ -1,6 +1,12 @@
 import * as React from 'react';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+
+// Material
+import {
+    Alert as MuiAlert,
+    Snackbar
+} from '@mui/material';
+
+// Utils
 import { SnackbarProps } from 'utils/types';
 
 // const Alert = React.forwardRef(function Alert(props, ref) {
@@ -10,7 +16,6 @@ import { SnackbarProps } from 'utils/types';
 XSnackbar.propTypes = SnackbarProps
 
 export default function XSnackbar({ isOpen, close, message, variant }) {
-
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
