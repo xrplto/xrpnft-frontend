@@ -6,11 +6,11 @@ import { useSnackbar } from 'notistack';
 import useSWR from 'swr';
 import { fetcher } from 'utils/utils';
 
-// https://ws.xrpnft.com/api/account/nfts/rH6jr16vArKBneg2Hzy1bgC9ewdMReYavH
+// https://api.xrpnft.com/api/account/nfts/rH6jr16vArKBneg2Hzy1bgC9ewdMReYavH
 
 export default function AccountNfts({ account }) {
     const { enqueueSnackbar } = useSnackbar();
-    const { data, error } = useSWR('https://ws.xrpnft.com/api/account/nfts/' + account, fetcher)
+    const { data, error } = useSWR('https://api.xrpnft.com/api/account/nfts/' + account, fetcher)
     console.log({ data })
     // const [nfts, setNFTs] = useState([])
     // const [loading, setLoading] = useState(false)

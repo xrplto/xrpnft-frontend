@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://ws.xrpnft.com/api';
+export const BASE_URL = 'https://api.xrpnft.com/api';
 export const RIPPLE_TEST_NET_URL = 'wss://xls20-sandbox.rippletest.net:51233'
 export const NEW_RIPPLE_TEST_NET_URL = 'wss://s.altnet.rippletest.net:51233'
 export const PINATA_PINNING_FILE_URL = 'https://api.pinata.cloud/pinning/pinFileToIPFS'

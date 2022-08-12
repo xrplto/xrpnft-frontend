@@ -1,33 +1,38 @@
 import { useState, useEffect } from 'react'
+
+// Material
 import {
     Accordion,
     AccordionDetails,
     AccordionSummary,
+    Box,
     Divider,
     Skeleton,
     Stack,
     Typography,
     Button,
     Paper,
-    Box,
 } from '@mui/material'
-import TimePeriods from 'components/offpage/TimePeriodsDropdown'
 import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 import TimelineIcon from '@mui/icons-material/Timeline'
 import ListIcon from '@mui/icons-material/List'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+
+// Redux
 import { useSelector } from 'react-redux'
+
+// Components
+import TimePeriods from 'components/offpage/TimePeriodsDropdown'
+
 import { getSellAndBuyOffers } from 'utils/tokenActions'
 import SellOffersList from './SellOffersList'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+
 import BuyOffersList from './BuyOffersList'
-import { NFTOffersDetailProps } from 'utils/types'
 import BaseDialog from 'components/dialog/BaseDialog';
 import CreateSellOfferDgContent from 'components/dialog/CreateSellOfferDgContent'
 import { Icon } from '@iconify/react';
 import BurnNFTDgContent from 'components/dialog/BurnNFTDgContent'
 import CreateBuyOfferDgContent from 'components/dialog/CreateBuyOfferDgContent'
-
-NFTOffersDetail.prototype = NFTOffersDetailProps
 
 export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
     const [isOpenSellDg, setIsOpenSellDg] = useState(false)

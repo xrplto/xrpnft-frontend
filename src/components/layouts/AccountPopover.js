@@ -1,6 +1,8 @@
-import { Icon } from '@iconify/react';
+import axios from 'axios';
 import { useRef, useState, useEffect } from 'react';
-import userLock from '@iconify/icons-fa-solid/user-lock';
+import { BASE_URL } from 'utils/constants';
+
+// Material
 import {
     Box,
     Typography,
@@ -11,17 +13,22 @@ import {
     Stack
 } from '@mui/material';
 
+// Iconify
+import { Icon } from '@iconify/react';
+import userLock from '@iconify/icons-fa-solid/user-lock';
+
+// Components
 import MenuPopover from '../MenuPopover';
 import LoginDialog from '../dialog/LoginDialog';
-import { useContext } from 'react'
-import Context from 'Context'
-import axios from 'axios';
 
-const SERVER_BASE_URL = 'https://ws.xrpnft.com/api/xumm';
+// Context
+import Context from 'Context'
+import { useContext } from 'react'
 
 export default function AccountPopover() {
-    const { accountProfile, setAccountProfile } = useContext(Context);
     const anchorRef = useRef(null);
+    const { accountProfile, setAccountProfile } = useContext(Context);
+    
     const [open, setOpen] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
     const [uuid, setUuid] = useState(null);
@@ -46,7 +53,7 @@ export default function AccountPopover() {
                 if (isRunning) return;
                 isRunning = true;
                 try {
-                    const res = await axios.get(`${SERVER_BASE_URL}/payload/${uuid}`);
+                    const res = await axios.get(`${BASE_URL}/xumm/payload/${uuid}`);
                     const account = res.data.data.response.account;
                     if (account) {
                         setOpen(true);
@@ -74,7 +81,7 @@ export default function AccountPopover() {
 
     const onConnectXumm = async () => {
         try {
-            const res = await axios.post(`${SERVER_BASE_URL}/login`);
+            const res = await axios.post(`${BASE_URL}/xumm/login`);
             if (res.status === 200) {
                 const uuid = res.data.data.uuid;
                 const qrlink = res.data.data.qrUrl;
@@ -90,7 +97,7 @@ export default function AccountPopover() {
 
     const onDisconnectXumm = async (uuid) => {
         try {
-            const res = await axios.delete(`${SERVER_BASE_URL}/logout/${uuid}`);
+            const res = await axios.delete(`${BASE_URL}/xumm/logout/${uuid}`);
             if (res.status === 200) {
                 //setLog(res.data.status ? "disconnect success" : "disconnect failed");
                 setAccountProfile(null);

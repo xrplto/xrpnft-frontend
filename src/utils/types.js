@@ -70,12 +70,6 @@ export const NFTDetailsProps = {
     data: PropTypes.exact(MetaDataProps)
 }
 
-export const NFTOffersDetailProps = {
-    NFTokenID: PropTypes.string,
-    name: PropTypes.string,
-    Issuer: PropTypes.string,
-}
-
 export const ErrorPageProps = {
     message: PropTypes.string
 }

@@ -6,7 +6,7 @@ import Spinner from 'pages/spinner/Spinner';
 import ProgressPage from 'pages/progress/ProgressPage';
 import NotFound from 'pages/Page404';
 import Minting from 'pages/mintpage'
-import NFTInfo from 'pages/offpage/OffPage'
+import OffPage from 'pages/OffPage'
 import Account from 'pages/account/Account'
 import LoginPage from 'pages/LoginPage';
 import { XRPNFTList } from 'components/NFTLists/XRPNFTList';
@@ -23,7 +23,7 @@ export default function Router() {
                 { path: 'tester', element: <TokenTesterUpdated /> },
                 { path: 'spinners', element: <Spinner /> },
                 { path: 'progress', element: <ProgressPage /> },
-                { path: 'nft/:tokenID/:tokenURI', element: <NFTInfo /> },
+                { path: 'nft/:tokenID/:tokenURI', element: <OffPage /> },
                 { path: 'create', element: <Minting /> },
                 { path: 'explore', element:<LedgerNFTList />},
                 { path: 'login', element: <LoginPage /> },
