@@ -1145,6 +1145,7 @@ export const DarkSpacesTheme = createTheme({
       defaultProps: {
         variantMapping: {
           h1: 'h1',
+          h1a: 'h1',
           h2: 'h2',
           h3: 'div',
           h4: 'div',
@@ -1153,7 +1154,8 @@ export const DarkSpacesTheme = createTheme({
           subtitle1: 'div',
           subtitle2: 'div',
           body1: 'div',
-          body2: 'div'
+          body2: 'div',
+          s1: 'span'
         }
       },
       styleOverrides: {
@@ -1173,9 +1175,19 @@ export const DarkSpacesTheme = createTheme({
   typography: {
     fontFamily:
       '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
+    s1: {
+      fontWeight: 400,
+      fontSize: 24,
+      lineHeight: 1.4,
+      color: colors.alpha.black[70]
+    },
     h1: {
       fontWeight: 700,
       fontSize: 35
+    },
+    h1a: {
+      fontWeight: 600,
+      fontSize: 45
     },
     h2: {
       fontWeight: 700,

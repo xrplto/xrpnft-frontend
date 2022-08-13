@@ -3,32 +3,25 @@ import { AppContext } from 'src/AppContext';
 
 // Material
 import {
-    alpha,
+    alpha, styled,
     Box,
     Container,
     IconButton,
-    Link,
-    styled,
-    Stack,
-    Tooltip
+    Stack
 } from '@mui/material';
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
-import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
 
 // Iconify Icons
 import { Icon } from '@iconify/react';
 import baselineBrightnessHigh from '@iconify/icons-ic/baseline-brightness-high';
 import baselineBrightness4 from '@iconify/icons-ic/baseline-brightness-4';
-import fiatIcon from '@iconify/icons-simple-icons/fiat';
 
 // Utils
 
 // Components
 import Logo from 'src/components/Logo';
-import Account from 'src/components/Account';
+import Wallet from 'src/components/Wallet';
 
-const HeaderWrapper = styled(Box)(
-    ({ theme }) => `
+const HeaderWrapper = styled(Box)(({ theme }) => `
     width: 100%;
     display: flex;
     align-items: center;
@@ -51,15 +44,7 @@ export default function Header(props) {
                         <Logo />
                     </Box>
                     <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-                        <Link
-                            href="/buy-crypto"
-                            rel="noreferrer noopener nofollow"
-                        >
-                            <Tooltip title="Buy crypto">
-                                <IconButton> <CurrencyExchangeIcon /> </IconButton>
-                            </Tooltip>
-                        </Link>
-                        <Account />
+                        <Wallet />
                         <IconButton onClick={() => { toggleTheme() }} >
                             {darkMode ? (
                                 <Icon icon={baselineBrightnessHigh} />

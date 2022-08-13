@@ -2,6 +2,7 @@ import Head from 'next/head';
 import ThemeProvider from 'src/theme/ThemeProvider';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ContextProvider } from 'src/AppContext';
+import "src/landing/NFTCard.css";
 
 function XRPNFTApp(props) {
     const { Component, pageProps } = props;

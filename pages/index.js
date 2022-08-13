@@ -11,35 +11,68 @@ import {
 } from '@mui/material';
 
 // Components
-import Header from 'src/components/Header';
+import Landing from 'src/landing';
 import ScrollToTop from 'src/components/ScrollToTop';
+import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
 
 // overflow: scroll;
 // overflow: auto;
 // overflow: hidden;
+
+// const FabStyle = styled('div')(({ theme }) => ({
+//     boxShadow: 'none',
+//     backdropFilter: 'blur(2px)',
+//     WebkitBackdropFilter: 'blur(2px)', // Fix on Mobile
+//     //backgroundColor: alpha(theme.palette.background.default, 0.9),
+//     //color: alpha("#00AB88", 0.7),
+//     //backgroundColor: alpha("#00AB88", 0.7),
+//     backgroundColor: alpha("#9E86FF", 0.7),
+//     '&:hover': {
+//         backgroundColor: alpha("#9E86FF", 0.4),
+//     },
+// }));
+
+
 const OverviewWrapper = styled(Box)(
-  ({ theme }) => `
-    overflow: hidden;
-    flex: 1;
+    ({ theme }) => `
+        overflow: hidden;
+        flex: 1;
 `
 );
 
-function Overview({data}) {
+const BackgroundWrapper = styled(Box)(
+    ({ theme }) => `
+        width: 100%;
+        position: absolute;
+        background-size: cover;
+        background-color: rgb(32, 34, 37);
+        background-position: center center;
+        opacity: 0.3;
+        filter: blur(8px);
+        -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);
+        overflow: hidden;
+        flex: 1;
+`
+);
+
+export default function Overview({data}) {
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
             <Header />
-            
-            <Container maxWidth="xl">
+
+            <Container maxWidth="lg">
                 <Grid
                     container
                     direction="row"
                     justifyContent="left"
                     alignItems="stretch"
                     spacing={3}
+                    sx={{mt:2}}
                 >
                     <Grid item xs={12} md={12} lg={12} >
+                        <Landing />
                     </Grid>
                 </Grid>
             </Container>
@@ -51,8 +84,6 @@ function Overview({data}) {
         </OverviewWrapper>
     );
 }
-
-export default Overview;
 
 const BASE_URL = 'http://95.217.113.244/api';
 
