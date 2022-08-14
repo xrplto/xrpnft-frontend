@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { SnackbarProvider } from 'notistack';
 import ThemeProvider from 'src/theme/ThemeProvider';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ContextProvider } from 'src/AppContext';
@@ -46,8 +47,10 @@ function XRPNFTApp(props) {
             </Head>
             <ContextProvider data={data}>
                 <ThemeProvider>
-                    <CssBaseline />
-                    <Component {...pageProps} />
+                    <SnackbarProvider maxSnack={3}>
+                        <CssBaseline />
+                        <Component {...pageProps} />
+                    </SnackbarProvider>
                 </ThemeProvider>
             </ContextProvider>
         </>

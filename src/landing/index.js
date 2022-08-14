@@ -24,7 +24,14 @@ export default function Landing({data}) {
                 </Stack>
 
                 <Stack direction="row" spacing={2} sx={{mt: 4}}>
-                    <Button variant="contained">Explore</Button>
+                    <Link
+                        underline="none"
+                        color="inherit"
+                        href={`/explore`}
+                        rel="noreferrer noopener nofollow"
+                    >
+                        <Button variant="contained">Explore</Button>
+                    </Link>
                     <Button variant="outlined">Create</Button>
                 </Stack>
             </Grid>
