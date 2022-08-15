@@ -1,84 +1,69 @@
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from "react";
+import SlideImage from "./SlideImage";
+
+// Material
 import {
+    alpha, styled, useTheme, useMediaQuery,
     Box,
+    Card,
     Link,
     Stack,
     Typography
 } from '@mui/material';
 
-const collections = [
-    {
-        title: 'FAT CATS',
-        img: '/static/collection/fat-cats-xrpl.png',
-        link: 'https://fatcats.nftlabs.to/'
-    },
-    {
-        title: 'FRACTALS',
-        img: '/static/collection/fractals.png',
-        link: 'https://fractal.nftlabs.to/'
-    },
-    {
-        title: 'LEDGERPUNK',
-        img: '/static/collection/ledgerpunks-nft.png',
-        link: 'https://ledgerpunks.com/'
-    },
-    {
-        title: 'RIPPLE SHARKS',
-        img: '/static/collection/Ripple-Sharks.png',
-        link: 'https://nftlabs.to/projects/ripple-sharks/'
-    },
-    {
-        title: 'LLAMMAPALOOZA',
-        img: '/static/collection/llamapalooza-xrplnft.png',
-        link: 'https://llamapalooza.nftlabs.to/'
-    },
-    {
-        title: 'TRIPPY APES CLUB',
-        img: '/static/collection/TRIPPY.png',
-        link: 'https://trippyapes.nftlabs.to/'
-    },
+const AutoCard = styled(Card)(
+    ({ theme }) => `
+        width: 300px;
+        height: 300px;
+        align-items: center;
+        background: transparent;
+        @media (min-width: ${theme.breakpoints.values.md}px) {
+            width: 500px;
+            height: 500px;
+        }
+  `
+);
 
-];
+export default function ColectionPreview() {
 
-export default function CollectionPreview() {
     const [idx, setIdx] = useState(0);
 
-    useEffect(() => {
-        let pos = 0;
-        function updateCollection() {
-            pos++;
-            if (pos >= 6) pos = 0;
-            setIdx(pos);
-        }
-        
-        const timer = setInterval(() => updateCollection(), 4000)
+    const images = [
+        {title: 'FAT CATS', src: '/static/collection/fat-cats-xrpl.png', link: 'https://fatcats.nftlabs.to/'},
+        {title: 'FRACTALS', src: '/static/collection/fractals.png', link: 'https://fractal.nftlabs.to/'},
+        {title: 'LEDGERPUNK', src: '/static/collection/ledgerpunks-nft.png', link: 'https://ledgerpunks.com/'},
+        {title: 'RIPPLE SHARKS', src: '/static/collection/Ripple-Sharks.png', link: 'https://nftlabs.to/projects/ripple-sharks/'},
+        {title: 'LLAMMAPALOOZA', src: '/static/collection/llamapalooza-xrplnft.png', link: 'https://llamapalooza.nftlabs.to/'},
+        {title: 'TRIPPY APES CLUB', src: '/static/collection/TRIPPY.png', link: 'https://trippyapes.nftlabs.to/'},
+    ];
 
-        return () => {
-            clearInterval(timer);
-        }
+    useEffect(() => {
+        const slideInterval = setInterval(() => {
+            setIdx((idx) => (idx + 1) % 6);
+        }, 5000);
+
+        return () => clearInterval(slideInterval);
+
     }, []);
 
-    const item = collections[idx];
+    const item = images[idx];
 
+    // <Card style={{maxWidth: 500}}> </Card>
     return (
-        <Link
-            underline="none"
-            color="inherit"
-            target="_blank"
-            href={item.link}
-            rel="noreferrer noopener"
-        >
-            <Stack>
-                <Box
-                    component="img"
-                    sx={{ 
-                        width: 480,
-                        height: 430 }}
-                    alt="The house from the offer."
-                    src={item.img}
-                />
-                <Typography variant='h2'>{item.title}</Typography>
-            </Stack>
-        </Link>
-    );
-};
+        <Stack alignItems="center" spacing={1}>
+            <Link
+                underline="none"
+                color="inherit"
+                target="_blank"
+                href={item.link}
+                rel="noreferrer noopener"
+            >
+                <AutoCard>
+                    <SlideImage src={item.src} alt="" key={idx}/>
+                </AutoCard>
+            </Link>
+            <Typography variant='h2a'>{item.title}</Typography>
+        </Stack>
+    )
+
+}

@@ -1,5 +1,6 @@
 // Material
 import {
+    alpha, styled, useTheme, useMediaQuery,
     Box,
     Button,
     Grid,
@@ -10,43 +11,53 @@ import {
     Typography
 } from '@mui/material';
 
-import { hotDropsData } from "./MockupData";
 import CollectionPreview from './CollectionPreview';
 import CardList from './CardList';
 
-export default function Landing({data}) {
-    return (
-        <Grid container spacing={3} justifyContent="center" alignItems="center" display="flex">
-            <Grid item xs={12} md={7} lg={7}>
-                <Typography variant="h1a">Discover, collect, and sell extraordinary NFTs</Typography>
-                <Stack sx={{mt:3}}>
-                    <Typography variant="s1">XRPNFT.COM is the world's first and largest XRPL NFT Marketplace.</Typography>
-                </Stack>
+const AutoStack1 = styled(Stack)(
+    ({ theme }) => `
+        align-items: center;
+        @media (min-width: ${theme.breakpoints.values.md}px) {
+            align-items: start;
+        }
+  `
+);
 
-                <Stack direction="row" spacing={2} sx={{mt: 4}}>
-                    <Link
-                        underline="none"
-                        color="inherit"
-                        href={`/explore`}
-                        rel="noreferrer noopener nofollow"
-                    >
-                        <Button variant="contained">Explore</Button>
-                    </Link>
-                    <Button variant="outlined">Create</Button>
-                </Stack>
+export default function Landing({data}) {
+    const theme = useTheme();
+    const isScreenMD = useMediaQuery(theme.breakpoints.down('md'));
+    return (
+        <Grid container spacing={3} justifyContent="center" alignItems="center" display="flex" sx={{mt:2}}>
+            <Grid item xs={12} md={7} lg={7}>
+                <AutoStack1 spacing={1}>
+                    <Typography variant="h1a">Discover, collect, and sell extraordinary NFTs</Typography>
+                    <Stack sx={{mt:3}}>
+                        <Typography variant="s1">XRPNFT.COM is the world's first and largest XRPL NFT Marketplace.</Typography>
+                    </Stack>
+
+                    <Stack direction="row" spacing={2} sx={{mt: 4}}>
+                        <Link
+                            underline="none"
+                            color="inherit"
+                            href={`/explore`}
+                            rel="noreferrer noopener nofollow"
+                        >
+                            <Button variant="contained">Explore</Button>
+                        </Link>
+                        <Button variant="outlined">Create</Button>
+                    </Stack>
+                </AutoStack1>
             </Grid>
+
             <Grid item xs={12} md={5} lg={5} sx={{pl:0}} alignItems="center">
-                {/* <Card child={<CollectionPreview /> } width="500px" height="500px">
-                    
-                </Card> */}
                 <CollectionPreview />
             </Grid>
 
             <Grid item xs={12} md={12} lg={12} sx={{mt:10}} alignItems="center">
                 <Stack alignItems="center" sx={{mt:1, mb:4}}>
-                    <Typography variant='h2'>Hot NFTs</Typography>
+                    <Typography variant='h2a'>Hot NFTs</Typography>
                 </Stack>
-                <CardList list={hotDropsData} />
+                <CardList />
             </Grid>
         </Grid>
     )

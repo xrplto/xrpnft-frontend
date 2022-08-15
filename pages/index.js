@@ -41,40 +41,61 @@ const OverviewWrapper = styled(Box)(
 `
 );
 
+// .bg-image {
+//     /* The image used */
+//     background-image: url("photographer.jpg");
+    
+//     /* Add the blur effect */
+//     filter: blur(8px);
+//     -webkit-filter: blur(8px);
+    
+//     /* Full height */
+//     height: 100%; 
+    
+//     /* Center and scale the image nicely */
+//     background-position: center;
+//     background-repeat: no-repeat;
+//     background-size: cover;
+// }
+
 const BackgroundWrapper = styled(Box)(
     ({ theme }) => `
         width: 100%;
+        height: 100%;
         position: absolute;
         background-size: cover;
         background-color: rgb(32, 34, 37);
         background-position: center center;
-        opacity: 0.3;
-        filter: blur(8px);
+        opacity: 0.99;
+        z-index: -1;
+        filter: blur(0px);
         -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);
-        overflow: hidden;
-        flex: 1;
 `
 );
 
+function generateRandom(maxLimit = 10){
+    let rand = Math.random() * maxLimit;
+
+    rand = Math.floor(rand);
+
+    return rand;
+}
+
 export default function Overview({data}) {
+    const bgIdx = generateRandom();
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
             <Header />
 
+            <BackgroundWrapper
+                style={{
+                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`
+                }}
+            />
+
             <Container maxWidth="lg">
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="left"
-                    alignItems="stretch"
-                    spacing={3}
-                    sx={{mt:2}}
-                >
-                    <Grid item xs={12} md={12} lg={12} >
-                        <Landing />
-                    </Grid>
-                </Grid>
+                <Landing />
             </Container>
 
             <ScrollToTop />

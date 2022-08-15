@@ -87,15 +87,15 @@ export async function getStaticProps() {
         data = res.data;
 
         const time = Date.now();
-        for (var token of data.tokens) {
-            token.bearbull = token.pro24h < 0 ? -1:1;
-            token.time = time;
-        }
+        // for (var token of data.tokens) {
+        //     token.bearbull = token.pro24h < 0 ? -1:1;
+        //     token.time = time;
+        // }
 
         var t2 = performance.now();
         var dt = (t2 - t1).toFixed(2);
 
-        console.log(`1. getStaticProps tokens: ${data.tokens.length} took: ${dt}ms`);
+        console.log(`1. getStaticProps took: ${dt}ms`);
     } catch (e) {
         console.log(e);
     }

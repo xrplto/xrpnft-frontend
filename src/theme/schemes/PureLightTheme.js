@@ -1142,6 +1142,7 @@ export const PureLightTheme = createTheme({
           h1: 'h1',
           h1a: 'h1',
           h2: 'h2',
+          h2a: 'h2',
           h3: 'div',
           h4: 'div',
           h5: 'div',
@@ -1150,7 +1151,9 @@ export const PureLightTheme = createTheme({
           subtitle2: 'div',
           body1: 'div',
           body2: 'div',
-          s1: 'span'
+          s1: 'span',
+          p1: 'p',
+          p2: 'p'
         }
       },
       styleOverrides: {
@@ -1161,7 +1164,44 @@ export const PureLightTheme = createTheme({
           fontSize: 17,
           lineHeight: 1.7
         }
-      }
+      },
+      variants: [
+        {
+          props: { variant: 'h1a' },
+          style: ({ theme }) => ({
+            fontWeight: 600,
+            fontSize: 28,
+            [theme.breakpoints.up('md')]: {
+              fontSize: 32,
+            },
+            [theme.breakpoints.up('lg')]: {
+              fontSize: 45,
+            },
+          })
+        },
+        {
+          props: { variant: 'h2a' },
+          style: ({ theme }) => ({
+            fontWeight: 600,
+            fontSize: 18,
+            [theme.breakpoints.up('md')]: {
+              fontSize: 24,
+            },
+          })
+        },
+        {
+          props: { variant: 's1' },
+          style: ({ theme }) => ({
+            fontWeight: 400,
+            fontSize: 18,
+            lineHeight: 1.4,
+            color: colors.alpha.black[70],
+            [theme.breakpoints.up('md')]: {
+              fontSize: 24,
+            },
+          })
+        }
+      ],
     }
   },
   shape: {
@@ -1170,19 +1210,21 @@ export const PureLightTheme = createTheme({
   typography: {
     fontFamily:
       '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
-    s1: {
-      fontWeight: 400,
-      fontSize: 24,
+    p1: {
+      fontWeight: 700,
+      fontSize: 16,
       lineHeight: 1.4,
-      color: colors.alpha.black[70]
+      color: colors.alpha.black[100]
+    },
+    p2: {
+      fontWeight: 400,
+      fontSize: 16,
+      lineHeight: 1.4,
+      color: colors.alpha.black[100]
     },
     h1: {
       fontWeight: 700,
       fontSize: 35
-    },
-    h1a: {
-      fontWeight: 600,
-      fontSize: 45
     },
     h2: {
       fontWeight: 700,
