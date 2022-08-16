@@ -83,8 +83,8 @@ export function parseURI(nftoken_uri_hex) {
     return uris_obj;
 }
 
-export const getdataFromjosn= async(tokenURI)=>{
-    const data= await axios.get(tokenURI)
+export const getdataFromjosn= async (tokenURI)=>{
+    const data = await axios.get(tokenURI)
     return(data)
 }
 

@@ -9,7 +9,7 @@ import {
 
 import { hotDropsData } from "./MockupData";
 
-export default function CardList({ type="horizontal" }) {
+export default function SampleCardList({ type="horizontal" }) {
     return (
         <Grid container spacing={0}
             style={{

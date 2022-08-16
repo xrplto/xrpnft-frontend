@@ -38,7 +38,6 @@ export default function SampleCard({ nftname, title, nftSrc, onClick }) {
 
     const getColors = colors => {
         setColors(c => [...c, ...colors]);
-        // console.log(colors);
     }
 
     return (

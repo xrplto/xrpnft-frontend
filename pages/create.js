@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 
 // Components
-import Landing from 'src/landing';
+import Minting from 'src/minting';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -35,7 +35,7 @@ const BackgroundWrapper = styled(Box)(
         background-size: cover;
         background-color: rgb(32, 34, 37);
         background-position: center center;
-        opacity: 0.99;
+        opacity: 0.1;
         z-index: -1;
         filter: blur(0px);
         -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);
@@ -65,7 +65,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="lg">
-                <Landing />
+                <Minting />
             </Container>
 
             <ScrollToTop />

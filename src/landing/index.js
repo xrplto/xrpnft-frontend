@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 
 import CollectionPreview from './CollectionPreview';
-import CardList from './CardList';
+import SampleCardList from './SampleCardList';
 
 const AutoStack1 = styled(Stack)(
     ({ theme }) => `
@@ -44,7 +44,15 @@ export default function Landing({data}) {
                         >
                             <Button variant="contained">Explore</Button>
                         </Link>
-                        <Button variant="outlined">Create</Button>
+
+                        <Link
+                            underline="none"
+                            color="inherit"
+                            href={`/create`}
+                            rel="noreferrer noopener nofollow"
+                        >
+                            <Button variant="outlined">Create</Button>
+                        </Link>
                     </Stack>
                 </AutoStack1>
             </Grid>
@@ -57,7 +65,7 @@ export default function Landing({data}) {
                 <Stack alignItems="center" sx={{mt:1, mb:4}}>
                     <Typography variant='h2a'>Hot NFTs</Typography>
                 </Stack>
-                <CardList />
+                <SampleCardList />
             </Grid>
         </Grid>
     )

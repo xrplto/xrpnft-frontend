@@ -23,9 +23,10 @@ import Wallet from 'src/components/Wallet';
 
 const HeaderWrapper = styled(Box)(({ theme }) => `
     width: 100%;
+    height: ${theme.spacing(10)};
     display: flex;
     align-items: center;
-    height: ${theme.spacing(10)};
+    background-color: ${theme.colors.alpha.white[50]};
     margin-bottom: ${theme.spacing(0)};
     border-radius: 0px;
     border-bottom: 1px solid ${alpha('#CBCCD2', 0.2)};
