@@ -1,18 +1,8 @@
-import PropTypes from 'prop-types';
+// Material
 import {
     Dialog,
     DialogTitle,
 } from '@mui/material';
-
-BaseDialog.propTypes = {
-    close: PropTypes.func.isRequired,
-    isOpen: PropTypes.bool.isRequired,
-    render: PropTypes.node,
-    title: PropTypes.string,
-    maxWidth: PropTypes.oneOfType(
-        [PropTypes.bool, PropTypes.string]
-    )
-};
 
 export default function BaseDialog({ close, render, isOpen, title, maxWidth }) {
 

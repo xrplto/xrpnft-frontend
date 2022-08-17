@@ -3,13 +3,12 @@ import SampleCard from "./SampleCard";
 
 // Material
 import {
-    styled,
     Grid
 } from '@mui/material';
 
 import { hotDropsData } from "./MockupData";
 
-export default function SampleCardList({ type="horizontal" }) {
+export default function SampleCardList() {
     return (
         <Grid container spacing={0}
             style={{

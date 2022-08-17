@@ -23,7 +23,7 @@ import MenuPopover from './MenuPopover';
 import LoginDialog from './LoginDialog';
 
 export default function Wallet() {
-    const BASE_URL = 'https://api.xrpl.to/api';
+    const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile, setAccountProfile, setLoading } = useContext(AppContext);
     const anchorRef = useRef(null);
     const [open, setOpen] = useState(false);

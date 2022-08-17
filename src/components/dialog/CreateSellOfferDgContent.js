@@ -1,5 +1,7 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useState } from 'react';
+import { useSnackbar } from 'notistack';
+
+// Material
 import {
     Box,
     Button,
@@ -12,16 +14,22 @@ import {
     InputAdornment,
     TextField,
     Tooltip,
-    Typography,
-} from '@mui/material'
-import InfoIcon from '@mui/icons-material/Info';
-import { LoadingButton } from '@mui/lab';
-import { Icon } from '@iconify/react';
+    Typography
+} from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { createSellOffer } from 'utils/tokenActions'
-import { getCurrentRippleEpoch } from 'utils/utils';
-import { useSnackbar } from 'notistack'
+import InfoIcon from '@mui/icons-material/Info';
+import { LoadingButton } from '@mui/lab';
+
+// Iconify
+import { Icon } from '@iconify/react';
+
+// Redux
+import { useSelector } from 'react-redux';
+
+// Utils
+import { createSellOffer } from 'src/utils/tokenActions';
+import { getCurrentRippleEpoch } from 'src/utils/utils';
 
 export default function CreateSellOfferDgContent({ close, NFTokenID, setOffers }) {
     const { enqueueSnackbar } = useSnackbar()

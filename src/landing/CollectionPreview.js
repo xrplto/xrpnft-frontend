@@ -1,5 +1,4 @@
 import {useEffect, useState} from "react";
-import SlideImage from "./SlideImage";
 
 // Material
 import {
@@ -10,6 +9,9 @@ import {
     Stack,
     Typography
 } from '@mui/material';
+
+// Components
+import SlideImage from "./SlideImage";
 
 const AutoCard = styled(Card)(
     ({ theme }) => `

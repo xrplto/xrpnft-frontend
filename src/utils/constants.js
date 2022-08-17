@@ -4,17 +4,18 @@ export const NEW_RIPPLE_TEST_NET_URL = 'wss://s.altnet.rippletest.net:51233'
 export const PINATA_PINNING_FILE_URL = 'https://api.pinata.cloud/pinning/pinFileToIPFS'
 export const PINATA_GATEWAY = 'https://xrpnft.mypinata.cloud/'
 export const XRPNFT_DOMAIN = 'xrpnft.com/ipfs/'
+
 export const SUPPORTED_FILE_TYPES = [
     'JPG',
     'PNG',
-    'GIF',
-    'SVG',
-    'MP4',
-    'WEBM',
-    'WAV',
-    'OGG',
-    'GLB',
-    'GLTF'
+    // 'GIF',
+    // 'SVG',
+    // 'MP4',
+    // 'WEBM',
+    // 'WAV',
+    // 'OGG',
+    // 'GLB',
+    // 'GLTF'
 ]
 
 export const ACCOUNTS = [

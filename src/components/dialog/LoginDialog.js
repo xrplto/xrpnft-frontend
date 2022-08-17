@@ -1,9 +1,8 @@
-//import { useState, useEffect } from "react";
-//import axios from "axios";
-//import useWebSocket, { ReadyState } from "react-use-websocket";
-import { Box, Dialog/*, DialogTitle, Divider*/ } from '@mui/material';
-//import { useContext } from 'react'
-//import Context from '../Context'
+// Material
+import {
+    Box,
+    Dialog
+} from '@mui/material';
 
 export default function LoginDialog(props) {
     const qrUrl = props.qrUrl;

@@ -41,8 +41,8 @@ export default function Minting() {
             <Container maxWidth='md' sx={{ marginBottom: '3vh' }}>
                 <Stack spacing={2} marginBottom={3}>
                     <Typography variant="h4" >Create New Item</Typography>
-                    <Typography variant='caption'>Image, Video, Audio, or 3D Model</Typography>
-                    <Typography variant='body1'>File types supported: {SUPPORTED_FILE_TYPES.join(', ')}. Max size: 100MB</Typography>
+                    {/* <Typography variant='caption'>Image, Video, Audio, or 3D Model</Typography> */}
+                    <Typography variant='body1'>File types supported: {SUPPORTED_FILE_TYPES.join(', ')}.   Max size: 10MB</Typography>
                     <NFTUploader />
                     <Typography variant='body1'>Image on IPFS:  {pinnedFileHash}</Typography>
                 </Stack>

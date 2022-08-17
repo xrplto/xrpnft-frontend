@@ -16,7 +16,7 @@ import {
 import { Icon } from '@iconify/react';
 
 // Redux
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
 import { setMetadata, updateProperty } from 'src/redux/statusSlice';
 
 export default function AddTraitDgContent({close}) {
@@ -89,11 +89,11 @@ export default function AddTraitDgContent({close}) {
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: 2 }}>
                 <Button
                     variant='contained'
+                    onClick={close}
                     sx={{
                         background: 'springgreen',
                         height: 50
                     }}
-                    onClick={close}
                 >
                     Close
                 </Button>

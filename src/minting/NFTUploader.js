@@ -14,6 +14,10 @@ import ImageIcon from '@mui/icons-material/Image';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
+
 // Redux
 import { useDispatch } from 'react-redux'
 import { setPinnedFileHash } from 'src/redux/statusSlice';
@@ -56,25 +60,70 @@ const CardOverlay = styled('div')(
 );
 
 export default function NFTUploader() {
-
+    const BASE_URL = 'https://api.xrpnft.com/api';
+    const { accountProfile } = useContext(AppContext);
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const fileRef = useRef();
     const [fileUrl, setFileUrl] = useState(null)
     const dispatch = useDispatch()
     const [file, setFile] = useState(null)
+    const [imgExt, setImgExt] = useState('');
     const [loading, setLoading] = useState(false)
 
+    const onUploadNft = async () => {
+        // POST https://api.xrpnft.com/api/mint
+        setLoading(true);
+        try {
+            let res;
+            const account = accountProfile.account;
+
+            const data = {};
+            data.fileExt = imgExt;
+
+            const formdata = new FormData();
+            formdata.append('nft', file);
+            formdata.append('account', account);
+            formdata.append('data', JSON.stringify(data));
+            
+            res = await axios.post(`${BASE_URL}/account/mint`, formdata, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+
+            if (res.status === 200) {
+                const ret = res.data;
+                if (ret.status) {
+                    console.log(ret);
+                    openSnackbar('File upload successful!', 'success')
+                    // setFile(null);
+                } else {
+                    // { status: false, data: null, err: 'ERR_URL_SLUG' }
+                    const err = ret.err;
+                }
+            }
+        } catch (err) {
+            console.error(err);
+        }
+        setLoading(false);
+    };
+
     const handleFileSelect = (e) => {
-        const pickedFile = e.target.files[0]
-
-        const reader = new FileReader()
+        const pickedFile = e.target.files[0];
         if (pickedFile) {
-            setFile(pickedFile)
+            const fileName = pickedFile.name;
+            var re = /(?:\.([^.]+))?$/;
+            var ext = re.exec(fileName)[1];
+            if (ext)
+                ext = ext.toLowerCase();
 
-            // This is used as src of image
-            reader.readAsDataURL(pickedFile)
-            reader.onloadend = function (e) {
-                setFileUrl(reader.result)
+            if (ext === 'jpg' || ext === 'png') {
+                setImgExt(ext);
+                setFile(pickedFile);
+                // This is used as src of image
+                const reader = new FileReader();
+                reader.readAsDataURL(pickedFile)
+                reader.onloadend = function (e) {
+                    setFileUrl(reader.result); // data:image/jpeg;base64
+                }
             }
         }
     }
@@ -122,7 +171,8 @@ export default function NFTUploader() {
                 ref={fileRef}
                 style={{ display: 'none' }}
                 // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
-                accept='image/*'
+                // accept='image/*'
+                accept='.png, .jpg'
                 id='contained-button-file'
                 multiple
                 type='file'
@@ -157,7 +207,7 @@ export default function NFTUploader() {
                     loading={loading}
                     loadingPosition='start'
                     startIcon={<SendIcon />}
-                    onClick={pinFileToIPFS}
+                    onClick={onUploadNft}
                 >
                     Upload
                 </LoadingButton>

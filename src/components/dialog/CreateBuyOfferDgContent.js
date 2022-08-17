@@ -1,5 +1,7 @@
-import { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useState } from 'react';
+import { useSnackbar } from 'notistack';
+
+// Material
 import {
     Box,
     Button,
@@ -14,10 +16,15 @@ import {
 } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info';
 import { LoadingButton } from '@mui/lab';
+
+// Iconify
 import { Icon } from '@iconify/react';
-import { useSnackbar } from 'notistack'
-import { createBuyOffer } from 'utils/tokenActions'
-const rippleAPI = require('ripple-address-codec')
+import { useSelector } from 'react-redux';
+
+// Utils
+import { createBuyOffer } from 'src/utils/tokenActions';
+
+const rippleAPI = require('ripple-address-codec');
 
 export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers, owner }) {
     const { enqueueSnackbar } = useSnackbar()

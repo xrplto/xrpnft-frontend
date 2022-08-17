@@ -1,23 +1,31 @@
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
+
+// Material
 import {
+    Alert,
+    AlertTitle,
     Button,
     DialogActions,
     DialogContent,
 } from '@mui/material'
+import { LoadingButton } from '@mui/lab';
+
+// Redux
+import { useSelector } from 'react-redux'
+
+// Components
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
-import { LoadingButton } from '@mui/lab';
+
+// Iconify
 import { Icon } from '@iconify/react';
+
+// Utils
 import { burnToken } from 'utils/tokenActions'
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import { useNavigate } from 'react-router-dom'
 
 export default function BurnNFTDgContent({ close, NFTokenID }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const [loading, setLoading] = useState(false)
-    const navigate = useNavigate()
     const account = useSelector(state => state.status.account)
     const login = useSelector(state => state.status.login)
     const handleBurn = async () => {
@@ -30,7 +38,7 @@ export default function BurnNFTDgContent({ close, NFTokenID }) {
                 )
                 openSnackbar('Offer succeed!', 'success')
                 close()
-                navigate('/account')
+                // navigate('/account')
             } catch (e) {
                 openSnackbar(e.message, 'error')
 
