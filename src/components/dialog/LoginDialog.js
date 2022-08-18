@@ -32,6 +32,6 @@ export default function LoginDialog(props) {
                     src={qrUrl}
                     />
             </div>
-      </Dialog>
+        </Dialog>
     );
 }

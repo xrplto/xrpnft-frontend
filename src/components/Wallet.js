@@ -13,6 +13,7 @@ import {
     IconButton,
     Stack
 } from '@mui/material';
+import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -21,17 +22,23 @@ import userLock from '@iconify/icons-fa-solid/user-lock';
 // Components
 import MenuPopover from './MenuPopover';
 import LoginDialog from './LoginDialog';
+import ChooseAccountDialog from './dialog/ChooseAccountDialog';
+
+// Utils
+import { ACCOUNTS } from 'src/utils/constants';
 
 export default function Wallet() {
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { accountProfile, setAccountProfile, setLoading } = useContext(AppContext);
     const anchorRef = useRef(null);
+    const { accountProfile, setAccountProfile, setLoading } = useContext(AppContext);
     const [open, setOpen] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
     const [uuid, setUuid] = useState(null);
     //const [wsUrl, setWsUrl] = useState(null);
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
+
+    const [selectedIndex, setSelectedIndex] = useState(accountProfile.id);
 
     /*const connectionStatus = {
         [ReadyState.CONNECTING]: "Connecting",
@@ -132,6 +139,13 @@ export default function Wallet() {
         onDisconnectXumm(uuid);
     };
 
+    const handleChooseAccount = (value) => {
+        setSelectedIndex(value);
+        const id = value;
+        const account = ACCOUNTS[id - 1].key;
+        setAccountProfile({account, id});
+    };
+
     // <Alert
     //     variant="outlined"
     //     severity="success">
@@ -153,12 +167,11 @@ export default function Wallet() {
 
     return (
         <>
-            <IconButton
+            {/* <IconButton
                 ref={anchorRef}
                 onClick={handleOpen} >
-                {/* <SupervisorAccountIcon fontSize="medium"/> */}
                 <Icon icon={userLock}/>
-            </IconButton>
+            </IconButton> */}
 
             <MenuPopover
                 open={open}
@@ -202,6 +215,23 @@ export default function Wallet() {
                 handleClose={handleLoginClose}
                 qrUrl={qrUrl}
                 nextUrl={nextUrl}
+            />
+
+            <ChooseAccountDialog
+                accounts={ACCOUNTS}
+                selectedIdx={selectedIndex}
+                onClose={handleChooseAccount}
+                render={
+                    (open) => (
+                        <Button
+                            variant="contained"
+                            onClick={open}
+                            startIcon={<Icon icon={userLock}/>}
+                        >
+                            Account {ACCOUNTS[selectedIndex - 1].id}
+                        </Button>
+                    )
+                }
             />
         </>
     );

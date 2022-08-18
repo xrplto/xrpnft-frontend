@@ -90,10 +90,6 @@ export default function AddTraitDgContent({close}) {
                 <Button
                     variant='contained'
                     onClick={close}
-                    sx={{
-                        background: 'springgreen',
-                        height: 50
-                    }}
                 >
                     Close
                 </Button>

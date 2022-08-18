@@ -4,7 +4,6 @@ import { configureStore } from "@reduxjs/toolkit";
 const initialState = {
     totalCount: 0,
     // IPFS
-    pinnedFileHash: '',
     flags: 13,
     metadata: {
         name: '',
@@ -33,9 +32,6 @@ const statusSlice = createSlice({
         update_totalCount: (state, action) => {
             const data = action.payload;
             state.totalCount = data.total;
-        },
-        setPinnedFileHash: (state, action) => {
-            state.pinnedFileHash = action.payload
         },
         setFlags: (state, action) => {
             state.flags = action.payload
@@ -67,7 +63,7 @@ const statusSlice = createSlice({
 });
 
 export const { update_totalCount } = statusSlice.actions;
-export const { setMetadata, resetIpfsState, setPinnedFileHash, setFlags, updateLevel, updateProperty } = statusSlice.actions
+export const { setMetadata, resetIpfsState, setFlags, updateLevel, updateProperty } = statusSlice.actions
 export const { doSetAccount, resetAccount, login, logout, setNFTs } = statusSlice.actions
 
 // The function below is called a selector and allows us to select a value from

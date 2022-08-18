@@ -1,6 +1,7 @@
 import axios from 'axios'
 import FormData from 'form-data';
-import { useState, useRef } from 'react'
+import { v4 as uuidv4 } from 'uuid';
+import { useState, useRef } from 'react';
 
 // Material
 import {
@@ -17,10 +18,6 @@ import CloseIcon from '@mui/icons-material/Close';
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
-
-// Redux
-import { useDispatch } from 'react-redux'
-import { setPinnedFileHash } from 'src/redux/statusSlice';
 
 // Utils
 import { PINATA_PINNING_FILE_URL } from 'src/utils/constants';
@@ -61,11 +58,10 @@ const CardOverlay = styled('div')(
 
 export default function NFTUploader() {
     const BASE_URL = 'https://api.xrpnft.com/api';
+    const fileRef = useRef();
     const { accountProfile } = useContext(AppContext);
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
-    const fileRef = useRef();
     const [fileUrl, setFileUrl] = useState(null)
-    const dispatch = useDispatch()
     const [file, setFile] = useState(null)
     const [imgExt, setImgExt] = useState('');
     const [loading, setLoading] = useState(false)
@@ -92,7 +88,11 @@ export default function NFTUploader() {
             if (res.status === 200) {
                 const ret = res.data;
                 if (ret.status) {
-                    console.log(ret);
+                    console.log(ret.link);
+                    // window.location.href = ret.link;
+                    
+                    window.open(ret.link, '_blank');
+
                     openSnackbar('File upload successful!', 'success')
                     // setFile(null);
                 } else {
@@ -114,7 +114,6 @@ export default function NFTUploader() {
             var ext = re.exec(fileName)[1];
             if (ext)
                 ext = ext.toLowerCase();
-
             if (ext === 'jpg' || ext === 'png') {
                 setImgExt(ext);
                 setFile(pickedFile);
@@ -149,7 +148,7 @@ export default function NFTUploader() {
                         }
                     }
                 )
-                dispatch(setPinnedFileHash(response.data.IpfsHash))
+                // dispatch(setPinnedFileHash(response.data.IpfsHash))
                 openSnackbar('IPFSHash: ' + response.data.IpfsHash, 'success')
             } catch (e) {
                 console.log(e)
@@ -166,53 +165,53 @@ export default function NFTUploader() {
     }
 
     return (
-        <CardWrapper>
-            <input
-                ref={fileRef}
-                style={{ display: 'none' }}
-                // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
-                // accept='image/*'
-                accept='.png, .jpg'
-                id='contained-button-file'
-                multiple
-                type='file'
-                onChange={handleFileSelect}
-            />
-            <Card
-                sx={{
-                    display: 'flex',
-                    width: 320,
-                    height: 240,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    overflow: 'auto',
-                    position: 'relative'
-                }}
-            >
-                <CardOverlay
-                    onClick={() => fileRef.current.click()}
+        <>
+            <CardWrapper>
+                <input
+                    ref={fileRef}
+                    style={{ display: 'none' }}
+                    // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
+                    // accept='image/*'
+                    accept='.png, .jpg'
+                    id='contained-button-file'
+                    multiple
+                    type='file'
+                    onChange={handleFileSelect}
+                />
+                <Card
+                    sx={{
+                        display: 'flex',
+                        width: 320,
+                        height: 240,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        overflow: 'auto',
+                        position: 'relative'
+                    }}
                 >
-                    <IconButton
-                        aria-label='close' onClick={(e) => handleResetFile(e)}
-                        sx={fileUrl ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
+                    <CardOverlay
+                        onClick={() => fileRef.current.click()}
                     >
-                        <CloseIcon color='white' />
-                    </IconButton>
-                </CardOverlay>
-                <img src={fileUrl} alt='' style={fileUrl ? {objectFit:'cover', height: '100%', overflow:'hidden'} : { display: 'none' }} />
-                <ImageIcon fontSize='large' sx={fileUrl ? { display: 'none' } : {width: 100, height: 100}} />
-            </Card>
-            <Stack>
-                <LoadingButton
-                    loading={loading}
-                    loadingPosition='start'
-                    startIcon={<SendIcon />}
-                    onClick={onUploadNft}
-                >
-                    Upload
-                </LoadingButton>
-            </Stack>
+                        <IconButton
+                            aria-label='close' onClick={(e) => handleResetFile(e)}
+                            sx={fileUrl ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
+                        >
+                            <CloseIcon color='white' />
+                        </IconButton>
+                    </CardOverlay>
+                    <img src={fileUrl} alt='' style={fileUrl ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} />
+                    <ImageIcon fontSize='large' sx={fileUrl ? { display: 'none' } : {width: 100, height: 100}} />
+                </Card>
+            </CardWrapper>
+            <LoadingButton
+                loading={loading}
+                loadingPosition='start'
+                startIcon={<SendIcon />}
+                onClick={onUploadNft}
+            >
+                Upload
+            </LoadingButton>
             <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
-        </CardWrapper>
+        </>
     )
 }

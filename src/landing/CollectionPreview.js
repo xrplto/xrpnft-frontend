@@ -27,7 +27,6 @@ const AutoCard = styled(Card)(
 );
 
 export default function ColectionPreview() {
-
     const [idx, setIdx] = useState(0);
 
     const images = [

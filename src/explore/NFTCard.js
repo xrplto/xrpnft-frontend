@@ -30,7 +30,6 @@ export default function NFTCard({ Flags, Issuer, NFTokenID, URI }) {
     const [imgUrl, setImgUrl] = useState('')
     const [loading, setLoading] = useState(false)
     const [name, setName] = useState(null)
- 
 
     useEffect(() => {
         let mounted = true

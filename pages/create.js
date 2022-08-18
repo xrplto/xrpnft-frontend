@@ -35,7 +35,7 @@ const BackgroundWrapper = styled(Box)(
         background-size: cover;
         background-color: rgb(32, 34, 37);
         background-position: center center;
-        opacity: 0.1;
+        opacity: 0.3;
         z-index: -1;
         filter: blur(0px);
         -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);
@@ -64,7 +64,7 @@ export default function Overview({data}) {
 
             <Header />
 
-            <Container maxWidth="lg">
+            <Container maxWidth="sm">
                 <Minting />
             </Container>
 

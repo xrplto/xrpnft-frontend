@@ -54,7 +54,7 @@
     "lodash": "^4.17.21",
     "perf_hooks": "^0.0.1",
     "crypto-js": "^4.1.1",
-    "uuidv4": "^6.2.13",
+    "uuid": "^8.3.2",
     "xrpl": "^2.3.1",
     "@pinata/sdk": "^1.1.24",
     "ripple-address-codec": "^4.2.3",

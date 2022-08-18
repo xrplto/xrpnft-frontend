@@ -110,10 +110,6 @@ export default function AddLevelDgContent({close}) {
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: 2 }}>
                 <Button
                     variant='contained'
-                    sx={{
-                      background: 'springgreen',
-                      height: 50
-                    }}
                     onClick={close}
                 >
                     Close

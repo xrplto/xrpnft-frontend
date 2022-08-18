@@ -9,6 +9,9 @@
 
 const isProd = process.env.RUN_ENV === 'production'
 module.exports = {
+	images: {
+    	domains: ['s1.xrpnft.com'],
+  	},
     poweredByHeader: false,
-    assetPrefix: isProd ? 'https://xrpl.to' : '',
+    assetPrefix: isProd ? 'https://xrpnft.com' : '',
 }

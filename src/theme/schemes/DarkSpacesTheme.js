@@ -1070,7 +1070,7 @@ export const DarkSpacesTheme = createTheme({
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: alpha(colors.alpha.black['100'], 0.95),
+          // backgroundColor: alpha(colors.alpha.black['100'], 0.95),
           padding: '8px 16px',
           fontSize: 13
         },
@@ -1157,8 +1157,11 @@ export const DarkSpacesTheme = createTheme({
           body1: 'div',
           body2: 'div',
           s1: 'span',
+          s2: 'span',
           p1: 'p',
-          p2: 'p'
+          p2: 'p',
+          p3: 'p',
+          p4: 'p'
         }
       },
       styleOverrides: {
@@ -1180,7 +1183,7 @@ export const DarkSpacesTheme = createTheme({
               fontSize: 32,
             },
             [theme.breakpoints.up('lg')]: {
-              fontSize: 45,
+              fontSize: 40,
             },
           })
         },
@@ -1226,6 +1229,22 @@ export const DarkSpacesTheme = createTheme({
       fontSize: 16,
       lineHeight: 1.4,
       color: colors.alpha.black[100]
+    },
+    p3: {
+      fontWeight: 500,
+      fontSize: 12,
+      lineHeight: 1.4,
+      color: colors.alpha.black[70]
+    },
+    p4: {
+      fontWeight: 600,
+      fontSize: 16,
+      color: colors.alpha.black[100]
+    },
+    s2: {
+      fontWeight: 500,
+      fontSize: 12,
+      color: '#EB5757'
     },
     h1: {
       fontWeight: 700,

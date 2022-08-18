@@ -18,12 +18,12 @@ export default function CollectionAndProperties() {
     }
 
     return (
-        <Stack>
-            <Typography variant='caption' >Collection</Typography>
-            <Typography variant='body1'>
+        <Stack spacing={2}>
+            <Typography variant='p4' >Collection</Typography>
+            <Typography variant='p3'>
                 This is the collection where your item will appear.
             </Typography>
-            <TextField required placeholder='Item name' margin='dense'
+            <TextField required placeholder='Select collection' margin='dense'
                 onChange={handleCollectionFieldChange}
                 value={collectionName}
                 sx={{
@@ -32,8 +32,8 @@ export default function CollectionAndProperties() {
                     }
                 }}
             />
-            <PropertySection />
-            <LevelsSection />
+            {/* <PropertySection />
+            <LevelsSection /> */}
         </Stack>
     );
 }
