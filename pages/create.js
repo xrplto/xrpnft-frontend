@@ -10,6 +10,10 @@ import {
     Toolbar
 } from '@mui/material';
 
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
+
 // Components
 import Minting from 'src/minting';
 import ScrollToTop from 'src/components/ScrollToTop';
@@ -35,7 +39,6 @@ const BackgroundWrapper = styled(Box)(
         background-size: cover;
         background-color: rgb(32, 34, 37);
         background-position: center center;
-        opacity: 0.9;
         z-index: -1;
         filter: blur(0px);
         -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);
@@ -52,13 +55,16 @@ function generateRandom(maxLimit = 10){
 
 export default function Overview({data}) {
     const bgIdx = generateRandom();
+    const { darkMode } = useContext(AppContext);
+
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
             <BackgroundWrapper
                 style={{
-                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`
+                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`,
+                    opacity: `${darkMode?0.8:0.7}`
                 }}
             />
 

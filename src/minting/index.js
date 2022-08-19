@@ -5,18 +5,24 @@ import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux'
 
 // Material
+import { withStyles } from '@mui/styles';
 import {
     styled,
     Button,
     Card,
+    Checkbox,
     Container,
+    FormControlLabel,
+    FormGroup,
     IconButton,
     Stack,
     TextField,
+    Tooltip,
     Typography
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import ImageIcon from '@mui/icons-material/Image';
+import InfoIcon from '@mui/icons-material/Info';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -25,7 +31,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN } from 'src/utils/constants';
+import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS } from 'src/utils/constants';
 
 // Components
 import BaseDialog from 'src/components/dialog/BaseDialog';
@@ -33,6 +39,8 @@ import NFTokenMintDgContent from './NFTokenMintDgContent';
 import CollectionAndProperties from './CollectionAndProperties';
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
+import PropertySection from './NFTProperties/PropertySection';
+import LevelsSection from './NFTLevels/LevelSection';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -64,6 +72,15 @@ const CardOverlay = styled('div')(
 `
 );
 
+const DisabledButton = withStyles({
+    root: {
+        "&.Mui-disabled": {
+            pointerEvents: "unset", // allow :hover styles to be triggered
+            cursor: "not-allowed", // and custom cursor can be defined without :hover state
+        }
+    }
+})(Button);
+
 export default function Minting() {
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -72,16 +89,22 @@ export default function Minting() {
     const properties = useSelector(state => state.status.metadata.properties);
     const [open, setOpen] = useState(false);
     const login = useSelector(state => state.status.login);
+
     const [nftName, setNftName] = useState('');
     const [extLink, setExtLink] = useState('');
     const [description, setDescription] = useState('');
+    const [collectionName, setCollectionName] = useState('')
+    const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
+
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
     const [fileUrl, setFileUrl] = useState(null);
     const [file, setFile] = useState(null);
     const [imgExt, setImgExt] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const onUploadNft = async () => {
+    const canCreate = file && nftName;
+
+    const onCreateNft = async () => {
         // POST https://api.xrpnft.com/api/mint
         setLoading(true);
         try {
@@ -152,6 +175,14 @@ export default function Minting() {
         fileRef.current.value = null
     }
 
+    const handleFlagChange = (e) => {
+        setFlag(flag ^ e.target.value);
+    }
+
+    const handleCollectionFieldChange = (e) => {
+        setCollectionName(e.target.value)
+    }
+
     return (
         <>
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
@@ -196,14 +227,6 @@ export default function Minting() {
                         <ImageIcon fontSize='large' sx={fileUrl ? { display: 'none' } : {width: 100, height: 100}} />
                     </Card>
                 </CardWrapper>
-                <LoadingButton
-                    loading={loading}
-                    loadingPosition='start'
-                    startIcon={<SendIcon />}
-                    onClick={onUploadNft}
-                >
-                    Upload
-                </LoadingButton>
 
                 <Typography variant='p4'>Name <Typography variant='s2'>*</Typography></Typography>
 
@@ -264,14 +287,79 @@ export default function Minting() {
                     }}
                 />
             </Stack>
-            <CollectionAndProperties />
-            <Button
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Flags</Typography>
+                <FormGroup sx={{ flexDirection: 'row' }}>
+                    {
+                        TOKEN_FLAGS.map((f) => (
+                            <FormControlLabel
+                                key={f.value}
+                                label={f.label}
+                                value={f.value}
+                                control={
+                                    <Checkbox checked={(flag & f.value) !== 0} onChange={handleFlagChange} />
+                                }
+                            />
+                        ))
+                    }
+                </FormGroup>
+                <Stack spacing={1} pl={0}>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Burnable:</Typography> If set, indicates that the issuer (or an entity authorized by the issuer) can destroy the object. The object's owner can always do so.
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>OnlyXRP:</Typography> If set, nft can only be offered or sold for XRP.
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>TrustLine:</Typography> If set, indicates that the issuer wants a trustline to be automatically created. This is useful when the token can be offered for sale for assets other than XRP and the issuer charges a TransferFee. If this flag is set, a trust line is automatically created as needed to allow the issuer to receive the appropriate transfer fee. If this flag is not set, an attempt to transfer the NFToken for an asset for which the issuer does not have a trustline fails.
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer.
+                    </Typography>
+                </Stack>
+            </Stack>
+            
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Collection</Typography>
+                <Typography variant='p3'>
+                    This is the collection where your item will appear.
+                </Typography>
+                <TextField required placeholder='Select collection' margin='dense'
+                    onChange={handleCollectionFieldChange}
+                    value={collectionName}
+                    sx={{
+                        '&.MuiTextField-root': {
+                            marginTop: 1
+                        }
+                    }}
+                />
+                {/* <PropertySection />
+                <LevelsSection /> */}
+            </Stack>
+
+            {/* <Button
                 variant='contained'
                 sx={{ mt: 5, mb: 6 }}
                 onClick={() => setOpen(true)}
             >
                 Create
-            </Button>
+            </Button> */}
+
+            <Stack alignItems='right'>
+                <LoadingButton
+                    disabled={!canCreate}
+                    variant='contained'
+                    loading={loading}
+                    loadingPosition='start'
+                    startIcon={<SendIcon />}
+                    onClick={onCreateNft}
+                    sx={{ mt: 5, mb: 6 }}
+                >
+                    Create
+                </LoadingButton>
+            </Stack>
+
             <BaseDialog
                 isOpen={open}
                 close={() => { setOpen(false) }}

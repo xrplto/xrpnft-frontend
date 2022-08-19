@@ -30,23 +30,23 @@ const AutoCard = styled(Card)(
 export default function ColectionPreview() {
     const [idx, setIdx] = useState(0);
 
-    // const images = [
-    //     {title: 'FAT CATS', src: '/static/collection/fat-cats-xrpl.jpg', link: 'https://fatcats.nftlabs.to/'},
-    //     {title: 'FRACTALS', src: '/static/collection/fractals.jpg', link: 'https://fractal.nftlabs.to/'},
-    //     {title: 'LEDGERPUNK', src: '/static/collection/ledgerpunks-nft.jpg', link: 'https://ledgerpunks.com/'},
-    //     {title: 'RIPPLE SHARKS', src: '/static/collection/Ripple-Sharks.jpg', link: 'https://nftlabs.to/projects/ripple-sharks/'},
-    //     {title: 'LLAMMAPALOOZA', src: '/static/collection/llamapalooza-xrplnft.jpg', link: 'https://llamapalooza.nftlabs.to/'},
-    //     {title: 'TRIPPY APES CLUB', src: '/static/collection/TRIPPY.jpg', link: 'https://trippyapes.nftlabs.to/'},
-    // ];
-
     const images = [
-        {title: 'FAT CATS', src: 'https://s1.xrpnft.com/static/collection/fat-cats-xrpl.jpg', link: 'https://fatcats.nftlabs.to/'},
-        {title: 'FRACTALS', src: 'https://s1.xrpnft.com/static/collection/fractals.jpg', link: 'https://fractal.nftlabs.to/'},
-        {title: 'LEDGERPUNK', src: 'https://s1.xrpnft.com/static/collection/ledgerpunks-nft.jpg', link: 'https://ledgerpunks.com/'},
-        {title: 'RIPPLE SHARKS', src: 'https://s1.xrpnft.com/static/collection/Ripple-Sharks.jpg', link: 'https://nftlabs.to/projects/ripple-sharks/'},
-        {title: 'LLAMMAPALOOZA', src: 'https://s1.xrpnft.com/static/collection/llamapalooza-xrplnft.jpg', link: 'https://llamapalooza.nftlabs.to/'},
-        {title: 'TRIPPY APES CLUB', src: 'https://s1.xrpnft.com/static/collection/TRIPPY.jpg', link: 'https://trippyapes.nftlabs.to/'},
+        {title: 'FAT CATS', src: '/static/collection/fat-cats-xrpl.jpg', link: 'https://fatcats.nftlabs.to/'},
+        {title: 'FRACTALS', src: '/static/collection/fractals.jpg', link: 'https://fractal.nftlabs.to/'},
+        {title: 'LEDGERPUNK', src: '/static/collection/ledgerpunks-nft.jpg', link: 'https://ledgerpunks.com/'},
+        {title: 'RIPPLE SHARKS', src: '/static/collection/Ripple-Sharks.jpg', link: 'https://nftlabs.to/projects/ripple-sharks/'},
+        {title: 'LLAMMAPALOOZA', src: '/static/collection/llamapalooza-xrplnft.jpg', link: 'https://llamapalooza.nftlabs.to/'},
+        {title: 'TRIPPY APES CLUB', src: '/static/collection/TRIPPY.jpg', link: 'https://trippyapes.nftlabs.to/'},
     ];
+
+    // const images = [
+    //     {title: 'FAT CATS', src: 'https://s1.xrpnft.com/static/collection/fat-cats-xrpl.jpg', link: 'https://fatcats.nftlabs.to/'},
+    //     {title: 'FRACTALS', src: 'https://s1.xrpnft.com/static/collection/fractals.jpg', link: 'https://fractal.nftlabs.to/'},
+    //     {title: 'LEDGERPUNK', src: 'https://s1.xrpnft.com/static/collection/ledgerpunks-nft.jpg', link: 'https://ledgerpunks.com/'},
+    //     {title: 'RIPPLE SHARKS', src: 'https://s1.xrpnft.com/static/collection/Ripple-Sharks.jpg', link: 'https://nftlabs.to/projects/ripple-sharks/'},
+    //     {title: 'LLAMMAPALOOZA', src: 'https://s1.xrpnft.com/static/collection/llamapalooza-xrplnft.jpg', link: 'https://llamapalooza.nftlabs.to/'},
+    //     {title: 'TRIPPY APES CLUB', src: 'https://s1.xrpnft.com/static/collection/TRIPPY.jpg', link: 'https://trippyapes.nftlabs.to/'},
+    // ];
 
     // const cacheImages = async (srcArray) => {
     //     const promises = await srcArray.map((src) => {
@@ -69,7 +69,7 @@ export default function ColectionPreview() {
 
         // cacheImages(images);
 
-        return () => clearInterval(slideInterval);
+        return () => {clearInterval(slideInterval); console.log('kill timer')}
 
     }, []);
 

@@ -10,6 +10,10 @@ import {
     Toolbar
 } from '@mui/material';
 
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
+
 // Components
 import Landing from 'src/landing';
 import ScrollToTop from 'src/components/ScrollToTop';
@@ -52,13 +56,16 @@ function generateRandom(maxLimit = 10){
 
 export default function Overview({data}) {
     const bgIdx = generateRandom();
+    const { darkMode } = useContext(AppContext);
+
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
             <BackgroundWrapper
                 style={{
-                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`
+                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`,
+                    opacity: `${darkMode?0.9:0.99}`
                 }}
             />
 

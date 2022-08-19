@@ -20,6 +20,7 @@ const SlideImage = ({src, alt}) => {
                 alt={alt}
                 layout="fill"
                 objectFit="cover"
+                priority
             />
         </animated.div>
     )

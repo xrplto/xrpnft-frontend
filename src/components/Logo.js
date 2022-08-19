@@ -1,10 +1,14 @@
-import { useContext } from 'react';
-import { AppContext } from 'src/AppContext';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+
+// Material
 import {
     Box,
     Link
 } from '@mui/material';
+
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
 
 function Logo() {
     const { darkMode } = useContext(AppContext);
