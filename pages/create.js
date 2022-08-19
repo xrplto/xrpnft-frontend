@@ -35,7 +35,7 @@ const BackgroundWrapper = styled(Box)(
         background-size: cover;
         background-color: rgb(32, 34, 37);
         background-position: center center;
-        opacity: 0.3;
+        opacity: 0.9;
         z-index: -1;
         filter: blur(0px);
         -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);

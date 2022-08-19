@@ -94,7 +94,6 @@ export const getResponseType = (res) => {
 
 const convertToHttpLink = (uriString) => {
     const regex_uri = /^[a-z0-9:./]+$/i
-    console.log("uristring:", uriString)
 
     if (regex_uri.test(uriString) && uriString.length > 45) {
         if (uriString.slice(0, 10) === 'xrpnft.com') // the tokenURI minted from this site
@@ -109,7 +108,7 @@ const convertToHttpLink = (uriString) => {
             return process.env.REACT_APP_IFPS_GATEWAY + uriString.slice(4)
         }
         else if (uriString.slice(0, 7) === 'ipfs://') {
-            // if (uriString.slice(8,15) === 'bafybei'){
+            // if (uriString.slice(8,15) === 'bafybei') {
             //     return null                
             // }
             return process.env.REACT_APP_IFPS_GATEWAY + uriString.slice(7)
@@ -131,6 +130,7 @@ export const parseNFTUri = (tokenURI) => {
     if (!tokenURI) return null
     if (regex_hex.test(tokenURI)) {
         const uriString = convertHexToString(tokenURI)
+        // console.log(`URI: ${uriString}`);
         return convertToHttpLink(uriString)
     }
     else return null
@@ -144,6 +144,7 @@ export const getImgUrlFromJSONResponse = (_param) => {
             : _param.image
     return convertToHttpLink(uri)
 }
+
 export const GetImgUrlFromHTMLResponse = (res, tokenuri)=>{
     const metadata = tokenuri + "/metadata.json"
     const imageurl = tokenuri + "/data.jpeg"
@@ -349,10 +350,8 @@ export const getIssuer = (tokenId) => {
  */
 export const getNFTokenInfo = async (tokenURI) => {
     const uri = parseNFTUri(tokenURI);
-    console.log({tokenURI, uri})
 
     try {
-        // console.log(uri)
         const res = await axios.get(uri)
         // console.log("res", res.data)
         const type = res.headers['content-type']

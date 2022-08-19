@@ -130,13 +130,17 @@ export default function Minting() {
             if (ext)
                 ext = ext.toLowerCase();
             if (ext === 'jpg' || ext === 'png') {
-                setImgExt(ext);
-                setFile(pickedFile);
-                // This is used as src of image
-                const reader = new FileReader();
-                reader.readAsDataURL(pickedFile)
-                reader.onloadend = function (e) {
-                    setFileUrl(reader.result); // data:image/jpeg;base64
+                const size = pickedFile.size;
+                if (size < 10240000) {
+                    setImgExt(ext);
+                    setFile(pickedFile);
+                    console.log(pickedFile.size);
+                    // This is used as src of image
+                    const reader = new FileReader();
+                    reader.readAsDataURL(pickedFile)
+                    reader.onloadend = function (e) {
+                        setFileUrl(reader.result); // data:image/jpeg;base64
+                    }
                 }
             }
         }

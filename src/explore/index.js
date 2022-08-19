@@ -21,7 +21,7 @@ export default function ExploreNFT({data}) {
     const BASE_URL = 'https://api.xrpnft.com/api'
 
     const { enqueueSnackbar } = useSnackbar();
-    const [nfTokens, setNfTokens] = useState([])
+    const [nfTokens, setNfTokens] = useState(data.nfts)
     const [offset, setOffset] = useState(0)
     const [hasMore, setHasMore] = useState(true)
     const [flag, setFlag] = useState(0);
@@ -65,6 +65,7 @@ export default function ExploreNFT({data}) {
         setOffset(0)
         fetchImages([], 0)
     }
+
     useEffect(() => {
         reset()
         setHasMore(true)
@@ -72,43 +73,42 @@ export default function ExploreNFT({data}) {
     }, [flag]);
 
     return (
-        <div>
-            <InfiniteScroll
-                dataLength={nfTokens.length}
-                next={() => fetchImages()}
-                hasMore={hasMore}
-                // loader={<p>loading...</p>}
-            >   
-            
-                <Grid container spacing={2}
-                    style={{
-                        display: 'grid',
-                        justifyContent: 'center',
-                        alignContent: 'flex-start',
-                        gridGap: '50px',
-                        gridTemplateColumns: 'repeat(auto-fill, 300px)'
-                    }}
-                >
-                    {   
-                    
-                        nfTokens.map((nft) => (
-                            
-                            // <Grid item key={nft.NFTokenID}
-                            // >
-                                <NFTCard
-                                    Flags={nft.Flags}
-                                    Issuer={nft.Issuer}
-                                    URI={nft.URI}
-                                    NFTokenID={nft.NFTokenID}
-                                    
-                                />
-                            //  </Grid>
-                        ))
+        <InfiniteScroll
+            dataLength={nfTokens.length}
+            next={() => fetchImages()}
+            hasMore={hasMore}
+            // loader={<p>loading...</p>}
+        >   
+        
+            <Grid container spacing={2}
+                style={{
+                    display: 'grid',
+                    justifyContent: 'center',
+                    alignContent: 'flex-start',
+                    gridGap: '50px',
+                    gridTemplateColumns: 'repeat(auto-fill, 300px)',
+                    marginTop: '30px'
+                }}
+            >
+                {   
+                
+                    nfTokens.map((nft) => (
                         
-                        // .filter(getNFTimage_info(URI)!==null)      
-                    }
-                </Grid>
-            </InfiniteScroll>
-        </div>
+                        // <Grid item key={nft.NFTokenID}
+                        // >
+                            <NFTCard
+                                key={nft.NFTokenID}
+                                Flags={nft.Flags}
+                                Issuer={nft.Issuer}
+                                URI={nft.URI}
+                                NFTokenID={nft.NFTokenID}
+                            />
+                        //  </Grid>
+                    ))
+                    
+                    // .filter(getNFTimage_info(URI)!==null)      
+                }
+            </Grid>
+        </InfiniteScroll>
     );
 };

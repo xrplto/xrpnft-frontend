@@ -29,13 +29,13 @@ export default function Landing({data}) {
     return (
         <Grid container spacing={3} justifyContent="center" alignItems="center" display="flex" sx={{mt:2}}>
             <Grid item xs={12} md={7} lg={7}>
-                <AutoStack1 spacing={1}>
+                <AutoStack1>
                     <Typography variant="h1a">Discover, collect, and sell extraordinary NFTs</Typography>
-                    <Stack sx={{mt:3}}>
+                    <Stack sx={{mt:4}}>
                         <Typography variant="s1">XRPNFT.COM is the world's first and largest XRPL NFT Marketplace.</Typography>
                     </Stack>
 
-                    <Stack direction="row" spacing={2} sx={{mt: 4}}>
+                    <Stack direction="row" spacing={2} sx={{mt: 3}}>
                         <Link
                             underline="none"
                             color="inherit"

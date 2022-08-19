@@ -30,37 +30,42 @@ const OverviewWrapper = styled(Box)(
 const BackgroundWrapper = styled(Box)(
     ({ theme }) => `
         width: 100%;
+        height: 100%;
         position: absolute;
+        background-repeat: repeat-y;
         background-size: cover;
         background-color: rgb(32, 34, 37);
         background-position: center center;
-        opacity: 0.3;
-        filter: blur(8px);
-        -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);
-        overflow: hidden;
-        flex: 1;
+        opacity: 0.9;
+        z-index: -1;
+        filter: blur(0px);
 `
 );
 
+function generateRandom(maxLimit = 10){
+    let rand = Math.random() * maxLimit;
+
+    rand = Math.floor(rand);
+
+    return rand;
+}
+
 export default function Overview({data}) {
+    const bgIdx = generateRandom();
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
+
+            {/* <BackgroundWrapper
+                style={{
+                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`
+                }}
+            /> */}
+
             <Header />
 
             <Container maxWidth="lg">
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="left"
-                    alignItems="stretch"
-                    spacing={3}
-                    sx={{mt:2}}
-                >
-                    <Grid item xs={12} md={12} lg={12} >
-                        <ExploreNFT />
-                    </Grid>
-                </Grid>
+                <ExploreNFT data={data}/>
             </Container>
 
             <ScrollToTop />
