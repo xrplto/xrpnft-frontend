@@ -82,12 +82,12 @@ const BASE_URL = 'http://95.217.113.244/api';
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps() {
-    // https://api.xrpnft.com/api/nfts?page=0&limit=30&flag=1&self=false
+    // https://api.xrpnft.com/api/nfts?page=0&limit=30&flag=1&status=1&self=false
     let data = null;
     try {
         var t1 = performance.now();
 
-        const res = await axios.get(`${BASE_URL}/nfts?page=0&limit=30&flag=1&self=false`);
+        const res = await axios.get(`${BASE_URL}/nfts?page=0&limit=30&flag=1&status=1&self=false`);
 
         data = res.data;
 

@@ -21,16 +21,16 @@ export default function ExploreNFT({data}) {
     const BASE_URL = 'https://api.xrpnft.com/api'
 
     const { enqueueSnackbar } = useSnackbar();
-    const [nfTokens, setNfTokens] = useState(data.nfts)
-    const [offset, setOffset] = useState(0)
-    const [hasMore, setHasMore] = useState(true)
+    const [nfTokens, setNfTokens] = useState(data.nfts);
+    const [offset, setOffset] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
     const [flag, setFlag] = useState(0);
 
     const fetchImages = (nfTokensParam, offsetParam) => {
         const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
         const _offset = offsetParam === 0 ? offsetParam : offset
         axios
-            .get(`${BASE_URL}/nfts?page=${_offset}&limit=30&flag=${flag}&self=false`)
+            .get(`${BASE_URL}/nfts?page=${_offset}&limit=30&flag=${flag}&status=1&self=false`)
             .then(res => {
                 if (res.data.nfts.length < 10) {
                     setHasMore(false)

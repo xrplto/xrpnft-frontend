@@ -3,6 +3,7 @@ import numeral from 'numeral';
 import { replace } from 'lodash';
 import { format, formatDistanceToNow } from 'date-fns';
 import {encodeAccountID} from 'ripple-address-codec';
+import isIPFS from 'is-ipfs';
 
 // ----------------------------------------------------------------------
 function extractUrisFromString(uris_string) {
@@ -344,66 +345,74 @@ export const getIssuer = (tokenId) => {
     return tokenId ? encodeAccountID(Buffer.from(tokenId.slice(8, 48), "hex")) : null;
 }
 
+export const getNFTfromURI = async (URI) => {
+    let strURI = '';
+    try {
+        strURI = convertHexToString(URI);
+    } catch(e) {}
+
+    let hash = 'default';
+
+    if (isIPFS.multihash(strURI))
+        hash = strURI
+    else if (isIPFS.ipfsUrl(strURI)) {
+        var lastPart = strURI.split("/").pop();
+        if (isIPFS.multihash(lastPart))
+            hash = lastPart;
+    }
+
+    return hash;
+}
+
 /**
  * get image link from token URI, hex_uri
  * @param {string} URI
  */
 export const getNFTokenInfo = async (tokenURI) => {
-    const uri = parseNFTUri(tokenURI);
+    // const uri = parseNFTUri(tokenURI);
+
+    const hash = await getNFTfromURI(tokenURI);
+    const uri = `https://xrpnft.mypinata.cloud/ipfs/${hash}`;
+
+    let img = '/static/nft.png';
+    let data = '';
+    let type = '';
 
     try {
-        const res = await axios.get(uri)
+        const res = await axios.get(uri);
         // console.log("res", res.data)
-        const type = res.headers['content-type']
-        console.log("type:", type)
+        type = res.headers['content-type'];
 
-        if (type === 'application/json') { // if the response data is JSON object
-            return {
-                description: res.data,
-                image: getImgUrlFromJSONResponse(res.data)
-            }
+        if (type === 'application/geo+json') {
+            data = res.data;
+        }
+        else if (type === 'application/json') { // if the response data is JSON object
+            data = res.data;
+            img = getImgUrlFromJSONResponse(res.data);
         }
         else if (type.slice(0, 5) === 'image') { // if the response is image
-            // console.log("image description",)
-            return {
-                description: res.data,
-                image: uri
-            }
+            data = res.data;
+            img = uri;
         }
-        else if (type.slice(0, 4)==='text'){ //if the response is HTML/text
+        else if (type.slice(0, 4)==='text'){ //if the response is text/html
             const NFTinfo = GetImgUrlFromHTMLResponse(res.data, uri)
             const des = getdataFromjosn(NFTinfo.metadata)
             // console.log("text description:", des.data)
-            return {
-                description: des.data,
-                image: NFTinfo.image
-            }
+            data = des.data;
+            img = NFTinfo.image;
         }
         // else if (type.slice==='application/pdf'){
-
-
         // }
         else if(type==='application/x-dbf')
         {
-            return {
-            description: res.data,
-            image:getImgUrlFromJSONResponse(res.data)
-            }
-        }
-        else {
-            console.log('Unknown file type: ', res)
-            return {
-                description: null,
-                image: null
-            }
+            data = res.data;
+            img = getImgUrlFromJSONResponse(res.data);
         }
     } catch (e) {
         console.log(e.message)
-        return {
-            description: null,
-            image: null
-        }
     }
+
+    return {type, data, img};
 }
 /**
  * get image link from token URI, hex_uri

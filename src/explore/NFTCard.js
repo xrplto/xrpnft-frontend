@@ -19,7 +19,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { Icon } from '@iconify/react';
 
 // Utils
-import { getNFTokenInfo, convertHexToString } from 'src/utils/parse';
+import { getNFTokenInfo, convertHexToString, getNFTfromURI } from 'src/utils/parse';
 
 // Components
 import FlagsContainer from './Flags';
@@ -41,9 +41,10 @@ const CardWrapper = styled('div')(
 );
 
 export default function NFTCard({ Flags, Issuer, NFTokenID, URI }) {
-    const [imgUrl, setImgUrl] = useState('')
-    const [loading, setLoading] = useState(false)
-    const [name, setName] = useState(null)
+    const [type, setType] = useState('');
+    const [imgUrl, setImgUrl] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [name, setName] = useState(null);
 
     const [isLike, setIsLike] = useState(false);
     const [colors, setColors] = useState([]);
@@ -57,19 +58,22 @@ export default function NFTCard({ Flags, Issuer, NFTokenID, URI }) {
     useEffect(() => {
         let mounted = true
         const getImgUrl = async () => {
-            setLoading(true)
+            setLoading(true);
 
-            const res = await getNFTokenInfo(URI)
+            const res = await getNFTokenInfo(URI);
+            setType(res.type);
+
+            console.log(res);
             
             if (mounted) {
-                // setImgUrl('/static/nft.png')
-                setImgUrl(res.image)
-                console.log("image url", res.image)
+                setImgUrl('/static/nft.png');
+                // setImgUrl(res.image)
+
+                // console.log("image url", res.image);
             }
-            setLoading(false)
+            setLoading(false);
             // if(res.description.name){
             // setName(res.description.name)}
-
         }
 
         getImgUrl()
@@ -93,7 +97,7 @@ export default function NFTCard({ Flags, Issuer, NFTokenID, URI }) {
                         )`,
                 }}
             >
-                {/* <ColorExtractor getColors={getColors}>
+                <ColorExtractor getColors={getColors}>
                     <img src={imgUrl}
                         style={{
                             width: 250,
@@ -102,8 +106,8 @@ export default function NFTCard({ Flags, Issuer, NFTokenID, URI }) {
                             borderRadius: 20
                         }}
                     />
-                </ColorExtractor> */}
-                {
+                </ColorExtractor>
+                {/* {
                   !loading
                     ?
                     <CardMedia
@@ -128,9 +132,9 @@ export default function NFTCard({ Flags, Issuer, NFTokenID, URI }) {
                             borderRadius:20
                         }}
                     />
-                }
+                } */}
                 <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>
-                    <Typography variant='s2'>Collection</Typography>
+                    <Typography variant='s2'>{type.toUpperCase()}</Typography>
                     <Typography variant='s2'>Price</Typography>
                 </Stack>
                 <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>
