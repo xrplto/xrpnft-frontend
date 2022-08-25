@@ -30,7 +30,7 @@ export default function ExploreNFT({data}) {
         const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
         const _offset = offsetParam === 0 ? offsetParam : offset
         axios
-            .get(`${BASE_URL}/nfts?page=${_offset}&limit=30&flag=${flag}&status=1&self=false`)
+            .get(`${BASE_URL}/nfts?page=${_offset}&limit=30&flag=${flag}&status=3&self=false`)
             .then(res => {
                 if (res.data.nfts.length < 10) {
                     setHasMore(false)
@@ -98,6 +98,7 @@ export default function ExploreNFT({data}) {
                         // >
                             <NFTCard
                                 key={nft.NFTokenID}
+                                nft={nft}
                                 Flags={nft.Flags}
                                 Issuer={nft.Issuer}
                                 URI={nft.URI}

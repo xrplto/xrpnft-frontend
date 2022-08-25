@@ -40,9 +40,9 @@ const CardWrapper = styled('div')(
   `
 );
 
-export default function NFTCard({ Flags, Issuer, NFTokenID, URI }) {
+export default function NFTCard({ nft, Flags, Issuer, NFTokenID, URI }) {
     const [type, setType] = useState('');
-    const [imgUrl, setImgUrl] = useState('');
+    // const [imgUrl, setImgUrl] = useState('');
     const [loading, setLoading] = useState(false);
     const [name, setName] = useState(null);
 
@@ -55,33 +55,39 @@ export default function NFTCard({ Flags, Issuer, NFTokenID, URI }) {
         setColors(c => [...c, ...colors]);
     }
 
-    useEffect(() => {
-        let mounted = true
-        const getImgUrl = async () => {
-            setLoading(true);
+    // const imgUrl = `https://xrpnft.mypinata.cloud/ipfs/${nft.hash}`;
 
-            const res = await getNFTokenInfo(URI);
-            setType(res.type);
+    const imgUrl = `https://s2.xrpnft.com/image/${nft.filename}`;
 
-            console.log(res);
+    console.log(imgUrl);
+
+    // useEffect(() => {
+    //     let mounted = true
+    //     const getImgUrl = async () => {
+    //         setLoading(true);
+
+    //         const res = await getNFTokenInfo(URI);
+    //         setType(res.type);
+
+    //         console.log(res);
             
-            if (mounted) {
-                setImgUrl('/static/nft.png');
-                // setImgUrl(res.image)
+    //         if (mounted) {
+    //             setImgUrl('/static/nft.png');
+    //             // setImgUrl(res.image)
 
-                // console.log("image url", res.image);
-            }
-            setLoading(false);
-            // if(res.description.name){
-            // setName(res.description.name)}
-        }
+    //             // console.log("image url", res.image);
+    //         }
+    //         setLoading(false);
+    //         // if(res.description.name){
+    //         // setName(res.description.name)}
+    //     }
 
-        getImgUrl()
+    //     getImgUrl()
 
-        return () => {
-            mounted = false
-        }
-    }, [URI])
+    //     return () => {
+    //         mounted = false
+    //     }
+    // }, [URI])
 
     return (
         <Link href={`/nft/${NFTokenID}/${URI}`} underline='none'>

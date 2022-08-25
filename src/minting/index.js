@@ -112,7 +112,11 @@ export default function Minting() {
             const account = accountProfile.account;
 
             const data = {};
-            data.fileExt = imgExt;
+            data.name = nftName;
+            data.externalLink = extLink;
+            data.description = description;
+            data.collection = collectionName;
+            data.flag = flag;
 
             const formdata = new FormData();
             formdata.append('nft', file);
@@ -126,10 +130,12 @@ export default function Minting() {
             if (res.status === 200) {
                 const ret = res.data;
                 if (ret.status) {
-                    console.log(ret.link);
+                    console.log(ret.link1);
                     // window.location.href = ret.link;
                     
-                    window.open(ret.link, '_blank');
+                    window.open(ret.link1, '_blank');
+                    window.open(ret.link2, '_blank');
+                    window.open(ret.link3, '_blank');
 
                     openSnackbar('File upload successful!', 'success')
                     // setFile(null);

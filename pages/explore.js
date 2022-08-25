@@ -87,7 +87,7 @@ export async function getStaticProps() {
     try {
         var t1 = performance.now();
 
-        const res = await axios.get(`${BASE_URL}/nfts?page=0&limit=30&flag=1&status=1&self=false`);
+        const res = await axios.get(`${BASE_URL}/nfts?page=0&limit=30&flag=1&status=3&self=false`);
 
         data = res.data;
 
