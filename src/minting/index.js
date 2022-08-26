@@ -130,16 +130,32 @@ export default function Minting() {
             if (res.status === 200) {
                 const ret = res.data;
                 if (ret.status) {
-                    console.log(ret.link1);
-                    console.log(ret.link2);
-                    console.log(ret.link3);
+                    console.log(ret.data);
+                    // console.log(ret.link1);
+                    // console.log(ret.link2);
+                    // console.log(ret.link3);
                     // window.location.href = ret.link;
                     
                     // window.open(ret.link1, '_blank');
                     // window.open(ret.link2, '_blank');
                     // window.open(ret.link3, '_blank');
 
-                    openSnackbar('File upload successful!', 'success')
+                    /*{
+                        "name": "FRACTAL-BBB",
+                        "externalLink": "",
+                        "description": "",
+                        "collection": "",
+                        "Flags": 13,
+                        "Issuer": "rEBKhngY8izMvRrgGg3Yh5zdiQgHH9cExg",
+                        "minter": "xrpnft.com",
+                        "image": "QmbUaafMaftkUTt44DVdTaSwgKzf51UWMD4NNNc7Jt4fCf",
+                        "URI": "516D656A506E6E6775635A5664723637583937324C313842726A366F317241503842794754796137645259763234",
+                        "uuid": "d1dcfe3cac80409793629707de2aafbf",
+                        "minted": false,
+                        "_id": "6308bc3d7a1dec795f21fc33"
+                    } */
+                    window.location.href = `/token/${uuid}`;
+                    openSnackbar('NFT mint successful!', 'success')
                     // setFile(null);
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }

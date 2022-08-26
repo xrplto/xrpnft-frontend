@@ -82,12 +82,12 @@ export default function Overview({data}) {
     );
 }
 
-const BASE_URL = 'http://95.217.113.244/api';
-
 // This function gets called at build time on server-side.
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps() {
+    const BASE_URL = 'http://95.217.113.244:3000/api';
+
     let ret = {};
 
     const ogp = {};
