@@ -83,11 +83,11 @@ export default function ChooseAccountDgContent() {
     const handleOk = async () => {
         // TODO: Open a new page with selected account
         // console.log('sendgindsdfsdf')
-        // console.log('account key', account.key)
+        // console.log('account', account.account)
         // navigate(`/account/${nftoken.tokenID}?tokenURI=${nftoken.URI}`)
-        if (account.key) {
+        if (account.account) {
             dispatch(doSetAccount(account))
-            const res = await getTokens(account.key)
+            const res = await getTokens(account.account)
             try {
                 
                 console.log("gettoken",res)
@@ -97,7 +97,7 @@ export default function ChooseAccountDgContent() {
             }
             // if(res){
             dispatch(login())
-            navigate(`/explore/${account.key}`)
+            navigate(`/explore/${account.account}`)
             // }
             // else{
             //     openSnackbar('Network is unstable','error')
@@ -120,13 +120,13 @@ export default function ChooseAccountDgContent() {
                     {ACCOUNTS.map((item) => (
                         <ListItemStyle
                             onClick={(event) => handleListItemClick(event, item)}
-                            key={item.key}
+                            key={item.account}
                             sx={{
-                                ...((account.key === item.key) && selectedStyle)
+                                ...((account.account === item.account) && selectedStyle)
                             }}
                         >
                             <ListItemIconStyle>{icon}</ListItemIconStyle>
-                            <ListItemText primary={`Account ${item.id}`} secondary={item.key} />
+                            <ListItemText primary={`Account ${item.id}`} secondary={item.account} />
                         </ListItemStyle>
                     ))}
                 </List>

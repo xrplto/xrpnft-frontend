@@ -21,21 +21,23 @@ export const SUPPORTED_FILE_TYPES = [
 export const ACCOUNTS = [
     {
         id: 1,
-        key: "rPPfyzxWCXo2FhL6j7LQ3JC5kWCaBs4pvZ",
-        secret: "ssjNJ1kqi3cuWES8FZVmSmY9pVCdC",
-        sequence: 1824352
+        account: "rKVd5WtB8ugrxaTDTbJv6pVH7WunmyryLq",
     },
     {
         id: 2,
-        key: "rNZ8EFNxCTf2sZTVExQgayqPRsGZK9AgQ8",
-        secret: "shh665kVoKGJzwjWmHdp1p3aqYCbQ",
-        sequence: 1824368
+        account: "rEBKhngY8izMvRrgGg3Yh5zdiQgHH9cExg",
     },
     {
         id: 3,
-        key: "rpRSDXFztBAsgAyFvSBqXF8B8CJXGu6DbZ",
-        secret: "ssSEzKkkK57yePdHU4jTt7DjfXSX5",
-        sequence: 1824374
+        account: "rwj4mN7o5niF2zqoUajKGH5rXJwdWyLWF9",
+    },
+    {
+        id: 4,
+        account: "rQ3zXHDBM7mbZyNrUP1fGjhEfHT38dkx1v",
+    },
+    {
+        id: 5,
+        account: "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
     },
 ];
 export const TOP_BAR_HEIGHT_DESKTOP = 33

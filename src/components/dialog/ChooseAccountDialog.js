@@ -30,13 +30,13 @@ const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props
     paddingRight: theme.spacing(2.5),
     color: theme.palette.text.secondary,
     '&:before': {
-      top: 0, right: 0, width: 3, bottom: 0,
-      content: "''",
-      display: 'none',
-      position: 'absolute',
-      borderTopLeftRadius: 4,
-      borderBottomLeftRadius: 4,
-      backgroundColor: theme.palette.primary.main
+        top: 0, right: 0, width: 3, bottom: 0,
+        content: "''",
+        display: 'none',
+        position: 'absolute',
+        borderTopLeftRadius: 4,
+        borderBottomLeftRadius: 4,
+        backgroundColor: theme.palette.primary.main
     }
   })
 );
@@ -100,7 +100,7 @@ export default function ChooseAccountDialog({ onClose, accounts, selectedIdx, re
                         }}
                         >
                         <ListItemIconStyle>{icon}</ListItemIconStyle>
-                        <ListItemText primary={`Account ${item.id}`} secondary={item.key} />
+                        <ListItemText primary={`Account ${item.id}`} secondary={item.account} />
                     </ListItemStyle>
                     ))}
                 </List>

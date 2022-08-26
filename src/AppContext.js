@@ -35,19 +35,19 @@ export function ContextProvider({ children, data }) {
     }, []);
 
     useEffect(() => {
-        const profile = window.localStorage.getItem('accountProfile1');
+        const profile = window.localStorage.getItem('accountProfile2');
         //const profile = '{"account":"rDsRQWRTRrtzAgK8HH7rcCAZnWeCsJm28K","uuid":"4a3eb58c-aa97-4d48-9ab2-92d90df9a75f"}';
         if (profile) {
             _setAccountProfile(JSON.parse(profile));
         } else {
             const id = 1;
-            const account = ACCOUNTS[id - 1].key;
+            const account = ACCOUNTS[id - 1].account;
             _setAccountProfile({account, id});
         }
     }, [])
 
     const setAccountProfile = (profile) => {
-        window.localStorage.setItem('accountProfile1', JSON.stringify(profile));
+        window.localStorage.setItem('accountProfile2', JSON.stringify(profile));
         _setAccountProfile(profile);
     };
 

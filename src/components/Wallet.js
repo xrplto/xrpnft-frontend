@@ -142,7 +142,7 @@ export default function Wallet() {
     const handleChooseAccount = (value) => {
         setSelectedIndex(value);
         const id = value;
-        const account = ACCOUNTS[id - 1].key;
+        const account = ACCOUNTS[id - 1].account;
         setAccountProfile({account, id});
     };
 

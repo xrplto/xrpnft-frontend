@@ -131,11 +131,13 @@ export default function Minting() {
                 const ret = res.data;
                 if (ret.status) {
                     console.log(ret.link1);
+                    console.log(ret.link2);
+                    console.log(ret.link3);
                     // window.location.href = ret.link;
                     
-                    window.open(ret.link1, '_blank');
-                    window.open(ret.link2, '_blank');
-                    window.open(ret.link3, '_blank');
+                    // window.open(ret.link1, '_blank');
+                    // window.open(ret.link2, '_blank');
+                    // window.open(ret.link3, '_blank');
 
                     openSnackbar('File upload successful!', 'success')
                     // setFile(null);
