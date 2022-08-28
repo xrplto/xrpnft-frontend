@@ -23,7 +23,7 @@ import { Icon } from '@iconify/react';
 // Utils
 import { burnToken } from 'utils/tokenActions'
 
-export default function BurnNFTDgContent({ close, NFTokenID }) {
+export default function BurnNFTDgContent({ close, TokenID }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
     const [loading, setLoading] = useState(false)
     const account = useSelector(state => state.status.account)
@@ -34,7 +34,7 @@ export default function BurnNFTDgContent({ close, NFTokenID }) {
             try {
                 await burnToken(
                     account.secret,
-                    NFTokenID,
+                    TokenID,
                 )
                 openSnackbar('Offer succeed!', 'success')
                 close()

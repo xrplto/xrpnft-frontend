@@ -1,3 +1,6 @@
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+// Material
 import {
     Accordion,
     AccordionSummary,
@@ -13,42 +16,33 @@ import {
 import DescriptionIcon from '@mui/icons-material/Description';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ArticleIcon from '@mui/icons-material/Article';
+
+// Iconify
 import { Icon } from '@iconify/react';
+
+// Components
 import NFTPreview from './NFTPreview';
-import { NFTDetailsProps } from 'utils/types';
 import FlagsContainer from 'components/NFTCard/Flags';
 import NFTDetailsDescription from './NftDetailsDescription';
 import Properties from 'components/miniting/NFTProperties/Properties';
 import Levels from 'components/miniting/NFTLevels/Levels';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
 
+export default function NFTDetails({token}) {
+    const {
+        name,
+        image,
+        uuid,
+        description,
+        collection,
+        Issuer,
+        TokenID
+    } = token;
 
-NFTDetails.propTypes = NFTDetailsProps
-
-export default function NFTDetails({
-    NFTokenID,
-    NFToken,
-    ParsedURI,
-    data
-}) {
-//     const res = axios.get(ParsedURI)
-//     const type = res.headers['content-type']
-//     setTimeout(async()=>{
-// }, 0)
-// const [paruri, setParuri] = useState(null)
-// if(type.slice(0,4)==="text")
-// {
-//     setParuri(res.data)
-// }
-// else{
-//     setParuri(ParsedURI)
-// }
     return (
         <Box >
             {/* NFT Preview image start--- */}
             {data.image &&
-                <NFTPreview uri={data.image} title={data.description?.name} favorites={0} />
+                <NFTPreview uri={image} title={data.description?.name} favorites={0} />
             }
             {/* NFT Preview image end--- */}
 

@@ -40,7 +40,7 @@ const CardWrapper = styled('div')(
   `
 );
 
-export default function NFTCard({ nft, Flags, Issuer, NFTokenID, URI }) {
+export default function NFTCard({ nft, Flags, Issuer, TokenID, URI }) {
     const [type, setType] = useState('');
     // const [imgUrl, setImgUrl] = useState('');
     const [loading, setLoading] = useState(false);
@@ -90,7 +90,7 @@ export default function NFTCard({ nft, Flags, Issuer, NFTokenID, URI }) {
     // }, [URI])
 
     return (
-        <Link href={`/nft/${NFTokenID}/${URI}`} underline='none'>
+        <Link href={`/nft/${TokenID}/${URI}`} underline='none'>
             <CardWrapper
                 style={{
                     width: 280,

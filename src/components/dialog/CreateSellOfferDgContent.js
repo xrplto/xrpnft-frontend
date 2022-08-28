@@ -31,7 +31,7 @@ import { useSelector } from 'react-redux';
 import { createSellOffer } from 'src/utils/tokenActions';
 import { getCurrentRippleEpoch } from 'src/utils/utils';
 
-export default function CreateSellOfferDgContent({ close, NFTokenID, setOffers }) {
+export default function CreateSellOfferDgContent({ close, TokenID, setOffers }) {
     const { enqueueSnackbar } = useSnackbar()
     const account = useSelector(state => state.status.account)
     const login = useSelector(state => state.status.login)
@@ -46,7 +46,7 @@ export default function CreateSellOfferDgContent({ close, NFTokenID, setOffers }
             try {
                 const res = await createSellOffer(
                     account.secret,
-                    NFTokenID,
+                    TokenID,
                     Math.floor(price * 10 ** 6).toString(),
                     expiration ? getCurrentRippleEpoch() + 24 * 60 * 60 * expiration : 0,
                     destination

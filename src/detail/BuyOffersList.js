@@ -1,18 +1,31 @@
 import { useState, useEffect } from 'react';
-import { List, Container, Grid, ButtonGroup, Backdrop, Button } from '@mui/material';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import { Icon } from '@iconify/react';
-import { acceptBuyOffer, cancelOffer } from 'utils/tokenActions';
-import { BuyOffersProps } from 'utils/types';
-import { useSelector } from 'react-redux'
-import { useSnackbar } from 'notistack'
+import { useSnackbar } from 'notistack';
 import { FadeLoader } from 'react-spinners';
-import { setNFTs } from 'app/slices/accountSlice'
-import { useDispatch } from 'react-redux'
+
+// Material
+import {
+    Avatar,
+    Backdrop,
+    Button,
+    ButtonGroup,
+    Container,
+    Divider,
+    Grid,
+    List,
+    ListItem,
+    ListItemAvatar,
+    Typography
+} from '@mui/material';
+
+// Iconify
+import { Icon } from '@iconify/react';
+
+// Utils
+import { acceptBuyOffer, cancelOffer } from 'utils/tokenActions';
+
+// Redux
+import { useSelector, useDispatch } from 'react-redux';
+import { setNFTs } from 'src/redux/statusSlice';
 
 // cannot accept buy offer if you are not the owner of token.
 // cannot accept sell offer if seller is not the owner of token.
@@ -20,19 +33,18 @@ import { useDispatch } from 'react-redux'
 // cannot accept offer if the expiration time and the closing time of the parent ledger has passed.
 // cannot accept an offer made by you.
 
-BuyOffersList.propTypes = BuyOffersProps
-
-export default function BuyOffersList({ _NFTokenID, _offers, _isOwner }) {
-    const { enqueueSnackbar } = useSnackbar()
-    const dispatch = useDispatch()
-    const [loading, setLoading] = useState(false)
-    const account = useSelector(state => state.account.account)
-    const login = useSelector(state => state.account.login)
-    const [offers, setOffers] = useState([..._offers])
+export default function BuyOffersList({ _TokenID, _offers, _isOwner }) {
+    const { enqueueSnackbar } = useSnackbar();
+    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
+    const account = useSelector(state => state.account.account);
+    const login = useSelector(state => state.account.login);
+    const [offers, setOffers] = useState([..._offers]);
+    
     const handleCancelOffer = async (index) => {
         setLoading(true)
         try {
-            const res = await cancelOffer(account.secret, index, _NFTokenID)
+            const res = await cancelOffer(account.secret, index, _TokenID)
             setOffers(res.buyOffers)
             enqueueSnackbar('Cancel offer success:' + index.slice(0, 10) + '...', {
                 variant: 'success'

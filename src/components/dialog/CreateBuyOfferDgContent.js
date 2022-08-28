@@ -26,7 +26,7 @@ import { createBuyOffer } from 'src/utils/tokenActions';
 
 const rippleAPI = require('ripple-address-codec');
 
-export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers, owner }) {
+export default function CreateBuyOfferDgContent({ close, TokenID, setOffers, owner }) {
     const { enqueueSnackbar } = useSnackbar()
     const account = useSelector(state => state.status.account)
     const login = useSelector(state => state.status.login)
@@ -49,7 +49,7 @@ export default function CreateBuyOfferDgContent({ close, NFTokenID, setOffers, o
                 try {
                     const res = await createBuyOffer(
                         account.secret,
-                        NFTokenID,
+                        TokenID,
                         Math.floor(price * 10 ** 6).toString(),
                         destination
                     )

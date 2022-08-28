@@ -94,15 +94,15 @@ export default function ExploreNFT({data}) {
                 
                     nfTokens.map((nft) => (
                         
-                        // <Grid item key={nft.NFTokenID}
+                        // <Grid item key={nft.TokenID}
                         // >
                             <NFTCard
-                                key={nft.NFTokenID}
+                                key={nft.TokenID}
                                 nft={nft}
                                 Flags={nft.Flags}
                                 Issuer={nft.Issuer}
                                 URI={nft.URI}
-                                NFTokenID={nft.NFTokenID}
+                                TokenID={nft.TokenID}
                             />
                         //  </Grid>
                     ))

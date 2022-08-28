@@ -72,7 +72,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="lg">
-                <TokenDetail />
+                <TokenDetail token={data.token}/>
             </Container>
 
             <ScrollToTop />
@@ -84,7 +84,7 @@ export default function Overview({data}) {
 }
 
 export async function getServerSideProps(ctx) {
-    const BASE_URL = 'http://95.217.113.244:3000/api';
+    const BASE_URL = 'http://api.xrpnft.com/api';
 
     let data = null;
     try {

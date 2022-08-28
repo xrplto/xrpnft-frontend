@@ -80,13 +80,13 @@ export default function Overview({data}) {
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps() {
-    const BASE_URL = 'http://95.217.113.244:3000/api';
-    // https://api.xrpnft.com/api/nfts?page=0&limit=30&flag=1&status=1&self=false
+    const BASE_URL = 'http://api.xrpnft.com/api';
+    // https://api.xrpnft.com/api/nfts?page=0&limit=30&flag=1&status=1
     let data = null;
     try {
         var t1 = performance.now();
 
-        const res = await axios.get(`${BASE_URL}/nfts?page=0&limit=30&flag=1&status=3&self=false`);
+        const res = await axios.get(`${BASE_URL}/nfts?page=0&limit=30&flag=1&status=3`);
 
         data = res.data;
 

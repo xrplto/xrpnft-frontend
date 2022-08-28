@@ -34,7 +34,7 @@ SellOffersList.propTypes = BuyOffersProps
 // cannot accept offer if the expiration time and the closing time of the parent ledger has passed.
 // cannot accept an offer made by you.
 
-export default function SellOffersList({ _offers, _NFTokenID, _isOwner }) {
+export default function SellOffersList({ _offers, _TokenID, _isOwner }) {
     const { enqueueSnackbar } = useSnackbar()
     const [loading, setLoading] = useState(false)
     const account = useSelector(state => state.account.account)
@@ -52,7 +52,7 @@ export default function SellOffersList({ _offers, _NFTokenID, _isOwner }) {
     const handleCancelOffer = async (index) => {
         setLoading(true)
         try {
-            const res = await cancelOffer(account.secret, index, _NFTokenID)
+            const res = await cancelOffer(account.secret, index, _TokenID)
             setOffers(res.sellOffers)
             console.log('selloffer', res.selloffers)
             enqueueSnackbar('Cancel offer success:' + index.slice(0, 10) + '...', {
@@ -72,7 +72,7 @@ export default function SellOffersList({ _offers, _NFTokenID, _isOwner }) {
         try {
             const res = await acceptSellOffer(account.secret, index)           
             dispatch(setNFTs(res ?? []))
-            const offers = await getSellAndBuyOffers(_NFTokenID)
+            const offers = await getSellAndBuyOffers(_TokenID)
             if(offers){
             setOffers(offers.sellOffers)
             enqueueSnackbar('Accept offer success:' + index.slice(0, 10) + '...', {

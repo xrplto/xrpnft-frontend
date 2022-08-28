@@ -7,9 +7,7 @@ import {
     Typography,
 } from '@mui/material'
 
-export default function NFTDetailsDescription({
-    description,
-}) {
+export default function NFTDetailsDescription({description}) {
 
     return (
         description ?

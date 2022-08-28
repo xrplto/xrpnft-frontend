@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+
+// Material
 import {
     Accordion,
     AccordionDetails,
@@ -11,31 +13,36 @@ import {
     Paper,
     Box,
 } from '@mui/material'
+
+// Components
 import TimePeriods from 'components/offpage/TimePeriodsDropdown'
 import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 import TimelineIcon from '@mui/icons-material/Timeline'
 import ListIcon from '@mui/icons-material/List'
-import { useSelector } from 'react-redux'
-import { getSellAndBuyOffers } from 'utils/tokenActions'
-import SellOffersList from './SellOffersList'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import BuyOffersList from './BuyOffersList'
-import { NFTOffersDetailProps } from 'utils/types'
+
+// Redux
+import { useSelector } from 'react-redux'
+
+// Utils
 import BaseDialog from 'components/dialog/BaseDialog';
+import { getSellAndBuyOffers } from 'src/utils/tokenActions'
+import SellOffersList from './SellOffersList'
+import BuyOffersList from './BuyOffersList'
 import CreateSellOfferDgContent from 'components/dialog/CreateSellOfferDgContent'
-import { Icon } from '@iconify/react';
 import BurnNFTDgContent from 'components/dialog/BurnNFTDgContent'
 import CreateBuyOfferDgContent from 'components/dialog/CreateBuyOfferDgContent'
 
-NFTOffersDetail.prototype = NFTOffersDetailProps
+// Iconify
+import { Icon } from '@iconify/react';
 
-export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
+export default function NFTOffersDetail({ TokenID, name, Issuer }) {
     const [isOpenSellDg, setIsOpenSellDg] = useState(false)
     const [isOpenBuyDg, setIsOpenBuyDg] = useState(false)
     const [isOpenBurnDg, setIsOpenBurnDg] = useState(false)
     const account_nfts = useSelector(state => state.account.nfts)
     console.log("account nfts", account_nfts)
-    const isOwner = account_nfts.findIndex((nft) => nft.NFTokenID === NFTokenID) > -1
+    const isOwner = account_nfts.findIndex((nft) => nft.TokenID === TokenID) > -1
     console.log("account token ID", isOwner)
     const login = useSelector(state => state.account.login)
     const [isPageLoading, setPageLoading] = useState(false)
@@ -46,7 +53,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
     const fetchOffers = async (mounted) => {
         setPageLoading(true)
         try {
-            const res = await getSellAndBuyOffers(NFTokenID)
+            const res = await getSellAndBuyOffers(TokenID)
             if (mounted) {
                 console.log({ res })
                 setBuyOffers(res.buyOffers)
@@ -78,7 +85,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-    // console.log("owner", NFTokenID)
+    // console.log("owner", TokenID)
     return (
         <div>
             <Stack spacing={2} marginTop={1}>
@@ -159,7 +166,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                                     <SellOffersList
                                         id={offers.data.sellOffers.id}
                                         result={offers.data.sellOffers.result}
-                                        NFTokenID={NFTokenID}
+                                        TokenID={TokenID}
                                         isOwner={isOwner}
                                     /> :
                                     <Typography variant='string'>
@@ -172,7 +179,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                         :
                         <SellOffersList
                             _offers={sellOffers}
-                            _NFTokenID={NFTokenID}
+                            _TokenID={TokenID}
                             _isOwner={isOwner}
                         />
                     }
@@ -199,7 +206,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                         :
                         <BuyOffersList
                             _offers={buyOffers}
-                            _NFTokenID={NFTokenID}
+                            _TokenID={TokenID}
                             _isOwner={isOwner}
                         />}
                     {/* {
@@ -246,7 +253,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                         close={() => {
                             setIsOpenSellDg(false)
                         }}
-                        NFTokenID={NFTokenID}
+                        TokenID={TokenID}
                         setOffers={(offers) => setSellOffers(offers)}
                     />}
             />
@@ -261,7 +268,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                         close={() => {
                             setIsOpenBurnDg(false)
                         }}
-                        NFTokenID={NFTokenID}
+                        TokenID={TokenID}
                     />}
             />
             <BaseDialog
@@ -275,7 +282,7 @@ export default function NFTOffersDetail({ NFTokenID, name, Issuer }) {
                         close={() => {
                             setIsOpenBuyDg(false)
                         }}
-                        NFTokenID={NFTokenID}
+                        TokenID={TokenID}
                         setOffers={(offers) => setBuyOffers(offers)}
                         owner={owner}
                     />}

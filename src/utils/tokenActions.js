@@ -134,13 +134,13 @@ export const createSellOffer = async (secret, tokenId, amount, expiration, desti
 /**
  * Create Buy Offer
  * @param {string} secret
- * @param {string} NFTokenID
+ * @param {string} TokenID
  * @param {number} amount
  * @param {number} flags
  * @param {string} owner
  * @returns {object} sell and buy offers for this token
  */
-export const createBuyOffer = async (secret, NFTokenID, amount, owner) => {
+export const createBuyOffer = async (secret, TokenID, amount, owner) => {
 
 	console.log('connecting to sandbox...')
 	const wallet = xrpl.Wallet.fromSeed(secret)
@@ -154,7 +154,7 @@ export const createBuyOffer = async (secret, NFTokenID, amount, owner) => {
 		'TransactionType': 'NFTokenCreateOffer',
 		'Account': wallet.classicAddress,
 		'Owner': owner,
-		'NFTokenID': NFTokenID,
+		'NFTokenID': TokenID,
 		'Amount': amount,
 		'Flags': 0
 	}
@@ -169,7 +169,7 @@ export const createBuyOffer = async (secret, NFTokenID, amount, owner) => {
 	try {
 		nftBuyOffers = await client.request({
 			method: 'nft_buy_offers',
-			nft_id: NFTokenID
+			nft_id: TokenID
 		})
 	} catch (err) {
 		console.log('No buy offers.')

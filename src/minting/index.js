@@ -130,7 +130,7 @@ export default function Minting() {
             if (res.status === 200) {
                 const ret = res.data;
                 if (ret.status) {
-                    console.log(ret.data);
+                    const nft = ret.data;
                     // console.log(ret.link1);
                     // console.log(ret.link2);
                     // console.log(ret.link3);
@@ -154,7 +154,7 @@ export default function Minting() {
                         "minted": false,
                         "_id": "6308bc3d7a1dec795f21fc33"
                     } */
-                    window.location.href = `/token/${uuid}`;
+                    window.location.href = `/token/${nft.uuid}`;
                     openSnackbar('NFT mint successful!', 'success')
                     // setFile(null);
                 } else {

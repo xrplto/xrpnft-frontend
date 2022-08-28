@@ -26,7 +26,7 @@ import { getNFTokenInfo } from 'src/utils/parse';
 // import {getSellOffers} from 'utils/tokenActions'
 
 
-export default function NFTCard({ Flags, Issuer, NFTokenID, URI }) {
+export default function NFTCard({ Flags, Issuer, TokenID, URI }) {
     const [imgUrl, setImgUrl] = useState('')
     const [loading, setLoading] = useState(false)
     const [name, setName] = useState(null)
@@ -58,7 +58,7 @@ export default function NFTCard({ Flags, Issuer, NFTokenID, URI }) {
     }, [URI])
 
     return (
-        <Link href={`/nft/${NFTokenID}/${URI}`} underline='none'>
+        <Link href={`/nft/${TokenID}/${URI}`} underline='none'>
             <Card sx={{ width: 300 }}>
                 {
                   !loading
