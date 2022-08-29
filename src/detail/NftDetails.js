@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+
 // Material
 import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
     Box,
+    Divider,
     Link,
     List,
     ListItem,
@@ -22,12 +24,14 @@ import { Icon } from '@iconify/react';
 
 // Components
 import NFTPreview from './NFTPreview';
-import FlagsContainer from 'components/NFTCard/Flags';
 import NFTDetailsDescription from './NftDetailsDescription';
-import Properties from 'components/miniting/NFTProperties/Properties';
-import Levels from 'components/miniting/NFTLevels/Levels';
+import FlagsContainer from 'src/explore/Flags';
+import Properties from 'src/minting/NFTProperties/Properties';
+import Levels from 'src/minting/NFTLevels/Levels';
+import { convertHexToString } from 'src/utils/parse';
 
 export default function NFTDetails({token}) {
+
     const {
         name,
         image,
@@ -35,154 +39,126 @@ export default function NFTDetails({token}) {
         description,
         collection,
         Issuer,
-        TokenID
+        TokenID,
+        URI,
+        Flags,
+        properties,
+        levels
     } = token;
 
+    const ParsedURI = convertHexToString(URI);
+    const hrefURI = `https://ipfs.xrpnft.com/ipfs/${ParsedURI}`;
+    
     return (
-        <Box >
-            {/* NFT Preview image start--- */}
-            {data.image &&
-                <NFTPreview uri={image} title={data.description?.name} favorites={0} />
-            }
-            {/* NFT Preview image end--- */}
-
-            {/* NFT Detail info start--- */}
-            <Accordion sx={{ marginTop: 2 }}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls='panel3a-content'
-                    id='panel3a-header'
-                >
-                    <Stack spacing={2} direction='row'>
-                        <ArticleIcon />
-                        <Typography variant='string' >Details</Typography>
-                    </Stack>
-                </AccordionSummary>
-                <AccordionDetails
-                    sx={{
-                        overflow: 'hidden'
-                    }}
-                >
-                    <List>
-                        {
-                            Object.keys(NFToken).map((key, idx) => (
-
-                                <ListItem key={idx} divider>
-                                    {
-                                        key === 'Flags' ?
-                                            <Box>
-                                                <Typography variant='caption'>Flags</Typography>
-                                                <FlagsContainer Flags={NFToken[key]} />
-                                            </Box> :
-                                            <ListItemText primary={
-                                                <Typography variant='caption'>
-                                                    {key}
-                                                </Typography>
-                                            }
-                                                secondary={
-                                                    key === 'Issuer' ?
-                                                        <Link
-                                                            underline='hover'
-                                                            href={`/account/${NFToken.Issuer}`}
-                                                            variant='info'
-                                                            sx={{ marginRight: 0, overflowWrap: 'anywhere' }}
-                                                        >
-                                                            {NFToken.Issuer}
-                                                        </Link> :
-                                                        JSON.stringify(NFToken[key])
-                                                }
-                                            />
-                                    }
-                                </ListItem>
-                            ))
-                        }
-                        <ListItem divider>
-                            <ListItemText primary={
-                                <Typography variant='caption'>
-                                    URI
-                                </Typography>
-                            }
-                                secondary={
-                                    <Link underline='hover' 
-                                        href={ParsedURI}
-                                        variant='info'
-                                        id='uri-link'
-                                        sx={{ marginRight: 0, overflowWrap: 'anywhere' }}
-                                    >
-                                        {ParsedURI}
-                                    </Link>}
-                            />
-                        </ListItem>
-                    </List>
-                </AccordionDetails>
-            </Accordion>
-            {/* NFT Detail info end--- */}
-
-
-            {/* NFT Properties start--- */}
-            {
-                data.description?.properties &&
-                <Accordion>
+        <Stack spacing={2} sx={{mt: 2}}>
+            <NFTPreview image={image} title={name} favorites={0} />
+            <Stack>
+                <Accordion defaultExpanded>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
-                        aria-controls='panel2a-content'
-                        id='panel2a-header'
+                        aria-controls="panel1bh-content"
+                        id="panel1bh-header"
                     >
                         <Stack spacing={2} direction='row'>
-                            <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                            {/* <MoreIcon /> */}
-                            <Typography variant='string' >Properties</Typography>
+                            <ArticleIcon />
+                            <Typography variant='string'>Details</Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Properties properties={data.description?.properties} />
+                        <Stack direction="row" spacing={2} alignItems="center">
+                            <Typography variant='caption'>Flags</Typography>
+                            <FlagsContainer Flags={Flags}/>
+                        </Stack>
+                        <Divider sx={{mt:2, mb:2}}/>
+                        <Stack spacing={1}>
+                            <Typography variant='caption'>Issuer</Typography>
+                            <Link
+                                href={`https://xls20.bithomp.com/explorer/${Issuer}`}
+                                sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
+                                underline='hover'
+                                target="_blank"
+                                variant='info'
+                                rel="noreferrer noopener nofollow"
+                            >
+                                <Typography sx={{ml:1}}>{Issuer}</Typography>
+                            </Link>
+                        </Stack>
+                        <Divider sx={{mt:2, mb:2}}/>
+                        <Stack spacing={1}>
+                            <Typography variant='caption'>URI</Typography>
+                            <Link
+                                href={hrefURI}
+                                sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
+                                underline='hover'
+                                target="_blank"
+                                variant='info'
+                                rel="noreferrer noopener nofollow"
+                            >
+                                <Typography sx={{ml:1}}>{ParsedURI}</Typography>
+                            </Link>
+                        </Stack>
+                        <Divider sx={{mt:2, mb:2}}/>
                     </AccordionDetails>
                 </Accordion>
-            }
-            {/* NFT Properties end--- */}
-
-            {/* NFT Leveled Properties start--- */}
-            {
-                data.description?.levels &&
-                <Accordion>
+                <Accordion defaultExpanded>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
-                        aria-controls='panel2a-content'
-                        id='panel2a-header'
+                        aria-controls="panel2bh-content"
+                        id="panel2bh-header"
                     >
                         <Stack spacing={2} direction='row'>
-                            <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                            {/* <MoreIcon /> */}
-                            <Typography variant='string' >Level Properties</Typography>
+                            <DescriptionIcon />
+                            <Typography variant='string' >Description</Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Levels levels={data.description?.levels} />
+                        <NFTDetailsDescription description={description} />
                     </AccordionDetails>
                 </Accordion>
-            }
-            {/* NFT Leveled Properties end--- */}
+                {/* NFT Properties start--- */}
+                {
+                    properties &&
+                    <Accordion defaultExpanded>
+                        <AccordionSummary
+                            id="panel3bh-header"
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel3bh-content"
+                        >
+                            <Stack spacing={2} direction='row'>
+                                <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
+                                {/* <MoreIcon /> */}
+                                <Typography variant='string' >Properties</Typography>
+                            </Stack>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Properties properties={properties} />
+                        </AccordionDetails>
+                    </Accordion>
+                }
+                {/* NFT Properties end--- */}
 
-            {/* NFT Description start--- */}
-            <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls='description-content'
-                    id='description-header'
-                >
-                    <Stack spacing={2} direction='row'>
-                        <DescriptionIcon />
-                        <Typography variant='string' >Description</Typography>
-                    </Stack>
-                </AccordionSummary>
-                <AccordionDetails sx={{ overflow: 'auto' }}>
-                    {
-                        <NFTDetailsDescription description={data.description} />
-                    }
-                </AccordionDetails>
-            </Accordion>
-            {/* NFT Description end--- */}
-
-        </Box>
+                {/* NFT Leveled Properties start--- */}
+                {
+                    levels &&
+                    <Accordion defaultExpanded>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel4bh-content"
+                            id="panel4bh-header"
+                        >
+                            <Stack spacing={2} direction='row'>
+                                <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
+                                {/* <MoreIcon /> */}
+                                <Typography variant='string' >Level Properties</Typography>
+                            </Stack>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Levels levels={data.description?.levels} />
+                        </AccordionDetails>
+                    </Accordion>
+                }
+                {/* NFT Leveled Properties end--- */}
+            </Stack>
+        </Stack>
     );
 }

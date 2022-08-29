@@ -99,10 +99,6 @@ export default function ExploreNFT({data}) {
                             <NFTCard
                                 key={nft.TokenID}
                                 nft={nft}
-                                Flags={nft.Flags}
-                                Issuer={nft.Issuer}
-                                URI={nft.URI}
-                                TokenID={nft.TokenID}
                             />
                         //  </Grid>
                     ))

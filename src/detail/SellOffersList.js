@@ -1,4 +1,9 @@
+import QRCode from "react-qr-code";
+import { useSnackbar } from 'notistack';
 import { useState, useEffect } from 'react';
+import { FadeLoader } from 'react-spinners';
+
+// Material
 import {
     Avatar,
     Backdrop,
@@ -13,20 +18,24 @@ import {
     Typography
 } from '@mui/material';
 // import { deepOrange } from '@mui/material/colors';
+
+// Iconify
 import { Icon } from '@iconify/react';
-import { acceptSellOffer, cancelOffer, getSellAndBuyOffers } from 'utils/tokenActions';
-import { BuyOffersProps } from 'utils/types';
-import { FadeLoader } from 'react-spinners';
-import { useSelector } from 'react-redux'
+
+// Utils
+import { getUnixTimeEpochFromRippleEpoch } from 'src/utils/parse';
+import { acceptSellOffer, cancelOffer, getSellAndBuyOffers } from 'src/utils/tokenActions';
+
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
+
+// Redux
+import { useSelector, useDispatch } from 'react-redux';
+import { setNFTs } from 'src/redux/statusSlice';
+
+// Components
 import CountdownTimer from './CountDownTimer';
-import { getUnixTimeEpochFromRippleEpoch } from 'utils/utils';
-import QRCode from "react-qr-code";
-import { useDispatch } from 'react-redux'
-import { setNFTs } from 'app/slices/accountSlice'
-import { useSnackbar } from 'notistack'
-
-
-SellOffersList.propTypes = BuyOffersProps
 
 // cannot accept buy offer if you are not the owner of token.
 // cannot accept sell offer if seller is not the owner of token.
@@ -35,20 +44,23 @@ SellOffersList.propTypes = BuyOffersProps
 // cannot accept an offer made by you.
 
 export default function SellOffersList({ _offers, _TokenID, _isOwner }) {
-    const { enqueueSnackbar } = useSnackbar()
-    const [loading, setLoading] = useState(false)
-    const account = useSelector(state => state.account.account)
-    const login = useSelector(state => state.account.login)
-    const [offers, setOffers] = useState([..._offers])
-    const [openQR, setOpenQR] = useState(false)
-    const [qrCode, setQRCode] = useState('')
-    // const navigate = useNavigate()
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+
+    const { enqueueSnackbar } = useSnackbar();
+    const [loading, setLoading] = useState(false);
+    const { accountProfile } = useContext(AppContext);
+    const account = accountProfile.account;
+    // const account = useSelector(state => state.account.account);
+    const login = true; // useSelector(state => state.account.login);
+    const [offers, setOffers] = useState([..._offers]);
+    const [openQR, setOpenQR] = useState(false);
+    const [qrCode, setQRCode] = useState('');
 
     const openQRCode = (index) => {
         setQRCode(index)
         setOpenQR(true)
     }
+
     const handleCancelOffer = async (index) => {
         setLoading(true)
         try {

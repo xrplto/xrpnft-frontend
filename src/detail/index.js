@@ -10,8 +10,6 @@ import {
 import NFTOffersDetail from './NFTOffersDetail';
 import NFTDetails from './NftDetails';
 
-const xrpl = require("xrpl");
-
 export default function Detail({token}) {
     const {
         name,
@@ -27,10 +25,10 @@ export default function Detail({token}) {
     
     return (
         <Grid container spacing={2} justifyContent='center'>
-            <Grid item md={5}>
+            <Grid item xs={12} md={5}>
                 <NFTDetails token={token} />
             </Grid>
-            <Grid item md={7}>
+            <Grid item xs={12} md={7}>
                 <NFTOffersDetail token={token} />
             </Grid>
         </Grid>

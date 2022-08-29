@@ -23,8 +23,8 @@ import { useDispatch } from 'react-redux';
 import { doSetAccount, login, setNFTs } from 'src/redux/statusSlice';
 
 // Utils
-import { ACCOUNTS } from 'utils/constants';
-import { getTokens } from 'utils/tokenActions';
+import { ACCOUNTS } from 'src/utils/constants';
+import { getTokens } from 'src/utils/tokenActions';
 
 // Components
 import XSnackbar from 'src/components/Snackbar';

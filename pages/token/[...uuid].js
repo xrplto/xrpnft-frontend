@@ -95,7 +95,7 @@ export async function getServerSideProps(ctx) {
 
         var t1 = performance.now();
 
-        // https://api.xrpnft.com/api/token/d1dcfe3cac80409793629707de2aafbf
+        // https://api.xrpnft.com/api/token/4a23c44e703944909b29b53f5e94a44b
         const res = await axios.get(`${BASE_URL}/token/${uuid}`);
 
         data = res.data;
@@ -103,25 +103,30 @@ export async function getServerSideProps(ctx) {
         var t2 = performance.now();
         var dt = (t2 - t1).toFixed(2);
 
-        console.log(`2. getServerSideProps slug: ${uuid} took: ${dt}ms`);
+        console.log(`2. getServerSideProps uuid: ${uuid} took: ${dt}ms`);
     } catch (e) {
         console.log(e);
     }
     let ret = {};
     if (data && data.token) {
         /*{
-            "name": "FRACTAL-BBB",
-            "externalLink": "",
-            "description": "",
-            "collection": "",
-            "Flags": 13,
-            "Issuer": "rEBKhngY8izMvRrgGg3Yh5zdiQgHH9cExg",
-            "minter": "xrpnft.com",
-            "image": "QmbUaafMaftkUTt44DVdTaSwgKzf51UWMD4NNNc7Jt4fCf",
-            "URI": "516D656A506E6E6775635A5664723637583937324C313842726A366F317241503842794754796137645259763234",
-            "uuid": "d1dcfe3cac80409793629707de2aafbf",
-            "minted": false,
-            "_id": "6308bc3d7a1dec795f21fc33"
+            "res": "success",
+            "took": "1.09",
+            "token": {
+                "_id": "630b722e2aa4d0244dcfc62b",
+                "name": "FAT CATS - 1",
+                "externalLink": "",
+                "description": "",
+                "collection": "",
+                "Flags": 13,
+                "Issuer": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
+                "minter": "xrpnft.com",
+                "image": "QmeBkwfxtCygbxCeZFRf8A1Qoh7vf1VoU4AxQCXCDwscUx",
+                "URI": "516D6653394D70417754756F684B674E795146636939726D6348654566727874705533473976324842674837735A",
+                "uuid": "4a23c44e703944909b29b53f5e94a44b",
+                "minted": true,
+                "TokenID": "000D000011BBE0160B08A0743C13E22918573B2AAC759E9E16E5DA9C00000001"
+            }
         } */
         
         const token = data.token;

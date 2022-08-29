@@ -21,7 +21,7 @@ import { useSnackbar } from 'src/components/useSnackbar';
 import { Icon } from '@iconify/react';
 
 // Utils
-import { burnToken } from 'utils/tokenActions'
+import { burnToken } from 'src/utils/tokenActions'
 
 export default function BurnNFTDgContent({ close, TokenID }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()

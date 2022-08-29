@@ -40,16 +40,43 @@ const CardWrapper = styled('div')(
   `
 );
 
-export default function NFTCard({ nft, Flags, Issuer, TokenID, URI }) {
+export default function NFTCard({ nft }) {
     const [type, setType] = useState('');
     // const [imgUrl, setImgUrl] = useState('');
     const [loading, setLoading] = useState(false);
-    const [name, setName] = useState(null);
-
     const [isLike, setIsLike] = useState(false);
     const [colors, setColors] = useState([]);
 
     const like = () => setIsLike(!isLike);
+
+    // {
+    //     "_id": "630b722e2aa4d0244dcfc62b",
+    //     "name": "FAT CATS - 1",
+    //     "externalLink": "",
+    //     "description": "",
+    //     "collection": "",
+    //     "Flags": 13,
+    //     "Issuer": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
+    //     "minter": "xrpnft.com",
+    //     "image": "QmeBkwfxtCygbxCeZFRf8A1Qoh7vf1VoU4AxQCXCDwscUx",
+    //     "URI": "516D6653394D70417754756F684B674E795146636939726D6348654566727874705533473976324842674837735A",
+    //     "uuid": "4a23c44e703944909b29b53f5e94a44b",
+    //     "minted": true,
+    //     "TokenID": "000D000011BBE0160B08A0743C13E22918573B2AAC759E9E16E5DA9C00000001"
+    // },
+    const {
+        name,
+        externalLink,
+        description,
+        collection,
+        Flags,
+        Issuer,
+        minter,
+        image,
+        URI,
+        uuid,
+        TokenID
+    } = nft;
 
     const getColors = colors => {
         setColors(c => [...c, ...colors]);
@@ -57,7 +84,8 @@ export default function NFTCard({ nft, Flags, Issuer, TokenID, URI }) {
 
     // const imgUrl = `https://xrpnft.mypinata.cloud/ipfs/${nft.hash}`;
 
-    const imgUrl = `https://s2.xrpnft.com/image/${nft.filename}`;
+    const imgUrl = `https://ipfs.xrpnft.com/ipfs/${image}`;
+    // const imgUrl = `https://s2.xrpnft.com/image/${nft.filename}`;
 
     console.log(imgUrl);
 
@@ -90,7 +118,7 @@ export default function NFTCard({ nft, Flags, Issuer, TokenID, URI }) {
     // }, [URI])
 
     return (
-        <Link href={`/nft/${TokenID}/${URI}`} underline='none'>
+        <Link href={`/token/${uuid}`} underline='none'>
             <CardWrapper
                 style={{
                     width: 280,

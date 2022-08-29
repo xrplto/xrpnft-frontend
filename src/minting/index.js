@@ -95,6 +95,7 @@ export default function Minting() {
     const [description, setDescription] = useState('');
     const [collectionName, setCollectionName] = useState('')
     const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
+    const [passphrase, setPassPhrase] = useState('');
 
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
     const [fileUrl, setFileUrl] = useState(null);
@@ -102,7 +103,7 @@ export default function Minting() {
     const [imgExt, setImgExt] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const canCreate = file && nftName;
+    const canCreate = file && nftName && passphrase;
 
     const onCreateNft = async () => {
         // POST https://api.xrpnft.com/api/mint
@@ -117,6 +118,8 @@ export default function Minting() {
             data.description = description;
             data.collection = collectionName;
             data.flag = flag;
+
+            data.passphrase = passphrase;
 
             const formdata = new FormData();
             formdata.append('nft', file);
@@ -160,6 +163,7 @@ export default function Minting() {
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
                     const err = ret.err;
+                    openSnackbar(err, 'error')
                 }
             }
         } catch (err) {
@@ -361,6 +365,23 @@ export default function Minting() {
                 {/* <PropertySection />
                 <LevelsSection /> */}
             </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Passphrase <Typography variant='s2'>*</Typography></Typography>
+
+                <TextField required placeholder='Passphrase' margin='dense'
+                    onChange={(e) => {
+                        setPassPhrase(e.target.value)
+                    }}
+                    value={passphrase}
+                    sx={{
+                        '&.MuiTextField-root': {
+                            marginTop: 1
+                        }
+                    }}
+                />
+            </Stack>
+            
 
             {/* <Button
                 variant='contained'

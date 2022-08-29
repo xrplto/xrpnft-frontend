@@ -23,7 +23,7 @@ import PriceContainer from './Price';
 // Utils
 import { getNFTokenInfo } from 'src/utils/parse';
 
-// import {getSellOffers} from 'utils/tokenActions'
+// import {getSellOffers} from 'src/utils/tokenActions'
 
 
 export default function NFTCard({ Flags, Issuer, TokenID, URI }) {

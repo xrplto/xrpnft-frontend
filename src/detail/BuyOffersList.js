@@ -21,7 +21,11 @@ import {
 import { Icon } from '@iconify/react';
 
 // Utils
-import { acceptBuyOffer, cancelOffer } from 'utils/tokenActions';
+import { acceptBuyOffer, cancelOffer } from 'src/utils/tokenActions';
+
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
 
 // Redux
 import { useSelector, useDispatch } from 'react-redux';
@@ -37,8 +41,10 @@ export default function BuyOffersList({ _TokenID, _offers, _isOwner }) {
     const { enqueueSnackbar } = useSnackbar();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    const account = useSelector(state => state.account.account);
-    const login = useSelector(state => state.account.login);
+    const { accountProfile } = useContext(AppContext);
+    const account = accountProfile.account;
+    // const account = useSelector(state => state.account.account);
+    const login = true; // useSelector(state => state.account.login);
     const [offers, setOffers] = useState([..._offers]);
     
     const handleCancelOffer = async (index) => {

@@ -29,12 +29,14 @@ import { useSelector } from 'react-redux';
 
 // Utils
 import { createSellOffer } from 'src/utils/tokenActions';
-import { getCurrentRippleEpoch } from 'src/utils/utils';
+import { getCurrentRippleEpoch } from 'src/utils/parse';
 
 export default function CreateSellOfferDgContent({ close, TokenID, setOffers }) {
-    const { enqueueSnackbar } = useSnackbar()
-    const account = useSelector(state => state.status.account)
-    const login = useSelector(state => state.status.login)
+    const { enqueueSnackbar } = useSnackbar();
+    const { accountProfile } = useContext(AppContext);
+    const account = accountProfile.account;
+    // const account = useSelector(state => state.status.account)
+    const login = true; // useSelector(state => state.status.login)
     const [price, setPrice] = useState(0)
     const [expiration, setExpiration] = useState(0)
     const [destination, setDestination] = useState('')
