@@ -37,7 +37,7 @@ import TimePeriods from './TimePeriodsDropdown';
 import SellOffersList from './SellOffersList';
 import BuyOffersList from './BuyOffersList';
 
-export default function NFTOffersDetail({ token }) {
+export default function NFTActions({ token }) {
     const [isOpenSellDg, setIsOpenSellDg] = useState(false);
     const [isOpenBuyDg, setIsOpenBuyDg] = useState(false);
     const [isOpenBurnDg, setIsOpenBurnDg] = useState(false);

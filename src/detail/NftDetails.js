@@ -37,6 +37,8 @@ export default function NFTDetails({token}) {
         image,
         uuid,
         description,
+        externalLink,
+        timestamp,
         collection,
         Issuer,
         TokenID,
@@ -48,6 +50,14 @@ export default function NFTDetails({token}) {
 
     const ParsedURI = convertHexToString(URI);
     const hrefURI = `https://ipfs.xrpnft.com/ipfs/${ParsedURI}`;
+
+    let strDateTime = '';
+    if (timestamp) {
+        const dt = new Date(timestamp); // .toLocaleDateString().split('.')[0].replace('T', ' ')
+        const date = dt.toLocaleDateString();
+        const time = dt.toLocaleTimeString();
+        strDateTime = `${date} ${time}`;
+    }
     
     return (
         <Stack spacing={2} sx={{mt: 2}}>
@@ -68,6 +78,7 @@ export default function NFTDetails({token}) {
                         <Stack direction="row" spacing={2} alignItems="center">
                             <Typography variant='caption'>Flags</Typography>
                             <FlagsContainer Flags={Flags}/>
+                            <Typography sx={{ml:1}}>{strDateTime}</Typography>
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
                         <Stack spacing={1}>
@@ -84,6 +95,7 @@ export default function NFTDetails({token}) {
                             </Link>
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
+                        
                         <Stack spacing={1}>
                             <Typography variant='caption'>URI</Typography>
                             <Link
@@ -95,6 +107,42 @@ export default function NFTDetails({token}) {
                                 rel="noreferrer noopener nofollow"
                             >
                                 <Typography sx={{ml:1}}>{ParsedURI}</Typography>
+                            </Link>
+                        </Stack>
+                        <Divider sx={{mt:2, mb:2}}/>
+
+                        {
+                            externalLink && (
+                                <>
+                                    <Stack spacing={1}>
+                                        <Typography variant='caption'>Link</Typography>
+                                        <Link
+                                            href={`${externalLink}`}
+                                            sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
+                                            underline='hover'
+                                            target="_blank"
+                                            variant='info'
+                                            rel="noreferrer noopener nofollow"
+                                        >
+                                            <Typography sx={{ml:1}}>{externalLink}</Typography>
+                                        </Link>
+                                    </Stack>
+                                    <Divider sx={{mt:2, mb:2}}/>
+                                </>
+                            )
+                        }
+
+                        <Stack spacing={1}>
+                            <Typography variant='caption'>Collection</Typography>
+                            <Link
+                                href={`/collection/${collection}`}
+                                sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
+                                underline='hover'
+                                target="_blank"
+                                variant='info'
+                                rel="noreferrer noopener nofollow"
+                            >
+                                <Typography sx={{ml:1}}>{collection}</Typography>
                             </Link>
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
