@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 
 // Material
-import { Popover } from '@mui/material';
 import {
-    alpha,
-    styled
+    alpha, styled,
+    Popover
 } from '@mui/material';
 
 // ----------------------------------------------------------------------
@@ -18,6 +17,7 @@ export default function MenuPopover({ children, sx, ...other }) {
         <Popover
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            disableScrollLock
             PaperProps={{
                 sx: {
                     mt: 1.5,

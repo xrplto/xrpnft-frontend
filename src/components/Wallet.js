@@ -1,10 +1,9 @@
-import { useContext } from 'react'
-import { AppContext } from 'src/AppContext';
 import axios from 'axios';
+import NextLink from 'next/link';
 import { useRef, useState, useEffect } from 'react';
 
 // Material
-import { 
+import {
     Box,
     Typography,
     Button,
@@ -14,6 +13,11 @@ import {
     Stack
 } from '@mui/material';
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import GridOnIcon from '@mui/icons-material/GridOn';
+
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -28,25 +32,18 @@ import ChooseAccountDialog from './dialog/ChooseAccountDialog';
 import { ACCOUNTS } from 'src/utils/constants';
 
 export default function Wallet() {
+    // https://github.com/mui/material-ui/issues/10000
     const BASE_URL = 'https://api.xrpnft.com/api';
     const anchorRef = useRef(null);
     const { accountProfile, setAccountProfile, setLoading } = useContext(AppContext);
     const [open, setOpen] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
     const [uuid, setUuid] = useState(null);
-    //const [wsUrl, setWsUrl] = useState(null);
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
 
     const [selectedIndex, setSelectedIndex] = useState(accountProfile.id);
 
-    /*const connectionStatus = {
-        [ReadyState.CONNECTING]: "Connecting",
-        [ReadyState.OPEN]: "Open",
-        [ReadyState.CLOSING]: "Closing",
-        [ReadyState.CLOSED]: "Closed",
-        [ReadyState.UNINSTANTIATED]: "Uninstantiated",
-    }[readyState];*/
     useEffect(() => {
         var timer = null;
         var isRunning = false;
@@ -125,11 +122,15 @@ export default function Wallet() {
     };
 
     const handleLogin = () => {
+        // TODO
+        return;
         setOpen(false);
         onConnectXumm();
     };
 
     const handleLogout = () => {
+        // TODO
+        return;
         setOpen(false);
         onDisconnectXumm(accountProfile.uuid);
     }
@@ -167,11 +168,27 @@ export default function Wallet() {
 
     return (
         <>
-            {/* <IconButton
+            <ChooseAccountDialog
+                accounts={ACCOUNTS}
+                selectedIdx={selectedIndex}
+                onClose={handleChooseAccount}
+                render={
+                    (open) => (
+                        <Button
+                            variant="contained"
+                            onClick={open}
+                            startIcon={<Icon icon={userLock}/>}
+                        >
+                            Account {ACCOUNTS[selectedIndex - 1].id}
+                        </Button>
+                    )
+                }
+            />
+            <IconButton
                 ref={anchorRef}
                 onClick={handleOpen} >
                 <Icon icon={userLock}/>
-            </IconButton> */}
+            </IconButton>
 
             <MenuPopover
                 open={open}
@@ -182,7 +199,18 @@ export default function Wallet() {
 
                 {accountProfile && accountProfile.account ? (
                         <>
-                        <Stack spacing={1} sx={{ pt: 2 }} alignItems='center'>
+                        <NextLink href="/collections" passHref>
+                            <MenuItem
+                                key="collection"
+                                sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                            >
+                                <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                    <GridOnIcon />
+                                    <Typography variant='s3' style={{marginLeft: '10px'}}>My Collections</Typography>
+                                </Stack>
+                            </MenuItem>
+                        </NextLink>
+                        {/* <Stack spacing={1} sx={{ pt: 2 }} alignItems='center'>
                             <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ mr:1, width: 24, height: 24 }}/>
                             <Typography align="center" style={{ wordWrap: "break-word" }} variant="body2" sx={{ width: 180, color: 'text.secondary' }} >
                                 {accountProfile.account}
@@ -192,7 +220,7 @@ export default function Wallet() {
                             <Button fullWidth color="inherit" variant="outlined" onClick={handleLogout}>
                                 Logout
                             </Button>
-                        </Box>
+                        </Box> */}
                         </>
                     ) : (
                         <MenuItem
@@ -215,23 +243,6 @@ export default function Wallet() {
                 handleClose={handleLoginClose}
                 qrUrl={qrUrl}
                 nextUrl={nextUrl}
-            />
-
-            <ChooseAccountDialog
-                accounts={ACCOUNTS}
-                selectedIdx={selectedIndex}
-                onClose={handleChooseAccount}
-                render={
-                    (open) => (
-                        <Button
-                            variant="contained"
-                            onClick={open}
-                            startIcon={<Icon icon={userLock}/>}
-                        >
-                            Account {ACCOUNTS[selectedIndex - 1].id}
-                        </Button>
-                    )
-                }
             />
         </>
     );
