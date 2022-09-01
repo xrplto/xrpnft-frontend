@@ -185,7 +185,6 @@ export default function Minting() {
                 if (size < 10240000) {
                     setImgExt(ext);
                     setFile(pickedFile);
-                    console.log(pickedFile.size);
                     // This is used as src of image
                     const reader = new FileReader();
                     reader.readAsDataURL(pickedFile)
@@ -198,9 +197,10 @@ export default function Minting() {
     }
 
     const handleResetFile = (e) => {
-        e.stopPropagation()
-        setFileUrl(null)
-        fileRef.current.value = null
+        e.stopPropagation();
+        setFile(null);
+        setFileUrl(null);
+        fileRef.current.value = null;
     }
 
     const handleFlagChange = (e) => {
@@ -226,7 +226,7 @@ export default function Minting() {
                         // accept='image/*'
                         accept='.png, .jpg'
                         id='contained-button-file'
-                        multiple
+                        // multiple
                         type='file'
                         onChange={handleFileSelect}
                     />

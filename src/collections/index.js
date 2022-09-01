@@ -78,27 +78,15 @@ const DisabledButton = withStyles({
 })(Button);
 
 export default function Collections({data}) {
-    const fileRef = useRef();
-    const BASE_URL = 'https://api.xrpnft.com/api';
-    const { accountProfile } = useContext(AppContext);
-    const levels = useSelector(state => state.status.metadata.levels);
-    const properties = useSelector(state => state.status.metadata.properties);
-    const [open, setOpen] = useState(false);
-    const login = useSelector(state => state.status.login);
-
-    const [nftName, setNftName] = useState('');
-    const [extLink, setExtLink] = useState('');
-    const [description, setDescription] = useState('');
-    const [collectionName, setCollectionName] = useState('')
-    const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
-    const [passphrase, setPassPhrase] = useState('');
-
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
-    const [fileUrl, setFileUrl] = useState(null);
-    const [file, setFile] = useState(null);
-    const [imgExt, setImgExt] = useState('');
-    const [loading, setLoading] = useState(false);
-
+    const {
+        name,
+        slug,
+        description,
+        logoImage,
+        featuredImage,
+        bannerImage,
+        timestamp
+    } = data.collection;
     return (
         <>
             <Stack spacing={1} sx={{mt: 4, mb:3}}>

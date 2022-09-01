@@ -92,25 +92,6 @@ const IconImage = styled('img')(
   `
 );
 
-const BannerImage = styled('img')(
-    ({ theme }) => `
-    position: absolute;
-    inset: 0px;
-    box-sizing: border-box;
-    padding: 0px;
-    border: none;
-    margin: auto;
-    display: block;
-    width: 0px; height: 0px;
-    min-width: 100%;
-    max-width: 100%;
-    min-height: 100%;
-    max-height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
-  `
-);
-
 export default function CollectionCard({ name, bSrc, iSrc, onClick }) {
     const [isLike, setIsLike] = useState(false);
     const [colors, setColors] = useState([]);
