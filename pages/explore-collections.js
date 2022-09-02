@@ -14,7 +14,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import MyCollections from 'src/collections/MyCollections';
+import AllCollections from 'src/collections';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -71,7 +71,7 @@ export default function Overview() {
             <Header />
 
             <Container maxWidth="lg">
-                <MyCollections />
+                <AllCollections />
             </Container>
 
             <ScrollToTop />
@@ -92,7 +92,7 @@ export async function getStaticProps() {
 
     const ogp = {};
     ogp.canonical = 'https://xrpnft.com';
-    ogp.title = 'My Collections';
+    ogp.title = 'Explore Collections';
     ogp.url = 'https://xrpnft.com/';
     ogp.imgUrl = 'https://xrpnft.com/ogp.png';
     ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';

@@ -41,6 +41,7 @@ const CardWrapper = styled('div')(
 );
 
 export default function NFTCard({ nft }) {
+    const [loaded, setLoaded] = useState(true);
     const [type, setType] = useState('');
     // const [imgUrl, setImgUrl] = useState('');
     const [loading, setLoading] = useState(false);
@@ -87,7 +88,9 @@ export default function NFTCard({ nft }) {
     const imgUrl = `https://ipfs.xrpnft.com/ipfs/${image}`;
     // const imgUrl = `https://s2.xrpnft.com/image/${nft.filename}`;
 
-    console.log(imgUrl);
+    const loadedImage = () => {
+        setLoaded(true);
+    }
 
     // useEffect(() => {
     //     let mounted = true
@@ -131,17 +134,24 @@ export default function NFTCard({ nft }) {
                         )`,
                 }}
             >
-                <ColorExtractor getColors={getColors}>
-                    <img src={imgUrl}
-                        style={{
-                            width: 250,
-                            height: 220,
-                            marginTop: 5,
-                            borderRadius: 20,
-                            objectFit: 'cover'
-                        }}
-                    />
-                </ColorExtractor>
+                {loaded?(
+                    <ColorExtractor getColors={getColors}>
+                        <img src={imgUrl}
+                            onLoad={(event) => setLoaded(true)}
+                            onError={(event) => setLoaded(true)}
+                            style={{
+                                width: 250,
+                                height: 220,
+                                marginTop: 5,
+                                borderRadius: 20,
+                                objectFit: 'cover'
+                            }}
+                        />
+                    </ColorExtractor>
+                ):(
+                    <Skeleton animation='wave' variant='rectangular' width={250} height={220} />   
+                )
+                }
                 {/* {
                   !loading
                     ?

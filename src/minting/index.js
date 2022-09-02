@@ -8,6 +8,9 @@ import { useSelector } from 'react-redux'
 import { withStyles } from '@mui/styles';
 import {
     styled,
+    Autocomplete,
+    Avatar,
+    Box,
     Button,
     Card,
     Checkbox,
@@ -15,6 +18,8 @@ import {
     FormControlLabel,
     FormGroup,
     IconButton,
+    MenuItem,
+    Select,
     Stack,
     TextField,
     Tooltip,
@@ -81,10 +86,17 @@ const DisabledButton = withStyles({
     }
 })(Button);
 
+const CustomSelect = styled(Select)(({ theme }) => ({
+    '& .MuiOutlinedInput-notchedOutline' : {
+        // border: 'none'
+    }
+}));
+
 export default function Minting() {
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile } = useContext(AppContext);
+    const account = accountProfile.account;
     const levels = useSelector(state => state.status.metadata.levels);
     const properties = useSelector(state => state.status.metadata.properties);
     const [open, setOpen] = useState(false);
@@ -103,15 +115,42 @@ export default function Minting() {
     const [imgExt, setImgExt] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const canCreate = file && nftName && passphrase;
+    // Collection related
+    const [collections, setCollections] = useState([]);
+    const [collectionValue, setCollectionValue] = useState(0);
+    const [filter, setFilter] = useState('go');
+
+    const canCreate = file && nftName && collectionName && passphrase;
+
+    const loadCollections=() => {
+        console.log(`loadCollections filter: ${filter}`);
+        // https://api.xrpnft.com/api/account/query-collections?filter=
+        axios.get(`${BASE_URL}/account/query-collections?account=${account}&filter=${filter}`)
+        .then(res => {
+            try {
+                if (res.status === 200 && res.data) {
+                    const ret = res.data;
+                    setCollections(ret.collections);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }).catch(err => {
+            console.log("err->>", err);
+        }).then(function () {
+            // Always executed
+        });
+    };
+
+    useEffect(() => {
+        loadCollections();
+    }, [filter, account]);
 
     const onCreateNft = async () => {
         // POST https://api.xrpnft.com/api/mint
         setLoading(true);
         try {
             let res;
-            const account = accountProfile.account;
-
             const data = {};
             data.name = nftName;
             data.externalLink = extLink;
@@ -239,8 +278,23 @@ export default function Minting() {
     }
 
     const handleCollectionFieldChange = (e) => {
-        setCollectionName(e.target.value)
+        setCollectionName(e.target.value);
     }
+
+    const handleCollectionQuery = (e) => {
+        setFilter(e.target.value);
+    }
+
+    const handleChangeCollection = (event) => {
+        const idx = parseInt(event.target.value, 10);
+        console.log(idx);
+        if (idx >= 0) {
+            const collection = collections[idx];
+            setCollectionValue(idx);
+            setCollectionName(collection.name);
+            console.log(`Change Collection - ${collection.name}`);
+        }
+    };
 
     return (
         <>
@@ -380,11 +434,78 @@ export default function Minting() {
             </Stack>
             
             <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Collection</Typography>
+                <Typography variant='p4'>Collection <Typography variant='s2'>*</Typography></Typography>
                 <Typography variant='p3'>
                     This is the collection where your item will appear.
                 </Typography>
-                <TextField required placeholder='Select collection' margin='dense'
+                {/* <Autocomplete
+                    id="collection-select"
+                    // sx={{ width: 300 }}
+                    options={collections}
+                    autoHighlight
+                    disableClearable
+                    getOptionLabel={(option) => option.name}
+                    renderOption={(props, option) => (
+                        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                            <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${option.logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
+                            <Typography variant='d4'>{option.name}</Typography>
+                        </Box>
+                    )}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            label=""
+                            placeholder='Select collection'
+                            inputProps={{
+                                ...params.inputProps,
+                                autoComplete: 'new-password', // disable autocomplete and autofill
+                            }}
+                        />
+                    )}
+                    onInputChange={handleCollectionQuery}
+                /> */}
+                <CustomSelect
+                    value={collectionValue}
+                    onChange={handleChangeCollection}
+                    renderValue={(idx) => (
+                        <>
+                        {(collections.length > 0 && idx > -1 && collections.length > idx) &&
+                            <Stack direction='row' alignItems="center">
+                                <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${collections[idx].logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
+                                <Typography variant='d4'>{collections[idx].name}</Typography>
+                            </Stack>
+                        }
+                        </>
+                    )}
+                >
+                    <TextField 
+                        variant='standard'
+                        placeholder='Filter'
+                        onChange={handleCollectionQuery}
+                        autoComplete='new-password'
+                        value={filter}
+                        defaultValue={filter}
+                        onFocus={event => {
+                            event.target.select();
+                        }}
+                        fullWidth
+                        sx={{
+                            pl:2,pr:2,pb:2,pt:1
+                        }}
+                    />
+                    {collections.map((col, idx) => (
+                        <MenuItem
+                            key={col.uuid}
+                            value={idx}
+                        >
+                            <Stack direction='row' alignItems="center" sx={{mt:0.5, mb:0.5}}>
+                                <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${col.logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
+                                <Typography variant='d4'>{col.name}</Typography>
+                            </Stack>
+                        </MenuItem>
+                    ))}
+                </CustomSelect>
+                {/* <TextField required placeholder='Select collection' margin='dense'
                     onChange={handleCollectionFieldChange}
                     value={collectionName}
                     sx={{
@@ -392,7 +513,7 @@ export default function Minting() {
                             marginTop: 1
                         }
                     }}
-                />
+                /> */}
                 {/* <PropertySection />
                 <LevelsSection /> */}
             </Stack>

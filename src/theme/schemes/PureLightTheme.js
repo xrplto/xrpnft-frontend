@@ -117,9 +117,15 @@ const colors = {
     main: themeColors.warning,
     dark: darken(themeColors.warning, 0.2)
   },
+  // error: {
+  //   lighter: lighten(themeColors.error, 0.85),
+  //   light: lighten(themeColors.error, 0.3),
+  //   main: themeColors.error,
+  //   dark: darken(themeColors.error, 0.2)
+  // },
   error: {
-    lighter: lighten(themeColors.error, 0.85),
-    light: lighten(themeColors.error, 0.3),
+    lighter: lighten(themeColors.error, 0.2),
+    light: lighten(themeColors.error, 0.1),
     main: themeColors.error,
     dark: darken(themeColors.error, 0.2)
   },
@@ -1066,8 +1072,10 @@ export const PureLightTheme = createTheme({
       styleOverrides: {
         tooltip: {
           // backgroundColor: alpha(colors.alpha.black['100'], 0.95),
+          color: alpha(colors.alpha.white['100'], 0.95),
           padding: '8px 16px',
-          fontSize: 13
+          fontSize: 14,
+          fontWeight: 500
         },
         arrow: {
           color: alpha(colors.alpha.black['100'], 0.95)
@@ -1148,6 +1156,8 @@ export const PureLightTheme = createTheme({
           h5: 'div',
           h6: 'div',
           d1: 'div',
+          d2: 'div',
+          d3: 'div',
           subtitle1: 'div',
           subtitle2: 'div',
           body1: 'div',
@@ -1155,6 +1165,7 @@ export const PureLightTheme = createTheme({
           s1: 'span',
           s2: 'span',
           s3: 'span',
+          s4: 'span',
           p1: 'p',
           p2: 'p',
           p3: 'p'
@@ -1247,6 +1258,11 @@ export const PureLightTheme = createTheme({
       fontSize: 16,
       color: colors.alpha.black[100]
     },
+    s4: {
+      fontWeight: 400,
+      fontSize: 16,
+      color: colors.alpha.black[50]
+    },
     h1: {
       fontWeight: 700,
       fontSize: 35
@@ -1273,6 +1289,16 @@ export const PureLightTheme = createTheme({
       fontSize: 15
     },
     d1: {
+      fontWeight: 400,
+      fontSize: 16,
+      color: colors.alpha.black[100]
+    },
+    d2: {
+      fontWeight: 600,
+      fontSize: 20,
+      color: colors.alpha.black[100]
+    },
+    d3: {
       fontWeight: 400,
       fontSize: 16,
       color: colors.alpha.black[100]

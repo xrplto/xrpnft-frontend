@@ -16,7 +16,7 @@ export default function XSnackbar({ isOpen, close, message, variant }) {
     };
 
     return (
-        <Snackbar open={isOpen} autoHideDuration={6000} onClose={handleClose}>
+        <Snackbar open={isOpen} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical:'top', horizontal:'right' }}>
             <MuiAlert onClose={handleClose} severity={variant} sx={{ width: '100%' }}>
                 {message}
             </MuiAlert>

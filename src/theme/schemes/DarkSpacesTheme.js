@@ -117,11 +117,17 @@ const colors = {
     main: themeColors.warning,
     dark: darken(themeColors.warning, 0.2)
   },
+  // error: {
+  //   lighter: alpha(themeColors.error, 0.85),
+  //   light: alpha(themeColors.error, 0.3),
+  //   main: themeColors.error,
+  //   dark: darken(themeColors.error, 0.2)
+  // },
   error: {
-    lighter: alpha(themeColors.error, 0.85),
-    light: alpha(themeColors.error, 0.3),
+    lighter: alpha(themeColors.error, 0.9),
+    light: alpha(themeColors.error, 0.9),
     main: themeColors.error,
-    dark: darken(themeColors.error, 0.2)
+    dark: darken(themeColors.error, 0.9)
   },
   info: {
     lighter: alpha(themeColors.info, 0.85),
@@ -1007,6 +1013,9 @@ export const DarkSpacesTheme = createTheme({
     },
     MuiAlert: {
       styleOverrides: {
+        root: {
+          // backgroundColor: '#ff0000',
+        },
         message: {
           lineHeight: 1.5,
           fontSize: 14
@@ -1156,6 +1165,7 @@ export const DarkSpacesTheme = createTheme({
           h6: 'div',
           d1: 'div',
           d2: 'div',
+          d3: 'div',
           subtitle1: 'div',
           subtitle2: 'div',
           body1: 'div',
@@ -1295,6 +1305,11 @@ export const DarkSpacesTheme = createTheme({
     d2: {
       fontWeight: 600,
       fontSize: 20,
+      color: colors.alpha.black[100]
+    },
+    d3: {
+      fontWeight: 400,
+      fontSize: 16,
       color: colors.alpha.black[100]
     },
     body1: {
