@@ -87,7 +87,7 @@ export default function Overview({data}) {
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps() {
-    const BASE_URL = 'http://api.xrpnft.com/api';
+    const BASE_URL = 'https://api.xrpnft.com/api';
 
     let ret = {};
 

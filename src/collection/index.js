@@ -22,10 +22,15 @@ import {
     Typography
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import ImageIcon from '@mui/icons-material/Image';
-import InfoIcon from '@mui/icons-material/Info';
-import SendIcon from '@mui/icons-material/Send';
-import CloseIcon from '@mui/icons-material/Close';
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import ShareIcon from '@mui/icons-material/Share';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+
+// Iconify
+import { Icon } from '@iconify/react';
+import arrowsExchange from '@iconify/icons-gg/arrows-exchange';
+import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
 // Context
 import { useContext } from 'react';
@@ -36,11 +41,24 @@ import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS } from 'src/utils/cons
 
 // Components
 import { useSnackbar } from 'src/components/useSnackbar';
+import ExploreNFT from './explore';
 
 const IconCover = styled('div')(
     ({ theme }) => `
-        width: 132px;
-        height: 132px;
+        width: 102px;
+        height: 102px;
+        margin-top: -56px;
+        margin-bottom: 16px;
+        @media (min-width: ${theme.breakpoints.values.sm}px) {
+            width: 132px;
+            height: 132px;
+            margin-top: -86px;
+        }
+        @media (min-width: ${theme.breakpoints.values.md}px) {
+            width: 192px;
+            height: 192px;
+            margin-top: -156px;
+        }
         border: 6px solid ${theme.colors.alpha.black[50]};
         border-radius: 10px;
         box-shadow: rgb(0 0 0 / 8%) 0px 5px 10px;
@@ -55,8 +73,16 @@ const IconWrapper = styled('div')(
         box-sizing: border-box;
         display: inline-block;
         position: relative;
-        width: 120px;
-        height: 120px;
+        width: 90px;
+        height: 90px;
+        @media (min-width: ${theme.breakpoints.values.sm}px) {
+            width: 120px;
+            height: 120px;
+        }
+        @media (min-width: ${theme.breakpoints.values.md}px) {
+            width: 180px;
+            height: 180px;
+        }
   `
 );
 
@@ -78,7 +104,6 @@ const IconImage = styled('img')(
     border-radius: 10px;
   `
 );
-
 
 export default function Collection({data}) {
     // "collection": {
@@ -104,22 +129,73 @@ export default function Collection({data}) {
         timestamp
     } = data.collection;
 
+    const [countNft, setCountNft] = useState(0);
+    const [countOwner, setCountOwner] = useState(0);
+    const [totalVolume, setTotalVolume] = useState('0.00');
+    const [floorPrice, setFloorPrice] = useState('---');
+
     return (
         <>
-            <Stack direction="row" spacing={1.5} sx={{p:3, mt:-6}} alignItems="center">
-                <IconCover>
-                    <IconWrapper>
-                        <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
-                    </IconWrapper>
-                </IconCover>
-            </Stack>
-            <Stack spacing={1} sx={{mt: 1, mb:3}}>
+            <IconCover>
+                <IconWrapper>
+                    <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
+                </IconWrapper>
+            </IconCover>
+            <Stack direction="row" justifyContent="space-between" sx={{mt: 1, mb:3}}>
                 <Typography variant="h1a">{name}</Typography>
-                <Typography variant="d1">Create, curate, and manage collections of unique NFTs to share and sell.</Typography>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+                    <Tooltip title="Add to watchlist">
+                        <IconButton size='medium' sx={{ padding: 1 }}
+                            onClick={() => {
+                            }}
+                        >
+                            <StarBorderIcon />
+                        </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Share">
+                        <IconButton size='medium' sx={{ padding: 1 }}
+                            onClick={() => {
+                            }}
+                        >
+                            <ShareIcon />
+                        </IconButton>
+                    </Tooltip>
+
+                    <IconButton size='medium' sx={{ padding: 1 }}
+                        onClick={() => {
+                        }}
+                    >
+                        <MoreHorizIcon />
+                    </IconButton>
+                </Stack>
             </Stack>
-            <Button component={Link} href="/collection/create" variant="contained" color="primary">
+            <Stack direction="row" sx={{mt: 1, mb:3}} spacing={5}>
+                <Stack>
+                    <Typography variant='d2'>{countNft}</Typography>
+                    <Typography variant='s4'>items</Typography>
+                </Stack>
+                <Stack>
+                    <Typography variant='d2'>{countOwner}</Typography>
+                    <Typography variant='s4'>owners</Typography>
+                </Stack>
+                <Stack>
+                    <Stack direction="row" spacing={0.5} alignItems='center'>
+                        <Icon icon={rippleSolid} />
+                        <Typography variant="d2" noWrap>{totalVolume}</Typography>
+                    </Stack>
+                    <Typography variant='s4'>total volume</Typography>
+                </Stack>
+                <Stack>
+                    <Typography variant='d2'>{floorPrice}</Typography>
+                    <Typography variant='s4'>floor price</Typography>
+                </Stack>
+            </Stack>
+
+            <ExploreNFT />
+            {/* <Button component={Link} href="/collection/create" variant="contained" color="primary">
                 Create a collection
-            </Button>
+            </Button> */}
             <Stack sx={{mt:5, minHeight: '50vh'}}>
             </Stack>
         </>

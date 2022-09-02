@@ -172,6 +172,37 @@ export default function Minting() {
         setLoading(false);
     };
 
+    const pinFileToIPFS = async () => {
+
+        // TODO: Called only when the file is uploaded to site.
+        setLoading(true)
+        if (file) {
+            try {
+                const formData = new FormData()
+                formData.append("file", file)
+                console.log('uploading image to ipfs')
+                const response = await axios.post(
+                    PINATA_PINNING_FILE_URL,
+                    formData,
+                    {
+                        maxContentLength: "Infinity",
+                        headers: {
+                            "Content-Type": `multipart/form-data;boundary=${formData._boundary}`,
+                            'pinata_api_key': process.env.REACT_APP_PINATA_API_KEY,
+                            'pinata_secret_api_key': process.env.REACT_APP_PINATA_SECRET_KEY
+                        }
+                    }
+                )
+                // dispatch(setPinnedFileHash(response.data.IpfsHash))
+                openSnackbar('IPFSHash: ' + response.data.IpfsHash, 'success')
+            } catch (e) {
+                console.log(e)
+                openSnackbar(e.message, 'error')
+            }
+        }
+        setLoading(false)
+    }
+
     const handleFileSelect = (e) => {
         const pickedFile = e.target.files[0];
         if (pickedFile) {

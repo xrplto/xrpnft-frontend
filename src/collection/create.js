@@ -120,7 +120,7 @@ const DisabledButton = withStyles({
     }
 })(Button);
 
-export default function Minting() {
+export default function CreateCollection() {
     const fileRef1 = useRef();
     const fileRef2 = useRef();
     const fileRef3 = useRef();
@@ -154,9 +154,9 @@ export default function Minting() {
     const [fileUrl3, setFileUrl3] = useState(null);
     const [file3, setFile3] = useState(null);
 
-    const [passphrase, setPassPhrase] = useState('XRPNFT.COM'); // SHOULD BE REMOVED on deploy
+    const [passphrase, setPassPhrase] = useState(''); // SHOULD BE REMOVED on deploy
 
-    const canCreate = file1 && collectionName;
+    const canCreate = file1 && collectionName && passphrase;
 
     const onCreateCollection = async () => {
         // POST https://api.xrpnft.com/api/account/create-collection
@@ -212,6 +212,7 @@ export default function Minting() {
                         "_id": "6308bc3d7a1dec795f21fc33"
                     } */
                     openSnackbar('Create collection successful!', 'success')
+                    window.location.href = `/collection/${data.slug}`;
                     // setFile(null);
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }

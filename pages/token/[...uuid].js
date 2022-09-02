@@ -84,7 +84,7 @@ export default function Overview({data}) {
 }
 
 export async function getServerSideProps(ctx) {
-    const BASE_URL = 'http://api.xrpnft.com/api';
+    const BASE_URL = 'https://api.xrpnft.com/api';
 
     let data = null;
     try {

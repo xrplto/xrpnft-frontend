@@ -6,12 +6,8 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
-    Box,
     Divider,
     Link,
-    List,
-    ListItem,
-    ListItemText,
     Stack,
     Typography,
 } from '@mui/material'
@@ -25,7 +21,7 @@ import { Icon } from '@iconify/react';
 // Components
 import NFTPreview from './NFTPreview';
 import NFTDetailsDescription from './NftDetailsDescription';
-import FlagsContainer from 'src/explore/Flags';
+import FlagsContainer from 'src/components/Flags';
 import Properties from 'src/minting/NFTProperties/Properties';
 import Levels from 'src/minting/NFTLevels/Levels';
 import { convertHexToString } from 'src/utils/parse';

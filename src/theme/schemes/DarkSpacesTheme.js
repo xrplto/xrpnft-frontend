@@ -1071,8 +1071,10 @@ export const DarkSpacesTheme = createTheme({
       styleOverrides: {
         tooltip: {
           // backgroundColor: alpha(colors.alpha.black['100'], 0.95),
+          color: alpha(colors.alpha.black['100'], 0.95),
           padding: '8px 16px',
-          fontSize: 13
+          fontSize: 14,
+          fontWeight: 500
         },
         arrow: {
           color: alpha(colors.alpha.black['100'], 0.95)
@@ -1153,6 +1155,7 @@ export const DarkSpacesTheme = createTheme({
           h5: 'div',
           h6: 'div',
           d1: 'div',
+          d2: 'div',
           subtitle1: 'div',
           subtitle2: 'div',
           body1: 'div',
@@ -1160,6 +1163,7 @@ export const DarkSpacesTheme = createTheme({
           s1: 'span',
           s2: 'span',
           s3: 'span',
+          s4: 'span',
           p1: 'p',
           p2: 'p',
           p3: 'p',
@@ -1253,6 +1257,11 @@ export const DarkSpacesTheme = createTheme({
       fontSize: 16,
       color: colors.alpha.black[100]
     },
+    s4: {
+      fontWeight: 400,
+      fontSize: 16,
+      color: colors.alpha.black[50]
+    },
     h1: {
       fontWeight: 700,
       fontSize: 35
@@ -1281,6 +1290,11 @@ export const DarkSpacesTheme = createTheme({
     d1: {
       fontWeight: 400,
       fontSize: 16,
+      color: colors.alpha.black[100]
+    },
+    d2: {
+      fontWeight: 600,
+      fontSize: 20,
       color: colors.alpha.black[100]
     },
     body1: {

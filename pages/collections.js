@@ -53,7 +53,7 @@ function generateRandom(maxLimit = 10){
     return rand;
 }
 
-export default function Overview({data}) {
+export default function Overview() {
     const bgIdx = generateRandom();
     const { darkMode } = useContext(AppContext);
 
@@ -71,7 +71,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="lg">
-                <Collections data={data}/>
+                <Collections />
             </Container>
 
             <ScrollToTop />
@@ -86,13 +86,13 @@ export default function Overview({data}) {
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps() {
-    const BASE_URL = 'http://api.xrpnft.com/api';
+    const BASE_URL = 'https://api.xrpnft.com/api';
 
     let ret = {};
 
     const ogp = {};
     ogp.canonical = 'https://xrpnft.com';
-    ogp.title = 'XRPNFT, the largest XRPL NFT marketplace';
+    ogp.title = 'My Collections';
     ogp.url = 'https://xrpnft.com/';
     ogp.imgUrl = 'https://xrpnft.com/ogp.png';
     ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
