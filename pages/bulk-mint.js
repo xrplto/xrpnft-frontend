@@ -64,13 +64,13 @@ export default function Overview({data}) {
             <BackgroundWrapper
                 style={{
                     backgroundImage: `url("/static/fractal/${bgIdx}.png")`,
-                    opacity: `${darkMode?0.8:0.7}`
+                    opacity: `${darkMode?0.1:0.2}`
                 }}
             />
 
             <Header />
 
-            <Container maxWidth="sm">
+            <Container maxWidth="lg">
                 <BulkMinting />
             </Container>
 

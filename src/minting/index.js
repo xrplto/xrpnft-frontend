@@ -326,7 +326,8 @@ export default function Minting() {
                         <ImageIcon fontSize='large' sx={fileUrl ? { display: 'none' } : {width: 100, height: 100}} />
                     </Card>
                 </CardWrapper>
-
+            </Stack>
+            <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Name<Typography variant='s2'>*</Typography></Typography>
 
                 <TextField required placeholder='Item name' margin='dense'
@@ -340,8 +341,6 @@ export default function Minting() {
                         }
                     }}
                 />
-            </Stack>
-            <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>External link</Typography>
                 <Typography variant='p3'>
                     {'This site will include a link to this URL on this item\'s detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.'}
