@@ -77,27 +77,15 @@ const DisabledButton = withStyles({
     }
 })(Button);
 
-export default function Collections({data}) {
-    const {
-        name,
-        slug,
-        description,
-        logoImage,
-        featuredImage,
-        bannerImage,
-        timestamp
-    } = data.collection;
+export default function Collections() {
     return (
         <>
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
-                <Typography variant="h1a">My Collections</Typography>
-                <Typography variant="d1">Create, curate, and manage collections of unique NFTs to share and sell.</Typography>
+                <Typography variant="h1a">Explore collections</Typography>
             </Stack>
-            <Button component={Link} href="/collection/create" variant="contained" color="primary">
-                Create a collection
-            </Button>
+            
             <Stack sx={{mt:5, minHeight: '50vh'}}>
-                <CollectionList data={data}/>
+                <CollectionList isAll={true}/>
             </Stack>
         </>
     );

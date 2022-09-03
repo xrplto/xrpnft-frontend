@@ -8,13 +8,10 @@ import { useSelector } from 'react-redux'
 import { withStyles } from '@mui/styles';
 import {
     styled,
-    Autocomplete,
     Avatar,
-    Box,
     Button,
     Card,
     Checkbox,
-    Container,
     FormControlLabel,
     FormGroup,
     IconButton,
@@ -22,7 +19,6 @@ import {
     Select,
     Stack,
     TextField,
-    Tooltip,
     Typography
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -100,7 +96,7 @@ export default function Minting() {
     const levels = useSelector(state => state.status.metadata.levels);
     const properties = useSelector(state => state.status.metadata.properties);
     const [open, setOpen] = useState(false);
-    const login = useSelector(state => state.status.login);
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
     const [nftName, setNftName] = useState('');
     const [extLink, setExtLink] = useState('');
@@ -109,28 +105,26 @@ export default function Minting() {
     const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
     const [passphrase, setPassPhrase] = useState('');
 
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
+    
     const [fileUrl, setFileUrl] = useState(null);
     const [file, setFile] = useState(null);
-    const [imgExt, setImgExt] = useState('');
     const [loading, setLoading] = useState(false);
 
     // Collection related
     const [collections, setCollections] = useState([]);
-    const [collectionValue, setCollectionValue] = useState(0);
-    const [filter, setFilter] = useState('go');
+    const [filter, setFilter] = useState('');
 
     const canCreate = file && nftName && collectionName && passphrase;
 
     const loadCollections=() => {
-        console.log(`loadCollections filter: ${filter}`);
         // https://api.xrpnft.com/api/account/query-collections?filter=
         axios.get(`${BASE_URL}/account/query-collections?account=${account}&filter=${filter}`)
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {
                     const ret = res.data;
-                    setCollections(ret.collections);
+                    if (ret.collections.length > 0)
+                        setCollections(ret.collections);
                 }
             } catch (error) {
                 console.log(error);
@@ -253,7 +247,6 @@ export default function Minting() {
             if (ext === 'jpg' || ext === 'png') {
                 const size = pickedFile.size;
                 if (size < 10240000) {
-                    setImgExt(ext);
                     setFile(pickedFile);
                     // This is used as src of image
                     const reader = new FileReader();
@@ -277,23 +270,16 @@ export default function Minting() {
         setFlag(flag ^ e.target.value);
     }
 
-    const handleCollectionFieldChange = (e) => {
-        setCollectionName(e.target.value);
-    }
-
     const handleCollectionQuery = (e) => {
+        setCollectionName('');
         setFilter(e.target.value);
     }
 
     const handleChangeCollection = (event) => {
-        const idx = parseInt(event.target.value, 10);
-        console.log(idx);
-        if (idx >= 0) {
-            const collection = collections[idx];
-            setCollectionValue(idx);
-            setCollectionName(collection.name);
-            console.log(`Change Collection - ${collection.name}`);
-        }
+        // const idx = parseInt(event.target.value, 10);
+        const value = event.target.value;
+        setCollectionName(value);
+        setFilter('');
     };
 
     return (
@@ -341,7 +327,7 @@ export default function Minting() {
                     </Card>
                 </CardWrapper>
 
-                <Typography variant='p4'>Name <Typography variant='s2'>*</Typography></Typography>
+                <Typography variant='p4'>Name<Typography variant='s2'>*</Typography></Typography>
 
                 <TextField required placeholder='Item name' margin='dense'
                     onChange={(e) => {
@@ -465,20 +451,24 @@ export default function Minting() {
                     onInputChange={handleCollectionQuery}
                 /> */}
                 <CustomSelect
-                    value={collectionValue}
+                    id='select_collection'
+                    value={collectionName}
                     onChange={handleChangeCollection}
-                    renderValue={(idx) => (
-                        <>
-                        {(collections.length > 0 && idx > -1 && collections.length > idx) &&
-                            <Stack direction='row' alignItems="center">
-                                <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${collections[idx].logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
-                                <Typography variant='d4'>{collections[idx].name}</Typography>
-                            </Stack>
-                        }
-                        </>
-                    )}
+                    // renderValue={(idx) => (
+                    //     <>
+                    //     {(collections.length > 0 && idx > -1 && collections.length > idx) &&
+                    //         <Stack direction='row' alignItems="center">
+                    //             <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${collections[idx].logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
+                    //             <Typography variant='d4'>{collections[idx].name}</Typography>
+                    //         </Stack>
+                    //     }
+                    //     </>
+                    // )}
                 >
-                    <TextField 
+                    <TextField
+                        id='textFilter'
+                        // autoFocus
+                        fullWidth
                         variant='standard'
                         placeholder='Filter'
                         onChange={handleCollectionQuery}
@@ -488,17 +478,18 @@ export default function Minting() {
                         onFocus={event => {
                             event.target.select();
                         }}
-                        fullWidth
                         sx={{
-                            pl:2,pr:2,pb:2,pt:1
+                            pl:2,pr:2,pb:2,pt:2.5
                         }}
+                        onKeyDown={(e) => e.stopPropagation()}
                     />
                     {collections.map((col, idx) => (
                         <MenuItem
                             key={col.uuid}
-                            value={idx}
+                            value={col.name}
+                            sx={{pt:2, pb:2}}
                         >
-                            <Stack direction='row' alignItems="center" sx={{mt:0.5, mb:0.5}}>
+                            <Stack direction='row' alignItems="center">
                                 <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${col.logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
                                 <Typography variant='d4'>{col.name}</Typography>
                             </Stack>

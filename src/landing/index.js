@@ -39,7 +39,7 @@ export default function Landing({data}) {
                         <Link
                             underline="none"
                             color="inherit"
-                            href={`/explore`}
+                            href={`/explore-collections`}
                             rel="noreferrer noopener nofollow"
                         >
                             <Button variant="contained">Explore</Button>

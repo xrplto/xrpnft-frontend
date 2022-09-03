@@ -21,7 +21,7 @@ function XRPNFTApp(props) {
 
                 {/* <meta name="robots" content="nofollow"/> */}
 
-                <link rel="preload" as="image" href="/static/collection/fat-cats-xrpl.jpg"/>
+                {/* <link rel="preload" as="image" href="/static/collection/fat-cats-xrpl.jpg"/> */}
 
                 <link rel="canonical" href={ogp.canonical}/>
 

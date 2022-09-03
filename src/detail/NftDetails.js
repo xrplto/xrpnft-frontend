@@ -130,16 +130,7 @@ export default function NFTDetails({token}) {
 
                         <Stack spacing={1}>
                             <Typography variant='caption'>Collection</Typography>
-                            <Link
-                                href={`/collection/${collection}`}
-                                sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
-                                underline='hover'
-                                target="_blank"
-                                variant='info'
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <Typography sx={{ml:1}}>{collection}</Typography>
-                            </Link>
+                            <Typography sx={{pl:1}}>{collection.name||collection}</Typography>
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
                     </AccordionDetails>

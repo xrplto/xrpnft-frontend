@@ -142,7 +142,7 @@ export default function Overview({data}) {
 }
 
 export async function getServerSideProps(ctx) {
-    const BASE_URL = 'http://api.xrpnft.com/api';
+    const BASE_URL = 'https://api.xrpnft.com/api';
 
     let data = null;
     try {
@@ -194,18 +194,9 @@ export async function getServerSideProps(ctx) {
             description
         } = data.collection;
 
-        /*const ogp = {};
-        ogp.canonical = 'https://xrpnft.com';
-        ogp.title = 'XRPNFT, the largest XRPL NFT marketplace';
-        ogp.url = 'https://xrpnft.com/';
-        ogp.imgUrl = 'https://xrpnft.com/ogp.png';
-        ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
-
-        ret = {data, ogp};*/
-
         let ogp = {};
         ogp.canonical = `https://xrpnft.com/collection/${slug}`;
-        ogp.title = `${name} - XRPNFT, the largest XRPL NFT marketplace`;
+        ogp.title = `${name} - Collection`;
         ogp.url = `https://xrpnft.com/collection/${slug}`;
         ogp.imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
         ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;

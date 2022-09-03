@@ -5,6 +5,7 @@ import { ColorExtractor } from 'react-color-extractor';
 import {
     styled,
     Button,
+    Link,
     Stack,
     Typography
 } from '@mui/material';
@@ -59,12 +60,12 @@ const IconCover = styled('div')(
         box-shadow: rgb(0 0 0 / 8%) 0px 5px 10px;
         background-color: ${theme.colors.alpha.white[70]};
         position: relative;
+        overflow: hidden;
     `
 );
 
 const IconWrapper = styled('div')(
     ({ theme }) => `
-        overflow: hidden;
         box-sizing: border-box;
         display: inline-block;
         position: relative;
@@ -88,55 +89,80 @@ const IconImage = styled('img')(
     min-height: 100%;
     max-height: 100%;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 0px;
   `
 );
 
-export default function CollectionCard({ name, bSrc, iSrc, onClick }) {
-    const [isLike, setIsLike] = useState(false);
-    const [colors, setColors] = useState([]);
+export default function CollectionCard({ item }) {
 
-    const like = () => setIsLike(!isLike);
+    // {
+    //     "_id": "6310c27cf81fe46884ef89ba",
+    //     "account": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
+    //     "name": "collection1",
+    //     "slug": "collection-1",
+    //     "description": "",
+    //     "logoImage": "1662042748001_12e8a38273134f0e87f1039958d5b132.png",
+    //     "featuredImage": "1662042748001_70910cc4c6134845bf84cf262e696d05.png",
+    //     "bannerImage": "1662042748002_b32b442dea454998aa29ab61c8fa0887.jpg",
+    //     "timestamp": 1662042748016,
+    //     "creator": "xrpnft.com",
+    //     "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
+    // }
+
+    const {
+        uuid,
+        name,
+        slug,
+        account,
+        description,
+        logoImage,
+        featuredImage,
+        bannerImage,
+        timestamp
+    } = item;
+
+    const [colors, setColors] = useState([]);
 
     const getColors = colors => {
         setColors(c => [...c, ...colors]);
     }
 
     return (
-        <CardWrapper
-            style={{
-                width: 320,
-                height: 300,
-                padding: 0,
-                background: `radial-gradient(
-                        circle,
-                        rgba(255, 255, 255, 0.05) 0%,
-                        ${colors[0]} 0%,
-                        rgba(255, 255, 255, 0.05) 70%
-                    )`,
-            }}
-            onClick={onClick}
-        >
-            <ColorExtractor getColors={getColors}>
-                <img src={bSrc}
-                    style={{
-                        width: 320,
-                        height: 220,
-                        objectFit: 'cover',
-                        borderTopLeftRadius: 20,
-                        borderTopRightRadius: 20,
-                    }}
-                />
-            </ColorExtractor>
-            <Stack direction="row" spacing={1.5} sx={{p:3, mt:-6}} alignItems="center">
-                <IconCover>
-                    <IconWrapper>
-                        <IconImage src={iSrc}/>
-                    </IconWrapper>
-                </IconCover>
-                <Typography variant="p1" sx={{pt:2}}>{name}</Typography>
-            </Stack>
-            <CardOverlay />
-        </CardWrapper>
+        <Link href={`/collection/${slug}`} underline='none'>
+            <CardWrapper
+                style={{
+                    width: 320,
+                    height: 300,
+                    padding: 0,
+                    background: `radial-gradient(
+                            circle,
+                            rgba(255, 255, 255, 0.05) 0%,
+                            ${colors[0]} 0%,
+                            rgba(255, 255, 255, 0.05) 70%
+                        )`,
+                }}
+            >
+                <ColorExtractor getColors={getColors}>
+                    <img src={`https://s1.xrpnft.com/collection/${featuredImage}`}
+                        style={{
+                            width: 320,
+                            height: 220,
+                            objectFit: 'cover',
+                            borderTopLeftRadius: 20,
+                            borderTopRightRadius: 20,
+                        }}
+                    />
+                </ColorExtractor>
+                <Stack direction="row" spacing={1.5} sx={{p:3, mt:-6}} alignItems="center">
+                    <IconCover>
+                        <IconWrapper>
+                            <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
+                        </IconWrapper>
+                    </IconCover>
+                    <Typography variant="p1" sx={{pt:2}}>{name}</Typography>
+                </Stack>
+                <CardOverlay />
+            </CardWrapper>
+        </Link>
     );
 };

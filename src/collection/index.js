@@ -64,12 +64,12 @@ const IconCover = styled('div')(
         box-shadow: rgb(0 0 0 / 8%) 0px 5px 10px;
         background-color: ${theme.colors.alpha.white[70]};
         position: relative;
+        overflow: hidden;
     `
 );
 
 const IconWrapper = styled('div')(
     ({ theme }) => `
-        overflow: hidden;
         box-sizing: border-box;
         display: inline-block;
         position: relative;
@@ -101,7 +101,7 @@ const IconImage = styled('img')(
     min-height: 100%;
     max-height: 100%;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 0px;
   `
 );
 
@@ -141,8 +141,9 @@ export default function Collection({data}) {
                     <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
                 </IconWrapper>
             </IconCover>
-            <Stack direction="row" justifyContent="space-between" sx={{mt: 1, mb:3}}>
+            <Stack direction="row" justifyContent="space-between" sx={{mt: 1, mb:1}}>
                 <Typography variant="h1a">{name}</Typography>
+                
                 <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
                     <Tooltip title="Add to watchlist">
                         <IconButton size='medium' sx={{ padding: 1 }}
@@ -170,7 +171,12 @@ export default function Collection({data}) {
                     </IconButton>
                 </Stack>
             </Stack>
-            <Stack direction="row" sx={{mt: 1, mb:3}} spacing={5}>
+
+            {description &&
+                <Typography variant="d3">{description}</Typography>
+            }
+
+            <Stack direction="row" sx={{mt: 2, mb:3}} spacing={5}>
                 <Stack>
                     <Typography variant='d2'>{countNft}</Typography>
                     <Typography variant='s4'>items</Typography>
