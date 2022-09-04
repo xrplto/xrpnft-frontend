@@ -28,9 +28,6 @@ import { tfTransferable, XRPNFT_DOMAIN } from 'src/utils/constants'
 // import { mintToken } from 'src/utils/tokenActions'
 // import { pinJsonToIPFS } from 'src/utils/pinata'
 
-// Components
-import TokenFlagsForm from './TokenFlagsForm';
-
 export default function NFTokenMintDgContent({ close, metadata }) {
     const { enqueueSnackbar } = useSnackbar()
     const dispatch = useDispatch()
@@ -83,14 +80,6 @@ export default function NFTokenMintDgContent({ close, metadata }) {
             <DialogContent dividers sx={{ backgroundColor: 'theme.palette.background.paper' }}>
                 <Box sx={{ paddingBottom: 2 }}>
                     <Grid container alignItems={'center'} spacing={3}>
-                        <Grid item md={4} justifyContent='flex-end' sx={{ display: 'flex' }}>
-                            <Typography variant='caption' >
-                                Set Flags
-                            </Typography>
-                        </Grid>
-                        <Grid item md={8}>
-                            <TokenFlagsForm />
-                        </Grid>
                         <Grid item md={4} justifyContent='flex-end' sx={{ display: 'flex' }}>
                             <Typography variant='caption' >
                                 Issuer

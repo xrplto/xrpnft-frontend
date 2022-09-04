@@ -55,11 +55,8 @@ import { fIntNumber, fNumber } from 'src/utils/formatNumber';
 // Components
 import BaseDialog from 'src/components/dialog/BaseDialog';
 import NFTokenMintDgContent from './NFTokenMintDgContent';
-import CollectionAndProperties from './CollectionAndProperties';
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
-import PropertySection from './NFTProperties/PropertySection';
-import LevelsSection from './NFTLevels/LevelSection';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -140,6 +137,9 @@ const COLLECTION_FAMILIES = [
     }
 ];
 
+// Calculate MD5 hash of a large file using javascript
+// https://stackoverflow.com/questions/39112096/calculate-md5-hash-of-a-large-file-using-javascript
+
 export default function Minting() {
     const fileRef1 = useRef();
     const fileRef2 = useRef();
@@ -160,7 +160,6 @@ export default function Minting() {
     const [collectionFamily, setCollectionFamily] = useState('');
     const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
     const [passphrase, setPassPhrase] = useState('');
-
     
     const [metadata, setMetaData] = useState([]);
     const [sMeta, setSampleMeta] = useState(null);
@@ -526,7 +525,8 @@ export default function Minting() {
 
                     <Stack spacing={2}>
                         <Typography variant='p4'>NFT Contents <Typography variant='s2'>*</Typography></Typography>
-                        <Typography variant='p3'>Only ZIP file is supported.</Typography>
+                        {/* <Typography variant='p3'>Only ZIP file is supported.</Typography> */}
+                        <Typography variant='s2'>Not supported for now</Typography>
 
                         <Stack direction="row" alignItems='center' spacing={0} sx={{mt: 2}}>
                             <input
@@ -539,6 +539,7 @@ export default function Minting() {
                                 onChange={handleFileSelect2}
                             />
                             <Button
+                                disabled
                                 variant='contained'
                                 color='info'
                                 onClick={() => fileRef2.current.click()}
@@ -559,6 +560,8 @@ export default function Minting() {
                     </Typography>
                     <Typography variant='s2'>Don't include indexed numbers like #1</Typography>
                     <TextField required placeholder='Item name' margin='dense'
+                        id='id_nft_name'
+                        autoComplete='new-password'
                         onChange={(e) => {
                             const value = e.target.value;
                             setNftName(value);
@@ -598,9 +601,10 @@ export default function Minting() {
                     <Typography variant='p3'>
                         Your NFTs will refer to this IPFS CID. And prefix 'ipfs://' and postfix indexed numbers will be automatically appended. ex; ipfs://QmPPPYRX79ESWWoVSB3B1AxtKaE61pDqr8bc9tqV22Cquu/###.png'
                     </Typography>
-                    <OutlinedInput
-                        id='text_field_ipfs_hash'
-                        required placeholder='QmPPPYRX79ESWWoVSB3B1AxtKaE61pDqr8bc9tqV22Cquu'
+                    <OutlinedInput required
+                        id='id_ipfs_cid'
+                        autoComplete='new-password'
+                        placeholder='QmPPPYRX79ESWWoVSB3B1AxtKaE61pDqr8bc9tqV22Cquu'
                         margin='dense'
                         variant='outlined'
                         onChange={(e) => {
@@ -635,8 +639,10 @@ export default function Minting() {
                     <Typography variant='p3'>
                         Each NFT metadata will include this link as <Typography variant='s2'>external_link</Typography> field, users can check to learn more about it. You are welcome to link to your own webpage with more details.'
                     </Typography>
-                    <TextField
-                        required placeholder='External link'
+                    <TextField required
+                        id='id_external_link'
+                        autoComplete='new-password'
+                        placeholder='External link'
                         margin='dense'
                         onChange={(e) => {
                             const value = e.target.value;
@@ -663,6 +669,8 @@ export default function Minting() {
                     </Typography>
                     <Typography variant='s2'>The same description will be applied to all NFTs. Check description field on the right JSON if you have made changes.</Typography>
                     <TextField
+                        id='id_text_description'
+                        autoComplete='new-password'
                         placeholder='Provide a detailed description of your item'
                         margin='dense'
                         multiline
@@ -728,56 +736,20 @@ export default function Minting() {
                     <Typography variant='p3'>
                         This is the collection where your item will appear.
                     </Typography>
-                    {/* <Autocomplete
-                        id="collection-select"
-                        // sx={{ width: 300 }}
-                        options={collections}
-                        autoHighlight
-                        disableClearable
-                        getOptionLabel={(option) => option.name}
-                        renderOption={(props, option) => (
-                            <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                                <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${option.logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
-                                <Typography variant='d4'>{option.name}</Typography>
-                            </Box>
-                        )}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label=""
-                                placeholder='Select collection'
-                                inputProps={{
-                                    ...params.inputProps,
-                                    autoComplete: 'new-password', // disable autocomplete and autofill
-                                }}
-                            />
-                        )}
-                        onInputChange={handleCollectionQuery}
-                    /> */}
                     <Select
                         id='select_collection'
                         value={collectionName}
                         onChange={handleChangeCollection}
                         MenuProps={{ disableScrollLock: true }}
-                        // renderValue={(idx) => (
-                        //     <>
-                        //     {(collections.length > 0 && idx > -1 && collections.length > idx) &&
-                        //         <Stack direction='row' alignItems="center">
-                        //             <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${collections[idx].logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
-                        //             <Typography variant='d4'>{collections[idx].name}</Typography>
-                        //         </Stack>
-                        //     }
-                        //     </>
-                        // )}
                     >
                         <TextField
                             id='textFilter'
-                            // autoFocus
+                            autoComplete='new-password'
+                            autoFocus
                             fullWidth
                             variant='standard'
                             placeholder='Filter'
                             onChange={handleCollectionQuery}
-                            autoComplete='new-password'
                             value={filter}
                             defaultValue={filter}
                             onFocus={event => {
@@ -911,7 +883,7 @@ export default function Minting() {
                 <BaseDialog
                     isOpen={open}
                     close={() => { setOpen(false) }}
-                    title={'Mint New NFT'}
+                    title={'Bulk Mint Items'}
                     maxWidth={'sm'}
                     render={
                         <NFTokenMintDgContent

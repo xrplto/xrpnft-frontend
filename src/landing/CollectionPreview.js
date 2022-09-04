@@ -30,10 +30,15 @@ const AutoCard = styled(Card)(
 export default function ColectionPreview() {
     const [idx, setIdx] = useState(0);
 
+    
     const images = [
+        {title: 'Muscle Mutant Club', src: '/static/collection/NFT_Labs_Images4.png', link: 'https://www.mutantmuscleclub.org/'},
+        {title: 'Bored Apes XRP Club', src: '/static/collection/NFT_Labs_Images2.png', link: 'https://x-apes.com/'},
+        {title: 'HOGS', src: '/static/collection/NFT_Labs_Images3.png', link: 'https://x-apes.com/'},
+
         {title: 'FAT CATS', src: '/static/collection/fat-cats-xrpl.jpg', link: 'https://fatcats.nftlabs.to/'},
         {title: 'FRACTALS', src: '/static/collection/fractals.jpg', link: 'https://fractal.nftlabs.to/'},
-        {title: 'LEDGERPUNK', src: '/static/collection/ledgerpunks-nft.jpg', link: 'https://ledgerpunks.com/'},
+        // {title: 'LEDGERPUNK', src: '/static/collection/ledgerpunks-nft.jpg', link: 'https://ledgerpunks.com/'},
         {title: 'RIPPLE SHARKS', src: '/static/collection/Ripple-Sharks.jpg', link: 'https://nftlabs.to/projects/ripple-sharks/'},
         {title: 'LLAMMAPALOOZA', src: '/static/collection/llamapalooza-xrplnft.jpg', link: 'https://llamapalooza.nftlabs.to/'},
         {title: 'TRIPPY APES CLUB', src: '/static/collection/TRIPPY.jpg', link: 'https://trippyapes.nftlabs.to/'},
