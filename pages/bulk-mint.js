@@ -92,7 +92,7 @@ export async function getStaticProps() {
 
     const ogp = {};
     ogp.canonical = 'https://xrpnft.com';
-    ogp.title = 'XRPNFT, the largest XRPL NFT marketplace';
+    ogp.title = 'Bulk Mint Items';
     ogp.url = 'https://xrpnft.com/';
     ogp.imgUrl = 'https://xrpnft.com/ogp.png';
     ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';

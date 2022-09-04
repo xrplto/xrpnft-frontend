@@ -196,7 +196,6 @@ export default function CreateCollection() {
                 const ret = res.data;
                 if (ret.status) {
                     const data = ret.data;
-                    console.log(data);
                     /*{
                         "name": "FRACTAL-BBB",
                         "externalLink": "",

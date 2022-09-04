@@ -15,6 +15,7 @@ import {
     FormControlLabel,
     FormGroup,
     IconButton,
+    Link,
     MenuItem,
     Select,
     Stack,
@@ -362,7 +363,7 @@ export default function Minting() {
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Description</Typography>
                 <Typography variant='p3'>
-                    {'The description will be included on the item\'s detail page underneath its image. Markdown syntax is supported.'}
+                    The description will be included on the item's detail page underneath its image. <Link href="https://www.markdownguide.org/cheat-sheet/">Markdown</Link> syntax is supported.
                 </Typography>
                 <TextField
                     placeholder='Provide a detailed description of your item'
@@ -453,6 +454,7 @@ export default function Minting() {
                     id='select_collection'
                     value={collectionName}
                     onChange={handleChangeCollection}
+                    MenuProps={{ disableScrollLock: true }}
                     // renderValue={(idx) => (
                     //     <>
                     //     {(collections.length > 0 && idx > -1 && collections.length > idx) &&

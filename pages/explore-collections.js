@@ -76,7 +76,7 @@ export default function Overview() {
 
             <ScrollToTop />
 
-            {/* <Footer /> */}
+            <Footer />
 
         </OverviewWrapper>
     );
