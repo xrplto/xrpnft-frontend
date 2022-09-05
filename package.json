@@ -62,7 +62,6 @@
     "react-apexcharts": "1.4.0",
     "react-dom": "17.0.2",
     "react-redux": "^8.0.2",
-    "react-spring": "8.0.5",
     "react-share": "^4.4.0",
     "react-spinners": "^0.13.2",
     "react-qr-code": "^2.0.7",
@@ -70,8 +69,9 @@
     "react-json-pretty": "^2.2.0",
     "react-use-websocket": "^3.0.0",
     "react-device-detect": "^2.2.2",
-    "react-copy-to-clipboard": "^5.1.0",
     "react-color-extractor": "^1.1.2",
+    "react-copy-to-clipboard": "^5.1.0",
+    "react-responsive-carousel": "^3.2.23",
     "react-lazy-load-image-component": "^1.5.4",
     "react-infinite-scroll-component": "^6.1.0"
   },

@@ -3,6 +3,7 @@ import axios from 'axios'
 import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux'
+import { ClipLoader } from "react-spinners";
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -12,10 +13,14 @@ import {
     Card,
     Checkbox,
     Container,
+    FormControl,
     FormControlLabel,
     FormGroup,
+    FormHelperText,
     IconButton,
+    InputAdornment,
     Link,
+    OutlinedInput,
     Stack,
     TextField,
     Tooltip,
@@ -26,6 +31,8 @@ import ImageIcon from '@mui/icons-material/Image';
 import InfoIcon from '@mui/icons-material/Info';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
+import ErrorIcon from '@mui/icons-material/Error';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 // Context
 import { useContext } from 'react';
@@ -37,6 +44,7 @@ import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS } from 'src/utils/cons
 // Components
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
+import LoadingTextField from 'src/components/LoadingTextField';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -157,6 +165,9 @@ export default function CreateCollection() {
     const [passphrase, setPassPhrase] = useState(''); // SHOULD BE REMOVED on deploy
 
     const canCreate = file1 && collectionName && passphrase;
+
+    const [status, setStatus] = useState(0);
+    const [data, setData] = useState('');
 
     const onCreateCollection = async () => {
         // POST https://api.xrpnft.com/api/account/create-collection
@@ -431,6 +442,16 @@ export default function CreateCollection() {
                             marginTop: 1
                         }
                     }}
+                />
+
+                <LoadingTextField
+                    id='id_nft_name'
+                    placeholder='Example: My XRPL NFTs'
+                    margin='dense'
+                    onChangeValue={(value) => {
+                        setCollectionName(value)
+                    }}
+                    value={collectionName}
                 />
             </Stack>
             <Stack spacing={2} mb={3}>

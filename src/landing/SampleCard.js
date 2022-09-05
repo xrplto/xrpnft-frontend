@@ -15,7 +15,7 @@ import { Icon } from '@iconify/react';
 
 // Components
 
-const CardWrapper = styled('div')(
+const CardWrapper = styled('div') (
     ({ theme }) => `
         box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
         border-radius: 30px;
@@ -32,10 +32,9 @@ const CardWrapper = styled('div')(
 
 export default function SampleCard({ nftname, title, nftSrc, onClick }) {
     const [isLike, setIsLike] = useState(false);
-    const [colors, setColors] = useState([]);
-
     const like = () => setIsLike(!isLike);
 
+    const [colors, setColors] = useState([]);
     const getColors = colors => {
         setColors(c => [...c, ...colors]);
     }

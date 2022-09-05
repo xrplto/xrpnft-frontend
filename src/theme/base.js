@@ -1,27 +1,23 @@
-// Black
-import { NebulaFighterTheme } from './schemes/NebulaFighterTheme';
+// Dark Mode
 import { DarkSpacesTheme } from './schemes/DarkSpacesTheme';
-import { GreenFieldsTheme } from './schemes/GreenFieldsTheme';
-// White
+// import { NebulaFighterTheme } from './schemes/NebulaFighterTheme';
+// import { GreenFieldsTheme } from './schemes/GreenFieldsTheme';
+
+// Light Mode
 import { PureLightTheme } from './schemes/PureLightTheme';
-import { GreyGooseTheme } from './schemes/GreyGooseTheme';
-import { PurpleFlowTheme } from './schemes/PurpleFlowTheme';
-// XRPL.to
-import { XrplToDarkTheme } from './schemes/XrplToDarkTheme';
-import { XrplToLightTheme } from './schemes/XrplToLightTheme';
+// import { GreyGooseTheme } from './schemes/GreyGooseTheme';
+// import { PurpleFlowTheme } from './schemes/PurpleFlowTheme';
 
 const themeMap = {
-    // Black
-    NebulaFighterTheme,
+    // Dark Mode
     DarkSpacesTheme,
-    GreenFieldsTheme,
-    // White
+    // NebulaFighterTheme,
+    // GreenFieldsTheme,
+
+    // Light Mode
     PureLightTheme,
-    GreyGooseTheme,
-    PurpleFlowTheme,
-    // XRPL.to
-    XrplToDarkTheme,
-    XrplToLightTheme,
+    // GreyGooseTheme,
+    // PurpleFlowTheme,
 };
 
 

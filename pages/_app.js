@@ -21,7 +21,7 @@ function XRPNFTApp(props) {
 
                 {/* <meta name="robots" content="nofollow"/> */}
 
-                {/* <link rel="preload" as="image" href="/static/collection/fat-cats-xrpl.jpg"/> */}
+                {/* <link rel="preload" as="image" href="/static/collection/NFT_Labs_Images4.png"/> */}
 
                 <link rel="canonical" href={ogp.canonical}/>
 

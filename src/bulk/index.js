@@ -910,7 +910,7 @@ export default function Minting() {
                     <Typography variant='p3' mt={2}>
                         One of your metadata used to create NFT URI. Metadata will follow the <Link href="https://github.com/XRPLF/XRPL-Standards/discussions/69" target="_blank" rel="noreferrer noopener nofollow">XLS-24D</Link> standard.
                     </Typography>
-                    {sMeta > 0 &&
+                    {metadata.length > 0 &&
                         <Typography variant='s2' mt={0.5}>(Total {fIntNumber(metadata.length)} metadata in length)</Typography>
                     }
                     <Stack alignItems='center'>

@@ -15,9 +15,17 @@ import {
     ListItemButton,
 } from '@mui/material';
 
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
+
 // Iconify
 import { Icon } from '@iconify/react';
 import roundAccountCircle from '@iconify/icons-ic/round-account-circle';
+import userLock from '@iconify/icons-fa-solid/user-lock';
+
+// Utils
+import { ACCOUNTS } from 'src/utils/constants';
 
 // ----------------------------------------------------------------------
 
@@ -51,9 +59,10 @@ const ListItemIconStyle = styled(ListItemIcon)({
 
 // ----------------------------------------------------------------------
 
-export default function ChooseAccountDialog({ onClose, accounts, selectedIdx, render }) {
+export default function ChooseAccountDialog({}) {
     const [open, setOpen] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(selectedIdx);
+    const { accountProfile, setAccountProfile, setLoading } = useContext(AppContext);
+    const [selectedIndex, setSelectedIndex] = useState(accountProfile.id);
 
 	const theme = useTheme();
 	const icon = <Icon icon={roundAccountCircle} width={48} height={48} />;
@@ -67,7 +76,6 @@ export default function ChooseAccountDialog({ onClose, accounts, selectedIdx, re
 
     const handleClickOpen = () => {
         setOpen(true);
-        setSelectedIndex(selectedIdx);
     };
 
     const handleClose = () => {
@@ -79,19 +87,28 @@ export default function ChooseAccountDialog({ onClose, accounts, selectedIdx, re
     };
 
     const handleOk = () => {
-        handleClose();
-        onClose(selectedIndex);
+        const id = selectedIndex;
+        const account = ACCOUNTS[id - 1].account;
+        setAccountProfile({account, id});
+
+        setOpen(false);
     };
 
     return (
         <>
-        {render(handleClickOpen)}
-        <Dialog onClose={handleClose} open={open}>
+        <Button
+            variant="contained"
+            onClick={handleClickOpen}
+            startIcon={<Icon icon={userLock}/>}
+        >
+            Account {ACCOUNTS[selectedIndex - 1].id}
+        </Button>
+        <Dialog onClose={handleClose} open={open} disableScrollLock>
             <DialogTitle>Choose an Account</DialogTitle>
             <Divider />
             <Paper style={{maxHeight: 320, overflow: 'auto', borderRadius:0}}>
                 <List disablePadding>
-                    {accounts.map((item) => (
+                    {ACCOUNTS.map((item) => (
                     <ListItemStyle
                         onClick={(event) => handleListItemClick(event, item.id)}
                         key={item.id}

@@ -28,9 +28,6 @@ import MenuPopover from './MenuPopover';
 import LoginDialog from './LoginDialog';
 import ChooseAccountDialog from './dialog/ChooseAccountDialog';
 
-// Utils
-import { ACCOUNTS } from 'src/utils/constants';
-
 export default function Wallet() {
     // https://github.com/mui/material-ui/issues/10000
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -41,8 +38,6 @@ export default function Wallet() {
     const [uuid, setUuid] = useState(null);
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
-
-    const [selectedIndex, setSelectedIndex] = useState(accountProfile.id);
 
     useEffect(() => {
         var timer = null;
@@ -140,13 +135,6 @@ export default function Wallet() {
         onDisconnectXumm(uuid);
     };
 
-    const handleChooseAccount = (value) => {
-        setSelectedIndex(value);
-        const id = value;
-        const account = ACCOUNTS[id - 1].account;
-        setAccountProfile({account, id});
-    };
-
     // <Alert
     //     variant="outlined"
     //     severity="success">
@@ -168,25 +156,13 @@ export default function Wallet() {
 
     return (
         <>
-            <ChooseAccountDialog
-                accounts={ACCOUNTS}
-                selectedIdx={selectedIndex}
-                onClose={handleChooseAccount}
-                render={
-                    (open) => (
-                        <Button
-                            variant="contained"
-                            onClick={open}
-                            startIcon={<Icon icon={userLock}/>}
-                        >
-                            Account {ACCOUNTS[selectedIndex - 1].id}
-                        </Button>
-                    )
-                }
-            />
+            <ChooseAccountDialog />
+            
             <IconButton
                 ref={anchorRef}
-                onClick={handleOpen} >
+                onClick={handleOpen}
+                onMouseOver={handleOpen}
+            >
                 <Icon icon={userLock}/>
             </IconButton>
 
