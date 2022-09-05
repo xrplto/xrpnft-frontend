@@ -164,10 +164,11 @@ export default function CreateCollection() {
 
     const [passphrase, setPassPhrase] = useState(''); // SHOULD BE REMOVED on deploy
 
-    const canCreate = file1 && collectionName && passphrase;
+    const [valid1, setValid1] = useState(false);
+    const [valid2, setValid2] = useState(false);
+    const [validPassword, setValidPassword] = useState(false);
 
-    const [status, setStatus] = useState(0);
-    const [data, setData] = useState('');
+    const canCreate = file1 && collectionName && slug && passphrase && valid1 && valid2 && validPassword;
 
     const onCreateCollection = async () => {
         // POST https://api.xrpnft.com/api/account/create-collection
@@ -432,46 +433,35 @@ export default function CreateCollection() {
 
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Name <Typography variant='s2'>*</Typography></Typography>
 
-                <TextField required placeholder='Example: My XRPL NFTs' margin='dense'
-                    onChange={(e) => {
-                        setCollectionName(e.target.value)
-                    }}
-                    value={collectionName}
-                    sx={{
-                        '&.MuiTextField-root': {
-                            marginTop: 1
-                        }
-                    }}
-                />
-
                 <LoadingTextField
-                    id='id_nft_name'
+                    id='id_collection_name'
                     placeholder='Example: My XRPL NFTs'
-                    margin='dense'
-                    onChangeValue={(value) => {
-                        setCollectionName(value)
-                    }}
+                    type='COLLECTION_NAME'
+                    startText=''
                     value={collectionName}
+                    setValid={setValid1}
+                    onChange={(e) => {
+                        setCollectionName(e.target.value);
+                    }}
                 />
             </Stack>
             <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>URL</Typography>
+                <Typography variant='p4'>URL <Typography variant='s2'>*</Typography></Typography>
                 <Typography variant='p2'>
                     Customize your URL on XRPNFT.COM. Must only contain lowercase letters, numbers, and hyphens.
                 </Typography>
-                <TextField
-                    required placeholder='https://xrpnft.com/collection/my-xrpl-nfts'
-                    margin='dense'
+
+                <LoadingTextField
+                    id='id_collection_slug'
+                    placeholder='my-xrpl-nfts'
+                    type='COLLECTION_SLUG'
+                    startText='https://xrpnft.com/collection/'
+                    value={slug}
+                    setValid={setValid2}
                     onChange={(e) => {
                         const value = e.target.value;
                         const newSlug = value?value.replace(/[^a-z0-9-]/g, ""):'';
                         setSlug(newSlug);
-                    }}
-                    value={slug}
-                    sx={{
-                        '&.MuiTextField-root': {
-                            marginTop: 1
-                        }
                     }}
                 />
             </Stack>
@@ -505,15 +495,15 @@ export default function CreateCollection() {
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Passphrase <Typography variant='s2'>*</Typography></Typography>
 
-                <TextField required placeholder='Passphrase' margin='dense'
+                <LoadingTextField
+                    id='id_collection_passphrase'
+                    placeholder='Passphrase'
+                    type='PASSPHRASE_CREATE_COLLECTION'
+                    startText=''
+                    value={passphrase}
+                    setValid={setValidPassword}
                     onChange={(e) => {
                         setPassPhrase(e.target.value)
-                    }}
-                    value={passphrase}
-                    sx={{
-                        '&.MuiTextField-root': {
-                            marginTop: 1
-                        }
                     }}
                 />
             </Stack>

@@ -57,6 +57,7 @@ import BaseDialog from 'src/components/dialog/BaseDialog';
 import NFTokenMintDgContent from './NFTokenMintDgContent';
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
+import LoadingTextField from 'src/components/LoadingTextField';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -99,7 +100,7 @@ const DisabledButton = withStyles({
 
 const CustomSelect = styled(Select)(({ theme }) => ({
     '& .MuiOutlinedInput-notchedOutline' : {
-        border: 'none'
+        border_left: 'none'
     }
 }));
 
@@ -177,8 +178,10 @@ export default function Minting() {
     const [collections, setCollections] = useState([]);
     const [filter, setFilter] = useState('');
 
-    const canCreate = zipFile && metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName && passphrase;
+    const [validPassword, setValidPassword] = useState(false);
+    
     const canDownload = metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName;
+    const canCreate = /*zipFile &&*/ metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName && passphrase && validPassword;
 
     const loadCollections=() => {
         // https://api.xrpnft.com/api/account/query-collections?filter=
@@ -206,6 +209,7 @@ export default function Minting() {
 
     const onCreateNft = async () => {
         // POST https://api.xrpnft.com/api/mint
+        openSnackbar('Comming soon!', 'error')
         return;
         setLoading(true);
         try {
@@ -786,9 +790,9 @@ export default function Minting() {
                     <LevelsSection /> */}
                 </Stack>
 
-                <Stack direction="row" spacing={2} mb={3} alignItems='center' sx={{ minHeight: 60 }}>
+                <Stack direction="row" mb={3} alignItems='center' sx={{ minHeight: 60 }}>
                     <Typography variant='d4'>Collection Family</Typography>
-                    <FormControl sx={{ pt: 0, minWidth: 120 }} size="small">
+                    <FormControl sx={{ ml:2, pt: 0, minWidth: 120 }} size="small">
                         <CustomSelect
                             value={collectionFamily}
                             onChange={handleChangeCollectionFamily}
@@ -818,7 +822,7 @@ export default function Minting() {
                                     sMeta.collection.family = undefined;
                             }
                         }}
-                        sx={collectionFamily ? { display: 'block', pt:1.5 } : { display: 'none' }}
+                        sx={collectionFamily ? { display: 'block' } : { display: 'none' }}
                     >
                         <CancelIcon />
                     </IconButton>
@@ -844,15 +848,15 @@ export default function Minting() {
                 <Stack spacing={2} mb={3}>
                     <Typography variant='p4'>Passphrase <Typography variant='s2'>*</Typography></Typography>
 
-                    <TextField required placeholder='Passphrase' margin='dense'
+                    <LoadingTextField
+                        id='id_bulk_mint_passphrase'
+                        type='PASSPHRASE_CREATE_BULK'
+                        placeholder='Passphrase'
+                        startText=''
+                        value={passphrase}
+                        setValid={setValidPassword}
                         onChange={(e) => {
                             setPassPhrase(e.target.value)
-                        }}
-                        value={passphrase}
-                        sx={{
-                            '&.MuiTextField-root': {
-                                marginTop: 1
-                            }
                         }}
                     />
                 </Stack>

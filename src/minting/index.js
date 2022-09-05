@@ -43,6 +43,7 @@ import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
 import PropertySection from './NFTProperties/PropertySection';
 import LevelsSection from './NFTLevels/LevelSection';
+import LoadingTextField from 'src/components/LoadingTextField';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -105,7 +106,6 @@ export default function Minting() {
     const [collectionName, setCollectionName] = useState('')
     const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
     const [passphrase, setPassPhrase] = useState('');
-
     
     const [fileUrl, setFileUrl] = useState(null);
     const [file, setFile] = useState(null);
@@ -115,7 +115,9 @@ export default function Minting() {
     const [collections, setCollections] = useState([]);
     const [filter, setFilter] = useState('');
 
-    const canCreate = file && nftName && collectionName && passphrase;
+    const [validPassword, setValidPassword] = useState(false);
+
+    const canCreate = file && nftName && collectionName && passphrase && validPassword;
 
     const loadCollections=() => {
         // https://api.xrpnft.com/api/account/query-collections?filter=
@@ -522,6 +524,18 @@ export default function Minting() {
                         '&.MuiTextField-root': {
                             marginTop: 1
                         }
+                    }}
+                />
+
+                <LoadingTextField
+                    id='id_create_item_passphrase'
+                    type='PASSPHRASE_CREATE_NFT'
+                    placeholder='Passphrase'
+                    startText=''
+                    value={passphrase}
+                    setValid={setValidPassword}
+                    onChange={(e) => {
+                        setPassPhrase(e.target.value)
                     }}
                 />
             </Stack>

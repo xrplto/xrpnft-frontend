@@ -21,12 +21,18 @@ import { ClipLoader } from "react-spinners";
 // Iconify
 import { Icon } from '@iconify/react';
 
-export default function LoadingTextField({ value, type, onChangeValue, ...props }) {
-    const BASE_URL = 'https://api.xrpnft.com/api';
-    const [status, setStatus] = useState(0);
-    const [text, setText] = useState(value);
+export default function LoadingTextField({ type, value, setValid, startText, ...props }) {
+    const TEXT_EMPTY = 0;
+    const TEXT_CHECKING = 1;
+    const TEXT_VALID = 2;
+    const TEXT_INVALID = 3;
 
-    const checkValidation = () => {
+    const BASE_URL = 'https://api.xrpnft.com/api';
+    const [status, setStatus] = useState(TEXT_EMPTY);
+
+    const checkValidation = (text) => {
+        setStatus(TEXT_CHECKING);
+
         const body = {};
         body.text = text;
         body.type = type;
@@ -35,6 +41,12 @@ export default function LoadingTextField({ value, type, onChangeValue, ...props 
         axios.post(`${BASE_URL}/validation`, body).then(res => {
             try {
                 if (res.status === 200 && res.data) {
+                    const ret = res.data.status;
+
+                    if (ret)
+                        setStatus(TEXT_VALID);
+                    else
+                        setStatus(TEXT_INVALID);
                 }
             } catch (error) {
                 console.log(error);
@@ -47,35 +59,55 @@ export default function LoadingTextField({ value, type, onChangeValue, ...props 
     }
 
     useEffect(() => {
-        if (!text)
-            setStatus(0)
-        // else
-        //     checkValidation();
-    }, [text]);
+        var timer = null;
+
+        const handleValue = () => {
+            if (!value)
+                setStatus(TEXT_EMPTY)
+            else
+                checkValidation(value);
+        }
+
+        setValid(false);
+        timer = setTimeout(handleValue, 500);
+        return () => {
+            if (timer) {
+                clearTimeout(timer);
+            }
+        };
+    }, [value]);
+
+    useEffect(() => {
+        if (setValid) {
+            if (status === TEXT_VALID)
+                setValid(true);
+            else
+                setValid(false);
+        }
+    }, [status, setValid]);
 
     return (
         <FormControl sx={{ m: 1 }} variant="outlined">
             <OutlinedInput
                 {...props}
+                value={value}
+                // autoFocus
+                // onFocus={event => {
+                //     event.target.select();
+                // }}
                 autoComplete='new-password'
-                onChange={(e) => {
-                    const value = e.target.value;
-                    setText(value);
-                    onChangeValue(value);
-
-                    if (!value)
-                        setStatus(0);
-                    else {
-                        setStatus(1);
-                        checkValidation();
-                    }
-                        
-                }}
+                inputProps={{autoComplete: 'off'}}
+                margin='dense'
                 endAdornment={
                     <InputAdornment position="end">
                         {status === 1 && <ClipLoader color='#ff0000' size={15} /> }
                         {status === 2 && <CheckCircleIcon color='success'/> }
                         {status === 3 && <ErrorIcon color='error' />}
+                    </InputAdornment>
+                }
+                startAdornment={
+                    <InputAdornment position="start" sx={{mr:0.1}}>
+                        {startText}
                     </InputAdornment>
                 }
                 sx={{
