@@ -45,7 +45,7 @@ export default function NFTDetails({token}) {
     } = token;
 
     const ParsedURI = convertHexToString(URI);
-    const hrefURI = `https://ipfs.xrpnft.com/ipfs/${ParsedURI}`;
+    const hrefURI = `https://gateway.xrpnft.com/ipfs/${ParsedURI}`;
 
     let strDateTime = '';
     if (timestamp) {

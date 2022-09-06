@@ -515,18 +515,6 @@ export default function Minting() {
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Passphrase <Typography variant='s2'>*</Typography></Typography>
 
-                <TextField required placeholder='Passphrase' margin='dense'
-                    onChange={(e) => {
-                        setPassPhrase(e.target.value)
-                    }}
-                    value={passphrase}
-                    sx={{
-                        '&.MuiTextField-root': {
-                            marginTop: 1
-                        }
-                    }}
-                />
-
                 <LoadingTextField
                     id='id_create_item_passphrase'
                     type='PASSPHRASE_CREATE_NFT'

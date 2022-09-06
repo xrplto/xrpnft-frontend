@@ -84,7 +84,7 @@ export default function NFTCard({ nft }) {
 
     // const imgUrl = `https://xrpnft.mypinata.cloud/ipfs/${nft.hash}`;
 
-    const imgUrl = `https://ipfs.xrpnft.com/ipfs/${image}`;
+    const imgUrl = `https://gateway.xrpnft.com/ipfs/${image}`;
     // const imgUrl = `https://s2.xrpnft.com/image/${nft.filename}`;
 
     console.log(imgUrl);

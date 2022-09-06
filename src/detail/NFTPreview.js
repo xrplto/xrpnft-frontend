@@ -11,7 +11,7 @@ import {
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 export default function NFTPreview({ image, title, favorites }) {
-    const imgUrl = `https://ipfs.xrpnft.com/ipfs/${image}`;
+    const imgUrl = `https://gateway.xrpnft.com/ipfs/${image}`;
     return (
         <Card>
             <CardHeader
