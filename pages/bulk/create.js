@@ -15,7 +15,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import CreateCollection from 'src/collection/create';
+import CreateBulk from 'src/bulk/create';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -71,7 +71,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="sm">
-                <CreateCollection />
+                <CreateBulk />
             </Container>
 
             <ScrollToTop />

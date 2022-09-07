@@ -15,16 +15,27 @@ import {
     TableCell,
     TableHead,
     TableRow,
-    Typography
+    Typography,
+    Divider
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
+import PendingIcon from '@mui/icons-material/Pending';
 
-// Components
-import BulkToolbar from './BulkToolbar';
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
 
 // Utils
 import { fNumber } from 'src/utils/formatNumber';
 import { normalizeCurrencyCodeXummImpl } from 'src/utils/normalizers';
+
+// Loader
+import { ClipLoader } from "react-spinners";
+
+// Components
+import BulkToolbar from './BulkToolbar';
 
 // ----------------------------------------------------------------------
 const CancelTypography = withStyles({
@@ -71,27 +82,48 @@ function truncate(str, n){
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
+const STATUS_INITIAL = 0;
+const STATUS_DOWNLOAD_START = 1;
+const STATUS_DOWNLOAD_ERROR = 2;
+const STATUS_DOWNLOAD_SUCCESS = 3;
+const STATUS_EXTRACT_START = 4;
+const STATUS_EXTRACT_ERROR = 5;
+const STATUS_EXTRACT_SUCCESS = 6
+const STATUS_PINNING_START = 7;
+const STATUS_PINNING_ERROR = 8;
+const STATUS_PINNING_SUCCESS = 9;
+const STATUS_ALL_DONE = 10;
+
+function getStatusString(status) {
+    if (status === STATUS_INITIAL) return 'PENDING';
+    if (status === STATUS_DOWNLOAD_START) return 'Started downloading ...';
+    if (status === STATUS_DOWNLOAD_ERROR) return 'Error on downloading ...';
+    if (status === STATUS_DOWNLOAD_SUCCESS) return 'Success on downloading ...';
+    if (status === STATUS_EXTRACT_START) return 'Started extractiong ...';
+    if (status === STATUS_EXTRACT_ERROR) return 'Error on extracting ...';
+    if (status === STATUS_EXTRACT_SUCCESS) return 'Success on extracting ...';
+    if (status === STATUS_PINNING_START) return 'Started pinning to IPFS ...';
+    if (status === STATUS_PINNING_ERROR) return 'Error on pinning to IPFS ...';
+    if (status === STATUS_PINNING_SUCCESS) return 'Success on pinning to IPFS ...';
+    return 'EXTRA ERROR';
+}
+
 export default function BulkList({data}) {
     const theme = useTheme();
-    const EPOCH_OFFSET = 946684800;
     const BASE_URL = 'https://api.xrpnft.com/api';
+
+    const { accountProfile } = useContext(AppContext);
+    const account = accountProfile.account;
 
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [count, setCount] = useState(0);
-    const [bulks, setBulks] = useState(data.bulks);
+    const [bulks, setBulks] = useState([]);
     
-    const {
-        issuer,
-        currency,
-        // md5
-    } = token;
-
     useEffect(() => {
         function getBulks() {
-            if (!pair) return;
-            // https://api.xrpnft.com/api/bulk/list?page=0&limit=10
-            axios.get(`${BASE_URL}/bulk/list?page=${page}&limit=${rows}`)
+            // https://api.xrpnft.com/api/bulk/list?account=rhhh&page=0&limit=10
+            axios.get(`${BASE_URL}/bulk/list?account=${account}&page=${page}&limit=${rows}`)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -105,7 +137,7 @@ export default function BulkList({data}) {
                 });
         }
         getBulks();
-    }, [page, rows]);
+    }, [account, page, rows]);
 
     return (
         <>
@@ -128,59 +160,19 @@ export default function BulkList({data}) {
                         borderBottomColor: theme.palette.divider
                     }
                 }}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="left">#</TableCell>
-                            <TableCell align="left">Price</TableCell>
-                            <TableCell align="left">Volume</TableCell>
-                            <TableCell align="left">Flag</TableCell>
-                            <TableCell align="left">Taker Paid</TableCell>
-                            <TableCell align="left">Taker Got</TableCell>
-                            <TableCell align="left">Time</TableCell>
-                            <TableCell align="left">Ledger</TableCell>
-                            <TableCell align="left">Sequence</TableCell>
-                            <TableCell align="left">Maker</TableCell>
-                            <TableCell align="left">Taker</TableCell>
-                            <TableCell align="left">Hash</TableCell>
-                        </TableRow>
-                    </TableHead>
                     <TableBody>
                     {
                         // exchs.slice(page * rows, page * rows + rows)
-                        exchs.map((row) => {
+                        bulks.map((row) => {
                                 const {
-                                    id,
-                                    _id,
-                                    dir,
-                                    hash,
-                                    maker,
-                                    taker,
-                                    ledger,
-                                    seq,
-                                    takerPaid,
-                                    takerGot,
-                                    date,
-                                    cancel,
-                                    // pair,
-                                    // xUSD
-                                    } = row;
-                                let value;
-                                let exch;
-                                // let buy;
-                                if (takerPaid.issuer === issuer && takerPaid.currency === currency) {
-                                    // SELL, Red
-                                    const t = parseFloat(takerGot.value);
-                                    value = parseFloat(takerPaid.value);
-                                    exch = t / value;
-                                    // buy = false;
-                                } else {
-                                    // BUY, Green
-                                    const t = parseFloat(takerPaid.value);
-                                    value = parseFloat(takerGot.value);
-                                    exch = t / value;
-                                    // buy = true;
-                                }
-                                const nDate = new Date((date + EPOCH_OFFSET) * 1000);
+                                    uuid,
+                                    url,
+                                    status,
+                                    logo,
+                                    name,
+                                    created
+                                } = row;
+                                const nDate = new Date(created);
                                 const year = nDate.getFullYear();
                                 const month = nDate.getMonth() + 1;
                                 const day = nDate.getDate();
@@ -188,126 +180,63 @@ export default function BulkList({data}) {
                                 const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
                                 const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
 
+                                const error = status === STATUS_DOWNLOAD_ERROR || status === STATUS_EXTRACT_ERROR || status === STATUS_PINNING_ERROR;
+
                                 //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
                                 //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
                                 const strDate = `${year}-${month}-${day}`;
                                 const strTime = `${hour}:${min}:${sec}`;
 
-                                const tMaker = truncate(maker, 12);
-                                const tTaker = truncate(taker, 12);
-                                const tHash = truncate(hash, 16);
-
-                                const namePaid = normalizeCurrencyCodeXummImpl(takerPaid.currency);
-                                const nameGot = normalizeCurrencyCodeXummImpl(takerGot.currency);
-
                                 return (
                                     <TableRow
                                         hover
-                                        key={_id}
+                                        key={uuid}
                                         sx={{
                                             [`& .${tableCellClasses.root}`]: {
-                                                color: (/*buy*/dir === 'sell' ? '#007B55' : '#B72136')
+                                                // color: (error ? '#B72136' : '#B72136')
                                             }
                                         }}
                                     >
-                                        <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell>
-                                        <TableCell align="left"><Typography variant="subtitle2">{fNumber(exch)}</Typography></TableCell>
-                                        <TableCell align="left"><Typography variant="subtitle2">{fNumber(value)}</Typography></TableCell>
+                                        {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
+                                        <TableCell align="left" width='15%'>
+                                            <Avatar alt="C" src={`https://s3.xrpnft.com/bulk/${logo}`} sx={{ mr:2, width: 128, height: 128 }} />
+                                        </TableCell>
+                                        
                                         <TableCell align="left">
                                             <Stack spacing={1}>
-                                                {dir==='sell' && (
-                                                    <Stack direction="row">
-                                                        <BuyTypography variant="caption">
-                                                        buy
-                                                        </BuyTypography>
+                                                <Typography variant="h3">{name}</Typography>
+                                                <Link
+                                                    underline="none"
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={url}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="d4">{url}</Typography>
+                                                </Link>
+                                                <Typography variant="d4" color={error ? '#B72136' : ''}>{getStatusString(status)}</Typography>
+                                                <Stack direction="row" spacing={4}>
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <ClipLoader color='#FFA319' size={30} />
+                                                        <Typography variant="s4">Download</Typography>
                                                     </Stack>
-                                                )}
+                                                    <Divider orientation="vertical" flexItem/>
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <CheckCircleIcon fontSize='large' color='success'/>
+                                                        <Typography variant="s4">Unzip</Typography>
+                                                    </Stack>
+                                                    <Divider orientation="vertical" flexItem/>
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <ErrorIcon fontSize='large' color='error'/>
+                                                        <Typography variant="s4">Pin to IPFS</Typography>
+                                                    </Stack>
+                                                </Stack>
                                                 
-                                                {dir==='buy' && (
-                                                    <Stack direction="row">
-                                                        <SellTypography variant="caption">
-                                                        sell
-                                                        </SellTypography>
-                                                    </Stack>
-                                                )}
-                                                {cancel && (
-                                                    <Stack direction="row">
-                                                        <CancelTypography variant="caption">
-                                                        cancel
-                                                        </CancelTypography>
-                                                    </Stack>
-                                                )}
                                             </Stack>
                                         </TableCell>
-
+                                        
                                         <TableCell align="left">
-                                            {fNumber(takerPaid.value)} <Typography variant="caption">{namePaid}</Typography>
-                                        </TableCell>
-
-                                        <TableCell align="left">
-                                            {fNumber(takerGot.value)} <Typography variant="caption">{nameGot}</Typography>
-                                        </TableCell>
-
-                                        <TableCell align="left">
-                                            <Stack>
-                                                <Typography variant="subtitle2">{strTime}</Typography>
-                                                <Typography variant="caption">{strDate}</Typography>
-                                            </Stack>
                                             
-                                        </TableCell>
-                                        <TableCell align="left">{ledger}</TableCell>
-                                        <TableCell align="left">{seq}</TableCell>
-                                        <TableCell align="left">
-                                            <Link
-                                                underline="none"
-                                                color="inherit"
-                                                target="_blank"
-                                                href={`https://bithomp.com/explorer/${maker}`}
-                                                rel="noreferrer noopener nofollow"
-                                            >
-                                                {tMaker}
-                                            </Link>
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            <Link
-                                                underline="none"
-                                                color="inherit"
-                                                target="_blank"
-                                                href={`https://bithomp.com/explorer/${taker}`}
-                                                rel="noreferrer noopener nofollow"
-                                            >
-                                                {tTaker}
-                                            </Link>
-                                        </TableCell>
-                                        <TableCell align="left">
-                                            <Stack direction="row" alignItems='center'>
-                                                <Link
-                                                    underline="none"
-                                                    color="inherit"
-                                                    target="_blank"
-                                                    href={`https://bithomp.com/explorer/${hash}`}
-                                                    rel="noreferrer noopener nofollow"
-                                                >
-                                                    <Stack direction="row" alignItems='center'>
-                                                        {tHash}
-                                                        <IconButton edge="end" aria-label="bithomp">
-                                                            <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
-                                                        </IconButton>
-                                                    </Stack>
-                                                </Link>
-
-                                                <Link
-                                                    underline="none"
-                                                    color="inherit"
-                                                    target="_blank"
-                                                    href={`https://livenet.xrpl.org/transactions/${hash}`}
-                                                    rel="noreferrer noopener nofollow"
-                                                >
-                                                    <IconButton edge="end" aria-label="bithomp">
-                                                        <Avatar alt="livenetxrplorg" src="/static/livenetxrplorg.ico" sx={{ width: 16, height: 16 }} />
-                                                    </IconButton>
-                                                </Link>
-                                            </Stack>
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -315,13 +244,15 @@ export default function BulkList({data}) {
                     </TableBody>
                 </Table>
             </Box>
-            <BulkToolbar
-                count={count}
-                rows={rows}
-                setRows={setRows}
-                page={page}
-                setPage={setPage}
-            />
+            { count > 0 &&
+                <BulkToolbar
+                    count={count}
+                    rows={rows}
+                    setRows={setRows}
+                    page={page}
+                    setPage={setPage}
+                />
+            }
         </>
     );
 }

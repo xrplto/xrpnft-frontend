@@ -1158,6 +1158,7 @@ export const PureLightTheme = createTheme({
           d1: 'div',
           d2: 'div',
           d3: 'div',
+          d4: 'div',
           subtitle1: 'div',
           subtitle2: 'div',
           body1: 'div',
@@ -1302,6 +1303,11 @@ export const PureLightTheme = createTheme({
       fontWeight: 400,
       fontSize: 16,
       color: colors.alpha.black[100]
+    },
+    d4: {
+      fontWeight: 500,
+      fontSize: 16,
+      color: colors.alpha.black[70]
     },
     body1: {
       fontSize: 14

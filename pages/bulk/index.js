@@ -1,6 +1,6 @@
-import axios from 'axios'
-import { useState, useEffect, useRef } from 'react';
-import { performance } from 'perf_hooks';
+// import axios from 'axios'
+// import { useState, useEffect, useRef } from 'react';
+// import { performance } from 'perf_hooks';
 
 // Material
 import {
@@ -54,7 +54,7 @@ function generateRandom(maxLimit = 10){
     return rand;
 }
 
-export default function Overview({data}) {
+export default function Overview() {
     const bgIdx = generateRandom();
     const { darkMode } = useContext(AppContext);
 
@@ -72,7 +72,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="lg">
-                <Bulks bulks={data.bulks} />
+                <Bulks />
             </Container>
 
             <ScrollToTop />
@@ -89,37 +89,38 @@ export default function Overview({data}) {
 export async function getStaticProps() {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
-    let data = null;
-    try {
+    // let data = null;
+    // try {
 
-        var t1 = performance.now();
+    //     var t1 = performance.now();
 
-        // https://api.xrpnft.com/api/bulk/list
-        const res = await axios.get(`${BASE_URL}/bulk/list`);
+    //     // https://api.xrpnft.com/api/bulk/list
+    //     const res = await axios.get(`${BASE_URL}/bulk/list`);
 
-        data = res.data;
+    //     data = res.data;
 
-        console.log(data);
+    //     console.log(data);
 
-        var t2 = performance.now();
-        var dt = (t2 - t1).toFixed(2);
+    //     var t2 = performance.now();
+    //     var dt = (t2 - t1).toFixed(2);
 
-        console.log(`getServerSideProps(bulks) took: ${dt}ms`);
-    } catch (e) {
-        console.log(e);
-    }
+    //     console.log(`getServerSideProps(bulks) took: ${dt}ms`);
+    // } catch (e) {
+    //     console.log(e);
+    // }
+    
+    // if (data && data.bulks) {
+    // }
 
     let ret = {};
-    if (data && data.bulks) {
-        const ogp = {};
-        ogp.canonical = 'https://xrpnft.com';
-        ogp.title = 'Manage Bulk Mint';
-        ogp.url = 'https://xrpnft.com/';
-        ogp.imgUrl = 'https://xrpnft.com/ogp.png';
-        ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
+    const ogp = {};
+    ogp.canonical = 'https://xrpnft.com';
+    ogp.title = 'Manage Bulk Mint';
+    ogp.url = 'https://xrpnft.com/';
+    ogp.imgUrl = 'https://xrpnft.com/ogp.png';
+    ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
 
-        ret = {ogp, data};
-    }
+    ret = {ogp};
 
     return {
         props: ret, // will be passed to the page component as props
