@@ -15,7 +15,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import BulkMinting from 'src/bulk';
+import CreateCollection from 'src/collection/create';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -64,14 +64,14 @@ export default function Overview({data}) {
             <BackgroundWrapper
                 style={{
                     backgroundImage: `url("/static/fractal/${bgIdx}.png")`,
-                    opacity: `${darkMode?0.1:0.2}`
+                    opacity: `${darkMode?0.3:0.2}`
                 }}
             />
 
             <Header />
 
-            <Container maxWidth="lg">
-                <BulkMinting />
+            <Container maxWidth="sm">
+                <CreateCollection />
             </Container>
 
             <ScrollToTop />
@@ -92,7 +92,7 @@ export async function getStaticProps() {
 
     const ogp = {};
     ogp.canonical = 'https://xrpnft.com';
-    ogp.title = 'Bulk Mint Items';
+    ogp.title = 'XRPNFT, the largest XRPL NFT marketplace';
     ogp.url = 'https://xrpnft.com/';
     ogp.imgUrl = 'https://xrpnft.com/ogp.png';
     ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
