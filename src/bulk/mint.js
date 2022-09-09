@@ -142,8 +142,7 @@ const COLLECTION_FAMILIES = [
 // https://stackoverflow.com/questions/39112096/calculate-md5-hash-of-a-large-file-using-javascript
 
 export default function Minting({bulk}) {
-    const fileRef1 = useRef();
-    const fileRef2 = useRef();
+    const fileRef = useRef();
     const infoIPFS = bulk.infoIPFS;
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile } = useContext(AppContext);
@@ -169,10 +168,6 @@ export default function Minting({bulk}) {
     const [jsonFileName, setJsonFileName] = useState(null);
     const [jsonFileModified, setJsonFileModified] = useState(null);
 
-    const [zipFileName, setZipFileName] = useState(null);
-    const [zipFileModified, setZipFileModified] = useState(null);
-
-    const [zipFile, setZipFile] = useState(null);
     const [loading, setLoading] = useState(false);
 
     // Collection related
@@ -182,7 +177,7 @@ export default function Minting({bulk}) {
     const [validPassword, setValidPassword] = useState(false);
     
     const canDownload = metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName;
-    const canCreate = /*zipFile &&*/ metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName && passphrase && validPassword;
+    const canCreate = metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName && passphrase && validPassword;
 
     const loadCollections=() => {
         // https://api.xrpnft.com/api/account/query-collections?filter=
@@ -210,59 +205,25 @@ export default function Minting({bulk}) {
 
     const onCreateNft = async () => {
         // POST https://api.xrpnft.com/api/mint
-        openSnackbar('Comming soon!', 'error')
-        return;
         setLoading(true);
+        const newMetaData = getFinalMetaData();
         try {
             let res;
-            const data = {};
-            data.name = nftName;
-            data.externalLink = extLink;
-            data.description = description;
-            data.collection = collectionName;
-            data.flag = flag;
+            const body = {};
+            body.metadata = newMetaData;
+            body.flag = flag;
+            body.passphrase = passphrase;
 
-            data.passphrase = passphrase;
-
-            const formdata = new FormData();
-            formdata.append('nft', file);
-            formdata.append('account', account);
-            formdata.append('data', JSON.stringify(data));
-            
-            res = await axios.post(`${BASE_URL}/account/mint`, formdata, {
-                headers: { "Content-Type": "multipart/form-data" }
-            });
+            res = await axios.post(`${BASE_URL}/account/mint`, body);
 
             if (res.status === 200) {
                 const ret = res.data;
                 if (ret.status) {
-                    const nft = ret.data;
-                    // console.log(ret.link1);
-                    // console.log(ret.link2);
-                    // console.log(ret.link3);
-                    // window.location.href = ret.link;
+                    const data = ret.data;
+                    console.log(data);
                     
-                    // window.open(ret.link1, '_blank');
-                    // window.open(ret.link2, '_blank');
-                    // window.open(ret.link3, '_blank');
-
-                    /*{
-                        "name": "FRACTAL-BBB",
-                        "externalLink": "",
-                        "description": "",
-                        "collection": "",
-                        "Flags": 13,
-                        "Issuer": "rEBKhngY8izMvRrgGg3Yh5zdiQgHH9cExg",
-                        "minter": "xrpnft.com",
-                        "image": "QmbUaafMaftkUTt44DVdTaSwgKzf51UWMD4NNNc7Jt4fCf",
-                        "URI": "516D656A506E6E6775635A5664723637583937324C313842726A366F317241503842794754796137645259763234",
-                        "uuid": "d1dcfe3cac80409793629707de2aafbf",
-                        "minted": false,
-                        "_id": "6308bc3d7a1dec795f21fc33"
-                    } */
-                    window.location.href = `/token/${nft.uuid}`;
-                    openSnackbar('NFT mint successful!', 'success')
-                    // setFile(null);
+                    // window.location.href = `/token/${nft.uuid}`;
+                    openSnackbar('Bulk mint successful!', 'success')
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
                     const err = ret.err;
@@ -275,38 +236,7 @@ export default function Minting({bulk}) {
         setLoading(false);
     };
 
-    // const pinFileToIPFS = async () => {
-
-    //     // TODO: Called only when the file is uploaded to site.
-    //     setLoading(true)
-    //     if (file) {
-    //         try {
-    //             const formData = new FormData()
-    //             formData.append("file", file)
-    //             console.log('uploading image to ipfs')
-    //             const response = await axios.post(
-    //                 PINATA_PINNING_FILE_URL,
-    //                 formData,
-    //                 {
-    //                     maxContentLength: "Infinity",
-    //                     headers: {
-    //                         "Content-Type": `multipart/form-data;boundary=${formData._boundary}`,
-    //                         'pinata_api_key': process.env.REACT_APP_PINATA_API_KEY,
-    //                         'pinata_secret_api_key': process.env.REACT_APP_PINATA_SECRET_KEY
-    //                     }
-    //                 }
-    //             )
-    //             // dispatch(setPinnedFileHash(response.data.IpfsHash))
-    //             openSnackbar('IPFSHash: ' + response.data.IpfsHash, 'success')
-    //         } catch (e) {
-    //             console.log(e)
-    //             openSnackbar(e.message, 'error')
-    //         }
-    //     }
-    //     setLoading(false)
-    // }
-
-    const handleFileSelect1 = (e) => {
+    const handleFileSelect = (e) => {
         const pickedFile = e.target.files[0];
         if (pickedFile) {
             const fileName = pickedFile.name;
@@ -344,46 +274,13 @@ export default function Minting({bulk}) {
                         setJsonFileModified(strDateTime);
 
                         const meta = metadata[0];
-                        setNftName(meta.name);
                         setSampleMeta({...meta});
+                        // setNftName(meta.name);
                         // setDescription(meta.description);
                         // setIpfsCID(meta.image);
                     }
                 }
             }
-        }
-    }
-
-    const handleFileSelect2 = (e) => {
-        const pickedFile = e.target.files[0];
-        if (!pickedFile) return;
-
-        const fileName = pickedFile.name;
-        const type = pickedFile.type;
-        const size = pickedFile.size;
-        const lastModified = pickedFile.lastModifiedDate;
-        console.log(type);
-        if (type === 'application/x-zip-compressed') {
-            setZipFile(pickedFile);
-
-            let strDateTime = '';
-            try {
-                if (lastModified) {
-                    const dt = new Date(lastModified);
-                    const date = dt.toLocaleDateString();
-                    const time = dt.toLocaleTimeString();
-                    strDateTime = `${date} ${time}`;
-                }
-            } catch (e) {
-                console.error(e);
-            }
-
-            setZipFileName(fileName);
-            setZipFileModified(strDateTime);
-            // const reader = new FileReader();
-            // reader.readAsDataURL(pickedFile)
-            // reader.onloadend = function (e) {
-            // }
         }
     }
 
@@ -414,10 +311,10 @@ export default function Minting({bulk}) {
         setImgExt(value);
         if (sMeta) {
             if (value === 'png' || value === 'jpg') {
-                sMeta.image = 'ipfs://' + ipfsCID + `/1.${value}`;
+                sMeta.image = ipfsCID + `/1.${value}`;
                 if (sMeta.video) sMeta.video = '';
             } else if (value === 'mp4') {
-                sMeta.video = 'ipfs://' + ipfsCID + `/1.${value}`;
+                sMeta.video = ipfsCID + `/1.${value}`;
                 if (sMeta.image) sMeta.image = '';
             }
         }
@@ -455,10 +352,10 @@ export default function Minting({bulk}) {
             // TODO
 
             if (imgExt === 'png' || imgExt === 'jpg') {
-                newMeta.image = 'ipfs://' + ipfsCID + `/${count}.${imgExt}`;
+                newMeta.image = ipfsCID + `/${count}.${imgExt}`;
                 if (newMeta.video) newMeta.video = '';
             } else if (imgExt === 'mp4') {
-                newMeta.video = 'ipfs://' + ipfsCID + `/${count}.${imgExt}`;
+                newMeta.video = ipfsCID + `/${count}.${imgExt}`;
                 if (newMeta.image) newMeta.image = '';
             }
 
@@ -499,62 +396,29 @@ export default function Minting({bulk}) {
         
         <Grid container spacing={3}>
             <Grid item lg={6}>
-                <Stack direction="row" spacing={4} sx={{mb:3}} justifyContent="space-around">
-                    <Stack spacing={2}>
-                        
-                        <Typography variant='p4'>Metadata <Typography variant='s2'>*</Typography></Typography>
-                        <Typography variant='p3'>File types: JSON. Max size: 20MB</Typography>
+                <Stack spacing={2} sx={{mb:3}}>
+                    <Typography variant='p4'>Metadata <Typography variant='s2'>*</Typography></Typography>
+                    <Typography variant='p3'>File types: JSON. Max size: 20MB</Typography>
 
-                        <Stack direction="row" alignItems='center' spacing={0} sx={{mt: 2}}>
-                            <input
-                                ref={fileRef1}
-                                style={{ display: 'none' }}
-                                accept='.json'
-                                id='contained-button-file1'
-                                // multiple
-                                type='file'
-                                onChange={handleFileSelect1}
-                            />
-                            <Button
-                                variant='contained'
-                                onClick={() => fileRef1.current.click()}
-                            >
-                                Open
-                            </Button>
-                            <Stack>
-                                <Typography variant='d4' sx={{pl: 3}}>{jsonFileName}</Typography>
-                                <Typography variant='p3' sx={{pl: 3}}>{jsonFileModified}</Typography>
-                            </Stack>
-                        </Stack>
-                    </Stack>
-
-                    <Stack spacing={2}>
-                        <Typography variant='p4'>NFT Contents <Typography variant='s2'>*</Typography></Typography>
-                        {/* <Typography variant='p3'>Only ZIP file is supported.</Typography> */}
-                        <Typography variant='s2'>Not supported for now</Typography>
-
-                        <Stack direction="row" alignItems='center' spacing={0} sx={{mt: 2}}>
-                            <input
-                                ref={fileRef2}
-                                style={{ display: 'none' }}
-                                accept='.zip'
-                                id='contained-button-file2'
-                                // multiple
-                                type='file'
-                                onChange={handleFileSelect2}
-                            />
-                            <Button
-                                disabled
-                                variant='contained'
-                                color='info'
-                                onClick={() => fileRef2.current.click()}
-                            >
-                                Open
-                            </Button>
-                            <Stack>
-                                <Typography variant='d4' sx={{pl: 3}}>{zipFileName}</Typography>
-                                <Typography variant='p3' sx={{pl: 3}}>{zipFileModified}</Typography>
-                            </Stack>
+                    <Stack direction="row" alignItems='center' spacing={0} sx={{mt: 2}}>
+                        <input
+                            ref={fileRef}
+                            style={{ display: 'none' }}
+                            accept='.json'
+                            id='contained-button-file1'
+                            // multiple
+                            type='file'
+                            onChange={handleFileSelect}
+                        />
+                        <Button
+                            variant='contained'
+                            onClick={() => fileRef.current.click()}
+                        >
+                            Open
+                        </Button>
+                        <Stack>
+                            <Typography variant='d4' sx={{pl: 3}}>{jsonFileName}</Typography>
+                            <Typography variant='p3' sx={{pl: 3}}>{jsonFileModified}</Typography>
                         </Stack>
                     </Stack>
                 </Stack>
@@ -604,7 +468,7 @@ export default function Minting({bulk}) {
                     </Select>
                     <Typography variant='p4'>IPFS CID <Typography variant='s2'>*</Typography></Typography>
                     <Typography variant='p3'>
-                        Your NFTs will refer to this IPFS CID. And prefix 'ipfs://' and postfix indexed numbers will be automatically appended. ex; ipfs://QmPPPYRX79ESWWoVSB3B1AxtKaE61pDqr8bc9tqV22Cquu/###.png'
+                        Your NFTs will refer to this IPFS CID. And postfix indexed numbers will be automatically appended. ex; QmPPPYRX79ESWWoVSB3B1AxtKaE61pDqr8bc9tqV22Cquu/###.png'
                     </Typography>
                     <OutlinedInput required
                         id='id_ipfs_cid'
@@ -620,10 +484,10 @@ export default function Minting({bulk}) {
                             setIpfsCID(value)
                             if (sMeta) {
                                 if (imgExt === 'png' || imgExt === 'jpg') {
-                                    sMeta.image = 'ipfs://' + value + `/1.${imgExt}`;
+                                    sMeta.image = value + `/1.${imgExt}`;
                                     if (sMeta.video) sMeta.video = '';
                                 } else if (imgExt === 'mp4') {
-                                    sMeta.video = 'ipfs://' + value + `/1.${imgExt}`;
+                                    sMeta.video = value + `/1.${imgExt}`;
                                     if (sMeta.image) sMeta.image = '';
                                 }
                             }
