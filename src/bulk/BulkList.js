@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -15,6 +16,7 @@ import {
     TableCell,
     TableHead,
     TableRow,
+    Tooltip,
     Typography,
     Divider
 } from '@mui/material';
@@ -22,19 +24,26 @@ import { tableCellClasses } from "@mui/material/TableCell";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import PendingIcon from '@mui/icons-material/Pending';
+import FiberPinIcon from '@mui/icons-material/FiberPin';
+import PushPinIcon from '@mui/icons-material/PushPin';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { fNumber } from 'src/utils/formatNumber';
+import { fIntNumber } from 'src/utils/formatNumber';
 import { normalizeCurrencyCodeXummImpl } from 'src/utils/normalizers';
 
 // Loader
-import { ClipLoader } from "react-spinners";
+import { ClipLoader, ClockLoader } from "react-spinners";
 
 // Components
+import XSnackbar from 'src/components/Snackbar';
+import { useSnackbar } from 'src/components/useSnackbar';
 import BulkToolbar from './BulkToolbar';
 
 // ----------------------------------------------------------------------
@@ -82,30 +91,57 @@ function truncate(str, n){
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-const STATUS_INITIAL = 0;
-const STATUS_DOWNLOAD_START = 1;
-const STATUS_DOWNLOAD_ERROR = 2;
-const STATUS_DOWNLOAD_SUCCESS = 3;
-const STATUS_EXTRACT_START = 4;
-const STATUS_EXTRACT_ERROR = 5;
-const STATUS_EXTRACT_SUCCESS = 6
-const STATUS_PINNING_START = 7;
-const STATUS_PINNING_ERROR = 8;
-const STATUS_PINNING_SUCCESS = 9;
-const STATUS_ALL_DONE = 10;
+const STATUS_PENDING = 0;
+const STATUS_START = 1;
+const STATUS_ERROR = 2;
+const STATUS_SUCCESS = 3;
 
-function getStatusString(status) {
-    if (status === STATUS_INITIAL) return 'PENDING';
-    if (status === STATUS_DOWNLOAD_START) return 'Started downloading ...';
-    if (status === STATUS_DOWNLOAD_ERROR) return 'Error on downloading ...';
-    if (status === STATUS_DOWNLOAD_SUCCESS) return 'Success on downloading ...';
-    if (status === STATUS_EXTRACT_START) return 'Started extractiong ...';
-    if (status === STATUS_EXTRACT_ERROR) return 'Error on extracting ...';
-    if (status === STATUS_EXTRACT_SUCCESS) return 'Success on extracting ...';
-    if (status === STATUS_PINNING_START) return 'Started pinning to IPFS ...';
-    if (status === STATUS_PINNING_ERROR) return 'Error on pinning to IPFS ...';
-    if (status === STATUS_PINNING_SUCCESS) return 'Success on pinning to IPFS ...';
-    return 'EXTRA ERROR';
+const FLAG_GOOGLE = 0;
+const FLAG_UNZIP = 1;
+const FLAG_IPFS = 2;
+const FLAG_MINT = 3;
+
+function getBulkStatus(bulk, flag) {
+    const status = bulk.status;
+    if (flag === FLAG_GOOGLE)
+        return status & 0x03;
+    else if (flag === FLAG_UNZIP)
+        return (status >> 2) & 0x03;
+    else if (flag === FLAG_IPFS)
+        return (status >> 4) & 0x03;
+    else if (flag === FLAG_MINT)
+        return (status >> 6) & 0x03;
+}
+
+function StatusContainer({bulk, flag}) {
+    const status = getBulkStatus(bulk, flag);
+    // return (
+    //     <ClockLoader color='#FFA319' size={30} />
+    // )
+    return (
+        <>
+        {status === STATUS_PENDING &&
+            <Tooltip title={'PENDING'}>
+                <PendingIcon fontSize='large'/>
+            </Tooltip>
+        }
+        {status === STATUS_START &&
+            <Tooltip title={'WORKING'}>
+                <ClockLoader color='#FFA319' size={30} />
+            </Tooltip>
+        }
+        {status === STATUS_ERROR &&
+            <Tooltip title={'ERROR'}>
+                <ErrorIcon color='error' fontSize='large' />
+            </Tooltip>
+        }
+        {status === STATUS_SUCCESS &&
+            <Tooltip title={'OK'}>
+                <CheckCircleIcon color='success' fontSize='large' />
+            </Tooltip>
+        }
+        </>
+    )
 }
 
 export default function BulkList({data}) {
@@ -114,6 +150,7 @@ export default function BulkList({data}) {
 
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile.account;
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
@@ -137,6 +174,11 @@ export default function BulkList({data}) {
                 });
         }
         getBulks();
+        const timer = setInterval(() => getBulks(), 8000);
+
+        return () => {
+            clearInterval(timer);
+        }
     }, [account, page, rows]);
 
     return (
@@ -157,90 +199,161 @@ export default function BulkList({data}) {
                 <Table stickyHeader sx={{
                     [`& .${tableCellClasses.root}`]: {
                         borderBottom: "1px solid",
-                        borderBottomColor: theme.palette.divider
+                        borderColor: theme.palette.divider
                     }
                 }}>
                     <TableBody>
                     {
                         // exchs.slice(page * rows, page * rows + rows)
                         bulks.map((row) => {
-                                const {
-                                    uuid,
-                                    url,
-                                    status,
-                                    logo,
-                                    name,
-                                    created
-                                } = row;
-                                const nDate = new Date(created);
-                                const year = nDate.getFullYear();
-                                const month = nDate.getMonth() + 1;
-                                const day = nDate.getDate();
-                                const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                            const {
+                                uuid,
+                                url,
+                                status,
+                                logo,
+                                name,
+                                created,
+                                description,
+                                infoIPFS
+                            } = row;
+                            const nDate = new Date(created);
+                            const year = nDate.getFullYear();
+                            const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
+                            const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
+                            const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                            const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                            const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
 
-                                const error = status === STATUS_DOWNLOAD_ERROR || status === STATUS_EXTRACT_ERROR || status === STATUS_PINNING_ERROR;
+                            //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
+                            //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
+                            const strDate = `${year}-${month}-${day}`;
+                            const strTime = `${hour}:${min}:${sec}`;
 
-                                //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-                                //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-                                const strDate = `${year}-${month}-${day}`;
-                                const strTime = `${hour}:${min}:${sec}`;
-
-                                return (
-                                    <TableRow
-                                        hover
-                                        key={uuid}
-                                        sx={{
-                                            [`& .${tableCellClasses.root}`]: {
-                                                // color: (error ? '#B72136' : '#B72136')
+                            return (
+                                <TableRow
+                                    // hover
+                                    key={uuid}
+                                    sx={{
+                                        [`& .${tableCellClasses.root}`]: {
+                                            // color: (error ? '#B72136' : '#B72136')
+                                        }
+                                    }}
+                                >
+                                    {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
+                                    <TableCell align="left" width='15%'>
+                                        <Avatar alt="C" src={`https://s3.xrpnft.com/bulk/${logo}`}
+                                            sx={{
+                                                mr:2,
+                                                width: 128,
+                                                height: 128,
+                                                filter: infoIPFS?`drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`:'grayscale(100%)',
+                                            }}
+                                        />
+                                    </TableCell>
+                                    
+                                    <TableCell align="left">
+                                        <Stack>
+                                            <Typography variant="h3">{name}</Typography>
+                                            {infoIPFS &&
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    {/* <Typography variant="d3" color="#FFA319">Please check the following CID before Bulk-Mint your items</Typography> */}
+                                                    <Link
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://gateway.xrpnft.com/ipfs/${infoIPFS.cid}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Typography variant="d3" color="#33C2FF">{infoIPFS.cid}</Typography>
+                                                    </Link>
+                                                    <Link
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://gateway.xrpnft.com/ipfs/${infoIPFS.cid}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title={'Check on IPFS'}>
+                                                            <IconButton>
+                                                                <OpenInNewIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
+                                                    <CopyToClipboard text={`${infoIPFS.cid}`} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                        <Tooltip title={'Click to copy'}>
+                                                            <IconButton>
+                                                                <ContentCopyIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Stack>
                                             }
-                                        }}
-                                    >
-                                        {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
-                                        <TableCell align="left" width='15%'>
-                                            <Avatar alt="C" src={`https://s3.xrpnft.com/bulk/${logo}`} sx={{ mr:2, width: 128, height: 128 }} />
-                                        </TableCell>
-                                        
-                                        <TableCell align="left">
-                                            <Stack spacing={1}>
-                                                <Typography variant="h3">{name}</Typography>
+                                            {description &&
+                                                <Typography variant="d4" sx={{mb: 1}}>{description}</Typography>
+                                            }
+                                            <Stack direction="row" spacing={2} alignItems="center">
+                                                <Typography variant="p3">{`${strDate} ${strTime}`}</Typography>
                                                 <Link
-                                                    underline="none"
                                                     color="inherit"
                                                     target="_blank"
                                                     href={url}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="d4">{url}</Typography>
+                                                    <Typography variant="p3">{url}</Typography>
                                                 </Link>
-                                                <Typography variant="d4" color={error ? '#B72136' : ''}>{getStatusString(status)}</Typography>
-                                                <Stack direction="row" spacing={4}>
-                                                    <Stack direction="row" spacing={1} alignItems="center">
-                                                        <ClipLoader color='#FFA319' size={30} />
-                                                        <Typography variant="s4">Download</Typography>
-                                                    </Stack>
-                                                    <Divider orientation="vertical" flexItem/>
-                                                    <Stack direction="row" spacing={1} alignItems="center">
-                                                        <CheckCircleIcon fontSize='large' color='success'/>
-                                                        <Typography variant="s4">Unzip</Typography>
-                                                    </Stack>
-                                                    <Divider orientation="vertical" flexItem/>
-                                                    <Stack direction="row" spacing={1} alignItems="center">
-                                                        <ErrorIcon fontSize='large' color='error'/>
+                                            </Stack>
+                                            <Stack direction="row" spacing={4}>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <StatusContainer bulk={row} flag={FLAG_GOOGLE} />
+                                                    <Typography variant="s4">Download</Typography>
+                                                </Stack>
+                                                <Divider orientation="vertical" flexItem/>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <StatusContainer bulk={row} flag={FLAG_UNZIP} />
+                                                    <Typography variant="s4">Unzip</Typography>
+                                                </Stack>
+                                                <Divider orientation="vertical" flexItem/>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <StatusContainer bulk={row} flag={FLAG_IPFS} />
+                                                    <Stack>
                                                         <Typography variant="s4">Pin to IPFS</Typography>
+                                                        {infoIPFS &&
+                                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                                <FiberPinIcon fontSize='small' color='info'/>
+                                                                <Typography variant="d4" color="primary">{fIntNumber(infoIPFS.count)}</Typography>
+                                                                {/* <PushPinIcon fontSize='small' color='warning'/> */}
+                                                            </Stack>
+                                                        }
                                                     </Stack>
                                                 </Stack>
-                                                
+                                                <Divider orientation="vertical" flexItem/>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <StatusContainer bulk={row} flag={FLAG_MINT} />
+                                                    <Typography variant="s4">Mint</Typography>
+                                                </Stack>
+                                            </Stack>                                                
+                                        </Stack>
+                                    </TableCell>
+                                    
+                                    <TableCell align="left">
+                                        {infoIPFS &&
+                                            <Stack alignItems="center">
+                                                <Link
+                                                    color="inherit"
+                                                    // target="_blank"
+                                                    href={`/bulk/mint/${uuid}`}
+                                                    // rel="noreferrer noopener nofollow"
+                                                >
+                                                    <IconButton aria-label='bulk-mint'>
+                                                        <CollectionsIcon sx={{width:56, height:56}} />
+                                                    </IconButton>
+                                                </Link>
+                                                <Typography variant="d4">Bulk Mint</Typography>
                                             </Stack>
-                                        </TableCell>
-                                        
-                                        <TableCell align="left">
-                                            
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
+                                        }
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })
+                    }
                     </TableBody>
                 </Table>
             </Box>
@@ -253,6 +366,7 @@ export default function BulkList({data}) {
                     setPage={setPage}
                 />
             }
+            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     );
 }

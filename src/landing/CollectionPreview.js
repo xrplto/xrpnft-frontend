@@ -37,20 +37,22 @@ const CustomCarousel = styled(Carousel)(
 export default function ColectionPreview() {
     
     // src: 'https://s1.xrpnft.com/static/collection/fat-cats-xrpl.jpg'
-    const images1 = [
-        {title: 'Muscle Mutant Club', src: 'NFT_Labs_Images4.png', link: 'https://www.mutantmuscleclub.org/'},
-        {title: 'Bored Apes XRP Club', src: 'NFT_Labs_Images2.png', link: 'https://x-apes.com/'},
-        {title: 'HOGS', src: 'NFT_Labs_Images3.png', link: 'https://x-apes.com/'},
+    // const images1 = [
+    //     {title: 'XPEPE', src: 'NFT_Labs_Images5.png', link: 'https://xrpepe.com/'},
+    //     {title: 'Muscle Mutant Club', src: 'NFT_Labs_Images4.png', link: 'https://www.mutantmuscleclub.org/'},
+    //     {title: 'Bored Apes XRP Club', src: 'NFT_Labs_Images2.png', link: 'https://x-apes.com/'},
+    //     {title: 'HOGS', src: 'NFT_Labs_Images3.png', link: 'https://x-apes.com/'},
 
-        {title: 'FAT CATS', src: 'fat-cats-xrpl.jpg', link: 'https://fatcats.nftlabs.to/'},
-        {title: 'FRACTALS', src: 'fractals.jpg', link: 'https://fractal.nftlabs.to/'},
-        // {title: 'LEDGERPUNK', src: 'ledgerpunks-nft.jpg', link: 'https://ledgerpunks.com/'},
-        {title: 'RIPPLE SHARKS', src: 'Ripple-Sharks.jpg', link: 'https://nftlabs.to/projects/ripple-sharks/'},
-        {title: 'LLAMMAPALOOZA', src: 'llamapalooza-xrplnft.jpg', link: 'https://llamapalooza.nftlabs.to/'},
-        {title: 'TRIPPY APES CLUB', src: 'TRIPPY.jpg', link: 'https://trippyapes.nftlabs.to/'},
-    ];
+    //     {title: 'FAT CATS', src: 'fat-cats-xrpl.jpg', link: 'https://fatcats.nftlabs.to/'},
+    //     {title: 'FRACTALS', src: 'fractals.jpg', link: 'https://fractal.nftlabs.to/'},
+    //     // {title: 'LEDGERPUNK', src: 'ledgerpunks-nft.jpg', link: 'https://ledgerpunks.com/'},
+    //     {title: 'RIPPLE SHARKS', src: 'Ripple-Sharks.jpg', link: 'https://nftlabs.to/projects/ripple-sharks/'},
+    //     {title: 'LLAMMAPALOOZA', src: 'llamapalooza-xrplnft.jpg', link: 'https://llamapalooza.nftlabs.to/'},
+    //     {title: 'TRIPPY APES CLUB', src: 'TRIPPY.jpg', link: 'https://trippyapes.nftlabs.to/'},
+    // ];
 
     const images = [
+        {title: 'XPEPE', src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images5.png', link: 'https://xrpepe.com/'},
         {title: 'Muscle Mutant Club', src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images4.png', link: 'https://www.mutantmuscleclub.org/'},
         {title: 'Bored Apes XRP Club', src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images2.png', link: 'https://x-apes.com/'},
         {title: 'HOGS', src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images3.png', link: 'https://x-apes.com/'},

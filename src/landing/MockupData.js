@@ -1,6 +1,12 @@
 
 export const hotDropsData = [
     {
+        name: "XPEPE #1",
+        title: "XPEPE",
+        description: "",
+        src: "/static/nfts/xpepetest1.jpg",
+    },
+    {
         name: "Muscle Mutant Club #1",
         title: "Muscle Mutant Club",
         description: "",

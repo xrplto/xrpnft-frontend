@@ -201,7 +201,7 @@ export default function CreateCollection() {
                         "_id": "6318b392475c7f1bd653b7d5"
                     } */
                     openSnackbar('Create Bulk successful!', 'success')
-                    // window.location.href = `/bulk`;
+                    window.location.href = `/bulk`;
                     // setFile(null);
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
@@ -309,7 +309,7 @@ export default function CreateCollection() {
                     Paste the Google Drive shared link URL here.
                 </Typography>
                 <Typography variant='p3'>
-                    https://drive.google.com/file/d/1ssfB16Ep5cWKv905c2T13p3zFDeed0wD/view
+                    https://drive.google.com/file/d/1xjA-1bodiMrvSCtdTEMim5x1Cam74bXU/view
                 </Typography>
 
                 <TextField

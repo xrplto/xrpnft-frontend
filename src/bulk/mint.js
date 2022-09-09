@@ -141,21 +141,22 @@ const COLLECTION_FAMILIES = [
 // Calculate MD5 hash of a large file using javascript
 // https://stackoverflow.com/questions/39112096/calculate-md5-hash-of-a-large-file-using-javascript
 
-export default function Minting() {
+export default function Minting({bulk}) {
     const fileRef1 = useRef();
     const fileRef2 = useRef();
+    const infoIPFS = bulk.infoIPFS;
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile.account;
-    const levels = useSelector(state => state.status.metadata.levels);
-    const properties = useSelector(state => state.status.metadata.properties);
+    // const levels = useSelector(state => state.status.metadata.levels);
+    // const properties = useSelector(state => state.status.metadata.properties);
     const [open, setOpen] = useState(false);
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
     const [nftName, setNftName] = useState('');
     const [imgExt, setImgExt] = useState('png');
     const [extLink, setExtLink] = useState('');
-    const [ipfsCID, setIpfsCID] = useState('');
+    const [ipfsCID, setIpfsCID] = useState(infoIPFS ? infoIPFS.cid:'');
     const [description, setDescription] = useState('');
     const [collectionName, setCollectionName] = useState('')
     const [collectionFamily, setCollectionFamily] = useState('');
@@ -884,7 +885,7 @@ export default function Minting() {
                     </LoadingButton>
                 </Stack>
 
-                <BaseDialog
+                {/* <BaseDialog
                     isOpen={open}
                     close={() => { setOpen(false) }}
                     title={'Bulk Mint Items'}
@@ -905,7 +906,7 @@ export default function Minting() {
                             }
                         />
                     }
-                />
+                /> */}
                 <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
             </Grid>
             <Grid item lg={6}>

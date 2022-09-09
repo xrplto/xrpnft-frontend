@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import GridOnIcon from '@mui/icons-material/GridOn';
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 
 // Context
 import { useContext } from 'react';
@@ -175,17 +176,28 @@ export default function Wallet() {
 
                 {accountProfile && accountProfile.account ? (
                         <>
-                        <NextLink href="/collections" passHref>
                             <MenuItem
                                 key="collection"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}
                             >
-                                <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                    <GridOnIcon />
-                                    <Typography variant='s3' style={{marginLeft: '10px'}}>My Collections</Typography>
-                                </Stack>
+                                <NextLink href="/collections" passHref>
+                                    <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                        <GridOnIcon />
+                                        <Typography variant='s3' style={{marginLeft: '10px'}}>My Collections</Typography>
+                                    </Stack>
+                                </NextLink>
                             </MenuItem>
-                        </NextLink>
+                            <MenuItem
+                                key="create-bulk"
+                                sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                            >
+                                <NextLink href="/bulk" passHref>
+                                    <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                        <PhotoLibraryIcon />
+                                        <Typography variant='s3' style={{marginLeft: '10px'}}>Create Bulk</Typography>
+                                    </Stack>
+                                </NextLink>
+                            </MenuItem>
                         {/* <Stack spacing={1} sx={{ pt: 2 }} alignItems='center'>
                             <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ mr:1, width: 24, height: 24 }}/>
                             <Typography align="center" style={{ wordWrap: "break-word" }} variant="body2" sx={{ width: 180, color: 'text.secondary' }} >
