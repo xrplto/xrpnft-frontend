@@ -223,6 +223,7 @@ export default function Minting({bulk}) {
             data.metadata = newMetaData;
             data.flag = flag;
             data.count = newMetaData.length;
+            data.bulkid = bulk.uuid;
 
             const body = {};
             body.data = data;
@@ -234,9 +235,8 @@ export default function Minting({bulk}) {
 
             if (res.status === 200) {
                 const ret = res.data;
-                if (ret.status) {
-                    const data = ret.data;
-                    console.log(data);
+                if (ret && ret.status) {
+                    console.log(ret);
                     
                     // window.location.href = `/token/${nft.uuid}`;
                     openSnackbar('Bulk mint successful!', 'success')
@@ -390,6 +390,13 @@ export default function Minting({bulk}) {
             if (collectionFamily)
                 collection.family = collectionFamily;
             newMeta.collection = collection;
+
+
+            if (includeTime && newDateField) {
+                if (oldDateField)
+                    newMeta[oldDateField] = undefined;
+                newMeta[newDateField] = timestamp;
+            }
 
             newMetaData.push(newMeta);
             count++;
@@ -632,45 +639,47 @@ export default function Minting({bulk}) {
                             }
                         />
                     </FormGroup>
-                    <Stack spacing={2} pl={0} alignItems="center" sx={{pl: 4}}>
-                        <Stack direction="row" alignItems="center" spacing={3}>
-                            {/* <Typography variant='d4'>Remove</Typography> */}
-                            <TextField
-                                size="small"
-                                variant="standard"
-                                placeholder='Old Field'
-                                id='id_timestamp_remove_field'
-                                autoComplete='new-password'
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    if (sMeta && value) {
-                                        sMeta[value] = undefined;
-                                    }
-                                    setOldDateField(value);
-                                }}
-                                value={oldDateField}
-                            />
-                            {/* <Typography variant='d4'>Add</Typography> */}
-                            <TextField
-                                size="small"
-                                variant="standard"
-                                placeholder='New Field'
-                                id='id_timestamp_add_field'
-                                autoComplete='new-password'
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    if (sMeta && value) {
-                                        if (newDateField)
-                                            sMeta[newDateField] = undefined;
-                                        sMeta[value] = Date.now();
-                                    }
-                                    setNewDateField(value);
-                                }}
-                                value={newDateField}
-                            />
+                    {includeTime &&
+                        <Stack spacing={2} pl={0} alignItems="center" sx={{pl: 4}}>
+                            <Stack direction="row" alignItems="center" spacing={3}>
+                                {/* <Typography variant='d4'>Remove</Typography> */}
+                                <TextField
+                                    size="small"
+                                    variant="standard"
+                                    placeholder='Old Field'
+                                    id='id_timestamp_remove_field'
+                                    autoComplete='new-password'
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (sMeta && value) {
+                                            sMeta[value] = undefined;
+                                        }
+                                        setOldDateField(value);
+                                    }}
+                                    value={oldDateField}
+                                />
+                                {/* <Typography variant='d4'>Add</Typography> */}
+                                <TextField
+                                    size="small"
+                                    variant="standard"
+                                    placeholder='New Field'
+                                    id='id_timestamp_add_field'
+                                    autoComplete='new-password'
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        if (sMeta && value) {
+                                            if (newDateField)
+                                                sMeta[newDateField] = undefined;
+                                            sMeta[value] = Date.now();
+                                        }
+                                        setNewDateField(value);
+                                    }}
+                                    value={newDateField}
+                                />
+                            </Stack>
+                            <Typography variant='p3'>Old field will be removed from your metadata and the current timestamp will be added with the new field. These fields can be equal if you just want to add the new timestamp value to the existing field. If your metadata does not already have timestamp field, you can ignore Old Field, but the New Field is required, essential.</Typography>
                         </Stack>
-                        <Typography variant='p3'>Old field will be removed from your metadata and the current timestamp will be added with the new field. These fields can be equal if you just want to add the new timestamp value to the existing field. If your metadata does not already have timestamp field, you can ignore Old Field, but the New Field is required, essential.</Typography>
-                    </Stack>
+                    }
                 </Stack>
                 
                 <Stack spacing={2} mb={0}>
