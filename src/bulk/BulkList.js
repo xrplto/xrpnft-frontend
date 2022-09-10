@@ -39,7 +39,8 @@ import { fIntNumber } from 'src/utils/formatNumber';
 import { normalizeCurrencyCodeXummImpl } from 'src/utils/normalizers';
 
 // Loader
-import { ClipLoader, ClockLoader } from "react-spinners";
+import { ClipLoader, ClockLoader, ClimbingBoxLoader } from "react-spinners";
+import { RotatingSquare } from 'react-loader-spinner';
 
 // Components
 import XSnackbar from 'src/components/Snackbar';
@@ -121,22 +122,24 @@ function StatusContainer({bulk, flag}) {
     return (
         <>
         {status === STATUS_PENDING &&
-            <Tooltip title={'PENDING'}>
+            <Tooltip title='PENDING'>
                 <PendingIcon fontSize='large'/>
             </Tooltip>
         }
         {status === STATUS_START &&
-            <Tooltip title={'WORKING'}>
-                <ClockLoader color='#FFA319' size={30} />
+            <Tooltip title='WORKING'>
+                <Stack>
+                    <ClockLoader color='#FFA319' size={30} />
+                </Stack>
             </Tooltip>
         }
         {status === STATUS_ERROR &&
-            <Tooltip title={'ERROR'}>
+            <Tooltip title='ERROR'>
                 <ErrorIcon color='error' fontSize='large' />
             </Tooltip>
         }
         {status === STATUS_SUCCESS &&
-            <Tooltip title={'OK'}>
+            <Tooltip title='OK'>
                 <CheckCircleIcon color='success' fontSize='large' />
             </Tooltip>
         }
@@ -214,7 +217,8 @@ export default function BulkList({data}) {
                                 name,
                                 created,
                                 description,
-                                infoIPFS
+                                infoIPFS,
+                                infoMINT, // {count: 0, length: metadata.length};
                             } = row;
                             const nDate = new Date(created);
                             const year = nDate.getFullYear();
@@ -271,14 +275,14 @@ export default function BulkList({data}) {
                                                         href={`https://gateway.xrpnft.com/ipfs/${infoIPFS.cid}`}
                                                         rel="noreferrer noopener nofollow"
                                                     >
-                                                        <Tooltip title={'Check on IPFS'}>
+                                                        <Tooltip title='Check on IPFS'>
                                                             <IconButton>
                                                                 <OpenInNewIcon />
                                                             </IconButton>
                                                         </Tooltip>
                                                     </Link>
                                                     <CopyToClipboard text={`${infoIPFS.cid}`} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                        <Tooltip title={'Click to copy'}>
+                                                        <Tooltip title='Click to copy'>
                                                             <IconButton>
                                                                 <ContentCopyIcon />
                                                             </IconButton>
@@ -334,7 +338,7 @@ export default function BulkList({data}) {
                                     </TableCell>
                                     
                                     <TableCell align="left">
-                                        {infoIPFS &&
+                                        {infoIPFS && status === 0x3F && // 0x3F = b0011 1111
                                             <Stack alignItems="center">
                                                 <Link
                                                     color="inherit"
@@ -347,6 +351,21 @@ export default function BulkList({data}) {
                                                     </IconButton>
                                                 </Link>
                                                 <Typography variant="d4">Bulk Mint</Typography>
+                                            </Stack>
+                                        }
+                                        {infoMINT &&
+                                            <Stack alignItems="center">
+                                                <RotatingSquare
+                                                    height="100"
+                                                    width="100"
+                                                    color="#4fa94d"
+                                                    ariaLabel="rotating-square-loading"
+                                                    strokeWidth="4"
+                                                    wrapperStyle={{}}
+                                                    wrapperClass=""
+                                                    visible={true}
+                                                />
+                                                <Typography variant="d4" color="#33C2FF">{infoMINT.count} / {infoMINT.length}</Typography>
                                             </Stack>
                                         }
                                     </TableCell>

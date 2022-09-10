@@ -69,6 +69,7 @@
     "react-json-pretty": "^2.2.0",
     "react-use-websocket": "^3.0.0",
     "react-device-detect": "^2.2.2",
+    "react-loader-spinner": "^5.3.4",
     "react-color-extractor": "^1.1.2",
     "react-copy-to-clipboard": "^5.1.0",
     "react-responsive-carousel": "^3.2.23",

@@ -223,7 +223,7 @@ export default function Minting({bulk}) {
             data.metadata = newMetaData;
             data.flag = flag;
             data.count = newMetaData.length;
-            data.bulkid = bulk.uuid;
+            data.bulk = bulk;
 
             const body = {};
             body.data = data;
@@ -235,11 +235,10 @@ export default function Minting({bulk}) {
 
             if (res.status === 200) {
                 const ret = res.data;
-                if (ret && ret.status) {
-                    console.log(ret);
-                    
-                    // window.location.href = `/token/${nft.uuid}`;
+                if (ret && ret.status && ret.infoMINT) {
+                    // console.log(ret);
                     openSnackbar('Bulk mint successful!', 'success')
+                    window.location.href = `/bulk`;
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
                     const err = ret.err;
