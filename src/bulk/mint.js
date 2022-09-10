@@ -4,6 +4,7 @@ import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
 import JSONPretty from 'react-json-pretty';
 import isIPFS from 'is-ipfs';
+import crypto from 'crypto';
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -147,9 +148,9 @@ export default function Minting({bulk}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile.account;
+    const JWToken = 'JWToken';
     // const levels = useSelector(state => state.status.metadata.levels);
     // const properties = useSelector(state => state.status.metadata.properties);
-    const [open, setOpen] = useState(false);
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
     const [nftName, setNftName] = useState('');
@@ -168,6 +169,10 @@ export default function Minting({bulk}) {
     const [jsonFileName, setJsonFileName] = useState(null);
     const [jsonFileModified, setJsonFileModified] = useState(null);
 
+    const [includeTime, setIncludeTime] = useState(false);
+    const [oldDateField, setOldDateField] = useState('');
+    const [newDateField, setNewDateField] = useState('');
+
     const [loading, setLoading] = useState(false);
 
     // Collection related
@@ -176,8 +181,13 @@ export default function Minting({bulk}) {
 
     const [validPassword, setValidPassword] = useState(false);
     
-    const canDownload = metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName;
-    const canCreate = metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName && passphrase && validPassword;
+    let canDownload = metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName;
+    let canCreate = metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName && passphrase && validPassword;
+
+    if (includeTime && !newDateField) {
+        canDownload = false;
+        canCreate = false;
+    }
 
     const loadCollections=() => {
         // https://api.xrpnft.com/api/account/query-collections?filter=
@@ -209,12 +219,18 @@ export default function Minting({bulk}) {
         const newMetaData = getFinalMetaData();
         try {
             let res;
-            const body = {};
-            body.metadata = newMetaData;
-            body.flag = flag;
-            body.passphrase = passphrase;
+            const data = {};
+            data.metadata = newMetaData;
+            data.flag = flag;
+            data.count = newMetaData.length;
 
-            res = await axios.post(`${BASE_URL}/account/mint`, body);
+            const body = {};
+            body.data = data;
+            body.account = account;
+            body.passphrase = passphrase;
+            body.signature = crypto.createHmac("SHA256", JWToken).update(JSON.stringify(data)).digest("hex");
+
+            res = await axios.post(`${BASE_URL}/bulk/mint`, body);
 
             if (res.status === 200) {
                 const ret = res.data;
@@ -288,6 +304,10 @@ export default function Minting({bulk}) {
         setFlag(flag ^ e.target.value);
     }
 
+    const handleTimestampCheck = (e) => {
+        setIncludeTime(!includeTime);
+    }
+
     const handleCollectionQuery = (e) => {
         setCollectionName('');
         setFilter(e.target.value);
@@ -344,6 +364,7 @@ export default function Minting({bulk}) {
     };
 
     const getFinalMetaData = () => {
+        const timestamp = Date.now(); // new Date().getTime();
         let count = 1;
         const newMetaData = [];
         for (var meta of metadata) {
@@ -567,9 +588,7 @@ export default function Minting({bulk}) {
 
                 <Stack spacing={2} mb={3}>
                     <Typography variant='p4'>Flags <Typography variant='s2'>*</Typography></Typography>
-                    <Typography variant='p3'>
-                        {'Flag will be set in your NFTs when minting.'}
-                    </Typography>
+                    <Typography variant='p3'>Flag will be set in your NFTs when minting.</Typography>
                     <FormGroup sx={{ flexDirection: 'row' }}>
                         {
                             TOKEN_FLAGS.map((f) => (
@@ -597,6 +616,60 @@ export default function Minting({bulk}) {
                         <Typography variant='p3'>
                             <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer.
                         </Typography>
+                    </Stack>
+                </Stack>
+
+                <Stack spacing={1} mb={3}>
+                    <Typography variant='p4'>Timestamp <Typography variant='s2'>*</Typography></Typography>
+                    <Typography variant='p3'>Check the following checkbox to add the current timestamp value to your metadata.</Typography>
+                    <FormGroup sx={{ flexDirection: 'row' }}>
+                        <FormControlLabel
+                            key='checkbox_timestamp'
+                            label='Add Timestamp'
+                            value='value'
+                            control={
+                                <Checkbox checked={includeTime} onChange={handleTimestampCheck} />
+                            }
+                        />
+                    </FormGroup>
+                    <Stack spacing={2} pl={0} alignItems="center" sx={{pl: 4}}>
+                        <Stack direction="row" alignItems="center" spacing={3}>
+                            {/* <Typography variant='d4'>Remove</Typography> */}
+                            <TextField
+                                size="small"
+                                variant="standard"
+                                placeholder='Old Field'
+                                id='id_timestamp_remove_field'
+                                autoComplete='new-password'
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (sMeta && value) {
+                                        sMeta[value] = undefined;
+                                    }
+                                    setOldDateField(value);
+                                }}
+                                value={oldDateField}
+                            />
+                            {/* <Typography variant='d4'>Add</Typography> */}
+                            <TextField
+                                size="small"
+                                variant="standard"
+                                placeholder='New Field'
+                                id='id_timestamp_add_field'
+                                autoComplete='new-password'
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (sMeta && value) {
+                                        if (newDateField)
+                                            sMeta[newDateField] = undefined;
+                                        sMeta[value] = Date.now();
+                                    }
+                                    setNewDateField(value);
+                                }}
+                                value={newDateField}
+                            />
+                        </Stack>
+                        <Typography variant='p3'>Old field will be removed from your metadata and the current timestamp will be added with the new field. These fields can be equal if you just want to add the new timestamp value to the existing field. If your metadata does not already have timestamp field, you can ignore Old Field, but the New Field is required, essential.</Typography>
                     </Stack>
                 </Stack>
                 
