@@ -135,6 +135,8 @@ export default function CreateCollection() {
 
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile } = useContext(AppContext);
+    const account = accountProfile?.account;
+
     const [loading, setLoading] = useState(false);
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
     
@@ -171,11 +173,14 @@ export default function CreateCollection() {
     const canCreate = file1 && collectionName && slug && passphrase && valid1 && valid2 && validPassword;
 
     const onCreateCollection = async () => {
+        if (!account) {
+            openSnackbar('Please login first!', 'error');
+            return;
+        }
         // POST https://api.xrpnft.com/api/account/create-collection
         setLoading(true);
         try {
             let res;
-            const account = accountProfile.account;
 
             const formdata = new FormData();
 

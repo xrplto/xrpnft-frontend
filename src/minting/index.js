@@ -93,8 +93,10 @@ const CustomSelect = styled(Select)(({ theme }) => ({
 export default function Minting() {
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';
+
     const { accountProfile } = useContext(AppContext);
-    const account = accountProfile.account;
+    const account = accountProfile?.account;
+
     const levels = useSelector(state => state.status.metadata.levels);
     const properties = useSelector(state => state.status.metadata.properties);
     const [open, setOpen] = useState(false);
@@ -120,6 +122,11 @@ export default function Minting() {
     const canCreate = file && nftName && collectionName && passphrase && validPassword;
 
     const loadCollections=() => {
+        if (!account) {
+            openSnackbar('Please login first!', 'error');
+            return;
+        }
+
         // https://api.xrpnft.com/api/account/query-collections?filter=
         axios.get(`${BASE_URL}/account/query-collections?account=${account}&filter=${filter}`)
         .then(res => {
@@ -144,6 +151,11 @@ export default function Minting() {
     }, [filter, account]);
 
     const onCreateNft = async () => {
+        if (!account) {
+            openSnackbar('Please login first!', 'error');
+            return;
+        }
+        
         // POST https://api.xrpnft.com/api/mint
         setLoading(true);
         try {

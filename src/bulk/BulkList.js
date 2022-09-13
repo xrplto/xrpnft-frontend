@@ -29,6 +29,11 @@ import PushPinIcon from '@mui/icons-material/PushPin';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import FolderZipIcon from '@mui/icons-material/FolderZip';
+import InfoIcon from '@mui/icons-material/Info';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import ApprovalOutlinedIcon from '@mui/icons-material/ApprovalOutlined';
 
 // Context
 import { useContext } from 'react';
@@ -152,7 +157,7 @@ export default function BulkList({data}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { accountProfile } = useContext(AppContext);
-    const account = accountProfile.account;
+    const account = accountProfile?.account;
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
     const [page, setPage] = useState(0);
@@ -162,6 +167,7 @@ export default function BulkList({data}) {
     
     useEffect(() => {
         function getBulks() {
+            if (!account) return;
             // https://api.xrpnft.com/api/bulk/list?account=rhhh&page=0&limit=10
             axios.get(`${BASE_URL}/bulk/list?account=${account}&page=${page}&limit=${rows}`)
                 .then(res => {
@@ -217,8 +223,11 @@ export default function BulkList({data}) {
                                 name,
                                 created,
                                 description,
+                                infoDOWNLOAD, // {size: '1.34 GB'}
+                                infoUNZIP, // {count: 1000}
                                 infoIPFS,
                                 infoMINT, // {count: 0, length: metadata.length};
+                                minter
                             } = row;
                             const nDate = new Date(created);
                             const year = nDate.getFullYear();
@@ -248,9 +257,9 @@ export default function BulkList({data}) {
                                         <Avatar alt="C" src={`https://s3.xrpnft.com/bulk/${logo}`}
                                             sx={{
                                                 mr:2,
-                                                width: 128,
-                                                height: 128,
-                                                filter: infoIPFS?`drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`:'grayscale(100%)',
+                                                width: 160,
+                                                height: 160,
+                                                filter: infoIPFS && infoIPFS.cid?`drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`:'grayscale(100%)',
                                             }}
                                         />
                                     </TableCell>
@@ -258,7 +267,7 @@ export default function BulkList({data}) {
                                     <TableCell align="left">
                                         <Stack>
                                             <Typography variant="h3">{name}</Typography>
-                                            {infoIPFS &&
+                                            {infoIPFS && infoIPFS.cid &&
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     {/* <Typography variant="d3" color="#FFA319">Please check the following CID before Bulk-Mint your items</Typography> */}
                                                     <Link
@@ -304,22 +313,73 @@ export default function BulkList({data}) {
                                                     <Typography variant="p3">{url}</Typography>
                                                 </Link>
                                             </Stack>
-                                            <Stack direction="row" spacing={4}>
+                                            <Stack direction="row" spacing={1} alignItems="center" sx={{mt:1}}>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${minter}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="p3">{minter}</Typography>
+                                                </Link>
+
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${minter}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Tooltip title='Check on Bithomp'>
+                                                        <IconButton size="small">
+                                                            <OpenInNewIcon fontSize="small" />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Link>
+                                                <Tooltip
+                                                    title="This is the account that mints NFTs for you.
+                                                    You must set your account's NFTokenMinter field to this address to start bulk-minting.
+                                                    Just click me to Set NFTokenMinter now.
+                                                    Please don't try to change your NFTokenMinter while minting this bulk of NFTs."
+                                                >
+                                                    <IconButton size="small">
+                                                        <ApprovalOutlinedIcon color="error" fontSize="small" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Stack>
+                                            <Stack direction="row" spacing={3} sx={{mt:1}}>
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     <StatusContainer bulk={row} flag={FLAG_GOOGLE} />
-                                                    <Typography variant="s4">Download</Typography>
+                                                    <Stack>
+                                                        <Typography variant="s4">Download</Typography>
+                                                        {infoDOWNLOAD &&
+                                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                                <CloudDownloadIcon fontSize='small' color='info'/>
+                                                                <Typography variant="d4" color="primary">{infoDOWNLOAD.size}</Typography>
+                                                                {/* <PushPinIcon fontSize='small' color='warning'/> */}
+                                                            </Stack>
+                                                        }
+                                                    </Stack>
                                                 </Stack>
                                                 <Divider orientation="vertical" flexItem/>
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     <StatusContainer bulk={row} flag={FLAG_UNZIP} />
-                                                    <Typography variant="s4">Unzip</Typography>
+                                                    <Stack>
+                                                        <Typography variant="s4">Unzip</Typography>
+                                                        {infoUNZIP &&
+                                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                                <FolderZipIcon fontSize='small' color='info'/>
+                                                                <Typography variant="d4" color="primary">{fIntNumber(infoUNZIP.count)}</Typography>
+                                                                {/* <PushPinIcon fontSize='small' color='warning'/> */}
+                                                            </Stack>
+                                                        }
+                                                    </Stack>
                                                 </Stack>
                                                 <Divider orientation="vertical" flexItem/>
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     <StatusContainer bulk={row} flag={FLAG_IPFS} />
                                                     <Stack>
                                                         <Typography variant="s4">Pin to IPFS</Typography>
-                                                        {infoIPFS &&
+                                                        {infoIPFS && infoIPFS.count &&
                                                             <Stack direction="row" spacing={1} alignItems="center">
                                                                 <FiberPinIcon fontSize='small' color='info'/>
                                                                 <Typography variant="d4" color="primary">{fIntNumber(infoIPFS.count)}</Typography>
@@ -338,7 +398,7 @@ export default function BulkList({data}) {
                                     </TableCell>
                                     
                                     <TableCell align="left">
-                                        {infoIPFS && status === 0x3F && // 0x3F = b0011 1111
+                                        {infoIPFS && infoIPFS.cid && status === 0x3F && // 0x3F = b0011 1111
                                             <Stack alignItems="center">
                                                 <Link
                                                     color="inherit"

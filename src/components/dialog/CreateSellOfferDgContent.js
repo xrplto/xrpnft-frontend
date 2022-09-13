@@ -33,8 +33,10 @@ import { getCurrentRippleEpoch } from 'src/utils/parse';
 
 export default function CreateSellOfferDgContent({ close, TokenID, setOffers }) {
     const { enqueueSnackbar } = useSnackbar();
+    
     const { accountProfile } = useContext(AppContext);
-    const account = accountProfile.account;
+    const account = accountProfile?.account;
+
     // const account = useSelector(state => state.status.account)
     const login = true; // useSelector(state => state.status.login)
     const [price, setPrice] = useState(0)

@@ -14,18 +14,26 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import CollectionCard from "./CollectionCard";
-
+import XSnackbar from 'src/components/Snackbar';
+import { useSnackbar } from 'src/components/useSnackbar';
 import { hotDropsData } from "./MockupData";
 
 export default function CollectionList({isAll}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile } = useContext(AppContext);
-    const account = accountProfile.account;
+    const account = accountProfile?.account;
+
     const [collections, setCollections] = useState([]);
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(true);
 
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
+
     const loadCollections=(offset) => {
+        if (!isAll && !account) {
+            openSnackbar('Please login first!', 'error');
+            return;
+        }
         // console.log(`loadCollections page: ${offset}`);
         // https://api.xrpnft.com/api/account/collections?account=rKVd5WtB8ugrxaTDTbJv6pVH7WunmyryLq
         const acct = isAll?'all':account;
@@ -67,8 +75,6 @@ export default function CollectionList({isAll}) {
         reset();
     }, [account]);
 
-    
-
     return (
         <InfiniteScroll
             dataLength={collections.length}
@@ -76,6 +82,7 @@ export default function CollectionList({isAll}) {
             hasMore={hasMore}
             // loader={<p>loading...</p>}
         >
+            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
             <Grid container spacing={0}
                 style={{
                     justifyContent: 'space-around',

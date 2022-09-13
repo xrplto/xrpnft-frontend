@@ -4,17 +4,19 @@ import { useRef, useState, useEffect } from 'react';
 
 // Material
 import {
-    Box,
-    Typography,
-    Button,
-    MenuItem,
     Avatar,
+    Box,
+    Button,
+    Divider,
     IconButton,
-    Stack
+    MenuItem,
+    Stack,
+    Typography
 } from '@mui/material';
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import GridOnIcon from '@mui/icons-material/GridOn';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 // Context
 import { useContext } from 'react';
@@ -27,6 +29,7 @@ import userLock from '@iconify/icons-fa-solid/user-lock';
 // Components
 import MenuPopover from './MenuPopover';
 import LoginDialog from './LoginDialog';
+import XLS20Dialog from './XLS20Dialog';
 import ChooseAccountDialog from './dialog/ChooseAccountDialog';
 
 export default function Wallet() {
@@ -36,6 +39,7 @@ export default function Wallet() {
     const { accountProfile, setAccountProfile, setLoading } = useContext(AppContext);
     const [open, setOpen] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
+    const [openXLS20Dialog, setOpenXLS20Dialog] = useState(false);
     const [uuid, setUuid] = useState(null);
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
@@ -50,7 +54,7 @@ export default function Wallet() {
                 if (isRunning) return;
                 isRunning = true;
                 try {
-                    const res = await axios.get(`${BASE_URL}/xumm/payloadlogin/${uuid}`);
+                    const res = await axios.get(`${BASE_URL}/xumm/payload/${uuid}`);
                     const data = res.data.data;
                     const admin = res.data.admin;
                     const account = data.response.account;
@@ -117,16 +121,21 @@ export default function Wallet() {
         setOpen(false);
     };
 
-    const handleLogin = () => {
-        // TODO
-        return;
+    const handleXLS20Login = () => {
         setOpen(false);
+        setOpenXLS20Dialog(true);
+    };
+
+    const handleXLS20LoginClose = () => {
+        setOpenXLS20Dialog(false);
+    };
+
+    const handleLogin = () => {
+        setOpenXLS20Dialog(false);
         onConnectXumm();
     };
 
     const handleLogout = () => {
-        // TODO
-        return;
         setOpen(false);
         onDisconnectXumm(accountProfile.uuid);
     }
@@ -157,7 +166,7 @@ export default function Wallet() {
 
     return (
         <>
-            <ChooseAccountDialog />
+            {/* <ChooseAccountDialog /> */}
             
             <IconButton
                 ref={anchorRef}
@@ -198,22 +207,21 @@ export default function Wallet() {
                                     </Stack>
                                 </NextLink>
                             </MenuItem>
-                        {/* <Stack spacing={1} sx={{ pt: 2 }} alignItems='center'>
-                            <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ mr:1, width: 24, height: 24 }}/>
-                            <Typography align="center" style={{ wordWrap: "break-word" }} variant="body2" sx={{ width: 180, color: 'text.secondary' }} >
-                                {accountProfile.account}
-                            </Typography>
-                        </Stack>
-                        <Box sx={{ p: 2, pt: 1.5 }}>
-                            <Button fullWidth color="inherit" variant="outlined" onClick={handleLogout}>
-                                Logout
-                            </Button>
-                        </Box> */}
+                            <Divider />
+                            <Stack spacing={1} alignItems='center' sx={{pt: 1, pb: 2}}>
+                                <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ mr:1, width: 24, height: 24 }}/>
+                                <Typography align="center" style={{ wordWrap: "break-word" }} variant="body2" sx={{ width: 180, color: 'text.secondary' }} >
+                                    {accountProfile.account}
+                                </Typography>
+                                <Button variant="contained" onClick={handleLogout} size="small">
+                                    Logout
+                                </Button>
+                            </Stack>
                         </>
                     ) : (
                         <MenuItem
                             key="xumm"
-                            onClick={handleLogin}
+                            onClick={handleXLS20Login}
                             sx={{ typography: 'body2', py: 2, px: 2.5 }}
                         >
                             <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
@@ -231,6 +239,12 @@ export default function Wallet() {
                 handleClose={handleLoginClose}
                 qrUrl={qrUrl}
                 nextUrl={nextUrl}
+            />
+
+            <XLS20Dialog
+                open={openXLS20Dialog}
+                handleClose={handleXLS20LoginClose}
+                handleLogin={handleLogin}
             />
         </>
     );

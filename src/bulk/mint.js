@@ -147,7 +147,8 @@ export default function Minting({bulk}) {
     const infoIPFS = bulk.infoIPFS;
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile } = useContext(AppContext);
-    const account = accountProfile.account;
+    const account = accountProfile?.account;
+
     const JWToken = 'JWToken';
     // const levels = useSelector(state => state.status.metadata.levels);
     // const properties = useSelector(state => state.status.metadata.properties);
@@ -190,6 +191,11 @@ export default function Minting({bulk}) {
     }
 
     const loadCollections=() => {
+        if (!account) {
+            openSnackbar('Please login first!', 'error');
+            return;
+        }
+
         // https://api.xrpnft.com/api/account/query-collections?filter=
         axios.get(`${BASE_URL}/account/query-collections?account=${account}&filter=${filter}`)
         .then(res => {
@@ -214,6 +220,11 @@ export default function Minting({bulk}) {
     }, [filter, account]);
 
     const onCreateNft = async () => {
+        if (!account) {
+            openSnackbar('Please login first!', 'error');
+            return;
+        }
+        
         // POST https://api.xrpnft.com/api/mint
         setLoading(true);
         const newMetaData = getFinalMetaData();
