@@ -100,7 +100,7 @@ export default function QRDialog({open, type, qrUrl, nextUrl, onClose}) {
                             setShowQR(true);
                         }}
                     >
-                        <Typography variant='caption' color='error'>Didn't receive a notification? Click here to scan QR!</Typography>
+                        <Typography variant='s4' color='error'>Didn't receive a notification? Click here to scan QR!</Typography>
                     </Link>
                 </Stack>
                 <div

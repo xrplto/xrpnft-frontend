@@ -7,6 +7,7 @@ import { withStyles } from '@mui/styles';
 import {
     styled, useTheme,
     Avatar,
+    Backdrop,
     Box,
     IconButton,
     Link,
@@ -44,10 +45,11 @@ import { fIntNumber } from 'src/utils/formatNumber';
 import { normalizeCurrencyCodeXummImpl } from 'src/utils/normalizers';
 
 // Loader
-import { ClipLoader, ClockLoader, ClimbingBoxLoader } from "react-spinners";
-import { RotatingSquare } from 'react-loader-spinner';
+import { ClipLoader, PulseLoader, ClockLoader, ClimbingBoxLoader } from "react-spinners";
+import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
+import QRDialog from 'src/components/QRDialog';
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
 import BulkToolbar from './BulkToolbar';
@@ -91,7 +93,7 @@ const SellTypography = withStyles({
 
 // ----------------------------------------------------------------------
 
-function truncate(str, n){
+function truncate(str, n) {
     if (!str) return '';
     //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
@@ -101,6 +103,10 @@ const STATUS_PENDING = 0;
 const STATUS_START = 1;
 const STATUS_ERROR = 2;
 const STATUS_SUCCESS = 3;
+
+// FLAG_MINT specific status
+const STATUS_ERR_MINTER = 4; // Minter not set to the account
+const STATUS_ERR_BALANCE = 5; // Minter balance is not enough to mint
 
 const FLAG_GOOGLE = 0;
 const FLAG_UNZIP = 1;
@@ -116,7 +122,7 @@ function getBulkStatus(bulk, flag) {
     else if (flag === FLAG_IPFS)
         return (status >> 4) & 0x03;
     else if (flag === FLAG_MINT)
-        return (status >> 6) & 0x03;
+        return (status >> 6) & 0x0F;
 }
 
 function StatusContainer({bulk, flag}) {
@@ -164,7 +170,14 @@ export default function BulkList({data}) {
     const [rows, setRows] = useState(10);
     const [count, setCount] = useState(0);
     const [bulks, setBulks] = useState([]);
-    
+
+    const [openScanQR, setOpenScanQR] = useState(false);
+    const [uuid, setUuid] = useState(null);
+    const [qrUrl, setQrUrl] = useState(null);
+    const [nextUrl, setNextUrl] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [selectedBulk, setSelectedBulk] = useState(null);
+        
     useEffect(() => {
         function getBulks() {
             if (!account) return;
@@ -190,8 +203,108 @@ export default function BulkList({data}) {
         }
     }, [account, page, rows]);
 
+    useEffect(() => {
+        var timer = null;
+        var isRunning = false;
+        var counter = 150;
+        async function getPayload() {
+            console.log(counter + " " + isRunning, uuid);
+            if (isRunning) return;
+            isRunning = true;
+            try {
+                const ret = await axios.get(`${BASE_URL}/xumm/payload/${uuid}`);
+                const res = ret.data.data.response;
+                // const account = res.account;
+                const resolved_at = res.resolved_at;
+                const dispatched_result = res.dispatched_result;
+                if (resolved_at) {
+                    setOpenScanQR(false);
+                    if (dispatched_result && dispatched_result === 'tesSUCCESS') {
+                        handleClose();
+                        openSnackbar('Set NFTokenMinter successful!', 'success');
+                    }
+                    else
+                        openSnackbar('Set NFTokenMinter failed!', 'error');
+
+                    return;
+                }
+            } catch (err) {
+            }
+            isRunning = false;
+            counter--;
+            if (counter <= 0) {
+                openSnackbar('Timeout!', 'error');
+                handleScanQRClose();
+            }
+        }
+        if (openScanQR) {
+            timer = setInterval(getPayload, 2000);
+        }
+        return () => {
+            if (timer) {
+                clearInterval(timer)
+            }
+        };
+    }, [openScanQR, uuid]);
+
+    const onMinterSetXumm = async (minter) => {
+        if (!account) {
+            openSnackbar('Please login first!', 'error');
+            return;
+        }
+        setLoading(true);
+        try {
+            const user_token = accountProfile?.token;
+
+            const body={ account, minter, user_token };
+
+            const res = await axios.post(`${BASE_URL}/xumm/setnftminter`, body);
+
+            if (res.status === 200) {
+                const uuid = res.data.data.uuid;
+                const qrlink = res.data.data.qrUrl;
+                const nextlink = res.data.data.next;
+
+                setUuid(uuid);
+                setQrUrl(qrlink);
+                setNextUrl(nextlink);
+                setOpenScanQR(true);
+            }
+        } catch (err) {
+            showAlert(ERR_NETWORK);
+        }
+        setLoading(false);
+    };
+
+    const onDisconnectXumm = async (uuid) => {
+        setLoading(true);
+        try {
+            const res = await axios.delete(`${BASE_URL}/xumm/logout/${uuid}`);
+            if (res.status === 200) {
+                setUuid(null);
+            }
+        } catch(err) {
+        }
+        setLoading(false);
+    };
+
+    const handleScanQRClose = () => {
+        setOpenScanQR(false);
+        onDisconnectXumm(uuid);
+    };
+
+    const handleNFTMinterSet = (minter) => {
+        onMinterSetXumm(minter);
+    }
+
     return (
         <>
+            <Backdrop
+                sx={{ color: "#000", zIndex: 1303 }}
+                open={loading}
+            >
+                <PulseLoader color={"#FF4842"} size={10} />
+            </Backdrop>
             <Box
                 sx={{
                     display: "flex",
@@ -341,7 +454,7 @@ export default function BulkList({data}) {
                                                     Just click me to Set NFTokenMinter now.
                                                     Please don't try to change your NFTokenMinter while minting this bulk of NFTs."
                                                 >
-                                                    <IconButton size="small">
+                                                    <IconButton size="small" onClick={()=>handleNFTMinterSet(minter)}>
                                                         <ApprovalOutlinedIcon color="error" fontSize="small" />
                                                     </IconButton>
                                                 </Tooltip>
@@ -415,16 +528,30 @@ export default function BulkList({data}) {
                                         }
                                         {infoMINT &&
                                             <Stack alignItems="center">
-                                                <RotatingSquare
-                                                    height="100"
-                                                    width="100"
-                                                    color="#4fa94d"
-                                                    ariaLabel="rotating-square-loading"
-                                                    strokeWidth="4"
-                                                    wrapperStyle={{}}
-                                                    wrapperClass=""
-                                                    visible={true}
-                                                />
+                                                {infoMINT.count !== infoMINT.length?(
+                                                    <RotatingSquare
+                                                        height="100"
+                                                        width="100"
+                                                        color="#4fa94d"
+                                                        ariaLabel="rotating-square-loading"
+                                                        strokeWidth="4"
+                                                        wrapperStyle={{}}
+                                                        wrapperClass=""
+                                                        visible={true}
+                                                    />
+                                                ):(
+                                                    <Vortex
+                                                        visible={true}
+                                                        height="80"
+                                                        width="80"
+                                                        ariaLabel="vortex-loading"
+                                                        wrapperStyle={{}}
+                                                        wrapperClass="vortex-wrapper"
+                                                        colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
+                                                    />
+                                                )}
+                                                
+                                                
                                                 <Typography variant="d4" color="#33C2FF">{infoMINT.count} / {infoMINT.length}</Typography>
                                             </Stack>
                                         }
@@ -445,6 +572,13 @@ export default function BulkList({data}) {
                     setPage={setPage}
                 />
             }
+            <QRDialog
+                open={openScanQR}
+                type="NFTokenMinterSet"
+                onClose={handleScanQRClose}
+                qrUrl={qrUrl}
+                nextUrl={nextUrl}
+            />
             <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     );

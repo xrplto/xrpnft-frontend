@@ -1,6 +1,7 @@
 import axios from 'axios';
 import NextLink from 'next/link';
 import { useRef, useState, useEffect } from 'react';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
 import {
@@ -9,14 +10,17 @@ import {
     Button,
     Divider,
     IconButton,
+    Link,
     MenuItem,
     Stack,
+    Tooltip,
     Typography
 } from '@mui/material';
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import GridOnIcon from '@mui/icons-material/GridOn';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 // Context
 import { useContext } from 'react';
@@ -30,7 +34,7 @@ import userLock from '@iconify/icons-fa-solid/user-lock';
 import MenuPopover from './MenuPopover';
 import LoginDialog from './LoginDialog';
 import XLS20Dialog from './XLS20Dialog';
-import ChooseAccountDialog from './dialog/ChooseAccountDialog';
+// import ChooseAccountDialog from './dialog/ChooseAccountDialog';
 
 export default function Wallet() {
     // https://github.com/mui/material-ui/issues/10000
@@ -210,12 +214,34 @@ export default function Wallet() {
                             <Divider />
                             <Stack spacing={1} alignItems='center' sx={{pt: 1, pb: 2}}>
                                 <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ mr:1, width: 24, height: 24 }}/>
-                                <Typography align="center" style={{ wordWrap: "break-word" }} variant="body2" sx={{ width: 180, color: 'text.secondary' }} >
-                                    {accountProfile.account}
-                                </Typography>
-                                <Button variant="contained" onClick={handleLogout} size="small">
-                                    Logout
-                                </Button>
+                                <Link
+                                    color="inherit"
+                                    target="_blank"
+                                    href={`https://xls20.bithomp.com/explorer/${accountProfile.account}`}
+                                    rel="noreferrer noopener nofollow"
+                                >
+                                    <Typography align="center" style={{ wordWrap: "break-word" }} variant="body2" sx={{ width: 180, color: 'text.secondary' }} >
+                                        {accountProfile.account}
+                                    </Typography>
+                                </Link>
+
+                                {/* <CopyToClipboard text={accountProfile.account} onCopy={()=>{}}>
+                                    <Tooltip title='Click to copy your address'>
+                                        <IconButton>
+                                            <ContentCopyIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
+                                </CopyToClipboard> */}
+                                <Stack direction="row" spacing={1}>
+                                    <Button variant="contained" onClick={handleLogout} size="small">
+                                        Logout
+                                    </Button>
+                                    <CopyToClipboard text={accountProfile.account} onCopy={()=>{}}>
+                                        <Button variant="contained" size="small" color="info">
+                                            Copy
+                                        </Button>
+                                    </CopyToClipboard>
+                                </Stack>
                             </Stack>
                         </>
                     ) : (
@@ -225,8 +251,8 @@ export default function Wallet() {
                             sx={{ typography: 'body2', py: 2, px: 2.5 }}
                         >
                             <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                <Avatar alt="xumm" src="/static/xumm.jpg"/>
-                                <h3 style={{marginLeft: '10px'}}>XUMM</h3>
+                                <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ mr:1, width: 24, height: 24 }}/>
+                                <Typography variant='s3' style={{marginLeft: '10px'}}>XUMM Login</Typography>
                             </Stack>
                         </MenuItem>
                 )}
