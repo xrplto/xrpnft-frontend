@@ -1,43 +1,26 @@
 import React from 'react';
-import axios from 'axios'
-import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux'
 
 // Material
 import { withStyles } from '@mui/styles';
 import {
     styled,
-    Button,
-    Card,
-    Checkbox,
-    Container,
-    FormControlLabel,
-    FormGroup,
     IconButton,
-    Link,
     Stack,
-    TextField,
     Tooltip,
     Typography
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 // Iconify
 import { Icon } from '@iconify/react';
-import arrowsExchange from '@iconify/icons-gg/arrows-exchange';
 import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
-
-// Utils
-import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS } from 'src/utils/constants';
 
 // Components
 import { useSnackbar } from 'src/components/useSnackbar';

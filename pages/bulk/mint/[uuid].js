@@ -1,12 +1,10 @@
-import axios from 'axios'
-import { useState, useEffect, useRef } from 'react';
-import { performance } from 'perf_hooks';
+// import axios from 'axios'
+// import { performance } from 'perf_hooks';
 
 // Material
 import {
     Box,
     Container,
-    Grid,
     styled,
     Toolbar
 } from '@mui/material';
@@ -72,7 +70,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="lg">
-                <BulkMinting bulk={data.bulk}/>
+                <BulkMinting uuid={data.uuid}/>
             </Container>
 
             <ScrollToTop />
@@ -84,38 +82,48 @@ export default function Overview({data}) {
 }
 
 export async function getServerSideProps(ctx) {
-    const BASE_URL = 'https://api.xrpnft.com/api';
+    // const BASE_URL = 'https://api.xrpnft.com/api';
 
-    let data = null;
-    try {
+    const uuid = ctx.params.uuid;
 
-        const uuid = ctx.params.uuid;
+    // let data = null;
+    // try {
 
-        var t1 = performance.now();
+    //     const uuid = ctx.params.uuid;
 
-        // https://api.xrpnft.com/api/bulk/get/9cbd9b0d508c403cbe6dde012e146a1b
-        const res = await axios.get(`${BASE_URL}/bulk/get/${uuid}`);
+    //     var t1 = performance.now();
 
-        data = res.data;
+    //     // https://api.xrpnft.com/api/bulk/get/9cbd9b0d508c403cbe6dde012e146a1b
+    //     const res = await axios.get(`${BASE_URL}/bulk/get/${uuid}`);
 
-        var t2 = performance.now();
-        var dt = (t2 - t1).toFixed(2);
+    //     data = res.data;
 
-        console.log(`getStaticProps(bulk/mint) uuid: ${uuid} took: ${dt}ms`);
-    } catch (e) {
-        console.log(e);
-    }
+    //     var t2 = performance.now();
+    //     var dt = (t2 - t1).toFixed(2);
 
-    let ret = {};
-    if (data && data.bulk) {
-        const ogp = {};
-        ogp.canonical = 'https://xrpnft.com';
-        ogp.title = 'Bulk Mint Items';
-        ogp.url = 'https://xrpnft.com/';
-        ogp.imgUrl = 'https://xrpnft.com/ogp.png';
-        ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
-        ret = {ogp, data};
-    }
+    //     console.log(`getStaticProps(bulk/mint) uuid: ${uuid} took: ${dt}ms`);
+    // } catch (e) {
+    //     console.log(e);
+    // }
+
+    // let ret = {};
+    // if (data && data.bulk) {
+    //     const ogp = {};
+    //     ogp.canonical = 'https://xrpnft.com';
+    //     ogp.title = 'Bulk Mint Items';
+    //     ogp.url = 'https://xrpnft.com/';
+    //     ogp.imgUrl = 'https://xrpnft.com/ogp.png';
+    //     ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
+    //     ret = {ogp, data};
+    // }
+
+    const ogp = {};
+    ogp.canonical = 'https://xrpnft.com';
+    ogp.title = 'Bulk Mint Items';
+    ogp.url = 'https://xrpnft.com/';
+    ogp.imgUrl = 'https://xrpnft.com/ogp.png';
+    ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
+    ret = {ogp, data: {uuid}};
 
     return {
         props: ret, // will be passed to the page component as props

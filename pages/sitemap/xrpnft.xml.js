@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const Sitemap = () => {};
 
-const BASE_URL = 'http://135.181.118.217/api';
+const BASE_URL = 'https://api.xrpnft.com/api';
 
 export const getServerSideProps = async ({ res }) => {
     let slugs = [];

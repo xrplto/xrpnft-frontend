@@ -53,7 +53,7 @@ function generateRandom(maxLimit = 10){
     return rand;
 }
 
-export default function Overview({data}) {
+export default function Overview() {
     const bgIdx = generateRandom();
     const { darkMode } = useContext(AppContext);
 

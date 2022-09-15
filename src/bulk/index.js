@@ -77,7 +77,7 @@ const DisabledButton = withStyles({
     }
 })(Button);
 
-export default function Bulks({bulks}) {
+export default function Bulks() {
     return (
         <>
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
@@ -88,7 +88,7 @@ export default function Bulks({bulks}) {
                 Create a Bulk
             </Button>
             <Stack sx={{mt:5, minHeight: '50vh'}}>
-                <BulkList bulks={bulks}/>
+                <BulkList />
             </Stack>
         </>
     );

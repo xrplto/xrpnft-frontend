@@ -36,13 +36,14 @@ import { AppContext } from 'src/AppContext';
 import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS } from 'src/utils/constants';
 
 // Components
-import BaseDialog from 'src/components/dialog/BaseDialog';
-import NFTokenMintDgContent from './NFTokenMintDgContent';
-import CollectionAndProperties from './CollectionAndProperties';
+// import BaseDialog from 'src/components/dialog/BaseDialog';
+// import NFTokenMintDgContent from './NFTokenMintDgContent';
+// import CollectionAndProperties from './CollectionAndProperties';
+import QRDialogNoPush from 'src/components/QRDialogNoPush';
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
-import PropertySection from './NFTProperties/PropertySection';
-import LevelsSection from './NFTLevels/LevelSection';
+// import PropertySection from './NFTProperties/PropertySection';
+// import LevelsSection from './NFTLevels/LevelSection';
 import LoadingTextField from 'src/components/LoadingTextField';
 
 const CardWrapper = styled('div')(
@@ -93,14 +94,17 @@ const CustomSelect = styled(Select)(({ theme }) => ({
 export default function Minting() {
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
+    const token = accountProfile?.token;
+    const user_token = accountProfile?.user_token;
 
     const levels = useSelector(state => state.status.metadata.levels);
     const properties = useSelector(state => state.status.metadata.properties);
+
     const [open, setOpen] = useState(false);
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
     const [nftName, setNftName] = useState('');
     const [extLink, setExtLink] = useState('');
@@ -111,6 +115,12 @@ export default function Minting() {
     
     const [fileUrl, setFileUrl] = useState(null);
     const [file, setFile] = useState(null);
+
+    const [openScanQR, setOpenScanQR] = useState(false);
+    const [uuidNft, setUuidNft] = useState('null');
+    const [uuid, setUuid] = useState(null);
+    const [qrUrl, setQrUrl] = useState(null);
+    const [nextUrl, setNextUrl] = useState(null);
     const [loading, setLoading] = useState(false);
 
     // Collection related
@@ -119,16 +129,17 @@ export default function Minting() {
 
     const [validPassword, setValidPassword] = useState(false);
 
-    const canCreate = file && nftName && collectionName && passphrase && validPassword;
+    const validAccount = account && token && user_token;
+    const canCreate = validAccount && file && nftName && collectionName && passphrase && validPassword;
 
     const loadCollections=() => {
-        if (!account) {
-            openSnackbar('Please login first!', 'error');
+        if (!account || !token) {
+            openSnackbar('Please login', 'error');
             return;
         }
 
         // https://api.xrpnft.com/api/account/query-collections?filter=
-        axios.get(`${BASE_URL}/account/query-collections?account=${account}&filter=${filter}`)
+        axios.get(`${BASE_URL}/account/query-collections?account=${account}&filter=${filter}`, {headers: {'x-access-token': token}})
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {
@@ -150,12 +161,61 @@ export default function Minting() {
         loadCollections();
     }, [filter, account]);
 
+    useEffect(() => {
+        var timer = null;
+        var isRunning = false;
+        var counter = 150;
+        async function getPayload() {
+            console.log(counter + " " + isRunning, uuid);
+            if (isRunning) return;
+            isRunning = true;
+            try {
+                const ret = await axios.get(`${BASE_URL}/account/payloadmint/${uuid}/${uuidNft}`);
+                const res = ret.data.data.response;
+
+                // const account = res.account;
+                const resolved_at = res.resolved_at;
+                const dispatched_result = res.dispatched_result;
+                if (resolved_at) {
+                    setOpenScanQR(false);
+                    console.log(res);
+                    if (dispatched_result === 'tesSUCCESS') {
+                        // handleClose();
+                        openSnackbar('NFTokenMint successful!', 'success');
+                        window.location.href = `/token/${uuidNft}`;
+                    }
+                    else {
+                        openSnackbar('NFTokenMint failed!', 'error');
+                    }
+
+                    return;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+            isRunning = false;
+            counter--;
+            if (counter <= 0) {
+                openSnackbar('Timeout!', 'error');
+                handleScanQRClose();
+            }
+        }
+        if (openScanQR) {
+            timer = setInterval(getPayload, 2000);
+        }
+        return () => {
+            if (timer) {
+                clearInterval(timer)
+            }
+        };
+    }, [openScanQR, uuid, uuidNft]);
+
     const onCreateNft = async () => {
-        if (!account) {
-            openSnackbar('Please login first!', 'error');
+        if (!account && !token && !user_token) {
+            openSnackbar('Please login', 'error');
             return;
         }
-        
+
         // POST https://api.xrpnft.com/api/mint
         setLoading(true);
         try {
@@ -172,41 +232,30 @@ export default function Minting() {
             const formdata = new FormData();
             formdata.append('nft', file);
             formdata.append('account', account);
+            formdata.append('user_token', user_token);
             formdata.append('data', JSON.stringify(data));
             
             res = await axios.post(`${BASE_URL}/account/mint`, formdata, {
-                headers: { "Content-Type": "multipart/form-data" }
+                headers: { "Content-Type": "multipart/form-data", 'x-access-token': token }
             });
 
             if (res.status === 200) {
                 const ret = res.data;
                 if (ret.status) {
-                    const nft = ret.data;
-                    // console.log(ret.link1);
-                    // console.log(ret.link2);
-                    // console.log(ret.link3);
-                    // window.location.href = ret.link;
-                    
-                    // window.open(ret.link1, '_blank');
-                    // window.open(ret.link2, '_blank');
-                    // window.open(ret.link3, '_blank');
+                    console.log(ret);
 
-                    /*{
-                        "name": "FRACTAL-BBB",
-                        "externalLink": "",
-                        "description": "",
-                        "collection": "",
-                        "Flags": 13,
-                        "Issuer": "rEBKhngY8izMvRrgGg3Yh5zdiQgHH9cExg",
-                        "minter": "xrpnft.com",
-                        "image": "QmbUaafMaftkUTt44DVdTaSwgKzf51UWMD4NNNc7Jt4fCf",
-                        "URI": "516D656A506E6E6775635A5664723637583937324C313842726A366F317241503842794754796137645259763234",
-                        "uuid": "d1dcfe3cac80409793629707de2aafbf",
-                        "minted": false,
-                        "_id": "6308bc3d7a1dec795f21fc33"
-                    } */
-                    window.location.href = `/token/${nft.uuid}`;
-                    openSnackbar('NFT mint successful!', 'success')
+                    const uuid_nft = ret.uuid_nft;
+                    const uuid = ret.uuid;
+                    const qrlink = ret.qrUrl;
+                    const nextlink = ret.next;
+
+                    setUuidNft(uuid_nft);
+                    setUuid(uuid);
+                    setQrUrl(qrlink);
+                    setNextUrl(nextlink);
+                    setOpenScanQR(true);
+                    // window.location.href = `/token/${nft.uuid}`;
+                    // openSnackbar('NFT mint successful!', 'success')
                     // setFile(null);
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
@@ -216,6 +265,19 @@ export default function Minting() {
             }
         } catch (err) {
             console.error(err);
+        }
+        setLoading(false);
+    };
+
+    const onDisconnectXumm = async (uuid, uuidNft) => {
+        setLoading(true);
+        try {
+            const res = await axios.delete(`${BASE_URL}/account/cancelmint/${uuid}/${uuidNft}`);
+            if (res.status === 200) {
+                setUuid(null);
+                setUuidNft(null);
+            }
+        } catch(err) {
         }
         setLoading(false);
     };
@@ -289,6 +351,11 @@ export default function Minting() {
         setCollectionName('');
         setFilter(e.target.value);
     }
+
+    const handleScanQRClose = () => {
+        setOpenScanQR(false);
+        onDisconnectXumm(uuid, uuidNft);
+    };
 
     const handleChangeCollection = (event) => {
         // const idx = parseInt(event.target.value, 10);
@@ -563,7 +630,7 @@ export default function Minting() {
                 </LoadingButton>
             </Stack>
 
-            <BaseDialog
+            {/* <BaseDialog
                 isOpen={open}
                 close={() => { setOpen(false) }}
                 title={'Mint New NFT'}
@@ -584,6 +651,13 @@ export default function Minting() {
                         }
                     />
                 }
+            /> */}
+            <QRDialogNoPush
+                open={openScanQR}
+                type="NFTokenMint"
+                onClose={handleScanQRClose}
+                qrUrl={qrUrl}
+                nextUrl={nextUrl}
             />
             <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>

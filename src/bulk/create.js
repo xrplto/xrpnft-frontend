@@ -128,14 +128,16 @@ const DisabledButton = withStyles({
     }
 })(Button);
 
-export default function CreateCollection() {
+export default function CreateBulk() {
     const fileRef = useRef();
-
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { accountProfile } = useContext(AppContext);
-    const account = accountProfile?.account;
-    const [loading, setLoading] = useState(false);
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
+    
+    const { accountProfile } = useContext(AppContext);
+    const [loading, setLoading] = useState(false);
+    
+    const account = accountProfile?.account;
+    const token = accountProfile?.token;
     
     // Opensea
     // {
@@ -163,8 +165,8 @@ export default function CreateCollection() {
 
     const onCreateBulk = async () => {
         // POST https://api.xrpnft.com/api/bulk/create
-        if (!account) {
-            openSnackbar('Please login first!', 'error');
+        if (!account || !token) {
+            openSnackbar('Please login', 'error');
             return;
         }
 
@@ -186,7 +188,7 @@ export default function CreateCollection() {
             formdata.append('data', JSON.stringify(data));
             
             res = await axios.post(`${BASE_URL}/bulk/create`, formdata, {
-                headers: { "Content-Type": "multipart/form-data" }
+                headers: { "Content-Type": "multipart/form-data", 'x-access-token': token }
             });
 
             if (res.status === 200) {

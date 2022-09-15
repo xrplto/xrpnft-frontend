@@ -158,14 +158,13 @@ function StatusContainer({bulk, flag}) {
     )
 }
 
-export default function BulkList({data}) {
+export default function BulkList() {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
-
-    const { accountProfile } = useContext(AppContext);
-    const account = accountProfile?.account;
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
+    const { accountProfile } = useContext(AppContext);
+    
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [count, setCount] = useState(0);
@@ -177,12 +176,19 @@ export default function BulkList({data}) {
     const [nextUrl, setNextUrl] = useState(null);
     const [loading, setLoading] = useState(false);
     const [selectedBulk, setSelectedBulk] = useState(null);
+
+    const account = accountProfile?.account;
+    const token = accountProfile?.token;
         
     useEffect(() => {
         function getBulks() {
-            if (!account) return;
+            if (!account || !token) {
+                openSnackbar('Please login', 'error');
+                return;
+            }
+
             // https://api.xrpnft.com/api/bulk/list?account=rhhh&page=0&limit=10
-            axios.get(`${BASE_URL}/bulk/list?account=${account}&page=${page}&limit=${rows}`)
+            axios.get(`${BASE_URL}/bulk/list?account=${account}&page=${page}&limit=${rows}`, {headers: {'x-access-token': token}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -219,8 +225,8 @@ export default function BulkList({data}) {
                 const dispatched_result = res.dispatched_result;
                 if (resolved_at) {
                     setOpenScanQR(false);
-                    if (dispatched_result && dispatched_result === 'tesSUCCESS') {
-                        handleClose();
+                    if (dispatched_result === 'tesSUCCESS') {
+                        // handleClose();
                         openSnackbar('Set NFTokenMinter successful!', 'success');
                     }
                     else
@@ -248,17 +254,17 @@ export default function BulkList({data}) {
     }, [openScanQR, uuid]);
 
     const onMinterSetXumm = async (minter) => {
-        if (!account) {
-            openSnackbar('Please login first!', 'error');
+        if (!account || !token) {
+            openSnackbar('Please login', 'error');
             return;
         }
         setLoading(true);
         try {
-            const user_token = accountProfile?.token;
+            const user_token = accountProfile.user_token;
 
             const body={ account, minter, user_token };
 
-            const res = await axios.post(`${BASE_URL}/xumm/setnftminter`, body);
+            const res = await axios.post(`${BASE_URL}/xumm/setnftminter`, body, {headers: {'x-access-token': token}});
 
             if (res.status === 200) {
                 const uuid = res.data.data.uuid;

@@ -16,30 +16,27 @@ import { AppContext } from 'src/AppContext';
 import CollectionCard from "./CollectionCard";
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
-import { hotDropsData } from "./MockupData";
 
 export default function CollectionList({isAll}) {
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
+    const token = accountProfile?.token;
 
     const [collections, setCollections] = useState([]);
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(true);
 
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
-
     const loadCollections=(offset) => {
-        if (!isAll && !account) {
-            openSnackbar('Please login first!', 'error');
+        if (!isAll && (!account || !token)) {
+            openSnackbar('Please login', 'error');
             return;
         }
         // console.log(`loadCollections page: ${offset}`);
         // https://api.xrpnft.com/api/account/collections?account=rKVd5WtB8ugrxaTDTbJv6pVH7WunmyryLq
-        const acct = isAll?'all':account;
-        if (!acct) return;
         
-        axios.get(`${BASE_URL}/account/collections?page=${offset}&limit=20&account=${acct}`)
+        axios.get(`${BASE_URL}/account/collections?account=${account}&all=${isAll}&page=${offset}&limit=20`, {headers: {'x-access-token': token}})
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {

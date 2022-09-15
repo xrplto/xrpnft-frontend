@@ -1,16 +1,12 @@
 import axios from 'axios';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 // Material
 import {
     FormControl,
     FormHelperText,
     InputAdornment,
-    OutlinedInput,
-    Stack,
-    TextField,
-    Tooltip,
-    Typography
+    OutlinedInput
 } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -18,8 +14,9 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 // Loader
 import { ClipLoader } from "react-spinners";
 
-// Iconify
-import { Icon } from '@iconify/react';
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
 
 export default function LoadingTextField({ type, value, setValid, startText, ...props }) {
     const TEXT_EMPTY = 0;
@@ -30,15 +27,22 @@ export default function LoadingTextField({ type, value, setValid, startText, ...
     const BASE_URL = 'https://api.xrpnft.com/api';
     const [status, setStatus] = useState(TEXT_EMPTY);
 
+    const { accountProfile } = useContext(AppContext);
+
     const checkValidation = (text) => {
+        const account = accountProfile?.account;
+        const token = accountProfile?.token;
+        if (!account || !token) return;
+
         setStatus(TEXT_CHECKING);
 
         const body = {};
+        body.account = account;
         body.text = text;
         body.type = type;
 
         // https://api.xrpnft.com/api/validation
-        axios.post(`${BASE_URL}/validation`, body).then(res => {
+        axios.post(`${BASE_URL}/validation`, body, {headers: {'x-access-token': token}}).then(res => {
             try {
                 if (res.status === 200 && res.data) {
                     const ret = res.data.status;
@@ -50,9 +54,11 @@ export default function LoadingTextField({ type, value, setValid, startText, ...
                 }
             } catch (error) {
                 console.log(error);
+                setStatus(TEXT_INVALID);
             }
         }).catch(err => {
             console.log("err->>", err);
+            setStatus(TEXT_INVALID);
         }).then(function () {
             // Always executed
         });

@@ -54,19 +54,24 @@ export default function Wallet() {
         var counter = 150;
         if (openLogin) {
             timer = setInterval(async () => {
-                console.log(counter + " " + isRunning, uuid);
+                // console.log(counter + " " + isRunning, uuid);
                 if (isRunning) return;
                 isRunning = true;
                 try {
-                    const res = await axios.get(`${BASE_URL}/xumm/payload/${uuid}`);
-                    const data = res.data.data;
-                    const admin = res.data.admin;
-                    const account = data.response.account;
-                    const token = data.application.issued_user_token;
-                    if (account) {
+                    const res = await axios.get(`${BASE_URL}/xumm/payloadlogin/${uuid}`);
+                    if (res && res.data && res.data.account) {
+
+                        console.log(res.data);
+                        
+                        const ret = res.data;
+                        const account = ret.account;
+                        const user_token = ret.user_token;
+                        const token = ret.token;
+                        const admin = ret.admin;
+
                         setOpen(true);
                         setOpenLogin(false);
-                        setAccountProfile({account: account, uuid: uuid, token:token, admin:admin});
+                        setAccountProfile({account, uuid, user_token, token, admin});
                         return;
                     }
                 } catch (err) {
