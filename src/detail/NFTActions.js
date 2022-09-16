@@ -44,7 +44,7 @@ export default function NFTActions({ token }) {
     const account_nfts = []; // useSelector(state => state.account.nfts);
     console.log("account nfts", account_nfts);
 
-    const isOwner = account_nfts.findIndex((nft) => nft.TokenID === TokenID) > -1;
+    const isOwner = account_nfts.findIndex((nft) => nft.NFTokenID === NFTokenID) > -1;
     console.log("account token ID", isOwner);
 
     const login = true; // useSelector(state => state.account.login);
@@ -60,7 +60,7 @@ export default function NFTActions({ token }) {
         description,
         collection,
         Issuer,
-        TokenID,
+        NFTokenID,
         URI,
         Flags,
         properties,
@@ -70,7 +70,7 @@ export default function NFTActions({ token }) {
     const fetchOffers = async (mounted) => {
         // setPageLoading(true)
         // try {
-        //     const res = await getSellAndBuyOffers(TokenID)
+        //     const res = await getSellAndBuyOffers(NFTokenID)
         //     if (mounted) {
         //         console.log({ res })
         //         setBuyOffers(res.buyOffers)
@@ -102,7 +102,7 @@ export default function NFTActions({ token }) {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-    // console.log("owner", TokenID)
+    // console.log("owner", NFTokenID)
     return (
         <Stack spacing={2}>
             <Stack spacing={2} sx={{mt:2}}>
@@ -183,7 +183,7 @@ export default function NFTActions({ token }) {
                                         <SellOffersList
                                             id={offers.data.sellOffers.id}
                                             result={offers.data.sellOffers.result}
-                                            TokenID={TokenID}
+                                            TokenID={NFTokenID}
                                             isOwner={isOwner}
                                         /> :
                                         <Typography variant='string'>
@@ -196,7 +196,7 @@ export default function NFTActions({ token }) {
                             :
                             <SellOffersList
                                 _offers={sellOffers}
-                                _TokenID={TokenID}
+                                _TokenID={NFTokenID}
                                 _isOwner={isOwner}
                             />
                         }
@@ -223,7 +223,7 @@ export default function NFTActions({ token }) {
                             :
                             <BuyOffersList
                                 _offers={buyOffers}
-                                _TokenID={TokenID}
+                                _TokenID={NFTokenID}
                                 _isOwner={isOwner}
                             />}
                         {/* {
@@ -271,7 +271,7 @@ export default function NFTActions({ token }) {
                         close={() => {
                             setIsOpenSellDg(false)
                         }}
-                        TokenID={TokenID}
+                        TokenID={NFTokenID}
                         setOffers={(offers) => setSellOffers(offers)}
                     />}
             />
@@ -286,7 +286,7 @@ export default function NFTActions({ token }) {
                         close={() => {
                             setIsOpenBurnDg(false)
                         }}
-                        TokenID={TokenID}
+                        TokenID={NFTokenID}
                     />}
             />
             <BaseDialog
@@ -300,7 +300,7 @@ export default function NFTActions({ token }) {
                         close={() => {
                             setIsOpenBuyDg(false)
                         }}
-                        TokenID={TokenID}
+                        TokenID={NFTokenID}
                         setOffers={(offers) => setBuyOffers(offers)}
                         owner={owner}
                     />}

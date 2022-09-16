@@ -84,7 +84,7 @@ export default function ChooseAccountDgContent() {
         // TODO: Open a new page with selected account
         // console.log('sendgindsdfsdf')
         // console.log('account', account.account)
-        // navigate(`/account/${nftoken.tokenID}?tokenURI=${nftoken.URI}`)
+        // navigate(`/account/${nftoken.NFTokenID}?tokenURI=${nftoken.URI}`)
         if (account.account) {
             dispatch(doSetAccount(account))
             const res = await getTokens(account.account)
@@ -109,7 +109,7 @@ export default function ChooseAccountDgContent() {
 
     const handleCancel = () => {
         // TODO: Open a new page with selected account
-        // navigate(`/account/${nftoken.tokenID}?tokenURI=${nftoken.URI}`)
+        // navigate(`/account/${nftoken.NFTokenID}?tokenURI=${nftoken.URI}`)
         navigate(`/`)
     }
 
