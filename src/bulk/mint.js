@@ -1,10 +1,8 @@
 import React from 'react';
 import axios from 'axios'
-import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
 import JSONPretty from 'react-json-pretty';
 import isIPFS from 'is-ipfs';
-import crypto from 'crypto';
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -142,22 +140,23 @@ const COLLECTION_FAMILIES = [
 // Calculate MD5 hash of a large file using javascript
 // https://stackoverflow.com/questions/39112096/calculate-md5-hash-of-a-large-file-using-javascript
 
-export default function Minting({bulk}) {
+export default function Minting({uuid}) {
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
+    
     const fileRef = useRef();
-    const infoIPFS = bulk.infoIPFS;
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
+    const token = accountProfile?.token;
 
-    const JWToken = 'JWToken';
     // const levels = useSelector(state => state.status.metadata.levels);
     // const properties = useSelector(state => state.status.metadata.properties);
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
+    const [bulk, setBulk] = useState(null);
 
     const [nftName, setNftName] = useState('');
     const [imgExt, setImgExt] = useState('png');
     const [extLink, setExtLink] = useState('');
-    const [ipfsCID, setIpfsCID] = useState(infoIPFS ? infoIPFS.cid:'');
+    const [ipfsCID, setIpfsCID] = useState('');
     const [description, setDescription] = useState('');
     const [collectionName, setCollectionName] = useState('')
     const [collectionFamily, setCollectionFamily] = useState('');
@@ -182,22 +181,60 @@ export default function Minting({bulk}) {
 
     const [validPassword, setValidPassword] = useState(false);
     
-    let canDownload = metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName;
-    let canCreate = metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName && passphrase && validPassword;
+    const active = account && token && bulk;
+    let canDownload = active && metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName;
+    let canCreate = canDownload && passphrase && validPassword;
 
     if (includeTime && !newDateField) {
         canDownload = false;
         canCreate = false;
     }
 
+    if (bulk && (!bulk.infoIPFS || !bulk.infoIPFS.cid)) {
+        canDownload = false;
+        canCreate = false;
+    }
+
+    const getBulk = () => {
+        if (!uuid) {
+            openSnackbar('Invalid request!', 'error');
+            return;
+        }
+
+        if (!account || !token) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        axios.get(`${BASE_URL}/bulk/get/${uuid}?account=${account}`, {headers: {'x-access-token': token}})
+        .then(res => {
+            try {
+                if (res.status === 200 && res.data) {
+                    const newBulk = res.data.bulk;
+                    if (newBulk) {
+                        setBulk(newBulk);
+                        if (newBulk.infoIPFS && newBulk.infoIPFS.cid)
+                            setIpfsCID(newBulk.infoIPFS.cid);
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }).catch(err => {
+            console.log("err->>", err);
+        }).then(function () {
+            // Always executed
+        });
+    };
+
     const loadCollections=() => {
-        if (!account) {
-            openSnackbar('Please login first!', 'error');
+        if (!account || !token) {
+            openSnackbar('Please login', 'error');
             return;
         }
 
         // https://api.xrpnft.com/api/account/query-collections?filter=
-        axios.get(`${BASE_URL}/account/query-collections?account=${account}&filter=${filter}`)
+        axios.get(`${BASE_URL}/account/query-collections?account=${account}&filter=${filter}`, {headers: {'x-access-token': token}})
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {
@@ -216,15 +253,19 @@ export default function Minting({bulk}) {
     };
 
     useEffect(() => {
+        getBulk();
+    }, [uuid]);
+
+    useEffect(() => {
         loadCollections();
     }, [filter, account]);
 
     const onCreateNft = async () => {
-        if (!account) {
-            openSnackbar('Please login first!', 'error');
+        if (!account || !token) {
+            openSnackbar('Please login', 'error');
             return;
         }
-        
+
         // POST https://api.xrpnft.com/api/mint
         setLoading(true);
         const newMetaData = getFinalMetaData();
@@ -240,9 +281,8 @@ export default function Minting({bulk}) {
             body.data = data;
             body.account = account;
             body.passphrase = passphrase;
-            body.signature = crypto.createHmac("SHA256", JWToken).update(JSON.stringify(data)).digest("hex");
 
-            res = await axios.post(`${BASE_URL}/bulk/mint`, body);
+            res = await axios.post(`${BASE_URL}/bulk/mint`, body, {headers: {'x-access-token': token}});
 
             if (res.status === 200) {
                 const ret = res.data;
@@ -400,7 +440,6 @@ export default function Minting({bulk}) {
             if (collectionFamily)
                 collection.family = collectionFamily;
             newMeta.collection = collection;
-
 
             if (includeTime && newDateField) {
                 if (oldDateField)

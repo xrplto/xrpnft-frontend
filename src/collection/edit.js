@@ -125,6 +125,8 @@ const FILE_NEW = 1;
 const FILE_REMOVED = 2;
 
 export default function EditCollection({collection}) {
+    const BASE_URL = 'https://api.xrpnft.com/api';
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
     /*{
         "_id": "631167f02cb4cfc85b82b74d",
         "account": "rKVd5WtB8ugrxaTDTbJv6pVH7WunmyryLq",
@@ -146,13 +148,12 @@ export default function EditCollection({collection}) {
     const fileRef1 = useRef();
     const fileRef2 = useRef();
     const fileRef3 = useRef();
-
-    const BASE_URL = 'https://api.xrpnft.com/api';
+    
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
+    const token = accountProfile?.token;
 
     const [loading, setLoading] = useState(false);
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
     
     // Opensea
     // {
@@ -222,8 +223,8 @@ export default function EditCollection({collection}) {
     }
 
     const onEditCollection = async () => {
-        if (!account) {
-            openSnackbar('Please login first!', 'error');
+        if (!account || !token) {
+            openSnackbar('Please login', 'error');
             return;
         }
         // POST https://api.xrpnft.com/api/account/create-collection
@@ -254,7 +255,7 @@ export default function EditCollection({collection}) {
             formdata.append('data', JSON.stringify(data));
             
             res = await axios.post(`${BASE_URL}/account/edit-collection`, formdata, {
-                headers: { "Content-Type": "multipart/form-data" }
+                headers: { "Content-Type": "multipart/form-data", 'x-access-token': token }
             });
 
             if (res.status === 200) {
