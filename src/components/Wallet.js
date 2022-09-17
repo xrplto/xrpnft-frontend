@@ -212,7 +212,7 @@ export default function Wallet() {
                                 <NextLink href="/bulk" passHref>
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <PhotoLibraryIcon />
-                                        <Typography variant='s3' style={{marginLeft: '10px'}}>Create Bulk</Typography>
+                                        <Typography variant='s3' style={{marginLeft: '10px'}}>Manage Bulks</Typography>
                                     </Stack>
                                 </NextLink>
                             </MenuItem>

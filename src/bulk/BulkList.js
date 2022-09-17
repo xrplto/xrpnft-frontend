@@ -180,14 +180,14 @@ export default function BulkList() {
     const token = accountProfile?.token;
         
     useEffect(() => {
-        function getBulks() {
+        function getBulkCollections() {
             if (!account || !token) {
                 openSnackbar('Please login', 'error');
                 return;
             }
 
             // https://api.xrpnft.com/api/bulk/list?account=rhhh&page=0&limit=10
-            axios.get(`${BASE_URL}/bulk/list?account=${account}&page=${page}&limit=${rows}`, {headers: {'x-access-token': token}})
+            axios.get(`${BASE_URL}/account/collections?account=${account}&page=${page}&limit=${rows}&type=bulk`, {headers: {'x-access-token': token}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -201,8 +201,8 @@ export default function BulkList() {
                     // always executed
                 });
         }
-        getBulks();
-        const timer = setInterval(() => getBulks(), 8000);
+        getBulkCollections();
+        const timer = setInterval(() => getBulkCollections(), 8000);
 
         return () => {
             clearInterval(timer);
@@ -333,7 +333,7 @@ export default function BulkList() {
                     <TableBody>
                     {
                         // exchs.slice(page * rows, page * rows + rows)
-                        bulks.map((row) => {
+                        bulks && bulks.map((row) => {
                             const {
                                 uuid,
                                 url,

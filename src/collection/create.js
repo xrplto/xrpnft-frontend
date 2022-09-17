@@ -23,6 +23,8 @@ import {
     OutlinedInput,
     Stack,
     TextField,
+    ToggleButton,
+    ToggleButtonGroup,
     Tooltip,
     Typography
 } from '@mui/material';
@@ -130,6 +132,7 @@ const DisabledButton = withStyles({
 
 export default function CreateCollection() {
     const BASE_URL = 'https://api.xrpnft.com/api';
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
     const fileRef1 = useRef();
     const fileRef2 = useRef();
@@ -140,7 +143,7 @@ export default function CreateCollection() {
     const token = accountProfile?.token;
 
     const [loading, setLoading] = useState(false);
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
+    
     
     // Opensea
     // {
@@ -155,6 +158,8 @@ export default function CreateCollection() {
     const [collectionName, setCollectionName] = useState('')
     const [slug, setSlug] = useState('');
     const [description, setDescription] = useState('');
+    const [type, setType] = useState('normal');
+    const [bulkUrl, setBulkUrl] = useState('');
 
     // Logo image
     const [fileUrl1, setFileUrl1] = useState(null);
@@ -172,7 +177,10 @@ export default function CreateCollection() {
     const [valid2, setValid2] = useState(false);
     const [validPassword, setValidPassword] = useState(false);
 
-    const canCreate = file1 && collectionName && slug && passphrase && valid1 && valid2 && validPassword;
+    let canCreate = file1 && collectionName && slug && passphrase && valid1 && valid2 && validPassword;
+
+    if (type === 'bulk' && !bulkUrl)
+        canCreate = false;
 
     const onCreateCollection = async () => {
         if (!account || !token) {
@@ -202,6 +210,8 @@ export default function CreateCollection() {
             data.slug = slug;
             data.description = description;
             data.fileFlag = fileFlag;
+            data.type = type;
+            data.bulkUrl = bulkUrl;
             data.passphrase = passphrase;
 
             formdata.append('account', account);
@@ -313,6 +323,10 @@ export default function CreateCollection() {
         setFileUrl3(null);
         fileRef3.current.value = null;
     }
+
+    const handleChangeType = (event, newType) => {
+        setType(newType);
+    };
 
     return (
         <>
@@ -472,6 +486,54 @@ export default function CreateCollection() {
                     }}
                 />
             </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Type <Typography variant='s2'>*</Typography></Typography>
+                <Typography variant='p2'>
+                    Select your collection type.
+                </Typography>
+
+                <Stack spacing={1} pl={0}>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Normal:</Typography> You can mint NFTs one by one for this collection.
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Bulk:</Typography> You can upload bulk nfts through Manage Bulks page.
+                    </Typography>
+                </Stack>
+
+                <ToggleButtonGroup
+                    color="primary"
+                    value={type}
+                    exclusive
+                    size="small"
+                    onChange={handleChangeType}
+                >
+                    <ToggleButton value="normal" sx={{pl:2, pr:2}}>Normal</ToggleButton>
+                    <ToggleButton value="bulk" sx={{pl:3, pr:3}}>Bulk</ToggleButton>
+                </ToggleButtonGroup>
+
+                {type === 'bulk' &&
+                    <Stack spacing={2} sx={{pl: 2}}>
+                        <Typography variant='p2'>
+                            Paste the Google Drive shared link URL here. <Typography variant='s2'>*</Typography>
+                        </Typography>
+                        <Typography variant='p3'>
+                            https://drive.google.com/file/d/1xjA-1bodiMrvSCtdTEMim5x1Cam74bXU/view
+                        </Typography>
+
+                        <TextField
+                            id='id_bulk_url'
+                            placeholder=''
+                            value={bulkUrl}
+                            onChange={(e) => {
+                                setBulkUrl(e.target.value);
+                            }}
+                        />
+                    </Stack>
+                }
+            </Stack>
+
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Description</Typography>
                 <Typography variant='p2'>
