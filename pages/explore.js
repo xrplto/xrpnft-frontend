@@ -80,7 +80,7 @@ export default function Overview({data}) {
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps() {
-    const BASE_URL = 'https://api.xrpnft.com/api';
+    const BASE_URL = 'http://65.109.54.46/api';
     // https://api.xrpnft.com/api/nfts?page=0&limit=30&flag=1
     let data = null;
     try {

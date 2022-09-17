@@ -49,7 +49,7 @@ export default function SellOffersList({ _offers, _TokenID, _isOwner }) {
     const { enqueueSnackbar } = useSnackbar();
     const [loading, setLoading] = useState(false);
     const { accountProfile } = useContext(AppContext);
-    const account = accountProfile.account;
+    const account = accountProfile?.account;
     // const account = useSelector(state => state.account.account);
     const login = true; // useSelector(state => state.account.login);
     const [offers, setOffers] = useState([..._offers]);
@@ -62,6 +62,7 @@ export default function SellOffersList({ _offers, _TokenID, _isOwner }) {
     }
 
     const handleCancelOffer = async (index) => {
+        if (!account) return;
         setLoading(true)
         try {
             const res = await cancelOffer(account.secret, index, _TokenID)

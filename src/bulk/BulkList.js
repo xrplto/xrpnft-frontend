@@ -175,7 +175,6 @@ export default function BulkList() {
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [selectedBulk, setSelectedBulk] = useState(null);
 
     const account = accountProfile?.account;
     const token = accountProfile?.token;
@@ -194,6 +193,7 @@ export default function BulkList() {
                     if (ret) {
                         setCount(ret.count);
                         setBulks(ret.bulks);
+                        console.log(ret);
                     }
                 }).catch(err => {
                     console.log("Error on getting exchanges!!!", err);

@@ -1,10 +1,6 @@
-import { useEffect, useState } from 'react';
-
 // Material
 import {
-    Container,
-    Grid,
-    Typography
+    Grid
 } from '@mui/material';
 
 import NFTActions from './NFTActions';
