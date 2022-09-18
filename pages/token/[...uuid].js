@@ -72,7 +72,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="lg">
-                <TokenDetail token={data.token}/>
+                <TokenDetail nft={data.token}/>
             </Container>
 
             <ScrollToTop />
@@ -129,15 +129,19 @@ export async function getServerSideProps(ctx) {
             }
         } */
         
-        const token = data.token;
-        const {
-            name,
-            image,
-            uuid,
-            description,
-            collection
-        } = token;
+        const nft = data.token;
 
+        const {
+            uuid,
+            name,
+            collection,
+            flag,
+            account,
+            date,
+            meta,
+            URI        
+        } = nft;
+    
         /*const ogp = {};
         ogp.canonical = 'https://xrpnft.com';
         ogp.title = 'XRPNFT, the largest XRPL NFT marketplace';
@@ -151,8 +155,8 @@ export async function getServerSideProps(ctx) {
         ogp.canonical = `https://xrpnft.com/token/${uuid}`;
         ogp.title = `${name} - XRPNFT, the largest XRPL NFT marketplace`;
         ogp.url = `https://xrpnft.com/token/${uuid}`;
-        ogp.imgUrl = `https://gateway.xrpnft.com/ipfs/${image}`;
-        ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+        ogp.imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
+        ogp.desc = meta.description?meta.description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
 
         ret = {data, ogp};
     }

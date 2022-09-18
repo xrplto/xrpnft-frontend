@@ -20,7 +20,9 @@ import {
     IconButton,
     InputAdornment,
     Link,
+    MenuItem,
     OutlinedInput,
+    Select,
     Stack,
     TextField,
     ToggleButton,
@@ -35,6 +37,9 @@ import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 // Context
 import { useContext } from 'react';
@@ -130,6 +135,25 @@ const DisabledButton = withStyles({
     }
 })(Button);
 
+const CustomSelect = styled(Select)(({ theme }) => ({
+    '& .MuiOutlinedInput-notchedOutline' : {
+        border_left: 'none'
+    }
+}));
+
+const COLLECTION_FAMILIES = [
+    {
+        title: 'Art',
+        value: 'art',
+        icon: (<PhotoLibraryIcon />)
+    },
+    {
+        title: 'Social',
+        value: 'social',
+        icon: (<FacebookIcon />)
+    }
+];
+
 export default function CreateCollection() {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
@@ -155,7 +179,8 @@ export default function CreateCollection() {
     //         }
     //     }
     // }
-    const [collectionName, setCollectionName] = useState('')
+    const [name, setName] = useState('');
+    const [family, setFamily] = useState('');
     const [slug, setSlug] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('normal');
@@ -177,7 +202,7 @@ export default function CreateCollection() {
     const [valid2, setValid2] = useState(false);
     const [validPassword, setValidPassword] = useState(false);
 
-    let canCreate = file1 && collectionName && slug && passphrase && valid1 && valid2 && validPassword;
+    let canCreate = file1 && name && slug && passphrase && valid1 && valid2 && validPassword;
 
     if (type === 'bulk' && !bulkUrl)
         canCreate = false;
@@ -206,7 +231,8 @@ export default function CreateCollection() {
             }
 
             const data = {};
-            data.name = collectionName;
+            data.name = name;
+            data.family = family;
             data.slug = slug;
             data.description = description;
             data.fileFlag = fileFlag;
@@ -240,7 +266,10 @@ export default function CreateCollection() {
                         "_id": "6308bc3d7a1dec795f21fc33"
                     } */
                     openSnackbar('Create collection successful!', 'success')
-                    window.location.href = `/collection/${data.slug}`;
+                    if (type === 'bulk')
+                        window.location.href = `/bulk`;
+                    else
+                        window.location.href = `/collection/${data.slug}`;
                     // setFile(null);
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
@@ -327,6 +356,11 @@ export default function CreateCollection() {
     const handleChangeType = (event, newType) => {
         setType(newType);
     };
+
+    const handleChangeFamily = (event) => {
+        const value = event.target.value;
+        setFamily(value);
+    }
 
     return (
         <>
@@ -459,13 +493,48 @@ export default function CreateCollection() {
                     placeholder='Example: My XRPL NFTs'
                     type='COLLECTION_NAME'
                     startText=''
-                    value={collectionName}
+                    value={name}
                     setValid={setValid1}
                     onChange={(e) => {
-                        setCollectionName(e.target.value);
+                        setName(e.target.value);
                     }}
                 />
             </Stack>
+
+            <Stack direction="row" mb={3} alignItems='center' sx={{ minHeight: 60 }}>
+                <Typography variant='d4'>Collection Family</Typography>
+                <FormControl sx={{ ml:2, pt: 0, minWidth: 120 }} size="small">
+                    <CustomSelect
+                        value={family}
+                        onChange={handleChangeFamily}
+                        MenuProps={{ disableScrollLock: true }}
+                    >
+                        {COLLECTION_FAMILIES.map((family, idx) => (
+                            <MenuItem
+                                key={idx}
+                                value={family.value}
+                                sx={{pt:2, pb:2}}
+                            >
+                                <Stack direction='row' spacing={1} alignItems="center">
+                                    {family.icon}
+                                    {/* <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${col.logoImage}`} sx={{ mr:2, width: 32, height: 32 }} /> */}
+                                    <Typography variant='d4'>{family.title}</Typography>
+                                </Stack>
+                            </MenuItem>
+                        ))}
+                    </CustomSelect>
+                </FormControl>
+
+                <IconButton
+                    aria-label='cancel' onClick={(e) => {
+                        setFamily('');
+                    }}
+                    sx={family ? { display: 'block' } : { display: 'none' }}
+                >
+                    <CancelIcon />
+                </IconButton>
+            </Stack>
+
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>URL <Typography variant='s2'>*</Typography></Typography>
                 <Typography variant='p2'>

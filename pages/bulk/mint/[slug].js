@@ -14,7 +14,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import BulkMinting from 'src/bulk/mint';
+import BulkMint from 'src/bulk/mint';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -70,7 +70,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="lg">
-                <BulkMinting uuid={data.uuid}/>
+                <BulkMint slug={data.slug}/>
             </Container>
 
             <ScrollToTop />
@@ -84,7 +84,7 @@ export default function Overview({data}) {
 export async function getServerSideProps(ctx) {
     // const BASE_URL = 'https://api.xrpnft.com/api';
 
-    const uuid = ctx.params.uuid;
+    const slug = ctx.params.slug;
 
     // let data = null;
     // try {
@@ -106,7 +106,7 @@ export async function getServerSideProps(ctx) {
     //     console.log(e);
     // }
 
-    // let ret = {};
+    let ret = {};
     // if (data && data.bulk) {
     //     const ogp = {};
     //     ogp.canonical = 'https://xrpnft.com';
@@ -123,7 +123,7 @@ export async function getServerSideProps(ctx) {
     ogp.url = 'https://xrpnft.com/';
     ogp.imgUrl = 'https://xrpnft.com/ogp.png';
     ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
-    ret = {ogp, data: {uuid}};
+    ret = {ogp, data: {slug}};
 
     return {
         props: ret, // will be passed to the page component as props

@@ -29,13 +29,11 @@ import {
 import { LoadingButton } from '@mui/lab';
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import FacebookIcon from '@mui/icons-material/Facebook';
 import ImageIcon from '@mui/icons-material/Image';
 import DescriptionIcon from '@mui/icons-material/Description';
 import InfoIcon from '@mui/icons-material/Info';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
-import CancelIcon from '@mui/icons-material/Cancel';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -97,12 +95,6 @@ const DisabledButton = withStyles({
     }
 })(Button);
 
-const CustomSelect = styled(Select)(({ theme }) => ({
-    '& .MuiOutlinedInput-notchedOutline' : {
-        border_left: 'none'
-    }
-}));
-
 const MEDIA_TYPES = [
     {
         title: 'Image/png (.png)',
@@ -124,42 +116,28 @@ const MEDIA_TYPES = [
     }
 ];
 
-const COLLECTION_FAMILIES = [
-    {
-        title: 'Art',
-        value: 'art',
-        icon: (<PhotoLibraryIcon />)
-    },
-    {
-        title: 'Social',
-        value: 'social',
-        icon: (<FacebookIcon />)
-    }
-];
-
 // Calculate MD5 hash of a large file using javascript
 // https://stackoverflow.com/questions/39112096/calculate-md5-hash-of-a-large-file-using-javascript
 
-export default function Minting({uuid}) {
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
-    
+export default function BulkMint({slug}) {
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
+    
+    
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
     const token = accountProfile?.token;
 
     // const levels = useSelector(state => state.status.metadata.levels);
     // const properties = useSelector(state => state.status.metadata.properties);
-    const [bulk, setBulk] = useState(null);
+    const [collection, setCollection] = useState(null);
 
     const [nftName, setNftName] = useState('');
     const [imgExt, setImgExt] = useState('png');
     const [extLink, setExtLink] = useState('');
     const [ipfsCID, setIpfsCID] = useState('');
     const [description, setDescription] = useState('');
-    const [collectionName, setCollectionName] = useState('')
-    const [collectionFamily, setCollectionFamily] = useState('');
     const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
     const [passphrase, setPassPhrase] = useState('');
     
@@ -175,14 +153,10 @@ export default function Minting({uuid}) {
 
     const [loading, setLoading] = useState(false);
 
-    // Collection related
-    const [collections, setCollections] = useState([]);
-    const [filter, setFilter] = useState('');
-
     const [validPassword, setValidPassword] = useState(false);
     
-    const active = account && token && bulk;
-    let canDownload = active && metadata.length > 0 && nftName && isIPFS.cid(ipfsCID) && collectionName;
+    const active = account && token && collection;
+    let canDownload = active && metadata.length > 0 && nftName && isIPFS.cid(ipfsCID);
     let canCreate = canDownload && passphrase && validPassword;
 
     if (includeTime && !newDateField) {
@@ -190,13 +164,13 @@ export default function Minting({uuid}) {
         canCreate = false;
     }
 
-    if (bulk && (!bulk.infoIPFS || !bulk.infoIPFS.cid)) {
+    if (collection && (!collection.infoIPFS || !collection.infoIPFS.cid)) {
         canDownload = false;
         canCreate = false;
     }
 
-    const getBulk = () => {
-        if (!uuid) {
+    const getCollection = () => {
+        if (!slug) {
             openSnackbar('Invalid request!', 'error');
             return;
         }
@@ -206,15 +180,16 @@ export default function Minting({uuid}) {
             return;
         }
 
-        axios.get(`${BASE_URL}/bulk/get/${uuid}?account=${account}`, {headers: {'x-access-token': token}})
+        axios.get(`${BASE_URL}/account/scollection/${slug}?account=${account}`, {headers: {'x-access-token': token}})
         .then(res => {
             try {
+                console.log(res);
                 if (res.status === 200 && res.data) {
-                    const newBulk = res.data.bulk;
-                    if (newBulk) {
-                        setBulk(newBulk);
-                        if (newBulk.infoIPFS && newBulk.infoIPFS.cid)
-                            setIpfsCID(newBulk.infoIPFS.cid);
+                    const coll = res.data.collection;
+                    if (coll) {
+                        setCollection(coll);
+                        if (coll.infoIPFS && coll.infoIPFS.cid)
+                            setIpfsCID(coll.infoIPFS.cid);
                     }
                 }
             } catch (error) {
@@ -227,38 +202,9 @@ export default function Minting({uuid}) {
         });
     };
 
-    const loadCollections=() => {
-        if (!account || !token) {
-            openSnackbar('Please login', 'error');
-            return;
-        }
-
-        // https://api.xrpnft.com/api/account/query-collections?filter=
-        axios.get(`${BASE_URL}/account/query-collections?account=${account}&filter=${filter}`, {headers: {'x-access-token': token}})
-        .then(res => {
-            try {
-                if (res.status === 200 && res.data) {
-                    const ret = res.data;
-                    if (ret.collections.length > 0)
-                        setCollections(ret.collections);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }).catch(err => {
-            console.log("err->>", err);
-        }).then(function () {
-            // Always executed
-        });
-    };
-
     useEffect(() => {
-        getBulk();
-    }, [uuid]);
-
-    useEffect(() => {
-        loadCollections();
-    }, [filter, account]);
+        getCollection();
+    }, [slug]);
 
     const onCreateNft = async () => {
         if (!account || !token) {
@@ -275,14 +221,14 @@ export default function Minting({uuid}) {
             data.metadata = newMetaData;
             data.flag = flag;
             data.count = newMetaData.length;
-            data.bulk = bulk;
+            data.collection = collection.name;
 
             const body = {};
             body.data = data;
             body.account = account;
             body.passphrase = passphrase;
 
-            res = await axios.post(`${BASE_URL}/bulk/mint`, body, {headers: {'x-access-token': token}});
+            res = await axios.post(`${BASE_URL}/account/mintbulk`, body, {headers: {'x-access-token': token}});
 
             if (res.status === 200) {
                 const ret = res.data;
@@ -340,6 +286,15 @@ export default function Minting({uuid}) {
                         setJsonFileModified(strDateTime);
 
                         const meta = metadata[0];
+
+                        if (imgExt === 'png' || imgExt === 'jpg') {
+                            meta.image = collection.infoIPFS.cid + `/1.${imgExt}`;
+                            if (meta.video) meta.video = '';
+                        } else if (imgExt === 'mp4') {
+                            meta.video = collection.infoIPFS.cid + `/1.${imgExt}`;
+                            if (meta.image) meta.image = '';
+                        }
+
                         setSampleMeta({...meta});
                         // setNftName(meta.name);
                         // setDescription(meta.description);
@@ -358,24 +313,6 @@ export default function Minting({uuid}) {
         setIncludeTime(!includeTime);
     }
 
-    const handleCollectionQuery = (e) => {
-        setCollectionName('');
-        setFilter(e.target.value);
-    }
-
-    const handleChangeCollection = (event) => {
-        // const idx = parseInt(event.target.value, 10);
-        const value = event.target.value;
-        setCollectionName(value);
-        setFilter('');
-        if (sMeta) {
-            const collection = {name: value};
-            if (collectionFamily)
-                collection.family = collectionFamily;
-            sMeta.collection = collection;
-        }
-    };
-
     const handleChangeContentType = (event) => {
         const value = event.target.value;
         setImgExt(value);
@@ -389,14 +326,6 @@ export default function Minting({uuid}) {
             }
         }
     };
-
-    const handleChangeCollectionFamily = (event) => {
-        const value = event.target.value;
-        setCollectionFamily(value);
-        if (sMeta) {
-            sMeta.collection = {name: collectionName, family: value};
-        }
-    }
 
     const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType });
@@ -436,10 +365,10 @@ export default function Minting({uuid}) {
             if (description)
                 newMeta.description = description;
 
-            const collection = {name: collectionName};
-            if (collectionFamily)
-                collection.family = collectionFamily;
-            newMeta.collection = collection;
+            const metaCollection = {name: collection.name};
+            if (collection.family)
+                metaCollection.family = collection.family;
+            newMeta.collection = metaCollection;
 
             if (includeTime && newDateField) {
                 if (oldDateField)
@@ -466,7 +395,7 @@ export default function Minting({uuid}) {
     return (
         <>
         <Stack spacing={2} sx={{mt: 4, mb:3}}>
-            <Typography variant="h1a" >Bulk Mint Items</Typography>
+            <Typography variant="h1a" >Bulk Mint Items </Typography>
             <Typography variant='p3'><Typography variant='s2'>*</Typography> Required fields</Typography>
             <Typography variant='s2'>Please read carefully each fields' description.</Typography>
         </Stack>
@@ -500,7 +429,16 @@ export default function Minting({uuid}) {
                     </Stack>
                 </Stack>
                 <Stack spacing={2} mb={3}>
-                    <Typography variant='p4'>Name <Typography variant='s2'>*</Typography></Typography>
+                    <Typography variant='p4'>Collection Info<Typography variant='s2'>*</Typography></Typography>
+
+                    {collection &&
+                        <Stack direction="row" alignItems="center">
+                            <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${collection.logoImage}`} sx={{mr:2}} />
+                            <Typography variant='p4'>{collection.name}</Typography>
+                        </Stack>
+                    }
+                    
+                    <Typography variant='p4'>NFT Name <Typography variant='s2'>*</Typography></Typography>
                     <Typography variant='p3'>
                         {'Indexed numbers will be automatically appended at the end. ex; NAME #1,  NAME #2 ...'}
                     </Typography>
@@ -545,30 +483,14 @@ export default function Minting({uuid}) {
                     </Select>
                     <Typography variant='p4'>IPFS CID <Typography variant='s2'>*</Typography></Typography>
                     <Typography variant='p3'>
-                        Your NFTs will refer to this IPFS CID. And postfix indexed numbers will be automatically appended. ex; QmPPPYRX79ESWWoVSB3B1AxtKaE61pDqr8bc9tqV22Cquu/###.png'
+                        Your NFTs will refer to this IPFS CID. And postfix indexed numbers will be automatically appended.
                     </Typography>
                     <OutlinedInput required
                         id='id_ipfs_cid'
                         autoComplete='new-password'
-                        placeholder='QmPPPYRX79ESWWoVSB3B1AxtKaE61pDqr8bc9tqV22Cquu'
                         margin='dense'
                         variant='outlined'
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            if (isIPFS.multihash(value))
-                                console.log(`IS multihash`);
-
-                            setIpfsCID(value)
-                            if (sMeta) {
-                                if (imgExt === 'png' || imgExt === 'jpg') {
-                                    sMeta.image = value + `/1.${imgExt}`;
-                                    if (sMeta.video) sMeta.video = '';
-                                } else if (imgExt === 'mp4') {
-                                    sMeta.video = value + `/1.${imgExt}`;
-                                    if (sMeta.image) sMeta.image = '';
-                                }
-                            }
-                        }}
+                        disabled
                         value={ipfsCID}
                         endAdornment={
                             <InputAdornment position="end">
@@ -729,99 +651,6 @@ export default function Minting({uuid}) {
                             <Typography variant='p3'>Old field will be removed from your metadata and the current timestamp will be added with the new field. These fields can be equal if you just want to add the new timestamp value to the existing field. If your metadata does not already have timestamp field, you can ignore Old Field, but the New Field is required, essential.</Typography>
                         </Stack>
                     }
-                </Stack>
-                
-                <Stack spacing={2} mb={0}>
-                    <Typography variant='p4'>Collection <Typography variant='s2'>*</Typography></Typography>
-                    <Typography variant='p3'>
-                        This is the collection where your item will appear.
-                    </Typography>
-                    <Select
-                        id='select_collection'
-                        value={collectionName}
-                        onChange={handleChangeCollection}
-                        MenuProps={{ disableScrollLock: true }}
-                    >
-                        <TextField
-                            id='textFilter'
-                            autoComplete='new-password'
-                            autoFocus
-                            fullWidth
-                            variant='standard'
-                            placeholder='Filter'
-                            onChange={handleCollectionQuery}
-                            value={filter}
-                            defaultValue={filter}
-                            onFocus={event => {
-                                event.target.select();
-                            }}
-                            sx={{
-                                pl:2,pr:2,pb:2,pt:2.5
-                            }}
-                            onKeyDown={(e) => e.stopPropagation()}
-                        />
-                        {collections.map((col, idx) => (
-                            <MenuItem
-                                key={col.uuid}
-                                value={col.name}
-                                sx={{pt:2, pb:2}}
-                            >
-                                <Stack direction='row' alignItems="center">
-                                    <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${col.logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
-                                    <Typography variant='d4'>{col.name}</Typography>
-                                </Stack>
-                            </MenuItem>
-                        ))}
-                    </Select>
-                    {/* <TextField required placeholder='Select collection' margin='dense'
-                        onChange={handleCollectionFieldChange}
-                        value={collectionName}
-                        sx={{
-                            '&.MuiTextField-root': {
-                                marginTop: 1
-                            }
-                        }}
-                    /> */}
-                    {/* <PropertySection />
-                    <LevelsSection /> */}
-                </Stack>
-
-                <Stack direction="row" mb={3} alignItems='center' sx={{ minHeight: 60 }}>
-                    <Typography variant='d4'>Collection Family</Typography>
-                    <FormControl sx={{ ml:2, pt: 0, minWidth: 120 }} size="small">
-                        <CustomSelect
-                            value={collectionFamily}
-                            onChange={handleChangeCollectionFamily}
-                            MenuProps={{ disableScrollLock: true }}
-                        >
-                            {COLLECTION_FAMILIES.map((family, idx) => (
-                                <MenuItem
-                                    key={idx}
-                                    value={family.value}
-                                    sx={{pt:2, pb:2}}
-                                >
-                                    <Stack direction='row' spacing={1} alignItems="center">
-                                        {family.icon}
-                                        {/* <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${col.logoImage}`} sx={{ mr:2, width: 32, height: 32 }} /> */}
-                                        <Typography variant='d4'>{family.title}</Typography>
-                                    </Stack>
-                                </MenuItem>
-                            ))}
-                        </CustomSelect>
-                    </FormControl>
-
-                    <IconButton
-                        aria-label='cancel' onClick={(e) => {
-                            setCollectionFamily('');
-                            if (sMeta) {
-                                if (sMeta.collection)
-                                    sMeta.collection.family = undefined;
-                            }
-                        }}
-                        sx={collectionFamily ? { display: 'block' } : { display: 'none' }}
-                    >
-                        <CancelIcon />
-                    </IconButton>
                 </Stack>
 
                 <Stack spacing={2} mb={5}>

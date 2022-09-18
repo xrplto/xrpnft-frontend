@@ -171,7 +171,7 @@ export default function BulkList() {
     const [bulks, setBulks] = useState([]);
 
     const [openScanQR, setOpenScanQR] = useState(false);
-    const [uuid, setUuid] = useState(null);
+    const [xummUuid, setXummUuid] = useState(null);
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -192,8 +192,7 @@ export default function BulkList() {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
                         setCount(ret.count);
-                        setBulks(ret.bulks);
-                        console.log(ret);
+                        setBulks(ret.collections);
                     }
                 }).catch(err => {
                     console.log("Error on getting exchanges!!!", err);
@@ -214,11 +213,11 @@ export default function BulkList() {
         var isRunning = false;
         var counter = 150;
         async function getPayload() {
-            console.log(counter + " " + isRunning, uuid);
+            console.log(counter + " " + isRunning, xummUuid);
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/xumm/payload/${uuid}`);
+                const ret = await axios.get(`${BASE_URL}/xumm/payload/${xummUuid}`);
                 const res = ret.data.data.response;
                 // const account = res.account;
                 const resolved_at = res.resolved_at;
@@ -251,7 +250,7 @@ export default function BulkList() {
                 clearInterval(timer)
             }
         };
-    }, [openScanQR, uuid]);
+    }, [openScanQR, xummUuid]);
 
     const onMinterSetXumm = async (minter) => {
         if (!account || !token) {
@@ -267,11 +266,11 @@ export default function BulkList() {
             const res = await axios.post(`${BASE_URL}/xumm/setnftminter`, body, {headers: {'x-access-token': token}});
 
             if (res.status === 200) {
-                const uuid = res.data.data.uuid;
+                const newUuid = res.data.data.uuid;
                 const qrlink = res.data.data.qrUrl;
                 const nextlink = res.data.data.next;
 
-                setUuid(uuid);
+                setXummUuid(newUuid);
                 setQrUrl(qrlink);
                 setNextUrl(nextlink);
                 setOpenScanQR(true);
@@ -282,12 +281,12 @@ export default function BulkList() {
         setLoading(false);
     };
 
-    const onDisconnectXumm = async (uuid) => {
+    const onDisconnectXumm = async () => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/xumm/logout/${uuid}`);
+            const res = await axios.delete(`${BASE_URL}/xumm/logout/${xummUuid}`);
             if (res.status === 200) {
-                setUuid(null);
+                setXummUuid(null);
             }
         } catch(err) {
         }
@@ -296,7 +295,7 @@ export default function BulkList() {
 
     const handleScanQRClose = () => {
         setOpenScanQR(false);
-        onDisconnectXumm(uuid);
+        onDisconnectXumm();
     };
 
     const handleNFTMinterSet = (minter) => {
@@ -332,13 +331,34 @@ export default function BulkList() {
                 }}>
                     <TableBody>
                     {
+                        // {
+                        //     "_id": "632683afa45d7f463e8ef870",
+                        //     "account": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
+                        //     "name": "TestCollection-1",
+                        //     "slug": "test1",
+                        //     "type": "bulk",
+                        //     "bulkUrl": "https://drive.google.com/file/d/1xjA-1bodiMrvSCtdTEMim5x1Cam74bXU/view",
+                        //     "status": 7,
+                        //     "description": "This is the description of test1 collection",
+                        //     "logoImage": "1663468463243_3d1cc658af10407fabf2c5e96bde2ab4.png",
+                        //     "featuredImage": "1663468463243_220f174cbce64122b203c6bccafab57c.jpg",
+                        //     "bannerImage": "1663468463245_dcb8db64b5b84da49fd2839508cc0618.jpg",
+                        //     "created": 1663468463251,
+                        //     "modified": 1663468463251,
+                        //     "uuid": "92d8b1d1ac3d48369e98463e6ec29678",
+                        //     "creator": "xrpnft.com",
+                        //     "infoDOWNLOAD": {
+                        //         "size": "2.47 GB"
+                        //     }
+                        // }
                         // exchs.slice(page * rows, page * rows + rows)
                         bulks && bulks.map((row) => {
                             const {
                                 uuid,
-                                url,
+                                slug,
+                                bulkUrl,
                                 status,
-                                logo,
+                                logoImage,
                                 name,
                                 created,
                                 description,
@@ -373,7 +393,7 @@ export default function BulkList() {
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
                                     <TableCell align="left" width='15%'>
-                                        <Avatar alt="C" src={`https://s3.xrpnft.com/bulk/${logo}`}
+                                        <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${logoImage}`}
                                             sx={{
                                                 mr:2,
                                                 width: 160,
@@ -426,10 +446,10 @@ export default function BulkList() {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={url}
+                                                    href={bulkUrl}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="p3">{url}</Typography>
+                                                    <Typography variant="p3">{bulkUrl}</Typography>
                                                 </Link>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center" sx={{mt:1}}>
@@ -522,7 +542,7 @@ export default function BulkList() {
                                                 <Link
                                                     color="inherit"
                                                     // target="_blank"
-                                                    href={`/bulk/mint/${uuid}`}
+                                                    href={`/bulk/mint/${slug}`}
                                                     // rel="noreferrer noopener nofollow"
                                                 >
                                                     <IconButton aria-label='bulk-mint'>
