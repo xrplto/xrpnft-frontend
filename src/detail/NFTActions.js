@@ -37,20 +37,17 @@ import TimePeriods from './TimePeriodsDropdown';
 import SellOffersList from './SellOffersList';
 import BuyOffersList from './BuyOffersList';
 
-export default function NFTActions({ token }) {
+export default function NFTActions({ nft }) {
     const {
-        name,
-        image,
         uuid,
-        description,
+        name,
         collection,
-        Issuer,
-        TokenID,
-        URI,
-        Flags,
-        properties,
-        levels
-    } = token;
+        flag,
+        account,
+        date,
+        meta,
+        URI
+    } = nft;
 
     const [isOpenSellDg, setIsOpenSellDg] = useState(false);
     const [isOpenBuyDg, setIsOpenBuyDg] = useState(false);
@@ -192,7 +189,7 @@ export default function NFTActions({ token }) {
                                         </Typography>
 
                         } */}
-                        {isPageLoading ?
+                        {/* {isPageLoading ?
                             <Skeleton animation='wave' height={100} width='100%' />
                             :
                             <SellOffersList
@@ -200,7 +197,7 @@ export default function NFTActions({ token }) {
                                 _TokenID={TokenID}
                                 _isOwner={isOwner}
                             />
-                        }
+                        } */}
                     </AccordionDetails>
                 </Accordion>
                 {/* Sell Offers end */}
@@ -219,14 +216,15 @@ export default function NFTActions({ token }) {
                     </AccordionSummary>
                     <Divider />
                     <AccordionDetails sx={{ margin: 3, textAlign: 'center' }}>
-                        {isPageLoading ?
+                        {/* {isPageLoading ?
                             <Skeleton animation='wave' height={100} width='100%' />
                             :
                             <BuyOffersList
                                 _offers={buyOffers}
                                 _TokenID={TokenID}
                                 _isOwner={isOwner}
-                            />}
+                            />
+                        } */}
                         {/* {
                             offers.error ? <Typography>Error: {offers.error.message}</Typography> :
                                 !offers.data ? <Skeleton animation='wave' height={100} width='100%' /> :
@@ -261,7 +259,7 @@ export default function NFTActions({ token }) {
                 {/* Price History end */}
             </Stack>
 
-            <BaseDialog
+            {/* <BaseDialog
                 isOpen={isOpenSellDg}
                 close={() => {
                     setIsOpenSellDg(false)
@@ -275,8 +273,8 @@ export default function NFTActions({ token }) {
                         TokenID={TokenID}
                         setOffers={(offers) => setSellOffers(offers)}
                     />}
-            />
-            <BaseDialog
+            /> */}
+            {/* <BaseDialog
                 isOpen={isOpenBurnDg}
                 close={() => {
                     setIsOpenBurnDg(false)
@@ -289,8 +287,8 @@ export default function NFTActions({ token }) {
                         }}
                         TokenID={TokenID}
                     />}
-            />
-            <BaseDialog
+            /> */}
+            {/* <BaseDialog
                 isOpen={isOpenBuyDg}
                 close={() => {
                     setIsOpenBuyDg(false)
@@ -305,7 +303,7 @@ export default function NFTActions({ token }) {
                         setOffers={(offers) => setBuyOffers(offers)}
                         owner={owner}
                     />}
-            />
+            /> */}
         </Stack>
     )
 }

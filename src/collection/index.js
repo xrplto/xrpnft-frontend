@@ -24,7 +24,7 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import { useSnackbar } from 'src/components/useSnackbar';
-import ExploreNFT from './explore';
+import ExploreNFT from 'src/explore';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -181,7 +181,7 @@ export default function Collection({data}) {
                 </Stack>
             </Stack>
 
-            <ExploreNFT />
+            <ExploreNFT collection={data.collection} />
             {/* <Button component={Link} href="/collection/create" variant="contained" color="primary">
                 Create a collection
             </Button> */}

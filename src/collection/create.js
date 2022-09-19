@@ -204,7 +204,7 @@ export default function CreateCollection() {
 
     let canCreate = file1 && name && slug && passphrase && valid1 && valid2 && validPassword;
 
-    if (type === 'bulk' && !bulkUrl)
+    if (type !== 'normal' && !bulkUrl)
         canCreate = false;
 
     const onCreateCollection = async () => {
@@ -266,7 +266,7 @@ export default function CreateCollection() {
                         "_id": "6308bc3d7a1dec795f21fc33"
                     } */
                     openSnackbar('Create collection successful!', 'success')
-                    if (type === 'bulk')
+                    if (type !== 'normal')
                         window.location.href = `/bulk`;
                     else
                         window.location.href = `/collection/${data.slug}`;
@@ -580,9 +580,10 @@ export default function CreateCollection() {
                 >
                     <ToggleButton value="normal" sx={{pl:2, pr:2}}>Normal</ToggleButton>
                     <ToggleButton value="bulk" sx={{pl:3, pr:3}}>Bulk</ToggleButton>
+                    <ToggleButton value="spinner" sx={{pl:3, pr:3}}>Spinner</ToggleButton>
                 </ToggleButtonGroup>
 
-                {type === 'bulk' &&
+                {type !== 'normal' &&
                     <Stack spacing={2} sx={{pl: 2}}>
                         <Typography variant='p2'>
                             Paste the Google Drive shared link URL here. <Typography variant='s2'>*</Typography>

@@ -222,7 +222,7 @@ export default function Minting() {
             let res;
             const data = {};
             data.name = nftName;
-            data.externalLink = extLink;
+            data.external_link = extLink;
             data.description = description;
             data.collection = collectionName;
             data.flag = flag;
@@ -235,27 +235,26 @@ export default function Minting() {
             formdata.append('user_token', user_token);
             formdata.append('data', JSON.stringify(data));
             
-            res = await axios.post(`${BASE_URL}/account/mint`, formdata, {
+            res = await axios.post(`${BASE_URL}/account/mintone`, formdata, {
                 headers: { "Content-Type": "multipart/form-data", 'x-access-token': token }
             });
 
             if (res.status === 200) {
                 const ret = res.data;
                 if (ret.status) {
-                    console.log(ret);
-
                     const uuid_nft = ret.uuid_nft;
-                    const uuid = ret.uuid;
-                    const qrlink = ret.qrUrl;
-                    const nextlink = ret.next;
+                    // const uuid = ret.uuid;
+                    // const qrlink = ret.qrUrl;
+                    // const nextlink = ret.next;
 
-                    setUuidNft(uuid_nft);
-                    setUuid(uuid);
-                    setQrUrl(qrlink);
-                    setNextUrl(nextlink);
-                    setOpenScanQR(true);
-                    // window.location.href = `/token/${nft.uuid}`;
-                    // openSnackbar('NFT mint successful!', 'success')
+                    // setUuidNft(uuid_nft);
+                    // setUuid(uuid);
+                    // setQrUrl(qrlink);
+                    // setNextUrl(nextlink);
+                    // setOpenScanQR(true);
+
+                    openSnackbar('NFT mint successful!', 'success')
+                    window.location.href = `/token/${uuid_nft}`;
                     // setFile(null);
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }

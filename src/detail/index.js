@@ -6,14 +6,14 @@ import {
 import NFTActions from './NFTActions';
 import NFTDetails from './NftDetails';
 
-export default function Detail({token}) {
+export default function Detail({nft}) {
     return (
         <Grid container spacing={2} justifyContent='center'>
             <Grid item xs={12} md={5}>
-                <NFTDetails token={token} />
+                <NFTDetails nft={nft} />
             </Grid>
             <Grid item xs={12} md={7}>
-                <NFTActions token={token} />
+                <NFTActions nft={nft} />
             </Grid>
         </Grid>
     );

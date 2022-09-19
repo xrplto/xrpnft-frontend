@@ -44,6 +44,7 @@ export default function NFTCard({ nft }) {
     const [type, setType] = useState('');
     // const [imgUrl, setImgUrl] = useState('');
     const [loading, setLoading] = useState(false);
+
     const [isLike, setIsLike] = useState(false);
     const [colors, setColors] = useState([]);
 
@@ -65,29 +66,21 @@ export default function NFTCard({ nft }) {
     //     "TokenID": "000D000011BBE0160B08A0743C13E22918573B2AAC759E9E16E5DA9C00000001"
     // },
     const {
-        name,
-        externalLink,
-        description,
-        collection,
-        Flags,
-        Issuer,
-        minter,
-        image,
-        URI,
         uuid,
-        TokenID
+        name,
+        collection,
+        flag,
+        account,
+        date,
+        meta,
+        URI        
     } = nft;
+
+    const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
 
     const getColors = colors => {
         setColors(c => [...c, ...colors]);
     }
-
-    // const imgUrl = `https://xrpnft.mypinata.cloud/ipfs/${nft.hash}`;
-
-    const imgUrl = `https://gateway.xrpnft.com/ipfs/${image}`;
-    // const imgUrl = `https://s2.xrpnft.com/image/${nft.filename}`;
-
-    console.log(imgUrl);
 
     // useEffect(() => {
     //     let mounted = true
@@ -178,7 +171,7 @@ export default function NFTCard({ nft }) {
                 </Stack>
                 <Divider sx={{mt:0.8, mb:0.3}}/>
                 <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>
-                    <FlagsContainer Flags={Flags} />
+                    <FlagsContainer Flags={flag} />
                     {/* <IconButton aria-label='buy'> */}
                       {/* <Icon icon="bxs:cart-alt" /> */}
                     {/* </IconButton> */}

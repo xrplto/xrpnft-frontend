@@ -17,20 +17,23 @@ import NFTCard from './NFTCard';
 
 // import getNFTimage_info from 'components/NFTCard/NFTimage_info'
 
-export default function ExploreNFT({data}) {
+export default function ExploreNFT({collection}) {
     const BASE_URL = 'https://api.xrpnft.com/api'
 
     const { enqueueSnackbar } = useSnackbar();
-    const [nfTokens, setNfTokens] = useState(data.nfts);
+    const [nfTokens, setNfTokens] = useState([]);
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const [flag, setFlag] = useState(0);
 
     const fetchImages = (nfTokensParam, offsetParam) => {
         const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
-        const _offset = offsetParam === 0 ? offsetParam : offset
-        axios
-            .get(`${BASE_URL}/nfts?page=${_offset}&limit=30&flag=${flag}`)
+        const page = offsetParam === 0 ? offsetParam : offset
+        const limit = 30;
+
+        const body={ page, limit, flag, collection: collection.name};
+
+        axios.post(`${BASE_URL}/nfts?page=${page}&limit=30&flag=${flag}`, body)
             .then(res => {
                 if (res.data.nfts.length < 10) {
                     setHasMore(false)
@@ -40,25 +43,9 @@ export default function ExploreNFT({data}) {
                 // enqueueSnackbar('Fetch:' + _offset, {
                 //     variant: 'success'
                 // })
-                setOffset(_offset + 1)
+                setOffset(page + 1)
             });
     };
-
-    // const fetchNFTokens = async () => {
-    //     try {
-    //         // const res = await axios.get(`${BASE_URL}/nfts/${offset}`)
-    //         const res = await axios.get(`${BASE_URL}/nfts?page=${offset}&limit=20&flag=${flags}`)
-    //         // setIsLoaded(true);
-    //         if (res.data.nfts.length < 10) // if this is the last page, no more request to server
-    //             setHasMore(false)
-    //         dispatch(addNfts(res.data.nfts))
-    //         dispatch(increaseOffset())
-    //         openSnackbar('Fetch:' + offset, 'success')
-    //     } catch (e) {
-    //         // use snack bar here
-    //         openSnackbar(e.message, 'error')
-    //     }
-    // }
 
     const reset = () => {
         setNfTokens([])
@@ -94,10 +81,10 @@ export default function ExploreNFT({data}) {
                 
                     nfTokens.map((nft) => (
                         
-                        // <Grid item key={nft.TokenID}
+                        // <Grid item key={nft.uuid}
                         // >
                             <NFTCard
-                                key={nft.TokenID}
+                                key={nft.uuid}
                                 nft={nft}
                             />
                         //  </Grid>

@@ -68,7 +68,6 @@ export default function CollectionList({isAll}) {
     }
 
     useEffect(() => {
-        console.log(`ACCOUNT change - ${account}`);
         reset();
     }, [account]);
 
