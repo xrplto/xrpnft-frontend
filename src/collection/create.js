@@ -11,23 +11,15 @@ import {
     styled,
     Button,
     Card,
-    Checkbox,
-    Container,
     FormControl,
-    FormControlLabel,
-    FormGroup,
-    FormHelperText,
     IconButton,
-    InputAdornment,
     Link,
     MenuItem,
-    OutlinedInput,
     Select,
     Stack,
     TextField,
     ToggleButton,
     ToggleButtonGroup,
-    Tooltip,
     Typography
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -45,13 +37,11 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
-// Utils
-import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS } from 'src/utils/constants';
-
 // Components
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
 import LoadingTextField from 'src/components/LoadingTextField';
+import QueryToken from './querytoken';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -569,6 +559,9 @@ export default function CreateCollection() {
                     <Typography variant='p3'>
                         <Typography variant='s2'>Bulk:</Typography> You can upload bulk nfts through Manage Bulks page.
                     </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Spinner:</Typography> Purchase NFTs with spins.
+                    </Typography>
                 </Stack>
 
                 <ToggleButtonGroup
@@ -584,23 +577,30 @@ export default function CreateCollection() {
                 </ToggleButtonGroup>
 
                 {type !== 'normal' &&
-                    <Stack spacing={2} sx={{pl: 2}}>
-                        <Typography variant='p2'>
-                            Paste the Google Drive shared link URL here. <Typography variant='s2'>*</Typography>
-                        </Typography>
-                        <Typography variant='p3'>
-                            https://drive.google.com/file/d/1xjA-1bodiMrvSCtdTEMim5x1Cam74bXU/view
-                        </Typography>
+                    <>
+                        {type === 'spinner' &&
+                            <Stack spacing={2} sx={{pl: 0}}>
+                                <QueryToken />
+                            </Stack>
+                        }
+                        <Stack spacing={2} sx={{pl: 0}}>
+                            <Typography variant='p2'>
+                                Paste the Google Drive shared link URL here. <Typography variant='s2'>*</Typography>
+                            </Typography>
+                            <Typography variant='p3'>
+                                https://drive.google.com/file/d/1xjA-1bodiMrvSCtdTEMim5x1Cam74bXU/view
+                            </Typography>
 
-                        <TextField
-                            id='id_bulk_url'
-                            placeholder=''
-                            value={bulkUrl}
-                            onChange={(e) => {
-                                setBulkUrl(e.target.value);
-                            }}
-                        />
-                    </Stack>
+                            <TextField
+                                id='id_bulk_url'
+                                placeholder=''
+                                value={bulkUrl}
+                                onChange={(e) => {
+                                    setBulkUrl(e.target.value);
+                                }}
+                            />
+                        </Stack>
+                    </>
                 }
             </Stack>
 
