@@ -26,6 +26,7 @@ import { AppContext } from 'src/AppContext';
 import { useSnackbar } from 'src/components/useSnackbar';
 import ExploreNFT from 'src/explore';
 import SpinNFT from './spin';
+import ViewNFT from './view';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -90,115 +91,21 @@ const IconImage = styled('img')(
 );
 
 export default function Collection({data}) {
-    // "collection": {
-    //     "_id": "6310c27cf81fe46884ef89ba",
-    //     "account": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
-    //     "name": "collection1",
-    //     "slug": "collection-1",
-    //     "description": "",
-    //     "logoImage": "1662042748001_12e8a38273134f0e87f1039958d5b132.png",
-    //     "featuredImage": "1662042748001_70910cc4c6134845bf84cf262e696d05.png",
-    //     "bannerImage": "1662042748002_b32b442dea454998aa29ab61c8fa0887.jpg",
-    //     "timestamp": 1662042748016,
-    //     "creator": "xrpnft.com",
-    //     "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
-    // }
-    const collection = data?.collection;
-
-    const {
-        name,
-        slug,
-        items,
-        type,
-        description,
-        logoImage,
-        featuredImage,
-        bannerImage,
-        timestamp
-    } = collection;
-
-    const [countOwner, setCountOwner] = useState(0);
-    const [totalVolume, setTotalVolume] = useState('0.00');
-    const [floorPrice, setFloorPrice] = useState('---');
-
+    const [view, setView] = useState(data?.collection?.type);
+    
     return (
         <>
-            <IconCover>
-                <IconWrapper>
-                    <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
-                </IconWrapper>
-            </IconCover>
-            <Stack direction="row" justifyContent="space-between" sx={{mt: 1, mb:1}}>
-                <Typography variant="h1a">{name}</Typography>
-                
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-                    <Tooltip title="Add to watchlist">
-                        <IconButton size='medium' sx={{ padding: 1 }}
-                            onClick={() => {
-                            }}
-                        >
-                            <StarBorderIcon />
-                        </IconButton>
-                    </Tooltip>
-
-                    <Tooltip title="Share">
-                        <IconButton size='medium' sx={{ padding: 1 }}
-                            onClick={() => {
-                            }}
-                        >
-                            <ShareIcon />
-                        </IconButton>
-                    </Tooltip>
-
-                    <IconButton size='medium' sx={{ padding: 1 }}
-                        onClick={() => {
-                        }}
-                    >
-                        <MoreHorizIcon />
-                    </IconButton>
-                </Stack>
-            </Stack>
-
-            {description &&
-                <Typography variant="d3">{description}</Typography>
-            }
-
-            <Stack direction="row" sx={{mt: 2, mb:3}} spacing={5}>
-                <Stack>
-                    <Typography variant='d2'>{items}</Typography>
-                    <Typography variant='s4'>items</Typography>
-                </Stack>
-                <Stack>
-                    <Typography variant='d2'>{countOwner}</Typography>
-                    <Typography variant='s4'>owners</Typography>
-                </Stack>
-                <Stack>
-                    <Stack direction="row" spacing={0.5} alignItems='center'>
-                        <Icon icon={rippleSolid} />
-                        <Typography variant="d2" noWrap>{totalVolume}</Typography>
-                    </Stack>
-                    <Typography variant='s4'>total volume</Typography>
-                </Stack>
-                <Stack>
-                    <Typography variant='d2'>{floorPrice}</Typography>
-                    <Typography variant='s4'>floor price</Typography>
-                </Stack>
-            </Stack>
-
-            {type === 'spinner' ? (
+            {view === 'spinner' ? (
                 <SpinNFT
-                    collection={collection}
+                    collection={data.collection}
                     spins={data.spins}
+                    setView={setView}
                 />
             ):(
-                <ExploreNFT collection={collection} />
-            )
-            }
-            {/* <Button component={Link} href="/collection/create" variant="contained" color="primary">
-                Create a collection
-            </Button> */}
-            <Stack sx={{mt:5, minHeight: '50vh'}}>
-            </Stack>
+                <ViewNFT
+                    collection={data.collection}
+                />
+            )}
         </>
     );
 }

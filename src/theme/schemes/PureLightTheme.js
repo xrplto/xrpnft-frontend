@@ -1169,7 +1169,9 @@ export const PureLightTheme = createTheme({
           s4: 'span',
           p1: 'p',
           p2: 'p',
-          p3: 'p'
+          p3: 'p',
+          p4: 'p',
+          p5: 'p'
         }
       },
       styleOverrides: {
@@ -1246,6 +1248,11 @@ export const PureLightTheme = createTheme({
     },
     p4: {
       fontWeight: 600,
+      fontSize: 16,
+      color: colors.alpha.black[100]
+    },
+    p5: {
+      fontWeight: 400,
       fontSize: 16,
       color: colors.alpha.black[100]
     },
