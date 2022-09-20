@@ -25,6 +25,7 @@ import { AppContext } from 'src/AppContext';
 // Components
 import { useSnackbar } from 'src/components/useSnackbar';
 import ExploreNFT from 'src/explore';
+import SpinNFT from './spin';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -102,17 +103,20 @@ export default function Collection({data}) {
     //     "creator": "xrpnft.com",
     //     "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
     // }
+    const collection = data?.collection;
+
     const {
         name,
         slug,
+        items,
+        type,
         description,
         logoImage,
         featuredImage,
         bannerImage,
         timestamp
-    } = data.collection;
+    } = collection;
 
-    const [countNft, setCountNft] = useState(0);
     const [countOwner, setCountOwner] = useState(0);
     const [totalVolume, setTotalVolume] = useState('0.00');
     const [floorPrice, setFloorPrice] = useState('---');
@@ -161,7 +165,7 @@ export default function Collection({data}) {
 
             <Stack direction="row" sx={{mt: 2, mb:3}} spacing={5}>
                 <Stack>
-                    <Typography variant='d2'>{countNft}</Typography>
+                    <Typography variant='d2'>{items}</Typography>
                     <Typography variant='s4'>items</Typography>
                 </Stack>
                 <Stack>
@@ -181,7 +185,15 @@ export default function Collection({data}) {
                 </Stack>
             </Stack>
 
-            <ExploreNFT collection={data.collection} />
+            {type === 'spinner' ? (
+                <SpinNFT
+                    collection={collection}
+                    spins={data.spins}
+                />
+            ):(
+                <ExploreNFT collection={collection} />
+            )
+            }
             {/* <Button component={Link} href="/collection/create" variant="contained" color="primary">
                 Create a collection
             </Button> */}

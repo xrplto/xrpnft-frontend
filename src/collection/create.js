@@ -154,7 +154,7 @@ export default function CreateCollection() {
     
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
-    const token = accountProfile?.token;
+    const accountToken = accountProfile?.token;
 
     const [loading, setLoading] = useState(false);
     
@@ -175,6 +175,9 @@ export default function CreateCollection() {
     const [description, setDescription] = useState('');
     const [type, setType] = useState('normal');
     const [bulkUrl, setBulkUrl] = useState('');
+
+    const [token, setToken] = useState(null);
+    const [cost, setCost] = useState('0');
 
     // Logo image
     const [fileUrl1, setFileUrl1] = useState(null);
@@ -197,8 +200,21 @@ export default function CreateCollection() {
     if (type !== 'normal' && !bulkUrl)
         canCreate = false;
 
+    if (type === 'spinner') {
+        if (!token)
+            canCreate = false;
+        else {
+            canCreate = false;
+            try {
+                let nCost = Number(cost);
+                if (nCost > 0)
+                    canCreate = true;
+            } catch (e) {}
+        }
+    }
+
     const onCreateCollection = async () => {
-        if (!account || !token) {
+        if (!account || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
@@ -229,12 +245,22 @@ export default function CreateCollection() {
             data.type = type;
             data.bulkUrl = bulkUrl;
             data.passphrase = passphrase;
+            if (type === 'spinner') {
+                data.infoSPIN = {
+                    name: token.name,
+                    issuer: token.issuer,
+                    currency: token.currency,
+                    md5: token.md5,
+                    ext: token.ext,
+                    cost: cost
+                };
+            }
 
             formdata.append('account', account);
             formdata.append('data', JSON.stringify(data));
             
             res = await axios.post(`${BASE_URL}/account/create-collection`, formdata, {
-                headers: { "Content-Type": "multipart/form-data", 'x-access-token': token }
+                headers: { "Content-Type": "multipart/form-data", 'x-access-token': accountToken }
             });
 
             if (res.status === 200) {
@@ -580,7 +606,12 @@ export default function CreateCollection() {
                     <>
                         {type === 'spinner' &&
                             <Stack spacing={2} sx={{pl: 0}}>
-                                <QueryToken />
+                                <QueryToken
+                                    cost={cost}
+                                    setCost={setCost}
+                                    token={token}
+                                    setToken={setToken}
+                                />
                             </Stack>
                         }
                         <Stack spacing={2} sx={{pl: 0}}>

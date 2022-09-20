@@ -35,6 +35,7 @@ import FolderZipIcon from '@mui/icons-material/FolderZip';
 import InfoIcon from '@mui/icons-material/Info';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ApprovalOutlinedIcon from '@mui/icons-material/ApprovalOutlined';
+import CasinoIcon from '@mui/icons-material/Casino';
 
 // Context
 import { useContext } from 'react';
@@ -405,7 +406,13 @@ export default function BulkList() {
                                     
                                     <TableCell align="left">
                                         <Stack>
-                                            <Typography variant="h3">{name}</Typography>
+                                            <Stack direction="row" spacing={2} alignItems="center">
+                                                <Typography variant="h3">{name}</Typography>
+                                                <Tooltip title='Spinner Collection'>
+                                                    <CasinoIcon color='info'/>
+                                                </Tooltip>
+                                            </Stack>
+                                            
                                             {infoIPFS && infoIPFS.cid &&
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     {/* <Typography variant="d3" color="#FFA319">Please check the following CID before Bulk-Mint your items</Typography> */}

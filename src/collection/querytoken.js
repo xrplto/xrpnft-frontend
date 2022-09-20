@@ -148,7 +148,7 @@ const CustomSelect = styled(Select)(({ theme }) => ({
     }
 }));
 
-export default function QueryToken({}) {
+export default function QueryToken({cost, setCost, token, setToken}) {
     const API_XRPL_TO_URL = 'https://api.xrpl.to/api';
 
     const [loading, setLoading] = useState(false);
@@ -157,9 +157,8 @@ export default function QueryToken({}) {
     const [filter, setFilter] = useState('');
     const [select, setSelect] = useState('');
 
-    const [cost, setCost] = useState('0');
-
     const loadTokens = () => {
+        setLoading(true);
         // https://api.xrpl.to/api/simple/tokens?filter=
         axios.get(`${API_XRPL_TO_URL}/simple/tokens?filter=${filter}`)
         .then(res => {
@@ -176,6 +175,7 @@ export default function QueryToken({}) {
             console.log("err->>", err);
         }).then(function () {
             // Always executed
+            setLoading(false);
         });
     };
 
@@ -186,6 +186,15 @@ export default function QueryToken({}) {
     const handleChangeToken = (e) => {
         const value = e.target.value;
         setSelect(value);
+
+        let newToken = null;
+        for (var t of tokens) {
+            if (t.md5 === value) {
+                newToken = t;
+                break;
+            }
+        }
+        setToken(newToken);
     };
 
     const handleChangeFilter = (e) => {
@@ -201,7 +210,24 @@ export default function QueryToken({}) {
     return (
         <Stack spacing={2}>
             <Stack spacing={2}>
-                <Typography variant='p2'>Spin Currency <Typography variant='s2'>*</Typography></Typography>
+                <Stack direction="row" alignItems="center">
+                    <Typography variant='p2'>Spin Currency <Typography variant='s2'>*</Typography></Typography>
+                    {token &&
+                        <Link
+                            underline="none"
+                            color="inherit"
+                            target="_blank"
+                            href={`https://bithomp.com/explorer/${token.issuer}`}
+                            rel="noreferrer noopener nofollow"
+                        >
+                            <Tooltip title="Check on Bithomp">
+                                <IconButton edge="end" aria-label="bithomp">
+                                    <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                </IconButton>
+                            </Tooltip>
+                        </Link>
+                    }
+                </Stack>
 
                 <CustomSelect
                     id='select_token'
@@ -225,8 +251,10 @@ export default function QueryToken({}) {
                         fullWidth
                         variant='standard'
                         placeholder='Filter'
+                        margin='dense'
                         onChange={handleChangeFilter}
                         autoComplete='new-password'
+                        inputProps={{autoComplete: 'off'}}
                         value={filter}
                         defaultValue={filter}
                         onFocus={event => {
@@ -236,12 +264,19 @@ export default function QueryToken({}) {
                             pl:2,pr:2,pb:2,pt:2.5
                         }}
                         onKeyDown={(e) => e.stopPropagation()}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="start">
+                                    {loading && <ClipLoader color='#ff0000' size={15} /> }
+                                </InputAdornment>
+                            ),
+                        }}
                     />
                     {tokens.map((token, idx) => (
                         <MenuItem
                             key={token.md5}
                             value={token.md5}
-                            sx={{pt:2, pb:2}}
+                            sx={{pt:1, pb:1}}
                         >
                             <Stack direction='row' alignItems="center">
                                 <Avatar alt="C" src={`https://xrpl.to/static/tokens/${token.md5}.${token.ext}`} sx={{ mr: 2 }} />
@@ -260,28 +295,30 @@ export default function QueryToken({}) {
                 </CustomSelect>
             </Stack>
 
-            <Stack spacing={2}>
-                <Typography variant='p2'>Cost per Spin <Typography variant='s2'>*</Typography></Typography>
+            {token &&
+                <Stack spacing={2}>
+                    <Typography variant='p2'>Cost per Spin <Typography variant='s2'>*</Typography></Typography>
 
-                <Stack direction="row" spacing={2} alignItems="center">
-                    <TextField
-                        id='id_txt_costperspin'
-                        // autoFocus
-                        variant='outlined'
-                        placeholder=''
-                        onChange={handleChangeCost}
-                        autoComplete='new-password'
-                        value={cost}
-                        defaultValue={cost}
-                        onFocus={event => {
-                            event.target.select();
-                        }}
-                        onKeyDown={(e) => e.stopPropagation()}
-                        // sx={{width: 100}}
-                    />
-                    <Typography variant='p2'>Cost</Typography>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                        <TextField
+                            id='id_txt_costperspin'
+                            // autoFocus
+                            variant='outlined'
+                            placeholder=''
+                            onChange={handleChangeCost}
+                            autoComplete='new-password'
+                            value={cost}
+                            defaultValue={cost}
+                            onFocus={event => {
+                                event.target.select();
+                            }}
+                            onKeyDown={(e) => e.stopPropagation()}
+                            // sx={{width: 100}}
+                        />
+                        <Typography variant='p2'>{token.name}</Typography>
+                    </Stack>
                 </Stack>
-            </Stack>
+            }
 
         </Stack>
     );
