@@ -1,0 +1,16 @@
+
+@keyframes spinner {
+  from {
+    /*top: -1200px;*/
+    filter: blur(0px);
+
+    transform: translateY(-2000px);
+  }
+  to {
+    /* top: 0px; */
+    filter: blur(0px);
+    /* transform: scale(1.5); */
+    transform: translateY(0px);
+  }
+}
+

@@ -18,7 +18,7 @@ const SlotBox = styled('div')(
     width: 240px;
     margin-bottom: 20px;
     margin-top: 20px;
-    border-style: solid;
+    // border-style: solid;
     justify-content: center;
     overflow: hidden;
     line-height: 4;
@@ -32,23 +32,15 @@ const SlotBoxArea = styled('div') (
   `
 );
 
-const images = [
-    "/static/casino/alcoholic.svg",
-    "/static/casino/ace-of-hearts.svg",
-    "/static/casino/black-jack.svg",
-    "/static/casino/card-game.svg",
-    "/static/casino/precious-stone.svg",
-    "/static/casino/slot-machine.svg"
-];
-
-const numberOfSlots = 1;
 const numberOfSymbolsPerSlot = 18;
 const spinDuration = 40000;
 
 
-const generateRefsArray = (numberOfRefs) => {
+const generateRefsArray = () => {
+    const numberOfSlots = 1;
     var refsArray = [];
-    for (var i = 0; i < numberOfRefs; i++) {
+
+    for (var i = 0; i < numberOfSlots; i++) {
         refsArray.push(createRef());
     }
     return refsArray;
@@ -58,11 +50,18 @@ export default function MySlot({collection}) {
 
     let counter = 0;
 
-    let lastThreeIcons = [];
-
     let symbolArray = [];
 
-    const testRef = [...generateRefsArray(numberOfSlots)];
+    const testRef = [...generateRefsArray()];
+
+    const images = [
+        "/static/casino/alcoholic.svg",
+        "/static/casino/ace-of-hearts.svg",
+        "/static/casino/black-jack.svg",
+        "/static/casino/card-game.svg",
+        "/static/casino/precious-stone.svg",
+        "/static/casino/slot-machine.svg"
+    ];
 
     const [state, setState] = useState({
         currentTime: 0,
@@ -82,15 +81,14 @@ export default function MySlot({collection}) {
     }, []);
 
     // Generate slots dynamically
-    const generateSlots = (numberOfSlots) => {
+    const generateSlots = () => {
+        const numberOfSlots = 1;
         var slots = [];
         for (var i = 0; i < numberOfSlots; i++) {
             slots.push(
                 <SlotBox key={i} id={i}>
                     <div
-                        className={`SlotReelContainer ${
-                            state.animState ? "animation" : ""
-                        }`}
+                        // className="SlotReelContainer"
                         ref={testRef[i]}
                         onAnimationEnd={onAnimationEnd}
                         onAnimationStart={onAnimationStart}
@@ -111,15 +109,16 @@ export default function MySlot({collection}) {
     };
 
     const onAnimationEnd = () => {
+        const numberOfSlots = 1;
+
         counter++;
         if (counter === testRef.length) {
             for (var i = 0; i < numberOfSlots; i++) {
-                testRef[i].current.className = "SlotReelContainer";
+                // testRef[i].current.className = "SlotReelContainer";
                 testRef[i].current.style.animation = ``;
                 //console.log(testRef[i].current.style.animation);
                 //console.log(testRef[i].current.className);
                 setState({ spin: 0 });
-                lastThreeIcons = [];
             }
         }
         setState({ animState: false });
@@ -140,14 +139,6 @@ export default function MySlot({collection}) {
             );
         });
     };
-
-    const generateNumberOfSlotsArray = (num) => {
-        var numArray = [];
-        for (var i = 0; i < num; i++) {
-            numArray.push(i);
-        }
-        return numArray;
-    }
 
     // sampleImage = (<img alt="Oops..." src={images[1]} />);
     //testSeries = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -173,14 +164,8 @@ export default function MySlot({collection}) {
             var randomIndex = Math.floor(Math.random() * images.length);
             nums2.push(setImage(randomIndex));
             numIndexes.push(randomIndex);
-            // if (i > 18) {
-            //   lastThreeIcons.push(nums2[i]);
-            // }
         }
 
-        lastThreeIcons.push(nums2.slice(0, 3));
-        //Get the first 3 elements of random reel
-        //console.log(lastThreeIcons);
         setState({ lastThreeSymbols: nums2.slice(0, 3) });
         console.log(state.lastThreeSymbols);
         // console.log(nums2.slice(0, 3));
@@ -189,40 +174,38 @@ export default function MySlot({collection}) {
         return output;
     }
 
-    const animateSlotsDownSequentially = (numberOfSlots) => {
+    const animateSlotsDownSequentially = () => {
         var increment = 0.5;
+        const numberOfSlots = 1;
 
         for (var i = 0; i < numberOfSlots; i++) {
             // console.log(testRef[i].current.style.animation);
 
             increment = increment + 0.2;
-            testRef[i].current.className = `SlotReelContainer animation`;
-            testRef[i].current.style.animation = `mymove ${0.6 + increment}s forwards ease-in-out`;
+            // testRef[i].current.className = `SlotReelContainer`;
+            testRef[i].current.style.animation = `spinner ${0.6 + increment}s forwards ease-in-out`;
         }
     }
 
     const spin = () => {
         //resetAllSlots();
-
-        lastThreeIcons = [];
         counter = 0;
         setReelArraySymbols().then((syms) => {
             setReelSymbols(syms);
         });
 
-        animateSlotsDownSequentially(numberOfSlots);
+        animateSlotsDownSequentially();
     }
     
 
     return (
         <div>
-            <SlotBoxArea>{generateSlots(numberOfSlots)}</SlotBoxArea>
+            <SlotBoxArea>{generateSlots()}</SlotBoxArea>
 
             <div>
                 <button
                     onClick={() => spin()}
                     disabled={state.spin}
-                    className={state.spin ? `Spinning` : ``}
                 >
                     {state.spin ? "Spinning??" : "Spin"}
                 </button>
