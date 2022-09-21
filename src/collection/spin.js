@@ -1,7 +1,8 @@
-import React, { useEffect, useState, createRef } from "react";
+import axios from 'axios';
+import Confetti from 'react-confetti';
 import { ColorExtractor } from 'react-color-extractor';
 import useWindowSize from 'react-use/lib/useWindowSize';
-import Confetti from 'react-confetti';
+import React, { useEffect, useState, createRef } from "react";
 
 // Material
 import { useTheme } from '@mui/material/styles';
@@ -25,7 +26,13 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
+
 // Components
+import XSnackbar from 'src/components/Snackbar';
+import { useSnackbar } from 'src/components/useSnackbar';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -139,10 +146,15 @@ function arrayRotate(arr, reverse) {
 }
 
 export default function SpinNFT({ collection, spins, setView }) {
-    const { width, height } = useWindowSize();
-
     const theme = useTheme();
+    const BASE_URL = 'https://api.xrpnft.com/api';
+    const { width, height } = useWindowSize();
     const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
+
+    const { accountProfile } = useContext(AppContext);
+    const account = accountProfile?.account;
+    const token = accountProfile?.token;
 
     const [nft, setNft] = useState(spins[0]);
 
@@ -196,6 +208,8 @@ export default function SpinNFT({ collection, spins, setView }) {
         spin: 0
     });
 
+    const [spinning, setSpinning] = useState(false);
+
     const [reelSymbols, setReelSymbols] = useState([]);
 
     useEffect(() => {
@@ -208,7 +222,7 @@ export default function SpinNFT({ collection, spins, setView }) {
         if (congrats) {
             setTimeout(() => {
                 setCongrats(false);
-            }, 5000);
+            }, 3000);
         }
     }, [congrats]);
 
@@ -251,8 +265,27 @@ export default function SpinNFT({ collection, spins, setView }) {
         )
     }
 
+    const setMainImage = () => {
+        // const nftImgUrl = 'https://xrpl.to/static/tokens/c9ac9a6c44763c1bd9ccc6e47572fd26.jpg';
+        console.log(nftImgUrl);
+        return (
+            <ColorExtractor getColors={getColors}>
+                <img src={nftImgUrl}
+                    style={{
+                        width: fullScreen?'480px':'280px',
+                        height: fullScreen?'400px':'200px',
+                        // marginTop: 5,
+                        borderRadius: 20,
+                        objectFit: 'cover'
+                    }}
+                />
+            </ColorExtractor>
+        )
+    }
+
     const generateImageColumn = () => {
         var nums = [];
+        // nums.push(setMainImage());
 
         for (var i = 0; i < numberOfSymbolsPerSlot; i++) {
             var randomIndex = Math.floor(Math.random() * spins.length);
@@ -262,19 +295,50 @@ export default function SpinNFT({ collection, spins, setView }) {
         return nums;
     }
 
+    const getSpinnerNFT = (slotRef) => {
+        if (!account || !token) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        setSpinning(true);
+
+        const body = { account, collection: collection.name };
+
+        // https://api.xrpnft.com/api/account/spinnernft
+        axios.post(`${BASE_URL}/account/spinnernft`, body, {headers: {'x-access-token': token}})
+            .then(res => {
+                let ret = res.status === 200 ? res.data : undefined;
+                if (ret && ret.nft) {
+                    setNft(ret.nft);
+                    // setCongrats(true);
+                }
+            }).catch(err => {
+                console.log("Error on getting exchanges!!!", err);
+            }).then(function () {
+                // always executed
+                // slotRef.current.style.animation = ``;
+                setTimeout(() => {
+                    setCongrats(true);
+                    setSpinning(false);
+                }, 3000);
+            });
+    }
+
     const spin = () => {
+        getSpinnerNFT();
         // resetAllSlots();
 
         // setReelArraySymbols().then((syms) => {
         //     setReelSymbols(syms);
         // });
 
-        // console.log(arrayRotate(['1', '2', '3', '4', '5']));
-        slotRef.current.style.animation = `spinner 0.5s forwards ease-in-out`;
+        // slotRef.current.style.animation = `spinner 0.5s forwards ease-in-out`;
     }
 
     return (
         <>
+            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
             <Confetti
                 width={width}
                 height={height*2}
@@ -283,8 +347,8 @@ export default function SpinNFT({ collection, spins, setView }) {
                 run={true}
                 recycle={congrats}
                 gravity={0.2}
-                numberOfPieces={width / 2}
-                tweenDuration={1000}
+                numberOfPieces={width / 3}
+                tweenDuration={100}
             />
             <Stack alignItems="center" sx={{mb: 5}}>
                 <IconCover>
@@ -328,11 +392,10 @@ export default function SpinNFT({ collection, spins, setView }) {
                                     ref={slotRef}
                                     onAnimationStart={onAnimationStart}
                                     onAnimationEnd={onAnimationEnd}
+                                    style={{
+                                        animation: spinning?`spinner 0.5s infinite forwards ease-in-out`:''
+                                    }}
                                 >
-                                    {reelSymbols[0]}
-                                </div>
-
-                                {state.spin === 0 &&
                                     <ColorExtractor getColors={getColors}>
                                         <img src={nftImgUrl}
                                             style={{
@@ -344,7 +407,8 @@ export default function SpinNFT({ collection, spins, setView }) {
                                             }}
                                         />
                                     </ColorExtractor>
-                                }
+                                    {reelSymbols[0]}
+                                </div>
                             </SlotBox>
                             
                             

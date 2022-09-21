@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
@@ -165,6 +165,8 @@ export default function BulkList() {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
     const { accountProfile } = useContext(AppContext);
+    const account = accountProfile?.account;
+    const token = accountProfile?.token;
     
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
@@ -176,9 +178,6 @@ export default function BulkList() {
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
     const [loading, setLoading] = useState(false);
-
-    const account = accountProfile?.account;
-    const token = accountProfile?.token;
         
     useEffect(() => {
         function getBulkCollections() {
