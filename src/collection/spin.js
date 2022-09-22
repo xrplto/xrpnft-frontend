@@ -29,6 +29,7 @@ import { AppContext } from 'src/AppContext';
 // Components
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
+import BuySpinDialog from './BuySpinDialog';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -159,23 +160,35 @@ export default function SpinNFT({ collection, spins, setView }) {
 
     const [congrats, setCongrats] = useState(false);
 
+    const [openBuySpin, setOpenBuySpin] = useState(false);
+
     const nftImgUrl = `https://gateway.xrpnft.com/ipfs/${nft.meta.image}`;
 
-    // {
-    //     "_id": "630b722e2aa4d0244dcfc62b",
-    //     "name": "FAT CATS - 1",
-    //     "externalLink": "",
+    // "collection": {
+    //     "_id": "632980fe283594d8a321fdaa",
+    //     "account": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
+    //     "name": "test1",
+    //     "family": "",
+    //     "slug": "test1",
+    //     "type": "spinner",
+    //     "items": 10000,
+    //     "owners": 0,
+    //     "infoSPIN": {
+    //         "name": "XRP",
+    //         "issuer": "XRPL",
+    //         "currency": "XRP",
+    //         "ext": "png",
+    //         "cost": "1"
+    //     },
     //     "description": "",
-    //     "collection": "",
-    //     "Flags": 13,
-    //     "Issuer": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
-    //     "minter": "xrpnft.com",
-    //     "image": "QmeBkwfxtCygbxCeZFRf8A1Qoh7vf1VoU4AxQCXCDwscUx",
-    //     "URI": "516D6653394D70417754756F684B674E795146636939726D6348654566727874705533473976324842674837735A",
-    //     "uuid": "4a23c44e703944909b29b53f5e94a44b",
-    //     "minted": true,
-    //     "TokenID": "000D000011BBE0160B08A0743C13E22918573B2AAC759E9E16E5DA9C00000001"
-    // },
+    //     "logoImage": "1663664381890_53c4804a3c6a4cf09fb0e9ca249c7d02.png",
+    //     "featuredImage": "1663664381891_5b63c3b5343b45b4bf0ceebce490ddc5.jpg",
+    //     "bannerImage": "1663664381891_783dcce2a9614ee3a802d9cf11028b7f.jpg",
+    //     "created": 1663664382644,
+    //     "modified": 1663664382644,
+    //     "uuid": "f19c871e0750474795942f998bbfad0d",
+    //     "creator": "xrpnft.com"
+    // }
 
     const {
         name,
@@ -187,7 +200,8 @@ export default function SpinNFT({ collection, spins, setView }) {
         logoImage,
         featuredImage,
         bannerImage,
-        timestamp
+        timestamp,
+        minter
     } = collection;
 
     // const description = "This is the test collection that spinns the nfts very fast and you can won and purchase nfts"
@@ -336,6 +350,15 @@ export default function SpinNFT({ collection, spins, setView }) {
     return (
         <>
             <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
+
+            <BuySpinDialog
+                open={openBuySpin}
+                setOpen={setOpenBuySpin}
+                infoSPIN={infoSPIN}
+                openSnackbar={openSnackbar}
+                minter={minter}
+            />
+
             <Confetti
                 width={width}
                 height={height*2}
@@ -434,9 +457,9 @@ export default function SpinNFT({ collection, spins, setView }) {
                             <Stack spacing={2} sx={{pl:5, pr:5}}>
                                 <Button
                                     variant='contained'
-                                    onClick={() => {}}
+                                    onClick={() => setOpenBuySpin(true)}
                                 >
-                                    Buy SPINs With XRP
+                                    Buy SPINs With {infoSPIN.name}
                                 </Button>
 
                                 <Link
