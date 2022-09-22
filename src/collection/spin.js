@@ -1,4 +1,5 @@
 import axios from 'axios';
+import useSound from 'use-sound';
 import Confetti from 'react-confetti';
 import { ColorExtractor } from 'react-color-extractor';
 import useWindowSize from 'react-use/lib/useWindowSize';
@@ -9,16 +10,11 @@ import { useTheme } from '@mui/material/styles';
 import {
     styled,
     Button,
-    CardContent,
-    CardMedia,
     Container,
     Divider,
     Grid,
-    IconButton,
     Link,
-    Skeleton,
     Stack,
-    Tooltip,
     Typography,
     useMediaQuery
 } from '@mui/material';
@@ -130,7 +126,7 @@ const SlotBox = styled('div') (
         // border-style: solid;
         justify-content: center;
         overflow: hidden;
-        line-height: 4;
+        // line-height: 4;
         border-radius: 20px;
     `
 );
@@ -149,6 +145,7 @@ export default function SpinNFT({ collection, spins, setView }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { width, height } = useWindowSize();
+    const [play, { stop }] = useSound('/static/sounds/mixkit-fireworks-bang-in-sky-2989.wav');
     const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
@@ -249,19 +246,18 @@ export default function SpinNFT({ collection, spins, setView }) {
     const setImage = (index, key) => {
         const imgUrl = `https://gateway.xrpnft.com/ipfs/${spins[index].meta.image}`;
         return (
-            <ColorExtractor getColors={(colors)=> getColors(colors, index)} key={key}>
-                <img
-                    alt="Oops..."
-                    src={imgUrl}
-                    style={{
-                        width: fullScreen?'480px':'280px',
-                        height: fullScreen?'400px':'200px',
-                        // marginTop: 5,
-                        borderRadius: 20,
-                        objectFit: 'cover'
-                    }}
-                />
-            </ColorExtractor>
+            <img
+                key={key}
+                alt="Oops..."
+                src={imgUrl}
+                style={{
+                    width: fullScreen?'480px':'280px',
+                    height: fullScreen?'400px':'200px',
+                    // marginTop: 5,
+                    // borderRadius: 20,
+                    objectFit: 'cover',
+                }}
+            />
         )
     }
 
@@ -321,6 +317,7 @@ export default function SpinNFT({ collection, spins, setView }) {
                 setTimeout(() => {
                     setCongrats(true);
                     setSpinning(false);
+                    play();
                 }, 3000);
             });
     }
@@ -387,13 +384,14 @@ export default function SpinNFT({ collection, spins, setView }) {
                             }}
                         >
                             <SlotBox key={11} id={12}>
-                                <div
-                                    // className="SlotReelContainer"
+                                <Stack
                                     ref={slotRef}
                                     onAnimationStart={onAnimationStart}
                                     onAnimationEnd={onAnimationEnd}
                                     style={{
-                                        animation: spinning?`spinner 0.5s infinite forwards ease-in-out`:''
+                                        animation: spinning?`spinner 0.5s infinite forwards ease-in-out`:``,
+                                        // filter: 'blur(10px)',
+                                        // WebkitMask: 'linear-gradient(rgb(255, 255, 255), transparent)'
                                     }}
                                 >
                                     <ColorExtractor getColors={getColors}>
@@ -402,13 +400,13 @@ export default function SpinNFT({ collection, spins, setView }) {
                                                 width: fullScreen?'480px':'280px',
                                                 height: fullScreen?'400px':'200px',
                                                 // marginTop: 5,
-                                                borderRadius: 20,
+                                                // borderRadius: 20,
                                                 objectFit: 'cover'
                                             }}
                                         />
                                     </ColorExtractor>
                                     {reelSymbols[0]}
-                                </div>
+                                </Stack>
                             </SlotBox>
                             
                             
@@ -433,22 +431,30 @@ export default function SpinNFT({ collection, spins, setView }) {
                             <Typography variant="p5">If a collection sells out and an allocation could not be completed, your spin will not be used and will remain in your account.</Typography>
                             <Typography variant="p5">It can be used against the purchase of any other spinner collection.</Typography>
                             <Typography variant="p5" sx={{pb: 3}}>You currently have 94 spins available and 8327.9998 XRP tokens in your wallet.</Typography>
-                            <Stack>
+                            <Stack spacing={2} sx={{pl:5, pr:5}}>
                                 <Button
                                     variant='contained'
                                     onClick={() => {}}
-                                    sx={{ml:5, mr:5}}
                                 >
-                                    Buy Spins With XRP
+                                    Buy SPINs With XRP
                                 </Button>
 
-                                <Button
-                                    variant='outlined'
-                                    onClick={() => {}}
-                                    sx={{mt:2, ml:5, mr:5}}
+                                <Link
+                                    underline="none"
+                                    color="inherit"
+                                    target="_blank"
+                                    href={`/buy-xrp`}
+                                    rel="noreferrer noopener nofollow"
                                 >
-                                    Buy XRP
-                                </Button>
+                                    <Stack>
+                                        <Button
+                                            variant='outlined'
+                                            onClick={() => {}}
+                                        >
+                                            Buy XRP
+                                        </Button>
+                                    </Stack>
+                                </Link>
                             </Stack>
                         </Stack>
                     </Grid>
