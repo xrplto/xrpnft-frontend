@@ -87,7 +87,7 @@ export default function XLS20Dialog({open, handleClose, handleLogin}) {
                                 component="img"
                                 alt="QR"
                                 sx={{width:240, height:240}}
-                                src='/xls20testnet.png'
+                                src='/static/xls20testnet.png'
                             />
                         </Stack>
                     </Stack>

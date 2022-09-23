@@ -198,7 +198,7 @@ export async function getServerSideProps(ctx) {
         ogp.canonical = `https://xrpnft.com/collection/${slug}`;
         ogp.title = `${name} - Collection`;
         ogp.url = `https://xrpnft.com/collection/${slug}`;
-        ogp.imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
+        ogp.imgUrl = `https://s1.xrpnft.com/collection/${bannerImage}`;
         ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
 
         ret = {data, ogp};

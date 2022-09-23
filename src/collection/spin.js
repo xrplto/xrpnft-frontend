@@ -142,7 +142,7 @@ function arrayRotate(arr, reverse) {
     return arr;
 }
 
-export default function SpinNFT({ collection, spins, setView }) {
+export default function SpinNFT({ collection, nfts, setView }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { width, height } = useWindowSize();
@@ -154,7 +154,7 @@ export default function SpinNFT({ collection, spins, setView }) {
     const account = accountProfile?.account;
     const token = accountProfile?.token;
 
-    const [nft, setNft] = useState(spins[0]);
+    const [nft, setNft] = useState(null);
 
     const [colors, setColors] = useState([]);
 
@@ -162,7 +162,9 @@ export default function SpinNFT({ collection, spins, setView }) {
 
     const [openBuySpin, setOpenBuySpin] = useState(false);
 
-    const nftImgUrl = `https://gateway.xrpnft.com/ipfs/${nft.meta.image}`;
+    const nftImgUrl = nft?`https://gateway.xrpnft.com/ipfs/${nft.meta.image}`:'/static/unknown.png';
+
+    const [spins, setSpins] = useState(0);
 
     // "collection": {
     //     "_id": "632980fe283594d8a321fdaa",
@@ -224,6 +226,30 @@ export default function SpinNFT({ collection, spins, setView }) {
     const [reelSymbols, setReelSymbols] = useState([]);
 
     useEffect(() => {
+        function getSpins() {
+            if (!account || !token) {
+                openSnackbar('Please login', 'error');
+                return;
+            }
+
+            // https://api.xrpnft.com/api/spin/count?account=rhhh
+            axios.get(`${BASE_URL}/spin/count?account=${account}&cid=${collection.uuid}`, {headers: {'x-access-token': token}})
+                .then(res => {
+                    let ret = res.status === 200 ? res.data : undefined;
+                    if (ret) {
+                        console.log(`Spins: ${ret.spins}`);
+                        setSpins(ret.spins);
+                    }
+                }).catch(err => {
+                    console.log("Error on getting exchanges!!!", err);
+                }).then(function () {
+                    // always executed
+                });
+        }
+        getSpins();
+    }, [account, token]);
+
+    useEffect(() => {
         setReelArraySymbols().then((syms) => {
             setReelSymbols(syms);
         });
@@ -258,7 +284,7 @@ export default function SpinNFT({ collection, spins, setView }) {
     };
 
     const setImage = (index, key) => {
-        const imgUrl = `https://gateway.xrpnft.com/ipfs/${spins[index].meta.image}`;
+        const imgUrl = `https://gateway.xrpnft.com/ipfs/${nfts[index].meta.image}`;
         return (
             <img
                 key={key}
@@ -275,30 +301,12 @@ export default function SpinNFT({ collection, spins, setView }) {
         )
     }
 
-    const setMainImage = () => {
-        // const nftImgUrl = 'https://xrpl.to/static/tokens/c9ac9a6c44763c1bd9ccc6e47572fd26.jpg';
-        console.log(nftImgUrl);
-        return (
-            <ColorExtractor getColors={getColors}>
-                <img src={nftImgUrl}
-                    style={{
-                        width: fullScreen?'480px':'280px',
-                        height: fullScreen?'400px':'200px',
-                        // marginTop: 5,
-                        borderRadius: 20,
-                        objectFit: 'cover'
-                    }}
-                />
-            </ColorExtractor>
-        )
-    }
-
     const generateImageColumn = () => {
         var nums = [];
         // nums.push(setMainImage());
 
         for (var i = 0; i < numberOfSymbolsPerSlot; i++) {
-            var randomIndex = Math.floor(Math.random() * spins.length);
+            var randomIndex = Math.floor(Math.random() * nfts.length);
             nums.push(setImage(randomIndex, i));
         }
 
@@ -308,6 +316,11 @@ export default function SpinNFT({ collection, spins, setView }) {
     const getSpinnerNFT = (slotRef) => {
         if (!account || !token) {
             openSnackbar('Please login', 'error');
+            return;
+        }
+
+        if (spins < 1) {
+            openSnackbar('You do not have enough SPINs', 'error');
             return;
         }
 
@@ -357,6 +370,8 @@ export default function SpinNFT({ collection, spins, setView }) {
                 infoSPIN={infoSPIN}
                 openSnackbar={openSnackbar}
                 minter={minter}
+                collection={collection}
+                setSpins={setSpins}
             />
 
             <Confetti
@@ -407,34 +422,35 @@ export default function SpinNFT({ collection, spins, setView }) {
                             }}
                         >
                             <SlotBox key={11} id={12}>
+                                <ColorExtractor getColors={getColors}>
+                                    <img src={nftImgUrl}
+                                        style={{
+                                            width: fullScreen?'480px':'280px',
+                                            height: fullScreen?'400px':'200px',
+                                            // marginTop: 5,
+                                            // borderRadius: 20,
+                                            objectFit: 'cover',
+                                            display: spinning?'none':'block'
+                                        }}
+                                    />
+                                </ColorExtractor>
                                 <Stack
                                     ref={slotRef}
                                     onAnimationStart={onAnimationStart}
                                     onAnimationEnd={onAnimationEnd}
                                     style={{
                                         animation: spinning?`spinner 0.5s infinite forwards ease-in-out`:``,
-                                        // filter: 'blur(10px)',
-                                        // WebkitMask: 'linear-gradient(rgb(255, 255, 255), transparent)'
+                                        filter: !spins?'blur(30px)':'',
+                                        WebkitMask: !spins?'linear-gradient(rgb(255, 255, 255), transparent)':''
                                     }}
                                 >
-                                    <ColorExtractor getColors={getColors}>
-                                        <img src={nftImgUrl}
-                                            style={{
-                                                width: fullScreen?'480px':'280px',
-                                                height: fullScreen?'400px':'200px',
-                                                // marginTop: 5,
-                                                // borderRadius: 20,
-                                                objectFit: 'cover'
-                                            }}
-                                        />
-                                    </ColorExtractor>
                                     {reelSymbols[0]}
                                 </Stack>
                             </SlotBox>
                             
                             
                             <Stack alignItems="center" sx={{mt:1}}>
-                                <Typography variant='h2a'>{nft.name}</Typography>
+                                <Typography variant='h2a'>{nft?.name}</Typography>
                             </Stack>
                             <Divider sx={{mt:0.8, mb:2}}/>
                             <Button
@@ -453,7 +469,7 @@ export default function SpinNFT({ collection, spins, setView }) {
                             <Typography variant="p5">Each spin costs {infoSPIN.cost} {infoSPIN.name}.</Typography>
                             <Typography variant="p5">If a collection sells out and an allocation could not be completed, your spin will not be used and will remain in your account.</Typography>
                             <Typography variant="p5">It can be used against the purchase of any other spinner collection.</Typography>
-                            <Typography variant="p5" sx={{pb: 3}}>You currently have 94 spins available and 8327.9998 XRP tokens in your wallet.</Typography>
+                            <Typography variant="p5" sx={{pb: 3}}>You currently have {spins} spins available and 8327.9998 XRP tokens in your wallet.</Typography>
                             <Stack spacing={2} sx={{pl:5, pr:5}}>
                                 <Button
                                     variant='contained'

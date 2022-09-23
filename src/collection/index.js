@@ -98,7 +98,7 @@ export default function Collection({data}) {
             {view === 'spinner' ? (
                 <SpinNFT
                     collection={data.collection}
-                    spins={data.spins}
+                    nfts={data.spins}
                     setView={setView}
                 />
             ):(

@@ -10,11 +10,13 @@ import {
     Avatar,
     Backdrop,
     Button,
+    Checkbox,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
     Divider,
+    FormControlLabel,
     IconButton,
     InputAdornment,
     Link,
@@ -41,7 +43,7 @@ import { AppContext } from 'src/AppContext'
 import { useDispatch } from "react-redux";
 
 // Components
-import QRDialog from 'src/components/QRDialog';
+import QRDialogNoPush from 'src/components/QRDialogNoPush';
 
 // Loader
 import { PulseLoader } from "react-spinners";
@@ -53,6 +55,7 @@ import Decimal from 'decimal.js';
 // Iconify
 import { Icon } from '@iconify/react';
 import copyIcon from '@iconify/icons-fad/copy';
+
 // ----------------------------------------------------------------------
 const BuyDialog = styled(Dialog) (({ theme }) => ({
     backdropFilter: 'blur(1px)',
@@ -95,7 +98,16 @@ const Label = withStyles({
     }
 })(Typography);
 
-export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnackbar}) {
+function GetNum(amount) {
+    let num = 0;
+    try {
+        num = new Decimal(amount).toNumber();
+        if (num < 0) num = 0;
+    } catch (err) {}
+    return num;
+}
+
+export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnackbar, collection, setSpins}) {
     //     "infoSPIN": {
     //         "name": "XRP",
     //         "issuer": "XRPL",
@@ -116,7 +128,9 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [amount, setAmount] = useState(0);
+    const [quantity, setQuantity] = useState(0);
+
+    const [disclaimer, setDisclaimer] = useState(false);
 
     const {
         issuer,
@@ -127,7 +141,12 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
         cost
     } = infoSPIN;
 
-    const imgUrl = `https://xrpl.to/static/tokens/${md5}.${ext}`;
+    // const imgUrl = `https://xrpl.to/static/tokens/${md5}.${ext}`;
+
+    let canApprove = false;
+    const amt = GetNum(quantity);
+    if (amt > 0 && disclaimer)
+        canApprove = true;
 
     useEffect(() => {
         var timer = null;
@@ -138,14 +157,17 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/xumm/payload/${uuid}`);
+                const ret = await axios.get(`${BASE_URL}/spin/payload/${uuid}?account=${account}`, {headers: {'x-access-token': token}});
                 const res = ret.data.data.response;
+                console.log(ret.data);
                 // const account = res.account;
                 const resolved_at = res.resolved_at;
                 const dispatched_result = res.dispatched_result;
+                const newSpins = ret.data.spins;
                 if (resolved_at) {
                     setOpenScanQR(false);
                     if (dispatched_result && dispatched_result === 'tesSUCCESS') {
+                        setSpins(newSpins);
                         handleClose();
                         openSnackbar('Transaction successful!', 'success');
                     }
@@ -173,34 +195,38 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
         };
     }, [openScanQR, uuid]);
 
-    const onPaymentXumm = async (value) => {
-        // {
-        //     "TransactionType" : "Payment",
-        //     "Account" : "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
-        //     "Destination" : "ra5nK24KXen9AHvsdFTKHSANinZseWnPcX",
-        //     "Amount" : {
-        //        "currency" : "USD",
-        //        "value" : "1",
-        //        "issuer" : "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn"
-        //     },
-        //     "Fee": "12",
-        //     "Flags": 2147483648,
-        //     "Sequence": 2,
-        // }
+    const onPaymentXumm = async () => {
+        if (!account || !token) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+        /*{
+            "TransactionType" : "Payment",
+            "Account" : "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
+            "Destination" : "ra5nK24KXen9AHvsdFTKHSANinZseWnPcX",
+            "Amount" : {
+               "currency" : "USD",
+               "value" : "1",
+               "issuer" : "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn"
+            },
+            "Fee": "12",
+            "Flags": 2147483648,
+            "Sequence": 2,
+        }*/
+
         setLoading(true);
         try {
-            const user_token = undefined; // accountProfile?.token;
-
-            const Flags = 0x00020000;
-
-            let LimitAmount = {};
-            LimitAmount.issuer = issuer;
-            LimitAmount.currency = currency;
-            LimitAmount.value = value;
+            const user_token = accountProfile?.token;
+            const cid = collection.uuid;
+            let amount = {};
+            if (currency !== 'XRP')
+                amount.issuer = issuer;
+            amount.currency = currency;
+            amount.value = cost * quantity;
             
-            const body={ LimitAmount, Flags, user_token};
+            const body = { account, dest: minter, amount, quantity, cid, user_token};
 
-            const res = await axios.post(`${BASE_URL}/xumm/trustset`, body);
+            const res = await axios.post(`${BASE_URL}/spin/buyspin`, body, {headers: {'x-access-token': token}});
 
             if (res.status === 200) {
                 const uuid = res.data.data.uuid;
@@ -213,6 +239,7 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
                 setOpenScanQR(true);
             }
         } catch (err) {
+            console.error(err);
             openSnackbar('Network error!', 'error');
         }
         setLoading(false);
@@ -221,7 +248,7 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
     const onDisconnectXumm = async (uuid) => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/xumm/logout/${uuid}`);
+            const res = await axios.delete(`${BASE_URL}/spin/logout/${uuid}`, {headers: {'x-access-token': token}});
             if (res.status === 200) {
                 setUuid(null);
             }
@@ -239,10 +266,12 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
         setOpen(false);
     }
 
-    const handleChangeAmount = (e) => {
+    const handleChangeQuantity = (e) => {
         const value = e.target.value;
-        const amt = value?value.replace(/[^0-9]/g, ""):'';
-        setAmount(amt);
+        try {
+            const amt = value?Number(value.replace(/[^0-9]/g, "")):0;
+            setQuantity(amt)
+        } catch (e) {}
     }
 
     const isNumber = (num) => {
@@ -250,21 +279,17 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
     }
 
     const handleApprove = (e) => {
-        let fAmount = 0;
-        try {
-            if (isNumber(amount)) {
-                fAmount = new Decimal(amount.replaceAll(',','')).toNumber();
-            }
-                
-        } catch(e) {}
-
-        if (fAmount > 0) {
-            // onPaymentXumm(fAmount);
-            openSnackbar('Comming soon!', 'success');
+        if (quantity > 0) {
+            onPaymentXumm();
+            // openSnackbar('Comming soon!', 'success');
         } else {
             openSnackbar('Invalid value!', 'error');
         }
     }
+
+    const handleChangeDisclaimer = (e) => {
+        setDisclaimer(e.target.checked);
+    };
 
     return (
         <>
@@ -290,7 +315,7 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
                     <Stack sx={{pl:1, pr:1}}>
                         <Typography variant="p5" sx={{mt: 0}}>To power up the spinner, you need at least 1 or more SPINs. This will enable you to purchase NFTs that is randomly selected from this collection.</Typography>
                         <Typography variant="p5" sx={{mt: 2}}>Spins that purchased here can not be used on the other collections.</Typography>
-                        {md5 &&
+                        {name !== 'XRP' &&
                             <Typography variant="p5" sx={{mt: 2}}>If you want to buy or trade {name} tokens please &nbsp;
                                 <Link
                                     underline="always"
@@ -319,18 +344,28 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
                             </Link>
                         </Stack>
                         <Stack spacing={2}  sx={{pt: 1}}>
-                            <Typography variant="p4">Quantity <Typography variant='s2'>*</Typography></Typography>
                             <TextField
                                 id="input-with-sx2"
-                                variant="outlined"
+                                variant="standard"
                                 fullWidth
-                                value={amount}
-                                onChange={handleChangeAmount}
+                                value={quantity}
+                                autoComplete='new-password'
+                                onFocus={event => {
+                                    event.target.select();
+                                }}
+                                onChange={handleChangeQuantity}
+                                onKeyDown={(e) => e.stopPropagation()}
                                 margin='dense'
                                 inputProps={{
+                                    autoComplete: 'off',
                                     style: { textAlign: 'center' },
                                 }}
                                 InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <Typography variant="p4">Quantity <Typography variant='s2'>*</Typography></Typography>
+                                        </InputAdornment>
+                                    ),
                                     endAdornment: (
                                         <InputAdornment position="end">
                                             <Typography variant="s4">SPINs</Typography>
@@ -342,15 +377,20 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
                         </Stack>
                         <Stack direction="row" spacing={2} sx={{mt: 1}}>
                             <Typography variant="p4">Total {name} Required</Typography>
-                            <Typography variant="s4">{cost*amount} {name}</Typography>
+                            <Typography variant="s4">{fNumber(cost*quantity)} {name}</Typography>
                         </Stack>
+
+                        <FormControlLabel sx={{mt: 2}} control={<Checkbox checked={disclaimer} onChange={handleChangeDisclaimer}/>}
+                            label={`I understand that I will be purchasing ${quantity} SPINs with total ${fNumber(cost*quantity)} ${name}. Each SPIN will mint the NFT on XRPL and transfer it to my wallet address which is ${account}`}
+                        />
 
                         <Stack direction='row' spacing={2} justifyContent="center" sx={{mt:3, mb:3}}>
                             <Button
                                 variant="outlined"
                                 onClick={handleApprove}
                                 color='primary'
-                                size='small'
+                                disabled={!canApprove}
+                                // size='medium'
                             >
                                 Approve in My Wallet
                             </Button>
@@ -359,9 +399,9 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
                 </DialogContent>
             </BuyDialog>
 
-            <QRDialog
+            <QRDialogNoPush
                 open={openScanQR}
-                type="Trust Set"
+                type="Payment"
                 onClose={handleScanQRClose}
                 qrUrl={qrUrl}
                 nextUrl={nextUrl}

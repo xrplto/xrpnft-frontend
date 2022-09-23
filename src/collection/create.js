@@ -200,7 +200,7 @@ export default function CreateCollection() {
     if (type !== 'normal' && !bulkUrl)
         canCreate = false;
 
-    if (type === 'spinner') {
+    if (type === 'spinner' && canCreate) {
         if (!token)
             canCreate = false;
         else {
