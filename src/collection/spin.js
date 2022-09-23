@@ -325,15 +325,17 @@ export default function SpinNFT({ collection, nfts, setView }) {
         }
 
         setSpinning(true);
+        // setNft(null);
 
         const body = { account, collection: collection.name };
 
+        let newNft = null;
         // https://api.xrpnft.com/api/account/spinnernft
         axios.post(`${BASE_URL}/account/spinnernft`, body, {headers: {'x-access-token': token}})
             .then(res => {
                 let ret = res.status === 200 ? res.data : undefined;
                 if (ret && ret.nft) {
-                    setNft(ret.nft);
+                    newNft = ret.nft;
                     // setCongrats(true);
                 }
             }).catch(err => {
@@ -342,6 +344,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                 // always executed
                 // slotRef.current.style.animation = ``;
                 setTimeout(() => {
+                    setNft(newNft);
                     setCongrats(true);
                     setSpinning(false);
                     play();
@@ -450,7 +453,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                             
                             
                             <Stack alignItems="center" sx={{mt:1}}>
-                                <Typography variant='h2a'>{nft?.name}</Typography>
+                                <Typography variant='h2a'>{spinning?'SPINNING':(nft?nft.name:'Spin to Win')}</Typography>
                             </Stack>
                             <Divider sx={{mt:0.8, mb:2}}/>
                             <Button
@@ -465,17 +468,17 @@ export default function SpinNFT({ collection, nfts, setView }) {
 
                     <Grid container item xs={12} md={6} justifyContent="flex-start" alignItems="flex-start">
                         <Stack spacing={1} sx={{mb:6}}>
-                            <Typography variant="p5">To win a random NFT from this collection, you need to purchase spins.</Typography>
-                            <Typography variant="p5">Each spin costs {infoSPIN.cost} {infoSPIN.name}.</Typography>
-                            <Typography variant="p5">If a collection sells out and an allocation could not be completed, your spin will not be used and will remain in your account.</Typography>
+                            <Typography variant="p5">To win a random NFT from this collection, you need to purchase Mints.</Typography>
+                            <Typography variant="s5">Each mint costs <Typography variant="s5" color="#33C2FF">{infoSPIN.cost} {infoSPIN.name}</Typography>.</Typography>
+                            <Typography variant="p5">It can be used against the purchase of only <Typography variant="s5" color="#57CA22">{collection.name}</Typography> Collection.</Typography>
                             <Typography variant="p5">It can be used against the purchase of any other spinner collection.</Typography>
-                            <Typography variant="p5" sx={{pb: 3}}>You currently have {spins} spins available and 8327.9998 XRP tokens in your wallet.</Typography>
+                            <Typography variant="p5" sx={{pb: 3}}>You currently have <Typography variant="s5" color="#33C2FF">{spins} mints</Typography> available and <Typography variant="s5" color="#33C2FF">8327.9998 XRP</Typography> tokens in your wallet.</Typography>
                             <Stack spacing={2} sx={{pl:5, pr:5}}>
                                 <Button
                                     variant='contained'
                                     onClick={() => setOpenBuySpin(true)}
                                 >
-                                    Buy SPINs With {infoSPIN.name}
+                                    Buy Mints With {infoSPIN.name}
                                 </Button>
 
                                 <Link

@@ -159,7 +159,6 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
             try {
                 const ret = await axios.get(`${BASE_URL}/spin/payload/${uuid}?account=${account}`, {headers: {'x-access-token': token}});
                 const res = ret.data.data.response;
-                console.log(ret.data);
                 // const account = res.account;
                 const resolved_at = res.resolved_at;
                 const dispatched_result = res.dispatched_result;
@@ -308,13 +307,13 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
                 hideBackdrop={true}
             >
                 <BuyDialogTitle id="customized-dialog-title" onClose={handleClose}>
-                    <Typography variant="p4">Buy SPIN</Typography>
+                    <Typography variant="p4">Buy Mint</Typography>
                 </BuyDialogTitle>
 
                 <DialogContent>
                     <Stack sx={{pl:1, pr:1}}>
-                        <Typography variant="p5" sx={{mt: 0}}>To power up the spinner, you need at least 1 or more SPINs. This will enable you to purchase NFTs that is randomly selected from this collection.</Typography>
-                        <Typography variant="p5" sx={{mt: 2}}>Spins that purchased here can not be used on the other collections.</Typography>
+                        <Typography variant="p5" sx={{mt: 0}}>To power up the spinner, you need at least 1 or more Mints. This will enable you to purchase NFTs that is randomly selected from this collection.</Typography>
+                        <Typography variant="p5" sx={{mt: 2}}>Mints purchased for this collection can not be used on the other collections.</Typography>
                         {name !== 'XRP' &&
                             <Typography variant="p5" sx={{mt: 2}}>If you want to buy or trade {name} tokens please &nbsp;
                                 <Link
@@ -330,7 +329,7 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
                         }
                         <Stack direction="row" spacing={2} sx={{mt: 2}} alignItems="center">
                             <Typography variant="p4">Cost</Typography>
-                            <Typography variant="s4">{cost} {name} / SPIN</Typography>
+                            <Typography variant="s5" color="#33C2FF">{cost} {name} / Mint</Typography>
                             <Link
                                 underline="none"
                                 color="inherit"
@@ -368,7 +367,7 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
                                     ),
                                     endAdornment: (
                                         <InputAdornment position="end">
-                                            <Typography variant="s4">SPINs</Typography>
+                                            <Typography variant="s4">Mints</Typography>
                                         </InputAdornment>
                                     ),
                                 }}
@@ -377,11 +376,11 @@ export default function BuySpinDialog({open, setOpen, infoSPIN, minter, openSnac
                         </Stack>
                         <Stack direction="row" spacing={2} sx={{mt: 1}}>
                             <Typography variant="p4">Total {name} Required</Typography>
-                            <Typography variant="s4">{fNumber(cost*quantity)} {name}</Typography>
+                            <Typography variant="s5" color="#33C2FF">{fNumber(cost*quantity)} {name}</Typography>
                         </Stack>
 
                         <FormControlLabel sx={{mt: 2}} control={<Checkbox checked={disclaimer} onChange={handleChangeDisclaimer}/>}
-                            label={`I understand that I will be purchasing ${quantity} SPINs with total ${fNumber(cost*quantity)} ${name}. Each SPIN will mint the NFT on XRPL and transfer it to my wallet address which is ${account}`}
+                            label={<Typography variant="s6">I understand that I will be purchasing <Typography variant="s6" color="#33C2FF">{quantity} Mints</Typography> with total <Typography variant="s6" color="#33C2FF">{fNumber(cost*quantity)} {name}</Typography>. Each Mint will mint the NFT on XRPL and transfer it to my wallet address which is <Typography variant="s6" color="#33C2FF">{account}</Typography></Typography>}
                         />
 
                         <Stack direction='row' spacing={2} justifyContent="center" sx={{mt:3, mb:3}}>
