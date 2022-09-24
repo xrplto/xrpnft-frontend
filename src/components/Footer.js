@@ -73,56 +73,110 @@ function Footer() {
                         <Grid container>
                             <Grid item xs={6} sm={6} md={3} lg={3} sx={{ mt: 3 }}>
                                 <Stack>
-                                    <Typography variant='h6'>Products</Typography>
+                                    <Typography variant='h6'>Marketplace</Typography>
                                     <Link
-                                        href="https://xrpscan.com/"
+                                        href="/assets"
                                         sx={{ mt: 2, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>XRP Ledger Explorer</Typography>
+                                        <Typography variant='link'>All NFTs</Typography>
                                     </Link>
                                     <Link
-                                        href="/status/coming-soon"
+                                        href="/category/art"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>Token API</Typography>
+                                        <Typography variant='link'>Art</Typography>
                                     </Link>
                                     <Link
-                                        href="https://jobs.xrpl.org/jobs"
+                                        href="/category/collectables"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>Job Board</Typography>
+                                        <Typography variant='link'>Collectables</Typography>
                                     </Link>
                                     <Link
-                                        href="/sitemap/token.xml"
+                                        href="/category/domain-names"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>Sitemap</Typography>
+                                        <Typography variant='link'>Domain Name</Typography>
+                                    </Link>
+                                    <Link
+                                        href="/category/music"
+                                        sx={{ mt: 1.5, display: 'inline-flex' }}
+                                        underline="none"
+                                        target="_blank"
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Typography variant='link'>Music</Typography>
+                                    </Link>
+                                    <Link
+                                        href="/category/photography"
+                                        sx={{ mt: 1.5, display: 'inline-flex' }}
+                                        underline="none"
+                                        target="_blank"
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Typography variant='link'>Photography</Typography>
+                                    </Link>
+                                    <Link
+                                        href="/category/sports"
+                                        sx={{ mt: 1.5, display: 'inline-flex' }}
+                                        underline="none"
+                                        target="_blank"
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Typography variant='link'>Sports</Typography>
+                                    </Link>
+                                    <Link
+                                        href="/category/trading-cards"
+                                        sx={{ mt: 1.5, display: 'inline-flex' }}
+                                        underline="none"
+                                        target="_blank"
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Typography variant='link'>Trading Cards</Typography>
+                                    </Link>
+                                    <Link
+                                        href="/category/utility"
+                                        sx={{ mt: 1.5, display: 'inline-flex' }}
+                                        underline="none"
+                                        target="_blank"
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Typography variant='link'>Utility</Typography>
+                                    </Link>
+                                    <Link
+                                        href="/category/virtual-worlds"
+                                        sx={{ mt: 1.5, display: 'inline-flex' }}
+                                        underline="none"
+                                        target="_blank"
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Typography variant='link'>Virtual Worlds</Typography>
                                     </Link>
                                 </Stack>
                             </Grid>
                             <Grid item xs={6} sm={6} md={3} lg={3} sx={{ mt: 3 }}>
                                 <Stack>
-                                    <Typography variant='h6'>Company</Typography>
+                                    <Typography variant='h6'>My Account</Typography>
                                     <Link
-                                        href="/status/coming-soon"
+                                        href="/account"
                                         sx={{ mt: 2, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>About us</Typography>
+                                        <Typography variant='link'>Profile</Typography>
                                     </Link>
                                     <Link
                                         href="/status/coming-soon"
@@ -131,102 +185,102 @@ function Footer() {
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>Terms of use</Typography>
+                                        <Typography variant='link'>Favorites</Typography>
                                     </Link>
                                     <Link
-                                        href="/status/coming-soon"
+                                        href="/rankings/watchlist"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>Privacy Policy</Typography>
+                                        <Typography variant='link'>Watchlist</Typography>
                                     </Link>
                                     <Link
-                                        href="/status/coming-soon"
+                                        href="/collections"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>Community Rules</Typography>
+                                        <Typography variant='link'>My Collections</Typography>
                                     </Link>
                                     <Link
-                                        href="/status/coming-soon"
+                                        href="/account/settings"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>Disclaimer</Typography>
-                                    </Link>
-                                    <Link
-                                        href="/status/coming-soon"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Methodology</Typography>
-                                    </Link>
-                                    <Link
-                                        href="/status/coming-soon"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Careers</Typography>
+                                        <Typography variant='link'>Settings</Typography>
                                     </Link>
                                 </Stack>
                             </Grid>
                             <Grid item xs={6} sm={6} md={3} lg={3} sx={{ mt: 3 }}>
                                 <Stack>
-                                    <Typography variant='h6'>Support</Typography>
+                                    <Typography variant='h6'>Resources</Typography>
                                     <Link
-                                        href="/status/coming-soon"
+                                        href="/platform-status"
                                         sx={{ mt: 2, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>Request Form</Typography>
+                                        <Typography variant='link'>Platform Status</Typography>
                                     </Link>
                                     <Link
-                                        href="/status/coming-soon"
+                                        href="/partners"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>Contact Support</Typography>
+                                        <Typography variant='link'>Partners</Typography>
                                     </Link>
                                     <Link
-                                        href="/status/coming-soon"
+                                        href="/buy-crypto"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>FAQ</Typography>
+                                        <Typography variant='link'>Buy XRP</Typography>
                                     </Link>
                                     <Link
-                                        href="/status/coming-soon"
+                                        href="/blog"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>Glossary</Typography>
+                                        <Typography variant='link'>Blog</Typography>
+                                    </Link>
+                                    <Link
+                                        href="/discord"
+                                        sx={{ mt: 1.5, display: 'inline-flex' }}
+                                        underline="none"
+                                        target="_blank"
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Typography variant='link'>Help Center</Typography>
                                     </Link>
                                 </Stack>
                             </Grid>
                             <Grid item xs={6} sm={6} md={3} lg={3} sx={{ mt: 3 }}>
                                 <Stack>
-                                    <Typography variant='h6'>Socials</Typography>
+                                    <Typography variant='h6'>Social</Typography>
                                     <Link
-                                        href="https://www.facebook.com/xrpl.to/"
+                                        href="https://twitter.com/XRPNFTdotcom/"
                                         sx={{ mt: 2, display: 'inline-flex' }}
+                                        underline="none"
+                                        target="_blank"
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Typography variant='link'>Twitter</Typography>
+                                    </Link>
+                                    <Link
+                                        href="https://www.facebook.com/xrpnft/"
+                                        sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
                                         rel="noreferrer noopener nofollow"
@@ -234,16 +288,7 @@ function Footer() {
                                         <Typography variant='link'>Facebook</Typography>
                                     </Link>
                                     <Link
-                                        href="https://t.me/xrplto/"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Telegram</Typography>
-                                    </Link>
-                                    <Link
-                                        href="https://www.instagram.com/xrpl.to/"
+                                        href="https://www.instagram.com/xrpnftdotcom"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"
@@ -252,16 +297,7 @@ function Footer() {
                                         <Typography variant='link'>Instagram</Typography>
                                     </Link>
                                     <Link
-                                        href="https://www.reddit.com/r/xrplto/"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Reddit</Typography>
-                                    </Link>
-                                    <Link
-                                        href="https://xrpl.to/discord"
+                                        href="https://xrpnft.com/discord"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
                                         target="_blank"

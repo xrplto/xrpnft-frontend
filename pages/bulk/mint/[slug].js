@@ -112,7 +112,7 @@ export async function getServerSideProps(ctx) {
     //     ogp.canonical = 'https://xrpnft.com';
     //     ogp.title = 'Bulk Mint Items';
     //     ogp.url = 'https://xrpnft.com/';
-    //     ogp.imgUrl = 'https://xrpnft.com/ogp.png';
+    //     ogp.imgUrl = 'https://xrpnft.com/static/ogp.png';
     //     ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
     //     ret = {ogp, data};
     // }
@@ -121,7 +121,7 @@ export async function getServerSideProps(ctx) {
     ogp.canonical = 'https://xrpnft.com';
     ogp.title = 'Bulk Mint Items';
     ogp.url = 'https://xrpnft.com/';
-    ogp.imgUrl = 'https://xrpnft.com/ogp.png';
+    ogp.imgUrl = 'https://xrpnft.com/static/ogp.png';
     ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
     ret = {ogp, data: {slug}};
 

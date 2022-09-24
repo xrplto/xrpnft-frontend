@@ -46,7 +46,7 @@ export const getServerSideProps = async ({ res }) => {
     ${slugs.map((slug) => {
     return `
     <url>
-        <loc>https://xrpl.to/token/${slug}</loc>
+        <loc>https://xrpnft.com/assets/${slug}</loc>
         <lastmod>${time}</lastmod>
         <changefreq>always</changefreq>
     </url>`}).join('')

@@ -3,6 +3,6 @@ User-agent: *
 Allow: /
 
 # User-Agent: YandexBot
-# Disallow: /token
+# Disallow: /assets
 
 Sitemap: https://xrpnft.com/sitemap.xml

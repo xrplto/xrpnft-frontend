@@ -352,7 +352,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
             });
     }
 
-    const spin = () => {
+    const mint = () => {
         getSpinnerNFT();
         // resetAllSlots();
 
@@ -453,25 +453,24 @@ export default function SpinNFT({ collection, nfts, setView }) {
                             
                             
                             <Stack alignItems="center" sx={{mt:1}}>
-                                <Typography variant='h2a'>{spinning?'SPINNING':(nft?nft.name:'Spin to Win')}</Typography>
+                                <Typography variant='h2a'>{spinning?'SPINNING':(nft?nft.name:'Spin to Mint')}</Typography>
                             </Stack>
                             <Divider sx={{mt:0.8, mb:2}}/>
                             <Button
                                 variant='contained'
-                                onClick={() => spin()}
+                                onClick={() => mint()}
                                 sx={{pl:3, pr:3}}
                             >
-                                Spin
+                                Mint
                             </Button>
                         </CardWrapper>
                     </Grid>
 
                     <Grid container item xs={12} md={6} justifyContent="flex-start" alignItems="flex-start">
                         <Stack spacing={1} sx={{mb:6}}>
-                            <Typography variant="p5">To win a random NFT from this collection, you need to purchase Mints.</Typography>
+                            <Typography variant="p5">To mint a random NFT from this collection, you need to purchase Mints.</Typography>
                             <Typography variant="s5">Each mint costs <Typography variant="s5" color="#33C2FF">{infoSPIN.cost} {infoSPIN.name}</Typography>.</Typography>
                             <Typography variant="p5">It can be used against the purchase of only <Typography variant="s5" color="#57CA22">{collection.name}</Typography> Collection.</Typography>
-                            <Typography variant="p5">It can be used against the purchase of any other spinner collection.</Typography>
                             <Typography variant="p5" sx={{pb: 3}}>You currently have <Typography variant="s5" color="#33C2FF">{spins} mints</Typography> available and <Typography variant="s5" color="#33C2FF">8327.9998 XRP</Typography> tokens in your wallet.</Typography>
                             <Stack spacing={2} sx={{pl:5, pr:5}}>
                                 <Button
@@ -485,7 +484,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                                     underline="none"
                                     color="inherit"
                                     target="_blank"
-                                    href={`/buy-xrp`}
+                                    href={`/buy-crypto`}
                                     rel="noreferrer noopener nofollow"
                                 >
                                     <Stack>
@@ -502,6 +501,9 @@ export default function SpinNFT({ collection, nfts, setView }) {
                     </Grid>
                 </Grid>
             </Container>
+
+            <Stack sx={{mt:5, minHeight: '20vh'}}>
+            </Stack>
         </>
     );
 };

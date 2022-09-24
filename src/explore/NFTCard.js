@@ -111,7 +111,7 @@ export default function NFTCard({ nft }) {
     // }, [URI])
 
     return (
-        <Link href={`/token/${uuid}`} underline='none'>
+        <Link href={`/assets/${uuid}`} underline='none'>
             <CardWrapper
                 style={{
                     width: 280,

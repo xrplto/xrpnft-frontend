@@ -16,7 +16,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import BuyXRP from 'src/buyxrp';
+import BuyCrypto from 'src/buycrypto';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -73,7 +73,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="sm">
-                <BuyXRP
+                <BuyCrypto
                     fiats={data.fiats}
                     coins={data.coins}
                 />
@@ -115,7 +115,7 @@ export async function getStaticProps() {
         ogp.canonical = 'https://xrpnft.com';
         ogp.title = 'XRPNFT, the largest XRPL NFT marketplace';
         ogp.url = 'https://xrpnft.com/';
-        ogp.imgUrl = 'https://xrpnft.com/ogp.png';
+        ogp.imgUrl = 'https://xrpnft.com/static/ogp.png';
         ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
 
         ret = {data, ogp};

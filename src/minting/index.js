@@ -182,7 +182,7 @@ export default function Minting() {
                     if (dispatched_result === 'tesSUCCESS') {
                         // handleClose();
                         openSnackbar('NFTokenMint successful!', 'success');
-                        window.location.href = `/token/${uuidNft}`;
+                        window.location.href = `/assets/${uuidNft}`;
                     }
                     else {
                         openSnackbar('NFTokenMint failed!', 'error');
@@ -254,7 +254,7 @@ export default function Minting() {
                     // setOpenScanQR(true);
 
                     openSnackbar('NFT mint successful!', 'success')
-                    window.location.href = `/token/${uuid_nft}`;
+                    window.location.href = `/assets/${uuid_nft}`;
                     // setFile(null);
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }

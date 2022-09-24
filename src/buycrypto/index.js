@@ -105,8 +105,8 @@ export default function BuyXRP({fiats, coins}) {
     
     const isLoggedIn = accountProfile && accountProfile.account;
 
-    const banxa_black = "/banxa-logo-black.png";
-    const banxa_white = "/banxa-logo-white.png";
+    const banxa_black = "/static/banxa-logo-black.png";
+    const banxa_white = "/static/banxa-logo-white.png";
     
     const banxa_img = darkMode?banxa_white:banxa_black;
 
@@ -224,7 +224,7 @@ export default function BuyXRP({fiats, coins}) {
                 source_amount: fiatAmount,
                 target: "XRP",
                 wallet_address: accountProfile.account,
-                return_url_on_success: "https://xrpnft.com/buy-xrp"
+                return_url_on_success: "https://xrpnft.com/buy-crypto"
             };
 
             // {

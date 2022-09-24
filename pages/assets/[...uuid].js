@@ -95,8 +95,8 @@ export async function getServerSideProps(ctx) {
 
         var t1 = performance.now();
 
-        // https://api.xrpnft.com/api/token/4a23c44e703944909b29b53f5e94a44b
-        const res = await axios.get(`${BASE_URL}/token/${uuid}`);
+        // https://api.xrpnft.com/api/assets/4a23c44e703944909b29b53f5e94a44b
+        const res = await axios.get(`${BASE_URL}/assets/${uuid}`);
 
         data = res.data;
 
@@ -146,15 +146,15 @@ export async function getServerSideProps(ctx) {
         ogp.canonical = 'https://xrpnft.com';
         ogp.title = 'XRPNFT, the largest XRPL NFT marketplace';
         ogp.url = 'https://xrpnft.com/';
-        ogp.imgUrl = 'https://xrpnft.com/ogp.png';
+        ogp.imgUrl = 'https://xrpnft.com/static/ogp.png';
         ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
 
         ret = {data, ogp};*/
 
         let ogp = {};
-        ogp.canonical = `https://xrpnft.com/token/${uuid}`;
+        ogp.canonical = `https://xrpnft.com/assets/${uuid}`;
         ogp.title = `${name} - XRPNFT, the largest XRPL NFT marketplace`;
-        ogp.url = `https://xrpnft.com/token/${uuid}`;
+        ogp.url = `https://xrpnft.com/assets/${uuid}`;
         ogp.imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
         ogp.desc = meta.description?meta.description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
 
