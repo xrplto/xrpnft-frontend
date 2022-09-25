@@ -132,7 +132,7 @@ const SlotBox = styled('div') (
     `
 );
   
-const numberOfSymbolsPerSlot = 18; // 18;
+const numberOfSymbolsPerSlot = 5;
 
 function arrayRotate(arr, reverse) {
     if (reverse)
@@ -305,9 +305,14 @@ export default function SpinNFT({ collection, nfts, setView }) {
         var nums = [];
         // nums.push(setMainImage());
 
+        // for (var i = 0; i < numberOfSymbolsPerSlot; i++) {
+        //     var randomIndex = Math.floor(Math.random() * nfts.length);
+        //     nums.push(setImage(randomIndex, i));
+        // }
+
+        const len = nfts.length;
         for (var i = 0; i < numberOfSymbolsPerSlot; i++) {
-            var randomIndex = Math.floor(Math.random() * nfts.length);
-            nums.push(setImage(randomIndex, i));
+            nums.push(setImage(i % len, i));
         }
 
         return nums;
@@ -353,7 +358,13 @@ export default function SpinNFT({ collection, nfts, setView }) {
     }
 
     const mint = () => {
+        // if (spinning)
+        //     setSpinning(false);
+        // else
+        //     setSpinning(true);
+
         getSpinnerNFT();
+        
         // resetAllSlots();
 
         // setReelArraySymbols().then((syms) => {
@@ -379,7 +390,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
 
             <Confetti
                 width={width}
-                height={height*2}
+                height={height}
                 initialVelocityX={4}
                 initialVelocityY={100}
                 run={true}
@@ -424,6 +435,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                                     )`,
                             }}
                         >
+
                             <SlotBox key={11} id={12}>
                                 <ColorExtractor getColors={getColors}>
                                     <img src={nftImgUrl}
@@ -442,7 +454,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                                     onAnimationStart={onAnimationStart}
                                     onAnimationEnd={onAnimationEnd}
                                     style={{
-                                        animation: spinning?`spinner 0.5s infinite forwards ease-in-out`:``,
+                                        animation: spinning?`spinner .5s infinite forwards ease-in-out`:``,
                                         filter: !spins?'blur(30px)':'',
                                         WebkitMask: !spins?'linear-gradient(rgb(255, 255, 255), transparent)':''
                                     }}
@@ -502,8 +514,8 @@ export default function SpinNFT({ collection, nfts, setView }) {
                 </Grid>
             </Container>
 
-            <Stack sx={{mt:5, minHeight: '20vh'}}>
-            </Stack>
+            {/* <Stack sx={{mt:5, minHeight: '20vh'}}>
+            </Stack> */}
         </>
     );
 };

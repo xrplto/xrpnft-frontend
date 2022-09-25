@@ -28,6 +28,18 @@ import InfoIcon from '@mui/icons-material/Info';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 
+import ClassIcon from '@mui/icons-material/Class';
+import ArtTrackIcon from '@mui/icons-material/ArtTrack';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import DnsIcon from '@mui/icons-material/Dns';
+import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
+import WallpaperIcon from '@mui/icons-material/Wallpaper';
+import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
+import PaymentsIcon from '@mui/icons-material/Payments';
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
+import ViewInArIcon from '@mui/icons-material/ViewInAr';
+import PaletteIcon from '@mui/icons-material/Palette';
+
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
@@ -91,6 +103,59 @@ const CustomSelect = styled(Select)(({ theme }) => ({
     }
 }));
 
+const CATEGORIES = [
+    {
+        title: 'NONE',
+        value: 'none',
+        icon: (<ClassIcon />)
+    },
+    {
+        title: 'Art',
+        value: 'art',
+        icon: (<PaletteIcon />)
+    },
+    {
+        title: 'Collectables',
+        value: 'collectables',
+        icon: (<CollectionsIcon />)
+    },
+    {
+        title: 'Domain Names',
+        value: 'domain-names',
+        icon: (<DnsIcon />)
+    },
+    {
+        title: 'Music',
+        value: 'music',
+        icon: (<LibraryMusicIcon />)
+    },
+    {
+        title: 'Photography',
+        value: 'photography',
+        icon: (<WallpaperIcon />)
+    },
+    {
+        title: 'Sports',
+        value: 'sports',
+        icon: (<SportsBasketballIcon />)
+    },
+    {
+        title: 'Trading Cards',
+        value: 'trading-cards',
+        icon: (<PaymentsIcon />)
+    },
+    {
+        title: 'Utility',
+        value: 'utility',
+        icon: (<HomeRepairServiceIcon />)
+    },
+    {
+        title: 'Virtual Worlds',
+        value: 'virtual-worlds',
+        icon: (<ViewInArIcon />)
+    },
+];
+
 export default function Minting() {
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -110,6 +175,9 @@ export default function Minting() {
     const [extLink, setExtLink] = useState('');
     const [description, setDescription] = useState('');
     const [collectionName, setCollectionName] = useState('')
+    const [category, setCategory] = useState('none');
+    const [royalty, setRoyalty] = useState('0');
+    const [explicit, setExplicit] = useState(false);
     const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
     const [passphrase, setPassPhrase] = useState('');
     
@@ -363,6 +431,19 @@ export default function Minting() {
         setFilter('');
     };
 
+    const handleChangeCategory = (event) => {
+        const value = event.target.value;
+        setCategory(value);
+    }
+
+    const handleChangeRoyalty = (e) => {
+        const value = e.target.value;
+        try {
+            const val = value?value.replace(/[^0-9.]/g, ""):'0';
+            setRoyalty(val)
+        } catch (e) {}
+    }
+
     return (
         <>
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
@@ -440,6 +521,33 @@ export default function Minting() {
                     }}
                 />
             </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Category</Typography>
+                <Typography variant='p3'>
+                    This helps your NFT to be found when people search by Category.
+                </Typography>
+                <CustomSelect
+                    id='select_category'
+                    value={category}
+                    onChange={handleChangeCategory}
+                    MenuProps={{ disableScrollLock: true }}
+                >
+                    {CATEGORIES.map((cat, idx) => (
+                        <MenuItem
+                            key={idx}
+                            value={cat.value}
+                            sx={{pt:2, pb:2}}
+                        >
+                            <Stack direction='row' spacing={1} alignItems="center">
+                                {cat.icon}
+                                <Typography variant='d4'>{cat.title}</Typography>
+                            </Stack>
+                        </MenuItem>
+                    ))}
+                </CustomSelect>
+            </Stack>
+
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Description</Typography>
                 <Typography variant='p3'>
@@ -468,6 +576,20 @@ export default function Minting() {
             </Stack>
 
             <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Royalty <Typography variant='s2'>*</Typography><Typography variant='s7'> (Transfer fee)</Typography></Typography>
+
+                <TextField required placeholder='' margin='dense'
+                    onChange={handleChangeRoyalty}
+                    value={royalty}
+                    sx={{
+                        '&.MuiTextField-root': {
+                            marginTop: 1
+                        }
+                    }}
+                />
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Flags</Typography>
                 <FormGroup sx={{ flexDirection: 'row' }}>
                     {
@@ -482,7 +604,9 @@ export default function Minting() {
                             />
                         ))
                     }
+                    
                 </FormGroup>
+
                 <Stack spacing={1} pl={0}>
                     <Typography variant='p3'>
                         <Typography variant='s2'>Burnable:</Typography> If set, indicates that the issuer (or an entity authorized by the issuer) can destroy the object. The object's owner can always do so.
@@ -497,6 +621,19 @@ export default function Minting() {
                         <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer.
                     </Typography>
                 </Stack>
+
+                <FormGroup sx={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <FormControlLabel
+                        key='check_explicit'
+                        label='Explicit content'
+                        value='explicit'
+                        control={
+                            <Checkbox checked={explicit} onChange={()=>setExplicit(!explicit)} />
+                        }
+                    />
+                    <Typography variant='p3'>Check if content if for audiences over 18.</Typography>
+                </FormGroup>
+                
             </Stack>
             
             <Stack spacing={2} mb={3}>

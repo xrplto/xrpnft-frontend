@@ -188,8 +188,8 @@ export default function ViewNFT({collection}) {
             {/* <Button component={Link} href="/collection/create" variant="contained" color="primary">
                 Create a collection
             </Button> */}
-            <Stack sx={{mt:5, minHeight: '50vh'}}>
-            </Stack>
+            {/* <Stack sx={{mt:5, minHeight: '50vh'}}>
+            </Stack> */}
         </>
     );
 }

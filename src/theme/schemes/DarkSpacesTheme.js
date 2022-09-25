@@ -1177,6 +1177,7 @@ export const DarkSpacesTheme = createTheme({
           s4: 'span',
           s5: 'span',
           s6: 'span',
+          s7: 'span',
           p1: 'p',
           p2: 'p',
           p3: 'p',
@@ -1290,6 +1291,11 @@ export const DarkSpacesTheme = createTheme({
       fontWeight: 500,
       fontSize: 14,
       color: colors.alpha.black[100]
+    },
+    s7: {
+      fontWeight: 400,
+      fontSize: 12,
+      color: colors.alpha.black[50]
     },
     h1: {
       fontWeight: 700,
