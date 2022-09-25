@@ -3,6 +3,7 @@ import axios from 'axios'
 import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux'
+import Decimal from 'decimal.js';
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -106,52 +107,42 @@ const CustomSelect = styled(Select)(({ theme }) => ({
 const CATEGORIES = [
     {
         title: 'NONE',
-        value: 'none',
         icon: (<ClassIcon />)
     },
     {
         title: 'Art',
-        value: 'art',
         icon: (<PaletteIcon />)
     },
     {
         title: 'Collectables',
-        value: 'collectables',
         icon: (<CollectionsIcon />)
     },
     {
         title: 'Domain Names',
-        value: 'domain-names',
         icon: (<DnsIcon />)
     },
     {
         title: 'Music',
-        value: 'music',
         icon: (<LibraryMusicIcon />)
     },
     {
         title: 'Photography',
-        value: 'photography',
         icon: (<WallpaperIcon />)
     },
     {
         title: 'Sports',
-        value: 'sports',
         icon: (<SportsBasketballIcon />)
     },
     {
         title: 'Trading Cards',
-        value: 'trading-cards',
         icon: (<PaymentsIcon />)
     },
     {
         title: 'Utility',
-        value: 'utility',
         icon: (<HomeRepairServiceIcon />)
     },
     {
         title: 'Virtual Worlds',
-        value: 'virtual-worlds',
         icon: (<ViewInArIcon />)
     },
 ];
@@ -175,11 +166,11 @@ export default function Minting() {
     const [extLink, setExtLink] = useState('');
     const [description, setDescription] = useState('');
     const [collectionName, setCollectionName] = useState('')
-    const [category, setCategory] = useState('none');
+    const [category, setCategory] = useState('NONE');
     const [royalty, setRoyalty] = useState('0');
     const [explicit, setExplicit] = useState(false);
     const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
-    const [passphrase, setPassPhrase] = useState('');
+    // const [passphrase, setPassPhrase] = useState('');
     
     const [fileUrl, setFileUrl] = useState(null);
     const [file, setFile] = useState(null);
@@ -195,10 +186,10 @@ export default function Minting() {
     const [collections, setCollections] = useState([]);
     const [filter, setFilter] = useState('');
 
-    const [validPassword, setValidPassword] = useState(false);
+    // const [validPassword, setValidPassword] = useState(false);
 
     const validAccount = account && token && user_token;
-    const canCreate = validAccount && file && nftName && collectionName && passphrase && validPassword;
+    const canCreate = validAccount && file && nftName && collectionName; //  && passphrase && validPassword;
 
     const loadCollections=() => {
         if (!account || !token) {
@@ -284,6 +275,12 @@ export default function Minting() {
             return;
         }
 
+        const num = new Decimal(royalty).toNumber();
+        if (num > 50 || num < 0) {
+            openSnackbar('Invalid Royalty', 'error');
+            return;
+        }
+
         // POST https://api.xrpnft.com/api/mint
         setLoading(true);
         try {
@@ -293,9 +290,10 @@ export default function Minting() {
             data.external_link = extLink;
             data.description = description;
             data.collection = collectionName;
+            data.category = category;
+            data.royalty = royalty;
+            data.explicit = explicit;
             data.flag = flag;
-
-            data.passphrase = passphrase;
 
             const formdata = new FormData();
             formdata.append('nft', file);
@@ -311,19 +309,18 @@ export default function Minting() {
                 const ret = res.data;
                 if (ret.status) {
                     const uuid_nft = ret.uuid_nft;
-                    // const uuid = ret.uuid;
-                    // const qrlink = ret.qrUrl;
-                    // const nextlink = ret.next;
+                    const uuid = ret.uuid;
+                    const qrlink = ret.qrUrl;
+                    const nextlink = ret.next;
 
-                    // setUuidNft(uuid_nft);
-                    // setUuid(uuid);
-                    // setQrUrl(qrlink);
-                    // setNextUrl(nextlink);
-                    // setOpenScanQR(true);
+                    setUuidNft(uuid_nft);
+                    setUuid(uuid);
+                    setQrUrl(qrlink);
+                    setNextUrl(nextlink);
+                    setOpenScanQR(true);
 
-                    openSnackbar('NFT mint successful!', 'success')
-                    window.location.href = `/assets/${uuid_nft}`;
-                    // setFile(null);
+                    // openSnackbar('NFT mint successful!', 'success')
+                    // window.location.href = `/assets/${uuid_nft}`;
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
                     const err = ret.err;
@@ -440,8 +437,9 @@ export default function Minting() {
         const value = e.target.value;
         try {
             const val = value?value.replace(/[^0-9.]/g, ""):'0';
-            setRoyalty(val)
-        } catch (e) {}
+            setRoyalty(val);
+        } catch (e) {
+        }
     }
 
     return (
@@ -503,139 +501,8 @@ export default function Minting() {
                         }
                     }}
                 />
-                <Typography variant='p4'>External link</Typography>
-                <Typography variant='p3'>
-                    {'This site will include a link to this URL on this item\'s detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.'}
-                </Typography>
-                <TextField
-                    required placeholder='External link'
-                    margin='dense'
-                    onChange={(e) => {
-                        setExtLink(e.target.value)
-                    }}
-                    value={extLink}
-                    sx={{
-                        '&.MuiTextField-root': {
-                            marginTop: 1
-                        }
-                    }}
-                />
             </Stack>
 
-            <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Category</Typography>
-                <Typography variant='p3'>
-                    This helps your NFT to be found when people search by Category.
-                </Typography>
-                <CustomSelect
-                    id='select_category'
-                    value={category}
-                    onChange={handleChangeCategory}
-                    MenuProps={{ disableScrollLock: true }}
-                >
-                    {CATEGORIES.map((cat, idx) => (
-                        <MenuItem
-                            key={idx}
-                            value={cat.value}
-                            sx={{pt:2, pb:2}}
-                        >
-                            <Stack direction='row' spacing={1} alignItems="center">
-                                {cat.icon}
-                                <Typography variant='d4'>{cat.title}</Typography>
-                            </Stack>
-                        </MenuItem>
-                    ))}
-                </CustomSelect>
-            </Stack>
-
-            <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Description</Typography>
-                <Typography variant='p3'>
-                    The description will be included on the item's detail page underneath its image. <Link href="https://www.markdownguide.org/cheat-sheet/">Markdown</Link> syntax is supported.
-                </Typography>
-                <TextField
-                    placeholder='Provide a detailed description of your item'
-                    margin='dense'
-                    multiline
-                    maxRows={4}
-                    value={description}
-                    onChange={(e) => {
-                        setDescription(e.target.value)
-                    }}
-                    sx={{
-                        '&.MuiTextField-root': {
-                            marginTop: 1,
-                            minHeight: 10
-                        },
-                        '& .MuiOutlinedInput-root': {
-                            height: 100,
-                            alignItems: 'start'
-                        }
-                    }}
-                />
-            </Stack>
-
-            <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Royalty <Typography variant='s2'>*</Typography><Typography variant='s7'> (Transfer fee)</Typography></Typography>
-
-                <TextField required placeholder='' margin='dense'
-                    onChange={handleChangeRoyalty}
-                    value={royalty}
-                    sx={{
-                        '&.MuiTextField-root': {
-                            marginTop: 1
-                        }
-                    }}
-                />
-            </Stack>
-
-            <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Flags</Typography>
-                <FormGroup sx={{ flexDirection: 'row' }}>
-                    {
-                        TOKEN_FLAGS.map((f) => (
-                            <FormControlLabel
-                                key={f.value}
-                                label={f.label}
-                                value={f.value}
-                                control={
-                                    <Checkbox checked={(flag & f.value) !== 0} onChange={handleFlagChange} />
-                                }
-                            />
-                        ))
-                    }
-                    
-                </FormGroup>
-
-                <Stack spacing={1} pl={0}>
-                    <Typography variant='p3'>
-                        <Typography variant='s2'>Burnable:</Typography> If set, indicates that the issuer (or an entity authorized by the issuer) can destroy the object. The object's owner can always do so.
-                    </Typography>
-                    <Typography variant='p3'>
-                        <Typography variant='s2'>OnlyXRP:</Typography> If set, nft can only be offered or sold for XRP.
-                    </Typography>
-                    <Typography variant='p3'>
-                        <Typography variant='s2'>TrustLine:</Typography> If set, indicates that the issuer wants a trustline to be automatically created. This is useful when the token can be offered for sale for assets other than XRP and the issuer charges a TransferFee. If this flag is set, a trust line is automatically created as needed to allow the issuer to receive the appropriate transfer fee. If this flag is not set, an attempt to transfer the NFToken for an asset for which the issuer does not have a trustline fails.
-                    </Typography>
-                    <Typography variant='p3'>
-                        <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer.
-                    </Typography>
-                </Stack>
-
-                <FormGroup sx={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <FormControlLabel
-                        key='check_explicit'
-                        label='Explicit content'
-                        value='explicit'
-                        control={
-                            <Checkbox checked={explicit} onChange={()=>setExplicit(!explicit)} />
-                        }
-                    />
-                    <Typography variant='p3'>Check if content if for audiences over 18.</Typography>
-                </FormGroup>
-                
-            </Stack>
-            
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Collection <Typography variant='s2'>*</Typography></Typography>
                 <Typography variant='p3'>
@@ -728,6 +595,140 @@ export default function Minting() {
             </Stack>
 
             <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Category</Typography>
+                <Typography variant='p3'>
+                    This helps your NFT to be found when people search by Category.
+                </Typography>
+                <CustomSelect
+                    id='select_category'
+                    value={category}
+                    onChange={handleChangeCategory}
+                    MenuProps={{ disableScrollLock: true }}
+                >
+                    {CATEGORIES.map((cat, idx) => (
+                        <MenuItem
+                            key={idx}
+                            value={cat.title}
+                            sx={{pt:2, pb:2}}
+                        >
+                            <Stack direction='row' spacing={1} alignItems="center">
+                                {cat.icon}
+                                <Typography variant='d4'>{cat.title}</Typography>
+                            </Stack>
+                        </MenuItem>
+                    ))}
+                </CustomSelect>
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>External link</Typography>
+                <Typography variant='p3'>
+                    {'This site will include a link to this URL on this item\'s detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.'}
+                </Typography>
+                <TextField
+                    required placeholder='External link'
+                    margin='dense'
+                    onChange={(e) => {
+                        setExtLink(e.target.value)
+                    }}
+                    value={extLink}
+                    sx={{
+                        '&.MuiTextField-root': {
+                            marginTop: 1
+                        }
+                    }}
+                />
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Description</Typography>
+                <Typography variant='p3'>
+                    The description will be included on the item's detail page underneath its image. <Link href="https://www.markdownguide.org/cheat-sheet/">Markdown</Link> syntax is supported.
+                </Typography>
+                <TextField
+                    placeholder='Provide a detailed description of your item'
+                    margin='dense'
+                    multiline
+                    maxRows={4}
+                    value={description}
+                    onChange={(e) => {
+                        setDescription(e.target.value)
+                    }}
+                    sx={{
+                        '&.MuiTextField-root': {
+                            marginTop: 1,
+                            minHeight: 10
+                        },
+                        '& .MuiOutlinedInput-root': {
+                            height: 100,
+                            alignItems: 'start'
+                        }
+                    }}
+                />
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Royalty <Typography variant='s2'>*</Typography><Typography variant='s7'> (Transfer fee)</Typography></Typography>
+                <Typography variant='p3'>Between 0.00% and 50.00% in increments of 0.001.</Typography>
+                <TextField required placeholder='' margin='dense'
+                    onChange={handleChangeRoyalty}
+                    value={royalty}
+                    sx={{
+                        '&.MuiTextField-root': {
+                            marginTop: 1
+                        }
+                    }}
+                />
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Flags</Typography>
+                <FormGroup sx={{ flexDirection: 'row' }}>
+                    {
+                        TOKEN_FLAGS.map((f) => (
+                            <FormControlLabel
+                                key={f.value}
+                                label={f.label}
+                                value={f.value}
+                                control={
+                                    <Checkbox checked={(flag & f.value) !== 0} onChange={handleFlagChange} />
+                                }
+                            />
+                        ))
+                    }
+                    
+                </FormGroup>
+
+                <Stack spacing={1} pl={0}>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Burnable:</Typography> If set, indicates that the issuer (or an entity authorized by the issuer) can destroy the object. The object's owner can always do so.
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>OnlyXRP:</Typography> If set, nft can only be offered or sold for XRP.
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>TrustLine:</Typography> If set, indicates that the issuer wants a trustline to be automatically created. This is useful when the token can be offered for sale for assets other than XRP and the issuer charges a TransferFee. If this flag is set, a trust line is automatically created as needed to allow the issuer to receive the appropriate transfer fee. If this flag is not set, an attempt to transfer the NFToken for an asset for which the issuer does not have a trustline fails.
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer.
+                    </Typography>
+                </Stack>
+
+                <FormGroup sx={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <FormControlLabel
+                        key='check_explicit'
+                        label='Explicit content'
+                        value='explicit'
+                        control={
+                            <Checkbox checked={explicit} onChange={()=>setExplicit(!explicit)} />
+                        }
+                    />
+                    <Typography variant='p3'>Check if the content is for audiences over 18.</Typography>
+                </FormGroup>
+                
+            </Stack>
+
+            {/* <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Passphrase <Typography variant='s2'>*</Typography></Typography>
 
                 <LoadingTextField
@@ -741,7 +742,7 @@ export default function Minting() {
                         setPassPhrase(e.target.value)
                     }}
                 />
-            </Stack>
+            </Stack> */}
             
 
             {/* <Button
