@@ -104,8 +104,8 @@ export async function getServerSideProps(ctx) {
 
         var t1 = performance.now();
 
-        // https://api.xrpnft.com/api/account/collection/4a23c44e703944909b29b53f5e94a44b
-        const res = await axios.get(`${BASE_URL}/account/collection/${slug}`);
+        // https://api.xrpnft.com/api/collection/test1
+        const res = await axios.get(`${BASE_URL}/collection/${slug}`);
 
         data = res.data;
 

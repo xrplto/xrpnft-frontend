@@ -14,7 +14,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import MyCollections from 'src/collections/MyCollections';
+import MyCollections from 'src/collection/MyCollections';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';

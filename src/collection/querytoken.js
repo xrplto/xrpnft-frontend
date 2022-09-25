@@ -211,7 +211,7 @@ export default function QueryToken({cost, setCost, token, setToken}) {
         <Stack spacing={2}>
             <Stack spacing={2}>
                 <Stack direction="row" alignItems="center">
-                    <Typography variant='p2'>Spin Currency <Typography variant='s2'>*</Typography></Typography>
+                    <Typography variant='p2'>Mint Currency <Typography variant='s2'>*</Typography></Typography>
                     {token &&
                         <Link
                             underline="none"

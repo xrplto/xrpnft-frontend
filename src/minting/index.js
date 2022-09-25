@@ -241,7 +241,8 @@ export default function Minting() {
                     if (dispatched_result === 'tesSUCCESS') {
                         // handleClose();
                         openSnackbar('NFTokenMint successful!', 'success');
-                        window.location.href = `/assets/${uuidNft}`;
+                        // window.location.href = `/assets/${uuidNft}`;
+                        window.location.href = `/congrats/nft/${uuidNft}`;
                     }
                     else {
                         openSnackbar('NFTokenMint failed!', 'error');
@@ -278,6 +279,11 @@ export default function Minting() {
         const num = new Decimal(royalty).toNumber();
         if (num > 50 || num < 0) {
             openSnackbar('Invalid Royalty', 'error');
+            return;
+        }
+
+        if (num > 0 && ((flag & 0x08) === 0)) {
+            openSnackbar('You should select Transferable flag to set Royalty', 'error');
             return;
         }
 

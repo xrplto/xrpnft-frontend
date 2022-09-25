@@ -179,6 +179,8 @@ export default function CreateCollection() {
     const [token, setToken] = useState(null);
     const [cost, setCost] = useState('0');
 
+    const [taxon, setTaxon] = useState('');
+
     // Logo image
     const [fileUrl1, setFileUrl1] = useState(null);
     const [file1, setFile1] = useState(null);
@@ -189,13 +191,10 @@ export default function CreateCollection() {
     const [fileUrl3, setFileUrl3] = useState(null);
     const [file3, setFile3] = useState(null);
 
-    const [passphrase, setPassPhrase] = useState(''); // SHOULD BE REMOVED on deploy
-
     const [valid1, setValid1] = useState(false);
     const [valid2, setValid2] = useState(false);
-    const [validPassword, setValidPassword] = useState(false);
 
-    let canCreate = file1 && name && slug && passphrase && valid1 && valid2 && validPassword;
+    let canCreate = file1 && name && slug && valid1 && valid2;
 
     if (type !== 'normal' && !bulkUrl)
         canCreate = false;
@@ -212,6 +211,29 @@ export default function CreateCollection() {
             } catch (e) {}
         }
     }
+
+    const getTaxon = () => {
+        // https://api.xrpnft.com/api/taxon?account=
+        axios.get(`${BASE_URL}/taxon/available?account=${account}`)
+        .then(res => {
+            try {
+                if (res.status === 200 && res.data) {
+                    const ret = res.data;
+                    setTaxon(ret.taxon + 1);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }).catch(err => {
+            console.log("err->>", err);
+        }).then(function () {
+            // Always executed
+        });
+    };
+
+    useEffect(() => {
+        getTaxon();
+    }, []);
 
     const onCreateCollection = async () => {
         if (!account || !accountToken) {
@@ -244,7 +266,6 @@ export default function CreateCollection() {
             data.fileFlag = fileFlag;
             data.type = type;
             data.bulkUrl = bulkUrl;
-            data.passphrase = passphrase;
             if (type === 'spinner') {
                 data.infoSPIN = {
                     name: token.name,
@@ -282,11 +303,11 @@ export default function CreateCollection() {
                         "_id": "6308bc3d7a1dec795f21fc33"
                     } */
                     openSnackbar('Create collection successful!', 'success')
-                    if (type !== 'normal')
-                        window.location.href = `/bulk`;
-                    else
-                        window.location.href = `/collection/${data.slug}`;
-                    // setFile(null);
+                    // if (type !== 'normal')
+                    //     window.location.href = `/bulk`;
+                    // else
+                    //     window.location.href = `/collection/${data.slug}`;
+                    window.location.href = `/congrats/collection/${data.slug}`;
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
                     const err = ret.err;
@@ -384,7 +405,7 @@ export default function CreateCollection() {
                 <Typography variant="h1a">Create a Collection</Typography>
                 <Typography variant='p2'><Typography variant='s2'>*</Typography> Required fields</Typography>
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Logo image <Typography variant='s2'>*</Typography></Typography>
-                <Typography variant='p2'>This image will also be used for navigation. 350 x 350 recommended.</Typography>
+                <Typography variant='p3'>This image will also be used for navigation. 350 x 350 recommended.</Typography>
                 <CardWrapperCircle>
                     <input
                         ref={fileRef1}
@@ -423,7 +444,7 @@ export default function CreateCollection() {
                     </Card>
                 </CardWrapperCircle>
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Featured image</Typography>
-                <Typography variant='p2'>This image will be used for featuring your collection on the homepage, category pages, or other promotional areas of XRPNFT.COM. 600 x 400 recommended.</Typography>
+                <Typography variant='p3'>This image will be used for featuring your collection on the homepage, category pages, or other promotional areas of XRPNFT.COM. 600 x 400 recommended.</Typography>
                 <CardWrapper>
                     <input
                         ref={fileRef2}
@@ -463,7 +484,7 @@ export default function CreateCollection() {
                 </CardWrapper>
 
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Banner image</Typography>
-                <Typography variant='p2'>This image will appear at the top of your collection page. Avoid including too much text in this banner image, as the dimensions change on different devices. 1400 x 350 recommended.</Typography>
+                <Typography variant='p3'>This image will appear at the top of your collection page. Avoid including too much text in this banner image, as the dimensions change on different devices. 1400 x 350 recommended.</Typography>
                 <CardWrapper3>
                     <input
                         ref={fileRef3}
@@ -553,7 +574,7 @@ export default function CreateCollection() {
 
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>URL <Typography variant='s2'>*</Typography></Typography>
-                <Typography variant='p2'>
+                <Typography variant='p3'>
                     Customize your URL on XRPNFT.COM. Must only contain lowercase letters, numbers, and hyphens.
                 </Typography>
 
@@ -574,7 +595,7 @@ export default function CreateCollection() {
 
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Type <Typography variant='s2'>*</Typography></Typography>
-                <Typography variant='p2'>
+                <Typography variant='p3'>
                     Select your collection type.
                 </Typography>
 
@@ -637,7 +658,7 @@ export default function CreateCollection() {
 
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Description</Typography>
-                <Typography variant='p2'>
+                <Typography variant='p3'>
                     <Link href="https://www.markdownguide.org/cheat-sheet/">Markdown</Link> syntax is supported. 0 of 1000 characters used.
                 </Typography>
                 <TextField
@@ -663,18 +684,17 @@ export default function CreateCollection() {
             </Stack>
 
             <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Passphrase <Typography variant='s2'>*</Typography></Typography>
+                <Typography variant='p4'>Taxon</Typography>
+                <Typography variant='p3'>
+                    Taxon links NFTs to this collection, NFTs minted for this collection will have this Taxon in their NFTokenID field. Taxon is automatically set.
+                </Typography>
 
-                <LoadingTextField
-                    id='id_collection_passphrase'
-                    placeholder='Passphrase'
-                    type='PASSPHRASE_CREATE_COLLECTION'
-                    startText=''
-                    value={passphrase}
-                    setValid={setValidPassword}
-                    onChange={(e) => {
-                        setPassPhrase(e.target.value)
-                    }}
+                <TextField
+                    id='id_collection_taxon'
+                    disabled
+                    placeholder=''
+                    margin='dense'
+                    value={taxon}
                 />
             </Stack>
 

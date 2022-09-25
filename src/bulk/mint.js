@@ -180,7 +180,7 @@ export default function BulkMint({slug}) {
             return;
         }
 
-        axios.get(`${BASE_URL}/account/scollection/${slug}?account=${account}`, {headers: {'x-access-token': token}})
+        axios.get(`${BASE_URL}/collection/${slug}?account=${account}`, {headers: {'x-access-token': token}})
         .then(res => {
             try {
                 console.log(res);

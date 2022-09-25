@@ -16,7 +16,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import Congrats from 'src/minting/congrats';
+import Congrats from 'src/congrats';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -72,7 +72,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="lg">
-                <Congrats nft={data.token}/>
+                <Congrats data={data} />
             </Container>
 
             <ScrollToTop />
@@ -91,14 +91,22 @@ export async function getServerSideProps(ctx) {
 
         const params = ctx.params.uuid;
 
-        const uuid = params; // params[0];
+        const type = params[0];
+        const uuid = params[1];
 
-        console.log(uuid);
+        if (type !== 'collection' && type !== 'assets') {
+            return {
+                redirect: {
+                    permanent: false,
+                    destination: '/404'
+                }
+            }
+        }
 
         var t1 = performance.now();
 
         // https://api.xrpnft.com/api/assets/4a23c44e703944909b29b53f5e94a44b
-        const res = await axios.get(`${BASE_URL}/assets/${uuid}`);
+        const res = await axios.get(`${BASE_URL}/${type}/${uuid}`);
 
         data = res.data;
 
@@ -109,8 +117,9 @@ export async function getServerSideProps(ctx) {
     } catch (e) {
         console.log(e);
     }
-    let ret = {};
+
     if (data && data.token) {
+
         /*{
             "res": "success",
             "took": "1.09",
@@ -131,8 +140,6 @@ export async function getServerSideProps(ctx) {
             }
         } */
         
-        const nft = data.token;
-
         const {
             uuid,
             name,
@@ -141,18 +148,9 @@ export async function getServerSideProps(ctx) {
             account,
             date,
             meta,
-            URI        
-        } = nft;
+            URI
+        } = data.token;
     
-        /*const ogp = {};
-        ogp.canonical = 'https://xrpnft.com';
-        ogp.title = 'XRPNFT, the largest XRPL NFT marketplace';
-        ogp.url = 'https://xrpnft.com/';
-        ogp.imgUrl = 'https://xrpnft.com/static/ogp.png';
-        ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
-
-        ret = {data, ogp};*/
-
         let ogp = {};
         ogp.canonical = `https://xrpnft.com/assets/${uuid}`;
         ogp.title = `${name} - XRPNFT, the largest XRPL NFT marketplace`;
@@ -160,10 +158,55 @@ export async function getServerSideProps(ctx) {
         ogp.imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
         ogp.desc = meta.description?meta.description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
 
-        ret = {data, ogp};
-    }
+        return {
+            props: {data, ogp}, // will be passed to the page component as props
+        }
+    } else if (data && data.collection) {
+        /*{
+            "result": "success",
+            "took": "1.02",
+            "slug": "collection-1",
+            "collection": {
+                "_id": "6310c27cf81fe46884ef89ba",
+                "account": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
+                "name": "collection1",
+                "slug": "collection-1",
+                "description": "",
+                "logoImage": "1662042748001_12e8a38273134f0e87f1039958d5b132.png",
+                "featuredImage": "1662042748001_70910cc4c6134845bf84cf262e696d05.png",
+                "bannerImage": "1662042748002_b32b442dea454998aa29ab61c8fa0887.jpg",
+                "timestamp": 1662042748016,
+                "creator": "xrpnft.com",
+                "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
+            }
+        } */
+        
+        const {
+            name,
+            featuredImage,
+            logoImage,
+            bannerImage,
+            slug,
+            uuid,
+            description
+        } = data.collection;
 
-    return {
-        props: ret, // will be passed to the page component as props
+        let ogp = {};
+        ogp.canonical = `https://xrpnft.com/collection/${slug}`;
+        ogp.title = `${name} - Collection`;
+        ogp.url = `https://xrpnft.com/collection/${slug}`;
+        ogp.imgUrl = `https://s1.xrpnft.com/collection/${bannerImage}`;
+        ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+
+        return {
+            props: {data, ogp}, // will be passed to the page component as props
+        }
+    } else {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/404'
+            }
+        }
     }
 }
