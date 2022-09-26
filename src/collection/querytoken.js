@@ -297,11 +297,11 @@ export default function QueryToken({cost, setCost, token, setToken}) {
 
             {token &&
                 <Stack spacing={2}>
-                    <Typography variant='p2'>Cost per Spin <Typography variant='s2'>*</Typography></Typography>
+                    <Typography variant='p2'>Cost per Mint <Typography variant='s2'>*</Typography></Typography>
 
                     <Stack direction="row" spacing={2} alignItems="center">
                         <TextField
-                            id='id_txt_costperspin'
+                            id='id_txt_costpermint'
                             // autoFocus
                             variant='outlined'
                             placeholder=''

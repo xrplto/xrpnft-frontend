@@ -1178,6 +1178,7 @@ export const DarkSpacesTheme = createTheme({
           s5: 'span',
           s6: 'span',
           s7: 'span',
+          caption: 'span',
           p1: 'p',
           p2: 'p',
           p3: 'p',

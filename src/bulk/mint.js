@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useState, useEffect, useRef } from 'react';
 import JSONPretty from 'react-json-pretty';
 import isIPFS from 'is-ipfs';
+import Decimal from 'decimal.js';
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -46,7 +47,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS } from 'src/utils/constants';
+import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS, CATEGORIES } from 'src/utils/constants';
 import { fIntNumber, fNumber } from 'src/utils/formatNumber';
 
 // Components
@@ -95,6 +96,12 @@ const DisabledButton = withStyles({
     }
 })(Button);
 
+const CustomSelect = styled(Select)(({ theme }) => ({
+    '& .MuiOutlinedInput-notchedOutline' : {
+        // border: 'none'
+    }
+}));
+
 const MEDIA_TYPES = [
     {
         title: 'Image/png (.png)',
@@ -138,8 +145,13 @@ export default function BulkMint({slug}) {
     const [extLink, setExtLink] = useState('');
     const [ipfsCID, setIpfsCID] = useState('');
     const [description, setDescription] = useState('');
+
+    const [category, setCategory] = useState('NONE');
+    const [royalty, setRoyalty] = useState('0');
+    const [explicit, setExplicit] = useState(false);
+
     const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
-    const [passphrase, setPassPhrase] = useState('');
+    // const [passphrase, setPassPhrase] = useState('');
     
     const [metadata, setMetaData] = useState([]);
     const [sMeta, setSampleMeta] = useState(null);
@@ -157,7 +169,7 @@ export default function BulkMint({slug}) {
     
     const active = account && token && collection;
     let canDownload = active && metadata.length > 0 && nftName && isIPFS.cid(ipfsCID);
-    let canCreate = canDownload && passphrase && validPassword;
+    let canCreate = canDownload; //  && passphrase && validPassword;
 
     if (includeTime && !newDateField) {
         canDownload = false;
@@ -212,6 +224,17 @@ export default function BulkMint({slug}) {
             return;
         }
 
+        const num = new Decimal(royalty).toNumber();
+        if (num > 50 || num < 0) {
+            openSnackbar('Invalid Royalty', 'error');
+            return;
+        }
+
+        if (num > 0 && ((flag & 0x08) === 0)) {
+            openSnackbar('You should select Transferable flag to set Royalty', 'error');
+            return;
+        }
+
         // POST https://api.xrpnft.com/api/mint
         setLoading(true);
         const newMetaData = getFinalMetaData();
@@ -223,10 +246,13 @@ export default function BulkMint({slug}) {
             data.count = newMetaData.length;
             data.collection = collection.name;
 
+            data.category = category;
+            data.royalty = royalty;
+            data.explicit = explicit;
+
             const body = {};
             body.data = data;
             body.account = account;
-            body.passphrase = passphrase;
 
             res = await axios.post(`${BASE_URL}/account/mintbulk`, body, {headers: {'x-access-token': token}});
 
@@ -327,6 +353,27 @@ export default function BulkMint({slug}) {
         }
     };
 
+    const handleChangeCategory = (event) => {
+        const value = event.target.value;
+        setCategory(value);
+        if (sMeta) {
+            if (!value || value === 'NONE') {
+                sMeta.category = undefined;
+            } else {
+                sMeta.category = value;
+            }
+        }
+    }
+
+    const handleChangeRoyalty = (e) => {
+        const value = e.target.value;
+        try {
+            const val = value?value.replace(/[^0-9.]/g, ""):'0';
+            setRoyalty(val);
+        } catch (e) {
+        }
+    }
+
     const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType });
 
@@ -364,6 +411,9 @@ export default function BulkMint({slug}) {
                 
             if (description)
                 newMeta.description = description;
+            
+            if (category && category !== 'NONE')
+                newMeta.category = category;
 
             const metaCollection = {name: collection.name};
             if (collection.family)
@@ -434,7 +484,7 @@ export default function BulkMint({slug}) {
                     {collection &&
                         <Stack direction="row" alignItems="center">
                             <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${collection.logoImage}`} sx={{mr:2}} />
-                            <Typography variant='p4'>{collection.name}</Typography>
+                            <Typography variant='p4'>{collection.name} <Typography variant='s7'> (Taxon: {collection.taxon})</Typography></Typography>
                         </Stack>
                     }
                     
@@ -457,6 +507,42 @@ export default function BulkMint({slug}) {
                         sx={{
                             '&.MuiTextField-root': {
                                 marginTop: 0.5
+                            }
+                        }}
+                    />
+
+                    <Typography variant='p4'>Category</Typography>
+                    <Typography variant='p3'>
+                        This helps your NFT to be found when people search by Category.
+                    </Typography>
+                    <CustomSelect
+                        id='select_category'
+                        value={category}
+                        onChange={handleChangeCategory}
+                        MenuProps={{ disableScrollLock: true }}
+                    >
+                        {CATEGORIES.map((cat, idx) => (
+                            <MenuItem
+                                key={idx}
+                                value={cat.title}
+                                sx={{pt:2, pb:2}}
+                            >
+                                <Stack direction='row' spacing={1} alignItems="center">
+                                    {cat.icon}
+                                    <Typography variant='d4'>{cat.title}</Typography>
+                                </Stack>
+                            </MenuItem>
+                        ))}
+                    </CustomSelect>
+
+                    <Typography variant='p4'>Royalty <Typography variant='s2'>*</Typography><Typography variant='s7'> (Transfer fee)</Typography></Typography>
+                    <Typography variant='p3'>Between 0.00% and 50.00% in increments of 0.001.</Typography>
+                    <TextField required placeholder='' margin='dense'
+                        onChange={handleChangeRoyalty}
+                        value={royalty}
+                        sx={{
+                            '&.MuiTextField-root': {
+                                marginTop: 1
                             }
                         }}
                     />
@@ -595,6 +681,18 @@ export default function BulkMint({slug}) {
                             <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer.
                         </Typography>
                     </Stack>
+
+                    <FormGroup sx={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <FormControlLabel
+                            key='check_explicit'
+                            label='Explicit content'
+                            value='explicit'
+                            control={
+                                <Checkbox checked={explicit} onChange={()=>setExplicit(!explicit)} />
+                            }
+                        />
+                        <Typography variant='p3'>Check if the content is for audiences over 18.</Typography>
+                    </FormGroup>
                 </Stack>
 
                 <Stack spacing={1} mb={3}>
@@ -670,7 +768,7 @@ export default function BulkMint({slug}) {
                     </Stack>
                 </Stack>
 
-                <Stack spacing={2} mb={3}>
+                {/* <Stack spacing={2} mb={3}>
                     <Typography variant='p4'>Passphrase <Typography variant='s2'>*</Typography></Typography>
 
                     <LoadingTextField
@@ -684,7 +782,7 @@ export default function BulkMint({slug}) {
                             setPassPhrase(e.target.value)
                         }}
                     />
-                </Stack>
+                </Stack> */}
                 
 
                 {/* <Button

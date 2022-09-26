@@ -1,3 +1,15 @@
+import ClassIcon from '@mui/icons-material/Class';
+import ArtTrackIcon from '@mui/icons-material/ArtTrack';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import DnsIcon from '@mui/icons-material/Dns';
+import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
+import WallpaperIcon from '@mui/icons-material/Wallpaper';
+import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
+import PaymentsIcon from '@mui/icons-material/Payments';
+import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
+import ViewInArIcon from '@mui/icons-material/ViewInAr';
+import PaletteIcon from '@mui/icons-material/Palette';
+
 export const BASE_URL = 'https://api.xrpnft.com/api';
 export const RIPPLE_TEST_NET_URL = 'wss://xls20-sandbox.rippletest.net:51233'
 export const NEW_RIPPLE_TEST_NET_URL = 'wss://s.altnet.rippletest.net:51233'
@@ -68,5 +80,47 @@ export const TOKEN_FLAGS = [
         desc: '	If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer.'
     },
 ]
-
 export const NON_FLAGS = [6, 7, 14, 15]
+
+export const CATEGORIES = [
+    {
+        title: 'NONE',
+        icon: (<ClassIcon />)
+    },
+    {
+        title: 'Art',
+        icon: (<PaletteIcon />)
+    },
+    {
+        title: 'Collectables',
+        icon: (<CollectionsIcon />)
+    },
+    {
+        title: 'Domain Names',
+        icon: (<DnsIcon />)
+    },
+    {
+        title: 'Music',
+        icon: (<LibraryMusicIcon />)
+    },
+    {
+        title: 'Photography',
+        icon: (<WallpaperIcon />)
+    },
+    {
+        title: 'Sports',
+        icon: (<SportsBasketballIcon />)
+    },
+    {
+        title: 'Trading Cards',
+        icon: (<PaymentsIcon />)
+    },
+    {
+        title: 'Utility',
+        icon: (<HomeRepairServiceIcon />)
+    },
+    {
+        title: 'Virtual Worlds',
+        icon: (<ViewInArIcon />)
+    },
+];

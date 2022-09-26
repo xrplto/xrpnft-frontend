@@ -45,7 +45,7 @@ const BackgroundWrapper = styled(Box)(
 `
 );
 
-function generateRandom(maxLimit = 10){
+function generateRandom(maxLimit = 10) {
     let rand = Math.random() * maxLimit;
 
     rand = Math.floor(rand);

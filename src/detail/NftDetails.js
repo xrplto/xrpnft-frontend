@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import Decimal from 'decimal.js';
 
 // Material
 import {
@@ -36,7 +37,10 @@ export default function NFTDetails({nft}) {
         account,
         date,
         meta,
-        URI
+        URI,
+        royalty,
+        taxon,
+        collectionSlug
     } = nft;
 
     const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
@@ -51,6 +55,14 @@ export default function NFTDetails({nft}) {
         const strTime = dt.toLocaleTimeString();
         strDateTime = `${strDate} ${strTime}`;
     }
+
+    let transferFee = 0;
+    try {
+        if (royalty)
+            transferFee = Decimal.div(royalty, '1000').toDP(3, Decimal.ROUND_DOWN).toNumber();
+    } catch (e) {}
+
+    const collectionName = collection.name || collection;
     
     return (
         <Stack spacing={2} sx={{mt: 2}}>
@@ -69,13 +81,21 @@ export default function NFTDetails({nft}) {
                     </AccordionSummary>
                     <AccordionDetails>
                         <Stack direction="row" spacing={2} alignItems="center">
-                            <Typography variant='caption'>Flags</Typography>
+                            <Typography variant="caption">Flags</Typography>
                             <FlagsContainer Flags={flag}/>
-                            <Typography sx={{ml:1}}>{strDateTime}</Typography>
+                            <Typography variant="s6">{strDateTime}</Typography>
+                        </Stack>
+                        <Stack direction="row" spacing={2} sx={{mt: 2}}>
+                            <Typography variant="caption">Taxon</Typography>
+                            <Typography variant="s6">{taxon}</Typography>
+                        </Stack>
+                        <Stack direction="row" spacing={2} sx={{mt: 2}} alignItems="center">
+                            <Typography variant="caption">Transfer Fee</Typography>
+                            <Typography variant="s6">{transferFee} %</Typography>
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
                         <Stack spacing={1}>
-                            <Typography variant='caption'>Issuer</Typography>
+                            <Typography variant="caption">Issuer</Typography>
                             <Link
                                 href={`https://xls20.bithomp.com/explorer/${account}`}
                                 sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
@@ -127,7 +147,14 @@ export default function NFTDetails({nft}) {
 
                         <Stack spacing={1}>
                             <Typography variant='caption'>Collection</Typography>
-                            <Typography sx={{pl:1}}>{collection.name||collection}</Typography>
+                            {collectionSlug ? (
+                                <Link href={`/collection/${collectionSlug}`} underline='none'>
+                                    <Typography sx={{pl:1}}>{collectionName}</Typography>
+                                </Link>
+                            ):(
+                                <Typography sx={{pl:1}}>{collectionName}</Typography>
+                            )}
+                            
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
                     </AccordionDetails>

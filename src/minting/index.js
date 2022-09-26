@@ -46,7 +46,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS } from 'src/utils/constants';
+import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS, CATEGORIES } from 'src/utils/constants';
 
 // Components
 // import BaseDialog from 'src/components/dialog/BaseDialog';
@@ -103,49 +103,6 @@ const CustomSelect = styled(Select)(({ theme }) => ({
         // border: 'none'
     }
 }));
-
-const CATEGORIES = [
-    {
-        title: 'NONE',
-        icon: (<ClassIcon />)
-    },
-    {
-        title: 'Art',
-        icon: (<PaletteIcon />)
-    },
-    {
-        title: 'Collectables',
-        icon: (<CollectionsIcon />)
-    },
-    {
-        title: 'Domain Names',
-        icon: (<DnsIcon />)
-    },
-    {
-        title: 'Music',
-        icon: (<LibraryMusicIcon />)
-    },
-    {
-        title: 'Photography',
-        icon: (<WallpaperIcon />)
-    },
-    {
-        title: 'Sports',
-        icon: (<SportsBasketballIcon />)
-    },
-    {
-        title: 'Trading Cards',
-        icon: (<PaymentsIcon />)
-    },
-    {
-        title: 'Utility',
-        icon: (<HomeRepairServiceIcon />)
-    },
-    {
-        title: 'Virtual Worlds',
-        icon: (<ViewInArIcon />)
-    },
-];
 
 export default function Minting() {
     const fileRef = useRef();
@@ -580,9 +537,9 @@ export default function Minting() {
                             value={col.name}
                             sx={{pt:2, pb:2}}
                         >
-                            <Stack direction='row' alignItems="center">
-                                <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${col.logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
-                                <Typography variant='d4'>{col.name}</Typography>
+                            <Stack direction='row' spacing={1} alignItems="center">
+                                <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${col.logoImage}`} sx={{ width: 32, height: 32 }} />
+                                <Typography variant='d4'>{col.name} <Typography variant='s7'> (Taxon: {col.taxon})</Typography></Typography>
                             </Stack>
                         </MenuItem>
                     ))}

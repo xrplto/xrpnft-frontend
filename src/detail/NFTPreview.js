@@ -1,4 +1,9 @@
 import * as React from 'react';
+// import ModalImage from "react-modal-image";
+import { Lightbox } from "react-modal-image";
+import { useState, useEffect, useRef } from 'react';
+
+// Material
 import {
     Box,
     Card,
@@ -6,12 +11,21 @@ import {
     CardMedia,
     Divider,
     IconButton,
+    Link,
+    Modal,
     Typography
 } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 export default function NFTPreview({ image, title, favorites }) {
     const imgUrl = `https://gateway.xrpnft.com/ipfs/${image}`;
+
+    const [open, setOpen] = useState(false);
+
+    const closeLightbox = () => {
+        setOpen(false);
+    }
+
     return (
         <Card>
             <CardHeader
@@ -27,11 +41,40 @@ export default function NFTPreview({ image, title, favorites }) {
                 subheader={title}
             />
             <Divider />
-            <CardMedia
-                component='img'
-                image={imgUrl}
-                alt={'IMAGE'}
-            />
+
+            <Link
+                component="button"
+                underline="none"
+                onClick={() => setOpen(true)}
+            >
+                <CardMedia
+                    component='img'
+                    image={imgUrl}
+                    alt={'NFT'}
+                />
+            </Link>
+
+            {/* <CardMedia
+                component={ModalImage}
+                small={imgUrl}
+                large={imgUrl}
+                hideDownload
+                hideZoom
+
+                disableScrollLock
+                DialogProps={{ disableScrollLock: true }}
+            /> */}
+
+            {open &&
+                <Lightbox
+                    small={imgUrl}
+                    large={imgUrl}
+                    hideDownload
+                    hideZoom
+                    onClose={closeLightbox}
+                />
+            }
+
         </Card>
     );
 }

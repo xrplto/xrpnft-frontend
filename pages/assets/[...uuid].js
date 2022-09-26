@@ -95,7 +95,7 @@ export async function getServerSideProps(ctx) {
 
         var t1 = performance.now();
 
-        // https://api.xrpnft.com/api/assets/4a23c44e703944909b29b53f5e94a44b
+        // https://api.xrpnft.com/api/assets/f0f2513dd72042bfb46fde46c4a4d514
         const res = await axios.get(`${BASE_URL}/assets/${uuid}`);
 
         data = res.data;

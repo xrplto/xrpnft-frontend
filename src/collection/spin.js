@@ -325,7 +325,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
         }
 
         if (spins < 1) {
-            openSnackbar('You do not have enough SPINs', 'error');
+            openSnackbar('You do not have enough Mints', 'error');
             return;
         }
 

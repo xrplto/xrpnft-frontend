@@ -157,8 +157,7 @@ export default function CreateCollection() {
     const accountToken = accountProfile?.token;
 
     const [loading, setLoading] = useState(false);
-    
-    
+
     // Opensea
     // {
     //     "collections": {
@@ -604,10 +603,10 @@ export default function CreateCollection() {
                         <Typography variant='s2'>Normal:</Typography> You can mint NFTs one by one for this collection.
                     </Typography>
                     <Typography variant='p3'>
-                        <Typography variant='s2'>Bulk:</Typography> You can upload bulk nfts through Manage Bulks page.
+                        <Typography variant='s2'>Bulk:</Typography> You can upload bulk NFTs through Manage Bulks page.
                     </Typography>
                     <Typography variant='p3'>
-                        <Typography variant='s2'>Spinner:</Typography> Purchase NFTs with spins.
+                        <Typography variant='s2'>Spinner:</Typography> You can sell random NFTs with Mints.
                     </Typography>
                 </Stack>
 
