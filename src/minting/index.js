@@ -28,6 +28,12 @@ import ImageIcon from '@mui/icons-material/Image';
 import InfoIcon from '@mui/icons-material/Info';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import CancelIcon from '@mui/icons-material/Cancel';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
 import ClassIcon from '@mui/icons-material/Class';
 import ArtTrackIcon from '@mui/icons-material/ArtTrack';
@@ -57,7 +63,16 @@ import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
 // import PropertySection from './NFTProperties/PropertySection';
 // import LevelsSection from './NFTLevels/LevelSection';
-import LoadingTextField from 'src/components/LoadingTextField';
+// import LoadingTextField from 'src/components/LoadingTextField';
+import AddPropertyDialog from './AddPropertyDialog';
+
+const DisabledTextField = withStyles({
+    root: {
+      "& .MuiInputBase-root.Mui-disabled": {
+        color: "#57CA22"
+      }
+    }
+  })(TextField);
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -114,16 +129,18 @@ export default function Minting() {
     const token = accountProfile?.token;
     const user_token = accountProfile?.user_token;
 
-    const levels = useSelector(state => state.status.metadata.levels);
-    const properties = useSelector(state => state.status.metadata.properties);
+    // const levels = useSelector(state => state.status.metadata.levels);
+    // const properties = useSelector(state => state.status.metadata.properties);
 
     const [open, setOpen] = useState(false);
+    const [openAddProperty, setOpenAddProperty] = useState(false);
 
     const [nftName, setNftName] = useState('');
     const [extLink, setExtLink] = useState('');
     const [description, setDescription] = useState('');
     const [collectionName, setCollectionName] = useState('')
     const [category, setCategory] = useState('NONE');
+    const [properties, setProperties] = useState([]);
     const [royalty, setRoyalty] = useState('0');
     const [explicit, setExplicit] = useState(false);
     const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
@@ -257,6 +274,8 @@ export default function Minting() {
             data.royalty = royalty;
             data.explicit = explicit;
             data.flag = flag;
+            if (properties && properties.length > 0)
+                data.properties = properties;
 
             const formdata = new FormData();
             formdata.append('nft', file);
@@ -308,37 +327,6 @@ export default function Minting() {
         }
         setLoading(false);
     };
-
-    const pinFileToIPFS = async () => {
-
-        // TODO: Called only when the file is uploaded to site.
-        setLoading(true)
-        if (file) {
-            try {
-                const formData = new FormData()
-                formData.append("file", file)
-                console.log('uploading image to ipfs')
-                const response = await axios.post(
-                    PINATA_PINNING_FILE_URL,
-                    formData,
-                    {
-                        maxContentLength: "Infinity",
-                        headers: {
-                            "Content-Type": `multipart/form-data;boundary=${formData._boundary}`,
-                            'pinata_api_key': process.env.REACT_APP_PINATA_API_KEY,
-                            'pinata_secret_api_key': process.env.REACT_APP_PINATA_SECRET_KEY
-                        }
-                    }
-                )
-                // dispatch(setPinnedFileHash(response.data.IpfsHash))
-                openSnackbar('IPFSHash: ' + response.data.IpfsHash, 'success')
-            } catch (e) {
-                console.log(e)
-                openSnackbar(e.message, 'error')
-            }
-        }
-        setLoading(false)
-    }
 
     const handleFileSelect = (e) => {
         const pickedFile = e.target.files[0];
@@ -405,8 +393,38 @@ export default function Minting() {
         }
     }
 
+    const handleAddProperty = (property) => {
+        const {
+            name,
+            value
+        } = property;
+        for (var p of properties) {
+            if (p.name === name) {
+                p.value = value;
+                return;
+            }
+        }
+        properties.push(property);
+    }
+
+    const handleRemoveProperty = (name) => {
+        const newProperties = [];
+        for (var p of properties) {
+            if (p.name !== name)
+                newProperties.push(p);
+        }
+        setProperties(newProperties);
+    }
+
     return (
         <>
+            <AddPropertyDialog
+                open={openAddProperty}
+                setOpen={setOpenAddProperty}
+                openSnackbar={openSnackbar}
+                onAddProperty={handleAddProperty}
+            />
+
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
                 <Typography variant="h1a" >Create New Item</Typography>
                 <Typography variant='p3'><Typography variant='s2'>*</Typography> Required fields</Typography>
@@ -581,6 +599,48 @@ export default function Minting() {
                         </MenuItem>
                     ))}
                 </CustomSelect>
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Properties</Typography>
+                <Typography variant='p3'>
+                    You can add more properties in your NFT metadata.
+                </Typography>
+                {properties.map((property, idx) => (
+                    <Stack direction="row" spacing={2} sx={{mt: 3}} key={idx} alignItems="flex-end">
+                        <TextField
+                            id="outlined-size-name"
+                            variant="standard"
+                            disabled
+                            label={idx===0?"Name":""}
+                            value={property.name}
+                        />
+
+                        <ArrowRightAltIcon fontSize="small" />
+
+                        <TextField
+                            id="outlined-size-value"
+                            variant="standard"
+                            disabled
+                            label={idx===0?"Value":""}
+                            value={property.value}
+                        />
+
+                        <IconButton onClick={()=>handleRemoveProperty(property.name)}>
+                            <HighlightOffOutlinedIcon fontSize="small" />
+                        </IconButton>
+                    </Stack>
+                ))}
+                <Stack direction="row">
+                    <Button
+                        variant="outlined"
+                        startIcon={<AddCircleIcon />}
+                        size="small"
+                        onClick={()=>setOpenAddProperty(true)}
+                    >
+                        Add
+                    </Button>
+                </Stack>
             </Stack>
 
             <Stack spacing={2} mb={3}>

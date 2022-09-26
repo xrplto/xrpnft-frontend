@@ -165,7 +165,7 @@ export default function BulkMint({slug}) {
 
     const [loading, setLoading] = useState(false);
 
-    const [validPassword, setValidPassword] = useState(false);
+    // const [validPassword, setValidPassword] = useState(false);
     
     const active = account && token && collection;
     let canDownload = active && metadata.length > 0 && nftName && isIPFS.cid(ipfsCID);
