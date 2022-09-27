@@ -19,6 +19,7 @@ import {
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import GridOnIcon from '@mui/icons-material/GridOn';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
@@ -202,6 +203,17 @@ export default function Wallet() {
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <GridOnIcon />
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>My Collections</Typography>
+                                    </Stack>
+                                </NextLink>
+                            </MenuItem>
+                            <MenuItem
+                                key="create-bulk"
+                                sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                            >
+                                <NextLink href="/create" passHref>
+                                    <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                        <AddPhotoAlternateIcon />
+                                        <Typography variant='s3' style={{marginLeft: '10px'}}>Create a NFT</Typography>
                                     </Stack>
                                 </NextLink>
                             </MenuItem>

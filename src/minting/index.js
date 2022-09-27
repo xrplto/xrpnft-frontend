@@ -25,34 +25,18 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import ImageIcon from '@mui/icons-material/Image';
-import InfoIcon from '@mui/icons-material/Info';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import CancelIcon from '@mui/icons-material/Cancel';
-import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
-
-import ClassIcon from '@mui/icons-material/Class';
-import ArtTrackIcon from '@mui/icons-material/ArtTrack';
-import CollectionsIcon from '@mui/icons-material/Collections';
-import DnsIcon from '@mui/icons-material/Dns';
-import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
-import WallpaperIcon from '@mui/icons-material/Wallpaper';
-import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
-import PaymentsIcon from '@mui/icons-material/Payments';
-import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
-import ViewInArIcon from '@mui/icons-material/ViewInAr';
-import PaletteIcon from '@mui/icons-material/Palette';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS, CATEGORIES } from 'src/utils/constants';
+import { SUPPORTED_FILE_TYPES, TOKEN_FLAGS, CATEGORIES } from 'src/utils/constants';
 
 // Components
 // import BaseDialog from 'src/components/dialog/BaseDialog';
@@ -216,7 +200,7 @@ export default function Minting() {
                         // handleClose();
                         openSnackbar('NFTokenMint successful!', 'success');
                         // window.location.href = `/assets/${uuidNft}`;
-                        window.location.href = `/congrats/nft/${uuidNft}`;
+                        window.location.href = `/congrats/assets/${uuidNft}`;
                     }
                     else {
                         openSnackbar('NFTokenMint failed!', 'error');

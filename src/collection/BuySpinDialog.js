@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -12,28 +11,17 @@ import {
     Button,
     Checkbox,
     Dialog,
-    DialogActions,
     DialogContent,
     DialogTitle,
-    Divider,
     FormControlLabel,
     IconButton,
     InputAdornment,
     Link,
-    OutlinedInput,
     Stack,
-    Table,
-    TableBody,
-    TableRow,
-    TableCell,
-    Tooltip,
     Typography,
     TextField
 } from '@mui/material';
-import { tableCellClasses } from "@mui/material/TableCell";
-import {
-    Close as CloseIcon
-} from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
 
 // Context
 import { useContext } from 'react';
@@ -51,10 +39,6 @@ import { PulseLoader } from "react-spinners";
 // Utils
 import { fNumber } from 'src/utils/formatNumber';
 import Decimal from 'decimal.js';
-
-// Iconify
-import { Icon } from '@iconify/react';
-import copyIcon from '@iconify/icons-fad/copy';
 
 // ----------------------------------------------------------------------
 const BuyDialog = styled(Dialog) (({ theme }) => ({

@@ -2,8 +2,6 @@ import React from 'react';
 import axios from 'axios'
 import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux'
-import { ClipLoader } from "react-spinners";
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -24,11 +22,8 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import ImageIcon from '@mui/icons-material/Image';
-import InfoIcon from '@mui/icons-material/Info';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
-import ErrorIcon from '@mui/icons-material/Error';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import CancelIcon from '@mui/icons-material/Cancel';

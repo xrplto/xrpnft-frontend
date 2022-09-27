@@ -4,17 +4,10 @@ import { ColorExtractor } from 'react-color-extractor';
 // Material
 import {
     styled,
-    Button,
     Link,
     Stack,
     Typography
 } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-
-// Iconify
-import { Icon } from '@iconify/react';
-
-// Components
 
 const CardWrapper = styled('div')(
     ({ theme }) => `

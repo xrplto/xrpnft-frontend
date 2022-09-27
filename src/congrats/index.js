@@ -12,19 +12,11 @@ import { useTheme } from '@mui/material/styles';
 import {
     styled,
     Button,
-    Container,
-    Divider,
-    Grid,
     Link,
     Stack,
     Typography,
     useMediaQuery
 } from '@mui/material';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import ShareIcon from '@mui/icons-material/Share';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-
-// Components
 
 const CardWrapper = styled('div')(
     ({ theme }) => `

@@ -7,7 +7,6 @@ import {
     Box,
     Container,
     IconButton,
-    Link,
     styled,
     Stack
 } from '@mui/material';

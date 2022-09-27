@@ -1,20 +1,17 @@
 // Material
 import {
-    alpha, styled, useTheme, useMediaQuery,
-    Box,
+    styled, useTheme, useMediaQuery,
     Button,
     Grid,
-    IconButton,
     Link,
     Stack,
-    Toolbar,
     Typography
 } from '@mui/material';
 
 import CollectionPreview from './CollectionPreview';
 import SampleCardList from './SampleCardList';
 
-const AutoStack1 = styled(Stack)(
+const AutoStack = styled(Stack)(
     ({ theme }) => `
         align-items: center;
         @media (min-width: ${theme.breakpoints.values.md}px) {
@@ -29,7 +26,7 @@ export default function Landing({data}) {
     return (
         <Grid container spacing={3} justifyContent="center" alignItems="center" display="flex" sx={{mt:2}}>
             <Grid item xs={12} md={7} lg={7}>
-                <AutoStack1>
+                <AutoStack>
                     <Typography variant="h1a">Discover, collect, and sell extraordinary NFTs</Typography>
                     <Stack sx={{mt:4}}>
                         <Typography variant="s1">XRPNFT.COM is the world's first and largest XRPL NFT Marketplace.</Typography>
@@ -54,7 +51,7 @@ export default function Landing({data}) {
                             <Button variant="outlined">Create</Button>
                         </Link>
                     </Stack>
-                </AutoStack1>
+                </AutoStack>
             </Grid>
 
             <Grid item xs={12} md={5} lg={5} sx={{pl:0}} alignItems="center">

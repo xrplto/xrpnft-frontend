@@ -5,13 +5,11 @@ import { withStyles } from '@mui/styles';
 import {
     alpha, useTheme, useMediaQuery,
     styled,
-    Box,
     Button,
     Dialog,
     DialogContent,
     DialogTitle,
     IconButton,
-    InputAdornment,
     Stack,
     Typography,
     TextField
@@ -124,6 +122,7 @@ export default function AddPropertyDialog({open, setOpen, openSnackbar, onAddPro
                 open={open}
                 sx={{zIndex: 1302}}
                 maxWidth='xs'
+                disableScrollLock
                 // hideBackdrop={true}
             >
                 <AddDialogTitle id="customized-dialog-title" onClose={handleClose}>

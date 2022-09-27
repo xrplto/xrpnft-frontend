@@ -6,7 +6,6 @@ import {
     AccordionDetails,
     AccordionSummary,
     Divider,
-    Skeleton,
     Stack,
     Typography,
     Button,
@@ -18,14 +17,8 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-// Redux
-import { useSelector } from 'react-redux';
-
 // Iconify
 import { Icon } from '@iconify/react';
-
-// Utils
-import { getSellAndBuyOffers } from 'src/utils/tokenActions';
 
 // Components
 import BaseDialog from 'src/components/dialog/BaseDialog';

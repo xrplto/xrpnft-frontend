@@ -1,8 +1,6 @@
 import React from 'react';
 import axios from 'axios'
-import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux'
 import { ClipLoader } from "react-spinners";
 
 // Material
@@ -11,18 +9,10 @@ import {
     styled,
     Avatar,
     Button,
-    Card,
-    Checkbox,
-    Container,
-    FormControl,
-    FormControlLabel,
-    FormGroup,
-    FormHelperText,
     IconButton,
     InputAdornment,
     Link,
     MenuItem,
-    OutlinedInput,
     Select,
     Stack,
     TextField,
@@ -31,116 +21,13 @@ import {
     Tooltip,
     Typography
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import ImageIcon from '@mui/icons-material/Image';
-import InfoIcon from '@mui/icons-material/Info';
-import SendIcon from '@mui/icons-material/Send';
-import CloseIcon from '@mui/icons-material/Close';
-import ErrorIcon from '@mui/icons-material/Error';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import CancelIcon from '@mui/icons-material/Cancel';
 
 // Iconify
 import { Icon } from '@iconify/react';
-import arrowsExchange from '@iconify/icons-gg/arrows-exchange';
 import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
-// Context
-import { useContext } from 'react';
-import { AppContext } from 'src/AppContext';
-
 // Utils
-import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS } from 'src/utils/constants';
 import { fNumber } from 'src/utils/formatNumber';
-
-// Components
-import XSnackbar from 'src/components/Snackbar';
-import { useSnackbar } from 'src/components/useSnackbar';
-import LoadingTextField from 'src/components/LoadingTextField';
-
-const CardWrapper = styled('div')(
-    ({ theme }) => `
-    border: dashed 3px;
-    border-radius: 5px;
-    padding: 5px;
-    width: fit-content;
-    &:hover {
-        cursor: pointer;
-    }
-`
-);
-
-const CardWrapperCircle = styled('div')(
-    ({ theme }) => `
-    border: dashed 3px;
-    border-radius: 50%;
-    padding: 5px;
-    width: fit-content;
-    overflow: hidden;
-    &:hover {
-        cursor: pointer;
-    }
-`
-);
-
-const CardWrapper3 = styled('div')(
-    ({ theme }) => `
-    border: dashed 3px;
-    border-radius: 5px;
-    padding: 5px;
-    // width: fit-content;
-    &:hover {
-        cursor: pointer;
-    }
-`
-);
-
-const CardOverlay = styled('div')(
-    ({ theme }) => `
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    background: black;
-    inset: 0;
-    opacity: 0;
-    z-index: 1;
-    transition: opacity 0.5s;
-    &:hover {
-        opacity: 0.6;
-    }
-`
-);
-
-const CardOverlayCircle = styled('div')(
-    ({ theme }) => `
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    background: black;
-    inset: 0;
-    opacity: 0;
-    z-index: 1;
-    transition: opacity 0.5s;
-    &:hover {
-        opacity: 0.6;
-    }
-`
-);
-
-const DisabledButton = withStyles({
-    root: {
-        "&.Mui-disabled": {
-            pointerEvents: "unset", // allow :hover styles to be triggered
-            cursor: "not-allowed", // and custom cursor can be defined without :hover state
-        }
-    }
-})(Button);
 
 const CustomSelect = styled(Select)(({ theme }) => ({
     '& .MuiOutlinedInput-notchedOutline' : {
