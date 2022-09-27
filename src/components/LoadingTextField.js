@@ -31,8 +31,8 @@ export default function LoadingTextField({ type, value, setValid, startText, ...
 
     const checkValidation = (text) => {
         const account = accountProfile?.account;
-        const token = accountProfile?.token;
-        if (!account || !token) return;
+        const accountToken = accountProfile?.accountToken;
+        if (!account || !accountToken) return;
 
         setStatus(TEXT_CHECKING);
 
@@ -42,7 +42,7 @@ export default function LoadingTextField({ type, value, setValid, startText, ...
         body.type = type;
 
         // https://api.xrpnft.com/api/validation
-        axios.post(`${BASE_URL}/validation`, body, {headers: {'x-access-token': token}}).then(res => {
+        axios.post(`${BASE_URL}/validation`, body, {headers: {'x-access-token': accountToken}}).then(res => {
             try {
                 if (res.status === 200 && res.data) {
                     const ret = res.data.status;

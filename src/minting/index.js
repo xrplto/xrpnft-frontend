@@ -110,7 +110,7 @@ export default function Minting() {
 
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
-    const token = accountProfile?.token;
+    const accountToken = accountProfile?.token;
     const user_token = accountProfile?.user_token;
 
     // const levels = useSelector(state => state.status.metadata.levels);
@@ -146,17 +146,17 @@ export default function Minting() {
 
     // const [validPassword, setValidPassword] = useState(false);
 
-    const validAccount = account && token && user_token;
+    const validAccount = account && accountToken && user_token;
     const canCreate = validAccount && file && nftName && collectionName; //  && passphrase && validPassword;
 
     const loadCollections=() => {
-        if (!account || !token) {
+        if (!account || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
 
         // https://api.xrpnft.com/api/account/query-collections?filter=
-        axios.get(`${BASE_URL}/account/query-collections?account=${account}&filter=${filter}`, {headers: {'x-access-token': token}})
+        axios.get(`${BASE_URL}/account/query-collections?account=${account}&filter=${filter}`, {headers: {'x-access-token': accountToken}})
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {
@@ -229,7 +229,7 @@ export default function Minting() {
     }, [openScanQR, uuid, uuidNft]);
 
     const onCreateNft = async () => {
-        if (!account && !token && !user_token) {
+        if (!account && !accountToken && !user_token) {
             openSnackbar('Please login', 'error');
             return;
         }
@@ -268,7 +268,7 @@ export default function Minting() {
             formdata.append('data', JSON.stringify(data));
             
             res = await axios.post(`${BASE_URL}/account/mintone`, formdata, {
-                headers: { "Content-Type": "multipart/form-data", 'x-access-token': token }
+                headers: { "Content-Type": "multipart/form-data", 'x-access-token': accountToken }
             });
 
             if (res.status === 200) {

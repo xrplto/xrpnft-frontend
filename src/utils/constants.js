@@ -124,3 +124,12 @@ export const CATEGORIES = [
         icon: (<ViewInArIcon />)
     },
 ];
+
+export const XRP_TOKEN = {
+    md5: 'xrp',
+    name: 'XRP',
+    issuer: 'XRPL',
+    currency: 'XRP',
+    ext: 'png',
+    exch: '1'
+};
