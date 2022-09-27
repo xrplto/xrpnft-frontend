@@ -22,21 +22,21 @@ export default function CollectionList({isAll}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
-    const token = accountProfile?.token;
+    const accountToken = accountProfile?.token;
 
     const [collections, setCollections] = useState([]);
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(true);
 
     const loadCollections=(offset) => {
-        if (!isAll && (!account || !token)) {
+        if (!isAll && (!account || !accountToken)) {
             openSnackbar('Please login', 'error');
             return;
         }
         // console.log(`loadCollections page: ${offset}`);
         // https://api.xrpnft.com/api/account/collections?account=rKVd5WtB8ugrxaTDTbJv6pVH7WunmyryLq
         
-        axios.get(`${BASE_URL}/account/collections?account=${account}&all=${isAll}&page=${offset}&limit=20`, {headers: {'x-access-token': token}})
+        axios.get(`${BASE_URL}/account/collections?account=${account}&all=${isAll}&page=${offset}&limit=20`, {headers: {'x-access-token': accountToken}})
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {

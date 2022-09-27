@@ -151,7 +151,7 @@ export default function EditCollection({collection}) {
     
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
-    const token = accountProfile?.token;
+    const accountToken = accountProfile?.token;
 
     const [loading, setLoading] = useState(false);
     
@@ -223,7 +223,7 @@ export default function EditCollection({collection}) {
     }
 
     const onEditCollection = async () => {
-        if (!account || !token) {
+        if (!account || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
@@ -255,7 +255,7 @@ export default function EditCollection({collection}) {
             formdata.append('data', JSON.stringify(data));
             
             res = await axios.post(`${BASE_URL}/account/edit-collection`, formdata, {
-                headers: { "Content-Type": "multipart/form-data", 'x-access-token': token }
+                headers: { "Content-Type": "multipart/form-data", 'x-access-token': accountToken }
             });
 
             if (res.status === 200) {

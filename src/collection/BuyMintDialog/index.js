@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import Decimal from 'decimal.js';
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -26,6 +27,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import StoreIcon from '@mui/icons-material/Store';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -43,7 +45,6 @@ import { PulseLoader } from "react-spinners";
 
 // Utils
 import { fNumber } from 'src/utils/formatNumber';
-import Decimal from 'decimal.js';
 
 // ----------------------------------------------------------------------
 const BuyDialog = styled(Dialog) (({ theme }) => ({
@@ -89,7 +90,7 @@ const Label = withStyles({
 
 const CustomSelect = styled(Select)(({ theme }) => ({
     '& .MuiOutlinedInput-notchedOutline' : {
-        // border_left: 'none'
+        border: 'none'
     }
 }));
 
@@ -102,7 +103,7 @@ function GetNum(amount) {
     return num;
 }
 
-export default function BuyMintDialog({open, setOpen, infoSPIN, minter, openSnackbar, collection, setSpins}) {
+export default function BuyMintDialog({open, setOpen, infoSPIN, minter, openSnackbar, collection, setMints, setXrpBalance}) {
     //     "infoSPIN": {
     //         "costs": [
     //             {
@@ -166,25 +167,28 @@ export default function BuyMintDialog({open, setOpen, infoSPIN, minter, openSnac
                 // const account = res.account;
                 const resolved_at = res.resolved_at;
                 const dispatched_result = res.dispatched_result;
-                const newSpins = ret.data.spins;
+                const newMints = ret.data.mints;
+                const newXrpBalance = ret.data.xrpBalance;
                 if (resolved_at) {
                     setOpenScanQR(false);
                     if (dispatched_result && dispatched_result === 'tesSUCCESS') {
-                        setSpins(newSpins);
+                        setMints(newMints);
+                        setXrpBalance(newXrpBalance);
                         handleClose();
-                        openSnackbar('Transaction successful!', 'success');
+                        openSnackbar('Buy Mints successful!', 'success');
                     }
                     else
-                        openSnackbar('Transaction rejected!', 'error');
+                        openSnackbar('Buy Mints rejected!', 'error');
 
                     return;
                 }
             } catch (err) {
+                console.log(err);
             }
             isRunning = false;
             counter--;
             if (counter <= 0) {
-                openSnackbar('Transaction timeout!', 'error');
+                openSnackbar('Buy Mints timeout!', 'error');
                 handleScanQRClose();
             }
         }
@@ -221,9 +225,17 @@ export default function BuyMintDialog({open, setOpen, infoSPIN, minter, openSnac
         try {
             const user_token = accountProfile?.user_token;
             const cid = collection.uuid;
+
+            const {
+                currency,
+                issuer,
+                cost
+            } = token;
+
             let amount = {};
             if (currency !== 'XRP')
                 amount.issuer = issuer;
+
             amount.currency = currency;
             amount.value = cost * quantity;
             
@@ -267,6 +279,10 @@ export default function BuyMintDialog({open, setOpen, infoSPIN, minter, openSnac
 
     const handleClose = () => {
         setOpen(false);
+
+        setToken(costs[0]);
+        setQuantity(0);
+        setDisclaimer(false);
     }
 
     const handleChangeQuantity = (e) => {
@@ -334,68 +350,67 @@ export default function BuyMintDialog({open, setOpen, infoSPIN, minter, openSnac
                         <Typography variant="p5" sx={{mt: 0}}>To power up the spinner, you need at least 1 or more Mints. This will enable you to purchase NFTs that is randomly selected from this collection.</Typography>
                         <Typography variant="p5" sx={{mt: 2}}>Mints purchased for this collection can not be used on the other collections.</Typography>
                         
-                        <Stack direction="row" spacing={2} sx={{mt: 2}} alignItems="center">
-                            <Typography variant="p4">Cost</Typography>
+                        <Stack spacing={2} sx={{mt: 2}}>
                             {/* <Typography variant="s5" color="#33C2FF">{cost} {name} / Mint</Typography> */}
-                            <CustomSelect
-                                id='select_token'
-                                value={token.md5}
-                                onChange={handleChangeToken}
-                                MenuProps={{ disableScrollLock: true }}
-                            >
-                                {costs.map((cost, idx) => (
-                                    <MenuItem
-                                        key={cost.md5}
-                                        value={cost.md5}
-                                        sx={{pt:1, pb:1}}
-                                    >
-                                        <Stack direction='row' alignItems="center">
-                                            <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} sx={{ mr: 2 }} />
-                                            <Stack spacing={0.5}>
-                                                <Stack direction="row">
-                                                    <Typography variant='d4'>{cost.name}</Typography>
-                                                    <Typography variant='d4' sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(token.exch)}</Typography>
-                                                </Stack>
-                                                <Stack direction="row">
-                                                    <Typography variant='p3'>{cost.issuer}</Typography>
-                                                </Stack>
+                            <Stack direction="row" spacing={2} alignItems="center">
+                                <Typography variant="p4">Cost</Typography>
+                                <CustomSelect
+                                    id='select_token'
+                                    value={token.md5}
+                                    onChange={handleChangeToken}
+                                    MenuProps={{ disableScrollLock: true }}
+                                >
+                                    {costs.map((token, idx) => (
+                                        <MenuItem
+                                            key={token.md5}
+                                            value={token.md5}
+                                        >
+                                            <Stack direction='row' alignItems="center">
+                                                <Avatar alt="C" src={`https://xrpl.to/static/tokens/${token.md5}.${token.ext}`} sx={{ width: 28, height:28, mr: 1 }} />
+                                                <Typography variant='d4' color="#EB5757">{token.cost} {token.name}</Typography>
                                             </Stack>
-                                        </Stack>
-                                    </MenuItem>
-                                ))}
-                            </CustomSelect>
-                            <Link
-                                underline="none"
-                                color="inherit"
-                                target="_blank"
-                                href={`https://bithomp.com/explorer/${token.issuer}`}
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <Tooltip title='Check on Bithomp'>
-                                    <IconButton edge="end" aria-label="bithomp">
-                                        <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
-                                    </IconButton>
-                                </Tooltip>
-                            </Link>
-                            <Link
-                                underline="none"
-                                color="inherit"
-                                target="_blank"
-                                href={`https://xrpl.to/trade/${token.md5}`}
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <Tooltip title='Trade on XRPL.to'>
-                                    <IconButton edge="end" aria-label="bithomp" size="small">
-                                        <StoreIcon color="#33C2FF"/>
-                                    </IconButton>
-                                </Tooltip>
-                            </Link>
+                                        </MenuItem>
+                                    ))}
+                                </CustomSelect>
+                                {token.currency !== 'XRP' &&
+                                    <>
+                                        <Link
+                                            underline="none"
+                                            color="inherit"
+                                            target="_blank"
+                                            href={`https://bithomp.com/explorer/${token.issuer}`}
+                                            rel="noreferrer noopener nofollow"
+                                        >
+                                            <Tooltip title='Check on Bithomp'>
+                                                <IconButton edge="end" aria-label="bithomp">
+                                                    <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 24, height: 24 }} />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Link>
+                                        <Link
+                                            underline="none"
+                                            color="inherit"
+                                            target="_blank"
+                                            href={`https://xrpl.to/trade/${token.md5}`}
+                                            rel="noreferrer noopener nofollow"
+                                        >
+                                            <Tooltip title='Trade on XRPL.to'>
+                                                <IconButton edge="end" aria-label="trade">
+                                                    <ShoppingCartIcon fontSize="medium" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Link>
+                                    </>
+                                }
+                            </Stack>
+                            
                         </Stack>
-                        <Stack spacing={2}  sx={{pt: 1}}>
+                        <Stack direction="row" spacing={2} sx={{mt: 2}}>
+                            <Typography variant="p4">Quantity <Typography variant='s2'>*</Typography></Typography>
+
                             <TextField
                                 id="input-with-sx2"
                                 variant="standard"
-                                fullWidth
                                 value={quantity}
                                 autoComplete='new-password'
                                 onFocus={event => {
@@ -408,31 +423,19 @@ export default function BuyMintDialog({open, setOpen, infoSPIN, minter, openSnac
                                     autoComplete: 'off',
                                     style: { textAlign: 'center' },
                                 }}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <Typography variant="p4">Quantity <Typography variant='s2'>*</Typography></Typography>
-                                        </InputAdornment>
-                                    ),
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <Typography variant="s4">Mints</Typography>
-                                        </InputAdornment>
-                                    ),
-                                }}
                                 
                             />
                         </Stack>
-                        <Stack direction="row" spacing={2} sx={{mt: 1}}>
-                            <Typography variant="p4">Total {token.name} Required</Typography>
+                        <Stack direction="row" spacing={2} sx={{mt: 3}}>
+                            <Typography variant="s5">Total {token.name} Required</Typography>
                             <Typography variant="s5" color="#33C2FF">{fNumber(token.cost*quantity)} {token.name}</Typography>
                         </Stack>
 
-                        <FormControlLabel sx={{mt: 2}} control={<Checkbox checked={disclaimer} onChange={handleChangeDisclaimer}/>}
-                            label={<Typography variant="s6">I understand that I will be purchasing <Typography variant="s6" color="#33C2FF">{quantity} Mints</Typography> with total <Typography variant="s6" color="#33C2FF">{fNumber(token.cost*quantity)} {token.name}</Typography>. Each Mint will mint the NFT on XRPL and transfer it to my wallet address which is <Typography variant="s6" color="#33C2FF">{account}</Typography></Typography>}
+                        <FormControlLabel sx={{mt: 3}} control={<Checkbox checked={disclaimer} onChange={handleChangeDisclaimer}/>}
+                            label={<Typography variant="s6">I understand that I will be purchasing <Typography variant="s6" color="#33C2FF">{quantity} Mints</Typography> with total <Typography variant="s6" color="#33C2FF">{fNumber(token.cost*quantity)} {token.name}</Typography>.  Each Mint will mint the NFT on XRPL and transfer it to my wallet address which is <Typography variant="s6" color="#33C2FF">{account}</Typography></Typography>}
                         />
 
-                        <Stack direction='row' spacing={2} justifyContent="center" sx={{mt:3, mb:3}}>
+                        <Stack direction='row' spacing={2} justifyContent="center" sx={{mt:3, mb:4}}>
                             <Button
                                 variant="outlined"
                                 onClick={handleApprove}

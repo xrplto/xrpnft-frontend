@@ -7,8 +7,10 @@ import { useState, useEffect, useRef } from 'react';
 import { withStyles } from '@mui/styles';
 import {
     styled,
+    Avatar,
     Button,
     Card,
+    Divider,
     FormControl,
     IconButton,
     Link,
@@ -18,6 +20,7 @@ import {
     TextField,
     ToggleButton,
     ToggleButtonGroup,
+    Tooltip,
     Typography
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -27,16 +30,25 @@ import CloseIcon from '@mui/icons-material/Close';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import CancelIcon from '@mui/icons-material/Cancel';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
+
+// Iconify
+import { Icon } from '@iconify/react';
+import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
+// Utils
+import { fNumber } from 'src/utils/formatNumber';
+
 // Components
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
 import LoadingTextField from 'src/components/LoadingTextField';
-import QueryToken from './querytoken';
+import AddCostDialog from './AddCostDialog';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -153,6 +165,8 @@ export default function CreateCollection() {
 
     const [loading, setLoading] = useState(false);
 
+    const [openAddCost, setOpenAddCost] = useState(false);
+
     // Opensea
     // {
     //     "collections": {
@@ -170,8 +184,7 @@ export default function CreateCollection() {
     const [type, setType] = useState('normal');
     const [bulkUrl, setBulkUrl] = useState('');
 
-    const [token, setToken] = useState(null);
-    const [cost, setCost] = useState('0');
+    const [costs, setCosts] = useState([]);
 
     const [taxon, setTaxon] = useState('');
 
@@ -193,17 +206,8 @@ export default function CreateCollection() {
     if (type !== 'normal' && !bulkUrl)
         canCreate = false;
 
-    if (type === 'spinner' && canCreate) {
-        if (!token)
-            canCreate = false;
-        else {
-            canCreate = false;
-            try {
-                let nCost = Number(cost);
-                if (nCost > 0)
-                    canCreate = true;
-            } catch (e) {}
-        }
+    if (type === 'spinner' && costs.length === 0) {
+        canCreate = false;
     }
 
     const getTaxon = () => {
@@ -234,6 +238,11 @@ export default function CreateCollection() {
             openSnackbar('Please login', 'error');
             return;
         }
+
+        if (costs.length === 0) {
+            openSnackbar('You need to add at least 1 Mint currency to create a Spinner collection.', 'error');
+            return;
+        }
         // POST https://api.xrpnft.com/api/account/create-collection
         setLoading(true);
         try {
@@ -261,14 +270,7 @@ export default function CreateCollection() {
             data.type = type;
             data.bulkUrl = bulkUrl;
             if (type === 'spinner') {
-                data.infoSPIN = {
-                    name: token.name,
-                    issuer: token.issuer,
-                    currency: token.currency,
-                    md5: token.md5,
-                    ext: token.ext,
-                    cost: cost
-                };
+                data.infoSPIN = {costs};
             }
 
             formdata.append('account', account);
@@ -393,8 +395,33 @@ export default function CreateCollection() {
         setFamily(value);
     }
 
+    const handleAddCost = (token) => {
+        for (var c of costs) {
+            if (c.md5 === token.md5) {
+                c.cost = token.cost;
+                return;
+            }
+        }
+        costs.push(token);
+    }
+
+    const handleRemoveCost = (md5) => {
+        const newCosts = [];
+        for (var c of costs) {
+            if (c.md5 !== md5)
+                newCosts.push(c);
+        }
+        setCosts(newCosts);
+    }
+
     return (
         <>
+            <AddCostDialog
+                open={openAddCost}
+                setOpen={setOpenAddCost}
+                openSnackbar={openSnackbar}
+                onAddCost={handleAddCost}
+            />
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
                 <Typography variant="h1a">Create a Collection</Typography>
                 <Typography variant='p2'><Typography variant='s2'>*</Typography> Required fields</Typography>
@@ -620,13 +647,66 @@ export default function CreateCollection() {
                 {type !== 'normal' &&
                     <>
                         {type === 'spinner' &&
-                            <Stack spacing={2} sx={{pl: 0}}>
-                                <QueryToken
-                                    cost={cost}
-                                    setCost={setCost}
-                                    token={token}
-                                    setToken={setToken}
-                                />
+                            <Stack spacing={1}>
+                                <Typography variant='p2'>Costs per Mint <Typography variant='s2'>*</Typography></Typography>
+                                <Typography variant='p3' sx={{pb: 2}}>You need to add at least 1 Mint currency to create a Spinner collection.</Typography>
+
+                                {costs.map((token, idx) => (
+                                    <Stack spacing={1} sx={{pl: 1, pr:1}} key={token.md5}>
+                                        <Stack direction="row" spacing={2} sx={{mt: 0}} alignItems="center" justifyContent="space-between">
+                                            <Stack direction='row' alignItems="center">
+                                                <Avatar alt="C" src={`https://xrpl.to/static/tokens/${token.md5}.${token.ext}`} sx={{ mr: 2 }} />
+                                                <Stack spacing={0.5}>
+                                                    <Stack direction="row">
+                                                        <Typography variant='d4'>{token.name}</Typography>
+                                                        <Typography variant='d4' sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(token.exch)}</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" alignItems="center">
+                                                        <Typography variant='p3'>{token.issuer}</Typography>
+                                                        {token && token.currency !== 'XRP' &&
+                                                            <Link
+                                                                underline="none"
+                                                                color="inherit"
+                                                                target="_blank"
+                                                                href={`https://bithomp.com/explorer/${token.issuer}`}
+                                                                rel="noreferrer noopener nofollow"
+                                                            >
+                                                                <Tooltip title="Check on Bithomp">
+                                                                    <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                        <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </Link>
+                                                        }
+                                                    </Stack>
+                                                </Stack>
+                                            </Stack>
+
+                                            <Stack direction='row' spacing={2} alignItems="center">
+                                                <Stack direction='row' spacing={1} alignItems="flex-end">
+                                                    <Typography variant='p4' color="#EB5757">{token.cost}</Typography>
+                                                    <Typography variant='s2'>{token.name}</Typography>
+                                                </Stack>
+                                                
+                                                <IconButton onClick={()=>handleRemoveCost(token.md5)}>
+                                                    <HighlightOffOutlinedIcon fontSize="small" />
+                                                </IconButton>
+                                            </Stack>
+                                        </Stack>
+                                        <Divider />
+                                    </Stack>
+                                ))}
+
+                                <Stack direction="row" sx={{pl: 1, pt: 1, pb: 3}}>
+                                    <Button
+                                        variant="outlined"
+                                        startIcon={<AddCircleIcon />}
+                                        size="small"
+                                        onClick={()=>setOpenAddCost(true)}
+                                    >
+                                        Add
+                                    </Button>
+                                </Stack>
                             </Stack>
                         }
                         <Stack spacing={2} sx={{pl: 0}}>
