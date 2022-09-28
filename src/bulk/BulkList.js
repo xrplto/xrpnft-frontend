@@ -206,7 +206,7 @@ export default function BulkList() {
         return () => {
             clearInterval(timer);
         }
-    }, [account, token, page, rows]);
+    }, [account, accountToken, page, rows]);
 
     useEffect(() => {
         var timer = null;

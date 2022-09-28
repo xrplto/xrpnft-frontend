@@ -227,7 +227,6 @@ export default function EditCollection({collection}) {
             openSnackbar('Please login', 'error');
             return;
         }
-        // POST https://api.xrpnft.com/api/account/create-collection
         setLoading(true);
         try {
             let res;
@@ -254,7 +253,7 @@ export default function EditCollection({collection}) {
             formdata.append('account', account);
             formdata.append('data', JSON.stringify(data));
             
-            res = await axios.post(`${BASE_URL}/account/edit-collection`, formdata, {
+            res = await axios.post(`${BASE_URL}/collection/edit`, formdata, {
                 headers: { "Content-Type": "multipart/form-data", 'x-access-token': accountToken }
             });
 

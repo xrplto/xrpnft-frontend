@@ -31,7 +31,7 @@ export default function LoadingTextField({ type, value, setValid, startText, ...
 
     const checkValidation = (text) => {
         const account = accountProfile?.account;
-        const accountToken = accountProfile?.accountToken;
+        const accountToken = accountProfile?.token;
         if (!account || !accountToken) return;
 
         setStatus(TEXT_CHECKING);

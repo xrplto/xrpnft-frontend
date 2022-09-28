@@ -182,6 +182,7 @@ export default function CreateCollection() {
     const [slug, setSlug] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('normal');
+    const [privateCollection, setPrivateCollection] = useState('no');
     const [bulkUrl, setBulkUrl] = useState('');
 
     const [costs, setCosts] = useState([]);
@@ -243,7 +244,6 @@ export default function CreateCollection() {
             openSnackbar('You need to add at least 1 Mint currency to create a Spinner collection.', 'error');
             return;
         }
-        // POST https://api.xrpnft.com/api/account/create-collection
         setLoading(true);
         try {
             let res;
@@ -269,14 +269,16 @@ export default function CreateCollection() {
             data.fileFlag = fileFlag;
             data.type = type;
             data.bulkUrl = bulkUrl;
+            data.private = privateCollection;
             if (type === 'spinner') {
                 data.infoSPIN = {costs};
             }
 
             formdata.append('account', account);
             formdata.append('data', JSON.stringify(data));
-            
-            res = await axios.post(`${BASE_URL}/account/create-collection`, formdata, {
+
+            // https://api.xrpnft.com/api/collection/create
+            res = await axios.post(`${BASE_URL}/collection/create`, formdata, {
                 headers: { "Content-Type": "multipart/form-data", 'x-access-token': accountToken }
             });
 
@@ -388,6 +390,10 @@ export default function CreateCollection() {
 
     const handleChangeType = (event, newType) => {
         setType(newType);
+    };
+
+    const handleChangePrivate = (event, newValue) => {
+        setPrivateCollection(newValue);
     };
 
     const handleChangeFamily = (event) => {
@@ -770,6 +776,25 @@ export default function CreateCollection() {
                     margin='dense'
                     value={taxon}
                 />
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Private <Typography variant='s2'>*</Typography></Typography>
+                <Typography variant='p3'>
+                    Make your collection private when you need to upload NFTs or do something private.
+                    You can make collection public again after you've done all things.
+                </Typography>
+
+                <ToggleButtonGroup
+                    color="primary"
+                    value={privateCollection}
+                    exclusive
+                    size="small"
+                    onChange={handleChangePrivate}
+                >
+                    <ToggleButton value="no" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>No</ToggleButton>
+                    <ToggleButton value="yes" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>Yes</ToggleButton>
+                </ToggleButtonGroup>
             </Stack>
 
             <Stack alignItems='right'>

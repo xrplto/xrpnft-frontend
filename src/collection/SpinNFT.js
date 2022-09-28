@@ -341,8 +341,10 @@ export default function SpinNFT({ collection, nfts, setView }) {
         // }
 
         const len = nfts.length;
-        for (var i = 0; i < numberOfSymbolsPerSlot; i++) {
-            nums.push(setImage(i % len, i));
+        if (len > 0) {
+            for (var i = 0; i < numberOfSymbolsPerSlot; i++) {
+                nums.push(setImage(i % len, i));
+            }
         }
 
         return nums;
@@ -356,6 +358,11 @@ export default function SpinNFT({ collection, nfts, setView }) {
 
         if (mints < 1) {
             openSnackbar('You do not have enough Mints', 'error');
+            return;
+        }
+
+        if (pendingNfts < 1) {
+            openSnackbar('There are no NFTs left', 'error');
             return;
         }
 
@@ -385,6 +392,12 @@ export default function SpinNFT({ collection, nfts, setView }) {
                 // always executed
                 // slotRef.current.style.animation = ``;
                 setTimeout(() => {
+                    if (!newNft) {
+                        if (newPendingNfts > 0)
+                            openSnackbar('Try again!', 'error');
+                        else
+                            openSnackbar('There are not any NFTs left.', 'error');
+                    }
                     setNft(newNft);
                     setMints(newMints);
                     setXrpBalance(newXrpBalance);
@@ -523,7 +536,9 @@ export default function SpinNFT({ collection, nfts, setView }) {
                             <Typography variant="p5">To mint a random NFT from this collection, you need to purchase Mints.</Typography>
                             {/* <Typography variant="s5">Each mint costs <Typography variant="s5" color="#33C2FF">{infoSPIN.cost} {infoSPIN.name}</Typography>.</Typography> */}
                             <Typography variant="p5">It can be used against the purchase of only <Typography variant="s5" color="#57CA22">{collection.name}</Typography> Collection.</Typography>
-                            <Typography variant="p5" sx={{pb: 3}}>You currently have <Typography variant="s5" color="#33C2FF">{mints} mints</Typography> available and <Typography variant="s5" color="#33C2FF">{xrpBalance} XRP</Typography> tokens in your wallet.</Typography>
+                            <Typography variant="p5">You currently have <Typography variant="s5" color="#33C2FF">{mints} mints</Typography> available and <Typography variant="s5" color="#33C2FF">{xrpBalance} XRP</Typography> tokens in your wallet.</Typography>
+                            <Typography variant="p5" sx={{pb: 3}}>There are currently <Typography variant="s5" color="error">{pendingNfts}</Typography> / <Typography variant="s4" color="#33C2FF">{collection.items}</Typography> NFTs left in this collection.</Typography>
+                            
                             <Stack direction="row" spacing={2} justifyContent="center">
                                 <Button
                                     variant='contained'

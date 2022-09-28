@@ -126,7 +126,7 @@ export default function BulkMint({slug}) {
 
     // const [validPassword, setValidPassword] = useState(false);
     
-    const active = account && token && collection;
+    const active = account && accountToken && collection;
     let canDownload = active && metadata.length > 0 && nftName && isIPFS.cid(ipfsCID);
     let canCreate = canDownload; //  && passphrase && validPassword;
 
@@ -151,7 +151,7 @@ export default function BulkMint({slug}) {
             return;
         }
 
-        axios.get(`${BASE_URL}/collection/one/${slug}?account=${account}`, {headers: {'x-access-token': accountToken}})
+        axios.get(`${BASE_URL}/collection/${slug}?account=${account}`, {headers: {'x-access-token': accountToken}})
         .then(res => {
             try {
                 console.log(res);
