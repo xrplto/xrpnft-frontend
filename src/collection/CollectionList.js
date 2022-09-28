@@ -34,9 +34,9 @@ export default function CollectionList({isAll}) {
             return;
         }
         // console.log(`loadCollections page: ${offset}`);
-        // https://api.xrpnft.com/api/account/collections?account=rKVd5WtB8ugrxaTDTbJv6pVH7WunmyryLq
+        // https://api.xrpnft.com/api/collection/list?account=rKVd5WtB8ugrxaTDTbJv6pVH7WunmyryLq
         
-        axios.get(`${BASE_URL}/account/collections?account=${account}&all=${isAll}&page=${offset}&limit=20`, {headers: {'x-access-token': accountToken}})
+        axios.get(`${BASE_URL}/collection/list?account=${account}&all=${isAll}&page=${offset}&limit=20`, {headers: {'x-access-token': accountToken}})
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {

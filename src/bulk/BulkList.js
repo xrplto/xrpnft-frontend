@@ -166,7 +166,7 @@ export default function BulkList() {
 
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
-    const token = accountProfile?.token;
+    const accountToken = accountProfile?.token;
     
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
@@ -181,13 +181,13 @@ export default function BulkList() {
         
     useEffect(() => {
         function getBulkCollections() {
-            if (!account || !token) {
+            if (!account || !accountToken) {
                 openSnackbar('Please login', 'error');
                 return;
             }
 
-            // https://api.xrpnft.com/api/bulk/list?account=rhhh&page=0&limit=10
-            axios.get(`${BASE_URL}/account/collections?account=${account}&page=${page}&limit=${rows}&type=bulk`, {headers: {'x-access-token': token}})
+            // https://api.xrpnft.com/api/collection/list?account=rhhh&page=0&limit=10
+            axios.get(`${BASE_URL}/collection/list?account=${account}&page=${page}&limit=${rows}&type=bulk`, {headers: {'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -253,7 +253,7 @@ export default function BulkList() {
     }, [openScanQR, xummUuid]);
 
     const onMinterSetXumm = async (minter) => {
-        if (!account || !token) {
+        if (!account || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
@@ -263,7 +263,7 @@ export default function BulkList() {
 
             const body={ account, minter, user_token };
 
-            const res = await axios.post(`${BASE_URL}/xumm/setnftminter`, body, {headers: {'x-access-token': token}});
+            const res = await axios.post(`${BASE_URL}/xumm/setnftminter`, body, {headers: {'x-access-token': accountToken}});
 
             if (res.status === 200) {
                 const newUuid = res.data.data.uuid;
@@ -406,7 +406,9 @@ export default function BulkList() {
                                     <TableCell align="left">
                                         <Stack>
                                             <Stack direction="row" spacing={2} alignItems="center">
-                                                <Typography variant="h3">{name}</Typography>
+                                                <Link href={`/collection/${slug}`}>
+                                                    <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                                </Link>
                                                 <Tooltip title='Spinner Collection'>
                                                     <CasinoIcon color='info'/>
                                                 </Tooltip>

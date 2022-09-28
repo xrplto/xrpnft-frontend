@@ -61,9 +61,6 @@ export default function Wallet() {
                 try {
                     const res = await axios.get(`${BASE_URL}/xumm/payloadlogin/${uuid}`);
                     if (res && res.data && res.data.account) {
-
-                        console.log(res.data);
-                        
                         const ret = res.data;
                         const account = ret.account;
                         const user_token = ret.user_token;
@@ -207,7 +204,7 @@ export default function Wallet() {
                                 </NextLink>
                             </MenuItem>
                             <MenuItem
-                                key="create-bulk"
+                                key="create-nft"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}
                             >
                                 <NextLink href="/create" passHref>
@@ -218,7 +215,7 @@ export default function Wallet() {
                                 </NextLink>
                             </MenuItem>
                             <MenuItem
-                                key="create-bulk"
+                                key="manage-bulks"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}
                             >
                                 <NextLink href="/bulk" passHref>

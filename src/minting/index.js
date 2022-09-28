@@ -155,8 +155,8 @@ export default function Minting() {
             return;
         }
 
-        // https://api.xrpnft.com/api/account/query-collections?filter=
-        axios.get(`${BASE_URL}/account/query-collections?account=${account}&filter=${filter}`, {headers: {'x-access-token': accountToken}})
+        // https://api.xrpnft.com/api/collection/query?filter=
+        axios.get(`${BASE_URL}/collection/query?account=${account}&filter=${filter}`, {headers: {'x-access-token': accountToken}})
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {

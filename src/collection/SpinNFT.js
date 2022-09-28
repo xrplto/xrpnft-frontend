@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Decimal from 'decimal.js';
 import useSound from 'use-sound';
 import Confetti from 'react-confetti';
 import { ColorExtractor } from 'react-color-extractor';
@@ -18,13 +19,13 @@ import {
     Typography,
     useMediaQuery
 } from '@mui/material';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import ShareIcon from '@mui/icons-material/Share';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
+
+// Utils
+import { fNumber } from 'src/utils/formatNumber';
 
 // Components
 import XSnackbar from 'src/components/Snackbar';
@@ -142,6 +143,10 @@ function arrayRotate(arr, reverse) {
     return arr;
 }
 
+function fNumberSelf(x) {
+    return new Decimal(x).toFixed(6, Decimal.ROUND_DOWN);
+}
+
 export default function SpinNFT({ collection, nfts, setView }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -165,6 +170,10 @@ export default function SpinNFT({ collection, nfts, setView }) {
     const nftImgUrl = nft?`https://gateway.xrpnft.com/ipfs/${nft.meta.image}`:'/static/unknown.png';
 
     const [mints, setMints] = useState(0);
+
+    const [xrpBalance, setXrpBalance] = useState(0);
+
+    const [pendingNfts, setPendingNfts] = useState(0);
 
     // "collection": {
     //     "_id": "6332e893d799f7b10ec627a2",
@@ -246,6 +255,8 @@ export default function SpinNFT({ collection, nfts, setView }) {
         function getMints() {
             if (!account || !accountToken) {
                 openSnackbar('Please login', 'error');
+                setMints(0);
+                setXrpBalance(0);
                 return;
             }
 
@@ -254,8 +265,10 @@ export default function SpinNFT({ collection, nfts, setView }) {
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
-                        console.log(`Mints: ${ret.mints}`);
+                        // console.log(`Mints: ${ret.mints}`);
                         setMints(ret.mints);
+                        setXrpBalance(ret.xrpBalance);
+                        setPendingNfts(ret.pendingNfts);
                     }
                 }).catch(err => {
                     console.log("Error on getting exchanges!!!", err);
@@ -349,15 +362,21 @@ export default function SpinNFT({ collection, nfts, setView }) {
         setSpinning(true);
         // setNft(null);
 
-        const body = { account, collection: collection.name };
+        const body = { account, collectionName: collection.name, cid: collection.uuid };
 
         let newNft = null;
-        // https://api.xrpnft.com/api/account/spinnernft
-        axios.post(`${BASE_URL}/account/spinnernft`, body, {headers: {'x-access-token': accountToken}})
+        let newMints = 0;
+        let newXrpBalance = 0;
+        let newPendingNfts = 0;
+        // https://api.xrpnft.com/api/spin/chooseone
+        axios.post(`${BASE_URL}/spin/chooseone`, body, {headers: {'x-access-token': accountToken}})
             .then(res => {
                 let ret = res.status === 200 ? res.data : undefined;
                 if (ret && ret.nft) {
                     newNft = ret.nft;
+                    newMints = ret.mints;
+                    newXrpBalance = ret.xrpBalance;
+                    newPendingNfts = ret.pendingNfts;
                     // setCongrats(true);
                 }
             }).catch(err => {
@@ -367,6 +386,9 @@ export default function SpinNFT({ collection, nfts, setView }) {
                 // slotRef.current.style.animation = ``;
                 setTimeout(() => {
                     setNft(newNft);
+                    setMints(newMints);
+                    setXrpBalance(newXrpBalance);
+                    setPendingNfts(newPendingNfts);
                     setCongrats(true);
                     setSpinning(false);
                     play();
@@ -403,6 +425,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                 minter={minter}
                 collection={collection}
                 setMints={setMints}
+                setXrpBalance={setXrpBalance}
             />
 
             <Confetti
@@ -500,7 +523,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                             <Typography variant="p5">To mint a random NFT from this collection, you need to purchase Mints.</Typography>
                             {/* <Typography variant="s5">Each mint costs <Typography variant="s5" color="#33C2FF">{infoSPIN.cost} {infoSPIN.name}</Typography>.</Typography> */}
                             <Typography variant="p5">It can be used against the purchase of only <Typography variant="s5" color="#57CA22">{collection.name}</Typography> Collection.</Typography>
-                            <Typography variant="p5" sx={{pb: 3}}>You currently have <Typography variant="s5" color="#33C2FF">{mints} mints</Typography> available and <Typography variant="s5" color="#33C2FF">8327.9998 XRP</Typography> tokens in your wallet.</Typography>
+                            <Typography variant="p5" sx={{pb: 3}}>You currently have <Typography variant="s5" color="#33C2FF">{mints} mints</Typography> available and <Typography variant="s5" color="#33C2FF">{xrpBalance} XRP</Typography> tokens in your wallet.</Typography>
                             <Stack direction="row" spacing={2} justifyContent="center">
                                 <Button
                                     variant='contained'

@@ -47,54 +47,13 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS, CATEGORIES } from 'src/utils/constants';
+import { TOKEN_FLAGS, CATEGORIES } from 'src/utils/constants';
 import { fIntNumber, fNumber } from 'src/utils/formatNumber';
 
 // Components
-import BaseDialog from 'src/components/dialog/BaseDialog';
-import NFTokenMintDgContent from './NFTokenMintDgContent';
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
-import LoadingTextField from 'src/components/LoadingTextField';
-
-const CardWrapper = styled('div')(
-    ({ theme }) => `
-    border: dashed 3px;
-    border-radius: 5px;
-    padding: 5px;
-    width: fit-content;
-    &:hover {
-        cursor: pointer;
-    }
-`
-);
-
-const CardOverlay = styled('div')(
-    ({ theme }) => `
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    background: black;
-    inset: 0;
-    opacity: 0;
-    z-index: 1;
-    transition: opacity 0.5s;
-    &:hover {
-        opacity: 0.6;
-    }
-`
-);
-
-const DisabledButton = withStyles({
-    root: {
-        "&.Mui-disabled": {
-            pointerEvents: "unset", // allow :hover styles to be triggered
-            cursor: "not-allowed", // and custom cursor can be defined without :hover state
-        }
-    }
-})(Button);
+// import LoadingTextField from 'src/components/LoadingTextField';
 
 const CustomSelect = styled(Select)(({ theme }) => ({
     '& .MuiOutlinedInput-notchedOutline' : {
@@ -134,7 +93,7 @@ export default function BulkMint({slug}) {
     
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
-    const token = accountProfile?.token;
+    const accountToken = accountProfile?.token;
 
     // const levels = useSelector(state => state.status.metadata.levels);
     // const properties = useSelector(state => state.status.metadata.properties);
@@ -187,12 +146,12 @@ export default function BulkMint({slug}) {
             return;
         }
 
-        if (!account || !token) {
+        if (!account || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
 
-        axios.get(`${BASE_URL}/collection/${slug}?account=${account}`, {headers: {'x-access-token': token}})
+        axios.get(`${BASE_URL}/collection/one/${slug}?account=${account}`, {headers: {'x-access-token': accountToken}})
         .then(res => {
             try {
                 console.log(res);
@@ -219,7 +178,7 @@ export default function BulkMint({slug}) {
     }, [slug]);
 
     const onCreateNft = async () => {
-        if (!account || !token) {
+        if (!account || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
@@ -254,7 +213,7 @@ export default function BulkMint({slug}) {
             body.data = data;
             body.account = account;
 
-            res = await axios.post(`${BASE_URL}/account/mintbulk`, body, {headers: {'x-access-token': token}});
+            res = await axios.post(`${BASE_URL}/account/mintbulk`, body, {headers: {'x-access-token': accountToken}});
 
             if (res.status === 200) {
                 const ret = res.data;
@@ -806,29 +765,6 @@ export default function BulkMint({slug}) {
                         Create
                     </LoadingButton>
                 </Stack>
-
-                {/* <BaseDialog
-                    isOpen={open}
-                    close={() => { setOpen(false) }}
-                    title={'Bulk Mint Items'}
-                    maxWidth={'sm'}
-                    render={
-                        <NFTokenMintDgContent
-                            close={() => { setOpen(false) }}
-                            metadata={
-                                {
-                                    image: XRPNFT_DOMAIN + 'pinnedFileHash',
-                                    name: nftName,
-                                    type: 'image',
-                                    description: description,
-                                    externalLink: extLink,
-                                    levels: levels,
-                                    properties: properties,
-                                }
-                            }
-                        />
-                    }
-                /> */}
                 <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
             </Grid>
             <Grid item lg={6}>
