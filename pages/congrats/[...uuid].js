@@ -87,14 +87,16 @@ export async function getServerSideProps(ctx) {
     const BASE_URL = 'http://65.109.54.46/api';
 
     let data = null;
+    let isEditCollection = false;
     try {
 
         const params = ctx.params.uuid;
 
-        const type = params[0];
+        let type = params[0];
         const uuid = params[1];
 
-        if (type !== 'collection' && type !== 'assets') {
+        isEditCollection = type === 'editcollection';
+        if (type !== 'collection' && type !== 'assets' && type !=='editcollection') {
             return {
                 redirect: {
                     permanent: false,
@@ -102,6 +104,8 @@ export async function getServerSideProps(ctx) {
                 }
             }
         }
+
+        if (type === 'editcollection') type = 'collection';
 
         var t1 = performance.now();
 
@@ -198,6 +202,7 @@ export async function getServerSideProps(ctx) {
         ogp.imgUrl = `https://s1.xrpnft.com/collection/${bannerImage}`;
         ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
 
+        data.isEditCollection = isEditCollection;
         return {
             props: {data, ogp}, // will be passed to the page component as props
         }

@@ -195,7 +195,7 @@ export default function BulkList() {
                         setBulks(ret.collections);
                     }
                 }).catch(err => {
-                    console.log("Error on getting exchanges!!!", err);
+                    console.log("Error on getting bulk list!!!", err);
                 }).then(function () {
                     // always executed
                 });

@@ -4,6 +4,8 @@ import { ColorExtractor } from 'react-color-extractor';
 // Material
 import {
     styled,
+    Box,
+    ButtonBase,
     IconButton,
     Link,
     Stack,
@@ -24,6 +26,15 @@ const CardWrapper = styled('div')(
         overflow: hidden;
         transition: width 1s ease-in-out, height .5s ease-in-out !important;
         -webkit-tap-highlight-color: transparent;
+        &:hover, &.Mui-focusVisible {
+            z-index: 1;
+            & .MuiImageBackdrop-root {
+                opacity: 0.1;
+            }
+            & .MuiIconEditButton-root {
+                opacity: 1;
+            }
+        }
   `
 );
 
@@ -41,7 +52,7 @@ const CardOverlay = styled('div')(
     transition: opacity 0.5s;
     // border-radius: 20px;
     &:hover {
-        opacity: 0.6;
+        opacity: 0.3;
     }
 `
 );
@@ -88,7 +99,27 @@ const IconImage = styled('img')(
   `
 );
 
-export default function CollectionCard({ item }) {
+const images = [
+    {
+      url: '/static/covers/5.jpg',
+      title: 'Breakfast',
+      width: '40%',
+    }
+];
+
+  
+const ImageBackdrop = styled('span')(({ theme }) => ({
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: theme.palette.common.black,
+    opacity: 0,
+    transition: theme.transitions.create('opacity'),
+}));
+  
+export default function CollectionCard({ item, isAll }) {
 
     // {
     //     "_id": "6310c27cf81fe46884ef89ba",
@@ -123,53 +154,56 @@ export default function CollectionCard({ item }) {
     }
 
     return (
-        <Link href={`/collection/${slug}`} underline='none'>
-            <CardWrapper
-                style={{
-                    width: 320,
-                    height: 300,
-                    padding: 0,
-                    background: `radial-gradient(
-                            circle,
-                            rgba(255, 255, 255, 0.05) 0%,
-                            ${colors[0]} 0%,
-                            rgba(255, 255, 255, 0.05) 70%
-                        )`,
-                }}
-            >
-                <ColorExtractor getColors={getColors}>
-                    <img src={`https://s1.xrpnft.com/collection/${featuredImage}`}
-                        style={{
-                            width: 320,
-                            height: 220,
-                            objectFit: 'cover',
-                            borderTopLeftRadius: 20,
-                            borderTopRightRadius: 20,
-                        }}
-                    />
-                </ColorExtractor>
-                <Stack direction="row" spacing={1.5} sx={{p:3, mt:-6}} alignItems="center">
-                    <IconCover>
-                        <IconWrapper>
-                            <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
-                        </IconWrapper>
-                    </IconCover>
-                    <Typography variant="p1" sx={{pt:2}}>{name}</Typography>
-                </Stack>
+        <CardWrapper
+            style={{
+                width: 320,
+                height: 300,
+                padding: 0,
+                background: `radial-gradient(
+                        circle,
+                        rgba(255, 255, 255, 0.05) 0%,
+                        ${colors[0]} 0%,
+                        rgba(255, 255, 255, 0.05) 70%
+                    )`,
+            }}
+        >
+            <ColorExtractor getColors={getColors}>
+                <img src={`https://s1.xrpnft.com/collection/${featuredImage}`}
+                    style={{
+                        width: 320,
+                        height: 220,
+                        objectFit: 'cover',
+                        borderTopLeftRadius: 20,
+                        borderTopRightRadius: 20,
+                    }}
+                />
+            </ColorExtractor>
 
-                {/* <CardOverlay /> */}
+            <Stack direction="row" spacing={1.5} sx={{p:3, mt:-6}} alignItems="center">
+                <IconCover>
+                    <IconWrapper>
+                        <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
+                    </IconWrapper>
+                </IconCover>
+                <Typography variant="p1" sx={{pt:2}}>{name}</Typography>
+            </Stack>
 
-                <CardOverlay>
-                    <Link href={`/collection/${slug}/edit`} underline='none'>
-                        <IconButton
-                            aria-label='edit'
-                            sx={true ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
-                        >
-                            <EditIcon color='error' />
-                        </IconButton>
-                    </Link>
-                </CardOverlay>
-            </CardWrapper>
-        </Link>
+            {/* <CardOverlay /> */}
+            <Link href={`/collection/${slug}`} underline='none'>
+                <ImageBackdrop className="MuiImageBackdrop-root" />
+            </Link>
+
+            {!isAll &&
+                <Link href={`/collection/${slug}/edit`} underline='none'>
+                    <IconButton
+                        className="MuiIconEditButton-root"
+                        aria-label='edit'
+                        sx={true ? { position: 'absolute', right: '1vw', top: '1vh', opacity: 0, zIndex: 1 } : { display: 'none' }}
+                    >
+                        <EditIcon color='primary' fontSize="large" />
+                    </IconButton>
+                </Link>
+            }
+        </CardWrapper>
     );
 };

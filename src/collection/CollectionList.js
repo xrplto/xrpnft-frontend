@@ -90,7 +90,7 @@ export default function CollectionList({isAll}) {
                 {   
                     collections.map((item,index) => (
                         // <Grid item key={index + "s"}>
-                            <CollectionCard key={index} item={item} />
+                            <CollectionCard key={index} item={item} isAll={isAll} />
                         // </Grid>
                     ))
                     

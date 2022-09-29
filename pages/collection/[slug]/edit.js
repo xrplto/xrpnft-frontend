@@ -4,10 +4,10 @@ import { performance } from 'perf_hooks';
 
 // Material
 import {
+    styled,
     Box,
     Container,
-    Grid,
-    styled,
+    Stack,
     Toolbar
 } from '@mui/material';
 
@@ -56,15 +56,41 @@ function generateRandom(maxLimit = 10){
 
 export default function Overview({data}) {
     const bgIdx = generateRandom();
+    const BASE_URL = 'https://api.xrpnft.com/api';
     const { darkMode, accountProfile } = useContext(AppContext);
 
-    let invalidAccount = true;
-    if (data && accountProfile && accountProfile.account) {
-        const collection = data.collection;
-        const account = accountProfile.account;
-        if (account === collection.account)
-            invalidAccount = false;
-    }
+    const account = accountProfile?.account;
+    const accountToken = accountProfile?.token;
+
+    const [collection, setCollection] = useState(null);
+
+    const slug = data?.collection?.slug;
+
+    useEffect(() => {
+        function getCollection() {
+            if (!account || !accountToken) {
+                openSnackbar('Please login', 'error');
+                return;
+            }
+
+            // https://api.xrpnft.com/api/collection/test1
+            axios.get(`${BASE_URL}/collection/${slug}?account=${account}`, {headers: {'x-access-token': accountToken}})
+                .then(res => {
+                    let ret = res.status === 200 ? res.data : undefined;
+                    if (ret) {
+                        setCollection(ret.collection);
+                    }
+                }).catch(err => {
+                    console.log("Error on getting a collection!!!", err);
+                }).then(function () {
+                    // always executed
+                });
+        }
+
+        if (slug)
+            getCollection();
+
+    }, [account, accountToken, slug]);
 
 
     return (
@@ -81,8 +107,11 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="sm">
-                {!invalidAccount &&
-                    <EditCollection collection={data.collection}/>
+                {collection ? (
+                    <EditCollection collection={collection}/>
+                ):(
+                    <Stack sx={{mt:5, minHeight: '50vh'}}/>
+                )
                 }
             </Container>
 
@@ -154,10 +183,15 @@ export async function getServerSideProps(ctx) {
         ogp.imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
         ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
 
-        ret = {data, ogp};
-    }
-
-    return {
-        props: ret, // will be passed to the page component as props
+        return {
+            props: {data, ogp}, // will be passed to the page component as props
+        }
+    } else {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/404'
+            }
+        }
     }
 }

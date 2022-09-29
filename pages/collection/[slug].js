@@ -159,7 +159,7 @@ export async function getServerSideProps(ctx) {
     } catch (e) {
         console.log(e);
     }
-    let ret = {};
+
     if (data && data.collection) {
         /*{
             "result": "success",
@@ -197,10 +197,15 @@ export async function getServerSideProps(ctx) {
         ogp.imgUrl = `https://s1.xrpnft.com/collection/${bannerImage}`;
         ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
 
-        ret = {data, ogp};
-    }
-
-    return {
-        props: ret, // will be passed to the page component as props
+        return {
+            props: {data, ogp}, // will be passed to the page component as props
+        }
+    } else {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/404'
+            }
+        }
     }
 }
