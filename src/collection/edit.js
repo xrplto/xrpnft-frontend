@@ -8,16 +8,23 @@ import { useSelector } from 'react-redux'
 import { withStyles } from '@mui/styles';
 import {
     styled,
+    Avatar,
     Button,
     Card,
     Checkbox,
     Container,
+    Divider,
+    FormControl,
     FormControlLabel,
     FormGroup,
     IconButton,
     Link,
+    MenuItem,
+    Select,
     Stack,
     TextField,
+    ToggleButton,
+    ToggleButtonGroup,
     Tooltip,
     Typography
 } from '@mui/material';
@@ -26,17 +33,27 @@ import ImageIcon from '@mui/icons-material/Image';
 import InfoIcon from '@mui/icons-material/Info';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
+import CancelIcon from '@mui/icons-material/Cancel';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
+// Iconify
+import { Icon } from '@iconify/react';
+import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
+
 // Utils
-import { SUPPORTED_FILE_TYPES, XRPNFT_DOMAIN, TOKEN_FLAGS } from 'src/utils/constants';
+import { fNumber } from 'src/utils/formatNumber';
+import { COLLECTION_FAMILIES } from 'src/utils/constants';
 
 // Components
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
+import LoadingTextField from 'src/components/LoadingTextField';
+import AddCostDialog from './AddCostDialog';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -120,6 +137,12 @@ const DisabledButton = withStyles({
     }
 })(Button);
 
+const CustomSelect = styled(Select)(({ theme }) => ({
+    '& .MuiOutlinedInput-notchedOutline' : {
+        border_left: 'none'
+    }
+}));
+
 const FILE_UNCHANGED = 0;
 const FILE_NEW = 1;
 const FILE_REMOVED = 2;
@@ -144,16 +167,20 @@ export default function EditCollection({collection}) {
     const logoImageUrl = collection.logoImage?`https://s1.xrpnft.com/collection/${collection.logoImage}`:null;
     const featuredImageUrl = collection.featuredImage?`https://s1.xrpnft.com/collection/${collection.featuredImage}`:null;
     const bannerImageUrl = collection.bannerImage?`https://s1.xrpnft.com/collection/${collection.bannerImage}`:null;
+    const spinnerImageUrl = collection.spinnerImage?`https://s1.xrpnft.com/collection/${collection.spinnerImage}`:null;
 
     const fileRef1 = useRef();
     const fileRef2 = useRef();
     const fileRef3 = useRef();
+    const fileRef4 = useRef();
     
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
     const [loading, setLoading] = useState(false);
+
+    const [openAddCost, setOpenAddCost] = useState(false);
     
     // Opensea
     // {
@@ -165,9 +192,15 @@ export default function EditCollection({collection}) {
     //         }
     //     }
     // }
-    const [collectionName, setCollectionName] = useState(collection.name)
+    const [name, setName] = useState(collection.name)
+    const [family, setFamily] = useState('');
     const [slug, setSlug] = useState(collection.slug);
     const [description, setDescription] = useState(collection.description);
+    const [type, setType] = useState(collection.type);
+    const [privateCollection, setPrivateCollection] = useState(collection.private);
+    const [bulkUrl, setBulkUrl] = useState(collection.bulkUrl || '');
+    const [costs, setCosts] = useState(collection.infoSPIN.costs);
+    const [taxon, setTaxon] = useState(collection.taxon);
 
     // Logo image
     const [fileUrl1, setFileUrl1] = useState(logoImageUrl);
@@ -178,31 +211,54 @@ export default function EditCollection({collection}) {
     // Banner image
     const [fileUrl3, setFileUrl3] = useState(bannerImageUrl);
     const [file3, setFile3] = useState(null);
+    // Spinner GIF image
+    const [fileUrl4, setFileUrl4] = useState(spinnerImageUrl);
+    const [file4, setFile4] = useState(null);
 
-    const [passphrase, setPassPhrase] = useState(''); // SHOULD BE REMOVED on deploy
+    const [valid1, setValid1] = useState(false); // Name validation check
+    const [valid2, setValid2] = useState(false); // Slug validation check
 
     const checkChanged = () => {
-        if (file1)
-            return true;
+        if (file1) return true;
+
         if (file2)
             return true;
         else if (fileUrl2 !== featuredImageUrl)
             return true;
+
         if (file3)
             return true;
         else if (fileUrl3 !== bannerImageUrl)
             return true;
 
-        if (collectionName !== collection.name) return true;
+        if (file4)
+            return true;
+        else if (fileUrl4 !== spinnerImageUrl)
+            return true;
+
+        if (family !== collection.family) return true;
         if (description !== collection.description) return true;
         if (slug !== collection.slug) return true;
+        if (bulkUrl !== collection.bulkUrl) return true;
+
+        if (type === 'spinner') {
+            if (JSON.stringify(costs) !== JSON.stringify(collection.infoSPIN.costs))
+                return true;
+        }
         return false;
     }
     
-    const canSaveChanges = (file1 || fileUrl1) && collectionName && passphrase && checkChanged();
+    let canSaveChanges = (file1 || fileUrl1) && slug && valid2 && checkChanged();
+
+    if (type !== 'normal' && !bulkUrl)
+        canSaveChanges = false;
+
+    if (type === 'spinner' && costs.length === 0) {
+        canSaveChanges = false;
+    }
 
     const getFileFlagArray = () => {
-        let flag = [0, 0, 0]; // 0: Not changed 1: New File 2: Removed
+        let flag = [0, 0, 0, 0]; // 0: Not changed 1: New File 2: Removed
         if (file1) {
             flag[0] = FILE_NEW;
         }
@@ -217,6 +273,12 @@ export default function EditCollection({collection}) {
             flag[2] = FILE_NEW;
         } else if (!fileUrl3) {
             flag[2] = FILE_REMOVED;
+        }
+
+        if (file4) {
+            flag[3] = FILE_NEW;
+        } else if (!fileUrl4) {
+            flag[3] = FILE_REMOVED;
         }
 
         return flag;
@@ -241,14 +303,22 @@ export default function EditCollection({collection}) {
                 formdata.append('imgCollection', file2);
             if (fileFlag[2] === FILE_NEW)
                 formdata.append('imgCollection', file3);
+            if (fileFlag[3] === FILE_NEW)
+                formdata.append('imgCollection', file4);
 
             const data = {};
-            data.name = collectionName;
+            data.name = name;
+            data.family = family;
             data.slug = slug;
             data.description = description;
             data.fileFlag = fileFlag;
+            data.type = type;
+            data.bulkUrl = bulkUrl;
+            data.private = privateCollection;
+            if (type === 'spinner') {
+                data.infoSPIN = {costs};
+            }
             data.uuid = collection.uuid;
-            data.passphrase = passphrase;
 
             formdata.append('account', account);
             formdata.append('data', JSON.stringify(data));
@@ -276,7 +346,8 @@ export default function EditCollection({collection}) {
                         "_id": "6308bc3d7a1dec795f21fc33"
                     } */
                     openSnackbar('Edit collection successful!', 'success')
-                    window.location.href = `/collection/${data.slug}`;
+                    // window.location.href = `/collection/${data.slug}`;
+                    window.location.href = `/congrats/editcollection/${data.slug}`;
                     // setFile(null);
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
@@ -298,7 +369,7 @@ export default function EditCollection({collection}) {
         var ext = re.exec(fileName)[1];
         if (ext)
             ext = ext.toLowerCase();
-        if (ext === 'jpg' || ext === 'png') {
+        if (ext === 'jpg' || ext === 'png' || ext === 'gif') {
             const size = pickedFile.size;
             if (size < 10240000) {
                 // setImgExt(ext);
@@ -308,6 +379,8 @@ export default function EditCollection({collection}) {
                     setFile2(pickedFile);
                 else if (idx === 3)
                     setFile3(pickedFile);
+                else if (idx === 4)
+                    setFile4(pickedFile);
 
                 // This is used as src of image
                 const reader = new FileReader();
@@ -319,6 +392,8 @@ export default function EditCollection({collection}) {
                         setFileUrl2(reader.result);
                     else if (idx === 3)
                         setFileUrl3(reader.result);
+                    else if (idx === 4)
+                        setFileUrl4(reader.result);
                 }
             }
         }
@@ -337,6 +412,11 @@ export default function EditCollection({collection}) {
     const handleFileSelect3 = (e) => {
         const pickedFile = e.target.files[0];
         processFile(pickedFile, 3);
+    }
+
+    const handleFileSelect4 = (e) => {
+        const pickedFile = e.target.files[0];
+        processFile(pickedFile, 4);
     }
 
     const handleResetFile1 = (e) => {
@@ -360,8 +440,54 @@ export default function EditCollection({collection}) {
         fileRef3.current.value = null;
     }
 
+    const handleResetFile4 = (e) => {
+        e.stopPropagation();
+        setFile4(null);
+        setFileUrl4(null);
+        fileRef4.current.value = null;
+    }
+
+    const handleChangeType = (event, newType) => {
+        // setType(newType);
+        openSnackbar('You can not change Type', 'error');
+    };
+
+    const handleChangePrivate = (event, newValue) => {
+        setPrivateCollection(newValue);
+    };
+
+    const handleChangeFamily = (event) => {
+        const value = event.target.value;
+        setFamily(value);
+    }
+
+    const handleAddCost = (token) => {
+        for (var c of costs) {
+            if (c.md5 === token.md5) {
+                c.cost = token.cost;
+                return;
+            }
+        }
+        costs.push(token);
+    }
+
+    const handleRemoveCost = (md5) => {
+        const newCosts = [];
+        for (var c of costs) {
+            if (c.md5 !== md5)
+                newCosts.push(c);
+        }
+        setCosts(newCosts);
+    }
+
     return (
         <>
+            <AddCostDialog
+                open={openAddCost}
+                setOpen={setOpenAddCost}
+                openSnackbar={openSnackbar}
+                onAddCost={handleAddCost}
+            />
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
                 <Typography variant="h1a">Edit My Collection</Typography>
                 <Typography variant='p2'><Typography variant='s2'>*</Typography> Required fields</Typography>
@@ -486,39 +612,231 @@ export default function EditCollection({collection}) {
 
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Name <Typography variant='s2'>*</Typography></Typography>
 
-                <TextField required placeholder='Example: My XRPL NFTs' margin='dense'
+                <LoadingTextField
+                    id='id_collection_name'
+                    placeholder='Example: My XRPL NFTs'
+                    type='EDIT_COLLECTION_NAME'
+                    uuid={collection.uuid}
+                    startText=''
+                    value={name}
+                    setValid={setValid1}
                     onChange={(e) => {
-                        setCollectionName(e.target.value)
+                        // setName(e.target.value);
                     }}
-                    value={collectionName}
-                    sx={{
-                        '&.MuiTextField-root': {
-                            marginTop: 1
-                        }
-                    }}
+                    disabled
                 />
             </Stack>
+
+            <Stack direction="row" mb={3} alignItems='center' sx={{ minHeight: 60 }}>
+                <Typography variant='d4'>Collection Family</Typography>
+                <FormControl sx={{ ml:2, pt: 0, minWidth: 120 }} size="small">
+                    <CustomSelect
+                        value={family}
+                        onChange={handleChangeFamily}
+                        MenuProps={{ disableScrollLock: true }}
+                    >
+                        {COLLECTION_FAMILIES.map((family, idx) => (
+                            <MenuItem
+                                key={idx}
+                                value={family.value}
+                                sx={{pt:2, pb:2}}
+                            >
+                                <Stack direction='row' spacing={1} alignItems="center">
+                                    {family.icon}
+                                    {/* <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${col.logoImage}`} sx={{ mr:2, width: 32, height: 32 }} /> */}
+                                    <Typography variant='d4'>{family.title}</Typography>
+                                </Stack>
+                            </MenuItem>
+                        ))}
+                    </CustomSelect>
+                </FormControl>
+
+                <IconButton
+                    aria-label='cancel' onClick={(e) => {
+                        setFamily('');
+                    }}
+                    sx={family ? { display: 'block' } : { display: 'none' }}
+                >
+                    <CancelIcon />
+                </IconButton>
+            </Stack>
+
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>URL</Typography>
                 <Typography variant='p2'>
                     Customize your URL on XRPNFT.COM. Must only contain lowercase letters, numbers, and hyphens.
                 </Typography>
-                <TextField
-                    required placeholder='https://xrpnft.com/collection/my-xrpl-nfts'
-                    margin='dense'
+                <LoadingTextField
+                    id='id_collection_slug'
+                    placeholder='my-xrpl-nfts'
+                    type='EDIT_COLLECTION_SLUG'
+                    uuid={collection.uuid}
+                    startText='https://xrpnft.com/collection/'
+                    value={slug}
+                    setValid={setValid2}
                     onChange={(e) => {
                         const value = e.target.value;
                         const newSlug = value?value.replace(/[^a-z0-9-]/g, ""):'';
                         setSlug(newSlug);
                     }}
-                    value={slug}
-                    sx={{
-                        '&.MuiTextField-root': {
-                            marginTop: 1
-                        }
-                    }}
                 />
             </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Type <Typography variant='s2'>*</Typography></Typography>
+                <Typography variant='p3'>
+                    Select your collection type.
+                </Typography>
+
+                <Stack spacing={1} pl={0}>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Normal:</Typography> You can mint NFTs one by one for this collection.
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Bulk:</Typography> You can upload bulk NFTs through Manage Bulks page.
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Spinner:</Typography> You can sell random NFTs with Mints.
+                    </Typography>
+                </Stack>
+
+                <ToggleButtonGroup
+                    color="primary"
+                    value={type}
+                    exclusive
+                    size="small"
+                    onChange={handleChangeType}
+                >
+                    <ToggleButton value="normal" sx={{pl:2, pr:2}}>Normal</ToggleButton>
+                    <ToggleButton value="bulk" sx={{pl:3, pr:3}}>Bulk</ToggleButton>
+                    <ToggleButton value="spinner" sx={{pl:3, pr:3}}>Spinner</ToggleButton>
+                </ToggleButtonGroup>
+
+                {type !== 'normal' &&
+                    <>
+                        {type === 'spinner' &&
+                            <Stack spacing={1}>
+                                <Typography variant='p2'>Costs per Mint <Typography variant='s2'>*</Typography></Typography>
+                                <Typography variant='p3' sx={{pb: 2}}>You need to add at least 1 Mint currency to create a Spinner collection.</Typography>
+
+                                {costs.map((token, idx) => (
+                                    <Stack spacing={1} sx={{pl: 1, pr:1}} key={token.md5}>
+                                        <Stack direction="row" spacing={2} sx={{mt: 0}} alignItems="center" justifyContent="space-between">
+                                            <Stack direction='row' alignItems="center">
+                                                <Avatar alt="C" src={`https://xrpl.to/static/tokens/${token.md5}.${token.ext}`} sx={{ mr: 2 }} />
+                                                <Stack spacing={0.5}>
+                                                    <Stack direction="row">
+                                                        <Typography variant='d4'>{token.name}</Typography>
+                                                        <Typography variant='d4' sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(token.exch)}</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" alignItems="center">
+                                                        <Typography variant='p3'>{token.issuer}</Typography>
+                                                        {token && token.currency !== 'XRP' &&
+                                                            <Link
+                                                                underline="none"
+                                                                color="inherit"
+                                                                target="_blank"
+                                                                href={`https://bithomp.com/explorer/${token.issuer}`}
+                                                                rel="noreferrer noopener nofollow"
+                                                            >
+                                                                <Tooltip title="Check on Bithomp">
+                                                                    <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                        <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </Link>
+                                                        }
+                                                    </Stack>
+                                                </Stack>
+                                            </Stack>
+
+                                            <Stack direction='row' spacing={2} alignItems="center">
+                                                <Stack direction='row' spacing={1} alignItems="flex-end">
+                                                    <Typography variant='p4' color="#EB5757">{token.cost}</Typography>
+                                                    <Typography variant='s2'>{token.name}</Typography>
+                                                </Stack>
+                                                
+                                                <IconButton onClick={()=>handleRemoveCost(token.md5)}>
+                                                    <HighlightOffOutlinedIcon fontSize="small" />
+                                                </IconButton>
+                                            </Stack>
+                                        </Stack>
+                                        <Divider />
+                                    </Stack>
+                                ))}
+
+                                <Stack direction="row" sx={{pl: 1, pt: 1, pb: 3}}>
+                                    <Button
+                                        variant="outlined"
+                                        startIcon={<AddCircleIcon />}
+                                        size="small"
+                                        onClick={()=>setOpenAddCost(true)}
+                                    >
+                                        Add
+                                    </Button>
+                                </Stack>
+                            </Stack>
+                        }
+                        <Stack spacing={2} sx={{pl: 0}}>
+                            <Typography variant='p2'>
+                                Paste the Google Drive shared link URL here. <Typography variant='s2'>*</Typography>
+                            </Typography>
+                            <Typography variant='p3'>
+                                https://drive.google.com/file/d/1xjA-1bodiMrvSCtdTEMim5x1Cam74bXU/view
+                            </Typography>
+
+                            <TextField
+                                id='id_bulk_url'
+                                disabled
+                                placeholder=''
+                                value={bulkUrl}
+                                onChange={(e) => {
+                                    setBulkUrl(e.target.value);
+                                }}
+                            />
+                        </Stack>
+
+                        <Typography variant='p4' sx={{pt:2, pb:1}}>Spinner image</Typography>
+                        <Typography variant='p3'>This image will be used for spinning NFTs. 600 x 400 recommended.</Typography>
+                        <CardWrapper>
+                            <input
+                                ref={fileRef4}
+                                style={{ display: 'none' }}
+                                accept='.gif'
+                                id='contained-button-file4'
+                                // multiple
+                                type='file'
+                                onChange={handleFileSelect4}
+                            />
+                            <Card
+                                sx={{
+                                    display: 'flex',
+                                    width: 320,
+                                    height: 240,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    overflow: 'auto',
+                                    position: 'relative'
+                                }}
+                            >
+                                <CardOverlay
+                                    onClick={() => fileRef4.current.click()}
+                                >
+                                    <IconButton
+                                        aria-label='close' onClick={(e) => handleResetFile4(e)}
+                                        sx={fileUrl4 ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
+                                    >
+                                        <CloseIcon color='white' />
+                                    </IconButton>
+                                </CardOverlay>
+                                <img src={fileUrl4} alt='' style={fileUrl4 ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} />
+                                <ImageIcon fontSize='large' sx={fileUrl4 ? { display: 'none' } : {width: 100, height: 100}} />
+                            </Card>
+                        </CardWrapper>
+                    </>
+                }
+            </Stack>
+
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Description</Typography>
                 <Typography variant='p2'>
@@ -547,19 +865,37 @@ export default function EditCollection({collection}) {
             </Stack>
 
             <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Passphrase <Typography variant='s2'>*</Typography></Typography>
+                <Typography variant='p4'>Taxon</Typography>
+                <Typography variant='p3'>
+                    Taxon links NFTs to this collection, NFTs minted for this collection will have this Taxon in their NFTokenID field. Taxon is automatically set.
+                </Typography>
 
-                <TextField required placeholder='Passphrase' margin='dense'
-                    onChange={(e) => {
-                        setPassPhrase(e.target.value)
-                    }}
-                    value={passphrase}
-                    sx={{
-                        '&.MuiTextField-root': {
-                            marginTop: 1
-                        }
-                    }}
+                <TextField
+                    id='id_collection_taxon'
+                    disabled
+                    placeholder=''
+                    margin='dense'
+                    value={taxon}
                 />
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Private <Typography variant='s2'>*</Typography></Typography>
+                <Typography variant='p3'>
+                    Make your collection private when you need to upload NFTs or do something private.
+                    You can make collection public again after you've done all things.
+                </Typography>
+
+                <ToggleButtonGroup
+                    color="primary"
+                    value={privateCollection}
+                    exclusive
+                    size="small"
+                    onChange={handleChangePrivate}
+                >
+                    <ToggleButton value="no" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>No</ToggleButton>
+                    <ToggleButton value="yes" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>Yes</ToggleButton>
+                </ToggleButtonGroup>
             </Stack>
 
             <Stack alignItems='right'>

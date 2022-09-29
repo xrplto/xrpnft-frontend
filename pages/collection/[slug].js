@@ -11,10 +11,6 @@ import {
     Toolbar
 } from '@mui/material';
 
-// Context
-import { useContext } from 'react';
-import { AppContext } from 'src/AppContext';
-
 // Components
 import Collection from 'src/collection';
 import ScrollToTop from 'src/components/ScrollToTop';

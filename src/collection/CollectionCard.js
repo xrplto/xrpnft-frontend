@@ -4,10 +4,12 @@ import { ColorExtractor } from 'react-color-extractor';
 // Material
 import {
     styled,
+    IconButton,
     Link,
     Stack,
     Typography
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -39,7 +41,7 @@ const CardOverlay = styled('div')(
     transition: opacity 0.5s;
     // border-radius: 20px;
     &:hover {
-        opacity: 0.3;
+        opacity: 0.6;
     }
 `
 );
@@ -154,7 +156,19 @@ export default function CollectionCard({ item }) {
                     </IconCover>
                     <Typography variant="p1" sx={{pt:2}}>{name}</Typography>
                 </Stack>
-                <CardOverlay />
+
+                {/* <CardOverlay /> */}
+
+                <CardOverlay>
+                    <Link href={`/collection/${slug}/edit`} underline='none'>
+                        <IconButton
+                            aria-label='edit'
+                            sx={true ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
+                        >
+                            <EditIcon color='error' />
+                        </IconButton>
+                    </Link>
+                </CardOverlay>
             </CardWrapper>
         </Link>
     );

@@ -167,8 +167,6 @@ export default function SpinNFT({ collection, nfts, setView }) {
 
     const [openBuyMint, setOpenBuyMint] = useState(false);
 
-    const nftImgUrl = nft?`https://gateway.xrpnft.com/ipfs/${nft.meta.image}`:'/static/unknown.png';
-
     const [mints, setMints] = useState(0);
 
     const [xrpBalance, setXrpBalance] = useState(0);
@@ -228,6 +226,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
         logoImage,
         featuredImage,
         bannerImage,
+        spinnerImage,
         timestamp,
         minter
     } = collection;
@@ -238,18 +237,11 @@ export default function SpinNFT({ collection, nfts, setView }) {
         setColors(c => [...c, ...colors]);
     }
 
-    // Reel Slot
-    let symbolArray = [];
-
-    const slotRef = createRef();
-
-    const [state, setState] = useState({
-        spin: 0
-    });
-
     const [spinning, setSpinning] = useState(false);
 
-    const [reelSymbols, setReelSymbols] = useState([]);
+    let nftImgUrl = nft?`https://gateway.xrpnft.com/ipfs/${nft.meta.image}`:'/static/unknown.png';
+
+    const spinImgUrl = spinnerImage?`https://s1.xrpnft.com/collection/${spinnerImage}`:'/static/spin.gif';
 
     useEffect(() => {
         function getMints() {
@@ -271,19 +263,13 @@ export default function SpinNFT({ collection, nfts, setView }) {
                         setPendingNfts(ret.pendingNfts);
                     }
                 }).catch(err => {
-                    console.log("Error on getting exchanges!!!", err);
+                    console.log("Error on getting mint count!!!", err);
                 }).then(function () {
                     // always executed
                 });
         }
         getMints();
     }, [account, accountToken]);
-
-    useEffect(() => {
-        setReelArraySymbols().then((syms) => {
-            setReelSymbols(syms);
-        });
-    }, [fullScreen]);
 
     useEffect(() => {
         if (congrats) {
@@ -293,64 +279,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
         }
     }, [congrats]);
 
-    const onAnimationStart = () => {
-        setState({ spin: 1 });
-    };
-
-    const onAnimationEnd = () => {
-        slotRef.current.style.animation = ``;
-        setState({ spin: 0 });
-        setCongrats(true);
-    };
-
-    const setReelArraySymbols = (callback) => {
-        return new Promise((resolve, reject) => {
-            resolve(
-                (symbolArray = [
-                    generateImageColumn()
-                ])
-            );
-        });
-    };
-
-    const setImage = (index, key) => {
-        const imgUrl = `https://gateway.xrpnft.com/ipfs/${nfts[index].meta.image}`;
-        return (
-            <img
-                key={key}
-                alt="Oops..."
-                src={imgUrl}
-                style={{
-                    width: fullScreen?'480px':'280px',
-                    height: fullScreen?'400px':'200px',
-                    // marginTop: 5,
-                    // borderRadius: 20,
-                    objectFit: 'cover',
-                }}
-            />
-        )
-    }
-
-    const generateImageColumn = () => {
-        var nums = [];
-        // nums.push(setMainImage());
-
-        // for (var i = 0; i < numberOfSymbolsPerSlot; i++) {
-        //     var randomIndex = Math.floor(Math.random() * nfts.length);
-        //     nums.push(setImage(randomIndex, i));
-        // }
-
-        const len = nfts.length;
-        if (len > 0) {
-            for (var i = 0; i < numberOfSymbolsPerSlot; i++) {
-                nums.push(setImage(i % len, i));
-            }
-        }
-
-        return nums;
-    }
-
-    const getSpinnerNFT = (slotRef) => {
+    const getSpinnerNFT = () => {
         if (!account || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
@@ -387,10 +316,9 @@ export default function SpinNFT({ collection, nfts, setView }) {
                     // setCongrats(true);
                 }
             }).catch(err => {
-                console.log("Error on getting exchanges!!!", err);
+                console.log("Error on choosing NFT!!!", err);
             }).then(function () {
                 // always executed
-                // slotRef.current.style.animation = ``;
                 setTimeout(() => {
                     if (!newNft) {
                         if (newPendingNfts > 0)
@@ -405,25 +333,8 @@ export default function SpinNFT({ collection, nfts, setView }) {
                     setCongrats(true);
                     setSpinning(false);
                     play();
-                }, 3000);
+                }, 5000);
             });
-    }
-
-    const mint = () => {
-        // if (spinning)
-        //     setSpinning(false);
-        // else
-        //     setSpinning(true);
-
-        getSpinnerNFT();
-        
-        // resetAllSlots();
-
-        // setReelArraySymbols().then((syms) => {
-        //     setReelSymbols(syms);
-        // });
-
-        // slotRef.current.style.animation = `spinner 0.5s forwards ease-in-out`;
     }
 
     return (
@@ -491,6 +402,18 @@ export default function SpinNFT({ collection, nfts, setView }) {
 
                             <SlotBox key={11} id={12}>
                                 <ColorExtractor getColors={getColors}>
+                                    <img src={spinImgUrl}
+                                        style={{
+                                            width: fullScreen?'480px':'280px',
+                                            height: fullScreen?'400px':'200px',
+                                            // marginTop: 5,
+                                            // borderRadius: 20,
+                                            objectFit: 'cover',
+                                            display: spinning?'block':'none'
+                                        }}
+                                    />
+                                </ColorExtractor>
+                                <ColorExtractor getColors={getColors}>
                                     <img src={nftImgUrl}
                                         style={{
                                             width: fullScreen?'480px':'280px',
@@ -502,18 +425,6 @@ export default function SpinNFT({ collection, nfts, setView }) {
                                         }}
                                     />
                                 </ColorExtractor>
-                                <Stack
-                                    ref={slotRef}
-                                    onAnimationStart={onAnimationStart}
-                                    onAnimationEnd={onAnimationEnd}
-                                    style={{
-                                        animation: spinning?`spinner .5s infinite forwards ease-in-out`:``,
-                                        filter: !mints?'blur(30px)':'',
-                                        WebkitMask: !mints?'linear-gradient(rgb(255, 255, 255), transparent)':''
-                                    }}
-                                >
-                                    {reelSymbols[0]}
-                                </Stack>
                             </SlotBox>
                             
                             
@@ -523,7 +434,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                             <Divider sx={{mt:0.8, mb:2}}/>
                             <Button
                                 variant='contained'
-                                onClick={() => mint()}
+                                onClick={() => getSpinnerNFT()}
                                 sx={{pl:3, pr:3}}
                             >
                                 Mint

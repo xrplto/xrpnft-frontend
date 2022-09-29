@@ -18,7 +18,7 @@ import { ClipLoader } from "react-spinners";
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
-export default function LoadingTextField({ type, value, setValid, startText, ...props }) {
+export default function LoadingTextField({ type, value, uuid, setValid, startText, ...props }) {
     const TEXT_EMPTY = 0;
     const TEXT_CHECKING = 1;
     const TEXT_VALID = 2;
@@ -29,7 +29,7 @@ export default function LoadingTextField({ type, value, setValid, startText, ...
 
     const { accountProfile } = useContext(AppContext);
 
-    const checkValidation = (text) => {
+    const checkValidation = (text, uuid) => {
         const account = accountProfile?.account;
         const accountToken = accountProfile?.token;
         if (!account || !accountToken) return;
@@ -40,6 +40,8 @@ export default function LoadingTextField({ type, value, setValid, startText, ...
         body.account = account;
         body.text = text;
         body.type = type;
+        if (uuid)
+            body.uuid = uuid;
 
         // https://api.xrpnft.com/api/validation
         axios.post(`${BASE_URL}/validation`, body, {headers: {'x-access-token': accountToken}}).then(res => {
@@ -71,7 +73,7 @@ export default function LoadingTextField({ type, value, setValid, startText, ...
             if (!value)
                 setStatus(TEXT_EMPTY)
             else
-                checkValidation(value);
+                checkValidation(value, uuid);
         }
 
         setValid(false);
@@ -81,7 +83,7 @@ export default function LoadingTextField({ type, value, setValid, startText, ...
                 clearTimeout(timer);
             }
         };
-    }, [value]);
+    }, [value, uuid]);
 
     useEffect(() => {
         if (setValid) {
