@@ -75,7 +75,7 @@ function GetNum(amount) {
     return num;
 }
 
-export default function AddPropertyDialog({open, setOpen, openSnackbar, onAddProperty}) {
+export default function DlgAddProperty({open, setOpen, openSnackbar, onAddProperty}) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 

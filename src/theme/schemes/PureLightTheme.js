@@ -354,6 +354,13 @@ export const PureLightTheme = createTheme({
         }
       }
     },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          // backgroundColor: darken(themeColors.primaryAlt, 0.9)
+        }
+      }
+    },
     MuiCssBaseline: {
       styleOverrides: {
         'html, body': {
@@ -1066,6 +1073,16 @@ export const PureLightTheme = createTheme({
             display: 'none'
           }
         }
+      }
+    },
+    MuiPopover: {
+      defaultProps: {
+        disableScrollLock: true, keepMounted: true, disablePortal: true
+      }
+    },
+    MuiPopper: {
+      defaultProps: {
+        keepMounted: true, disablePortal: true
       }
     },
     MuiTooltip: {

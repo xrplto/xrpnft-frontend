@@ -5,23 +5,20 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
 import {
+    alpha,
     Avatar,
-    Box,
     Button,
     Divider,
     IconButton,
     Link,
     MenuItem,
+    Popover,
     Stack,
-    Tooltip,
     Typography
 } from '@mui/material';
-import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import GridOnIcon from '@mui/icons-material/GridOn';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import LogoutIcon from '@mui/icons-material/Logout';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 // Context
 import { useContext } from 'react';
@@ -32,7 +29,6 @@ import { Icon } from '@iconify/react';
 import userLock from '@iconify/icons-fa-solid/user-lock';
 
 // Components
-import MenuPopover from './MenuPopover';
 import LoginDialog from './LoginDialog';
 import XLS20Dialog from './XLS20Dialog';
 // import ChooseAccountDialog from './dialog/ChooseAccountDialog';
@@ -152,25 +148,6 @@ export default function Wallet() {
         onDisconnectXumm(uuid);
     };
 
-    // <Alert
-    //     variant="outlined"
-    //     severity="success">
-    //     <AlertTitle>{accountProfile.account}</AlertTitle>
-    //     <br/>
-    //     Login successful!
-    //     <br/>
-    // </Alert>
-
-    // <Alert severity="success" color="info">
-    //     Login Successful!
-    // </Alert>
-
-    // <Snackbar open={true} autoHideDuration={2000} onClose={handleClose}>
-    //     <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-    //         Login Successful!
-    //     </Alert>
-    // </Snackbar>
-
     return (
         <>
             {/* <ChooseAccountDialog /> */}
@@ -178,18 +155,28 @@ export default function Wallet() {
             <IconButton
                 ref={anchorRef}
                 onClick={handleOpen}
-                onMouseOver={handleOpen}
+                // onMouseOver={handleOpen}
             >
                 <Icon icon={userLock}/>
             </IconButton>
 
-            <MenuPopover
+            <Popover
                 open={open}
                 onClose={handleClose}
                 anchorEl={anchorRef.current}
-                sx={{ width: 220 }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                PaperProps={{
+                    sx: {
+                        mt: 1.5,
+                        ml: 0.5,
+                        overflow: 'inherit',
+                        // boxShadow: (theme) => theme.customShadows.z20,
+                        border: (theme) => `solid 1px ${alpha('#919EAB', 0.08)}`,
+                        width: 220,
+                    }
+                }}
             >
-
                 {accountProfile && accountProfile.account ? (
                         <>
                             <MenuItem
@@ -270,9 +257,7 @@ export default function Wallet() {
                             </Stack>
                         </MenuItem>
                 )}
-
-            {/* <Divider sx={{ my: 1 }} /> */}
-            </MenuPopover>
+            </Popover>
 
             <LoginDialog
                 open={openLogin}

@@ -44,7 +44,6 @@ export default function BuyOffersList({ _TokenID, _offers, _isOwner }) {
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
     // const account = useSelector(state => state.account.account);
-    const login = true; // useSelector(state => state.account.login);
     const [offers, setOffers] = useState([..._offers]);
     
     const handleCancelOffer = async (index) => {
@@ -153,8 +152,7 @@ export default function BuyOffersList({ _TokenID, _offers, _isOwner }) {
                                                         onClick={() => handleAccept(offer.nft_offer_index)}
                                                         color="success"
                                                         disabled={      // Can't accept Buy offer when
-                                                            !login      // not connected
-                                                            || !_isOwner  // account is not owner of nft
+                                                            !_isOwner  // account is not owner of nft
                                                             || offer.owner === account.key  // or account is owner of offer
                                                             // account.key === offer.owner
                                                             // || owner === offer.owner
@@ -172,7 +170,6 @@ export default function BuyOffersList({ _TokenID, _offers, _isOwner }) {
                                                             // when the account is not
                                                             // owner of offer
                                                             account.key !== offer.owner
-                                                            || !login
                                                         }
                                                         sx={{ borderRadius: 10 }}
                                                         startIcon={<Icon icon='iconoir:cancel' />}

@@ -8,7 +8,7 @@ import {
 
 import { hotDropsData } from "./MockupData";
 
-export default function SampleCardList() {
+export default function SampleList() {
     return (
         <Grid container spacing={0}
             style={{

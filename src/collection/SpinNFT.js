@@ -10,15 +10,18 @@ import React, { useEffect, useState, createRef } from "react";
 import { useTheme } from '@mui/material/styles';
 import {
     styled,
+    Box,
     Button,
     Container,
     Divider,
     Grid,
+    IconButton,
     Link,
     Stack,
     Typography,
     useMediaQuery
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 
 // Context
 import { useContext } from 'react';
@@ -92,6 +95,15 @@ const IconWrapper = styled('div')(
             width: 180px;
             height: 180px;
         }
+        &:hover, &.Mui-focusVisible {
+            z-index: 1;
+            & .MuiImageBackdrop-root {
+                opacity: 0.1;
+            }
+            & .MuiIconEditButton-root {
+                opacity: 1;
+            }
+        }
   `
 );
 
@@ -132,21 +144,29 @@ const SlotBox = styled('div') (
         border-radius: 20px;
     `
 );
+
+const ImageBackdrop = styled('span')(({ theme }) => ({
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: theme.palette.common.black,
+    opacity: 0,
+    transition: theme.transitions.create('opacity'),
+}));
+
+const CardOverlay = styled('div')(
+    ({ theme }) => `
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    inset: 0;
+`
+);
   
-const numberOfSymbolsPerSlot = 5;
-
-function arrayRotate(arr, reverse) {
-    if (reverse)
-        arr.unshift(arr.pop());
-    else
-        arr.push(arr.shift());
-    return arr;
-}
-
-function fNumberSelf(x) {
-    return new Decimal(x).toFixed(6, Decimal.ROUND_DOWN);
-}
-
 export default function SpinNFT({ collection, nfts, setView }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -382,6 +402,19 @@ export default function SpinNFT({ collection, nfts, setView }) {
                 <IconCover>
                     <IconWrapper>
                         <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
+                        {account === collection.account &&
+                            <Link href={`/collection/${slug}/edit`} underline='none'>
+                                <CardOverlay>
+                                    <EditIcon
+                                        className="MuiIconEditButton-root"
+                                        // color='primary'
+                                        fontSize="large"
+                                        sx={{ opacity: 0, zIndex: 1 }}
+                                    />
+                                </CardOverlay>
+                                <ImageBackdrop className="MuiImageBackdrop-root" />
+                            </Link>
+                        }
                     </IconWrapper>
                 </IconCover>
                 <Typography variant="h1a">{name}</Typography>

@@ -39,24 +39,13 @@ import { AppContext } from 'src/AppContext';
 import { SUPPORTED_FILE_TYPES, TOKEN_FLAGS, CATEGORIES } from 'src/utils/constants';
 
 // Components
-// import BaseDialog from 'src/components/dialog/BaseDialog';
-// import NFTokenMintDgContent from './NFTokenMintDgContent';
-// import CollectionAndProperties from './CollectionAndProperties';
 import QRDialogNoPush from 'src/components/QRDialogNoPush';
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
 // import PropertySection from './NFTProperties/PropertySection';
 // import LevelsSection from './NFTLevels/LevelSection';
 // import LoadingTextField from 'src/components/LoadingTextField';
-import AddPropertyDialog from './AddPropertyDialog';
-
-const DisabledTextField = withStyles({
-    root: {
-      "& .MuiInputBase-root.Mui-disabled": {
-        color: "#57CA22"
-      }
-    }
-  })(TextField);
+import DlgAddProperty from './DlgAddProperty';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -87,15 +76,6 @@ const CardOverlay = styled('div')(
     }
 `
 );
-
-const DisabledButton = withStyles({
-    root: {
-        "&.Mui-disabled": {
-            pointerEvents: "unset", // allow :hover styles to be triggered
-            cursor: "not-allowed", // and custom cursor can be defined without :hover state
-        }
-    }
-})(Button);
 
 const CustomSelect = styled(Select)(({ theme }) => ({
     '& .MuiOutlinedInput-notchedOutline' : {
@@ -143,8 +123,6 @@ export default function Minting() {
     // Collection related
     const [collections, setCollections] = useState([]);
     const [filter, setFilter] = useState('');
-
-    // const [validPassword, setValidPassword] = useState(false);
 
     const validAccount = account && accountToken && user_token;
     const canCreate = validAccount && file && nftName && collectionName; //  && passphrase && validPassword;
@@ -402,7 +380,7 @@ export default function Minting() {
 
     return (
         <>
-            <AddPropertyDialog
+            <DlgAddProperty
                 open={openAddProperty}
                 setOpen={setOpenAddProperty}
                 openSnackbar={openSnackbar}
@@ -473,32 +451,7 @@ export default function Minting() {
                 <Typography variant='p3'>
                     This is the collection where your item will appear.
                 </Typography>
-                {/* <Autocomplete
-                    id="collection-select"
-                    // sx={{ width: 300 }}
-                    options={collections}
-                    autoHighlight
-                    disableClearable
-                    getOptionLabel={(option) => option.name}
-                    renderOption={(props, option) => (
-                        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                            <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${option.logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
-                            <Typography variant='d4'>{option.name}</Typography>
-                        </Box>
-                    )}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            label=""
-                            placeholder='Select collection'
-                            inputProps={{
-                                ...params.inputProps,
-                                autoComplete: 'new-password', // disable autocomplete and autofill
-                            }}
-                        />
-                    )}
-                    onInputChange={handleCollectionQuery}
-                /> */}
+
                 <CustomSelect
                     id='select_collection'
                     value={collectionName}
@@ -735,31 +688,6 @@ export default function Minting() {
                 
             </Stack>
 
-            {/* <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Passphrase <Typography variant='s2'>*</Typography></Typography>
-
-                <LoadingTextField
-                    id='id_create_item_passphrase'
-                    type='PASSPHRASE_CREATE_NFT'
-                    placeholder='Passphrase'
-                    startText=''
-                    value={passphrase}
-                    setValid={setValidPassword}
-                    onChange={(e) => {
-                        setPassPhrase(e.target.value)
-                    }}
-                />
-            </Stack> */}
-            
-
-            {/* <Button
-                variant='contained'
-                sx={{ mt: 5, mb: 6 }}
-                onClick={() => setOpen(true)}
-            >
-                Create
-            </Button> */}
-
             <Stack alignItems='right'>
                 <LoadingButton
                     disabled={!canCreate}
@@ -774,28 +702,6 @@ export default function Minting() {
                 </LoadingButton>
             </Stack>
 
-            {/* <BaseDialog
-                isOpen={open}
-                close={() => { setOpen(false) }}
-                title={'Mint New NFT'}
-                maxWidth={'sm'}
-                render={
-                    <NFTokenMintDgContent
-                        close={() => { setOpen(false) }}
-                        metadata={
-                            {
-                                image: XRPNFT_DOMAIN + 'pinnedFileHash',
-                                name: nftName,
-                                type: 'image',
-                                description: description,
-                                externalLink: extLink,
-                                levels: levels,
-                                properties: properties,
-                            }
-                        }
-                    />
-                }
-            /> */}
             <QRDialogNoPush
                 open={openScanQR}
                 type="NFTokenMint"

@@ -1,7 +1,7 @@
 import * as React from 'react';
 // import ModalImage from "react-modal-image";
 import { Lightbox } from "react-modal-image";
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 
 // Material
 import {
@@ -12,7 +12,6 @@ import {
     Divider,
     IconButton,
     Link,
-    Modal,
     Typography
 } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';

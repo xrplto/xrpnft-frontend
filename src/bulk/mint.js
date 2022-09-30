@@ -6,18 +6,14 @@ import isIPFS from 'is-ipfs';
 import Decimal from 'decimal.js';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
     styled,
     Avatar,
     Button,
-    Card,
     Checkbox,
-    FormControl,
     FormControlLabel,
     FormGroup,
     Grid,
-    IconButton,
     OutlinedInput,
     InputAdornment,
     Link,
@@ -30,17 +26,10 @@ import {
 import { LoadingButton } from '@mui/lab';
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import ImageIcon from '@mui/icons-material/Image';
-import DescriptionIcon from '@mui/icons-material/Description';
-import InfoIcon from '@mui/icons-material/Info';
 import SendIcon from '@mui/icons-material/Send';
-import CloseIcon from '@mui/icons-material/Close';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DownloadIcon from '@mui/icons-material/Download';
-
-// Redux
-import { useSelector } from 'react-redux';
 
 // Context
 import { useContext } from 'react';

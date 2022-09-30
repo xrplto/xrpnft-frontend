@@ -1,6 +1,6 @@
 // Material
 import {
-    styled, useTheme, useMediaQuery,
+    styled, useTheme,
     Button,
     Grid,
     Link,
@@ -8,8 +8,9 @@ import {
     Typography
 } from '@mui/material';
 
+// Components
 import CollectionPreview from './CollectionPreview';
-import SampleCardList from './SampleCardList';
+import SampleList from './SampleList';
 
 const AutoStack = styled(Stack)(
     ({ theme }) => `
@@ -17,12 +18,11 @@ const AutoStack = styled(Stack)(
         @media (min-width: ${theme.breakpoints.values.md}px) {
             align-items: start;
         }
-  `
+    `
 );
 
 export default function Landing({data}) {
     const theme = useTheme();
-    const isScreenMD = useMediaQuery(theme.breakpoints.down('md'));
     return (
         <Grid container spacing={3} justifyContent="center" alignItems="center" display="flex" sx={{mt:2}}>
             <Grid item xs={12} md={7} lg={7}>
@@ -62,7 +62,7 @@ export default function Landing({data}) {
                 <Stack alignItems="center" sx={{mt:1, mb:4}}>
                     <Typography variant='h2a'>Hot NFTs</Typography>
                 </Stack>
-                <SampleCardList />
+                <SampleList />
             </Grid>
         </Grid>
     )

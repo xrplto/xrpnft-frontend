@@ -16,6 +16,8 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
+import XSnackbar from 'src/components/Snackbar';
+import { useSnackbar } from 'src/components/useSnackbar';
 import EditCollection from 'src/collection/edit';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
@@ -58,6 +60,8 @@ export default function Overview({data}) {
     const bgIdx = generateRandom();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { darkMode, accountProfile } = useContext(AppContext);
+
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
@@ -118,6 +122,8 @@ export default function Overview({data}) {
             <ScrollToTop />
 
             <Footer />
+
+            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
 
         </OverviewWrapper>
     );

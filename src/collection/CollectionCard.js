@@ -98,15 +98,6 @@ const IconImage = styled('img')(
     border-radius: 0px;
   `
 );
-
-const images = [
-    {
-      url: '/static/covers/5.jpg',
-      title: 'Breakfast',
-      width: '40%',
-    }
-];
-
   
 const ImageBackdrop = styled('span')(({ theme }) => ({
     position: 'absolute',
@@ -188,7 +179,6 @@ export default function CollectionCard({ item, isAll }) {
                 <Typography variant="p1" sx={{pt:2}}>{name}</Typography>
             </Stack>
 
-            {/* <CardOverlay /> */}
             <Link href={`/collection/${slug}`} underline='none'>
                 <ImageBackdrop className="MuiImageBackdrop-root" />
             </Link>

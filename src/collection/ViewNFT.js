@@ -2,10 +2,11 @@ import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 
 // Material
-import { withStyles } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
 import {
-    styled,
+    styled, useMediaQuery,
     IconButton,
+    Link,
     Stack,
     Tooltip,
     Typography
@@ -13,6 +14,7 @@ import {
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import EditIcon from '@mui/icons-material/Edit';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -66,6 +68,15 @@ const IconWrapper = styled('div')(
             width: 180px;
             height: 180px;
         }
+        &:hover, &.Mui-focusVisible {
+            z-index: 1;
+            & .MuiImageBackdrop-root {
+                opacity: 0.1;
+            }
+            & .MuiIconEditButton-root {
+                opacity: 1;
+            }
+        }
   `
 );
 
@@ -88,7 +99,35 @@ const IconImage = styled('img')(
   `
 );
 
+const ImageBackdrop = styled('span')(({ theme }) => ({
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: theme.palette.common.black,
+    opacity: 0,
+    transition: theme.transitions.create('opacity'),
+}));
+
+const CardOverlay = styled('div')(
+    ({ theme }) => `
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    inset: 0;
+`
+);
+
 export default function ViewNFT({collection}) {
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+    const { accountProfile } = useContext(AppContext);
+    const account = accountProfile?.account;
+    const accountToken = accountProfile?.token;
+
     // "collection": {
     //     "_id": "6310c27cf81fe46884ef89ba",
     //     "account": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
@@ -123,12 +162,35 @@ export default function ViewNFT({collection}) {
             <IconCover>
                 <IconWrapper>
                     <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
+                    {account === collection.account &&
+                        <Link href={`/collection/${slug}/edit`} underline='none'>
+                            <CardOverlay>
+                                <EditIcon
+                                    className="MuiIconEditButton-root"
+                                    // color='primary'
+                                    fontSize="large"
+                                    sx={{ opacity: 0, zIndex: 1 }}
+                                />
+                            </CardOverlay>
+                            <ImageBackdrop className="MuiImageBackdrop-root" />
+                        </Link>
+                    }
                 </IconWrapper>
             </IconCover>
-            <Stack direction="row" justifyContent="space-between" sx={{mt: 1, mb:1}}>
+            <Stack direction={fullScreen ? "column":"row"} spacing={2} justifyContent="space-between" sx={{mt: 1, mb:1}}>
                 <Typography variant="h1a">{name}</Typography>
                 
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+                <Stack direction="row" alignItems="center" spacing={1}>
+                    {account === collection.account &&
+                        <Link href={`/collection/${slug}/edit`} underline='none'>
+                            <Tooltip title="Edit your collection">
+                                <IconButton size='medium' sx={{ padding: 1 }}>
+                                    <EditIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </Link>
+                    }
+
                     <Tooltip title="Add to watchlist">
                         <IconButton size='medium' sx={{ padding: 1 }}
                             onClick={() => {

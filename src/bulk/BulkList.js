@@ -43,16 +43,15 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { fIntNumber } from 'src/utils/formatNumber';
-import { normalizeCurrencyCodeXummImpl } from 'src/utils/normalizers';
 
 // Loader
-import { ClipLoader, PulseLoader, ClockLoader, ClimbingBoxLoader } from "react-spinners";
+import { PulseLoader, ClockLoader } from "react-spinners";
 import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
-import QRDialog from 'src/components/QRDialog';
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
+import QRDialog from 'src/components/QRDialog';
 import BulkToolbar from './BulkToolbar';
 
 // ----------------------------------------------------------------------

@@ -18,14 +18,9 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import Landing from 'src/landing';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
-
-// overflow: scroll;
-// overflow: auto;
-// overflow: hidden;
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `

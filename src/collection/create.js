@@ -447,7 +447,7 @@ export default function CreateCollection() {
                         style={{ display: 'none' }}
                         // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
                         // accept='image/*'
-                        accept='.png, .jpg'
+                        accept='.png, .jpg, .gif'
                         id='contained-button-file1'
                         // multiple
                         type='file'
@@ -486,7 +486,7 @@ export default function CreateCollection() {
                         style={{ display: 'none' }}
                         // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
                         // accept='image/*'
-                        accept='.png, .jpg'
+                        accept='.png, .jpg, .gif'
                         id='contained-button-file2'
                         // multiple
                         type='file'
@@ -526,7 +526,7 @@ export default function CreateCollection() {
                         style={{ display: 'none' }}
                         // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
                         // accept='image/*'
-                        accept='.png, .jpg'
+                        accept='.png, .jpg, .gif'
                         id='contained-button-file3'
                         // multiple
                         type='file'
@@ -747,7 +747,7 @@ export default function CreateCollection() {
                             <input
                                 ref={fileRef4}
                                 style={{ display: 'none' }}
-                                accept='.gif'
+                                accept='.png, .jpg, .gif'
                                 id='contained-button-file4'
                                 // multiple
                                 type='file'

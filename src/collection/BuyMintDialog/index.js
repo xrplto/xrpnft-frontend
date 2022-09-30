@@ -360,7 +360,6 @@ export default function BuyMintDialog({open, setOpen, infoSPIN, minter, openSnac
                                     id='select_token'
                                     value={token.md5}
                                     onChange={handleChangeToken}
-                                    MenuProps={{ disableScrollLock: true, keepMounted: true, disablePortal: true }}
                                 >
                                     {costs.map((token, idx) => (
                                         <MenuItem

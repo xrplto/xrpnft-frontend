@@ -876,6 +876,9 @@ export const DarkSpacesTheme = createTheme({
       }
     },
     MuiMenu: {
+      // defaultProps: {
+      //   disableScrollLock: true, keepMounted: true, disablePortal: true
+      // },
       styleOverrides: {
         paper: {
           padding: 12
@@ -1074,6 +1077,16 @@ export const DarkSpacesTheme = createTheme({
             display: 'none'
           }
         }
+      }
+    },
+    MuiPopover: {
+      defaultProps: {
+        disableScrollLock: true, keepMounted: true, disablePortal: true
+      }
+    },
+    MuiPopper: {
+      defaultProps: {
+        keepMounted: true, disablePortal: true
       }
     },
     MuiTooltip: {

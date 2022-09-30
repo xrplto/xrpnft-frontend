@@ -505,7 +505,7 @@ export default function EditCollection({collection}) {
                         style={{ display: 'none' }}
                         // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
                         // accept='image/*'
-                        accept='.png, .jpg'
+                        accept='.png, .jpg, .gif'
                         id='contained-button-file'
                         // multiple
                         type='file'
@@ -544,7 +544,7 @@ export default function EditCollection({collection}) {
                         style={{ display: 'none' }}
                         // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
                         // accept='image/*'
-                        accept='.png, .jpg'
+                        accept='.png, .jpg, .gif'
                         id='contained-button-file'
                         // multiple
                         type='file'
@@ -584,7 +584,7 @@ export default function EditCollection({collection}) {
                         style={{ display: 'none' }}
                         // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
                         // accept='image/*'
-                        accept='.png, .jpg'
+                        accept='.png, .jpg, .gif'
                         id='contained-button-file'
                         // multiple
                         type='file'
@@ -808,7 +808,7 @@ export default function EditCollection({collection}) {
                             <input
                                 ref={fileRef4}
                                 style={{ display: 'none' }}
-                                accept='.gif'
+                                accept='.png, .jpg, .gif'
                                 id='contained-button-file4'
                                 // multiple
                                 type='file'

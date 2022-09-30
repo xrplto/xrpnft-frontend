@@ -122,7 +122,6 @@ export default function AddCostDialog({open, setOpen, openSnackbar, onAddCost}) 
                 open={open}
                 // sx={{zIndex: 1302}}
                 maxWidth='xs'
-                disableScrollLock
                 // hideBackdrop={true}
             >
                 <AddDialogTitle id="customized-dialog-title" onClose={handleClose}>
