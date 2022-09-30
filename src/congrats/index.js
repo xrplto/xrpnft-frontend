@@ -47,6 +47,7 @@ export default function Congrats({ data }) {
 
     const nft = data.token;
     const collection = data.collection;
+    const isEditCollection = data.isEditCollection;
 
     const [colors, setColors] = useState([]);
 
@@ -139,11 +140,18 @@ export default function Congrats({ data }) {
 
                 <Stack spacing={2} alignItems="center" sx={{pt: 3}}>
                     {nft &&
-                        <Typography variant="d3" >Your NFT has been minted on the XRP Ledger.</Typography>
+                        <Typography variant="d3">Your NFT has been minted on the XRP Ledger.</Typography>
                     }
                     
                     {collection &&
-                        <Typography variant="d3" >Your collection has been created.</Typography>
+                        <>
+                            {isEditCollection ? (
+                                <Typography variant="d3" >Your collection has been edited.</Typography>
+                            ):(
+                                <Typography variant="d3" >Your collection has been created.</Typography>
+                            )
+                            }
+                        </>
                     }
 
                     <Stack direction="row" spacing={2}>

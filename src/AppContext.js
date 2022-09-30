@@ -9,9 +9,6 @@ import {configureRedux} from "src/redux/statusSlice";
 // Loader
 import { PuffLoader } from "react-spinners";
 
-// Utils
-import { ACCOUNTS } from 'src/utils/constants';
-
 export const AppContext = createContext({});
 
 export function ContextProvider({ children, data }) {
@@ -36,14 +33,9 @@ export function ContextProvider({ children, data }) {
 
     useEffect(() => {
         const profile = window.localStorage.getItem('accountProfile4');
-        //const profile = '{"account":"rDsRQWRTRrtzAgK8HH7rcCAZnWeCsJm28K","uuid":"4a3eb58c-aa97-4d48-9ab2-92d90df9a75f"}';
         if (profile) {
             _setAccountProfile(JSON.parse(profile));
-        }/* else {
-            const id = 1;
-            const account = ACCOUNTS[id - 1].account;
-            _setAccountProfile({account, id});
-        }*/
+        }
     }, [])
 
     const setAccountProfile = (profile) => {

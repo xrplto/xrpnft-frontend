@@ -238,8 +238,13 @@ export default function EditCollection({collection}) {
 
         if (family !== collection.family) return true;
         if (description !== collection.description) return true;
+
+        if (!slug) return false;
         if (slug !== collection.slug) return true;
+
         if (bulkUrl !== collection.bulkUrl) return true;
+
+        if (privateCollection !== collection.private) return true;
 
         if (type === 'spinner') {
             if (JSON.stringify(costs) !== JSON.stringify(collection.infoSPIN.costs))
@@ -248,7 +253,7 @@ export default function EditCollection({collection}) {
         return false;
     }
     
-    let canSaveChanges = (file1 || fileUrl1) && slug && valid2 && checkChanged();
+    let canSaveChanges = (file1 || fileUrl1) && valid2 && checkChanged();
 
     if (type !== 'normal' && !bulkUrl)
         canSaveChanges = false;
@@ -310,6 +315,7 @@ export default function EditCollection({collection}) {
             data.name = name;
             data.family = family;
             data.slug = slug;
+            data.origSlug = collection.slug;
             data.description = description;
             data.fileFlag = fileFlag;
             data.type = type;

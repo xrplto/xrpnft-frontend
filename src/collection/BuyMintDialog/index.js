@@ -340,6 +340,8 @@ export default function BuyMintDialog({open, setOpen, infoSPIN, minter, openSnac
                 // sx={{zIndex: 1302}}
                 hideBackdrop={true}
                 disableScrollLock
+                disablePortal
+                keepMounted
             >
                 <BuyDialogTitle id="customized-dialog-title" onClose={handleClose}>
                     <Typography variant="p4">Buy Mint</Typography>
@@ -358,7 +360,7 @@ export default function BuyMintDialog({open, setOpen, infoSPIN, minter, openSnac
                                     id='select_token'
                                     value={token.md5}
                                     onChange={handleChangeToken}
-                                    MenuProps={{ disableScrollLock: true }}
+                                    MenuProps={{ disableScrollLock: true, keepMounted: true, disablePortal: true }}
                                 >
                                     {costs.map((token, idx) => (
                                         <MenuItem

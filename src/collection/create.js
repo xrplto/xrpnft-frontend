@@ -27,8 +27,6 @@ import { LoadingButton } from '@mui/lab';
 import ImageIcon from '@mui/icons-material/Image';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
-import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import FacebookIcon from '@mui/icons-material/Facebook';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
@@ -43,6 +41,7 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { fNumber } from 'src/utils/formatNumber';
+import { COLLECTION_FAMILIES } from 'src/utils/constants';
 
 // Components
 import XSnackbar from 'src/components/Snackbar';
@@ -138,19 +137,6 @@ const CustomSelect = styled(Select)(({ theme }) => ({
     }
 }));
 
-const COLLECTION_FAMILIES = [
-    {
-        title: 'Art',
-        value: 'art',
-        icon: (<PhotoLibraryIcon />)
-    },
-    {
-        title: 'Social',
-        value: 'social',
-        icon: (<FacebookIcon />)
-    }
-];
-
 export default function CreateCollection() {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
@@ -158,6 +144,7 @@ export default function CreateCollection() {
     const fileRef1 = useRef();
     const fileRef2 = useRef();
     const fileRef3 = useRef();
+    const fileRef4 = useRef();
     
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
@@ -184,9 +171,7 @@ export default function CreateCollection() {
     const [type, setType] = useState('normal');
     const [privateCollection, setPrivateCollection] = useState('no');
     const [bulkUrl, setBulkUrl] = useState('');
-
     const [costs, setCosts] = useState([]);
-
     const [taxon, setTaxon] = useState('');
 
     // Logo image
@@ -198,9 +183,12 @@ export default function CreateCollection() {
     // Banner image
     const [fileUrl3, setFileUrl3] = useState(null);
     const [file3, setFile3] = useState(null);
+    // Spinner GIF image
+    const [fileUrl4, setFileUrl4] = useState(null);
+    const [file4, setFile4] = useState(null);
 
-    const [valid1, setValid1] = useState(false);
-    const [valid2, setValid2] = useState(false);
+    const [valid1, setValid1] = useState(false); // Name validation check
+    const [valid2, setValid2] = useState(false); // Slug validation check
 
     let canCreate = file1 && name && slug && valid1 && valid2;
 
@@ -240,7 +228,7 @@ export default function CreateCollection() {
             return;
         }
 
-        if (costs.length === 0) {
+        if (type === 'spinner' && costs.length === 0) {
             openSnackbar('You need to add at least 1 Mint currency to create a Spinner collection.', 'error');
             return;
         }
@@ -250,7 +238,7 @@ export default function CreateCollection() {
 
             const formdata = new FormData();
 
-            let fileFlag = [true, false, false];
+            let fileFlag = [true, false, false, false];
             formdata.append('imgCollection', file1);
             if (file2) {
                 fileFlag[1] = true;
@@ -259,6 +247,10 @@ export default function CreateCollection() {
             if (file3) {
                 fileFlag[2] = true;
                 formdata.append('imgCollection', file3);
+            }
+            if (file4) {
+                fileFlag[3] = true;
+                formdata.append('imgCollection', file4);
             }
 
             const data = {};
@@ -326,7 +318,7 @@ export default function CreateCollection() {
         var ext = re.exec(fileName)[1];
         if (ext)
             ext = ext.toLowerCase();
-        if (ext === 'jpg' || ext === 'png') {
+        if (ext === 'jpg' || ext === 'png' || ext === 'gif') {
             const size = pickedFile.size;
             if (size < 10240000) {
                 // setImgExt(ext);
@@ -336,6 +328,8 @@ export default function CreateCollection() {
                     setFile2(pickedFile);
                 else if (idx === 3)
                     setFile3(pickedFile);
+                else if (idx === 4)
+                    setFile4(pickedFile);
 
                 // This is used as src of image
                 const reader = new FileReader();
@@ -347,6 +341,8 @@ export default function CreateCollection() {
                         setFileUrl2(reader.result);
                     else if (idx === 3)
                         setFileUrl3(reader.result);
+                    else if (idx === 4)
+                        setFileUrl4(reader.result);
                 }
             }
         }
@@ -365,6 +361,11 @@ export default function CreateCollection() {
     const handleFileSelect3 = (e) => {
         const pickedFile = e.target.files[0];
         processFile(pickedFile, 3);
+    }
+
+    const handleFileSelect4 = (e) => {
+        const pickedFile = e.target.files[0];
+        processFile(pickedFile, 4);
     }
 
     const handleResetFile1 = (e) => {
@@ -386,6 +387,13 @@ export default function CreateCollection() {
         setFile3(null);
         setFileUrl3(null);
         fileRef3.current.value = null;
+    }
+
+    const handleResetFile4 = (e) => {
+        e.stopPropagation();
+        setFile4(null);
+        setFileUrl4(null);
+        fileRef4.current.value = null;
     }
 
     const handleChangeType = (event, newType) => {
@@ -440,7 +448,7 @@ export default function CreateCollection() {
                         // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
                         // accept='image/*'
                         accept='.png, .jpg'
-                        id='contained-button-file'
+                        id='contained-button-file1'
                         // multiple
                         type='file'
                         onChange={handleFileSelect1}
@@ -479,7 +487,7 @@ export default function CreateCollection() {
                         // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
                         // accept='image/*'
                         accept='.png, .jpg'
-                        id='contained-button-file'
+                        id='contained-button-file2'
                         // multiple
                         type='file'
                         onChange={handleFileSelect2}
@@ -519,7 +527,7 @@ export default function CreateCollection() {
                         // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
                         // accept='image/*'
                         accept='.png, .jpg'
-                        id='contained-button-file'
+                        id='contained-button-file3'
                         // multiple
                         type='file'
                         onChange={handleFileSelect3}
@@ -732,6 +740,44 @@ export default function CreateCollection() {
                                 }}
                             />
                         </Stack>
+
+                        <Typography variant='p4' sx={{pt:2, pb:1}}>Spinner image</Typography>
+                        <Typography variant='p3'>This image will be used for spinning NFTs. 600 x 400 recommended.</Typography>
+                        <CardWrapper>
+                            <input
+                                ref={fileRef4}
+                                style={{ display: 'none' }}
+                                accept='.gif'
+                                id='contained-button-file4'
+                                // multiple
+                                type='file'
+                                onChange={handleFileSelect4}
+                            />
+                            <Card
+                                sx={{
+                                    display: 'flex',
+                                    width: 320,
+                                    height: 240,
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    overflow: 'auto',
+                                    position: 'relative'
+                                }}
+                            >
+                                <CardOverlay
+                                    onClick={() => fileRef4.current.click()}
+                                >
+                                    <IconButton
+                                        aria-label='close' onClick={(e) => handleResetFile4(e)}
+                                        sx={fileUrl4 ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
+                                    >
+                                        <CloseIcon color='white' />
+                                    </IconButton>
+                                </CardOverlay>
+                                <img src={fileUrl4} alt='' style={fileUrl4 ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} />
+                                <ImageIcon fontSize='large' sx={fileUrl4 ? { display: 'none' } : {width: 100, height: 100}} />
+                            </Card>
+                        </CardWrapper>
                     </>
                 }
             </Stack>

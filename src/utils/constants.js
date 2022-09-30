@@ -9,6 +9,8 @@ import PaymentsIcon from '@mui/icons-material/Payments';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import PaletteIcon from '@mui/icons-material/Palette';
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import FacebookIcon from '@mui/icons-material/Facebook';
 
 export const BASE_URL = 'https://api.xrpnft.com/api';
 export const RIPPLE_TEST_NET_URL = 'wss://xls20-sandbox.rippletest.net:51233'
@@ -133,3 +135,16 @@ export const XRP_TOKEN = {
     ext: 'png',
     exch: '1'
 };
+
+export const COLLECTION_FAMILIES = [
+    {
+        title: 'Art',
+        value: 'art',
+        icon: (<PhotoLibraryIcon />)
+    },
+    {
+        title: 'Social',
+        value: 'social',
+        icon: (<FacebookIcon />)
+    }
+];
