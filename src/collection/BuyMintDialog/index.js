@@ -103,20 +103,18 @@ function GetNum(amount) {
     return num;
 }
 
-export default function BuyMintDialog({open, setOpen, infoSPIN, minter, openSnackbar, collection, setMints, setXrpBalance}) {
-    //     "infoSPIN": {
-    //         "costs": [
-    //             {
-    //                 "md5": "0413ca7cfc258dfaf698c02fe304e607",
-    //                 "name": "SOLO",
-    //                 "issuer": "rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz",
-    //                 "currency": "534F4C4F00000000000000000000000000000000",
-    //                 "ext": "jpg",
-    //                 "exch": 0.29431199670355546,
-    //                 "cost": "100"
-    //             }
-    //         ]
-    //     },
+export default function BuyMintDialog({open, setOpen, costs, minter, openSnackbar, collection, setMints, setXrpBalance}) {
+    // "costs": [
+    //     {
+    //         "md5": "0413ca7cfc258dfaf698c02fe304e607",
+    //         "name": "SOLO",
+    //         "issuer": "rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz",
+    //         "currency": "534F4C4F00000000000000000000000000000000",
+    //         "ext": "jpg",
+    //         "exch": 0.29431199670355546,
+    //         "cost": "100"
+    //     }
+    // ]
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -134,7 +132,6 @@ export default function BuyMintDialog({open, setOpen, infoSPIN, minter, openSnac
 
     const [disclaimer, setDisclaimer] = useState(false);
 
-    const costs = infoSPIN.costs;
     const [token, setToken] = useState(costs[0]);
     // {
     //     "md5": "xrp",

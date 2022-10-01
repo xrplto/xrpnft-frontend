@@ -365,7 +365,8 @@ export default function BulkList() {
                                 infoUNZIP, // {count: 1000}
                                 infoIPFS,
                                 infoMINT, // {count: 0, length: metadata.length};
-                                minter
+                                minter,
+                                minterName
                             } = row;
                             const nDate = new Date(created);
                             const year = nDate.getFullYear();
@@ -408,7 +409,7 @@ export default function BulkList() {
                                                 <Link href={`/collection/${slug}`}>
                                                     <Typography variant="h3" color="#33C2FF">{name}</Typography>
                                                 </Link>
-                                                <Tooltip title='Spinner Collection'>
+                                                <Tooltip title='Random Collection'>
                                                     <CasinoIcon color='info'/>
                                                 </Tooltip>
                                             </Stack>
@@ -466,7 +467,7 @@ export default function BulkList() {
                                                     href={`https://xls20.bithomp.com/explorer/${minter}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="p3">{minter}</Typography>
+                                                    <Typography variant="p3">{minter} <Typography variant="s2">({minterName})</Typography></Typography>
                                                 </Link>
 
                                                 <Link

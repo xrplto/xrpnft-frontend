@@ -199,32 +199,30 @@ export default function SpinNFT({ collection, nfts, setView }) {
     //     "name": "spinner1",
     //     "family": "",
     //     "slug": "spin1",
-    //     "type": "spinner",
+    //     "type": "random",
     //     "items": 6568,
     //     "owners": 0,
     //     "minter": "rLHcy375RJfLcQL3MayfkYaaK3H9HYdHiC",
-    //     "infoSPIN": {
-    //         "costs": [
-    //             {
-    //                 "md5": "xrp",
-    //                 "name": "XRP",
-    //                 "issuer": "XRPL",
-    //                 "currency": "XRP",
-    //                 "ext": "png",
-    //                 "exch": "1",
-    //                 "cost": "1"
-    //             },
-    //             {
-    //                 "md5": "0413ca7cfc258dfaf698c02fe304e607",
-    //                 "name": "SOLO",
-    //                 "issuer": "rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz",
-    //                 "currency": "534F4C4F00000000000000000000000000000000",
-    //                 "ext": "jpg",
-    //                 "exch": 0.29431199670355546,
-    //                 "cost": "100"
-    //             }
-    //         ]
-    //     },
+    //     "costs": [
+    //         {
+    //             "md5": "xrp",
+    //             "name": "XRP",
+    //             "issuer": "XRPL",
+    //             "currency": "XRP",
+    //             "ext": "png",
+    //             "exch": "1",
+    //             "cost": "1"
+    //         },
+    //         {
+    //             "md5": "0413ca7cfc258dfaf698c02fe304e607",
+    //             "name": "SOLO",
+    //             "issuer": "rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz",
+    //             "currency": "534F4C4F00000000000000000000000000000000",
+    //             "ext": "jpg",
+    //             "exch": 0.29431199670355546,
+    //             "cost": "100"
+    //         }
+    //     ]
     //     "description": "",
     //     "logoImage": "1664280722827_d05ae9f8628a41ed8dbfb1321cf9fb50.png",
     //     "featuredImage": "1664280722828_a14b3d6686d64cf38b2259b864c25f8f.jpg",
@@ -242,12 +240,12 @@ export default function SpinNFT({ collection, nfts, setView }) {
         items,
         type,
         description,
-        infoSPIN,
         logoImage,
         featuredImage,
         bannerImage,
         spinnerImage,
         timestamp,
+        costs,
         minter
     } = collection;
 
@@ -311,7 +309,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
         }
     }, [congrats]);
 
-    const getSpinnerNFT = () => {
+    const getRandomNFT = () => {
         if (spinning) return;
 
         if (!account || !accountToken) {
@@ -378,7 +376,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
             <BuyMintDialog
                 open={openBuyMint}
                 setOpen={setOpenBuyMint}
-                infoSPIN={infoSPIN}
+                costs={costs}
                 openSnackbar={openSnackbar}
                 minter={minter}
                 collection={collection}
@@ -481,7 +479,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                             <Button
                                 variant='contained'
                                 disabled={spinning}
-                                onClick={() => getSpinnerNFT()}
+                                onClick={() => getRandomNFT()}
                                 sx={{pl:3, pr:3}}
                             >
                                 Mint
@@ -492,7 +490,6 @@ export default function SpinNFT({ collection, nfts, setView }) {
                     <Grid container item xs={12} md={6} justifyContent="flex-start" alignItems="flex-start">
                         <Stack spacing={1} sx={{mb:6}}>
                             <Typography variant="p5">To mint a random NFT from this collection, you need to purchase Mints.</Typography>
-                            {/* <Typography variant="s5">Each mint costs <Typography variant="s5" color="#33C2FF">{infoSPIN.cost} {infoSPIN.name}</Typography>.</Typography> */}
                             <Typography variant="p5">It can be used against the purchase of only <Typography variant="s5" color="#57CA22">{collection.name}</Typography> Collection.</Typography>
                             <Typography variant="p5">You currently have <Typography variant="s5" color="#33C2FF">{mints} mints</Typography> available and <Typography variant="s5" color="#33C2FF">{xrpBalance} XRP</Typography> tokens in your wallet.</Typography>
                             <Typography variant="p5" sx={{pb: 3}}>There are currently <Typography variant="s5" color="error">{pendingNfts}</Typography> / <Typography variant="s4" color="#33C2FF">{collection.items}</Typography> NFTs left in this collection.</Typography>

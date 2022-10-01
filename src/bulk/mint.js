@@ -21,6 +21,8 @@ import {
     Select,
     Stack,
     TextField,
+    ToggleButton,
+    ToggleButtonGroup,
     Typography
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -97,6 +99,7 @@ export default function BulkMint({slug}) {
     const [category, setCategory] = useState('NONE');
     const [royalty, setRoyalty] = useState('0');
     const [explicit, setExplicit] = useState(false);
+    const [issuerChoice, setIssuerChoice] = useState('no');
 
     const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
     // const [passphrase, setPassPhrase] = useState('');
@@ -193,6 +196,11 @@ export default function BulkMint({slug}) {
             data.flag = flag;
             data.count = newMetaData.length;
             data.collection = collection.name;
+
+            if (issuerChoice)
+                data.issuer = account;
+            else
+                data.issuer = collection.minter;
 
             data.category = category;
             data.royalty = royalty;
@@ -321,6 +329,10 @@ export default function BulkMint({slug}) {
         } catch (e) {
         }
     }
+
+    const handleChangeIssuerChoice = (event, newValue) => {
+        setIssuerChoice(newValue);
+    };
 
     const downloadFile = ({ data, fileName, fileType }) => {
         const blob = new Blob([data], { type: fileType });
@@ -494,6 +506,24 @@ export default function BulkMint({slug}) {
                             }
                         }}
                     />
+
+                    <Stack spacing={1} mb={3}>
+                        <Typography variant='p4'>NFT issuer <Typography variant='s2'>*</Typography></Typography>
+                        <Typography variant='p3'>XRPNFT.com mints NFTs on behalf of your account and implements lazy minting. If you are not sure about this please check <Link target="_blank" rel="noreferrer noopener nofollow" href="https://xrpl.org/nftokenmint.html#issuing-on-behalf-of-another-account">here</Link>.</Typography>
+                        <Typography variant='p3'>If you select <Typography variant='s2'>YES</Typography>, you should set the NFTokenMinter account setting of your Account to XRPNFT.com's account in Manage Bulks page.</Typography>
+                        <Typography variant='p3'>If you select <Typography variant='s2'>NO</Typography>, XRPNFT.com will mint NFTs with issuer field with its own address.</Typography>
+
+                        <ToggleButtonGroup
+                            color="primary"
+                            value={issuerChoice}
+                            exclusive
+                            size="small"
+                            onChange={handleChangeIssuerChoice}
+                        >
+                            <ToggleButton value="no" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>No</ToggleButton>
+                            <ToggleButton value="yes" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>Yes</ToggleButton>
+                        </ToggleButtonGroup>
+                    </Stack>
 
                     <Typography variant='p4'>Content Media Type <Typography variant='s2'>*</Typography></Typography>
                     <Select

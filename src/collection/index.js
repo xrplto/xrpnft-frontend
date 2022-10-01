@@ -10,7 +10,7 @@ export default function Collection({data}) {
     
     return (
         <>
-            {view === 'spinner' ? (
+            {view === 'random' ? (
                 <SpinNFT
                     collection={data.collection}
                     nfts={data.spins}

@@ -169,7 +169,6 @@ export default function CreateCollection() {
     const [slug, setSlug] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('normal');
-    const [issuerChoice, setIssuerChoice] = useState('no');
     const [privateCollection, setPrivateCollection] = useState('no');
     const [bulkUrl, setBulkUrl] = useState('');
     const [costs, setCosts] = useState([]);
@@ -255,11 +254,10 @@ export default function CreateCollection() {
             data.description = description;
             data.fileFlag = fileFlag;
             data.type = type;
-            data.bulkUrl = bulkUrl;
             data.private = privateCollection;
             if (type !== 'normal') {
                 data.costs = costs;
-                data.issuerChoice = issuerChoice;
+                data.bulkUrl = bulkUrl;
             }
 
             formdata.append('account', account);
@@ -398,10 +396,6 @@ export default function CreateCollection() {
 
     const handleChangePrivate = (event, newValue) => {
         setPrivateCollection(newValue);
-    };
-
-    const handleChangeIssuerChoice = (event, newValue) => {
-        setIssuerChoice(newValue);
     };
     
     const handleChangeFamily = (event) => {
@@ -660,23 +654,6 @@ export default function CreateCollection() {
 
                 {type !== 'normal' &&
                     <>
-                        <Stack spacing={1} mb={3}>                        
-                            <Typography variant='p2'>I want to be the NFT issuer <Typography variant='s2'>*</Typography></Typography>
-                            <Typography variant='p3'>In Bulk and Random mode, XRPNFT.com mints NFTs on behalf of your account and implements lazy minting. If you are not sure about this please check <Link target="_blank" rel="noreferrer noopener nofollow" href="https://xrpl.org/nftokenmint.html#issuing-on-behalf-of-another-account">here</Link>.</Typography>
-                            <Typography variant='p3'>If you select <Typography variant='s2'>YES</Typography>, you should set the NFTokenMinter account setting of your Account to XRPNFT.com's account in Manage Bulks page.</Typography>
-                            <Typography variant='p3'>If you select <Typography variant='s2'>NO</Typography>, XRPNFT.com will mint NFTs with issuer field with its own address.</Typography>
-
-                            <ToggleButtonGroup
-                                color="primary"
-                                value={issuerChoice}
-                                exclusive
-                                size="small"
-                                onChange={handleChangeIssuerChoice}
-                            >
-                                <ToggleButton value="no" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>No</ToggleButton>
-                                <ToggleButton value="yes" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>Yes</ToggleButton>
-                            </ToggleButtonGroup>
-                        </Stack>
                         <Stack spacing={1}>
                             {type === 'bulk'?(
                                 <Typography variant='p2'>Costs per NFT <Typography variant='s2'>*</Typography></Typography>
