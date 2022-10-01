@@ -2,7 +2,6 @@ import React from 'react';
 import axios from 'axios'
 import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux'
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -11,12 +10,8 @@ import {
     Avatar,
     Button,
     Card,
-    Checkbox,
-    Container,
     Divider,
     FormControl,
-    FormControlLabel,
-    FormGroup,
     IconButton,
     Link,
     MenuItem,
@@ -30,7 +25,6 @@ import {
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import ImageIcon from '@mui/icons-material/Image';
-import InfoIcon from '@mui/icons-material/Info';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -192,14 +186,15 @@ export default function EditCollection({collection}) {
     //         }
     //     }
     // }
-    const [name, setName] = useState(collection.name)
+    const [name, setName] = useState(collection.name);
     const [family, setFamily] = useState('');
     const [slug, setSlug] = useState(collection.slug);
     const [description, setDescription] = useState(collection.description);
     const [type, setType] = useState(collection.type);
+    const [issuerChoice, setIssuerChoice] = useState(collection.issuerChoice || 'no');
     const [privateCollection, setPrivateCollection] = useState(collection.private);
     const [bulkUrl, setBulkUrl] = useState(collection.bulkUrl || '');
-    const [costs, setCosts] = useState(collection.infoSPIN.costs);
+    const [costs, setCosts] = useState(collection.costs || []);
     const [taxon, setTaxon] = useState(collection.taxon);
 
     // Logo image
@@ -246,8 +241,8 @@ export default function EditCollection({collection}) {
 
         if (privateCollection !== collection.private) return true;
 
-        if (type === 'spinner') {
-            if (JSON.stringify(costs) !== JSON.stringify(collection.infoSPIN.costs))
+        if (type !== 'normal') {
+            if (JSON.stringify(costs) !== JSON.stringify(collection.costs || []))
                 return true;
         }
         return false;
@@ -255,12 +250,8 @@ export default function EditCollection({collection}) {
     
     let canSaveChanges = (file1 || fileUrl1) && valid2 && checkChanged();
 
-    if (type !== 'normal' && !bulkUrl)
+    if (type !== 'normal' && (!bulkUrl || costs.length < 1))
         canSaveChanges = false;
-
-    if (type === 'spinner' && costs.length === 0) {
-        canSaveChanges = false;
-    }
 
     const getFileFlagArray = () => {
         let flag = [0, 0, 0, 0]; // 0: Not changed 1: New File 2: Removed
@@ -321,8 +312,9 @@ export default function EditCollection({collection}) {
             data.type = type;
             data.bulkUrl = bulkUrl;
             data.private = privateCollection;
-            if (type === 'spinner') {
-                data.infoSPIN = {costs};
+            if (type !== 'normal') {
+                data.costs = costs;
+                data.issuerChoice = issuerChoice;
             }
             data.uuid = collection.uuid;
 
@@ -460,6 +452,10 @@ export default function EditCollection({collection}) {
 
     const handleChangePrivate = (event, newValue) => {
         setPrivateCollection(newValue);
+    };
+
+    const handleChangeIssuerChoice = (event, newValue) => {
+        setIssuerChoice(newValue);
     };
 
     const handleChangeFamily = (event) => {
@@ -699,10 +695,10 @@ export default function EditCollection({collection}) {
                         <Typography variant='s2'>Normal:</Typography> You can mint NFTs one by one for this collection.
                     </Typography>
                     <Typography variant='p3'>
-                        <Typography variant='s2'>Bulk:</Typography> You can upload bulk NFTs through Manage Bulks page.
+                        <Typography variant='s2'>Bulk:</Typography> You can upload bulk NFTs and sell with costs. Your IPFS NFT images are public in this mode. (Lazy mint mode)
                     </Typography>
                     <Typography variant='p3'>
-                        <Typography variant='s2'>Spinner:</Typography> You can sell random NFTs with Mints.
+                        <Typography variant='s2'>Random:</Typography> You can upload bulk NFTs and sell NFTs randomly one by one with Mints. Mints are bought by costs. (Lazy mint mode)
                     </Typography>
                 </Stack>
 
@@ -715,74 +711,94 @@ export default function EditCollection({collection}) {
                 >
                     <ToggleButton value="normal" sx={{pl:2, pr:2}}>Normal</ToggleButton>
                     <ToggleButton value="bulk" sx={{pl:3, pr:3}}>Bulk</ToggleButton>
-                    <ToggleButton value="spinner" sx={{pl:3, pr:3}}>Spinner</ToggleButton>
+                    <ToggleButton value="random" sx={{pl:3, pr:3}}>Random</ToggleButton>
                 </ToggleButtonGroup>
 
                 {type !== 'normal' &&
                     <>
-                        {type === 'spinner' &&
-                            <Stack spacing={1}>
+                        <Stack spacing={1} mb={3}>                        
+                            <Typography variant='p2'>I want to be the NFT issuer <Typography variant='s2'>*</Typography></Typography>
+                            <Typography variant='p3'>In Bulk and Random mode, XRPNFT.com mints NFTs on behalf of your account and implements lazy minting. If you are not sure about this please check <Link target="_blank" rel="noreferrer noopener nofollow" href="https://xrpl.org/nftokenmint.html#issuing-on-behalf-of-another-account">here</Link>.</Typography>
+                            <Typography variant='p3'>If you select <Typography variant='s2'>YES</Typography>, you should set the NFTokenMinter account setting of your Account to XRPNFT.com's account in Manage Bulks page.</Typography>
+                            <Typography variant='p3'>If you select <Typography variant='s2'>NO</Typography>, XRPNFT.com will mint NFTs with issuer field with its own address.</Typography>
+
+                            <ToggleButtonGroup
+                                color="primary"
+                                value={issuerChoice}
+                                exclusive
+                                size="small"
+                                onChange={handleChangeIssuerChoice}
+                            >
+                                <ToggleButton value="no" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>No</ToggleButton>
+                                <ToggleButton value="yes" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>Yes</ToggleButton>
+                            </ToggleButtonGroup>
+                        </Stack>
+                        <Stack spacing={1}>
+                            {type === 'bulk'?(
+                                <Typography variant='p2'>Costs per NFT <Typography variant='s2'>*</Typography></Typography>
+                            ):(
                                 <Typography variant='p2'>Costs per Mint <Typography variant='s2'>*</Typography></Typography>
-                                <Typography variant='p3' sx={{pb: 2}}>You need to add at least 1 Mint currency to create a Spinner collection.</Typography>
+                            )}
+                            <Typography variant='p3' sx={{pb: 2}}>You need to add at least 1 currency to create a collection.</Typography>
 
-                                {costs.map((token, idx) => (
-                                    <Stack spacing={1} sx={{pl: 1, pr:1}} key={token.md5}>
-                                        <Stack direction="row" spacing={2} sx={{mt: 0}} alignItems="center" justifyContent="space-between">
-                                            <Stack direction='row' alignItems="center">
-                                                <Avatar alt="C" src={`https://xrpl.to/static/tokens/${token.md5}.${token.ext}`} sx={{ mr: 2 }} />
-                                                <Stack spacing={0.5}>
-                                                    <Stack direction="row">
-                                                        <Typography variant='d4'>{token.name}</Typography>
-                                                        <Typography variant='d4' sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(token.exch)}</Typography>
-                                                    </Stack>
-                                                    <Stack direction="row" alignItems="center">
-                                                        <Typography variant='p3'>{token.issuer}</Typography>
-                                                        {token && token.currency !== 'XRP' &&
-                                                            <Link
-                                                                underline="none"
-                                                                color="inherit"
-                                                                target="_blank"
-                                                                href={`https://bithomp.com/explorer/${token.issuer}`}
-                                                                rel="noreferrer noopener nofollow"
-                                                            >
-                                                                <Tooltip title="Check on Bithomp">
-                                                                    <IconButton edge="end" aria-label="bithomp" size="small">
-                                                                        <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            </Link>
-                                                        }
-                                                    </Stack>
+                            {costs.map((token, idx) => (
+                                <Stack spacing={1} sx={{pl: 1, pr:1}} key={token.md5}>
+                                    <Stack direction="row" spacing={2} sx={{mt: 0}} alignItems="center" justifyContent="space-between">
+                                        <Stack direction='row' alignItems="center">
+                                            <Avatar alt="C" src={`https://xrpl.to/static/tokens/${token.md5}.${token.ext}`} sx={{ mr: 2 }} />
+                                            <Stack spacing={0.5}>
+                                                <Stack direction="row">
+                                                    <Typography variant='d4'>{token.name}</Typography>
+                                                    <Typography variant='d4' sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(token.exch)}</Typography>
                                                 </Stack>
-                                            </Stack>
-
-                                            <Stack direction='row' spacing={2} alignItems="center">
-                                                <Stack direction='row' spacing={1} alignItems="flex-end">
-                                                    <Typography variant='p4' color="#EB5757">{token.cost}</Typography>
-                                                    <Typography variant='s2'>{token.name}</Typography>
+                                                <Stack direction="row" alignItems="center">
+                                                    <Typography variant='p3'>{token.issuer}</Typography>
+                                                    {token && token.currency !== 'XRP' &&
+                                                        <Link
+                                                            underline="none"
+                                                            color="inherit"
+                                                            target="_blank"
+                                                            href={`https://bithomp.com/explorer/${token.issuer}`}
+                                                            rel="noreferrer noopener nofollow"
+                                                        >
+                                                            <Tooltip title="Check on Bithomp">
+                                                                <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                    <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </Link>
+                                                    }
                                                 </Stack>
-                                                
-                                                <IconButton onClick={()=>handleRemoveCost(token.md5)}>
-                                                    <HighlightOffOutlinedIcon fontSize="small" />
-                                                </IconButton>
                                             </Stack>
                                         </Stack>
-                                        <Divider />
-                                    </Stack>
-                                ))}
 
-                                <Stack direction="row" sx={{pl: 1, pt: 1, pb: 3}}>
-                                    <Button
-                                        variant="outlined"
-                                        startIcon={<AddCircleIcon />}
-                                        size="small"
-                                        onClick={()=>setOpenAddCost(true)}
-                                    >
-                                        Add
-                                    </Button>
+                                        <Stack direction='row' spacing={2} alignItems="center">
+                                            <Stack direction='row' spacing={1} alignItems="flex-end">
+                                                <Typography variant='p4' color="#EB5757">{token.cost}</Typography>
+                                                <Typography variant='s2'>{token.name}</Typography>
+                                            </Stack>
+                                            
+                                            <IconButton onClick={()=>handleRemoveCost(token.md5)}>
+                                                <HighlightOffOutlinedIcon fontSize="small" />
+                                            </IconButton>
+                                        </Stack>
+                                    </Stack>
+                                    <Divider />
                                 </Stack>
+                            ))}
+
+                            <Stack direction="row" sx={{pl: 1, pt: 1, pb: 3}}>
+                                <Button
+                                    variant="outlined"
+                                    startIcon={<AddCircleIcon />}
+                                    size="small"
+                                    onClick={()=>setOpenAddCost(true)}
+                                >
+                                    Add
+                                </Button>
                             </Stack>
-                        }
+                        </Stack>
+
                         <Stack spacing={2} sx={{pl: 0}}>
                             <Typography variant='p2'>
                                 Paste the Google Drive shared link URL here. <Typography variant='s2'>*</Typography>
@@ -793,7 +809,6 @@ export default function EditCollection({collection}) {
 
                             <TextField
                                 id='id_bulk_url'
-                                disabled
                                 placeholder=''
                                 value={bulkUrl}
                                 onChange={(e) => {
@@ -802,43 +817,47 @@ export default function EditCollection({collection}) {
                             />
                         </Stack>
 
-                        <Typography variant='p4' sx={{pt:2, pb:1}}>Spinner image</Typography>
-                        <Typography variant='p3'>This image will be used for spinning NFTs. 600 x 400 recommended.</Typography>
-                        <CardWrapper>
-                            <input
-                                ref={fileRef4}
-                                style={{ display: 'none' }}
-                                accept='.png, .jpg, .gif'
-                                id='contained-button-file4'
-                                // multiple
-                                type='file'
-                                onChange={handleFileSelect4}
-                            />
-                            <Card
-                                sx={{
-                                    display: 'flex',
-                                    width: 320,
-                                    height: 240,
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    overflow: 'auto',
-                                    position: 'relative'
-                                }}
-                            >
-                                <CardOverlay
-                                    onClick={() => fileRef4.current.click()}
-                                >
-                                    <IconButton
-                                        aria-label='close' onClick={(e) => handleResetFile4(e)}
-                                        sx={fileUrl4 ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
+                        {type === 'random' &&
+                            <>
+                                <Typography variant='p4' sx={{pt:2, pb:1}}>Spinner GIF image</Typography>
+                                <Typography variant='p3'>This image will be used for spinning NFTs. 600 x 400 recommended.</Typography>
+                                <CardWrapper>
+                                    <input
+                                        ref={fileRef4}
+                                        style={{ display: 'none' }}
+                                        accept='.png, .jpg, .gif'
+                                        id='contained-button-file4'
+                                        // multiple
+                                        type='file'
+                                        onChange={handleFileSelect4}
+                                    />
+                                    <Card
+                                        sx={{
+                                            display: 'flex',
+                                            width: 320,
+                                            height: 240,
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            overflow: 'auto',
+                                            position: 'relative'
+                                        }}
                                     >
-                                        <CloseIcon color='white' />
-                                    </IconButton>
-                                </CardOverlay>
-                                <img src={fileUrl4} alt='' style={fileUrl4 ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} />
-                                <ImageIcon fontSize='large' sx={fileUrl4 ? { display: 'none' } : {width: 100, height: 100}} />
-                            </Card>
-                        </CardWrapper>
+                                        <CardOverlay
+                                            onClick={() => fileRef4.current.click()}
+                                        >
+                                            <IconButton
+                                                aria-label='close' onClick={(e) => handleResetFile4(e)}
+                                                sx={fileUrl4 ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
+                                            >
+                                                <CloseIcon color='white' />
+                                            </IconButton>
+                                        </CardOverlay>
+                                        <img src={fileUrl4} alt='' style={fileUrl4 ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} />
+                                        <ImageIcon fontSize='large' sx={fileUrl4 ? { display: 'none' } : {width: 100, height: 100}} />
+                                    </Card>
+                                </CardWrapper>
+                            </>
+                        }
                     </>
                 }
             </Stack>

@@ -421,7 +421,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                 {description &&
                     <Typography variant="d3" maxWidth='600px'>{description}</Typography>
                 }
-                <Link
+                {/* <Link
                     component="button"
                     underline="always"
                     variant="body2"
@@ -431,7 +431,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                     }}
                 >
                     <Typography sx={{ml:0}}>View Collection Items</Typography>
-                </Link>
+                </Link> */}
             </Stack>
 
             <Container maxWidth="lg">
