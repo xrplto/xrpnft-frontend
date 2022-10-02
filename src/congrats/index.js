@@ -1,4 +1,3 @@
-import axios from 'axios';
 import useSound from 'use-sound';
 import Confetti from 'react-confetti';
 import { ColorExtractor } from 'react-color-extractor';
@@ -40,7 +39,6 @@ const CardWrapper = styled('div')(
   
 export default function Congrats({ data }) {
     const theme = useTheme();
-    const BASE_URL = 'https://api.xrpnft.com/api';
     const { width, height } = useWindowSize();
     const [play, { stop }] = useSound('/static/sounds/mixkit-fireworks-bang-in-sky-2989.wav');
     const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
