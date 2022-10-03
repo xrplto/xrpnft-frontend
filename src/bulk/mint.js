@@ -210,7 +210,7 @@ export default function BulkMint({slug}) {
             body.data = data;
             body.account = account;
 
-            res = await axios.post(`${BASE_URL}/account/mintbulk`, body, {headers: {'x-access-token': accountToken}});
+            res = await axios.post(`${BASE_URL}/mint/bulk`, body, {headers: {'x-access-token': accountToken}});
 
             if (res.status === 200) {
                 const ret = res.data;

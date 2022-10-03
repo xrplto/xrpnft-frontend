@@ -101,6 +101,8 @@ export default function PathFinding() {
     const [token, setToken] = useState(XRP_TOKEN);
     const [amount, setAmount] = useState('');
 
+    const [displayResult, setDisplayResult] = useState(false);
+
     const [loading, setLoading] = useState(false);
 
     const [paths, setPaths] = useState(false);
@@ -153,6 +155,7 @@ export default function PathFinding() {
 
 
         setLoading(true);
+        setDisplayResult(false);
         try {
             let res;
             const data = {};
@@ -239,6 +242,7 @@ export default function PathFinding() {
             console.error(err);
         }
         setLoading(false);
+        setDisplayResult(true);
     };
 
     // const handleChangeCategory = (event) => {
@@ -298,8 +302,14 @@ export default function PathFinding() {
             </Stack>
 
             <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Currency <Typography variant='s2'>*</Typography></Typography>
+                <Typography variant='s2'>In our case, we will receive this amount to sell Mints(the same as cost per Mint). But these are defined by the collection creator.</Typography>
+
                 <Stack direction="row" alignItems="center">
-                    <Typography variant='p4'>Currency <Typography variant='s2'>*</Typography></Typography>
+                    <Typography variant='p3'>
+                        Currency that the destination account would receive in a transaction. 
+                    </Typography>
+
                     {token && token.currency !== 'XRP' &&
                         <Link
                             underline="none"
@@ -316,10 +326,6 @@ export default function PathFinding() {
                         </Link>
                     }
                 </Stack>
-
-                <Typography variant='p3'>
-                    Currency that the destination account would receive in a transaction. 
-                </Typography>
 
                 <QueryToken
                     token={token}
@@ -355,6 +361,37 @@ export default function PathFinding() {
             <Stack spacing={2} mb={3}>
                 <Typography variant='p2'>Paths Found</Typography>
 
+                {displayResult && (
+                        paths.length>0?(
+                            <Typography variant='p3'>
+                                You should pay one of the following amount of assets in your wallet to deliver <Typography variant='s3' color='error'>{amount} {token.name}</Typography> worth to the destination account &nbsp;
+                                <Link
+                                    underline="always"
+                                    color="#33C2FF"
+                                    target="_blank"
+                                    href={`https://bithomp.com/explorer/${destAccount}`}
+                                    rel="noreferrer noopener nofollow"
+                                >
+                                    {destAccount}
+                                </Link>
+                            </Typography>
+                        ):(
+                            <Typography variant='p3'>
+                                You don't have enough amount of assets to deliver <Typography variant='s3' color='error'>{amount} {token.name}</Typography> worth to the destination account  &nbsp;
+                                <Link
+                                    underline="always"
+                                    color="#33C2FF"
+                                    target="_blank"
+                                    href={`https://bithomp.com/explorer/${destAccount}`}
+                                    rel="noreferrer noopener nofollow"
+                                >
+                                    {destAccount}
+                                </Link>
+                            </Typography>
+                        )
+                    )
+                }
+
                 {loading?(
                     <Stack alignItems="center">
                         <Comment
@@ -370,45 +407,40 @@ export default function PathFinding() {
                         <Typography variant='d4'>Finding ...</Typography>
                     </Stack>
                 ):(
-                    <Stack alignItems="center">
-                        {paths.length>0?
-                            (
-                                paths.map((path, idx) => (
-                                    <Stack direction='row' spacing={1} alignItems="center" key={idx}>
+                    paths.length>0?
+                        (
+                            paths.map((path, idx) => (
+                                <Stack direction="row" spacing={1} alignItems="center" key={idx}>
+                                    <Stack direction="row" spacing={1}>
                                         <Typography variant='d4'>{idx+1}. </Typography>
                                         {/* <Typography variant='d4'>{path.paths_computed?.[0]?.[0]?.account}</Typography> */}
                                         <Typography variant='d4'>{typeof path.source_amount === "string"
-                                        ? "XRP"
-                                        : utils.currencyCodeFormat(path.source_amount.currency)}
+                                            ? "XRP"
+                                            : utils.currencyCodeFormat(path.source_amount.currency)}
                                         </Typography>
-                                        {/* <Stack spacing={0.5}>
-                                            <Stack direction="row">
-                                                <Typography variant='d4'>{token.name}</Typography>
-                                                <Typography variant='d4' sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(token.exch)}</Typography>
-                                            </Stack>
-                                            <Stack direction="row">
-                                                <Typography variant='p3'>{token.issuer}</Typography>
-                                            </Stack>
-                                        </Stack> */}
                                     </Stack>
-                                ))
-                            ):(
-                                <Stack alignItems="center">
-                                    <Comment
-                                        visible={true}
-                                        height="80"
-                                        width="80"
-                                        ariaLabel="comment-loading"
-                                        wrapperStyle={{}}
-                                        wrapperClass="comment-wrapper"
-                                        color="#fff"
-                                        backgroundColor="#F4442E"
-                                    />
-                                    <Typography variant='d4'>No Paths</Typography>
+
+                                    <Typography variant='d4' color="error">{typeof path.source_amount === "string"
+                                        ? path.source_amount
+                                        : path.source_amount.value}
+                                    </Typography>
                                 </Stack>
-                            )
-                        }
-                    </Stack>
+                            ))
+                        ):(
+                            <Stack alignItems="center">
+                                <Comment
+                                    visible={true}
+                                    height="80"
+                                    width="80"
+                                    ariaLabel="comment-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClass="comment-wrapper"
+                                    color="#fff"
+                                    backgroundColor="#F4442E"
+                                />
+                                <Typography variant='d4'>No Paths</Typography>
+                            </Stack>
+                        )
                 )}
             </Stack>
 

@@ -165,7 +165,7 @@ export default function Minting() {
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/account/payloadmint/${uuid}/${uuidNft}`);
+                const ret = await axios.get(`${BASE_URL}/mint/payload/${uuid}/${uuidNft}`);
                 const res = ret.data.data.response;
 
                 // const account = res.account;
@@ -245,7 +245,7 @@ export default function Minting() {
             formdata.append('user_token', user_token);
             formdata.append('data', JSON.stringify(data));
             
-            res = await axios.post(`${BASE_URL}/account/mintone`, formdata, {
+            res = await axios.post(`${BASE_URL}/mint/one`, formdata, {
                 headers: { "Content-Type": "multipart/form-data", 'x-access-token': accountToken }
             });
 
@@ -280,7 +280,7 @@ export default function Minting() {
     const onDisconnectXumm = async (uuid, uuidNft) => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/account/cancelmint/${uuid}/${uuidNft}`);
+            const res = await axios.delete(`${BASE_URL}/mint/cancel/${uuid}/${uuidNft}`);
             if (res.status === 200) {
                 setUuid(null);
                 setUuidNft(null);
