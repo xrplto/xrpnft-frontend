@@ -88,93 +88,68 @@ export default function QueryToken({token, setToken}) {
     }
 
     return (
-        <Stack spacing={2}>
-            <Stack spacing={2}>
-                <Stack direction="row" alignItems="center">
-                    <Typography variant='p2'>Currency <Typography variant='s2'>*</Typography></Typography>
-                    {token && token.currency !== 'XRP' &&
-                        <Link
-                            underline="none"
-                            color="inherit"
-                            target="_blank"
-                            href={`https://bithomp.com/explorer/${token.issuer}`}
-                            rel="noreferrer noopener nofollow"
-                        >
-                            <Tooltip title="Check on Bithomp">
-                                <IconButton edge="end" aria-label="bithomp">
-                                    <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
-                                </IconButton>
-                            </Tooltip>
-                        </Link>
-                    }
-                </Stack>
-
-                <CustomSelect
-                    id='select_token'
+        <CustomSelect
+            id='select_token'
+            value={token.md5}
+            onChange={handleChangeToken}
+            MenuProps={{ disableScrollLock: true }}
+            // renderValue={(idx) => (
+            //     <>
+            //     {(collections.length > 0 && idx > -1 && collections.length > idx) &&
+            //         <Stack direction='row' alignItems="center">
+            //             <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${collections[idx].logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
+            //             <Typography variant='d4'>{collections[idx].name}</Typography>
+            //         </Stack>
+            //     }
+            //     </>
+            // )}
+        >
+            <TextField
+                id='textFilter'
+                // autoFocus
+                fullWidth
+                variant='standard'
+                placeholder='Filter'
+                margin='dense'
+                onChange={handleChangeFilter}
+                autoComplete='new-password'
+                inputProps={{autoComplete: 'off'}}
+                value={filter}
+                onFocus={event => {
+                    event.target.select();
+                }}
+                sx={{
+                    pl:2,pr:2,pb:2,pt:2.5
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="start">
+                            {loading && <ClipLoader color='#ff0000' size={15} /> }
+                        </InputAdornment>
+                    ),
+                }}
+            />
+            {tokens.map((token, idx) => (
+                <MenuItem
+                    key={token.md5}
                     value={token.md5}
-                    onChange={handleChangeToken}
-                    MenuProps={{ disableScrollLock: true }}
-                    // renderValue={(idx) => (
-                    //     <>
-                    //     {(collections.length > 0 && idx > -1 && collections.length > idx) &&
-                    //         <Stack direction='row' alignItems="center">
-                    //             <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${collections[idx].logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
-                    //             <Typography variant='d4'>{collections[idx].name}</Typography>
-                    //         </Stack>
-                    //     }
-                    //     </>
-                    // )}
+                    sx={{pt:1, pb:1}}
                 >
-                    <TextField
-                        id='textFilter'
-                        // autoFocus
-                        fullWidth
-                        variant='standard'
-                        placeholder='Filter'
-                        margin='dense'
-                        onChange={handleChangeFilter}
-                        autoComplete='new-password'
-                        inputProps={{autoComplete: 'off'}}
-                        value={filter}
-                        onFocus={event => {
-                            event.target.select();
-                        }}
-                        sx={{
-                            pl:2,pr:2,pb:2,pt:2.5
-                        }}
-                        onKeyDown={(e) => e.stopPropagation()}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="start">
-                                    {loading && <ClipLoader color='#ff0000' size={15} /> }
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                    {tokens.map((token, idx) => (
-                        <MenuItem
-                            key={token.md5}
-                            value={token.md5}
-                            sx={{pt:1, pb:1}}
-                        >
-                            <Stack direction='row' alignItems="center">
-                                <Avatar alt="C" src={`https://xrpl.to/static/tokens/${token.md5}.${token.ext}`} sx={{ mr: 2 }} />
-                                <Stack spacing={0.5}>
-                                    <Stack direction="row">
-                                        <Typography variant='d4'>{token.name}</Typography>
-                                        <Typography variant='d4' sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(token.exch)}</Typography>
-                                    </Stack>
-                                    <Stack direction="row">
-                                        <Typography variant='p3'>{token.issuer}</Typography>
-                                    </Stack>
-                                </Stack>
+                    <Stack direction='row' alignItems="center">
+                        <Avatar alt="C" src={`https://xrpl.to/static/tokens/${token.md5}.${token.ext}`} sx={{ mr: 2 }} />
+                        <Stack spacing={0.5}>
+                            <Stack direction="row">
+                                <Typography variant='d4'>{token.name}</Typography>
+                                <Typography variant='d4' sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(token.exch)}</Typography>
                             </Stack>
-                        </MenuItem>
-                    ))}
-                </CustomSelect>
-            </Stack>
-
-            
-        </Stack>
+                            <Stack direction="row">
+                                <Typography variant='p3'>{token.issuer}</Typography>
+                            </Stack>
+                        </Stack>
+                    </Stack>
+                </MenuItem>
+            ))}
+        </CustomSelect>
     );
 }

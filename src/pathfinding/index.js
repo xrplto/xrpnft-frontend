@@ -4,6 +4,7 @@ import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux'
 import Decimal from 'decimal.js';
+import { utils } from "xrpl-txdata";
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -21,6 +22,7 @@ import {
     Select,
     Stack,
     TextField,
+    Tooltip,
     Typography
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -37,6 +39,9 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { SUPPORTED_FILE_TYPES, TOKEN_FLAGS, CATEGORIES, XRP_TOKEN } from 'src/utils/constants';
+
+// Loader
+import { FallingLines, Comment } from 'react-loader-spinner';
 
 // Components
 import XSnackbar from 'src/components/Snackbar';
@@ -79,9 +84,10 @@ const CustomSelect = styled(Select)(({ theme }) => ({
     }
 }));
 
-export default function Minting() {
+export default function PathFinding() {
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';
+    const API_XRPL_TO_URL = 'https://api.xrpl.to/api';
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
     const { accountProfile } = useContext(AppContext);
@@ -89,19 +95,32 @@ export default function Minting() {
     const accountToken = accountProfile?.token;
     const user_token = accountProfile?.user_token;
 
-    const [destAccount, setDestAccount] = useState('');
-    const [sourceAccount, setSourceAccount] = useState('');
+    const [destAccount, setDestAccount] = useState('rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ');
+    const [sourceAccount, setSourceAccount] = useState('rpePPeRpC89vpCY3CDzhzMCs78nPoNnAKm');
 
     const [token, setToken] = useState(XRP_TOKEN);
     const [amount, setAmount] = useState('');
 
     const [loading, setLoading] = useState(false);
 
+    const [paths, setPaths] = useState(false);
+
     let canFindPath = destAccount && sourceAccount && token && amount;
 
     // https://github.com/XRPL-Labs/XUMM-Issue-Tracker/issues/392
 
     const onFindPath = async () => {
+        let value = 0;
+        try {
+            value = new Decimal(amount).toNumber();
+        } catch (e) {
+        }
+
+        if (value <= 0) {
+            openSnackbar('Invalid Amount', 'error');
+            return;
+        }
+        
         // {
         //     "id": 8,
         //     "command": "ripple_path_find",
@@ -122,47 +141,99 @@ export default function Minting() {
         //     }
         // }
 
-        // POST https://api.xrpnft.com/api/mint
+        /*
+        {
+            "command": "ripple_path_find",
+            "subcommand": "create",
+            "source_account": "rpePPeRpC89vpCY3CDzhzMCs78nPoNnAKm",
+            "destination_account": "rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ",
+            "destination_amount": "1000000"
+        }
+        */
+
+
         setLoading(true);
         try {
             let res;
             const data = {};
-            data.name = nftName;
-            data.external_link = extLink;
-            data.description = description;
-            data.collection = collectionName;
-            data.category = category;
-            data.royalty = royalty;
-            data.explicit = explicit;
-            data.flag = flag;
-            if (properties && properties.length > 0)
-                data.properties = properties;
+            data.source_account = sourceAccount;
+            data.destination_account = destAccount;
+            if (token.currency === 'XRP') {
+                data.destination_amount = new Decimal(amount).mul(1000000).toString();
+            } else {
+                data.destination_amount = {
+                    value: value.toString(),
+                    currency: token.currency,
+                    issuer: token.issuer
+                }
+            }
 
-            const formdata = new FormData();
-            formdata.append('nft', file);
-            formdata.append('account', account);
-            formdata.append('user_token', user_token);
-            formdata.append('data', JSON.stringify(data));
-            
-            res = await axios.post(`${BASE_URL}/account/mintone`, formdata, {
-                headers: { "Content-Type": "multipart/form-data", 'x-access-token': accountToken }
-            });
+            res = await axios.post(`${API_XRPL_TO_URL}/extra/ripplepathfind`, data);
 
             if (res.status === 200) {
-                const ret = res.data;
-                if (ret.status) {
-                    const uuid_nft = ret.uuid_nft;
-                    const uuid = ret.uuid;
-                    const qrlink = ret.qrUrl;
-                    const nextlink = ret.next;
+                const ret = res.data?.paths;
+                console.log(ret);
 
-                    // openSnackbar('Path finding successful!', 'success')
-                    // window.location.href = `/assets/${uuid_nft}`;
+                if (ret) {
+                    if (ret.error && ret.error_message) {
+                        openSnackbar(ret.error_message, 'error')
+                    } else {
+                        const newPaths = ret.alternatives || [];
+                        
+                        setPaths(newPaths);
+                        console.log(newPaths);
+                        /*
+                        [
+                            {
+                                "paths_canonical": [],
+                                "paths_computed": [
+                                    [
+                                        {
+                                            "account": "rcoreNywaoz2ZCQ8Lg2EbSLnGuRBmun6D",
+                                            "type": 1
+                                        },
+                                        {
+                                            "currency": "XRP",
+                                            "type": 16
+                                        }
+                                    ]
+                                ],
+                                "source_amount": {
+                                    "currency": "434F524500000000000000000000000000000000",
+                                    "issuer": "rpePPeRpC89vpCY3CDzhzMCs78nPoNnAKm",
+                                    "value": "2.573936320815423"
+                                }
+                            },
+                            {
+                                "paths_canonical": [],
+                                "paths_computed": [
+                                    [
+                                        {
+                                            "account": "rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz",
+                                            "type": 1
+                                        },
+                                        {
+                                            "currency": "XRP",
+                                            "type": 16
+                                        }
+                                    ]
+                                ],
+                                "source_amount": {
+                                    "currency": "534F4C4F00000000000000000000000000000000",
+                                    "issuer": "rpePPeRpC89vpCY3CDzhzMCs78nPoNnAKm",
+                                    "value": "3.499422652996957"
+                                }
+                            }
+                        ]
+                        */
+                    }
                 } else {
-                    // { status: false, data: null, err: 'ERR_URL_SLUG' }
-                    const err = ret.err;
-                    openSnackbar(err, 'error')
+                    openSnackbar("Error on path finding 1", 'error')
                 }
+                // openSnackbar('Path finding successful!', 'success')
+                // window.location.href = `/assets/${uuid_nft}`;
+            } else {
+                openSnackbar("Error on path finding 2", 'error')
             }
         } catch (err) {
             console.error(err);
@@ -189,7 +260,7 @@ export default function Minting() {
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Destination Account <Typography variant='s2'>*</Typography></Typography>
                 <Typography variant='p3'>
-                    Unique address of the account that would receive funds in a transaction.
+                    Unique address of the account that would receive funds in a transaction. (rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ)
                 </Typography>
                 
 
@@ -204,6 +275,51 @@ export default function Minting() {
                         }
                     }}
                 />
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Source Account <Typography variant='s2'>*</Typography></Typography>
+                <Typography variant='p3'>
+                    Unique address of the account that would send funds in a transaction. (rpePPeRpC89vpCY3CDzhzMCs78nPoNnAKm)
+                </Typography>
+                
+
+                <TextField required placeholder='Source' margin='dense'
+                    onChange={(e) => {
+                        setSourceAccount(e.target.value)
+                    }}
+                    value={sourceAccount}
+                    sx={{
+                        '&.MuiTextField-root': {
+                            marginTop: 1
+                        }
+                    }}
+                />
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Stack direction="row" alignItems="center">
+                    <Typography variant='p4'>Currency <Typography variant='s2'>*</Typography></Typography>
+                    {token && token.currency !== 'XRP' &&
+                        <Link
+                            underline="none"
+                            color="inherit"
+                            target="_blank"
+                            href={`https://bithomp.com/explorer/${token.issuer}`}
+                            rel="noreferrer noopener nofollow"
+                        >
+                            <Tooltip title="Check on Bithomp">
+                                <IconButton edge="end" aria-label="bithomp">
+                                    <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                </IconButton>
+                            </Tooltip>
+                        </Link>
+                    }
+                </Stack>
+
+                <Typography variant='p3'>
+                    Currency that the destination account would receive in a transaction. 
+                </Typography>
 
                 <QueryToken
                     token={token}
@@ -211,8 +327,11 @@ export default function Minting() {
                 />
             </Stack>
 
-            <Stack spacing={2} sx={{mt: 3}}>
+            <Stack spacing={2} mb={3}>
                 <Typography variant='p2'>Amount <Typography variant='s2'>*</Typography></Typography>
+                <Typography variant='p3'>
+                    Amount that the destination account would receive in a transaction. 
+                </Typography>
 
                 <Stack direction="row" spacing={2} alignItems="center">
                     <TextField
@@ -231,6 +350,66 @@ export default function Minting() {
                     />
                     <Typography variant='p2'>{token?.name}</Typography>
                 </Stack>
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p2'>Paths Found</Typography>
+
+                {loading?(
+                    <Stack alignItems="center">
+                        <Comment
+                            visible={true}
+                            height="80"
+                            width="80"
+                            ariaLabel="comment-loading"
+                            wrapperStyle={{}}
+                            wrapperClass="comment-wrapper"
+                            color="#fff"
+                            backgroundColor="#F4442E"
+                        />
+                        <Typography variant='d4'>Finding ...</Typography>
+                    </Stack>
+                ):(
+                    <Stack alignItems="center">
+                        {paths.length>0?
+                            (
+                                paths.map((path, idx) => (
+                                    <Stack direction='row' spacing={1} alignItems="center" key={idx}>
+                                        <Typography variant='d4'>{idx+1}. </Typography>
+                                        {/* <Typography variant='d4'>{path.paths_computed?.[0]?.[0]?.account}</Typography> */}
+                                        <Typography variant='d4'>{typeof path.source_amount === "string"
+                                        ? "XRP"
+                                        : utils.currencyCodeFormat(path.source_amount.currency)}
+                                        </Typography>
+                                        {/* <Stack spacing={0.5}>
+                                            <Stack direction="row">
+                                                <Typography variant='d4'>{token.name}</Typography>
+                                                <Typography variant='d4' sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(token.exch)}</Typography>
+                                            </Stack>
+                                            <Stack direction="row">
+                                                <Typography variant='p3'>{token.issuer}</Typography>
+                                            </Stack>
+                                        </Stack> */}
+                                    </Stack>
+                                ))
+                            ):(
+                                <Stack alignItems="center">
+                                    <Comment
+                                        visible={true}
+                                        height="80"
+                                        width="80"
+                                        ariaLabel="comment-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClass="comment-wrapper"
+                                        color="#fff"
+                                        backgroundColor="#F4442E"
+                                    />
+                                    <Typography variant='d4'>No Paths</Typography>
+                                </Stack>
+                            )
+                        }
+                    </Stack>
+                )}
             </Stack>
 
 
@@ -267,7 +446,7 @@ export default function Minting() {
                     loadingPosition='start'
                     startIcon={<SendIcon />}
                     onClick={onFindPath}
-                    sx={{ mt: 5, mb: 6 }}
+                    sx={{ mt: 2, mb: 6 }}
                 >
                     Find Path
                 </LoadingButton>

@@ -55,6 +55,7 @@
     "perf_hooks": "^0.0.1",
     "crypto-js": "^4.1.1",
     "is-ipfs": "^6.0.2",
+    "xrpl-txdata": "^1.2.1",
     "uuid": "^8.3.2",
     "use-sound": "^4.0.1",
     "@pinata/sdk": "^1.1.24",
