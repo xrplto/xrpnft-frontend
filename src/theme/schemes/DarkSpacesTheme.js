@@ -353,6 +353,9 @@ export const DarkSpacesTheme = createTheme({
       }
     },
     MuiDialog: {
+      defaultProps: {
+        // disableScrollLock: true, keepMounted: true, disablePortal: true
+      },
       styleOverrides: {
         paper: {
           backgroundColor: darken(themeColors.primaryAlt, 0.5)

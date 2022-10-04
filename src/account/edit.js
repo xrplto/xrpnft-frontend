@@ -485,10 +485,10 @@ export default function EditCollection({collection}) {
                 onAddCost={handleAddCost}
             />
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
-                <Typography variant="h1a">Edit My Collection</Typography>
+                <Typography variant="h1a">Edit Profile</Typography>
                 <Typography variant='p2'><Typography variant='s2'>*</Typography> Required fields</Typography>
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Logo image <Typography variant='s2'>*</Typography></Typography>
-                <Typography variant='p2'>This image will also be used for navigation. 350 x 350 recommended.</Typography>
+                <Typography variant='p3'>This image will also be used for navigation. 350 x 350 recommended.</Typography>
                 <CardWrapperCircle>
                     <input
                         ref={fileRef1}

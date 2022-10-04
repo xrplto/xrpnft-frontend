@@ -488,7 +488,7 @@ export default function EditCollection({collection}) {
                 <Typography variant="h1a">Edit My Collection</Typography>
                 <Typography variant='p2'><Typography variant='s2'>*</Typography> Required fields</Typography>
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Logo image <Typography variant='s2'>*</Typography></Typography>
-                <Typography variant='p2'>This image will also be used for navigation. 350 x 350 recommended.</Typography>
+                <Typography variant='p3'>This image will also be used for navigation. 350 x 350 recommended.</Typography>
                 <CardWrapperCircle>
                     <input
                         ref={fileRef1}
@@ -527,7 +527,7 @@ export default function EditCollection({collection}) {
                     </Card>
                 </CardWrapperCircle>
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Featured image</Typography>
-                <Typography variant='p2'>This image will be used for featuring your collection on the homepage, category pages, or other promotional areas of XRPNFT.COM. 600 x 400 recommended.</Typography>
+                <Typography variant='p3'>This image will be used for featuring your collection on the homepage, category pages, or other promotional areas of XRPNFT.COM. 600 x 400 recommended.</Typography>
                 <CardWrapper>
                     <input
                         ref={fileRef2}
@@ -567,7 +567,7 @@ export default function EditCollection({collection}) {
                 </CardWrapper>
 
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Banner image</Typography>
-                <Typography variant='p2'>This image will appear at the top of your collection page. Avoid including too much text in this banner image, as the dimensions change on different devices. 1400 x 350 recommended.</Typography>
+                <Typography variant='p3'>This image will appear at the top of your collection page. Avoid including too much text in this banner image, as the dimensions change on different devices. 1400 x 350 recommended.</Typography>
                 <CardWrapper3>
                     <input
                         ref={fileRef3}
@@ -659,7 +659,7 @@ export default function EditCollection({collection}) {
 
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>URL</Typography>
-                <Typography variant='p2'>
+                <Typography variant='p3'>
                     Customize your URL on XRPNFT.COM. Must only contain lowercase letters, numbers, and hyphens.
                 </Typography>
                 <LoadingTextField

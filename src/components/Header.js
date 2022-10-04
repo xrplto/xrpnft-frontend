@@ -35,8 +35,6 @@ const HeaderWrapper = styled(Box)(({ theme }) => `
 
 export default function Header(props) {
     const { toggleTheme, darkMode } = useContext(AppContext);
-    const data = props.data;
-
     return (
         <HeaderWrapper>
             <Container maxWidth="xl">

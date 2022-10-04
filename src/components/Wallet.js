@@ -19,6 +19,8 @@ import {
 import GridOnIcon from '@mui/icons-material/GridOn';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 // Context
 import { useContext } from 'react';
@@ -38,6 +40,9 @@ export default function Wallet() {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const anchorRef = useRef(null);
     const { accountProfile, setAccountProfile, setLoading } = useContext(AppContext);
+    const account = accountProfile?.account;
+    const accountUuid = accountProfile?.uuid;
+
     const [open, setOpen] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
     const [openXLS20Dialog, setOpenXLS20Dialog] = useState(false);
@@ -55,7 +60,7 @@ export default function Wallet() {
                 if (isRunning) return;
                 isRunning = true;
                 try {
-                    const res = await axios.get(`${BASE_URL}/xumm/payloadlogin/${uuid}`);
+                    const res = await axios.get(`${BASE_URL}/account/login/${uuid}`);
                     if (res && res.data && res.data.account) {
                         const ret = res.data;
                         const account = ret.account;
@@ -87,7 +92,7 @@ export default function Wallet() {
     const onConnectXumm = async () => {
         setLoading(true);
         try {
-            const res = await axios.post(`${BASE_URL}/xumm/login`);
+            const res = await axios.post(`${BASE_URL}/account/login`);
             if (res.status === 200) {
                 const uuid = res.data.data.uuid;
                 const qrlink = res.data.data.qrUrl;
@@ -107,7 +112,7 @@ export default function Wallet() {
     const onDisconnectXumm = async (uuid) => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/xumm/logout/${uuid}`);
+            const res = await axios.delete(`${BASE_URL}/account/logout/${uuid}`);
             if (res.status === 200) {
                 setAccountProfile(null);
                 setUuid(null);
@@ -140,7 +145,7 @@ export default function Wallet() {
 
     const handleLogout = () => {
         setOpen(false);
-        onDisconnectXumm(accountProfile.uuid);
+        onDisconnectXumm(accountUuid);
     }
 
     const handleLoginClose = () => {
@@ -177,8 +182,19 @@ export default function Wallet() {
                     }
                 }}
             >
-                {accountProfile && accountProfile.account ? (
+                {account ? (
                         <>
+                            <MenuItem
+                                key="account_profile"
+                                sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                            >
+                                <NextLink href={`/account/${account}`} passHref>
+                                    <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                        <AccountBoxIcon />
+                                        <Typography variant='s3' style={{marginLeft: '10px'}}>Profile</Typography>
+                                    </Stack>
+                                </NextLink>
+                            </MenuItem>
                             <MenuItem
                                 key="collection"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}
@@ -212,21 +228,32 @@ export default function Wallet() {
                                     </Stack>
                                 </NextLink>
                             </MenuItem>
+                            <MenuItem
+                                key="settings"
+                                sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                            >
+                                <NextLink href={`/setting/${accountUuid}`} passHref>
+                                    <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                        <SettingsIcon />
+                                        <Typography variant='s3' style={{marginLeft: '10px'}}>Settings</Typography>
+                                    </Stack>
+                                </NextLink>
+                            </MenuItem>
                             <Divider />
                             <Stack spacing={1} alignItems='center' sx={{pt: 1, pb: 2}}>
                                 <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ mr:1, width: 24, height: 24 }}/>
                                 <Link
                                     color="inherit"
                                     target="_blank"
-                                    href={`https://xls20.bithomp.com/explorer/${accountProfile.account}`}
+                                    href={`https://xls20.bithomp.com/explorer/${account}`}
                                     rel="noreferrer noopener nofollow"
                                 >
                                     <Typography align="center" style={{ wordWrap: "break-word" }} variant="body2" sx={{ width: 180, color: 'text.secondary' }} >
-                                        {accountProfile.account}
+                                        {account}
                                     </Typography>
                                 </Link>
 
-                                {/* <CopyToClipboard text={accountProfile.account} onCopy={()=>{}}>
+                                {/* <CopyToClipboard text={account} onCopy={()=>{}}>
                                     <Tooltip title='Click to copy your address'>
                                         <IconButton>
                                             <ContentCopyIcon fontSize="small" />
@@ -237,7 +264,7 @@ export default function Wallet() {
                                     <Button variant="contained" onClick={handleLogout} size="small">
                                         Logout
                                     </Button>
-                                    <CopyToClipboard text={accountProfile.account} onCopy={()=>{}}>
+                                    <CopyToClipboard text={account} onCopy={()=>{}}>
                                         <Button variant="contained" size="small" color="info">
                                             Copy
                                         </Button>

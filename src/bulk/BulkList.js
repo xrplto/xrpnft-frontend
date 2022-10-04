@@ -216,11 +216,9 @@ export default function BulkList() {
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/xumm/payload/${xummUuid}`);
-                const res = ret.data.data.response;
-                // const account = res.account;
-                const resolved_at = res.resolved_at;
-                const dispatched_result = res.dispatched_result;
+                const ret = await axios.get(`${BASE_URL}/account/setnftminter/${xummUuid}`);
+                const resolved_at = ret.data?.resolved_at;
+                const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
                     setOpenScanQR(false);
                     if (dispatched_result === 'tesSUCCESS') {
@@ -229,7 +227,6 @@ export default function BulkList() {
                     }
                     else
                         openSnackbar('Set NFTokenMinter failed!', 'error');
-
                     return;
                 }
             } catch (err) {
@@ -262,7 +259,7 @@ export default function BulkList() {
 
             const body={ account, minter, user_token };
 
-            const res = await axios.post(`${BASE_URL}/xumm/setnftminter`, body, {headers: {'x-access-token': accountToken}});
+            const res = await axios.post(`${BASE_URL}/account/setnftminter`, body, {headers: {'x-access-token': accountToken}});
 
             if (res.status === 200) {
                 const newUuid = res.data.data.uuid;
@@ -283,7 +280,7 @@ export default function BulkList() {
     const onDisconnectXumm = async () => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/xumm/logout/${xummUuid}`);
+            const res = await axios.delete(`${BASE_URL}/account/logout/${xummUuid}`);
             if (res.status === 200) {
                 setXummUuid(null);
             }

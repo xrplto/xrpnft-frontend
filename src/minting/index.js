@@ -166,14 +166,10 @@ export default function Minting() {
             isRunning = true;
             try {
                 const ret = await axios.get(`${BASE_URL}/mint/payload/${uuid}/${uuidNft}`);
-                const res = ret.data.data.response;
-
-                // const account = res.account;
-                const resolved_at = res.resolved_at;
-                const dispatched_result = res.dispatched_result;
+                const resolved_at = ret.data?.resolved_at;
+                const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
                     setOpenScanQR(false);
-                    console.log(res);
                     if (dispatched_result === 'tesSUCCESS') {
                         // handleClose();
                         openSnackbar('NFTokenMint successful!', 'success');

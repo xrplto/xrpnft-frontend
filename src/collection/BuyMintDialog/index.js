@@ -159,16 +159,15 @@ export default function BuyMintDialog({open, setOpen, costs, minter, openSnackba
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/spin/payload/${uuid}?account=${account}`, {headers: {'x-access-token': accountToken}});
-                const res = ret.data.data.response;
-                // const account = res.account;
-                const resolved_at = res.resolved_at;
-                const dispatched_result = res.dispatched_result;
-                const newMints = ret.data.mints;
-                const newXrpBalance = ret.data.xrpBalance;
+                const ret = await axios.get(`${BASE_URL}/spin/buymint/${uuid}?account=${account}`, {headers: {'x-access-token': accountToken}});
+                const resolved_at = ret.data?.resolved_at;
+                const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
                     setOpenScanQR(false);
-                    if (dispatched_result && dispatched_result === 'tesSUCCESS') {
+                    if (dispatched_result === 'tesSUCCESS') {
+                        const newMints = ret.data.mints;
+                        const newXrpBalance = ret.data.xrpBalance;
+
                         setMints(newMints);
                         setXrpBalance(newXrpBalance);
                         handleClose();
@@ -260,7 +259,7 @@ export default function BuyMintDialog({open, setOpen, costs, minter, openSnackba
     const onDisconnectXumm = async (uuid) => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/spin/logout/${uuid}`, {headers: {'x-access-token': accountToken}});
+            const res = await axios.delete(`${BASE_URL}/spin/buymint/${uuid}`, {headers: {'x-access-token': accountToken}});
             if (res.status === 200) {
                 setUuid(null);
             }

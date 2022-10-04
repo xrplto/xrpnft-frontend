@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 
 // Components
-import Account from 'src/account';
+import EditAccount from 'src/account/edit';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -84,11 +84,9 @@ const BannerImage = styled('img')(
 export default function Overview({data}) {
     const {
         name,
-        slug,
         description,
-        logoImage,
-        featuredImage,
-        bannerImage,
+        logo,
+        banner,
         timestamp
     } = data.account;
 
@@ -106,14 +104,14 @@ export default function Overview({data}) {
                 >
                     <BannerImage
                         alt={name}
-                        src={`https://s1.xrpnft.com/account/${bannerImage}`}
+                        src={`https://s1.xrpnft.com/account/${banner}`}
                         decoding="async"
                     />
                 </div>
             </BannerWrapper>
 
             <Container maxWidth="xl">
-                <Account data={data}/>
+                <EditAccount data={data}/>
             </Container>
 
             <ScrollToTop />
@@ -130,58 +128,52 @@ export async function getServerSideProps(ctx) {
     let data = null;
     try {
 
-        const slug = ctx.params.slug;
+        const acct = ctx.params.acct;
 
         var t1 = performance.now();
 
-        // https://api.xrpnft.com/api/collection/test1
-        const res = await axios.get(`${BASE_URL}/collection/${slug}?spins=true`);
+        // https://api.xrpnft.com/api/account/profile/rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n
+        const res = await axios.get(`${BASE_URL}/account/profile/${acct}`);
 
         data = res.data;
+
+        console.log(JSON.stringify(data));
 
         var t2 = performance.now();
         var dt = (t2 - t1).toFixed(2);
 
-        console.log(`3. getServerSideProps(collection) slug: ${slug} took: ${dt}ms`);
+        console.log(`3. getServerSideProps(profile) account: ${acct} took: ${dt}ms`);
     } catch (e) {
         console.log(e);
     }
 
-    if (data && data.collection) {
+    if (data && data.profile) {
         /*{
             "result": "success",
-            "took": "1.02",
-            "slug": "collection-1",
-            "collection": {
-                "_id": "6310c27cf81fe46884ef89ba",
-                "account": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
-                "name": "collection1",
-                "slug": "collection-1",
-                "description": "",
-                "logoImage": "1662042748001_12e8a38273134f0e87f1039958d5b132.png",
-                "featuredImage": "1662042748001_70910cc4c6134845bf84cf262e696d05.png",
-                "bannerImage": "1662042748002_b32b442dea454998aa29ab61c8fa0887.jpg",
-                "timestamp": 1662042748016,
-                "creator": "xrpnft.com",
-                "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
+            "took": "7.45",
+            "account": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
+            "profile": {
+                "_id": "633c43f5436e94e30e6f21ae",
+                "account": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
+                "timestamp": 1664894197862
             }
         } */
         
         const {
+            account,
             name,
-            featuredImage,
-            logoImage,
-            bannerImage,
-            slug,
-            uuid,
+            logo,
+            banner,
             description
-        } = data.collection;
+        } = data.profile;
+
+        const imgUrl = banner?`https://s1.xrpnft.com/account/${banner}`:'https://xrpnft.com/static/ogp.png';
 
         let ogp = {};
-        ogp.canonical = `https://xrpnft.com/collection/${slug}`;
-        ogp.title = `${name} - Collection`;
-        ogp.url = `https://xrpnft.com/collection/${slug}`;
-        ogp.imgUrl = `https://s1.xrpnft.com/collection/${bannerImage}`;
+        ogp.canonical = `https://xrpnft.com/account/${account}`;
+        ogp.title = `${name}`;
+        ogp.url = `https://xrpnft.com/account/${account}`;
+        ogp.imgUrl = imgUrl;
         ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
 
         return {

@@ -95,7 +95,7 @@ export default function XLS20Dialog({open, handleClose, handleLogin}) {
                 <Grid item xs={12} md={6}>
                     <Stack spacing={1} sx={{mb: 3, p: 2}}>
                         <Typography variant="d3">Step 2 - Get your testnet funded wallet</Typography>
-                        <Typography variant="d3" sx={{pt: 1}}>If you do not already have a testnet wallet, click the button below to generate a new one with 10,000XRP balance.</Typography>
+                        <Typography variant="d3" sx={{pt: 1}}>If you do not already have a testnet wallet, click the button below to generate a new one with 10,000 XRP balance.</Typography>
                         <Typography variant="d3">And you can't transfer that to your mainnet wallet </Typography>
                         
                         <Stack direction="row">

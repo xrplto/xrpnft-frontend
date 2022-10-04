@@ -37,15 +37,25 @@ export default function Account({data}) {
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
+    const accountUuid = accountProfile?.uuid;
+
+    const profile = data.profile;
+
+    const {
+        name,
+        logo,
+        banner,
+        description
+    } = profile;
     
     return (
         <>
             <Stack alignItems="center" sx={{mb: 5}}>
                 <IconCover>
                     <IconWrapper>
-                        <IconImage src={`https://s1.xrpnft.com/account/${logoImage}`}/>
-                        {account === collection.account &&
-                            <Link href={`/collection/${slug}/edit`} underline='none'>
+                        <IconImage src={`https://s1.xrpnft.com/account/${logo}`}/>
+                        {account === profile.account &&
+                            <Link href={`/setting/${account}`} underline='none'>
                                 <CardOverlay>
                                     <EditIcon
                                         className="MuiIconEditButton-root"
