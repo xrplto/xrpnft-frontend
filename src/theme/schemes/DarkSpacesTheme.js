@@ -93,45 +93,39 @@ const colors = {
       100: themeColors.black
     }
   },
-  secondary: {
-    lighter: alpha(themeColors.secondary, 0.85),
-    light: alpha(themeColors.secondary, 0.6),
-    main: themeColors.secondary,
-    dark: darken(themeColors.secondary, 0.2)
-  },
   primary: {
     lighter: alpha(themeColors.primary, 0.85),
     light: alpha(themeColors.primary, 0.3),
     main: themeColors.primary,
     dark: darken(themeColors.primary, 0.2)
   },
+  secondary: {
+    lighter: alpha(themeColors.secondary, 0.85),
+    light: alpha(themeColors.secondary, 0.6),
+    main: themeColors.secondary,
+    dark: darken(themeColors.secondary, 0.2)
+  },
   success: {
     lighter: alpha(themeColors.success, 0.85),
-    light: alpha(themeColors.success, 0.3),
+    light: alpha(themeColors.success, 1/*0.3*/),
     main: themeColors.success,
     dark: darken(themeColors.success, 0.2)
   },
   warning: {
     lighter: alpha(themeColors.warning, 0.85),
-    light: alpha(themeColors.warning, 0.3),
+    light: alpha(themeColors.warning, 1/*0.3*/),
     main: themeColors.warning,
     dark: darken(themeColors.warning, 0.2)
   },
-  // error: {
-  //   lighter: alpha(themeColors.error, 0.85),
-  //   light: alpha(themeColors.error, 0.3),
-  //   main: themeColors.error,
-  //   dark: darken(themeColors.error, 0.2)
-  // },
   error: {
-    lighter: alpha(themeColors.error, 0.9),
-    light: alpha(themeColors.error, 0.9),
+    lighter: alpha(themeColors.error, 0.85),
+    light: alpha(themeColors.error, 1/*0.3*/),
     main: themeColors.error,
-    dark: darken(themeColors.error, 0.9)
+    dark: darken(themeColors.error, 0.2)
   },
   info: {
     lighter: alpha(themeColors.info, 0.85),
-    light: alpha(themeColors.info, 0.3),
+    light: alpha(themeColors.info, 1/*0.3*/),
     main: themeColors.info,
     dark: darken(themeColors.info, 0.2)
   }
@@ -191,17 +185,17 @@ export const DarkSpacesTheme = createTheme({
         100: themeColors.black
       }
     },
-    secondary: {
-      lighter: alpha(themeColors.secondary, 0.1),
-      light: alpha(themeColors.secondary, 0.3),
-      main: themeColors.secondary,
-      dark: darken(themeColors.secondary, 0.2)
-    },
     primary: {
       lighter: alpha(themeColors.primary, 0.1),
       light: alpha(themeColors.primary, 0.3),
       main: themeColors.primary,
       dark: darken(themeColors.primary, 0.2)
+    },
+    secondary: {
+      lighter: alpha(themeColors.secondary, 0.1),
+      light: alpha(themeColors.secondary, 0.3),
+      main: themeColors.secondary,
+      dark: darken(themeColors.secondary, 0.2)
     },
     success: {
       lighter: alpha(themeColors.success, 0.1),

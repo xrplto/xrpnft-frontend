@@ -4,14 +4,19 @@ import { performance } from 'perf_hooks';
 
 // Material
 import {
-    styled,
     Box,
     Container,
+    Grid,
+    styled,
     Toolbar
 } from '@mui/material';
 
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
+
 // Components
-import AccountSetting from 'src/account/setting';
+import EditProfile from 'src/account/setting';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -49,68 +54,25 @@ function generateRandom(maxLimit = 10){
     return rand;
 }
 
-
-const BannerWrapper = styled('div')(
-    ({ theme }) => `
-    position: relative;
-    max-height: 320px;
-    overflow: hidden;
-`
-);
-
-const BannerImage = styled('img')(
-    ({ theme }) => `
-    position: absolute;
-    top:0;
-    left:0;
-    bottom:0;
-    right:0;
-    inset: 0px;
-    box-sizing: border-box;
-    padding: 0px;
-    border: none;
-    margin: auto;
-    display: block;
-    width: 0px; height: 0px;
-    min-width: 100%;
-    max-width: 100%;
-    min-height: 100%;
-    max-height: 100%;
-    object-fit: cover;
-  `
-);
-
 export default function Overview({data}) {
-    const {
-        name,
-        description,
-        logo,
-        banner,
-        timestamp
-    } = data.account;
+    const bgIdx = generateRandom();
+    const { darkMode, accountProfile, openSnackbar } = useContext(AppContext);
 
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
+            <BackgroundWrapper
+                style={{
+                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`,
+                    opacity: `${darkMode?0.3:0.2}`
+                }}
+            />
+
             <Header />
 
-            <BannerWrapper>
-                <div style={{
-                    height: 0,
-                    paddingBottom: '25%',
-                }}
-                >
-                    <BannerImage
-                        alt={name}
-                        src={`https://s1.xrpnft.com/account/${banner}`}
-                        decoding="async"
-                    />
-                </div>
-            </BannerWrapper>
-
-            <Container maxWidth="xl">
-                <AccountSetting data={data}/>
+            <Container maxWidth="sm">
+                <EditProfile profile={data.profile}/>
             </Container>
 
             <ScrollToTop />
@@ -166,11 +128,11 @@ export async function getServerSideProps(ctx) {
             description
         } = data.profile;
 
-        const imgUrl = banner?`https://s1.xrpnft.com/account/${banner}`:'https://xrpnft.com/static/ogp.png';
+        const imgUrl = banner?`https://s1.xrpnft.com/profile/${banner}`:'https://xrpnft.com/static/ogp.png';
 
         let ogp = {};
         ogp.canonical = `https://xrpnft.com/account/${account}`;
-        ogp.title = `${name}`;
+        ogp.title = name || account;
         ogp.url = `https://xrpnft.com/account/${account}`;
         ogp.imgUrl = imgUrl;
         ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;

@@ -32,14 +32,14 @@ export function ContextProvider({ children, data, openSnackbar }) {
     }, []);
 
     useEffect(() => {
-        const profile = window.localStorage.getItem('accountProfile5');
+        const profile = window.localStorage.getItem('accountProfile6');
         if (profile) {
             _setAccountProfile(JSON.parse(profile));
         }
     }, [])
 
     const setAccountProfile = (profile) => {
-        window.localStorage.setItem('accountProfile5', JSON.stringify(profile));
+        window.localStorage.setItem('accountProfile6', JSON.stringify(profile));
         _setAccountProfile(profile);
     };
 
@@ -53,7 +53,7 @@ export function ContextProvider({ children, data, openSnackbar }) {
             >
                 <PuffLoader color={"#00AB55"} size={50} />
             </Backdrop>
-            
+
             <Provider store={store}>
                 {children}
             </Provider>

@@ -33,7 +33,7 @@ export default function XSnackbar({ isOpen, close, message, variant }) {
         <Snackbar
             open={isOpen}
             key='key_self_snackbar'
-            autoHideDuration={300000}
+            autoHideDuration={2000}
             onClose={handleClose}
             anchorOrigin={{ vertical:'top', horizontal:'right' }}
             TransitionComponent={TransitionLeft}

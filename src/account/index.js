@@ -14,6 +14,8 @@ import {
     IconButton,
     Link,
     Stack,
+    Tab,
+    Tabs,
     Tooltip,
     Typography,
     useMediaQuery
@@ -161,15 +163,45 @@ const CardOverlay = styled('div')(
 `
 );
 
-export default function Account({data}) {
-    const [view, setView] = useState(data?.collection?.type);
+function TabPanel(props) {
+    const { children, value, id, ...other } = props;
+ 
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== id}
+            id={`simple-tabpanel-${id}`}
+            aria-labelledby={`simple-tab-${id}`}
+            {...other}
+        >
+            {value === id && (
+                <Box sx={{
+                    p: { xs: 0, md: 3 },
+                    pt: { xs: 3 },
+                }}>
+                    {children}
+                </Box>
+            )}
+        </div>
+    );
+}
 
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
+const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity'];
+
+export default function Account({profile}) {
     const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
     const accountUuid = accountProfile?.uuid;
 
-    const profile = data.profile;
+    const [tabID, setTabID] = useState(0);
 
     const {
         name,
@@ -178,7 +210,31 @@ export default function Account({data}) {
         description
     } = profile;
 
-    const logoImage = logo?`https://s1.xrpnft.com/account/${logo}`:'/static/account_logo.png';
+    const logoImage = logo?`https://s1.xrpnft.com/profile/${logo}`:'/static/account_logo.png';
+
+    const gotoTabView = (event) => {
+        const anchor = (event.target.ownerDocument || document).querySelector(
+            '#back-to-top-tab-anchor',
+        );
+    
+        if (anchor) {
+            anchor.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            });
+        }
+    };
+
+    const handleChangeTab = (event, newID) => {
+        // let url = '';
+        // if (newID > 0)
+        //     url = `/token/${token.urlSlug}/${tabValues[newID]}`;
+        // else
+        //     url = `/token/${token.urlSlug}/`;
+        // window.history.pushState({}, null, url);
+        setTabID(newID);
+        gotoTabView(event);
+    };
     
     return (
         <>
@@ -223,20 +279,37 @@ export default function Account({data}) {
                         </Tooltip>
                     </CopyToClipboard>
                 </Stack>
+
                 {description &&
                     <Typography variant="d3" maxWidth='600px'>{description}</Typography>
                 }
-                {/* <Link
-                    component="button"
-                    underline="always"
-                    variant="body2"
-                    color="#33C2FF"
-                    onClick={() => {
-                        setView('');
-                    }}
-                >
-                    <Typography sx={{ml:0}}>View Collection Items</Typography>
-                </Link> */}
+
+                <Stack sx={{mt: 3}}>
+
+                </Stack>
+
+                <Tabs value={tabID} onChange={handleChangeTab} variant="scrollable" scrollButtons="auto" aria-label="token-tabs">
+                    <Tab value={0} label={tabLabels[0]} {...a11yProps(0)} />
+                    <Tab value={1} label={tabLabels[1]} {...a11yProps(1)} />
+                    <Tab value={2} label={tabLabels[2]} {...a11yProps(2)} />
+                    <Tab value={3} label={tabLabels[3]} {...a11yProps(3)} />
+                </Tabs>
+                <TabPanel value={tabID} id={0}>
+                    <Stack sx={{mt:5, minHeight: '20vh'}}/>
+                    {/* <CollectList token={token} /> */}
+                </TabPanel>
+                <TabPanel value={tabID} id={1}>
+                    <Stack sx={{mt:5, minHeight: '20vh'}}/>
+                    {/* <CreatedList token={token}/> */}
+                </TabPanel>
+                <TabPanel value={tabID} id={2}>
+                    <Stack sx={{mt:5, minHeight: '20vh'}}/>
+                    {/* <FavoredList token={token} /> */}
+                </TabPanel>
+                <TabPanel value={tabID} id={3}>
+                    <Stack sx={{mt:5, minHeight: '20vh'}}/>
+                    {/* <History token={token} /> */}
+                </TabPanel>
             </Stack>
         </>
     );

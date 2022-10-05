@@ -50,6 +50,8 @@ export default function Wallet() {
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
 
+    const logoImageUrl = accountProfile?.logo?`https://s1.xrpnft.com/profile/${accountProfile.logo}`:null;
+
     useEffect(() => {
         var timer = null;
         var isRunning = false;
@@ -67,10 +69,11 @@ export default function Wallet() {
                         const user_token = ret.user_token;
                         const token = ret.token;
                         const admin = ret.admin;
+                        const logo = ret.logo || undefined;
 
                         setOpen(true);
                         setOpenLogin(false);
-                        setAccountProfile({account, uuid, user_token, token, admin});
+                        setAccountProfile({account, uuid, user_token, token, admin, logo});
                         return;
                     }
                 } catch (err) {
@@ -162,7 +165,11 @@ export default function Wallet() {
                 onClick={handleOpen}
                 // onMouseOver={handleOpen}
             >
-                <Icon icon={userLock}/>
+                {logoImageUrl?(
+                    <Avatar alt="user" src={logoImageUrl} sx={{ width: 32, height: 32 }}/>
+                ):(
+                    <Icon icon={userLock}/>
+                )}
             </IconButton>
 
             <Popover
@@ -232,7 +239,7 @@ export default function Wallet() {
                                 key="settings"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}
                             >
-                                <NextLink href={`/setting/${accountUuid}`} passHref>
+                                <NextLink href={`/setting/${account}`} passHref>
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <SettingsIcon />
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>Settings</Typography>
@@ -241,7 +248,11 @@ export default function Wallet() {
                             </MenuItem>
                             <Divider />
                             <Stack spacing={1} alignItems='center' sx={{pt: 1, pb: 2}}>
-                                <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ mr:1, width: 24, height: 24 }}/>
+                                {logoImageUrl?(
+                                    <Avatar alt="user" src={logoImageUrl} sx={{ width: 32, height: 32 }}/>
+                                ):(
+                                    <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ mr:1, width: 32, height: 32 }}/>
+                                )}
                                 <Link
                                     color="inherit"
                                     target="_blank"

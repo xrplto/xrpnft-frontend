@@ -88,9 +88,9 @@ export default function Overview({data}) {
         logo,
         banner,
         timestamp
-    } = data.account;
+    } = data.profile;
 
-    const bannerImage = banner?`https://s1.xrpnft.com/account/${banner}`:'/static/account_banner.png';
+    const bannerImage = banner?`https://s1.xrpnft.com/profile/${banner}`:'/static/account_banner.png';
 
     return (
         <OverviewWrapper>
@@ -113,7 +113,7 @@ export default function Overview({data}) {
             </BannerWrapper>
 
             <Container maxWidth="xl">
-                <Account data={data}/>
+                <Account profile={data.profile}/>
             </Container>
 
             <ScrollToTop />
@@ -169,7 +169,7 @@ export async function getServerSideProps(ctx) {
             description
         } = data.profile;
 
-        const imgUrl = banner?`https://s1.xrpnft.com/account/${banner}`:'https://xrpnft.com/static/ogp.png';
+        const imgUrl = banner?`https://s1.xrpnft.com/profile/${banner}`:'https://xrpnft.com/static/ogp.png';
 
         let ogp = {};
         ogp.canonical = `https://xrpnft.com/account/${account}`;
