@@ -44,8 +44,6 @@ import { fNumber } from 'src/utils/formatNumber';
 import { COLLECTION_FAMILIES } from 'src/utils/constants';
 
 // Components
-import XSnackbar from 'src/components/Snackbar';
-import { useSnackbar } from 'src/components/useSnackbar';
 import LoadingTextField from 'src/components/LoadingTextField';
 import AddCostDialog from './AddCostDialog';
 
@@ -143,7 +141,6 @@ const FILE_REMOVED = 2;
 
 export default function EditCollection({collection}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
     /*{
         "_id": "631167f02cb4cfc85b82b74d",
         "account": "rKVd5WtB8ugrxaTDTbJv6pVH7WunmyryLq",
@@ -168,7 +165,7 @@ export default function EditCollection({collection}) {
     const fileRef3 = useRef();
     const fileRef4 = useRef();
     
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -914,8 +911,6 @@ export default function EditCollection({collection}) {
                     Save Changes
                 </LoadingButton>
             </Stack>
-
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     );
 }

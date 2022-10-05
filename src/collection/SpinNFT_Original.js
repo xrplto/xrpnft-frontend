@@ -28,8 +28,6 @@ import { AppContext } from 'src/AppContext';
 import { fNumber } from 'src/utils/formatNumber';
 
 // Components
-import XSnackbar from 'src/components/Snackbar';
-import { useSnackbar } from 'src/components/useSnackbar';
 import BuyMintDialog from './BuyMintDialog';
 
 const CardWrapper = styled('div')(
@@ -153,9 +151,8 @@ export default function SpinNFT({ collection, nfts, setView }) {
     const { width, height } = useWindowSize();
     const [play, { stop }] = useSound('/static/sounds/mixkit-fireworks-bang-in-sky-2989.wav');
     const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -426,8 +423,6 @@ export default function SpinNFT({ collection, nfts, setView }) {
 
     return (
         <>
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
-
             <BuyMintDialog
                 open={openBuyMint}
                 setOpen={setOpenBuyMint}

@@ -5,7 +5,13 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ContextProvider } from 'src/AppContext';
 import "./spinner.css";
 
+// Components
+import XSnackbar from 'src/components/Snackbar';
+import { useSnackbar } from 'src/components/useSnackbar';
+
 function XRPNFTApp(props) {
+    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
+
     const { Component, pageProps } = props;
 
     const ogp = pageProps.ogp || {};
@@ -47,11 +53,12 @@ function XRPNFTApp(props) {
                 <meta name="twitter:image:src" content={ogp.imgUrl}/>
                 {/* <!-- Meta Tags Generated via https://www.opengraph.xyz --> */}
             </Head>
-            <ContextProvider data={data}>
+            <ContextProvider data={data} openSnackbar={openSnackbar}>
                 <ThemeProvider>
                     <SnackbarProvider maxSnack={3}>
                         <CssBaseline />
                         <Component {...pageProps} />
+                        <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
                     </SnackbarProvider>
                 </ThemeProvider>
             </ContextProvider>

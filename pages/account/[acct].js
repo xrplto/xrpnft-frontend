@@ -90,6 +90,8 @@ export default function Overview({data}) {
         timestamp
     } = data.account;
 
+    const bannerImage = banner?`https://s1.xrpnft.com/account/${banner}`:'/static/account_banner.png';
+
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
@@ -104,14 +106,14 @@ export default function Overview({data}) {
                 >
                     <BannerImage
                         alt={name}
-                        src={`https://s1.xrpnft.com/account/${banner}`}
+                        src={bannerImage}
                         decoding="async"
                     />
                 </div>
             </BannerWrapper>
 
             <Container maxWidth="xl">
-                {/* <Account data={data}/> */}
+                <Account data={data}/>
             </Container>
 
             <ScrollToTop />
@@ -171,7 +173,7 @@ export async function getServerSideProps(ctx) {
 
         let ogp = {};
         ogp.canonical = `https://xrpnft.com/account/${account}`;
-        ogp.title = `${name}`;
+        ogp.title = name || account;
         ogp.url = `https://xrpnft.com/account/${account}`;
         ogp.imgUrl = imgUrl;
         ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;

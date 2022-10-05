@@ -13,15 +13,13 @@ import { LoadingButton } from '@mui/lab';
 // Redux
 import { useSelector } from 'react-redux'
 
-// Components
-import XSnackbar from 'src/components/Snackbar';
-import { useSnackbar } from 'src/components/useSnackbar';
-
 // Iconify
 import { Icon } from '@iconify/react';
 
 // Utils
 import { burnToken } from 'src/utils/tokenActions'
+
+// Components
 
 export default function BurnNFTDgContent({ close, TokenID }) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar()
@@ -74,7 +72,6 @@ export default function BurnNFTDgContent({ close, TokenID }) {
                 </LoadingButton>
                 <Button autoFocus onClick={handleCancel}>Cancel</Button>
             </DialogActions>
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     )
 }

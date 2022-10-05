@@ -44,8 +44,6 @@ import { fNumber } from 'src/utils/formatNumber';
 import { COLLECTION_FAMILIES } from 'src/utils/constants';
 
 // Components
-import XSnackbar from 'src/components/Snackbar';
-import { useSnackbar } from 'src/components/useSnackbar';
 import LoadingTextField from 'src/components/LoadingTextField';
 import AddCostDialog from './AddCostDialog';
 
@@ -139,14 +137,13 @@ const CustomSelect = styled(Select)(({ theme }) => ({
 
 export default function CreateCollection() {
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
     const fileRef1 = useRef();
     const fileRef2 = useRef();
     const fileRef3 = useRef();
     const fileRef4 = useRef();
     
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -857,8 +854,6 @@ export default function CreateCollection() {
                     Create
                 </LoadingButton>
             </Stack>
-
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     );
 }

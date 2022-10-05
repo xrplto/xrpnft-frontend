@@ -44,10 +44,7 @@ import { fNumber } from 'src/utils/formatNumber';
 import { COLLECTION_FAMILIES } from 'src/utils/constants';
 
 // Components
-import XSnackbar from 'src/components/Snackbar';
-import { useSnackbar } from 'src/components/useSnackbar';
 import LoadingTextField from 'src/components/LoadingTextField';
-import AddCostDialog from './AddCostDialog';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -143,7 +140,6 @@ const FILE_REMOVED = 2;
 
 export default function EditCollection({collection}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
     /*{
         "_id": "631167f02cb4cfc85b82b74d",
         "account": "rKVd5WtB8ugrxaTDTbJv6pVH7WunmyryLq",
@@ -168,14 +164,12 @@ export default function EditCollection({collection}) {
     const fileRef3 = useRef();
     const fileRef4 = useRef();
     
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
     const [loading, setLoading] = useState(false);
 
-    const [openAddCost, setOpenAddCost] = useState(false);
-    
     // Opensea
     // {
     //     "collections": {
@@ -457,16 +451,6 @@ export default function EditCollection({collection}) {
         setFamily(value);
     }
 
-    const handleAddCost = (token) => {
-        for (var c of costs) {
-            if (c.md5 === token.md5) {
-                c.cost = token.cost;
-                return;
-            }
-        }
-        costs.push(token);
-    }
-
     const handleRemoveCost = (md5) => {
         const newCosts = [];
         for (var c of costs) {
@@ -478,12 +462,6 @@ export default function EditCollection({collection}) {
 
     return (
         <>
-            <AddCostDialog
-                open={openAddCost}
-                setOpen={setOpenAddCost}
-                openSnackbar={openSnackbar}
-                onAddCost={handleAddCost}
-            />
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
                 <Typography variant="h1a">Edit Profile</Typography>
                 <Typography variant='p2'><Typography variant='s2'>*</Typography> Required fields</Typography>
@@ -914,8 +892,6 @@ export default function EditCollection({collection}) {
                     Save Changes
                 </LoadingButton>
             </Stack>
-
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     );
 }

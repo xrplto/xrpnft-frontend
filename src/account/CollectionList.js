@@ -14,13 +14,10 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import CollectionCard from "./CollectionCard";
-import XSnackbar from 'src/components/Snackbar';
-import { useSnackbar } from 'src/components/useSnackbar';
 
 export default function CollectionList({isAll}) {
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -78,7 +75,6 @@ export default function CollectionList({isAll}) {
             hasMore={hasMore}
             // loader={<p>loading...</p>}
         >
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
             <Grid container spacing={0}
                 style={{
                     justifyContent: 'space-around',

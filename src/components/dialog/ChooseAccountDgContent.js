@@ -27,9 +27,6 @@ import { ACCOUNTS } from 'src/utils/constants';
 import { getTokens } from 'src/utils/tokenActions';
 
 // Components
-import XSnackbar from 'src/components/Snackbar';
-import { useSnackbar } from 'src/components/useSnackbar';
-
 
 const ListItemStyle = styled((props) => <ListItemButton disableGutters {...props} />)(
     ({ theme }) => ({
@@ -136,7 +133,6 @@ export default function ChooseAccountDgContent() {
                 <Button onClick={handleOk}>Login</Button>
                 <Button autoFocus onClick={handleCancel}>Cancel</Button>
             </DialogActions>
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     )
 }

@@ -44,8 +44,6 @@ import { SUPPORTED_FILE_TYPES, TOKEN_FLAGS, CATEGORIES, XRP_TOKEN } from 'src/ut
 import { FallingLines, Comment } from 'react-loader-spinner';
 
 // Components
-import XSnackbar from 'src/components/Snackbar';
-import { useSnackbar } from 'src/components/useSnackbar';
 import QueryToken from './QueryToken';
 
 const CardWrapper = styled('div')(
@@ -88,9 +86,8 @@ export default function PathFinding() {
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const API_XRPL_TO_URL = 'https://api.xrpl.to/api';
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
     const user_token = accountProfile?.user_token;
@@ -483,7 +480,6 @@ export default function PathFinding() {
                     Find Path
                 </LoadingButton>
             </Stack>
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </Stack>
     );
 }

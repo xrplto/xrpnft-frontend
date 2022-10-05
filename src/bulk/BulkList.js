@@ -49,8 +49,6 @@ import { PulseLoader, ClockLoader } from "react-spinners";
 import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
-import XSnackbar from 'src/components/Snackbar';
-import { useSnackbar } from 'src/components/useSnackbar';
 import QRDialog from 'src/components/QRDialog';
 import BulkToolbar from './BulkToolbar';
 
@@ -161,9 +159,8 @@ function StatusContainer({bulk, flag}) {
 export default function BulkList() {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
     
@@ -610,7 +607,6 @@ export default function BulkList() {
                 qrUrl={qrUrl}
                 nextUrl={nextUrl}
             />
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     );
 }

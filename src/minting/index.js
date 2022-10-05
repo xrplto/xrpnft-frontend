@@ -40,8 +40,6 @@ import { SUPPORTED_FILE_TYPES, TOKEN_FLAGS, CATEGORIES } from 'src/utils/constan
 
 // Components
 import QRDialogNoPush from 'src/components/QRDialogNoPush';
-import XSnackbar from 'src/components/Snackbar';
-import { useSnackbar } from 'src/components/useSnackbar';
 // import PropertySection from './NFTProperties/PropertySection';
 // import LevelsSection from './NFTLevels/LevelSection';
 // import LoadingTextField from 'src/components/LoadingTextField';
@@ -86,9 +84,8 @@ const CustomSelect = styled(Select)(({ theme }) => ({
 export default function Minting() {
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
 
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
     const user_token = accountProfile?.user_token;
@@ -705,7 +702,6 @@ export default function Minting() {
                 qrUrl={qrUrl}
                 nextUrl={nextUrl}
             />
-            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
         </>
     );
 }

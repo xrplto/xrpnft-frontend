@@ -4,15 +4,14 @@ import { performance } from 'perf_hooks';
 
 // Material
 import {
+    styled,
     Box,
     Container,
-    Grid,
-    styled,
     Toolbar
 } from '@mui/material';
 
 // Components
-import EditAccount from 'src/account/edit';
+import AccountSetting from 'src/account/setting';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -111,7 +110,7 @@ export default function Overview({data}) {
             </BannerWrapper>
 
             <Container maxWidth="xl">
-                <EditAccount data={data}/>
+                <AccountSetting data={data}/>
             </Container>
 
             <ScrollToTop />

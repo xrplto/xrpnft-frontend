@@ -42,8 +42,6 @@ import { TOKEN_FLAGS, CATEGORIES } from 'src/utils/constants';
 import { fIntNumber, fNumber } from 'src/utils/formatNumber';
 
 // Components
-import XSnackbar from 'src/components/Snackbar';
-import { useSnackbar } from 'src/components/useSnackbar';
 // import LoadingTextField from 'src/components/LoadingTextField';
 
 const CustomSelect = styled(Select)(({ theme }) => ({
@@ -78,11 +76,9 @@ const MEDIA_TYPES = [
 
 export default function BulkMint({slug}) {
     const fileRef = useRef();
-    const BASE_URL = 'https://api.xrpnft.com/api';
-    const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
+    const BASE_URL = 'https://api.xrpnft.com/api';    
     
-    
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -784,7 +780,6 @@ export default function BulkMint({slug}) {
                         Create
                     </LoadingButton>
                 </Stack>
-                <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
             </Grid>
             <Grid item lg={6}>
                 <Stack>
