@@ -284,10 +284,6 @@ export default function CreateCollection() {
                         "_id": "6308bc3d7a1dec795f21fc33"
                     } */
                     openSnackbar('Create collection successful!', 'success')
-                    // if (type !== 'normal')
-                    //     window.location.href = `/bulk`;
-                    // else
-                    //     window.location.href = `/collection/${data.slug}`;
                     window.location.href = `/congrats/collection/${data.slug}`;
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
@@ -723,6 +719,9 @@ export default function CreateCollection() {
                             </Typography>
                             <Typography variant='p3'>
                                 https://drive.google.com/file/d/1xjA-1bodiMrvSCtdTEMim5x1Cam74bXU/view
+                            </Typography>
+                            <Typography variant='p3'>
+                                https://drive.google.com/file/d/1FqD757nJEvCfGjzqvh4c7jta-ZCV8rj2/view?usp=sharing
                             </Typography>
 
                             <TextField

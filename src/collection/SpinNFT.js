@@ -329,40 +329,33 @@ export default function SpinNFT({ collection, nfts, setView }) {
 
         const body = { account, collectionName: collection.name, cid: collection.uuid };
 
-        let newNft = null;
-        let newMints = 0;
-        let newXrpBalance = 0;
-        let newPendingNfts = 0;
         // https://api.xrpnft.com/api/spin/chooseone
         axios.post(`${BASE_URL}/spin/chooseone`, body, {headers: {'x-access-token': accountToken}})
             .then(res => {
                 let ret = res.status === 200 ? res.data : undefined;
-                if (ret && ret.nft) {
-                    newNft = ret.nft;
-                    newMints = ret.mints;
-                    newXrpBalance = ret.xrpBalance;
-                    newPendingNfts = ret.pendingNfts;
-                    // setCongrats(true);
+                if (ret) {
+                    const newNft = ret.nft;
+                    const newPendingNfts = ret.pendingNfts;
+                    if (newNft) {
+                        setNft(newNft);
+                        setCongrats(true);
+                        play();
+                    } else {
+                        if (newPendingNfts > 0)
+                            openSnackbar(ret.result, 'error');
+                        else
+                            openSnackbar('There are not any NFTs left.', 'error');
+                        
+                    }
+                    setMints(ret.mints);
+                    setXrpBalance(ret.xrpBalance);
+                    setPendingNfts(ret.pendingNfts);
                 }
             }).catch(err => {
                 console.log("Error on choosing NFT!!!", err);
             }).then(function () {
                 // always executed
-                setTimeout(() => {
-                    if (!newNft) {
-                        if (newPendingNfts > 0)
-                            openSnackbar('Try again!', 'error');
-                        else
-                            openSnackbar('There are not any NFTs left.', 'error');
-                    }
-                    setNft(newNft);
-                    setMints(newMints);
-                    setXrpBalance(newXrpBalance);
-                    setPendingNfts(newPendingNfts);
-                    setCongrats(true);
-                    setSpinning(false);
-                    play();
-                }, 5000);
+                setSpinning(false);
             });
     }
 

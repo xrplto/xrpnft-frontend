@@ -6,17 +6,12 @@ import { performance } from 'perf_hooks';
 import {
     Box,
     Container,
-    Grid,
     styled,
     Toolbar
 } from '@mui/material';
 
-// Context
-import { useContext } from 'react';
-import { AppContext } from 'src/AppContext';
-
 // Components
-import EditProfile from 'src/account/setting';
+import Account from 'src/account';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -54,25 +49,70 @@ function generateRandom(maxLimit = 10){
     return rand;
 }
 
+
+const BannerWrapper = styled('div')(
+    ({ theme }) => `
+    position: relative;
+    max-height: 320px;
+    overflow: hidden;
+`
+);
+
+const BannerImage = styled('img')(
+    ({ theme }) => `
+    position: absolute;
+    top:0;
+    left:0;
+    bottom:0;
+    right:0;
+    inset: 0px;
+    box-sizing: border-box;
+    padding: 0px;
+    border: none;
+    margin: auto;
+    display: block;
+    width: 0px; height: 0px;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    object-fit: cover;
+  `
+);
+
 export default function Overview({data}) {
-    const bgIdx = generateRandom();
-    const { darkMode, accountProfile, openSnackbar } = useContext(AppContext);
+    const {
+        name,
+        description,
+        logo,
+        banner,
+        timestamp
+    } = data.profile;
+
+    const bannerImage = banner?`https://s1.xrpnft.com/profile/${banner}`:'/static/account_banner.png';
 
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <BackgroundWrapper
-                style={{
-                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`,
-                    opacity: `${darkMode?0.3:0.2}`
-                }}
-            />
-
             <Header />
 
-            <Container maxWidth="sm">
-                <EditProfile profile={data.profile}/>
+            <BannerWrapper>
+                <div style={{
+                    height: 0,
+                    paddingBottom: '25%',
+                }}
+                >
+                    <BannerImage
+                        alt=''
+                        src={bannerImage}
+                        decoding="async"
+                    />
+                </div>
+            </BannerWrapper>
+
+            <Container maxWidth="xl">
+                <Account profile={data.profile} tab={data.tab} />
             </Container>
 
             <ScrollToTop />
@@ -87,10 +127,11 @@ export async function getServerSideProps(ctx) {
     const BASE_URL = 'http://65.109.54.46/api';
 
     let data = null;
+    const params = ctx.params.acct;
+    const acct = params[0];
+    const tab = params[1];
+
     try {
-
-        const acct = ctx.params.acct;
-
         var t1 = performance.now();
 
         // https://api.xrpnft.com/api/account/profile/rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n
@@ -136,6 +177,9 @@ export async function getServerSideProps(ctx) {
         ogp.url = `https://xrpnft.com/account/${account}`;
         ogp.imgUrl = imgUrl;
         ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+
+        if (tab === 'accept')
+            data.tab = 'accept';
 
         return {
             props: {data, ogp}, // will be passed to the page component as props

@@ -222,7 +222,7 @@ export default function Congrats({ data }) {
                                 <Link
                                     underline="none"
                                     color="inherit"
-                                    href={`/bulk`}
+                                    href={`/bulks`}
                                     rel="noreferrer noopener nofollow"
                                 >
                                     <Button variant="contained">Manage Bulks</Button>

@@ -14,7 +14,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import BulkMint from 'src/bulk/mint';
+import BulkMint from 'src/bulks/mint';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -93,15 +93,15 @@ export async function getServerSideProps(ctx) {
 
     //     var t1 = performance.now();
 
-    //     // https://api.xrpnft.com/api/bulk/get/9cbd9b0d508c403cbe6dde012e146a1b
-    //     const res = await axios.get(`${BASE_URL}/bulk/get/${uuid}`);
+    //     // https://api.xrpnft.com/api/bulks/get/9cbd9b0d508c403cbe6dde012e146a1b
+    //     const res = await axios.get(`${BASE_URL}/bulks/get/${uuid}`);
 
     //     data = res.data;
 
     //     var t2 = performance.now();
     //     var dt = (t2 - t1).toFixed(2);
 
-    //     console.log(`getStaticProps(bulk/mint) uuid: ${uuid} took: ${dt}ms`);
+    //     console.log(`getStaticProps(bulks/mint) uuid: ${uuid} took: ${dt}ms`);
     // } catch (e) {
     //     console.log(e);
     // }

@@ -7,6 +7,7 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import {
     alpha,
     Avatar,
+    Badge,
     Button,
     Divider,
     IconButton,
@@ -21,6 +22,7 @@ import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import SettingsIcon from '@mui/icons-material/Settings';
+import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
 
 // Context
 import { useContext } from 'react';
@@ -39,7 +41,7 @@ export default function Wallet() {
     // https://github.com/mui/material-ui/issues/10000
     const BASE_URL = 'https://api.xrpnft.com/api';
     const anchorRef = useRef(null);
-    const { accountProfile, setAccountProfile, setLoading } = useContext(AppContext);
+    const { accountProfile, setAccountProfile, acceptNfts, setLoading } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountUuid = accountProfile?.uuid;
 
@@ -63,17 +65,13 @@ export default function Wallet() {
                 isRunning = true;
                 try {
                     const res = await axios.get(`${BASE_URL}/account/login/${uuid}`);
-                    if (res && res.data && res.data.account) {
-                        const ret = res.data;
-                        const account = ret.account;
-                        const user_token = ret.user_token;
-                        const token = ret.token;
-                        const admin = ret.admin;
-                        const logo = ret.logo || undefined;
-
+                    const ret = res?.data;
+                    if (ret?.profile) {
+                        const profile = ret.profile;
                         setOpen(true);
                         setOpenLogin(false);
-                        setAccountProfile({account, uuid, user_token, token, admin, logo});
+                        console.log(profile);
+                        setAccountProfile(profile);
                         return;
                     }
                 } catch (err) {
@@ -159,17 +157,19 @@ export default function Wallet() {
     return (
         <>
             {/* <ChooseAccountDialog /> */}
-            
+
             <IconButton
                 ref={anchorRef}
                 onClick={handleOpen}
                 // onMouseOver={handleOpen}
             >
-                {logoImageUrl?(
-                    <Avatar alt="user" src={logoImageUrl} sx={{ width: 32, height: 32 }}/>
-                ):(
-                    <Icon icon={userLock}/>
-                )}
+                <Badge color="primary" badgeContent={acceptNfts}>
+                    {logoImageUrl?(
+                        <Avatar alt="user" src={logoImageUrl} sx={{ width: 32, height: 32 }}/>
+                    ):(
+                        <Icon icon={userLock}/>
+                    )}
+                </Badge>
             </IconButton>
 
             <Popover
@@ -191,6 +191,21 @@ export default function Wallet() {
             >
                 {account ? (
                         <>
+                            {acceptNfts > 0 &&
+                                <MenuItem
+                                    key="account_accept_nft_offer"
+                                    sx={{ typography: 'body2', py: 2, px: 2.5, mt: 1 }}
+                                >
+                                    <NextLink href={`/account/${account}/accept`} passHref>
+                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                            <Badge color="primary" badgeContent={acceptNfts}>
+                                                <AssignmentReturnedIcon sx={{ width: 24, height: 24 }}/>
+                                            </Badge>
+                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Accept NFTs</Typography>
+                                        </Stack>
+                                    </NextLink>
+                                </MenuItem>
+                            }
                             <MenuItem
                                 key="account_profile"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}
@@ -228,7 +243,7 @@ export default function Wallet() {
                                 key="manage-bulks"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}
                             >
-                                <NextLink href="/bulk" passHref>
+                                <NextLink href={`/bulks}`} passHref>
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <PhotoLibraryIcon />
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>Manage Bulks</Typography>
@@ -239,7 +254,7 @@ export default function Wallet() {
                                 key="settings"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}
                             >
-                                <NextLink href={`/setting/${account}`} passHref>
+                                <NextLink href={`/setting`} passHref>
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <SettingsIcon />
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>Settings</Typography>

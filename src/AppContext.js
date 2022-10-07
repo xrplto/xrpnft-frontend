@@ -15,6 +15,7 @@ export function ContextProvider({ children, data, openSnackbar }) {
     const [loading, setLoading] = useState(false);
     const [darkMode, setDarkMode] = useState(true);
     const [accountProfile, _setAccountProfile] = useState(null);
+    const [acceptNfts, setAcceptNfts] = useState(1);
 
     const store = configureRedux(data);
 
@@ -32,20 +33,22 @@ export function ContextProvider({ children, data, openSnackbar }) {
     }, []);
 
     useEffect(() => {
-        const profile = window.localStorage.getItem('accountProfile6');
+        const profile = window.localStorage.getItem('accountProfile8');
         if (profile) {
-            _setAccountProfile(JSON.parse(profile));
+            try {
+                _setAccountProfile(JSON.parse(profile));
+            } catch (e){}
         }
     }, [])
 
     const setAccountProfile = (profile) => {
-        window.localStorage.setItem('accountProfile6', JSON.stringify(profile));
+        window.localStorage.setItem('accountProfile8', JSON.stringify(profile));
         _setAccountProfile(profile);
     };
 
     return (
         <AppContext.Provider
-            value={{ toggleTheme, darkMode, accountProfile, setAccountProfile, setLoading, openSnackbar }}
+            value={{ toggleTheme, darkMode, accountProfile, setAccountProfile, setLoading, openSnackbar, acceptNfts, setAcceptNfts }}
         >
             <Backdrop
                 sx={{ color: "#000", zIndex: (theme) => theme.zIndex.drawer + 1 }}
