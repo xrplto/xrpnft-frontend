@@ -221,6 +221,8 @@ export default function BuyMintDialog({open, setOpen, costs, minter, openSnackba
         try {
             const user_token = accountProfile?.user_token;
             const cid = collection.uuid;
+            const cname = collection.name;
+            const cslug = collection.slug;
 
             const {
                 currency,
@@ -229,13 +231,17 @@ export default function BuyMintDialog({open, setOpen, costs, minter, openSnackba
             } = token;
 
             let amount = {};
-            if (currency !== 'XRP')
-                amount.issuer = issuer;
-
-            amount.currency = currency;
-            amount.value = cost * quantity;
             
-            const body = { account, dest: minter, amount, quantity, cid, user_token};
+            amount.currency = currency;
+
+            if (currency === 'XRP') {
+                amount.value = new Decimal(cost).mul(quantity).mul(1000000).toString();
+            } else {
+                amount.issuer = issuer;
+                amount.value = new Decimal(cost).mul(quantity).toString();
+            }
+            
+            const body = { account, dest: minter, amount, quantity, cid, cname, cslug, user_token};
 
             const res = await axios.post(`${BASE_URL}/spin/buymint`, body, {headers: {'x-access-token': accountToken}});
 

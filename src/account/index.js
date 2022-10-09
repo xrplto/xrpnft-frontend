@@ -32,6 +32,7 @@ import { fNumber } from 'src/utils/formatNumber';
 
 // Components
 import CollectedList from './CollectedList';
+import ActivityList from './ActivityList';
 import OfferList from './OfferList';
 
 const CardWrapper = styled('div')(
@@ -211,7 +212,7 @@ export default function Account({profile, tab}) {
     const { accountProfile, openSnackbar, acceptNfts } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
-    const accountUuid = accountProfile?.uuid;
+    const accountUuid = accountProfile?.xuuid;
 
     const [tabID, setTabID] = useState(getTabID(tab));
 
@@ -323,8 +324,9 @@ export default function Account({profile, tab}) {
                     {/* <FavoredList token={token} /> */}
                 </TabPanel>
                 <TabPanel value={tabID} id={3}>
-                    <Stack sx={{mt:5, minHeight: '20vh'}}/>
-                    {/* <History token={token} /> */}
+                    <Stack sx={{mt:5, minHeight: '20vh'}}>
+                        <ActivityList />
+                    </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={4}>
                     <Stack sx={{mt:5, minHeight: '20vh'}}>

@@ -44,7 +44,7 @@ export default function Wallet() {
     const { accountProfile, setAccountProfile, acceptNfts, setAcceptNfts, setLoading } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
-    const accountUuid = accountProfile?.uuid;
+    const accountUuid = accountProfile?.xuuid;
 
     const [open, setOpen] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
@@ -137,10 +137,27 @@ export default function Wallet() {
         setLoading(false);
     };
 
-    const onDisconnectXumm = async (uuid) => {
+    const onCancelLoginXumm = async (xuuid) => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/account/logout/${uuid}`);
+            const res = await axios.delete(`${BASE_URL}/account/cancellogin/${xuuid}`);
+            if (res.status === 200) {
+                setAccountProfile(null);
+                setUuid(null);
+            }
+        } catch(err) {
+        }
+        setAccountProfile(null);
+        setUuid(null);
+        setAcceptNfts(0);
+
+        setLoading(false);
+    };
+
+    const onLogoutXumm = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.delete(`${BASE_URL}/account/logout/${account}/${accountUuid}`, {headers: {'x-access-token': accountToken}});
             if (res.status === 200) {
                 setAccountProfile(null);
                 setUuid(null);
@@ -177,12 +194,12 @@ export default function Wallet() {
 
     const handleLogout = () => {
         setOpen(false);
-        onDisconnectXumm(accountUuid);
+        onLogoutXumm();
     }
 
     const handleLoginClose = () => {
         setOpenLogin(false);
-        onDisconnectXumm(uuid);
+        onCancelLoginXumm(uuid);
     };
 
     return (

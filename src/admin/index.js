@@ -152,7 +152,7 @@ export default function Admin() {
     const { accountProfile, openSnackbar, acceptNfts } = useContext(AppContext);
     const account = accountProfile.account;
     const accountToken = accountProfile.token;
-    const accountUuid = accountProfile.uuid;
+    const accountUuid = accountProfile.xuuid;
 
     const [tabID, setTabID] = useState(4);
 

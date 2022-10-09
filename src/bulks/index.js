@@ -111,7 +111,7 @@ export default function Bulks() {
     const onDisconnectXumm = async () => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/account/logout/${xummUuid}`);
+            const res = await axios.delete(`${BASE_URL}/account/setnftminter/${xummUuid}`);
             if (res.status === 200) {
                 setXummUuid(null);
             }
