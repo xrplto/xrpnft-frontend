@@ -142,7 +142,6 @@ export default function BulkMint({slug}) {
         axios.get(`${BASE_URL}/collection/${slug}?account=${account}`, {headers: {'x-access-token': accountToken}})
         .then(res => {
             try {
-                console.log(res);
                 if (res.status === 200 && res.data) {
                     const coll = res.data.collection;
                     if (coll) {
@@ -213,7 +212,7 @@ export default function BulkMint({slug}) {
                 if (ret && ret.status && ret.infoMINT) {
                     // console.log(ret);
                     openSnackbar('Bulk mint successful!', 'success')
-                    window.location.href = `/bulk`;
+                    window.location.href = `/bulks`;
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
                     const err = ret.err;
@@ -284,7 +283,9 @@ export default function BulkMint({slug}) {
     }
 
     const handleFlagChange = (e) => {
-        setFlag(flag ^ e.target.value);
+        const value = e.target.value;
+        if (value !== '8' && value !== '4') // Disable TRANSFERABLE & TRUSTLINE flag unchecking, 
+            setFlag(flag ^ value);
     }
 
     const handleTimestampCheck = (e) => {
@@ -649,10 +650,10 @@ export default function BulkMint({slug}) {
                             <Typography variant='s2'>OnlyXRP:</Typography> If set, nft can only be offered or sold for XRP.
                         </Typography>
                         <Typography variant='p3'>
-                            <Typography variant='s2'>TrustLine:</Typography> If set, indicates that the issuer wants a trustline to be automatically created. This is useful when the token can be offered for sale for assets other than XRP and the issuer charges a TransferFee. If this flag is set, a trust line is automatically created as needed to allow the issuer to receive the appropriate transfer fee. If this flag is not set, an attempt to transfer the NFToken for an asset for which the issuer does not have a trustline fails.
+                            <Typography variant='s2'>TrustLine:</Typography> If set, indicates that the issuer wants a trustline to be automatically created. This is useful when the token can be offered for sale for assets other than XRP and the issuer charges a TransferFee. If this flag is set, a trust line is automatically created as needed to allow the issuer to receive the appropriate transfer fee. If this flag is not set, an attempt to transfer the NFToken for an asset for which the issuer does not have a trustline fails. You can't uncheck it.
                         </Typography>
                         <Typography variant='p3'>
-                            <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer.
+                            <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer. You can't uncheck it.
                         </Typography>
                     </Stack>
 

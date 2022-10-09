@@ -26,7 +26,7 @@ const CustomSelect = styled(Select)(({ theme }) => ({
     }
 }));
 
-export default function BulkToolbar({ count, rows, setRows, page, setPage}) {
+export default function ListToolbar({ count, rows, setRows, page, setPage}) {
     const num = count / rows;
     let page_count = Math.floor(num)
     if (num % 1 != 0) page_count++;
@@ -82,9 +82,9 @@ export default function BulkToolbar({ count, rows, setRows, page, setPage}) {
                         value={rows}
                         onChange={handleChangeRows}
                     >
-                        <MenuItem value={50}>50</MenuItem>
                         <MenuItem value={20}>20</MenuItem>
                         <MenuItem value={10}>10</MenuItem>
+                        <MenuItem value={5}>5</MenuItem>
                     </CustomSelect>
                 </Stack>
             </Grid>

@@ -121,11 +121,8 @@ const FILE_UNCHANGED = 0;
 const FILE_NEW = 1;
 const FILE_REMOVED = 2;
 
-export default function EditProfile({profile}) {
+export default function EditProfile() {
     const BASE_URL = 'https://api.xrpnft.com/api';
-    
-    const logoImageUrl = profile.logo?`https://s1.xrpnft.com/profile/${profile.logo}`:null;
-    const bannerImageUrl = profile.banner?`https://s1.xrpnft.com/profile/${profile.banner}`:null;
 
     const fileRef1 = useRef();
     const fileRef2 = useRef();
@@ -136,8 +133,11 @@ export default function EditProfile({profile}) {
 
     const [loading, setLoading] = useState(false);
 
-    const [name, setName] = useState(profile.name || '');
-    const [description, setDescription] = useState(profile.description || '');
+    const [name, setName] = useState(accountProfile?.name || '');
+    const [description, setDescription] = useState(accountProfile?.description || '');
+
+    const logoImageUrl = accountProfile?.logo?`https://s1.xrpnft.com/profile/${accountProfile.logo}`:null;
+    const bannerImageUrl = accountProfile?.banner?`https://s1.xrpnft.com/profile/${accountProfile.banner}`:null;
 
     // Logo image
     const [fileUrl1, setFileUrl1] = useState(logoImageUrl);
@@ -147,6 +147,8 @@ export default function EditProfile({profile}) {
     const [file2, setFile2] = useState(null);
 
     const checkChanged = () => {
+        if (!accountProfile) return false;
+
         if (file1)
             return true;
         else if (fileUrl1 !== logoImageUrl)
@@ -157,9 +159,9 @@ export default function EditProfile({profile}) {
         else if (fileUrl2 !== bannerImageUrl)
             return true;
 
-        if (name !== profile.name) return true;
+        if (name !== accountProfile.name) return true;
 
-        if (description !== profile.description) return true;
+        if (description !== accountProfile.description) return true;
 
         return false;
     }
@@ -225,14 +227,11 @@ export default function EditProfile({profile}) {
             if (res.status === 200) {
                 const ret = res.data;
                 if (ret.status) {
-                    const data = ret.profile;
-                    const logo = data.logo || undefined;
-
-                    accountProfile.logo = logo;
-                    setAccountProfile(accountProfile);
+                    const profile = ret.profile;
+                    setAccountProfile(profile);
 
                     openSnackbar('Edit profile successful!', 'success')
-                    window.location.href = `/account/${data.account}`;
+                    window.location.href = `/account/${profile.account}`;
                     // setFile(null);
                 } else {
                     const err = ret.err;
@@ -398,8 +397,8 @@ export default function EditProfile({profile}) {
 
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Description</Typography>
-                <Typography variant='p2'>
-                    <Link href="https://www.markdownguide.org/cheat-sheet/">Markdown</Link> syntax is supported. 0 of 1000 characters used.
+                <Typography variant='p3'>
+                    Only 0 of 1000 characters allowed.
                 </Typography>
                 <TextField
                     placeholder=''

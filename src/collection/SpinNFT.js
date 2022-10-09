@@ -172,7 +172,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
     const [play, { stop }] = useSound('/static/sounds/mixkit-fireworks-bang-in-sky-2989.wav');
     const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
 
-    const { accountProfile, openSnackbar } = useContext(AppContext);
+    const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -350,6 +350,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                     setMints(ret.mints);
                     setXrpBalance(ret.xrpBalance);
                     setPendingNfts(ret.pendingNfts);
+                    setAcceptNfts(ret.offerCount);
                 }
             }).catch(err => {
                 console.log("Error on choosing NFT!!!", err);
