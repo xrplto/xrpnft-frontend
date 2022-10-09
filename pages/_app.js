@@ -3,7 +3,7 @@ import { SnackbarProvider } from 'notistack';
 import ThemeProvider from 'src/theme/ThemeProvider';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ContextProvider } from 'src/AppContext';
-import "./spinner.css";
+import "./zMain.css";
 
 // Components
 import XSnackbar from 'src/components/Snackbar';

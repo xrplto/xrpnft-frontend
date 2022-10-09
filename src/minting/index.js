@@ -314,7 +314,9 @@ export default function Minting() {
     }
 
     const handleFlagChange = (e) => {
-        setFlag(flag ^ e.target.value);
+        const value = e.target.value;
+        if (value !== '8') // Disable TRANSFERABLE flag
+            setFlag(flag ^ value);
     }
 
     const handleCollectionQuery = (e) => {
@@ -663,7 +665,7 @@ export default function Minting() {
                         <Typography variant='s2'>TrustLine:</Typography> If set, indicates that the issuer wants a trustline to be automatically created. This is useful when the token can be offered for sale for assets other than XRP and the issuer charges a TransferFee. If this flag is set, a trust line is automatically created as needed to allow the issuer to receive the appropriate transfer fee. If this flag is not set, an attempt to transfer the NFToken for an asset for which the issuer does not have a trustline fails.
                     </Typography>
                     <Typography variant='p3'>
-                        <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer.
+                        <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer. You can't uncheck it.
                     </Typography>
                 </Stack>
 

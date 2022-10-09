@@ -839,7 +839,7 @@ export default function EditCollection({collection}) {
 
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Description</Typography>
-                <Typography variant='p2'>
+                <Typography variant='p3'>
                     <Link href="https://www.markdownguide.org/cheat-sheet/">Markdown</Link> syntax is supported. 0 of 1000 characters used.
                 </Typography>
                 <TextField

@@ -15,7 +15,7 @@ export function ContextProvider({ children, data, openSnackbar }) {
     const [loading, setLoading] = useState(false);
     const [darkMode, setDarkMode] = useState(true);
     const [accountProfile, _setAccountProfile] = useState(null);
-    const [acceptNfts, setAcceptNfts] = useState(1);
+    const [acceptNfts, setAcceptNfts] = useState(0);
 
     const store = configureRedux(data);
 
@@ -33,7 +33,7 @@ export function ContextProvider({ children, data, openSnackbar }) {
     }, []);
 
     useEffect(() => {
-        const profile = window.localStorage.getItem('accountProfile8');
+        const profile = window.localStorage.getItem('accountProfile9');
         if (profile) {
             try {
                 _setAccountProfile(JSON.parse(profile));
@@ -42,7 +42,7 @@ export function ContextProvider({ children, data, openSnackbar }) {
     }, [])
 
     const setAccountProfile = (profile) => {
-        window.localStorage.setItem('accountProfile8', JSON.stringify(profile));
+        window.localStorage.setItem('accountProfile9', JSON.stringify(profile));
         _setAccountProfile(profile);
     };
 

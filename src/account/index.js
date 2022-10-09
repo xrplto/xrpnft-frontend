@@ -6,6 +6,7 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import { useTheme } from '@mui/material/styles';
 import {
     styled,
+    Badge,
     Box,
     Button,
     Container,
@@ -30,6 +31,8 @@ import { AppContext } from 'src/AppContext';
 import { fNumber } from 'src/utils/formatNumber';
 
 // Components
+import CollectedList from './CollectedList';
+import OfferList from './OfferList';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -193,21 +196,31 @@ function a11yProps(index) {
     };
 }
 
-const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity'];
+const tabValues = ['', 'created', 'cavorited', 'activity', 'accept'];
+const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept'];
 
-export default function Account({profile}) {
-    const { accountProfile, openSnackbar } = useContext(AppContext);
+function getTabID(tab) {
+    if (!tab) return 0;
+    const idx = tabValues.indexOf(tab);
+    if (idx < 0)
+        return 0;
+    return idx;
+}
+
+export default function Account({profile, tab}) {
+    const { accountProfile, openSnackbar, acceptNfts } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
     const accountUuid = accountProfile?.uuid;
 
-    const [tabID, setTabID] = useState(0);
+    const [tabID, setTabID] = useState(getTabID(tab));
 
     const {
         name,
         logo,
         banner,
-        description
+        description,
+        minterWallet
     } = profile;
 
     const logoImage = logo?`https://s1.xrpnft.com/profile/${logo}`:'/static/account_logo.png';
@@ -226,12 +239,12 @@ export default function Account({profile}) {
     };
 
     const handleChangeTab = (event, newID) => {
-        // let url = '';
-        // if (newID > 0)
-        //     url = `/token/${token.urlSlug}/${tabValues[newID]}`;
-        // else
-        //     url = `/token/${token.urlSlug}/`;
-        // window.history.pushState({}, null, url);
+        let url = '';
+        if (newID > 0)
+            url = `/account/${profile.account}/${tabValues[newID]}`;
+        else
+            url = `/account/${profile.account}/`;
+        window.history.pushState({}, null, url);
         setTabID(newID);
         gotoTabView(event);
     };
@@ -243,7 +256,7 @@ export default function Account({profile}) {
                     <IconWrapper>
                         <IconImage src={logoImage}/>
                         {account === profile.account &&
-                            <Link href={`/setting/${account}`} underline='none'>
+                            <Link href={`/setting`} underline='none'>
                                 <CardOverlay>
                                     <EditIcon
                                         className="MuiIconEditButton-root"
@@ -264,14 +277,14 @@ export default function Account({profile}) {
                     <Link
                         color="inherit"
                         target="_blank"
-                        href={`https://xls20.bithomp.com/explorer/${account}`}
+                        href={`https://xls20.bithomp.com/explorer/${profile.account}`}
                         rel="noreferrer noopener nofollow"
                     >
                         <Typography align="center" style={{ wordWrap: "break-word" }} variant="d3">
-                            {account}
+                            {profile.account}
                         </Typography>
                     </Link>
-                    <CopyToClipboard text={account} onCopy={()=>{openSnackbar("Copied!", "success")}}>
+                    <CopyToClipboard text={profile.account} onCopy={()=>{openSnackbar("Copied!", "success")}}>
                         <Tooltip title='Click to copy'>
                             <IconButton>
                                 <ContentCopyIcon fontSize="small" />
@@ -293,9 +306,12 @@ export default function Account({profile}) {
                     <Tab value={1} label={tabLabels[1]} {...a11yProps(1)} />
                     <Tab value={2} label={tabLabels[2]} {...a11yProps(2)} />
                     <Tab value={3} label={tabLabels[3]} {...a11yProps(3)} />
+                    <Tab value={4} label={tabLabels[4]} {...a11yProps(4)} />
                 </Tabs>
                 <TabPanel value={tabID} id={0}>
-                    <Stack sx={{mt:5, minHeight: '20vh'}}/>
+                    <Stack sx={{mt:5, minHeight: '20vh'}}>
+                        <CollectedList />
+                    </Stack>
                     {/* <CollectList token={token} /> */}
                 </TabPanel>
                 <TabPanel value={tabID} id={1}>
@@ -309,6 +325,11 @@ export default function Account({profile}) {
                 <TabPanel value={tabID} id={3}>
                     <Stack sx={{mt:5, minHeight: '20vh'}}/>
                     {/* <History token={token} /> */}
+                </TabPanel>
+                <TabPanel value={tabID} id={4}>
+                    <Stack sx={{mt:5, minHeight: '20vh'}}>
+                        <OfferList />
+                    </Stack>
                 </TabPanel>
             </Stack>
         </>

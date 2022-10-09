@@ -41,8 +41,9 @@ export default function Wallet() {
     // https://github.com/mui/material-ui/issues/10000
     const BASE_URL = 'https://api.xrpnft.com/api';
     const anchorRef = useRef(null);
-    const { accountProfile, setAccountProfile, acceptNfts, setLoading } = useContext(AppContext);
+    const { accountProfile, setAccountProfile, acceptNfts, setAcceptNfts, setLoading } = useContext(AppContext);
     const account = accountProfile?.account;
+    const accountToken = accountProfile?.token;
     const accountUuid = accountProfile?.uuid;
 
     const [open, setOpen] = useState(false);
@@ -53,6 +54,33 @@ export default function Wallet() {
     const [nextUrl, setNextUrl] = useState(null);
 
     const logoImageUrl = accountProfile?.logo?`https://s1.xrpnft.com/profile/${accountProfile.logo}`:null;
+
+    useEffect(() => {
+        function getAcceptNftOffersCount() {
+            if (!account || !accountToken) {
+                return;
+            }
+
+            axios.get(`${BASE_URL}/account/offerscount?account=${account}`, {headers: {'x-access-token': accountToken}})
+                .then(res => {
+                    let ret = res.status === 200 ? res.data : undefined;
+                    if (ret && acceptNfts !== ret.count) {
+                        setAcceptNfts(ret.count);
+                    }
+                }).catch(err => {
+                    console.log("Error on getting accept nfts count!!!", err);
+                }).then(function () {
+                    // always executed
+                });
+        }
+        console.log(`Get accept NFTs count`);
+        getAcceptNftOffersCount();
+
+        // const timer = setInterval(() => getAcceptNftOffersCount(), 5000);
+        // return () => {
+        //     clearInterval(timer);
+        // }
+    }, [account, accountToken]);
 
     useEffect(() => {
         var timer = null;
@@ -70,7 +98,6 @@ export default function Wallet() {
                         const profile = ret.profile;
                         setOpen(true);
                         setOpenLogin(false);
-                        console.log(profile);
                         setAccountProfile(profile);
                         return;
                     }
@@ -120,6 +147,10 @@ export default function Wallet() {
             }
         } catch(err) {
         }
+        setAccountProfile(null);
+        setUuid(null);
+        setAcceptNfts(0);
+
         setLoading(false);
     };
 
@@ -243,7 +274,7 @@ export default function Wallet() {
                                 key="manage-bulks"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}
                             >
-                                <NextLink href={`/bulks}`} passHref>
+                                <NextLink href={`/bulks`} passHref>
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <PhotoLibraryIcon />
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>Manage Bulks</Typography>
