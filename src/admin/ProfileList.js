@@ -25,6 +25,7 @@ import {
     Divider
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 // Context
 import { useContext } from 'react';
@@ -48,7 +49,7 @@ function truncate(str, n) {
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-export default function NftList({counterAccount, apiType}) {
+export default function ProfileList() {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -59,21 +60,22 @@ export default function NftList({counterAccount, apiType}) {
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
-    const [nfts, setNfts] = useState([]);
+    const [profiles, setProfiles] = useState([]);
+    const [filter, setFilter] = useState('');
         
     useEffect(() => {
-        function getNfts() {
+        function getProfiles() {
             if (!account || !accountToken) {
                 openSnackbar('Please login', 'error');
                 return;
             }
 
-            axios.get(`${BASE_URL}/admin/${apiType}?account=${counterAccount}&page=${page}&limit=${rows}`, {headers: {'x-access-account': account, 'x-access-token': accountToken}})
+            axios.get(`${BASE_URL}/admin/profiles?page=${page}&limit=${rows}&filter=${filter}`, {headers: {'x-access-account': account, 'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
                         setTotal(ret.total);
-                        setNfts(ret.nfts);
+                        setProfiles(ret.profiles);
                     }
                 }).catch(err => {
                     console.log("Error on getting nft offers list!!!", err);
@@ -81,8 +83,8 @@ export default function NftList({counterAccount, apiType}) {
                     // always executed
                 });
         }
-        getNfts();
-    }, [counterAccount, account, accountToken, page, rows]);
+        getProfiles();
+    }, [account, accountToken, page, rows]);
 
     const handleApprove = (nft) => {
         openSnackbar('Comming soon!', 'info');
@@ -132,43 +134,38 @@ export default function NftList({counterAccount, apiType}) {
                         //     }
                         // }
                         // exchs.slice(page * rows, page * rows + rows)
-                        nfts && nfts.map((row) => {
+                        profiles && profiles.map((row) => {
                             const {
-                                uuid,
-                                name,
-                                collection,
-                                flag,
                                 account,
-                                date,
-                                meta,
-                                URI,
-                                offeredDate,
-                                NFTokenID
+                                name,
+                                logo,
+                                banner,
+                                description,
+                                minterWallet,
+                                timestamp
                             } = row;
                         
-                            const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
+                            const logoImage = logo?`https://s1.xrpnft.com/profile/${logo}`:'/static/account_logo.png';
 
                             let strDateTime = '';
 
-                            if (offeredDate) {
-                                const nDate = new Date(offeredDate);
-                                const year = nDate.getFullYear();
-                                const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                                const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                                const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                            const nDate = new Date(timestamp);
+                            const year = nDate.getFullYear();
+                            const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
+                            const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
+                            const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                            const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                            const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
 
-                                //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-                                //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-                                strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-                                // const strTime = `${hour}:${min}:${sec}`;
-                            }
+                            //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
+                            //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
+                            strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
+                            // const strTime = `${hour}:${min}:${sec}`;
 
                             return (
                                 <TableRow
                                     // hover
-                                    key={uuid}
+                                    key={account}
                                     sx={{
                                         [`& .${tableCellClasses.root}`]: {
                                             // color: (error ? '#B72136' : '#B72136')
@@ -177,47 +174,43 @@ export default function NftList({counterAccount, apiType}) {
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
                                     <TableCell align="left" width='15%'>
-                                        <ModalImage
-                                            className='nftpreview1'
-                                            small={imgUrl}
-                                            large={imgUrl}
-                                            alt={name}
-                                            hideDownload
-                                            hideZoom
-                                            style={{
-                                                width: 96,
-                                                height: 96,
-                                                filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
-                                            }}
-                                        />
+                                        <Avatar alt="C" src={logoImage}/>
                                     </TableCell>
                                     
                                     <TableCell align="left">
                                         <Stack spacing={0.5}>
-                                            <Stack direction="row" justifyContent="space-between">
-                                                <Typography variant="h3" color="#33C2FF">{name}</Typography>
-                                                {/* <Button variant="outlined" color="primary" size="small" onClick={()=>handleApprove(row)}>
-                                                    Approve
-                                                </Button> */}
+                                            <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
+                                                {name &&
+                                                    <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                                }
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Typography variant="s6">{account}</Typography>
+                                                    <Link
+                                                        underline="none"
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://bithomp.com/explorer/${account}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title="Check on Bithomp">
+                                                            <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
+                                                    <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                        <Tooltip title='Click to copy'>
+                                                            <IconButton size="small">
+                                                                <ContentCopyIcon fontSize="small" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Stack>
                                             </Stack>
+
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Collection: </Typography>
-                                                <Typography variant="s6">{collection}</Typography>
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Offered On: </Typography>
+                                                <Typography variant="s4">Login: </Typography>
                                                 <Typography variant="s6">{strDateTime}</Typography>
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">TokenID: </Typography>
-                                                <Link
-                                                    color="inherit"
-                                                    target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${NFTokenID}`}
-                                                    rel="noreferrer noopener nofollow"
-                                                >
-                                                    <Typography variant="s6">{NFTokenID}</Typography>
-                                                </Link>
                                             </Stack>
                                         </Stack>
                                     </TableCell>

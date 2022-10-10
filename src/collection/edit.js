@@ -135,6 +135,12 @@ const CustomSelect = styled(Select)(({ theme }) => ({
     }
 }));
 
+function stringCompare(str1, str2) {
+    if (!str1 && !str2) return false;
+    if (str1 !== str2) return true;
+    return false;
+}
+
 const FILE_UNCHANGED = 0;
 const FILE_NEW = 1;
 const FILE_REMOVED = 2;
@@ -186,7 +192,7 @@ export default function EditCollection({collection}) {
     const [name, setName] = useState(collection.name);
     const [family, setFamily] = useState('');
     const [slug, setSlug] = useState(collection.slug);
-    const [description, setDescription] = useState(collection.description);
+    const [description, setDescription] = useState(collection.description || '');
     const [type, setType] = useState(collection.type);
     const [privateCollection, setPrivateCollection] = useState(collection.private);
     const [bulkUrl, setBulkUrl] = useState(collection.bulkUrl || '');
@@ -207,7 +213,7 @@ export default function EditCollection({collection}) {
     const [file4, setFile4] = useState(null);
 
     const [valid1, setValid1] = useState(false); // Name validation check
-    const [valid2, setValid2] = useState(false); // Slug validation check
+    const [valid2, setValid2] = useState(true); // Slug validation check
 
     const checkChanged = () => {
         if (file1) return true;
@@ -228,7 +234,8 @@ export default function EditCollection({collection}) {
             return true;
 
         if (family !== collection.family) return true;
-        if (description !== collection.description) return true;
+
+        if (stringCompare(description, collection.description)) return true;
 
         if (!slug) return false;
         if (slug !== collection.slug) return true;
@@ -238,8 +245,14 @@ export default function EditCollection({collection}) {
         if (privateCollection !== collection.private) return true;
 
         if (type !== 'normal') {
-            if (JSON.stringify(costs) !== JSON.stringify(collection.costs || []))
+            if (JSON.stringify(costs) !== JSON.stringify(collection.costs || [])) {
+                console.log('different')
                 return true;
+            } else {
+                console.log(costs.length);
+                console.log(collection.costs.length);
+                console.log('the same')
+            }
         }
         return false;
     }
@@ -455,13 +468,19 @@ export default function EditCollection({collection}) {
     }
 
     const handleAddCost = (token) => {
+        let exist = false;
+        const newCosts = [];
         for (var c of costs) {
             if (c.md5 === token.md5) {
                 c.cost = token.cost;
-                return;
+                exist = true;
             }
+            newCosts.push(c);
         }
-        costs.push(token);
+        if (!exist)
+            newCosts.push(token);
+
+        setCosts(newCosts);
     }
 
     const handleRemoveCost = (md5) => {

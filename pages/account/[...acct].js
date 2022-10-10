@@ -139,8 +139,6 @@ export async function getServerSideProps(ctx) {
 
         data = res.data;
 
-        console.log(JSON.stringify(data));
-
         var t2 = performance.now();
         var dt = (t2 - t1).toFixed(2);
 
