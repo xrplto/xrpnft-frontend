@@ -32,6 +32,8 @@ import { fNumber } from 'src/utils/formatNumber';
 
 // Components
 import CollectedList from './CollectedList';
+import CreatedList from './CreatedList';
+import FavoritedList from './FavoritedList';
 import ActivityList from './ActivityList';
 import OfferList from './OfferList';
 
@@ -197,7 +199,7 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['', 'created', 'cavorited', 'activity', 'accept'];
+const tabValues = ['', 'created', 'favorited', 'activity', 'accept'];
 const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept'];
 
 function getTabID(tab) {
@@ -310,27 +312,28 @@ export default function Account({profile, tab}) {
                     <Tab value={4} label={tabLabels[4]} {...a11yProps(4)} />
                 </Tabs>
                 <TabPanel value={tabID} id={0}>
-                    <Stack sx={{mt:5, minHeight: '20vh'}}>
-                        <CollectedList />
+                    <Stack sx={{minHeight: '20vh'}}>
+                        <CollectedList account={profile.account} />
                     </Stack>
-                    {/* <CollectList token={token} /> */}
                 </TabPanel>
                 <TabPanel value={tabID} id={1}>
-                    <Stack sx={{mt:5, minHeight: '20vh'}}/>
-                    {/* <CreatedList token={token}/> */}
+                    <Stack sx={{minHeight: '20vh'}}>
+                        <CreatedList account={profile.account} />
+                    </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={2}>
-                    <Stack sx={{mt:5, minHeight: '20vh'}}/>
-                    {/* <FavoredList token={token} /> */}
+                    <Stack sx={{minHeight: '20vh'}}>
+                        <FavoritedList account={profile.account} />
+                    </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={3}>
-                    <Stack sx={{mt:5, minHeight: '20vh'}}>
-                        <ActivityList />
+                    <Stack sx={{minHeight: '20vh'}}>
+                        <ActivityList account={profile.account} />
                     </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={4}>
-                    <Stack sx={{mt:5, minHeight: '20vh'}}>
-                        <OfferList />
+                    <Stack sx={{minHeight: '20vh'}}>
+                        <OfferList account={profile.account} />
                     </Stack>
                 </TabPanel>
             </Stack>

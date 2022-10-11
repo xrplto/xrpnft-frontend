@@ -37,8 +37,8 @@ import NftList from './NftList';
 
 const IconCover = styled('div')(
     ({ theme }) => `
-        width: 192px;
-        height: 192px;
+        width: 108px;
+        height: 108px;
         border: 6px solid ${theme.colors.alpha.black[50]};
         border-radius: 10px;
         box-shadow: rgb(0 0 0 / 8%) 0px 5px 10px;
@@ -53,8 +53,8 @@ const IconWrapper = styled('div')(
         box-sizing: border-box;
         display: inline-block;
         position: relative;
-        width: 180px;
-        height: 180px;
+        width: 96px;
+        height: 96px;
         &:hover, &.Mui-focusVisible {
             z-index: 1;
             & .MuiImageBackdrop-root {
@@ -138,8 +138,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['', 'collected', 'created', 'cavorited', 'activity', 'transfer', 'accept', 'accepterror'];
-const tabLabels = ['Profile', 'Collected', 'Created', 'Favorited', 'Activity', 'Transfer', 'Accept', 'Accept Errors'];
+const tabValues = ['', 'created', 'favorited', 'activity', 'transfer', 'accept', 'accepterror'];
+const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Transfer', 'Accept', 'Accept Errors'];
 
 function getTabID(tab) {
     if (!tab) return 0;
@@ -239,7 +239,7 @@ export default function Admin() {
                                 </CopyToClipboard>
                             </Stack>
                         </Stack>
-                        {description &&
+                        {description && false &&
                             <Typography variant="d3" maxWidth='600px'>{description}</Typography>
                         }
                         <TextField
@@ -258,39 +258,45 @@ export default function Admin() {
                             <Tab value={4} label={tabLabels[4]} {...a11yProps(4)} />
                             <Tab value={5} label={tabLabels[5]} {...a11yProps(5)} />
                             <Tab value={6} label={tabLabels[6]} {...a11yProps(6)} />
-                            <Tab value={7} label={tabLabels[6]} {...a11yProps(7)} />
                         </Tabs>
                     </Stack>
                 </Stack>
 
-                <TabPanel value={tabID} id={0}>
-                    <ProfileList />
-                </TabPanel>
-                <TabPanel value={tabID} id={1}>
-                    <Stack sx={{mt:5, minHeight: '20vh'}}/>
-                    {/* <CollectList token={token} /> */}
-                </TabPanel>
-                <TabPanel value={tabID} id={2}>
-                    <Stack sx={{mt:5, minHeight: '20vh'}}/>
-                    {/* <CreatedList token={token}/> */}
-                </TabPanel>
-                <TabPanel value={tabID} id={3}>
-                    <Stack sx={{mt:5, minHeight: '20vh'}}/>
-                    {/* <FavoredList token={token} /> */}
-                </TabPanel>
-                <TabPanel value={tabID} id={4}>
-                    <Stack sx={{mt:5, minHeight: '20vh'}}/>
-                    {/* <History token={token} /> */}
-                </TabPanel>
-                <TabPanel value={tabID} id={5}>
-                    <NftList counterAccount={counterAccount} apiType="transfers"/>
-                </TabPanel>
-                <TabPanel value={tabID} id={6}>
-                    <NftList counterAccount={counterAccount} apiType="offers"/>
-                </TabPanel>
-                <TabPanel value={tabID} id={7}>
-                    <NftList counterAccount={counterAccount} apiType="erroroffers" />
-                </TabPanel>
+                <Grid container rowSpacing={2} alignItems="center" sx={{mb: 10}}>
+                    <Grid container item xs={12} md={5} alignItems="center">
+                        <ProfileList />
+                    </Grid>
+
+                    <Grid container item xs={12} md={7} alignItems="center">
+                        <TabPanel value={tabID} id={0}>
+                            <Stack sx={{mt:5, minHeight: '20vh'}}/>
+                            {/* <CollectList token={token} /> */}
+                        </TabPanel>
+                        <TabPanel value={tabID} id={1}>
+                            <Stack sx={{mt:5, minHeight: '20vh'}}/>
+                            {/* <CreatedList token={token}/> */}
+                        </TabPanel>
+                        <TabPanel value={tabID} id={2}>
+                            <Stack sx={{mt:5, minHeight: '20vh'}}/>
+                            {/* <FavoredList token={token} /> */}
+                        </TabPanel>
+                        <TabPanel value={tabID} id={3}>
+                            <Stack sx={{mt:5, minHeight: '20vh'}}/>
+                            {/* <History token={token} /> */}
+                        </TabPanel>
+                        <TabPanel value={tabID} id={4}>
+                            <NftList counterAccount={counterAccount} apiType="transfers"/>
+                        </TabPanel>
+                        <TabPanel value={tabID} id={5}>
+                            <NftList counterAccount={counterAccount} apiType="offers"/>
+                        </TabPanel>
+                        <TabPanel value={tabID} id={6}>
+                            <NftList counterAccount={counterAccount} apiType="erroroffers" />
+                        </TabPanel>
+                    </Grid>
+                </Grid>
+
+                
             </Stack>
         </>
     );

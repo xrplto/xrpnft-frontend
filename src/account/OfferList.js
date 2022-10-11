@@ -64,12 +64,12 @@ function truncate(str, n) {
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-export default function OfferList() {
+export default function OfferList({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
-    const account = accountProfile?.account;
+    const accountLocal = accountProfile?.account;
     const accountToken = accountProfile?.token;
     
     const [page, setPage] = useState(0);
@@ -81,16 +81,14 @@ export default function OfferList() {
     const [xummUuid, setXummUuid] = useState(null);
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
-    const [loading, setLoading] = useState(false);
+
+    const [loading, setLoading] = useState(true);
+    const [loading2, setLoading2] = useState(false);
         
     useEffect(() => {
         function getNfts() {
-            if (!account || !accountToken) {
-                openSnackbar('Please login', 'error');
-                return;
-            }
-
-            axios.get(`${BASE_URL}/account/offers?account=${account}&page=${page}&limit=${rows}`, {headers: {'x-access-token': accountToken}})
+            setLoading(true);
+            axios.get(`${BASE_URL}/account/offers?account=${account}&page=${page}&limit=${rows}`)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -101,10 +99,11 @@ export default function OfferList() {
                     console.log("Error on getting nft offers list!!!", err);
                 }).then(function () {
                     // always executed
+                    setLoading(false);
                 });
         }
         getNfts();
-    }, [account, accountToken, page, rows]);
+    }, [account, page, rows]);
 
     useEffect(() => {
         var timer = null;
@@ -157,11 +156,15 @@ export default function OfferList() {
     }, [openScanQR, xummUuid]);
 
     const onAcceptNFT = async (nft) => {
-        if (!account || !accountToken) {
+        if (!accountLocal || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
-        setLoading(true);
+        if (accountLocal !== account) {
+            openSnackbar('You are not the owner of this account', 'error');
+            return;
+        }
+        setLoading2(true);
         try {
             const {
                 uuid,
@@ -187,11 +190,11 @@ export default function OfferList() {
         } catch (err) {
             console.error(err);
         }
-        setLoading(false);
+        setLoading2(false);
     };
 
     const onDisconnectXumm = async () => {
-        setLoading(true);
+        setLoading2(true);
         try {
             const res = await axios.delete(`${BASE_URL}/account/acceptnft/${xummUuid}`);
             // if (res.status === 200) {
@@ -202,7 +205,7 @@ export default function OfferList() {
         }
         setXummUuid(null);
 
-        setLoading(false);
+        setLoading2(false);
     };
 
     const handleScanQRClose = () => {
@@ -216,9 +219,20 @@ export default function OfferList() {
 
     return (
         <>
+            {loading ? (
+                <Stack alignItems="center">
+                    <PulseLoader color='#00AB55' size={10} />
+                </Stack>
+            ):(
+                nfts && nfts.length === 0 &&
+                    <Stack alignItems="center" sx={{mt: 5}}>
+                        <Typography variant="s7">No Items</Typography>
+                    </Stack>
+            )
+            }
             <Backdrop
                 sx={{ color: "#000", zIndex: 1303 }}
-                open={loading}
+                open={loading2}
             >
                 <PulseLoader color={"#FF4842"} size={10} />
             </Backdrop>

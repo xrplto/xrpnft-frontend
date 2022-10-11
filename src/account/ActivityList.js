@@ -25,21 +25,18 @@ import {
     Divider
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ErrorIcon from '@mui/icons-material/Error';
-import PendingIcon from '@mui/icons-material/Pending';
-import FiberPinIcon from '@mui/icons-material/FiberPin';
-import PushPinIcon from '@mui/icons-material/PushPin';
-import CollectionsIcon from '@mui/icons-material/Collections';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-import FolderZipIcon from '@mui/icons-material/FolderZip';
-import InfoIcon from '@mui/icons-material/Info';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import ApprovalOutlinedIcon from '@mui/icons-material/ApprovalOutlined';
-import CasinoIcon from '@mui/icons-material/Casino';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
+import GridOnIcon from '@mui/icons-material/GridOn';
+import Grid4x4Icon from '@mui/icons-material/Grid4x4';
+import ApprovalIcon from '@mui/icons-material/Approval';
+import TokenIcon from '@mui/icons-material/Token';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import CasinoIcon from '@mui/icons-material/Casino';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 
 // Context
 import { useContext } from 'react';
@@ -84,27 +81,25 @@ const Activity = {
     ACCEPT_SELL_OFFER: 16
 }
 
-export default function ActivityList() {
+export default function ActivityList({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
-    const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
-    const account = accountProfile?.account;
-    const accountToken = accountProfile?.token;
+    // const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
+    // const account = accountProfile?.account;
+    // const accountToken = accountProfile?.token;
     
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
     const [acts, setActs] = useState([]);
 
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         function getActivities() {
-            if (!account || !accountToken) {
-                openSnackbar('Please login', 'error');
-                return;
-            }
-
-            axios.get(`${BASE_URL}/account/activity?account=${account}&page=${page}&limit=${rows}`, {headers: {'x-access-token': accountToken}})
+            setLoading(true);
+            axios.get(`${BASE_URL}/account/activity?account=${account}&page=${page}&limit=${rows}`)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -115,13 +110,25 @@ export default function ActivityList() {
                     console.log("Error on getting activity list!!!", err);
                 }).then(function () {
                     // always executed
+                    setLoading(false);
                 });
         }
         getActivities();
-    }, [account, accountToken, page, rows]);
+    }, [account, page, rows]);
 
     return (
         <>
+            {loading ? (
+                <Stack alignItems="center">
+                    <PulseLoader color='#00AB55' size={10} />
+                </Stack>
+            ):(
+                acts && acts.length === 0 &&
+                    <Stack alignItems="center" sx={{mt: 5}}>
+                        <Typography variant="s7">No Items</Typography>
+                    </Stack>
+            )
+            }
             <Box
                 sx={{
                     display: "flex",
@@ -188,45 +195,274 @@ export default function ActivityList() {
                             // const strTime = `${hour}:${min}:${sec}`;
 
                             let strActivity = '';
+                            let componentActivity = (<></>);
+                            let componentIcon = (<TaskAltIcon />);
                             switch (activity) {
                                 case Activity.LOGIN:
-                                    strActivity = 'LOGIN';
+                                    strActivity = 'Login';
+                                    componentIcon = (<LoginIcon />);
+                                    componentActivity = (
+                                        <>
+                                        </>
+                                    );
                                     break;
                                 case Activity.LOGOUT:
-                                    strActivity = 'LOGOUT';
+                                    strActivity = 'Logout';
+                                    componentIcon = (<LogoutIcon />);
+                                    componentActivity = (
+                                        <>
+                                        </>
+                                    );
                                     break;
                                 case Activity.UPDATE_PROFILE:
-                                    strActivity = 'UPDATE_PROFILE';
+                                    strActivity = 'Update Profile';
+                                    componentIcon = (<ManageAccountsIcon />);
+                                    componentActivity = (
+                                        <>
+                                        </>
+                                    );
                                     break;
                                 case Activity.CREATE_COLLECTION:
-                                    strActivity = 'CREATE_COLLECTION';
+                                    strActivity = 'Create a Collection';
+                                    componentIcon = (<GridOnIcon />);
+                                    // {name, type, slug, logo: data.logoImage}
+                                    componentActivity = (
+                                        <>
+                                            
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${data.logo}`}/>
+                                                <Stack>
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Typography variant="s7">Name: </Typography>
+                                                        <Typography variant="s2">{data.name}</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Typography variant="s7">Type: </Typography>
+                                                        <Typography variant="s2">{data.type}</Typography>
+                                                    </Stack>
+                                                </Stack>
+                                            </Stack>
+                                        </>
+                                    );
                                     break;
                                 case Activity.UPDATE_COLLECTION:
-                                    strActivity = 'UPDATE_COLLECTION';
+                                    strActivity = 'Update Collection';
+                                    componentIcon = (<Grid4x4Icon />);
+                                    componentActivity = (
+                                        <>
+                                            
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${data.logo}`}/>
+                                                <Stack>
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Typography variant="s7">Name: </Typography>
+                                                        <Typography variant="s2">{data.name}</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Typography variant="s7">Type: </Typography>
+                                                        <Typography variant="s2">{data.type}</Typography>
+                                                    </Stack>
+                                                </Stack>
+                                            </Stack>
+                                        </>
+                                    );
                                     break;
                                 case Activity.SET_NFT_MINTER:
-                                    strActivity = 'SET_NFT_MINTER';
+                                    strActivity = 'Set NFT Minter';
+                                    componentIcon = (<ApprovalIcon />);
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">Minter: </Typography>
+                                                <Typography variant="s2">{data.NFTokenMinter}</Typography>
+                                            </Stack>
+                                        </>
+                                    );
                                     break;
                                 case Activity.MINT_ONE:
-                                    strActivity = 'MINT_ONE';
+                                    strActivity = 'Create a NFT';
+                                    componentIcon = (<TokenIcon />);
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                                <Stack direction="row" spacing={1}>
+                                                    <Avatar alt="C" src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}/>
+                                                    <Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Name: </Typography>
+                                                            <Typography variant="s2">{data.name}</Typography>
+                                                        </Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Type: </Typography>
+                                                            <Typography variant="s2">{data.type}</Typography>
+                                                        </Stack>
+                                                    </Stack>
+                                                </Stack>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <FlagsContainer Flags={data.flag}/>
+                                                </Stack>
+                                            </Stack>
+                                        </>
+                                    );
                                     break;
                                 case Activity.MINT_BULK:
-                                    strActivity = 'MINT_BULK';
+                                    strActivity = 'Mint Bulk NFTs';
+                                    componentIcon = (<CollectionsIcon />);
+                                    // {flag, minter, issuer, count: metadata.length, meta: metadata[0]}
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                                <Stack direction="row" spacing={1}>
+                                                    <Avatar alt="C" src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}/>
+                                                    <Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Minter: </Typography>
+                                                            <Typography variant="s2">{data.minter}</Typography>
+                                                        </Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Issuer: </Typography>
+                                                            <Typography variant="s2">{data.issuer}</Typography>
+                                                        </Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Total: </Typography>
+                                                            <Typography variant="s2">{data.count}</Typography>
+                                                        </Stack>
+                                                    </Stack>
+                                                </Stack>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <FlagsContainer Flags={data.flag}/>
+                                                </Stack>
+                                            </Stack>
+                                        </>
+                                    );
                                     break;
                                 case Activity.BUY_MINT:
-                                    strActivity = 'BUY_MINT';
+                                    strActivity = 'Buy Mint';
+                                    componentIcon = (<ShoppingBagIcon />);
+                                    // {cid, cname, cslug, amount, quantity}
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                                <Stack direction="row" spacing={1}>
+                                                    <Avatar alt="C" src={`https://xrpl.to/static/tokens/${data.token?.md5}.${data.token?.ext}`} />
+                                                    <Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Collection: </Typography>
+                                                            <Typography variant="s2">{data.cname}</Typography>
+                                                        </Stack>
+                                                        <Stack direction='row' spacing={0.8} alignItems="center">
+                                                            <Typography variant='p4' color="#EB5757">{data.token?.cost}</Typography>
+                                                            <Typography variant='s2'>{data.token?.name}</Typography>
+                                                        </Stack>
+                                                    </Stack>
+                                                </Stack>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Typography variant="s7">Quantity: </Typography>
+                                                        <Typography variant="s2">{data.quantity}</Typography>
+                                                    </Stack>
+                                                </Stack>
+                                            </Stack>
+                                        </>
+                                    );
                                     break;
                                 case Activity.BUY_RANDOM_NFT:
-                                    strActivity = 'BUY_RANDOM_NFT';
+                                    strActivity = 'Buy Random NFT';
+                                    componentIcon = (<CasinoIcon />);
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                                <Stack direction="row" spacing={1}>
+                                                    <Avatar alt="C" src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}/>
+                                                    <Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Name: </Typography>
+                                                            <Typography variant="s2">{data.name}</Typography>
+                                                        </Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Type: </Typography>
+                                                            <Typography variant="s2">{data.type}</Typography>
+                                                        </Stack>
+                                                    </Stack>
+                                                </Stack>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <FlagsContainer Flags={data.flag}/>
+                                                </Stack>
+                                            </Stack>
+                                        </>
+                                    );
                                     break;
                                 case Activity.BUY_BULK_NFT:
-                                    strActivity = 'BUY_BULK_NFT';
+                                    strActivity = 'Buy Bulk NFT';
+                                    componentIcon = (<TaskAltIcon />);
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                                <Stack direction="row" spacing={1}>
+                                                    <Avatar alt="C" src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}/>
+                                                    <Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Name: </Typography>
+                                                            <Typography variant="s2">{data.name}</Typography>
+                                                        </Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Type: </Typography>
+                                                            <Typography variant="s2">{data.type}</Typography>
+                                                        </Stack>
+                                                    </Stack>
+                                                </Stack>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <FlagsContainer Flags={data.flag}/>
+                                                </Stack>
+                                            </Stack>
+                                        </>
+                                    );
                                     break;
                                 case Activity.BUY_NORMAL_NFT:
-                                    strActivity = 'BUY_NORMAL_NFT';
+                                    strActivity = 'Buy a NFT';
+                                    componentIcon = (<TokenIcon />);
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                                <Stack direction="row" spacing={1}>
+                                                    <Avatar alt="C" src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}/>
+                                                    <Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Name: </Typography>
+                                                            <Typography variant="s2">{data.name}</Typography>
+                                                        </Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Type: </Typography>
+                                                            <Typography variant="s2">{data.type}</Typography>
+                                                        </Stack>
+                                                    </Stack>
+                                                </Stack>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <FlagsContainer Flags={data.flag}/>
+                                                </Stack>
+                                            </Stack>
+                                        </>
+                                    );
                                     break;
                                 case Activity.ACCEPT_SELL_OFFER:
-                                    strActivity = 'ACCEPT_SELL_OFFER';
+                                    componentIcon = (<AssignmentReturnedIcon />);
+                                    strActivity = 'Accept Sell Offer';
+                                    // NFTokenID
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">NFTokenID: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                </Link>
+                                            </Stack>
+                                        </>
+                                    );
                                     break;
                             }
 
@@ -242,24 +478,24 @@ export default function ActivityList() {
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
                                     <TableCell align="left">
-                                        <TaskAltIcon />
+                                        {componentIcon}
                                     </TableCell>
 
                                     <TableCell align="left">
                                         <Stack spacing={0.5}>
-                                            <Link
+                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                                <Typography variant="s2">{strActivity}</Typography>
+                                                <Typography variant="s7">{strDateTime}</Typography>
+                                            </Stack>
+                                            {componentActivity}
+                                            {/* <Link
                                                 color="inherit"
                                                 target="_blank"
                                                 href={`https://xls20.bithomp.com/explorer/${account}`}
                                                 rel="noreferrer noopener nofollow"
                                             >
                                                 <Typography variant="s4" color="#33C2FF">{account}</Typography>
-                                            </Link>
-
-                                            <Stack direction="row" spacing={1}>
-                                                <Typography variant="s2">{strActivity}</Typography>
-                                                <Typography variant="s7">{strDateTime}</Typography>
-                                            </Stack>
+                                            </Link> */}
                                         </Stack>
                                     </TableCell>
                                     

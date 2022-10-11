@@ -62,7 +62,7 @@ function truncate(str, n) {
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-export default function CollectedList({account}) {
+export default function FavoritedList({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -80,7 +80,7 @@ export default function CollectedList({account}) {
     useEffect(() => {
         function getNfts() {
             setLoading(true);
-            axios.get(`${BASE_URL}/account/accepted?account=${account}&page=${page}&limit=${rows}`)
+            axios.get(`${BASE_URL}/account/favorited?account=${account}&page=${page}&limit=${rows}`)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -88,14 +88,26 @@ export default function CollectedList({account}) {
                         setNfts(ret.nfts);
                     }
                 }).catch(err => {
-                    console.log("Error on getting accepted nfts list!!!", err);
+                    console.log("Error on getting minted nfts list!!!", err);
                 }).then(function () {
                     // always executed
                     setLoading(false);
                 });
         }
-        getNfts();
+        // getNfts();
     }, [account, page, rows]);
+
+    return (
+        <Stack spacing={3} alignItems="center">
+            <Typography variant="s3" sx={{ mb: 2 }}>Coming Soon</Typography>
+            <img
+                alt="Coming Soon"
+                height={200}
+                src="/static/status/coming-soon.svg"
+            />
+            <Typography variant="s7" sx={{ mb: 4 }}>We're working on implementing this feature, Please contact us if you need this feature urgently!</Typography>
+        </Stack>
+    );
 
     return (
         <>
@@ -162,7 +174,6 @@ export default function CollectedList({account}) {
                                 date,
                                 meta,
                                 URI,
-                                acceptedDate,
                                 NFTokenID
                             } = row;
                         
@@ -170,20 +181,18 @@ export default function CollectedList({account}) {
 
                             let strDateTime = '';
 
-                            if (acceptedDate) {
-                                const nDate = new Date(acceptedDate);
-                                const year = nDate.getFullYear();
-                                const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                                const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                                const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                            const nDate = new Date(date);
+                            const year = nDate.getFullYear();
+                            const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
+                            const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
+                            const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                            const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                            const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
 
-                                //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-                                //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-                                strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-                                // const strTime = `${hour}:${min}:${sec}`;
-                            }
+                            //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
+                            //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
+                            strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
+                            // const strTime = `${hour}:${min}:${sec}`;
 
                             return (
                                 <TableRow
@@ -222,7 +231,7 @@ export default function CollectedList({account}) {
                                                 <Typography variant="s6">{collection}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Accepted On: </Typography>
+                                                <Typography variant="s4">Created On: </Typography>
                                                 <Typography variant="s6">{strDateTime}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={2} alignItems="center">

@@ -13,6 +13,7 @@ import {
     Button,
     CardMedia,
     IconButton,
+    InputAdornment,
     Link,
     Stack,
     Table,
@@ -20,6 +21,7 @@ import {
     TableCell,
     TableHead,
     TableRow,
+    TextField,
     Tooltip,
     Typography,
     Divider
@@ -35,7 +37,7 @@ import { AppContext } from 'src/AppContext';
 import { fIntNumber } from 'src/utils/formatNumber';
 
 // Loader
-import { PulseLoader, ClockLoader } from "react-spinners";
+import { PulseLoader, ClockLoader, ClipLoader } from "react-spinners";
 import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
@@ -62,6 +64,8 @@ export default function ProfileList() {
     const [total, setTotal] = useState(0);
     const [profiles, setProfiles] = useState([]);
     const [filter, setFilter] = useState('');
+
+    const [loading, setLoading] = useState(false);
         
     useEffect(() => {
         function getProfiles() {
@@ -69,7 +73,7 @@ export default function ProfileList() {
                 openSnackbar('Please login', 'error');
                 return;
             }
-
+            setLoading(true);
             axios.get(`${BASE_URL}/admin/profiles?page=${page}&limit=${rows}&filter=${filter}`, {headers: {'x-access-account': account, 'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
@@ -81,17 +85,42 @@ export default function ProfileList() {
                     console.log("Error on getting nft offers list!!!", err);
                 }).then(function () {
                     // always executed
+                    setLoading(false);
                 });
         }
         getProfiles();
-    }, [account, accountToken, page, rows]);
+    }, [account, accountToken, page, rows, filter]);
 
-    const handleApprove = (nft) => {
-        openSnackbar('Comming soon!', 'info');
+    const handleChangeFilter = (e) => {
+        setFilter(e.target.value);
     }
 
     return (
         <>
+            <TextField
+                id='textFilter'
+                // autoFocus
+                // fullWidth
+                variant='outlined'
+                placeholder='Filter'
+                margin='dense'
+                onChange={handleChangeFilter}
+                autoComplete='new-password'
+                inputProps={{autoComplete: 'off'}}
+                value={filter}
+                onFocus={event => {
+                    event.target.select();
+                }}
+                sx={{pl:2, pr:2, pt: 0, pb: 0, mt: 4}}
+                onKeyDown={(e) => e.stopPropagation()}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="start">
+                            {loading && <ClipLoader color='#ff0000' size={15} /> }
+                        </InputAdornment>
+                    ),
+                }}
+            />
             <Box
                 sx={{
                     display: "flex",
@@ -173,39 +202,38 @@ export default function ProfileList() {
                                     }}
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
-                                    <TableCell align="left" width='15%'>
+                                    <TableCell align="left">
                                         <Avatar alt="C" src={logoImage}/>
                                     </TableCell>
                                     
                                     <TableCell align="left">
-                                        <Stack spacing={0.5}>
-                                            <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-                                                {name &&
-                                                    <Typography variant="h3" color="#33C2FF">{name}</Typography>
-                                                }
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s6">{account}</Typography>
-                                                    <Link
-                                                        underline="none"
-                                                        color="inherit"
-                                                        target="_blank"
-                                                        href={`https://bithomp.com/explorer/${account}`}
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        <Tooltip title="Check on Bithomp">
-                                                            <IconButton edge="end" aria-label="bithomp" size="small">
-                                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </Link>
-                                                    <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                        <Tooltip title='Click to copy'>
-                                                            <IconButton size="small">
-                                                                <ContentCopyIcon fontSize="small" />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </CopyToClipboard>
-                                                </Stack>
+                                        <Stack spacing={0}>
+                                            {name &&
+                                                <Typography variant="s3" color="#33C2FF">{name}</Typography>
+                                            }
+                                            
+                                            <Stack direction="row" spacing={0.2} alignItems="center">
+                                                <Typography variant="s6">{account}</Typography>
+                                                <Link
+                                                    underline="none"
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${account}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Tooltip title="Check on Bithomp">
+                                                        <IconButton edge="end" aria-label="bithomp" size="small">
+                                                            <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Link>
+                                                <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                    <Tooltip title='Click to copy'>
+                                                        <IconButton size="small">
+                                                            <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </CopyToClipboard>
                                             </Stack>
 
                                             <Stack direction="row" spacing={1} alignItems="center">

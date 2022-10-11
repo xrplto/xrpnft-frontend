@@ -241,7 +241,7 @@ export default function BuyMintDialog({open, setOpen, costs, minter, openSnackba
                 amount.value = new Decimal(cost).mul(quantity).toString();
             }
             
-            const body = { account, dest: minter, amount, quantity, cid, cname, cslug, user_token};
+            const body = { account, dest: minter, amount, quantity, cid, cname, cslug, user_token, token};
 
             const res = await axios.post(`${BASE_URL}/spin/buymint`, body, {headers: {'x-access-token': accountToken}});
 
