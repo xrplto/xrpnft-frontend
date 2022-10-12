@@ -33,7 +33,13 @@ import { fNumber } from 'src/utils/formatNumber';
 
 // Components
 import ProfileList from './ProfileList';
-import NftList from './NftList';
+import ErrorList from './ErrorList';
+
+import CollectedList from '../account/CollectedList';
+import CreatedList from '../account/CreatedList';
+import FavoritedList from '../account/FavoritedList';
+import ActivityList from '../account/ActivityList';
+import OfferList from '../account/OfferList';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -138,8 +144,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['', 'created', 'favorited', 'activity', 'transfer', 'accept', 'accepterror'];
-const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Transfer', 'Accept', 'Accept Errors'];
+const tabValues = ['', 'collected', 'created', 'favorited', 'activity', 'accept'];
+const tabLabels = ['Error', 'Collected', 'Created', 'Favorited', 'Activity', 'Accept'];
 
 function getTabID(tab) {
     if (!tab) return 0;
@@ -157,7 +163,7 @@ export default function Admin() {
 
     const [tabID, setTabID] = useState(0);
 
-    const [counterAccount, setCounterAccount] = useState('rN6xpz8JZEgRbt5DxjvsW4ge2H4AcFRq9o');
+    const [counterAccount, setCounterAccount] = useState(account);
 
     const {
         name,
@@ -242,14 +248,6 @@ export default function Admin() {
                         {description && false &&
                             <Typography variant="d3" maxWidth='600px'>{description}</Typography>
                         }
-                        <TextField
-                            id='id_counter_account'
-                            placeholder='Account Address'
-                            value={counterAccount}
-                            onChange={(e) => {
-                                setCounterAccount(e.target.value);
-                            }}
-                        />
                         <Tabs value={tabID} onChange={handleChangeTab} variant="scrollable" scrollButtons="auto" aria-label="token-tabs">
                             <Tab value={0} label={tabLabels[0]} {...a11yProps(0)} />
                             <Tab value={1} label={tabLabels[1]} {...a11yProps(1)} />
@@ -257,41 +255,45 @@ export default function Admin() {
                             <Tab value={3} label={tabLabels[3]} {...a11yProps(3)} />
                             <Tab value={4} label={tabLabels[4]} {...a11yProps(4)} />
                             <Tab value={5} label={tabLabels[5]} {...a11yProps(5)} />
-                            <Tab value={6} label={tabLabels[6]} {...a11yProps(6)} />
                         </Tabs>
                     </Stack>
                 </Stack>
 
-                <Grid container rowSpacing={2} alignItems="center" sx={{mb: 10}}>
-                    <Grid container item xs={12} md={5} alignItems="center">
-                        <ProfileList />
+                <Grid container rowSpacing={0} sx={{mb: 10}}>
+                    <Grid container item xs={12} md={5}>
+                        <ProfileList setCounterAccount={setCounterAccount} />
                     </Grid>
 
-                    <Grid container item xs={12} md={7} alignItems="center">
+                    <Grid container item xs={12} md={7}>
                         <TabPanel value={tabID} id={0}>
-                            <Stack sx={{mt:5, minHeight: '20vh'}}/>
-                            {/* <CollectList token={token} /> */}
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <ErrorList account={counterAccount} />
+                            </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={1}>
-                            <Stack sx={{mt:5, minHeight: '20vh'}}/>
-                            {/* <CreatedList token={token}/> */}
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <CollectedList account={counterAccount} />
+                            </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={2}>
-                            <Stack sx={{mt:5, minHeight: '20vh'}}/>
-                            {/* <FavoredList token={token} /> */}
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <CreatedList account={counterAccount} />
+                            </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={3}>
-                            <Stack sx={{mt:5, minHeight: '20vh'}}/>
-                            {/* <History token={token} /> */}
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <FavoritedList account={counterAccount} />
+                            </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={4}>
-                            <NftList counterAccount={counterAccount} apiType="transfers"/>
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <ActivityList account={counterAccount} />
+                            </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={5}>
-                            <NftList counterAccount={counterAccount} apiType="offers"/>
-                        </TabPanel>
-                        <TabPanel value={tabID} id={6}>
-                            <NftList counterAccount={counterAccount} apiType="erroroffers" />
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <OfferList account={counterAccount} />
+                            </Stack>
                         </TabPanel>
                     </Grid>
                 </Grid>

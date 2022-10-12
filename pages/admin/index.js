@@ -71,7 +71,7 @@ export default function Overview({data}) {
 
             <Header />
 
-            <Container maxWidth="lg">
+            <Container maxWidth="xl">
                 {accountProfile &&
                     <Admin />
                 }

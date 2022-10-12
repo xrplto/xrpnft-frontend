@@ -52,8 +52,6 @@ import { PulseLoader, ClockLoader } from "react-spinners";
 import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
-import QRDialog from 'src/components/QRDialog';
-import QRDialogNoPush from 'src/components/QRDialogNoPush';
 import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 // ----------------------------------------------------------------------
@@ -64,12 +62,12 @@ function truncate(str, n) {
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-export default function OfferList({account}) {
+export default function ErrorList({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
-    const accountLocal = accountProfile?.account;
+    const accountAdmin = accountProfile?.account;
     const accountToken = accountProfile?.token;
     
     const [page, setPage] = useState(0);
@@ -77,18 +75,16 @@ export default function OfferList({account}) {
     const [total, setTotal] = useState(0);
     const [nfts, setNfts] = useState([]);
 
-    const [openScanQR, setOpenScanQR] = useState(false);
-    const [xummUuid, setXummUuid] = useState(null);
-    const [qrUrl, setQrUrl] = useState(null);
-    const [nextUrl, setNextUrl] = useState(null);
-
     const [loading, setLoading] = useState(true);
-    const [loading2, setLoading2] = useState(false);
-        
+
     useEffect(() => {
         function getNfts() {
+            if (!accountAdmin || !accountToken) {
+                openSnackbar('Please login', 'error');
+                return;
+            }
             setLoading(true);
-            axios.get(`${BASE_URL}/account/offers?account=${account}&page=${page}&limit=${rows}`)
+            axios.get(`${BASE_URL}/admin/errors?account=${account}&page=${page}&limit=${rows}`, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -96,126 +92,14 @@ export default function OfferList({account}) {
                         setNfts(ret.nfts);
                     }
                 }).catch(err => {
-                    console.log("Error on getting nft offers list!!!", err);
+                    console.log("Error on getting errored nfts list!!!", err);
                 }).then(function () {
                     // always executed
                     setLoading(false);
                 });
         }
         getNfts();
-    }, [account, page, rows]);
-
-    useEffect(() => {
-        var timer = null;
-        var isRunning = false;
-        var counter = 150;
-        async function getPayload() {
-            console.log(counter + " " + isRunning, xummUuid);
-            if (isRunning) return;
-            isRunning = true;
-            try {
-                const ret = await axios.get(`${BASE_URL}/account/acceptnft/${xummUuid}`);
-                const resolved_at = ret.data?.resolved_at;
-                const dispatched_result = ret.data?.dispatched_result;
-                if (resolved_at) {
-                    setOpenScanQR(false);
-                    if (dispatched_result === 'tesSUCCESS') {
-                        // handleClose();
-                        const offerCount = ret.data.data.offerCount;
-                        const nftUuid = ret.data.data.nftUuid;
-                        setAcceptNfts(offerCount);
-                        const newNfts = [];
-                        for (var n of nfts) {
-                            if (n.uuid !== nftUuid)
-                                newNfts.push(n);
-                        }
-                        setNfts(newNfts);
-                        openSnackbar('Accepting NFT successful!', 'success');
-                    }
-                    else
-                        openSnackbar('Accepting NFT failed!', 'error');
-                    return;
-                }
-            } catch (err) {
-            }
-            isRunning = false;
-            counter--;
-            if (counter <= 0) {
-                openSnackbar('Timeout!', 'error');
-                handleScanQRClose();
-            }
-        }
-        if (openScanQR) {
-            timer = setInterval(getPayload, 2000);
-        }
-        return () => {
-            if (timer) {
-                clearInterval(timer)
-            }
-        };
-    }, [openScanQR, xummUuid]);
-
-    const onAcceptNFT = async (nft) => {
-        if (!accountLocal || !accountToken) {
-            openSnackbar('Please login', 'error');
-            return;
-        }
-        if (accountLocal !== account) {
-            openSnackbar('You are not the owner of this account', 'error');
-            return;
-        }
-        setLoading2(true);
-        try {
-            const {
-                uuid,
-                NFTokenID,
-            } = nft;
-
-            const user_token = accountProfile.user_token;
-
-            const body={ account, uuid, NFTokenID, user_token };
-
-            const res = await axios.post(`${BASE_URL}/account/acceptnft`, body, {headers: {'x-access-token': accountToken}});
-
-            if (res.status === 200) {
-                const newUuid = res.data.data.uuid;
-                const qrlink = res.data.data.qrUrl;
-                const nextlink = res.data.data.next;
-
-                setXummUuid(newUuid);
-                setQrUrl(qrlink);
-                setNextUrl(nextlink);
-                setOpenScanQR(true);
-            }
-        } catch (err) {
-            console.error(err);
-        }
-        setLoading2(false);
-    };
-
-    const onDisconnectXumm = async () => {
-        setLoading2(true);
-        try {
-            const res = await axios.delete(`${BASE_URL}/account/acceptnft/${xummUuid}`);
-            // if (res.status === 200) {
-            //     setXummUuid(null);
-            // }
-        } catch(err) {
-            console.error(err);
-        }
-        setXummUuid(null);
-
-        setLoading2(false);
-    };
-
-    const handleScanQRClose = () => {
-        setOpenScanQR(false);
-        onDisconnectXumm();
-    };
-
-    const handleApprove = (nft) => {
-        onAcceptNFT(nft);
-    }
+    }, [account, page, rows, accountAdmin, accountToken]);
 
     return (
         <>
@@ -230,12 +114,6 @@ export default function OfferList({account}) {
                     </Stack>
             )
             }
-            <Backdrop
-                sx={{ color: "#000", zIndex: 1303 }}
-                open={loading2}
-            >
-                <PulseLoader color={"#FF4842"} size={10} />
-            </Backdrop>
             <Box
                 sx={{
                     display: "flex",
@@ -288,17 +166,16 @@ export default function OfferList({account}) {
                                 date,
                                 meta,
                                 URI,
-                                offeredDate,
-                                NFTokenID,
-                                mintHash
+                                acceptedDate,
+                                NFTokenID
                             } = row;
                         
                             const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
 
                             let strDateTime = '';
 
-                            if (offeredDate) {
-                                const nDate = new Date(offeredDate);
+                            if (acceptedDate) {
+                                const nDate = new Date(acceptedDate);
                                 const year = nDate.getFullYear();
                                 const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
                                 const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
@@ -343,16 +220,13 @@ export default function OfferList({account}) {
                                         <Stack spacing={0.5}>
                                             <Stack direction="row" justifyContent="space-between">
                                                 <Typography variant="h3" color="#33C2FF">{name}</Typography>
-                                                <Button variant="outlined" color="primary" size="small" onClick={()=>handleApprove(row)}>
-                                                    Approve
-                                                </Button>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s4">Collection: </Typography>
                                                 <Typography variant="s6">{collection}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Offered On: </Typography>
+                                                <Typography variant="s4">Accepted On: </Typography>
                                                 <Typography variant="s6">{strDateTime}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={2} alignItems="center">
@@ -369,17 +243,6 @@ export default function OfferList({account}) {
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s6">{NFTokenID}</Typography>
-                                                </Link>
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">TxMint: </Typography>
-                                                <Link
-                                                    color="inherit"
-                                                    target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${mintHash}`}
-                                                    rel="noreferrer noopener nofollow"
-                                                >
-                                                    <Typography variant="s6">{mintHash}</Typography>
                                                 </Link>
                                             </Stack>
                                         </Stack>
@@ -404,13 +267,6 @@ export default function OfferList({account}) {
                     setPage={setPage}
                 />
             }
-            <QRDialogNoPush
-                open={openScanQR}
-                type="NFTokenAcceptOffer"
-                onClose={handleScanQRClose}
-                qrUrl={qrUrl}
-                nextUrl={nextUrl}
-            />
         </>
     );
 }
