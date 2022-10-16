@@ -148,3 +148,22 @@ export const COLLECTION_FAMILIES = [
         icon: (<FacebookIcon />)
     }
 ];
+
+export const NFToken = {
+    PREMINT: 8, // Submitted the NFTokenMint transaction but not found NFTokenID yet
+    MINTED: 16, // Found NFTokenID for bulk & random collections or Created a NFT
+  
+    PREOFFER: 24, // Submitted the NFTokenCreateOffer transaction but not found SellOfferID yet
+    OFFERED: 32, // Found SellOfferID for bulk & random collections or Created a NFT
+  
+    ACCEPTED: 38, // NFTokenOffer is accepted
+    
+    ERROR_BASE: 130,
+    PREMINT_E1: 131, // Failed to submit the NFTokenMint transaction
+    PREMINT_E2: 132, // Exception occured to submit the NFTokenMint transaction
+    PREMINT_E3: 133, // Tried to find out NFTokenID but failed
+  
+    PREOFFER_E1: 141, // Failed to submit the NFTokenCreateOffer transaction
+    PREOFFER_E2: 142, // Exception occured to submit the NFTokenCreateOffer transaction
+    PREOFFER_E3: 143, // Tried to find out SellOfferID but failed
+  }

@@ -46,6 +46,7 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { fIntNumber } from 'src/utils/formatNumber';
+import { NFToken } from 'src/utils/constants';
 
 // Loader
 import { PulseLoader, ClockLoader } from "react-spinners";
@@ -63,6 +64,23 @@ function truncate(str, n) {
     //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
+
+/**
+ * Converts hex to its string equivalent. Useful to read the Domain field and some Memos.
+ *
+ * @param hex - The hex to convert to a string.
+ * @param encoding - The encoding to use. Defaults to 'utf8' (UTF-8). 'ascii' is also allowed.
+ * @returns The converted string.
+ * @category Utilities
+ */
+ function convertHexToString(hex, encoding = 'utf8') {
+    let ret = '';
+    try {
+        ret = Buffer.from(hex, 'hex').toString(encoding);
+    } catch (err) {
+    }
+    return ret;
+}
 
 export default function OfferList({account}) {
     const theme = useTheme();
@@ -84,11 +102,11 @@ export default function OfferList({account}) {
 
     const [loading, setLoading] = useState(true);
     const [loading2, setLoading2] = useState(false);
-        
+
     useEffect(() => {
         function getNfts() {
             setLoading(true);
-            axios.get(`${BASE_URL}/account/offers?account=${account}&page=${page}&limit=${rows}`)
+            axios.get(`${BASE_URL}/account/offered?account=${account}&page=${page}&limit=${rows}`)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -169,11 +187,12 @@ export default function OfferList({account}) {
             const {
                 uuid,
                 NFTokenID,
+                SellOfferID
             } = nft;
 
             const user_token = accountProfile.user_token;
 
-            const body={ account, uuid, NFTokenID, user_token };
+            const body={ account, uuid, NFTokenID, SellOfferID, user_token };
 
             const res = await axios.post(`${BASE_URL}/account/acceptnft`, body, {headers: {'x-access-token': accountToken}});
 
@@ -290,7 +309,9 @@ export default function OfferList({account}) {
                                 URI,
                                 offeredDate,
                                 NFTokenID,
-                                mintHash
+                                SellOfferID,
+                                mintHash,
+                                status
                             } = row;
                         
                             const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
@@ -323,7 +344,7 @@ export default function OfferList({account}) {
                                     }}
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
-                                    <TableCell align="left" width='15%'>
+                                    <TableCell align="left">
                                         <ModalImage
                                             className='nftpreview1'
                                             small={imgUrl}
@@ -343,9 +364,17 @@ export default function OfferList({account}) {
                                         <Stack spacing={0.5}>
                                             <Stack direction="row" justifyContent="space-between">
                                                 <Typography variant="h3" color="#33C2FF">{name}</Typography>
-                                                <Button variant="outlined" color="primary" size="small" onClick={()=>handleApprove(row)}>
-                                                    Approve
-                                                </Button>
+                                                {status === NFToken.OFFERED ? (
+                                                    <Button variant="outlined" color="primary" size="small" onClick={()=>handleApprove(row)}>
+                                                        Approve
+                                                    </Button>
+                                                ):(
+                                                    <Stack>
+                                                    <Typography variant="s5">Pending ...</Typography>
+                                                    <Typography variant="s4">Code: {status}</Typography>
+                                                    </Stack>
+                                                )
+                                                }
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s4">Collection: </Typography>
@@ -372,6 +401,14 @@ export default function OfferList({account}) {
                                                 </Link>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">URI(string): </Typography>
+                                                <Typography variant="s6">{convertHexToString(URI)}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">URI(hex): </Typography>
+                                                <Typography variant="s6">{URI}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s4">TxMint: </Typography>
                                                 <Link
                                                     color="inherit"
@@ -381,6 +418,10 @@ export default function OfferList({account}) {
                                                 >
                                                     <Typography variant="s6">{mintHash}</Typography>
                                                 </Link>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">Sell Offer ID: </Typography>
+                                                <Typography variant="s6">{SellOfferID}</Typography>
                                             </Stack>
                                         </Stack>
                                     </TableCell>

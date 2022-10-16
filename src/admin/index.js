@@ -34,6 +34,7 @@ import { fNumber } from 'src/utils/formatNumber';
 // Components
 import ProfileList from './ProfileList';
 import ErrorList from './ErrorList';
+import NoNFTIDList from './NoNFTIDList';
 
 import CollectedList from '../account/CollectedList';
 import CreatedList from '../account/CreatedList';
@@ -144,8 +145,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['', 'collected', 'created', 'favorited', 'activity', 'accept'];
-const tabLabels = ['Error', 'Collected', 'Created', 'Favorited', 'Activity', 'Accept'];
+const tabValues = ['nonftid', 'error', 'collected', 'created', 'favorited', 'activity', 'accept'];
+const tabLabels = ['No NFTokenIDs', 'Error', 'Collected', 'Created', 'Favorited', 'Activity', 'Accept'];
 
 function getTabID(tab) {
     if (!tab) return 0;
@@ -255,6 +256,7 @@ export default function Admin() {
                             <Tab value={3} label={tabLabels[3]} {...a11yProps(3)} />
                             <Tab value={4} label={tabLabels[4]} {...a11yProps(4)} />
                             <Tab value={5} label={tabLabels[5]} {...a11yProps(5)} />
+                            <Tab value={6} label={tabLabels[6]} {...a11yProps(6)} />
                         </Tabs>
                     </Stack>
                 </Stack>
@@ -267,30 +269,36 @@ export default function Admin() {
                     <Grid container item xs={12} md={7}>
                         <TabPanel value={tabID} id={0}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <ErrorList account={counterAccount} />
+                                <NoNFTIDList />
                             </Stack>
                         </TabPanel>
+
                         <TabPanel value={tabID} id={1}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <CollectedList account={counterAccount} />
+                                <ErrorList account={counterAccount} />
                             </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={2}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <CreatedList account={counterAccount} />
+                                <CollectedList account={counterAccount} />
                             </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={3}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <FavoritedList account={counterAccount} />
+                                <CreatedList account={counterAccount} />
                             </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={4}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <ActivityList account={counterAccount} />
+                                <FavoritedList account={counterAccount} />
                             </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={5}>
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <ActivityList account={counterAccount} />
+                            </Stack>
+                        </TabPanel>
+                        <TabPanel value={tabID} id={6}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <OfferList account={counterAccount} />
                             </Stack>

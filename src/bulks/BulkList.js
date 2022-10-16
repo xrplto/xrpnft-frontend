@@ -257,7 +257,8 @@ export default function BulkList() {
                                 infoIPFS,
                                 infoMINT, // {count: 0, length: metadata.length};
                                 minter,
-                                minterName
+                                minterName,
+                                type
                             } = row;
                             const nDate = new Date(created);
                             const year = nDate.getFullYear();
@@ -300,9 +301,11 @@ export default function BulkList() {
                                                 <Link href={`/collection/${slug}`}>
                                                     <Typography variant="h3" color="#33C2FF">{name}</Typography>
                                                 </Link>
-                                                <Tooltip title='Random Collection'>
-                                                    <CasinoIcon color='info'/>
-                                                </Tooltip>
+                                                {type === "random" &&
+                                                    <Tooltip title='Random Collection'>
+                                                        <CasinoIcon color='info'/>
+                                                    </Tooltip>
+                                                }
                                             </Stack>
                                             
                                             {infoIPFS && infoIPFS.cid &&

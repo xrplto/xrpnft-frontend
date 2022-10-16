@@ -80,7 +80,7 @@ export default function CreatedList({account}) {
     useEffect(() => {
         function getNfts() {
             setLoading(true);
-            axios.get(`${BASE_URL}/account/minted?account=${account}&page=${page}&limit=${rows}`)
+            axios.get(`${BASE_URL}/account/created?account=${account}&page=${page}&limit=${rows}`)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -88,7 +88,7 @@ export default function CreatedList({account}) {
                         setNfts(ret.nfts);
                     }
                 }).catch(err => {
-                    console.log("Error on getting minted nfts list!!!", err);
+                    console.log("Error on getting created nfts list!!!", err);
                 }).then(function () {
                     // always executed
                     setLoading(false);
@@ -193,7 +193,7 @@ export default function CreatedList({account}) {
                                     }}
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
-                                    <TableCell align="left" width='15%'>
+                                    <TableCell align="left">
                                         <ModalImage
                                             className='nftpreview1'
                                             small={imgUrl}

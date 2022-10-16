@@ -46,6 +46,7 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { fIntNumber } from 'src/utils/formatNumber';
+import { NFToken } from 'src/utils/constants';
 
 // Loader
 import { PulseLoader, ClockLoader } from "react-spinners";
@@ -62,25 +63,59 @@ function truncate(str, n) {
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-export default function CollectedList({account}) {
+function statusToString(status) {
+
+    for (const [key, value] of Object.entries(NFToken)) {
+        if (value === status)
+            return key;
+    }
+    return 'NONE';
+    // switch (status) {
+    //     case NFToken
+    // }
+}
+
+/**
+ * Converts hex to its string equivalent. Useful to read the Domain field and some Memos.
+ *
+ * @param hex - The hex to convert to a string.
+ * @param encoding - The encoding to use. Defaults to 'utf8' (UTF-8). 'ascii' is also allowed.
+ * @returns The converted string.
+ * @category Utilities
+ */
+ function convertHexToString(hex, encoding = 'utf8') {
+    let ret = '';
+    try {
+        ret = Buffer.from(hex, 'hex').toString(encoding);
+    } catch (err) {
+    }
+    return ret;
+}
+
+export default function NoNFTIDList({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
-    // const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
-    // const account = accountProfile?.account;
-    // const accountToken = accountProfile?.token;
+    const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
+    const accountAdmin = accountProfile?.account;
+    const accountToken = accountProfile?.token;
     
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
     const [nfts, setNfts] = useState([]);
+    const [sync, setSync] = useState(0);
 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         function getNfts() {
+            if (!accountAdmin || !accountToken) {
+                openSnackbar('Please login', 'error');
+                return;
+            }
             setLoading(true);
-            axios.get(`${BASE_URL}/account/accepted?account=${account}&page=${page}&limit=${rows}`)
+            axios.get(`${BASE_URL}/admin/nonftids?page=${page}&limit=${rows}`, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -88,14 +123,43 @@ export default function CollectedList({account}) {
                         setNfts(ret.nfts);
                     }
                 }).catch(err => {
-                    console.log("Error on getting accepted nfts list!!!", err);
+                    console.log("Error on getting errored nfts list!!!", err);
                 }).then(function () {
                     // always executed
                     setLoading(false);
                 });
         }
         getNfts();
-    }, [account, page, rows]);
+    }, [page, rows, accountAdmin, accountToken, sync]);
+
+    const onResolveNFT = async (nft) => {
+        if (!accountAdmin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const {
+                uuid,
+                status
+            } = nft;
+
+            const body = { uuid, status };
+
+            const res = await axios.post(`${BASE_URL}/admin/resolve`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
+
+            let ret = res.status === 200 ? res.data : undefined;
+            if (ret) {
+                openSnackbar('Successfully submitted', 'success');
+                setSync(sync + 1);
+            }
+        } catch (err) {
+            console.error(err);
+            openSnackbar('Error', 'error');
+        }
+        setLoading(false);
+    };
 
     return (
         <>
@@ -109,6 +173,15 @@ export default function CollectedList({account}) {
                         <Typography variant="s7">No Items</Typography>
                     </Stack>
             )
+            }
+            { total > 0 &&
+                <ListToolbar
+                    count={total}
+                    rows={rows}
+                    setRows={setRows}
+                    page={page}
+                    setPage={setPage}
+                />
             }
             <Box
                 sx={{
@@ -163,15 +236,19 @@ export default function CollectedList({account}) {
                                 meta,
                                 URI,
                                 acceptedDate,
-                                NFTokenID
+                                NFTokenID,
+                                mintHash,
+                                status,
+                                error,
+                                resolve
                             } = row;
                         
                             const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
 
                             let strDateTime = '';
 
-                            if (acceptedDate) {
-                                const nDate = new Date(acceptedDate);
+                            if (date) {
+                                const nDate = new Date(date);
                                 const year = nDate.getFullYear();
                                 const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
                                 const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
@@ -218,11 +295,38 @@ export default function CollectedList({account}) {
                                                 <Typography variant="h3" color="#33C2FF">{name}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">Account: </Typography>
+                                                <Stack direction="row" spacing={0.2} alignItems="center">
+                                                    <Typography variant="s6">{account}</Typography>
+                                                    <Link
+                                                        underline="none"
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://xls20.bithomp.com/explorer/${account}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title="Check on Bithomp">
+                                                            <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
+                                                    <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                        <Tooltip title='Click to copy'>
+                                                            <IconButton size="small">
+                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Stack>
+                                            </Stack>
+
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s4">Collection: </Typography>
                                                 <Typography variant="s6">{collection}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Accepted On: </Typography>
+                                                <Typography variant="s4">Date: </Typography>
                                                 <Typography variant="s6">{strDateTime}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={2} alignItems="center">
@@ -241,6 +345,45 @@ export default function CollectedList({account}) {
                                                     <Typography variant="s6">{NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">URI(string): </Typography>
+                                                <Typography variant="s6">{convertHexToString(URI)}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">URI(hex): </Typography>
+                                                <Typography variant="s6">{URI}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">TxMint: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${mintHash}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s6">{mintHash}</Typography>
+                                                </Link>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">Status: </Typography>
+                                                <Typography variant="s6">{status} - {statusToString(status)}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">Error: </Typography>
+                                                <Typography variant="s6">{JSON.stringify(error)}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                {resolve?(
+                                                    <Button disabled variant="contained" color="primary" size="small">
+                                                        Resolving ...
+                                                    </Button>
+                                                ):(
+                                                    <Button variant="contained" color="primary" size="small" onClick={()=>handleResolve(row)}>
+                                                        Resolve
+                                                    </Button>
+                                                )
+                                                }
+                                            </Stack>
                                         </Stack>
                                     </TableCell>
                                     
@@ -254,15 +397,6 @@ export default function CollectedList({account}) {
                     </TableBody>
                 </Table>
             </Box>
-            { total > 0 &&
-                <ListToolbar
-                    count={total}
-                    rows={rows}
-                    setRows={setRows}
-                    page={page}
-                    setPage={setPage}
-                />
-            }
         </>
     );
 }

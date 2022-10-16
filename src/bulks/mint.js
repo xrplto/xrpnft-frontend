@@ -33,6 +33,9 @@ import ErrorIcon from '@mui/icons-material/Error';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DownloadIcon from '@mui/icons-material/Download';
 
+// Loader
+import { ClipLoader } from "react-spinners";
+
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
@@ -81,6 +84,7 @@ export default function BulkMint({slug}) {
     const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
+    const minterWallet = accountProfile?.minterWallet;
 
     // const levels = useSelector(state => state.status.metadata.levels);
     // const properties = useSelector(state => state.status.metadata.properties);
@@ -95,7 +99,7 @@ export default function BulkMint({slug}) {
     const [category, setCategory] = useState('NONE');
     const [royalty, setRoyalty] = useState('0');
     const [explicit, setExplicit] = useState(false);
-    const [issuerChoice, setIssuerChoice] = useState('no');
+    const [issuerChoice, setIssuerChoice] = useState('yes');
 
     const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
     // const [passphrase, setPassPhrase] = useState('');
@@ -109,14 +113,21 @@ export default function BulkMint({slug}) {
     const [includeTime, setIncludeTime] = useState(false);
     const [oldDateField, setOldDateField] = useState('');
     const [newDateField, setNewDateField] = useState('');
+    const [minterSet, setMinterSet] = useState(false);
 
     const [loading, setLoading] = useState(false);
+
+    const [checkingMinter, setCheckingMinter] = useState(false);
 
     // const [validPassword, setValidPassword] = useState(false);
     
     const active = account && accountToken && collection;
     let canDownload = active && metadata.length > 0 && nftName && isIPFS.cid(ipfsCID);
     let canCreate = canDownload; //  && passphrase && validPassword;
+
+    if (issuerChoice === 'yes' && !minterSet) {
+        canCreate = false;
+    }
 
     if (includeTime && !newDateField) {
         canDownload = false;
@@ -160,9 +171,43 @@ export default function BulkMint({slug}) {
         });
     };
 
+    const checkMinter = () => {
+        if (!account || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+        setCheckingMinter(true);
+        axios.get(`${BASE_URL}/account/info/${account}`, {headers: {'x-access-token': accountToken}})
+        .then(res => {
+            try {
+                if (res.status === 200 && res.data) {
+                    const data = res.data;
+                    const NFTokenMinter = res.data.account_data?.NFTokenMinter;
+                    if (minterWallet && NFTokenMinter && minterWallet.address === NFTokenMinter) {
+                        setMinterSet(true);
+                    }
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }).catch(err => {
+            console.log("err->>", err);
+        }).then(function () {
+            // Always executed
+            setCheckingMinter(false);
+        });
+    };
+
     useEffect(() => {
         getCollection();
     }, [slug]);
+
+    useEffect(() => {
+        if (issuerChoice === 'yes') {
+            setMinterSet(false);
+            checkMinter();
+        }
+    }, [issuerChoice]);
 
     const onCreateNft = async () => {
         if (!account || !accountToken) {
@@ -192,7 +237,7 @@ export default function BulkMint({slug}) {
             data.count = newMetaData.length;
             data.collection = collection.name;
 
-            if (issuerChoice)
+            if (issuerChoice === 'yes')
                 data.issuer = account;
             else
                 data.issuer = collection.minter;
@@ -510,16 +555,35 @@ export default function BulkMint({slug}) {
                         <Typography variant='p3'>If you select <Typography variant='s2'>YES</Typography>, you should set the NFTokenMinter account setting of your Account to XRPNFT.com's account in Manage Bulks page.</Typography>
                         <Typography variant='p3'>If you select <Typography variant='s2'>NO</Typography>, XRPNFT.com will mint NFTs with issuer field with its own address.</Typography>
 
-                        <ToggleButtonGroup
-                            color="primary"
-                            value={issuerChoice}
-                            exclusive
-                            size="small"
-                            onChange={handleChangeIssuerChoice}
-                        >
-                            <ToggleButton value="no" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>No</ToggleButton>
-                            <ToggleButton value="yes" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>Yes</ToggleButton>
-                        </ToggleButtonGroup>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                            <ToggleButtonGroup
+                                color="primary"
+                                value={issuerChoice}
+                                exclusive
+                                size="small"
+                                onChange={handleChangeIssuerChoice}
+                            >
+                                <ToggleButton value="no" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>No</ToggleButton>
+                                <ToggleButton value="yes" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>Yes</ToggleButton>
+                            </ToggleButtonGroup>
+                            {checkingMinter &&
+                                <ClipLoader color='#ff0000' size={15} />
+                            }
+
+                            {!checkingMinter && !minterSet && issuerChoice === 'yes' &&
+                                <>
+                                    <ErrorIcon color='error' />
+                                    <Typography variant='s2'>You should set NFTokenMinter on the previous page.</Typography>
+                                </>
+                            }
+
+                            {!checkingMinter && minterSet && issuerChoice === 'yes' &&
+                                <>
+                                    <CheckCircleIcon color='success'/>
+                                    <Typography variant='s2' color='#33C2FF'>You already set NFTokenMinter.</Typography>
+                                </>
+                            }
+                        </Stack>
                     </Stack>
 
                     <Typography variant='p4'>Content Media Type <Typography variant='s2'>*</Typography></Typography>

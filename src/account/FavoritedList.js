@@ -205,7 +205,7 @@ export default function FavoritedList({account}) {
                                     }}
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
-                                    <TableCell align="left" width='15%'>
+                                    <TableCell align="left">
                                         <ModalImage
                                             className='nftpreview1'
                                             small={imgUrl}

@@ -56,16 +56,16 @@ export default function Wallet() {
     const logoImageUrl = accountProfile?.logo?`https://s1.xrpnft.com/profile/${accountProfile.logo}`:null;
 
     useEffect(() => {
-        function getAcceptNftOffersCount() {
+        function getOffersCount() {
             if (!account || !accountToken) {
                 return;
             }
 
-            axios.get(`${BASE_URL}/account/offerscount?account=${account}`, {headers: {'x-access-token': accountToken}})
+            axios.get(`${BASE_URL}/account/count_offered?account=${account}`, {headers: {'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret && acceptNfts !== ret.count) {
-                        setAcceptNfts(ret.count);
+                        setAcceptNfts(ret.offerCount);
                     }
                 }).catch(err => {
                     console.log("Error on getting accept nfts count!!!", err);
@@ -74,9 +74,9 @@ export default function Wallet() {
                 });
         }
         console.log(`Get accept NFTs count`);
-        getAcceptNftOffersCount();
+        getOffersCount();
 
-        // const timer = setInterval(() => getAcceptNftOffersCount(), 5000);
+        // const timer = setInterval(() => getOffersCount(), 5000);
         // return () => {
         //     clearInterval(timer);
         // }
