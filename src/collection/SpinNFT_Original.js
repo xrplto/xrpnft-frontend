@@ -426,6 +426,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
             <BuyMintDialog
                 open={openBuyMint}
                 setOpen={setOpenBuyMint}
+                type="random"
                 costs={costs}
                 openSnackbar={openSnackbar}
                 minter={minter}

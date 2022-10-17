@@ -301,6 +301,7 @@ export default function ErrorList({account}) {
                                 flag,
                                 account,
                                 date,
+                                destination,
                                 meta,
                                 URI,
                                 acceptedDate,
@@ -401,6 +402,10 @@ export default function ErrorList({account}) {
                                                 <Typography variant="s4">Flags: </Typography>
                                                 <FlagsContainer Flags={flag}/>
                                                 {/* <Typography variant="s6">{strDateTime}</Typography> */}
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">Destination: </Typography>
+                                                <Typography variant="s6">{destination}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s4">TokenID: </Typography>

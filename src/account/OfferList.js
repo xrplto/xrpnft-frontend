@@ -345,50 +345,51 @@ export default function OfferList({account}) {
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
                                     <TableCell align="left">
-                                        <ModalImage
-                                            className='nftpreview1'
-                                            small={imgUrl}
-                                            large={imgUrl}
-                                            alt={name}
-                                            hideDownload
-                                            hideZoom
-                                            style={{
-                                                width: 96,
-                                                height: 96,
-                                                filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
-                                            }}
-                                        />
-                                    </TableCell>
-                                    
-                                    <TableCell align="left">
+                                        <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+                                            <ModalImage
+                                                className='nftpreview1'
+                                                small={imgUrl}
+                                                large={imgUrl}
+                                                alt={name}
+                                                hideDownload
+                                                hideZoom
+                                                style={{
+                                                    width: 96,
+                                                    height: 96,
+                                                    filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
+                                                }}
+                                            />
+                                            <Stack spacing={0.5}>
+                                                <Stack direction="row" justifyContent="space-between">
+                                                    <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                                    {status === NFToken.OFFERED ? (
+                                                        <Button variant="contained" color="primary" size="small" onClick={()=>handleApprove(row)}>
+                                                            Approve
+                                                        </Button>
+                                                    ):(
+                                                        <Stack>
+                                                            <Typography variant="s5">Pending ...</Typography>
+                                                            <Typography variant="s4">Code: {status}</Typography>
+                                                        </Stack>
+                                                    )
+                                                    }
+                                                </Stack>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Typography variant="s4">Collection: </Typography>
+                                                    <Typography variant="s6">{collection}</Typography>
+                                                </Stack>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Typography variant="s4">Offered On: </Typography>
+                                                    <Typography variant="s6">{strDateTime}</Typography>
+                                                </Stack>
+                                                <Stack direction="row" spacing={2} alignItems="center">
+                                                    <Typography variant="s4">Flags: </Typography>
+                                                    <FlagsContainer Flags={flag}/>
+                                                    {/* <Typography variant="s6">{strDateTime}</Typography> */}
+                                                </Stack>
+                                            </Stack>
+                                        </Stack>
                                         <Stack spacing={0.5}>
-                                            <Stack direction="row" justifyContent="space-between">
-                                                <Typography variant="h3" color="#33C2FF">{name}</Typography>
-                                                {status === NFToken.OFFERED ? (
-                                                    <Button variant="outlined" color="primary" size="small" onClick={()=>handleApprove(row)}>
-                                                        Approve
-                                                    </Button>
-                                                ):(
-                                                    <Stack>
-                                                    <Typography variant="s5">Pending ...</Typography>
-                                                    <Typography variant="s4">Code: {status}</Typography>
-                                                    </Stack>
-                                                )
-                                                }
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Collection: </Typography>
-                                                <Typography variant="s6">{collection}</Typography>
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Offered On: </Typography>
-                                                <Typography variant="s6">{strDateTime}</Typography>
-                                            </Stack>
-                                            <Stack direction="row" spacing={2} alignItems="center">
-                                                <Typography variant="s4">Flags: </Typography>
-                                                <FlagsContainer Flags={flag}/>
-                                                {/* <Typography variant="s6">{strDateTime}</Typography> */}
-                                            </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s4">TokenID: </Typography>
                                                 <Link

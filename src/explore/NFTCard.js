@@ -20,10 +20,12 @@ import { Icon } from '@iconify/react';
 
 // Utils
 import { getNFTokenInfo, convertHexToString, getNFTfromURI } from 'src/utils/parse';
+import { NFToken } from "src/utils/constants";
 
 // Components
 import FlagsContainer from 'src/components/Flags';
 import PriceContainer from './Price';
+import Label from './Label';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -41,7 +43,6 @@ const CardWrapper = styled('div')(
 );
 
 export default function NFTCard({ nft }) {
-    const [type, setType] = useState('');
     // const [imgUrl, setImgUrl] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -68,13 +69,19 @@ export default function NFTCard({ nft }) {
     const {
         uuid,
         name,
-        collection,
         flag,
+        type,
         account,
+        minter,
+        issuer,
         date,
         meta,
-        URI        
+        URI,
+        status,
+        destination
     } = nft;
+
+    const isSold = (minter !== account) || status > NFToken.MINTED || destination;
 
     const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
 
@@ -124,6 +131,21 @@ export default function NFTCard({ nft }) {
                         )`,
                 }}
             >
+                {isSold && (
+                    <Label
+                        variant="filled"
+                        color={(isSold && 'error') || 'info'}
+                        sx={{
+                        zIndex: 9,
+                        top: 24,
+                        right: 24,
+                        position: 'absolute',
+                        textTransform: 'uppercase'
+                        }}
+                    >
+                        SOLD
+                    </Label>
+                )}
                 <ColorExtractor getColors={getColors}>
                     <img src={imgUrl}
                         style={{
@@ -166,8 +188,14 @@ export default function NFTCard({ nft }) {
                     <Typography variant='s2'>Price</Typography>
                 </Stack>
                 <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>
-                    <Typography variant='s2'>{name}</Typography>
-                    <PriceContainer price="2000" />
+                    <Typography variant='s4' color="#33C2FF">{name}</Typography>
+                    {account === minter ? (
+                        <Typography variant='s2'>1 Mint</Typography>
+                    ):(
+                        <Typography variant='s2'></Typography>
+                    )
+                    }
+                    {/* <PriceContainer price="2000" /> */}
                 </Stack>
                 <Divider sx={{mt:0.8, mb:0.3}}/>
                 <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>

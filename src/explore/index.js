@@ -86,6 +86,7 @@ export default function ExploreNFT({collection}) {
                             <NFTCard
                                 key={nft.uuid}
                                 nft={nft}
+                                collection={collection}
                             />
                         //  </Grid>
                     ))

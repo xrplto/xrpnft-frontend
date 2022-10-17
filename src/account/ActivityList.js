@@ -84,11 +84,7 @@ const Activity = {
 export default function ActivityList({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
-
-    // const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
-    // const account = accountProfile?.account;
-    // const accountToken = accountProfile?.token;
-    
+   
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);

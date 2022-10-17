@@ -59,7 +59,7 @@ export default function Overview({data}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { darkMode, accountProfile, openSnackbar } = useContext(AppContext);
 
-    const account = accountProfile?.account;
+    const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
     const [collection, setCollection] = useState(null);
@@ -68,13 +68,13 @@ export default function Overview({data}) {
 
     useEffect(() => {
         function getCollection() {
-            if (!account || !accountToken) {
+            if (!accountLogin || !accountToken) {
                 openSnackbar('Please login', 'error');
                 return;
             }
 
             // https://api.xrpnft.com/api/collection/test1
-            axios.get(`${BASE_URL}/collection/${slug}?account=${account}`, {headers: {'x-access-token': accountToken}})
+            axios.get(`${BASE_URL}/collection/${slug}?account=${accountLogin}`, {headers: {'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -90,7 +90,7 @@ export default function Overview({data}) {
         if (slug)
             getCollection();
 
-    }, [account, accountToken, slug]);
+    }, [accountLogin, accountToken, slug]);
 
 
     return (

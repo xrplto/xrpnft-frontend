@@ -103,7 +103,7 @@ function GetNum(amount) {
     return num;
 }
 
-export default function BuyMintDialog({open, setOpen, costs, minter, openSnackbar, collection, setMints, setXrpBalance}) {
+export default function BuyMintDialog({open, setOpen, type, costs, minter, openSnackbar, collection, setMints, setXrpBalance}) {
     // "costs": [
     //     {
     //         "md5": "0413ca7cfc258dfaf698c02fe304e607",
@@ -351,7 +351,9 @@ export default function BuyMintDialog({open, setOpen, costs, minter, openSnackba
 
                 <DialogContent>
                     <Stack sx={{pl:1, pr:1}}>
-                        <Typography variant="p5" sx={{mt: 0}}>To power up the spinner, you need at least 1 or more Mints. This will enable you to purchase NFTs that is randomly selected from this collection.</Typography>
+                        {type === "random" &&
+                            <Typography variant="p5" sx={{mt: 0}}>To power up the spinner, you need at least 1 or more Mints. This will enable you to purchase NFTs that is randomly selected from this collection.</Typography>
+                        }
                         <Typography variant="p5" sx={{mt: 2}}>Mints purchased for this collection can not be used on the other collections.</Typography>
                         
                         <Stack spacing={2} sx={{mt: 2}}>

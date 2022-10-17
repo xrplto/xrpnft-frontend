@@ -274,65 +274,67 @@ export default function NoNFTIDList({account}) {
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
                                     <TableCell align="left">
-                                        <ModalImage
-                                            className='nftpreview1'
-                                            small={imgUrl}
-                                            large={imgUrl}
-                                            alt={name}
-                                            hideDownload
-                                            hideZoom
-                                            style={{
-                                                width: 96,
-                                                height: 96,
-                                                filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
-                                            }}
-                                        />
-                                    </TableCell>
-                                    
-                                    <TableCell align="left">
                                         <Stack spacing={0.5}>
-                                            <Stack direction="row" justifyContent="space-between">
-                                                <Typography variant="h3" color="#33C2FF">{name}</Typography>
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Account: </Typography>
-                                                <Stack direction="row" spacing={0.2} alignItems="center">
-                                                    <Typography variant="s6">{account}</Typography>
-                                                    <Link
-                                                        underline="none"
-                                                        color="inherit"
-                                                        target="_blank"
-                                                        href={`https://xls20.bithomp.com/explorer/${account}`}
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        <Tooltip title="Check on Bithomp">
-                                                            <IconButton edge="end" aria-label="bithomp" size="small">
-                                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </Link>
-                                                    <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                        <Tooltip title='Click to copy'>
-                                                            <IconButton size="small">
-                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </CopyToClipboard>
-                                                </Stack>
-                                            </Stack>
+                                            <Stack direction="row" spacing={2} alignItems="center" mb={2}>
+                                                <ModalImage
+                                                    className='nftpreview1'
+                                                    small={imgUrl}
+                                                    large={imgUrl}
+                                                    alt={name}
+                                                    hideDownload
+                                                    hideZoom
+                                                    style={{
+                                                        width: 96,
+                                                        height: 96,
+                                                        filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
+                                                    }}
+                                                />
+                                            
+                                                <Stack>
+                                                    <Stack direction="row" justifyContent="space-between">
+                                                        <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <Typography variant="s4">Account: </Typography>
+                                                        <Stack direction="row" spacing={0.2} alignItems="center">
+                                                            <Typography variant="s6">{account}</Typography>
+                                                            <Link
+                                                                underline="none"
+                                                                color="inherit"
+                                                                target="_blank"
+                                                                href={`https://xls20.bithomp.com/explorer/${account}`}
+                                                                rel="noreferrer noopener nofollow"
+                                                            >
+                                                                <Tooltip title="Check on Bithomp">
+                                                                    <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                        <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </Link>
+                                                            <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                                <Tooltip title='Click to copy'>
+                                                                    <IconButton size="small">
+                                                                        <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </CopyToClipboard>
+                                                        </Stack>
+                                                    </Stack>
 
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Collection: </Typography>
-                                                <Typography variant="s6">{collection}</Typography>
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Date: </Typography>
-                                                <Typography variant="s6">{strDateTime}</Typography>
-                                            </Stack>
-                                            <Stack direction="row" spacing={2} alignItems="center">
-                                                <Typography variant="s4">Flags: </Typography>
-                                                <FlagsContainer Flags={flag}/>
-                                                {/* <Typography variant="s6">{strDateTime}</Typography> */}
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <Typography variant="s4">Collection: </Typography>
+                                                        <Typography variant="s6">{collection}</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <Typography variant="s4">Date: </Typography>
+                                                        <Typography variant="s6">{strDateTime}</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" spacing={2} alignItems="center">
+                                                        <Typography variant="s4">Flags: </Typography>
+                                                        <FlagsContainer Flags={flag}/>
+                                                        {/* <Typography variant="s6">{strDateTime}</Typography> */}
+                                                    </Stack>
+                                                </Stack>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s4">TokenID: </Typography>

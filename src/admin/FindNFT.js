@@ -13,6 +13,7 @@ import {
     Button,
     CardMedia,
     IconButton,
+    InputAdornment,
     Link,
     Stack,
     Table,
@@ -20,6 +21,7 @@ import {
     TableCell,
     TableHead,
     TableRow,
+    TextField,
     Tooltip,
     Typography,
     Divider
@@ -46,13 +48,13 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { fIntNumber } from 'src/utils/formatNumber';
+import { NFToken } from 'src/utils/constants';
 
 // Loader
-import { PulseLoader, ClockLoader } from "react-spinners";
+import { PulseLoader, ClockLoader, ClipLoader } from "react-spinners";
 import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
-import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 // ----------------------------------------------------------------------
 
@@ -62,25 +64,62 @@ function truncate(str, n) {
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-export default function CreatedList({account}) {
+function statusToString(status) {
+
+    for (const [key, value] of Object.entries(NFToken)) {
+        if (value === status)
+            return key;
+    }
+    return 'NONE';
+    // switch (status) {
+    //     case NFToken
+    // }
+}
+
+/**
+ * Converts hex to its string equivalent. Useful to read the Domain field and some Memos.
+ *
+ * @param hex - The hex to convert to a string.
+ * @param encoding - The encoding to use. Defaults to 'utf8' (UTF-8). 'ascii' is also allowed.
+ * @returns The converted string.
+ * @category Utilities
+ */
+ function convertHexToString(hex, encoding = 'utf8') {
+    let ret = '';
+    try {
+        ret = Buffer.from(hex, 'hex').toString(encoding);
+    } catch (err) {
+    }
+    return ret;
+}
+
+export default function FindNFT() {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
-    // const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
-    // const account = accountProfile?.account;
-    // const accountToken = accountProfile?.token;
+    const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
+    const accountAdmin = accountProfile?.account;
+    const accountToken = accountProfile?.token;
     
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
     const [nfts, setNfts] = useState([]);
+    const [filter, setFilter] = useState('');
 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         function getNfts() {
+            if (!accountAdmin || !accountToken) {
+                openSnackbar('Please login', 'error');
+                return;
+            }
             setLoading(true);
-            axios.get(`${BASE_URL}/account/created?account=${account}&page=${page}&limit=${rows}`)
+
+            const body = { filter };
+
+            axios.post(`${BASE_URL}/admin/findnft?page=${page}&limit=${rows}`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -88,28 +127,51 @@ export default function CreatedList({account}) {
                         setNfts(ret.nfts);
                     }
                 }).catch(err => {
-                    console.log("Error on getting created nfts list!!!", err);
+                    console.log("Error on getting nfts list!!!", err);
                 }).then(function () {
                     // always executed
                     setLoading(false);
                 });
         }
         getNfts();
-    }, [account, page, rows]);
+    }, [page, rows, accountAdmin, accountToken, filter]);
+
+    const handleChangeFilter = (e) => {
+        setFilter(e.target.value);
+    }
 
     return (
         <>
-            {loading ? (
-                <Stack alignItems="center">
-                    <PulseLoader color='#00AB55' size={10} />
+            <TextField
+                id='textFilter'
+                // autoFocus
+                // fullWidth
+                variant='outlined'
+                placeholder='Filter'
+                margin='dense'
+                onChange={handleChangeFilter}
+                autoComplete='new-password'
+                inputProps={{autoComplete: 'off'}}
+                value={filter}
+                onFocus={event => {
+                    event.target.select();
+                }}
+                sx={{pl:2, pr:2, pt: 0, pb: 0, mt: 4}}
+                onKeyDown={(e) => e.stopPropagation()}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="start">
+                            {loading && <ClipLoader color='#ff0000' size={15} /> }
+                        </InputAdornment>
+                    ),
+                }}
+            />
+            {nfts && nfts.length === 0 &&
+                <Stack alignItems="center" sx={{mt: 5}}>
+                    <Typography variant="s7">No Items</Typography>
                 </Stack>
-            ):(
-                nfts && nfts.length === 0 &&
-                    <Stack alignItems="center" sx={{mt: 5}}>
-                        <Typography variant="s7">No Items</Typography>
-                    </Stack>
-            )
             }
+            
             <Box
                 sx={{
                     display: "flex",
@@ -160,27 +222,35 @@ export default function CreatedList({account}) {
                                 flag,
                                 account,
                                 date,
+                                destination,
                                 meta,
                                 URI,
-                                NFTokenID
+                                acceptedDate,
+                                NFTokenID,
+                                mintHash,
+                                status,
+                                error,
+                                resolve
                             } = row;
                         
                             const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
 
                             let strDateTime = '';
 
-                            const nDate = new Date(date);
-                            const year = nDate.getFullYear();
-                            const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                            const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                            const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                            const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                            const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                            if (date) {
+                                const nDate = new Date(date);
+                                const year = nDate.getFullYear();
+                                const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
+                                const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
+                                const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                                const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                                const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
 
-                            //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-                            //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-                            strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-                            // const strTime = `${hour}:${min}:${sec}`;
+                                //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
+                                //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
+                                strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
+                                // const strTime = `${hour}:${min}:${sec}`;
+                            }
 
                             return (
                                 <TableRow
@@ -213,11 +283,38 @@ export default function CreatedList({account}) {
                                                     <Typography variant="h3" color="#33C2FF">{name}</Typography>
                                                 </Stack>
                                                 <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Typography variant="s4">Account: </Typography>
+                                                    <Stack direction="row" spacing={0.2} alignItems="center">
+                                                        <Typography variant="s6">{account}</Typography>
+                                                        <Link
+                                                            underline="none"
+                                                            color="inherit"
+                                                            target="_blank"
+                                                            href={`https://xls20.bithomp.com/explorer/${account}`}
+                                                            rel="noreferrer noopener nofollow"
+                                                        >
+                                                            <Tooltip title="Check on Bithomp">
+                                                                <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                    <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </Link>
+                                                        <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                            <Tooltip title='Click to copy'>
+                                                                <IconButton size="small">
+                                                                    <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </CopyToClipboard>
+                                                    </Stack>
+                                                </Stack>
+
+                                                <Stack direction="row" spacing={1} alignItems="center">
                                                     <Typography variant="s4">Collection: </Typography>
                                                     <Typography variant="s6">{collection}</Typography>
                                                 </Stack>
                                                 <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s4">Created On: </Typography>
+                                                    <Typography variant="s4">Date: </Typography>
                                                     <Typography variant="s6">{strDateTime}</Typography>
                                                 </Stack>
                                                 <Stack direction="row" spacing={2} alignItems="center">
@@ -229,6 +326,10 @@ export default function CreatedList({account}) {
                                         </Stack>
                                         <Stack spacing={0.5}>
                                             <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">Destination: </Typography>
+                                                <Typography variant="s6">{destination}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s4">TokenID: </Typography>
                                                 <Link
                                                     color="inherit"
@@ -238,6 +339,33 @@ export default function CreatedList({account}) {
                                                 >
                                                     <Typography variant="s6">{NFTokenID}</Typography>
                                                 </Link>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">URI(string): </Typography>
+                                                <Typography variant="s6">{convertHexToString(URI)}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">URI(hex): </Typography>
+                                                <Typography variant="s6">{URI}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">TxMint: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${mintHash}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s6">{mintHash}</Typography>
+                                                </Link>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">Status: </Typography>
+                                                <Typography variant="s6">{status} - {statusToString(status)}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">Error: </Typography>
+                                                <Typography variant="s6">{JSON.stringify(error)}</Typography>
                                             </Stack>
                                         </Stack>
                                     </TableCell>
@@ -252,15 +380,6 @@ export default function CreatedList({account}) {
                     </TableBody>
                 </Table>
             </Box>
-            { total > 0 &&
-                <ListToolbar
-                    count={total}
-                    rows={rows}
-                    setRows={setRows}
-                    page={page}
-                    setPage={setPage}
-                />
-            }
         </>
     );
 }

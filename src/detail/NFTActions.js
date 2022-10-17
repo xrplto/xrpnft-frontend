@@ -20,6 +20,14 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // Iconify
 import { Icon } from '@iconify/react';
 
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
+
+// Utils
+import { getNFTokenInfo, convertHexToString, getNFTfromURI } from 'src/utils/parse';
+import { NFToken } from "src/utils/constants";
+
 // Components
 import BaseDialog from 'src/components/dialog/BaseDialog';
 import CreateSellOfferDgContent from 'src/components/dialog/CreateSellOfferDgContent';
@@ -36,27 +44,33 @@ export default function NFTActions({ nft }) {
         name,
         collection,
         flag,
+        type,
         account,
+        minter,
+        issuer,
         date,
         meta,
-        URI
+        URI,
+        status,
+        destination
     } = nft;
+
+    const { accountProfile } = useContext(AppContext);
+    const accountLogin = accountProfile?.account;
+    const accountToken = accountProfile?.token;
+
+    const isSold = (minter !== account) || status > NFToken.MINTED || destination;
 
     const [isOpenSellDg, setIsOpenSellDg] = useState(false);
     const [isOpenBuyDg, setIsOpenBuyDg] = useState(false);
     const [isOpenBurnDg, setIsOpenBurnDg] = useState(false);
-    const account_nfts = []; // useSelector(state => state.account.nfts);
-    console.log("account nfts", account_nfts);
 
-    const isOwner = false; // account_nfts.findIndex((nft) => nft.TokenID === TokenID) > -1;
+    const isOwner = accountLogin === account;
 
-    const login = false; // useSelector(state => state.account.login);
     const [isPageLoading, setPageLoading] = useState(false);
     const [sellOffers, setSellOffers] = useState([]);
     const [buyOffers, setBuyOffers] = useState([]);
     const [owner, setOwner] = useState('');
-
-    
 
     const fetchOffers = async (mounted) => {
         // setPageLoading(true)
@@ -121,7 +135,7 @@ export default function NFTActions({ nft }) {
                                 startIcon={<LocalOfferIcon />}
                                 onClick={() => setIsOpenSellDg(true)}
                                 color='success'
-                                disabled={!login}
+                                disabled={!accountLogin}
                             >
                                 Sell
                             </Button>
@@ -131,7 +145,7 @@ export default function NFTActions({ nft }) {
                                 color='warning'
                                 startIcon={<Icon icon='ps:feedburner' />}
                                 onClick={() => setIsOpenBurnDg(false)}
-                                disabled={!isOwner || !login} // you cannot burn NFToken if you are not owner
+                                disabled={!isOwner || !accountLogin} // you cannot burn NFToken if you are not owner
                             >
                                 Burn
                             </Button>
@@ -139,13 +153,13 @@ export default function NFTActions({ nft }) {
                     ):(
                         <Button
                             sx={{ borderRadius: 10 }}
-                            disabled={!login}
+                            disabled={!accountLogin}
                             variant='outlined'
                             // onClick={makeBuyOffer}
                             onClick={() => setIsOpenBuyDg(false)}
                             startIcon={<LocalOfferIcon />}
                         >
-                            Best offer
+                            Buy NFT
                         </Button>
                     )
                 }
