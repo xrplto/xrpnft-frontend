@@ -165,7 +165,7 @@ const CardOverlay = styled('div')(
 `
 );
   
-export default function SpinNFT({ collection, nfts, setView }) {
+export default function SpinNFT({ collection, setView }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { width, height } = useWindowSize();
@@ -327,9 +327,8 @@ export default function SpinNFT({ collection, nfts, setView }) {
         setSpinning(true);
         // setNft(null);
 
-        const body = { account, collectionName: collection.name, cid: collection.uuid };
+        const body = { account, cid: collection.uuid };
 
-        // https://api.xrpnft.com/api/spin/chooseone
         axios.post(`${BASE_URL}/spin/chooseone`, body, {headers: {'x-access-token': accountToken}})
             .then(res => {
                 let ret = res.status === 200 ? res.data : undefined;
@@ -418,7 +417,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                         setView('');
                     }}
                 >
-                    <Typography sx={{ml:0}}>View Collection Items</Typography>
+                    <Typography sx={{ml:0}}>View Minted Items</Typography>
                 </Link> */}
             </Stack>
 
@@ -481,7 +480,7 @@ export default function SpinNFT({ collection, nfts, setView }) {
                         <Stack spacing={1} sx={{mb:6}}>
                             <Typography variant="p5">To mint a random NFT from this collection, you need to purchase Mints.</Typography>
                             <Typography variant="p5">It can be used against the purchase of only <Typography variant="s5" color="#57CA22">{collection.name}</Typography> Collection.</Typography>
-                            <Typography variant="p5">You currently have <Typography variant="s5" color="#33C2FF">{mints} mints</Typography> available and <Typography variant="s5" color="#33C2FF">{xrpBalance} XRP</Typography> tokens in your wallet.</Typography>
+                            <Typography variant="p5">You currently have <Typography variant="s5" color="#33C2FF">{mints} Mints</Typography> available and <Typography variant="s5" color="#33C2FF">{xrpBalance} XRP</Typography> tokens in your wallet.</Typography>
                             <Typography variant="p5" sx={{pb: 3}}>There are currently <Typography variant="s5" color="error">{pendingNfts}</Typography> / <Typography variant="s4" color="#33C2FF">{collection.items}</Typography> NFTs left in this collection.</Typography>
                             
                             <Stack direction="row" spacing={2} justifyContent="center">

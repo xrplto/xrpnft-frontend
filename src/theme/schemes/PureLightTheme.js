@@ -1366,7 +1366,7 @@ export const PureLightTheme = createTheme({
     },
     caption: {
       fontSize: 13,
-      textTransform: 'uppercase',
+      // textTransform: 'uppercase',
       color: colors.alpha.black[50]
     },
     subtitle1: {

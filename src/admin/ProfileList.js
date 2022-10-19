@@ -207,6 +207,11 @@ export default function ProfileList({setCounterAccount}) {
                                                 <Typography variant="s4">Login: </Typography>
                                                 <Typography variant="s6">{strDateTime}</Typography>
                                             </Stack>
+
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">Minter: </Typography>
+                                                <Typography variant="s7">{minterWallet.address} <Typography variant="s2">({minterWallet.name})</Typography></Typography>
+                                            </Stack>
                                         </React.Fragment>
                                     }
                                     />

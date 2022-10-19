@@ -82,7 +82,7 @@ function truncate(str, n) {
     return ret;
 }
 
-export default function OfferList({account}) {
+export default function AcceptList({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -307,7 +307,7 @@ export default function OfferList({account}) {
                                 date,
                                 meta,
                                 URI,
-                                offeredDate,
+                                time,
                                 NFTokenID,
                                 SellOfferID,
                                 mintHash,
@@ -318,8 +318,8 @@ export default function OfferList({account}) {
 
                             let strDateTime = '';
 
-                            if (offeredDate) {
-                                const nDate = new Date(offeredDate);
+                            if (time) {
+                                const nDate = new Date(time);
                                 const year = nDate.getFullYear();
                                 const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
                                 const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
@@ -362,7 +362,7 @@ export default function OfferList({account}) {
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row" justifyContent="space-between">
                                                     <Typography variant="h3" color="#33C2FF">{name}</Typography>
-                                                    {status === NFToken.OFFERED ? (
+                                                    {SellOfferID ? (
                                                         <Button variant="contained" color="primary" size="small" onClick={()=>handleApprove(row)}>
                                                             Approve
                                                         </Button>

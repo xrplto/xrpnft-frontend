@@ -35,7 +35,7 @@ import CollectedList from './CollectedList';
 import CreatedList from './CreatedList';
 import FavoritedList from './FavoritedList';
 import ActivityList from './ActivityList';
-import OfferList from './OfferList';
+import AcceptList from './AcceptList';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -333,7 +333,7 @@ export default function Account({profile, tab}) {
                 </TabPanel>
                 <TabPanel value={tabID} id={4}>
                     <Stack sx={{minHeight: '20vh'}}>
-                        <OfferList account={profile.account} />
+                        <AcceptList account={profile.account} />
                     </Stack>
                 </TabPanel>
             </Stack>
