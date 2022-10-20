@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
 import { useSnackbar } from 'notistack';
+import { useState, useEffect } from 'react';
 import { FadeLoader } from 'react-spinners';
+import { normalizeAmount } from 'src/utils/normalizers';
 
 // Material
 import {
@@ -11,25 +12,31 @@ import {
     Container,
     Divider,
     Grid,
+    IconButton,
+    Link,
     List,
     ListItem,
     ListItemAvatar,
+    Stack,
+    Tooltip,
     Typography
 } from '@mui/material';
+// import { deepOrange } from '@mui/material/colors';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 // Iconify
 import { Icon } from '@iconify/react';
 
 // Utils
-import { acceptBuyOffer, cancelOffer } from 'src/utils/tokenActions';
+import { getUnixTimeEpochFromRippleEpoch } from 'src/utils/parse';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
-// Redux
-import { useSelector, useDispatch } from 'react-redux';
-import { setNFTs } from 'src/redux/statusSlice';
+// Components
+import CountdownTimer from './CountDownTimer';
 
 // cannot accept buy offer if you are not the owner of token.
 // cannot accept sell offer if seller is not the owner of token.
@@ -37,63 +44,16 @@ import { setNFTs } from 'src/redux/statusSlice';
 // cannot accept offer if the expiration time and the closing time of the parent ledger has passed.
 // cannot accept an offer made by you.
 
-export default function BuyOffersList({ _TokenID, _offers, _isOwner }) {
-    const { enqueueSnackbar } = useSnackbar();
-    const dispatch = useDispatch();
+export default function BuyOffersList({ NFTokenID, offers, isOwner }) {
     const [loading, setLoading] = useState(false);
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;
-    // const account = useSelector(state => state.account.account);
-    const [offers, setOffers] = useState([..._offers]);
-    
+
     const handleCancelOffer = async (index) => {
-        if (!account) return;
-        
-        setLoading(true)
-        try {
-            const res = await cancelOffer(account.secret, index, _TokenID)
-            setOffers(res.buyOffers)
-            enqueueSnackbar('Cancel offer success:' + index.slice(0, 10) + '...', {
-                variant: 'success'
-            })
-        } catch (e) {
-            // TODO: snack bar error
-            enqueueSnackbar(e.message, {
-                variant: 'error'
-            })
-        }
-        setLoading(false)
     }
 
-    const handleAccept = async (index) => {
-        setLoading(true)
-        try {
-            const res = await acceptBuyOffer(account.secret, index)
-            console.log(res)
-            if(res){
-            dispatch(setNFTs(res.account_nfts))
-            enqueueSnackbar('Accept offer success:' + index.slice(0, 10) + '...', {
-                variant: 'success'
-            })
-        }
-        else {
-            enqueueSnackbar('Offer failed. You can’t create a buy offer. The owner address is incorrect. May be the NFT’s owner is changed', {
-                variant: 'error'
-            })
-           }
-
-        } catch (e) {
-            // TODO: snack bar error
-            enqueueSnackbar(e.message, {
-                variant: 'error'
-            })
-        }
-        setLoading(false)
+    const handleAcceptOffer = async (index) => {
     }
-
-    useEffect(() => {
-        setOffers([..._offers])
-    }, [_offers])
 
     return (
         <>
@@ -102,92 +62,81 @@ export default function BuyOffersList({ _TokenID, _offers, _isOwner }) {
                 open={loading}
             >
                 <FadeLoader color='lightGreen' size={50} />
+                {/* <Typography>loading...</Typography> */}
             </Backdrop>
-            <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+
+            <Stack>
                 {
-                    offers.length ?
-                        offers.map((offer) => (
-                            <div key={offer.nft_offer_index}>
-                                <ListItem alignItems='center' >
-                                    <ListItemAvatar>
-                                        <Avatar sx={{ bgcolor: 'lightseagreen' }}>
-                                            <Typography>
-                                                {offer.nft_offer_index.slice(0, 3)}
-                                            </Typography>
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <Container sx={{ overflowWrap: 'anywhere' }}>
-                                        <Grid container>
-                                            <Grid item xs={2}>
-                                                <Typography
-                                                    variant='subtitle1'
+                    offers.map((offer, idx) => {
+                        const price = normalizeAmount(offer.amount);
+                        return (
+                            <Stack key={offer.nft_offer_index} sx={{mt: 2}}>
+                                <Stack direction="row" spacing={1} alignItems="center">
+
+                                    <Stack>
+                                        {account && isOwner &&
+                                            <Tooltip title="Accept Offer">
+                                                <IconButton
+                                                    aria-label='close'
+                                                    onClick={() => handleAcceptOffer(offer.nft_offer_index)}
+                                                    
                                                 >
-                                                    Price
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={10}>
-                                                <Typography
-                                                    variant='string'
+                                                    <CheckCircleOutlineIcon fontSize='large' color='success' />
+                                                </IconButton>
+                                            </Tooltip>
+                                        }
+
+                                        {account && !isOwner &&
+                                            <Tooltip title="Cancel Offer">
+                                                <IconButton
+                                                    aria-label='close'
+                                                    onClick={() => handleCancelOffer(offer.nft_offer_index)}
+                                                    
                                                 >
-                                                    {offer.amount / (10 ** 6) + ' XRP'}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={2}>
-                                                <Typography
-                                                    variant='subtitle1'
-                                                >
-                                                    Offerer:
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={10}>
-                                                <Typography
-                                                    variant='string'
-                                                >
-                                                    {offer.owner}
-                                                </Typography>
-                                            </Grid>
-                                            <Grid item xs={12} >
-                                                <ButtonGroup variant="outlined">
-                                                    <Button aria-label="accept"
-                                                        onClick={() => handleAccept(offer.nft_offer_index)}
-                                                        color="success"
-                                                        disabled={      // Can't accept Buy offer when
-                                                            !_isOwner  // account is not owner of nft
-                                                            || offer.owner === account.key  // or account is owner of offer
-                                                            // account.key === offer.owner
-                                                            // || owner === offer.owner
-                                                        }
-                                                        sx={{ borderRadius: 10 }}
-                                                        startIcon={<Icon icon='akar-icons:check' />}
-                                                    >
-                                                        Accept
-                                                    </Button>
-                                                    <Button aria-label="cancel"
-                                                        onClick={() => handleCancelOffer(offer.nft_offer_index)}
-                                                        color="error"
-                                                        disabled={
-                                                            // Can't cancel buy offer
-                                                            // when the account is not
-                                                            // owner of offer
-                                                            account.key !== offer.owner
-                                                        }
-                                                        sx={{ borderRadius: 10 }}
-                                                        startIcon={<Icon icon='iconoir:cancel' />}
-                                                    >
-                                                        Cancel
-                                                    </Button>
-                                                </ButtonGroup>
-                                            </Grid>
-                                        </Grid>
-                                    </Container>
-                                </ListItem>
-                                <Divider component='li' />
-                            </div>
-                        ))
-                        :
-                        <Typography>No Offers yet</Typography>
+                                                    <HighlightOffIcon fontSize='large' color='error' />
+                                                </IconButton>
+                                            </Tooltip>
+                                        }
+                                    </Stack>
+
+                                    <Stack spacing={1}>
+                                        <Stack direction="row" spacing={2} alignItems="center">
+                                            <Typography variant='s6' color='#33C2FF'>{price.amount} {price.name}</Typography>
+                                            <Link
+                                                color="inherit"
+                                                target="_blank"
+                                                href={`https://xls20.bithomp.com/explorer/${offer.owner}`}
+                                                rel="noreferrer noopener nofollow"
+                                            >
+                                                <Typography variant='s6'>{offer.owner}</Typography>
+                                            </Link>
+                                        </Stack>
+
+                                        {offer.destination &&
+                                            <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                                <Typography variant='s4'>Destination</Typography>
+                                                <Typography variant='s6'>{offer.destination}</Typography>
+                                            </Stack>
+                                        }
+
+                                        {/* {offer.expiration ?
+                                            <Stack direction="row" alignItems="center">
+                                                <Typography variant='s4'>Expires by {new Date(getUnixTimeEpochFromRippleEpoch(offer.expiration)).toLocaleString()}</Typography>
+                                                <CountdownTimer targetDate={getUnixTimeEpochFromRippleEpoch(offer.expiration)} />
+                                            </Stack>
+                                            :
+                                            <Stack direction="row" alignItems="center">
+                                                <Typography variant='string'>No Expiration</Typography>
+                                            </Stack>
+                                        } */}
+                                    </Stack>
+                                </Stack>
+                                <Divider sx={{mt:2}} />
+                            </Stack>
+                        )
+                    })
                 }
-            </List>
+            </Stack>
         </>
     );
 }

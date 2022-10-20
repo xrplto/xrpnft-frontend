@@ -13,7 +13,6 @@ export default function Collection({data}) {
             {view === 'random' ? (
                 <SpinNFT
                     collection={data.collection}
-                    nfts={data.spins}
                     setView={setView}
                 />
             ):(

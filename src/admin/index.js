@@ -40,7 +40,7 @@ import CollectedList from '../account/CollectedList';
 import CreatedList from '../account/CreatedList';
 import FavoritedList from '../account/FavoritedList';
 import ActivityList from '../account/ActivityList';
-import OfferList from '../account/OfferList';
+import AcceptList from '../account/AcceptList';
 import FindNFT from './FindNFT';
 
 const IconCover = styled('div')(
@@ -302,7 +302,7 @@ export default function Admin() {
                         </TabPanel>
                         <TabPanel value={tabID} id={6}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <OfferList account={counterAccount} />
+                                <AcceptList account={counterAccount} />
                             </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={7}>

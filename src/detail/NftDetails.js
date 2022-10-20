@@ -40,8 +40,12 @@ export default function NFTDetails({nft}) {
         URI,
         royalty,
         taxon,
-        collectionSlug
+        cslug,
+        NFTokenID,
+        issuer
     } = nft;
+
+    console.log(nft);
 
     const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
 
@@ -94,8 +98,9 @@ export default function NFTDetails({nft}) {
                             <Typography variant="s6">{transferFee} %</Typography>
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
+
                         <Stack spacing={1}>
-                            <Typography variant="caption">Issuer</Typography>
+                            <Typography variant="caption">Owner</Typography>
                             <Link
                                 href={`https://xls20.bithomp.com/explorer/${account}`}
                                 sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
@@ -107,6 +112,35 @@ export default function NFTDetails({nft}) {
                                 <Typography sx={{ml:1}}>{account}</Typography>
                             </Link>
                         </Stack>
+                        <Divider sx={{mt:2, mb:2}}/>
+
+                        <Stack spacing={1}>
+                            <Typography variant="caption">Issuer</Typography>
+                            <Link
+                                href={`https://xls20.bithomp.com/explorer/${issuer}`}
+                                sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
+                                underline='hover'
+                                target="_blank"
+                                variant='info'
+                                rel="noreferrer noopener nofollow"
+                            >
+                                <Typography sx={{ml:1}}>{issuer}</Typography>
+                            </Link>
+                        </Stack>
+                        <Divider sx={{mt:2, mb:2}}/>
+                    
+                        <Stack spacing={1}>
+                            <Typography variant="caption">NFTokenID</Typography>
+                            <Link
+                                href={`https://xls20.bithomp.com/explorer/${NFTokenID}`}
+                                target='_blank'
+                                variant='info'
+                                rel="noreferrer noopener nofollow"
+                            >
+                                <Typography sx={{ml:1}}>{NFTokenID}</Typography>
+                            </Link>
+                        </Stack>
+
                         <Divider sx={{mt:2, mb:2}}/>
                         
                         <Stack spacing={1}>
@@ -147,8 +181,8 @@ export default function NFTDetails({nft}) {
 
                         <Stack spacing={1}>
                             <Typography variant='caption'>Collection</Typography>
-                            {collectionSlug ? (
-                                <Link href={`/collection/${collectionSlug}`} underline='none'>
+                            {cslug ? (
+                                <Link href={`/collection/${cslug}`} underline='none'>
                                     <Typography sx={{pl:1}}>{collectionName}</Typography>
                                 </Link>
                             ):(

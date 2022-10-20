@@ -340,15 +340,15 @@ export default function ActivityList({account}) {
                                         <>
                                             <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
                                                 <Stack direction="row" spacing={1}>
-                                                    <Avatar alt="C" src={`https://xrpl.to/static/tokens/${data.token?.md5}.${data.token?.ext}`} />
+                                                    <Avatar alt="C" src={`https://xrpl.to/static/tokens/${data.cost?.md5}.${data.cost?.ext}`} />
                                                     <Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Collection: </Typography>
                                                             <Typography variant="s2">{data.cname}</Typography>
                                                         </Stack>
                                                         <Stack direction='row' spacing={0.8} alignItems="center">
-                                                            <Typography variant='p4' color="#EB5757">{data.token?.cost}</Typography>
-                                                            <Typography variant='s2'>{data.token?.name}</Typography>
+                                                            <Typography variant='p4' color="#EB5757">{data.cost?.amount}</Typography>
+                                                            <Typography variant='s2'>{data.cost?.name}</Typography>
                                                         </Stack>
                                                     </Stack>
                                                 </Stack>

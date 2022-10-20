@@ -39,6 +39,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ApprovalOutlinedIcon from '@mui/icons-material/ApprovalOutlined';
 import CasinoIcon from '@mui/icons-material/Casino';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 
 // Context
 import { useContext } from 'react';
@@ -80,7 +81,7 @@ export default function CollectedList({account}) {
     useEffect(() => {
         function getNfts() {
             setLoading(true);
-            axios.get(`${BASE_URL}/account/accepted?account=${account}&page=${page}&limit=${rows}`)
+            axios.get(`${BASE_URL}/account/collected?account=${account}&page=${page}&limit=${rows}`)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -162,7 +163,7 @@ export default function CollectedList({account}) {
                                 date,
                                 meta,
                                 URI,
-                                acceptedDate,
+                                time,
                                 NFTokenID
                             } = row;
                         
@@ -170,8 +171,8 @@ export default function CollectedList({account}) {
 
                             let strDateTime = '';
 
-                            if (acceptedDate) {
-                                const nDate = new Date(acceptedDate);
+                            if (time) {
+                                const nDate = new Date(time);
                                 const year = nDate.getFullYear();
                                 const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
                                 const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
@@ -213,7 +214,28 @@ export default function CollectedList({account}) {
                                             />
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row" justifyContent="space-between">
-                                                    <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                                    <Link
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`/assets/${uuid}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                                    </Link>
+
+                                                    <Link
+                                                        underline="none"
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`/assets/${uuid}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title="Make Sell on this NFT">
+                                                            <IconButton edge="end" aria-label="store" size="small">
+                                                                <StorefrontIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
                                                 </Stack>
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     <Typography variant="s4">Collection: </Typography>
