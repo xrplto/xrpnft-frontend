@@ -232,6 +232,7 @@ export default function SpinNFT({ collection, setView }) {
     // }
 
     const {
+        uuid,
         name,
         slug,
         items,
@@ -365,10 +366,8 @@ export default function SpinNFT({ collection, setView }) {
                 open={openBuyMint}
                 setOpen={setOpenBuyMint}
                 type="random"
+                cid={uuid}
                 costs={costs}
-                openSnackbar={openSnackbar}
-                minter={minter}
-                collection={collection}
                 setMints={setMints}
                 setXrpBalance={setXrpBalance}
             />
@@ -408,7 +407,7 @@ export default function SpinNFT({ collection, setView }) {
                 {description &&
                     <Typography variant="d3" maxWidth='600px'>{description}</Typography>
                 }
-                {/* <Link
+                <Link
                     component="button"
                     underline="always"
                     variant="body2"
@@ -418,7 +417,7 @@ export default function SpinNFT({ collection, setView }) {
                     }}
                 >
                     <Typography sx={{ml:0}}>View Minted Items</Typography>
-                </Link> */}
+                </Link>
             </Stack>
 
             <Container maxWidth="lg">

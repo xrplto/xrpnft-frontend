@@ -24,8 +24,9 @@ import { LoadingButton } from '@mui/lab';
 // Iconify
 import { Icon } from '@iconify/react';
 
-// Redux
-import { useSelector } from 'react-redux';
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
 
 // Utils
 import { createSellOffer } from 'src/utils/tokenActions';

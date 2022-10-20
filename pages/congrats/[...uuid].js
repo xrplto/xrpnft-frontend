@@ -88,6 +88,7 @@ export async function getServerSideProps(ctx) {
 
     let data = null;
     let isEditCollection = false;
+    let isBuyAssets = false;
     try {
 
         const params = ctx.params.uuid;
@@ -96,7 +97,8 @@ export async function getServerSideProps(ctx) {
         const uuid = params[1];
 
         isEditCollection = type === 'editcollection';
-        if (type !== 'collection' && type !== 'assets' && type !=='editcollection') {
+        isBuyAssets = type === 'buyassets';
+        if (type !== 'collection' && type !== 'assets' && type !== 'buyassets' && type !=='editcollection') {
             return {
                 redirect: {
                     permanent: false,
@@ -105,7 +107,8 @@ export async function getServerSideProps(ctx) {
             }
         }
 
-        if (type === 'editcollection') type = 'collection';
+        if (isEditCollection) type = 'collection';
+        if (isBuyAssets) type = 'assets';
 
         var t1 = performance.now();
 
@@ -122,12 +125,12 @@ export async function getServerSideProps(ctx) {
         console.log(e);
     }
 
-    if (data && data.token) {
+    if (data && data.nft) {
 
         /*{
             "res": "success",
             "took": "1.09",
-            "token": {
+            "nft": {
                 "_id": "630b722e2aa4d0244dcfc62b",
                 "name": "FAT CATS - 1",
                 "externalLink": "",
@@ -153,7 +156,7 @@ export async function getServerSideProps(ctx) {
             date,
             meta,
             URI
-        } = data.token;
+        } = data.nft;
     
         let ogp = {};
         ogp.canonical = `https://xrpnft.com/assets/${uuid}`;
@@ -161,6 +164,8 @@ export async function getServerSideProps(ctx) {
         ogp.url = `https://xrpnft.com/assets/${uuid}`;
         ogp.imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
         ogp.desc = meta.description?meta.description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+
+        data.isBuyAssets = isBuyAssets;
 
         return {
             props: {data, ogp}, // will be passed to the page component as props

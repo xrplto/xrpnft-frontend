@@ -1,3 +1,4 @@
+import {normalizeCurrencyCodeXummImpl} from "src/utils/normalizers";
 import React, { useEffect, useState } from "react";
 import { ColorExtractor } from 'react-color-extractor';
 
@@ -70,9 +71,9 @@ export default function NFTCard({ nft }) {
         uuid,
         name,
         flag,
-        type,
         account,
         minter,
+        cost,
         issuer,
         date,
         meta,
@@ -81,7 +82,7 @@ export default function NFTCard({ nft }) {
         destination
     } = nft;
 
-    const isSold = (minter !== account) || status > NFToken.MINTED || destination;
+    const isSold = false;
 
     const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
 
@@ -183,18 +184,24 @@ export default function NFTCard({ nft }) {
                         }}
                     />
                 } */}
-                <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>
+                {/* <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>
                     <Typography variant='s2'>{type.toUpperCase()}</Typography>
                     <Typography variant='s2'>Price</Typography>
-                </Stack>
+                </Stack> */}
+                <Typography variant='s4' color="#33C2FF">{name}</Typography>
+
                 <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>
-                    <Typography variant='s4' color="#33C2FF">{name}</Typography>
-                    {account === minter ? (
-                        <Typography variant='s2'>1 Mint</Typography>
+                    <Typography variant='s2'>Price</Typography>
+                    {destination ? (
+                        <Typography variant='s2'>TRANSFER</Typography>
                     ):(
-                        <Typography variant='s2'></Typography>
-                    )
-                    }
+                        cost ? (
+                            <Typography variant='s2'>{cost.amount} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
+                        ):(
+                            <Typography variant='s2'>- - -</Typography>
+                        )
+                    )}
+                    
                     {/* <PriceContainer price="2000" /> */}
                 </Stack>
                 <Divider sx={{mt:0.8, mb:0.3}}/>

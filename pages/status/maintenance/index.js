@@ -4,6 +4,7 @@ import {
   Container,
   Divider,
   IconButton,
+  Stack,
   Tooltip,
   styled
 } from '@mui/material';
@@ -46,7 +47,9 @@ function StatusMaintenance() {
       <MainContent>
         <TopWrapper>
           <Container maxWidth="md">
-            <Logo />
+            <Stack alignItems="center">
+              <Logo />
+            </Stack>
             <Box textAlign="center">
               <Container maxWidth="xs">
                 <Typography variant="h2" sx={{ mt: 4, mb: 2 }}>

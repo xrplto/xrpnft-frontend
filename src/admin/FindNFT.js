@@ -225,7 +225,6 @@ export default function FindNFT() {
                                 destination,
                                 meta,
                                 URI,
-                                acceptedDate,
                                 NFTokenID,
                                 mintHash,
                                 status,

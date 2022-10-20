@@ -43,9 +43,10 @@ export default function Congrats({ data }) {
     const [play, { stop }] = useSound('/static/sounds/mixkit-fireworks-bang-in-sky-2989.wav');
     const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
 
-    const nft = data.token;
+    const nft = data.nft;
     const collection = data.collection;
     const isEditCollection = data.isEditCollection;
+    const isBuyAssets = data.isBuyAssets;
 
     const [colors, setColors] = useState([]);
 
@@ -138,7 +139,13 @@ export default function Congrats({ data }) {
 
                 <Stack spacing={2} alignItems="center" sx={{pt: 3}}>
                     {nft &&
-                        <Typography variant="d3">Your NFT has been minted on the XRP Ledger.</Typography>
+                        <>
+                            {isBuyAssets ? (
+                                <Typography variant="d3">You've successfully purchased a NFT.</Typography>
+                            ):(
+                                <Typography variant="d3">Your NFT has been minted on the XRP Ledger.</Typography>
+                            )}
+                        </>
                     }
                     
                     {collection &&
@@ -196,23 +203,35 @@ export default function Congrats({ data }) {
 
                     {nft && 
                         <>
-                            <Link
-                                underline="none"
-                                color="inherit"
-                                href={`/assets/${nft.uuid}`}
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <Button variant="contained">View NFT Detail</Button>
-                            </Link>
+                            {isBuyAssets?(
+                                <Link
+                                    underline="none"
+                                    color="inherit"
+                                    href={`/collection/${nft.cslug}`}
+                                >
+                                    <Button variant="outlined">Buy another NFT</Button>
+                                </Link>
+                            ):(
+                                <>
+                                    <Link
+                                        underline="none"
+                                        color="inherit"
+                                        href={`/assets/${nft.uuid}`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Button variant="contained">View NFT Detail</Button>
+                                    </Link>
 
-                            <Link
-                                underline="none"
-                                color="inherit"
-                                href={`/create`}
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <Button variant="outlined">Create another NFT</Button>
-                            </Link>
+                                    <Link
+                                        underline="none"
+                                        color="inherit"
+                                        href={`/create`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Button variant="outlined">Create another NFT</Button>
+                                    </Link>
+                                </>
+                            )}
                         </>
                     }
 

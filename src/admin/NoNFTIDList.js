@@ -235,7 +235,6 @@ export default function NoNFTIDList({account}) {
                                 date,
                                 meta,
                                 URI,
-                                acceptedDate,
                                 NFTokenID,
                                 mintHash,
                                 status,

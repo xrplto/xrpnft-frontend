@@ -17,7 +17,6 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import TokenDetail from 'src/detail';
-import BuyBulkNFT from 'src/buybulknft';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -59,16 +58,6 @@ export default function Overview({data}) {
     const bgIdx = generateRandom();
     const { darkMode } = useContext(AppContext);
 
-    const nft = data.nft;
-
-    const {
-        minter,
-        account,
-        type
-    } = nft;
-    
-    const isBulkNft = type === 'bulk';
-
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
@@ -83,12 +72,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="lg">
-                {isBulkNft ? (
-                    <BuyBulkNFT nft={data.nft} />
-                ):(
-                    <TokenDetail nft={data.nft}/>
-                )}
-                
+                <TokenDetail nft={data.nft}/>
             </Container>
 
             <ScrollToTop />

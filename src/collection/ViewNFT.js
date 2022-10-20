@@ -165,56 +165,8 @@ export default function ViewNFT({collection}) {
     const [totalVolume, setTotalVolume] = useState('0.00');
     const [floorPrice, setFloorPrice] = useState('---');
 
-    const [openBuyMint, setOpenBuyMint] = useState(false);
-
-    const [mints, setMints] = useState(0);
-
-    const [xrpBalance, setXrpBalance] = useState(0);
-
-    const [pendingNfts, setPendingNfts] = useState(0);
-
-    useEffect(() => {
-        function getMints() {
-            if (!account || !accountToken) {
-                openSnackbar('Please login', 'error');
-                setMints(0);
-                setXrpBalance(0);
-                return;
-            }
-
-            // https://api.xrpnft.com/api/spin/count?account=rhhh
-            axios.get(`${BASE_URL}/spin/count?account=${account}&cid=${collection.uuid}`, {headers: {'x-access-token': accountToken}})
-                .then(res => {
-                    let ret = res.status === 200 ? res.data : undefined;
-                    if (ret) {
-                        // console.log(`Mints: ${ret.mints}`);
-                        setMints(ret.mints);
-                        setXrpBalance(ret.xrpBalance);
-                        setPendingNfts(ret.pendingNfts);
-                    }
-                }).catch(err => {
-                    console.log("Error on getting mint count!!!", err);
-                }).then(function () {
-                    // always executed
-                });
-        }
-        getMints();
-    }, [account, accountToken]);
-
     return (
         <>
-            <BuyMintDialog
-                open={openBuyMint}
-                setOpen={setOpenBuyMint}
-                type="bulk"
-                costs={costs}
-                openSnackbar={openSnackbar}
-                minter={minter}
-                collection={collection}
-                setMints={setMints}
-                setXrpBalance={setXrpBalance}
-            />
-
             <IconCover>
                 <IconWrapper>
                     <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
@@ -234,35 +186,9 @@ export default function ViewNFT({collection}) {
                 </IconWrapper>
             </IconCover>
             <Stack direction={fullScreen ? "column":"row"} spacing={2} justifyContent="space-between" sx={{mt: 1, mb:1}}>
-                <Stack direction="row" spacing={2} alignItems="center">
-                    <Typography variant="h1a">{name}</Typography>
-                    {type === "bulk" &&
-                        <Tooltip title={<Typography variant="p5">To mint a NFT from this collection, you need to purchase Mints. It can be used against the purchase of only <Typography variant="s5" color="#57CA22">{collection.name}</Typography> Collection. Click <SellIcon /> icon to buy Mints on the right of your screen.</Typography>}>
-                            <div>
-                            <Comment
-                                visible={true}
-                                height="40"
-                                width="40"
-                                ariaLabel="comment-loading"
-                                wrapperStyle={{}}
-                                wrapperClass="comment-wrapper"
-                                color="#fff"
-                                backgroundColor="#F4442E"
-                            />
-                            </div>
-                        </Tooltip>
-                    }
-                </Stack>
+                <Typography variant="h1a">{name}</Typography>
                 
                 <Stack direction="row" alignItems="center" spacing={1}>
-                    <Tooltip title="Buy Mints">
-                        <IconButton size='medium' sx={{ padding: 1 }}
-                            onClick={() => setOpenBuyMint(true)}
-                        >
-                            <SellIcon />
-                        </IconButton>
-                    </Tooltip>
-
                     {account === collection.account &&
                         <Link href={`/collection/${slug}/edit`} underline='none'>
                             <Tooltip title="Edit your collection">
@@ -306,8 +232,7 @@ export default function ViewNFT({collection}) {
 
             <Stack direction="row" sx={{mt: 2, mb:3}} spacing={5}>
                 <Stack>
-                    {/* <Typography variant='d2'>{items}</Typography> */}
-                    <Typography variant="s5" color="error">{pendingNfts} / <Typography variant="s4" color="#33C2FF">{items}</Typography></Typography>
+                    <Typography variant='d2'>{items}</Typography>
                     <Typography variant='s4'>items</Typography>
                 </Stack>
                 <Stack>
@@ -325,21 +250,6 @@ export default function ViewNFT({collection}) {
                     <Typography variant='d2'>{floorPrice}</Typography>
                     <Typography variant='s4'>floor price</Typography>
                 </Stack>
-                {type === "bulk" &&
-                    <>
-                    <Stack>
-                        <Typography variant='d2' color='error'>{mints}</Typography>
-                        <Typography variant='s4'>Mints</Typography>
-                    </Stack>
-                    <Stack>
-                        <Stack direction="row" spacing={0.5} alignItems='center'>
-                            <Icon icon={rippleSolid} />
-                            <Typography variant="d2" noWrap>{xrpBalance}</Typography>
-                        </Stack>
-                        <Typography variant='s4'>In your wallet</Typography>
-                    </Stack>
-                    </>
-                }
             </Stack>
 
             <ExploreNFT collection={collection} />
