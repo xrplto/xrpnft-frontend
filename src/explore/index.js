@@ -26,12 +26,12 @@ export default function ExploreNFT({collection}) {
     const [hasMore, setHasMore] = useState(true);
     const [flag, setFlag] = useState(0);
 
-    const fetchImages = (nfTokensParam, offsetParam) => {
+    const fetchNfts = (nfTokensParam, offsetParam) => {
         const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
         const page = offsetParam === 0 ? offsetParam : offset
         const limit = 30;
 
-        const body={ page, limit, flag, collection: collection.name};
+        const body={ page, limit, flag, cid: collection.uuid};
 
         axios.post(`${BASE_URL}/nfts?page=${page}&limit=30&flag=${flag}`, body)
             .then(res => {
@@ -50,7 +50,7 @@ export default function ExploreNFT({collection}) {
     const reset = () => {
         setNfTokens([])
         setOffset(0)
-        fetchImages([], 0)
+        fetchNfts([], 0)
     }
 
     useEffect(() => {
@@ -62,7 +62,7 @@ export default function ExploreNFT({collection}) {
     return (
         <InfiniteScroll
             dataLength={nfTokens.length}
-            next={() => fetchImages()}
+            next={() => fetchNfts()}
             hasMore={hasMore}
             // loader={<p>loading...</p>}
         >   

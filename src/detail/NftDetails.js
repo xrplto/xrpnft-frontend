@@ -45,8 +45,6 @@ export default function NFTDetails({nft}) {
         issuer
     } = nft;
 
-    console.log(nft);
-
     const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
 
     const ParsedURI = convertHexToString(URI);
@@ -92,10 +90,18 @@ export default function NFTDetails({nft}) {
                         <Stack direction="row" spacing={2} sx={{mt: 2}}>
                             <Typography variant="caption">Taxon</Typography>
                             <Typography variant="s6">{taxon}</Typography>
-                        </Stack>
-                        <Stack direction="row" spacing={2} sx={{mt: 2}} alignItems="center">
                             <Typography variant="caption">Transfer Fee</Typography>
                             <Typography variant="s6">{transferFee} %</Typography>
+                        </Stack>
+                        <Stack direction="row" spacing={2} sx={{mt: 2}}>
+                            <Typography variant='caption'>Collection</Typography>
+                            {cslug ? (
+                                <Link href={`/collection/${cslug}`} underline='none'>
+                                    <Typography sx={{pl:1}}>{collectionName}</Typography>
+                                </Link>
+                            ):(
+                                <Typography sx={{pl:1}}>{collectionName}</Typography>
+                            )}
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
 
@@ -137,13 +143,16 @@ export default function NFTDetails({nft}) {
                                 variant='info'
                                 rel="noreferrer noopener nofollow"
                             >
-                                <Typography sx={{ml:1}}>{NFTokenID}</Typography>
+                                <Typography
+                                    sx={{ml:1}}
+                                    style={{ wordWrap: "break-word" }}
+                                >
+                                    {NFTokenID}
+                                </Typography>
                             </Link>
                         </Stack>
-
-                        <Divider sx={{mt:2, mb:2}}/>
                         
-                        <Stack spacing={1}>
+                        <Stack spacing={1} mt={1}>
                             <Typography variant='caption'>URI</Typography>
                             <Link
                                 href={hrefURI}
@@ -179,18 +188,6 @@ export default function NFTDetails({nft}) {
                             )
                         }
 
-                        <Stack spacing={1}>
-                            <Typography variant='caption'>Collection</Typography>
-                            {cslug ? (
-                                <Link href={`/collection/${cslug}`} underline='none'>
-                                    <Typography sx={{pl:1}}>{collectionName}</Typography>
-                                </Link>
-                            ):(
-                                <Typography sx={{pl:1}}>{collectionName}</Typography>
-                            )}
-                            
-                        </Stack>
-                        <Divider sx={{mt:2, mb:2}}/>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion defaultExpanded>

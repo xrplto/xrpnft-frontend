@@ -158,6 +158,7 @@ export default function ViewNFT({collection}) {
         bannerImage,
         timestamp,
         costs,
+        extra,
         minter
     } = collection;
 
@@ -236,7 +237,7 @@ export default function ViewNFT({collection}) {
                     <Typography variant='s4'>items</Typography>
                 </Stack>
                 <Stack>
-                    <Typography variant='d2'>{countOwner}</Typography>
+                    <Typography variant='d2'>{extra.owners}</Typography>
                     <Typography variant='s4'>owners</Typography>
                 </Stack>
                 <Stack>

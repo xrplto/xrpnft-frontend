@@ -12,9 +12,11 @@ import {
     Link,
     Skeleton,
     Stack,
+    Tooltip,
     Typography
 } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import SportsScoreIcon from '@mui/icons-material/SportsScore';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -137,11 +139,11 @@ export default function NFTCard({ nft }) {
                         variant="filled"
                         color={(isSold && 'error') || 'info'}
                         sx={{
-                        zIndex: 9,
-                        top: 24,
-                        right: 24,
-                        position: 'absolute',
-                        textTransform: 'uppercase'
+                            zIndex: 9,
+                            top: 24,
+                            right: 24,
+                            position: 'absolute',
+                            textTransform: 'uppercase'
                         }}
                     >
                         SOLD
@@ -193,7 +195,10 @@ export default function NFTCard({ nft }) {
                 <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>
                     <Typography variant='s2'>Price</Typography>
                     {destination ? (
-                        <Typography variant='s2'>TRANSFER</Typography>
+                        // <Typography variant='s2'>TRANSFER</Typography>
+                        <Tooltip title={`Sold & Transfer`}>
+                            <SportsScoreIcon />
+                        </Tooltip>
                     ):(
                         cost ? (
                             <Typography variant='s2'>{cost.amount} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>

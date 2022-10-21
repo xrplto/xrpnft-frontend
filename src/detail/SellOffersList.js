@@ -24,6 +24,7 @@ import {
 // import { deepOrange } from '@mui/material/colors';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -113,8 +114,9 @@ export default function SellOffersList({ NFTokenID, offers, isOwner }) {
                                         </Stack>
 
                                         {offer.destination &&
-                                            <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                                <Typography variant='s4'>Destination</Typography>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                {/* <Typography variant='s4'>Destination</Typography> */}
+                                                <TransferWithinAStationIcon />
                                                 <Typography variant='s6'>{offer.destination}</Typography>
                                             </Stack>
                                         }

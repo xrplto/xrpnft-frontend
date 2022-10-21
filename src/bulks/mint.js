@@ -100,6 +100,7 @@ export default function BulkMint({slug}) {
     const [royalty, setRoyalty] = useState('0');
     const [explicit, setExplicit] = useState(false);
     const [issuerChoice, setIssuerChoice] = useState('yes');
+    const [updateName, setUpdateName] = useState(true);
 
     const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
     // const [passphrase, setPassPhrase] = useState('');
@@ -122,7 +123,12 @@ export default function BulkMint({slug}) {
     // const [validPassword, setValidPassword] = useState(false);
     
     const active = account && accountToken && collection;
-    let canDownload = active && metadata.length > 0 && nftName && isIPFS.cid(ipfsCID);
+    let canDownload = active && metadata.length > 0 && isIPFS.cid(ipfsCID);
+
+    if (updateName && !nftName) {
+        canDownload = false;
+    }
+
     let canCreate = canDownload; //  && passphrase && validPassword;
 
     if (issuerChoice === 'yes' && !minterSet) {
@@ -229,7 +235,13 @@ export default function BulkMint({slug}) {
         // POST https://api.xrpnft.com/api/mint
         setLoading(true);
         const newMetaData = getFinalMetaData();
+
         try {
+            if (!newMetaData || newMetaData.length > 100000) {
+                openSnackbar('You can not mint NFTs more than 100k', 'error');
+                return;
+            }
+
             let res;
             const data = {};
             data.metadata = newMetaData;
@@ -397,7 +409,8 @@ export default function BulkMint({slug}) {
         const newMetaData = [];
         for (var meta of metadata) {
             const newMeta = {...meta};
-            newMeta.name = nftName + ' #' + count;
+            if (updateName)
+                newMeta.name = nftName + ' #' + count;
             // TODO
 
             if (imgExt === 'png' || imgExt === 'jpg') {
@@ -490,28 +503,44 @@ export default function BulkMint({slug}) {
                         </Stack>
                     }
                     
-                    <Typography variant='p4'>NFT Name <Typography variant='s2'>*</Typography></Typography>
-                    <Typography variant='p3'>
-                        {'Indexed numbers will be automatically appended at the end. ex; NAME #1,  NAME #2 ...'}
+                    
+                    <Stack direction="row" spacing={0.5} alignItems="center">
+                        <Typography variant='p4'>NFT Name <Typography variant='s2'>*</Typography></Typography>
+                        <FormControlLabel control={<Checkbox checked={updateName} onChange={(e)=>setUpdateName(e.target.checked)}/>}
+                            label={<Typography variant='s7'>(Uncheck if you don't want to update name.)</Typography>}
+                        />
+                    </Stack>
+
+                    <Typography variant='s2'>
+                    XRPNFT.com use the lowercase name, not Name. Make sure your metadata contains the lowercase name when you don't update name.
                     </Typography>
-                    <Typography variant='s2'>Don't include indexed numbers like #1</Typography>
-                    <TextField required placeholder='Item name' margin='dense'
-                        id='id_nft_name'
-                        autoComplete='new-password'
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            setNftName(value);
-                            if (sMeta) {
-                                sMeta.name = value + ' #1';
-                            }
-                        }}
-                        value={nftName}
-                        sx={{
-                            '&.MuiTextField-root': {
-                                marginTop: 0.5
-                            }
-                        }}
-                    />
+
+                    {updateName &&
+                    <>
+                        <Typography variant='p3'>
+                        {'Indexed numbers will be automatically appended at the end. ex; NAME #1,  NAME #2 ...'}
+                        </Typography>
+                        <Typography variant='s2'>Don't include indexed numbers like #1</Typography>
+                        <TextField required placeholder='Item name' margin='dense'
+                            id='id_nft_name'
+                            autoComplete='new-password'
+                            disabled={!updateName}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                setNftName(value);
+                                if (sMeta) {
+                                    sMeta.name = value + ' #1';
+                                }
+                            }}
+                            value={nftName}
+                            sx={{
+                                '&.MuiTextField-root': {
+                                    marginTop: 0.5
+                                }
+                            }}
+                        />
+                    </>
+                    }
 
                     <Typography variant='p4'>Category</Typography>
                     <Typography variant='p3'>

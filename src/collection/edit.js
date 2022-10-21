@@ -246,12 +246,12 @@ export default function EditCollection({collection}) {
 
         if (type !== 'normal') {
             if (JSON.stringify(costs) !== JSON.stringify(collection.costs || [])) {
-                console.log('different')
+                // console.log('different')
                 return true;
             } else {
-                console.log(costs.length);
-                console.log(collection.costs.length);
-                console.log('the same')
+                // console.log(costs.length);
+                // console.log(collection.costs.length);
+                // console.log('the same')
             }
         }
         return false;
@@ -467,18 +467,18 @@ export default function EditCollection({collection}) {
         setFamily(value);
     }
 
-    const handleAddCost = (token) => {
+    const handleAddCost = (cost) => {
         let exist = false;
         const newCosts = [];
         for (var c of costs) {
-            if (c.md5 === token.md5) {
-                c.cost = token.cost;
+            if (c.md5 === cost.md5) {
+                c.amount = cost.amount;
                 exist = true;
             }
             newCosts.push(c);
         }
         if (!exist)
-            newCosts.push(token);
+            newCosts.push(cost);
 
         setCosts(newCosts);
     }
@@ -734,24 +734,24 @@ export default function EditCollection({collection}) {
                             )}
                             <Typography variant='p3' sx={{pb: 2}}>You need to add at least 1 currency to create a collection.</Typography>
 
-                            {costs.map((token, idx) => (
-                                <Stack spacing={1} sx={{pl: 1, pr:1}} key={token.md5}>
+                            {costs.map((cost, idx) => (
+                                <Stack spacing={1} sx={{pl: 1, pr:1}} key={cost.md5}>
                                     <Stack direction="row" spacing={2} sx={{mt: 0}} alignItems="center" justifyContent="space-between">
                                         <Stack direction='row' alignItems="center">
-                                            <Avatar alt="C" src={`https://xrpl.to/static/tokens/${token.md5}.${token.ext}`} sx={{ mr: 2 }} />
+                                            <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} sx={{ mr: 2 }} />
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row">
-                                                    <Typography variant='d4'>{token.name}</Typography>
-                                                    <Typography variant='d4' sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(token.exch)}</Typography>
+                                                    <Typography variant='d4'>{cost.name}</Typography>
+                                                    <Typography variant='d4' sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(cost.exch)}</Typography>
                                                 </Stack>
                                                 <Stack direction="row" alignItems="center">
-                                                    <Typography variant='p3'>{token.issuer}</Typography>
-                                                    {token && token.currency !== 'XRP' &&
+                                                    <Typography variant='p3'>{cost.issuer}</Typography>
+                                                    {cost.currency !== 'XRP' &&
                                                         <Link
                                                             underline="none"
                                                             color="inherit"
                                                             target="_blank"
-                                                            href={`https://bithomp.com/explorer/${token.issuer}`}
+                                                            href={`https://bithomp.com/explorer/${cost.issuer}`}
                                                             rel="noreferrer noopener nofollow"
                                                         >
                                                             <Tooltip title="Check on Bithomp">
@@ -767,11 +767,11 @@ export default function EditCollection({collection}) {
 
                                         <Stack direction='row' spacing={2} alignItems="center">
                                             <Stack direction='row' spacing={1} alignItems="flex-end">
-                                                <Typography variant='p4' color="#EB5757">{token.cost}</Typography>
-                                                <Typography variant='s2'>{token.name}</Typography>
+                                                <Typography variant='p4' color="#EB5757">{cost.amount}</Typography>
+                                                <Typography variant='s2'>{cost.name}</Typography>
                                             </Stack>
                                             
-                                            <IconButton onClick={()=>handleRemoveCost(token.md5)}>
+                                            <IconButton onClick={()=>handleRemoveCost(cost.md5)}>
                                                 <HighlightOffOutlinedIcon fontSize="small" />
                                             </IconButton>
                                         </Stack>

@@ -66,7 +66,7 @@ export default function ProfileList({setCounterAccount}) {
     const accountToken = accountProfile?.token;
     
     const [page, setPage] = useState(0);
-    const [rows, setRows] = useState(10);
+    const [rows, setRows] = useState(5);
     const [total, setTotal] = useState(0);
     const [profiles, setProfiles] = useState([]);
     const [filter, setFilter] = useState('');
@@ -125,7 +125,7 @@ export default function ProfileList({setCounterAccount}) {
                 onFocus={event => {
                     event.target.select();
                 }}
-                sx={{pl:2, pr:2, pt: 0, pb: 0, mt: 4}}
+                sx={{pl:2, pr:2, pt: 0, pb: 0, mt: 4, mb: 4}}
                 onKeyDown={(e) => e.stopPropagation()}
                 InputProps={{
                     endAdornment: (
@@ -135,6 +135,15 @@ export default function ProfileList({setCounterAccount}) {
                     ),
                 }}
             />
+            { total > 0 &&
+                <ListToolbar
+                    count={total}
+                    rows={rows}
+                    setRows={setRows}
+                    page={page}
+                    setPage={setPage}
+                />
+            }
             <List sx={{ width: '100%' }}>
                 {profiles && profiles.map((row, idx) => {
                     const {
@@ -222,15 +231,6 @@ export default function ProfileList({setCounterAccount}) {
                     })
                 }
             </List>
-            { total > 0 &&
-                <ListToolbar
-                    count={total}
-                    rows={rows}
-                    setRows={setRows}
-                    page={page}
-                    setPage={setPage}
-                />
-            }
         </Stack>
     );
 }

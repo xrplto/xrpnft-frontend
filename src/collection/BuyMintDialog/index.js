@@ -103,7 +103,7 @@ function GetNum(amount) {
     return num;
 }
 
-export default function BuyMintDialog({open, setOpen, type, costs, minter, openSnackbar, collection, setMints, setXrpBalance}) {
+export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints, setXrpBalance}) {
     // "costs": [
     //     {
     //         "md5": "0413ca7cfc258dfaf698c02fe304e607",
@@ -119,7 +119,7 @@ export default function BuyMintDialog({open, setOpen, type, costs, minter, openS
     const BASE_URL = 'https://api.xrpnft.com/api';
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -132,7 +132,7 @@ export default function BuyMintDialog({open, setOpen, type, costs, minter, openS
 
     const [disclaimer, setDisclaimer] = useState(false);
 
-    const [token, setToken] = useState(costs[0]);
+    const [cost, setCost] = useState(costs[0]);
     // {
     //     "md5": "xrp",
     //     "name": "XRP",
@@ -220,28 +220,8 @@ export default function BuyMintDialog({open, setOpen, type, costs, minter, openS
         setLoading(true);
         try {
             const user_token = accountProfile?.user_token;
-            const cid = collection.uuid;
-            const cname = collection.name;
-            const cslug = collection.slug;
 
-            const {
-                currency,
-                issuer,
-                cost
-            } = token;
-
-            let amount = {};
-            
-            amount.currency = currency;
-
-            if (currency === 'XRP') {
-                amount.value = new Decimal(cost).mul(quantity).mul(1000000).toString();
-            } else {
-                amount.issuer = issuer;
-                amount.value = new Decimal(cost).mul(quantity).toString();
-            }
-            
-            const body = { account, dest: minter, amount, quantity, cid, cname, cslug, user_token, token};
+            const body = { account, md5: cost.md5, quantity, cid, user_token};
 
             const res = await axios.post(`${BASE_URL}/spin/buymint`, body, {headers: {'x-access-token': accountToken}});
 
@@ -282,7 +262,7 @@ export default function BuyMintDialog({open, setOpen, type, costs, minter, openS
     const handleClose = () => {
         setOpen(false);
 
-        setToken(costs[0]);
+        setCost(costs[0]);
         setQuantity(0);
         setDisclaimer(false);
     }
@@ -312,18 +292,18 @@ export default function BuyMintDialog({open, setOpen, type, costs, minter, openS
         setDisclaimer(e.target.checked);
     };
 
-    const handleChangeToken = (e) => {
+    const handleChangeCost = (e) => {
         const value = e.target.value;
 
-        let newToken = null;
+        let newCost = null;
         for (var t of costs) {
             if (t.md5 === value) {
-                newToken = t;
+                newCost = t;
                 break;
             }
         }
-        if (newToken)
-            setToken(newToken);
+        if (newCost)
+            setCost(newCost);
     };
 
     return (
@@ -361,29 +341,29 @@ export default function BuyMintDialog({open, setOpen, type, costs, minter, openS
                             <Stack direction="row" spacing={2} alignItems="center">
                                 <Typography variant="p4">Cost</Typography>
                                 <CustomSelect
-                                    id='select_token'
-                                    value={token.md5}
-                                    onChange={handleChangeToken}
+                                    id='select_cost'
+                                    value={cost.md5}
+                                    onChange={handleChangeCost}
                                 >
-                                    {costs.map((token, idx) => (
+                                    {costs.map((cost, idx) => (
                                         <MenuItem
-                                            key={token.md5}
-                                            value={token.md5}
+                                            key={cost.md5}
+                                            value={cost.md5}
                                         >
                                             <Stack direction='row' alignItems="center">
-                                                <Avatar alt="C" src={`https://xrpl.to/static/tokens/${token.md5}.${token.ext}`} sx={{ width: 28, height:28, mr: 1 }} />
-                                                <Typography variant='d4' color="#EB5757">{token.cost} {token.name}</Typography>
+                                                <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} sx={{ width: 28, height:28, mr: 1 }} />
+                                                <Typography variant='d4' color="#EB5757">{cost.amount} {cost.name}</Typography>
                                             </Stack>
                                         </MenuItem>
                                     ))}
                                 </CustomSelect>
-                                {token.currency !== 'XRP' &&
+                                {cost.currency !== 'XRP' &&
                                     <>
                                         <Link
                                             underline="none"
                                             color="inherit"
                                             target="_blank"
-                                            href={`https://bithomp.com/explorer/${token.issuer}`}
+                                            href={`https://bithomp.com/explorer/${cost.issuer}`}
                                             rel="noreferrer noopener nofollow"
                                         >
                                             <Tooltip title='Check on Bithomp'>
@@ -396,7 +376,7 @@ export default function BuyMintDialog({open, setOpen, type, costs, minter, openS
                                             underline="none"
                                             color="inherit"
                                             target="_blank"
-                                            href={`https://xrpl.to/trade/${token.md5}`}
+                                            href={`https://xrpl.to/trade/${cost.md5}`}
                                             rel="noreferrer noopener nofollow"
                                         >
                                             <Tooltip title='Trade on XRPL.to'>
@@ -432,12 +412,12 @@ export default function BuyMintDialog({open, setOpen, type, costs, minter, openS
                             />
                         </Stack>
                         <Stack direction="row" spacing={2} sx={{mt: 3}}>
-                            <Typography variant="s5">Total {token.name} Required</Typography>
-                            <Typography variant="s5" color="#33C2FF">{fNumber(token.cost*quantity)} {token.name}</Typography>
+                            <Typography variant="s5">Total {cost.name} Required</Typography>
+                            <Typography variant="s5" color="#33C2FF">{fNumber(cost.amount*quantity)} {cost.name}</Typography>
                         </Stack>
 
                         <FormControlLabel sx={{mt: 3}} control={<Checkbox checked={disclaimer} onChange={handleChangeDisclaimer}/>}
-                            label={<Typography variant="s6">I understand that I will be purchasing <Typography variant="s6" color="#33C2FF">{quantity} Mints</Typography> with total <Typography variant="s6" color="#33C2FF">{fNumber(token.cost*quantity)} {token.name}</Typography>.  Each Mint will mint the NFT on XRPL and transfer it to my wallet address which is <Typography variant="s6" color="#33C2FF">{account}</Typography></Typography>}
+                            label={<Typography variant="s6">I understand that I will be purchasing <Typography variant="s6" color="#33C2FF">{quantity} Mints</Typography> with total <Typography variant="s6" color="#33C2FF">{fNumber(cost.amount*quantity)} {cost.name}</Typography>.  Each Mint will mint the NFT on XRPL and transfer it to my wallet address which is <Typography variant="s6" color="#33C2FF">{account}</Typography></Typography>}
                         />
 
                         <Stack direction='row' spacing={2} justifyContent="center" sx={{mt:3, mb:4}}>

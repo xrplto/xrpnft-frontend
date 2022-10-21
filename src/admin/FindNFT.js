@@ -162,6 +162,7 @@ export default function FindNFT() {
                 <ToggleButton value="" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>None</ToggleButton>
                 <ToggleButton value="nonftids" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>No NFTokenID</ToggleButton>
                 <ToggleButton value="nosellofferids" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>No SellOfferID</ToggleButton>
+                <ToggleButton value="stillhavingmint" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Still having Mint</ToggleButton>
             </ToggleButtonGroup>
             <Stack direction="row">
                 <TextField
@@ -313,6 +314,10 @@ export default function FindNFT() {
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row" justifyContent="space-between">
                                                     <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                                </Stack>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Typography variant="s4">UUID: </Typography>
+                                                    <Typography variant="s6">{uuid}</Typography>
                                                 </Stack>
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     <Typography variant="s4">Account: </Typography>

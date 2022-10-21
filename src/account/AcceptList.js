@@ -360,7 +360,7 @@ export default function AcceptList({account}) {
                                                 }}
                                             />
                                             <Stack spacing={0.5}>
-                                                <Stack direction="row" justifyContent="space-between">
+                                                <Stack direction="row" spacing={2} alignItems="center">
                                                     <Typography variant="h3" color="#33C2FF">{name}</Typography>
                                                     {SellOfferID ? (
                                                         <Button variant="contained" color="primary" size="small" onClick={()=>handleApprove(row)}>
@@ -402,27 +402,8 @@ export default function AcceptList({account}) {
                                                 </Link>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">URI(string): </Typography>
+                                                <Typography variant="s4">URI: </Typography>
                                                 <Typography variant="s6">{convertHexToString(URI)}</Typography>
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">URI(hex): </Typography>
-                                                <Typography variant="s6">{URI}</Typography>
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">TxMint: </Typography>
-                                                <Link
-                                                    color="inherit"
-                                                    target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${mintHash}`}
-                                                    rel="noreferrer noopener nofollow"
-                                                >
-                                                    <Typography variant="s6">{mintHash}</Typography>
-                                                </Link>
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Sell Offer ID: </Typography>
-                                                <Typography variant="s6">{SellOfferID}</Typography>
                                             </Stack>
                                         </Stack>
                                     </TableCell>
