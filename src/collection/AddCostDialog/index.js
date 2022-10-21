@@ -83,8 +83,8 @@ export default function AddCostDialog({open, setOpen, openSnackbar, onAddCost}) 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [cost, setCost] = useState('');
     const [token, setToken] = useState(XRP_TOKEN);
+    const [amount, setAmount] = useState('');
 
     // useEffect(() => {
     //     setName('');
@@ -95,21 +95,21 @@ export default function AddCostDialog({open, setOpen, openSnackbar, onAddCost}) 
         setOpen(false);
     }
 
-    const handleChangeCost = (e) => {
+    const handleChangeAmount = (e) => {
         const value = e.target.value;
-        const newCost = value?value.replace(/[^0-9.]/g, ""):'';
-        setCost(newCost);
+        const newAmount = value?value.replace(/[^0-9.]/g, ""):'';
+        setAmount(newAmount);
     }
 
     const handleAddCost = () => {
-        const numCost = GetNum(cost);
-        if (numCost === 0)
+        const numAmount = GetNum(amount);
+        if (numAmount === 0)
             openSnackbar('Invalid cost', 'error');
         else {
-            token.cost = cost;
+            token.amount = amount;
             onAddCost(token);
             setOpen(false);
-            setCost('');
+            setAmount('');
             setToken(XRP_TOKEN);
         }
     }
@@ -133,8 +133,6 @@ export default function AddCostDialog({open, setOpen, openSnackbar, onAddCost}) 
                         {/* <Typography variant="p5" sx={{mt: 0}}></Typography> */}
                         {/* <Typography variant="p6" sx={{mt: 2}}></Typography> */}
                         <QueryToken
-                            cost={cost}
-                            setCost={setCost}
                             token={token}
                             setToken={setToken}
                         />
@@ -144,13 +142,13 @@ export default function AddCostDialog({open, setOpen, openSnackbar, onAddCost}) 
 
                             <Stack direction="row" spacing={2} alignItems="center">
                                 <TextField
-                                    id='id_txt_costpermint'
+                                    id='id_txt_costamountpermint'
                                     // autoFocus
                                     variant='outlined'
                                     placeholder=''
-                                    onChange={handleChangeCost}
+                                    onChange={handleChangeAmount}
                                     autoComplete='new-password'
-                                    value={cost}
+                                    value={amount}
                                     onFocus={event => {
                                         event.target.select();
                                     }}

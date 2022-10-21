@@ -22,6 +22,8 @@ import {
     TableHead,
     TableRow,
     TextField,
+    ToggleButton,
+    ToggleButtonGroup,
     Tooltip,
     Typography,
     Divider
@@ -55,6 +57,7 @@ import { PulseLoader, ClockLoader, ClipLoader } from "react-spinners";
 import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
+import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 // ----------------------------------------------------------------------
 
@@ -109,6 +112,8 @@ export default function FindNFT() {
 
     const [loading, setLoading] = useState(true);
 
+    const [choice, setChoice] = useState('');
+
     useEffect(() => {
         function getNfts() {
             if (!accountAdmin || !accountToken) {
@@ -117,7 +122,7 @@ export default function FindNFT() {
             }
             setLoading(true);
 
-            const body = { filter };
+            const body = { filter, choice };
 
             axios.post(`${BASE_URL}/admin/findnft?page=${page}&limit=${rows}`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
@@ -134,42 +139,70 @@ export default function FindNFT() {
                 });
         }
         getNfts();
-    }, [page, rows, accountAdmin, accountToken, filter]);
+    }, [page, rows, accountAdmin, accountToken, filter, choice]);
 
     const handleChangeFilter = (e) => {
         setFilter(e.target.value);
     }
 
+    const handleChangeChoice = (event, newValue) => {
+        setChoice(newValue);
+    };
+
     return (
         <>
-            <TextField
-                id='textFilter'
-                // autoFocus
-                // fullWidth
-                variant='outlined'
-                placeholder='Filter'
-                margin='dense'
-                onChange={handleChangeFilter}
-                autoComplete='new-password'
-                inputProps={{autoComplete: 'off'}}
-                value={filter}
-                onFocus={event => {
-                    event.target.select();
-                }}
-                sx={{pl:2, pr:2, pt: 0, pb: 0, mt: 4}}
-                onKeyDown={(e) => e.stopPropagation()}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="start">
-                            {loading && <ClipLoader color='#ff0000' size={15} /> }
-                        </InputAdornment>
-                    ),
-                }}
-            />
+            <ToggleButtonGroup
+                color="primary"
+                value={choice}
+                exclusive
+                // size="small"
+                
+                onChange={handleChangeChoice}
+            >
+                <ToggleButton value="" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>None</ToggleButton>
+                <ToggleButton value="nonftids" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>No NFTokenID</ToggleButton>
+                <ToggleButton value="nosellofferids" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>No SellOfferID</ToggleButton>
+            </ToggleButtonGroup>
+            <Stack direction="row">
+                <TextField
+                    id='textFilter'
+                    // autoFocus
+                    // fullWidth
+                    variant='outlined'
+                    placeholder='Filter'
+                    margin='dense'
+                    onChange={handleChangeFilter}
+                    autoComplete='new-password'
+                    inputProps={{autoComplete: 'off'}}
+                    value={filter}
+                    onFocus={event => {
+                        event.target.select();
+                    }}
+                    sx={{pl:2, pr:2, pt: 0, pb: 0, mt: 4}}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="start">
+                                {loading && <ClipLoader color='#ff0000' size={15} /> }
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+            </Stack>
             {nfts && nfts.length === 0 &&
                 <Stack alignItems="center" sx={{mt: 5}}>
                     <Typography variant="s7">No Items</Typography>
                 </Stack>
+            }
+
+            {total > 0 &&
+                <ListToolbar
+                    count={total}
+                    rows={rows}
+                    setRows={setRows}
+                    page={page}
+                    setPage={setPage}
+                />
             }
             
             <Box

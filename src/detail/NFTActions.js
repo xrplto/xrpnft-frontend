@@ -6,6 +6,7 @@ import {
     AccordionDetails,
     AccordionSummary,
     Divider,
+    Link,
     Stack,
     Typography,
     Button,
@@ -25,20 +26,23 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { getNFTokenInfo, convertHexToString, getNFTfromURI } from 'src/utils/parse';
 import { NFToken } from "src/utils/constants";
 
 // Components
-import BaseDialog from 'src/components/dialog/BaseDialog';
-import CreateSellOfferDgContent from 'src/components/dialog/CreateSellOfferDgContent';
-import BurnNFTDgContent from 'src/components/dialog/BurnNFTDgContent';
-import CreateBuyOfferDgContent from 'src/components/dialog/CreateBuyOfferDgContent';
+import CreateOfferDialog from './CreateOfferDialog';
 
 import TimePeriods from './TimePeriodsDropdown';
 import SellOffersList from './SellOffersList';
 import BuyOffersList from './BuyOffersList';
 
-export default function NFTActions({ nft }) {
+// const NFT_FLAGS = {
+//     0x00000001: 'lsfBurnable',
+//     0x00000002: 'lsfOnlyXRP',
+//     0x00000004: 'lsfTrustLine',
+//     0x00000008: 'lsfTransferable',
+// }
+
+export default function NFTActions({ nft, buyOffers, sellOffers }) {
     const {
         uuid,
         name,
@@ -52,25 +56,25 @@ export default function NFTActions({ nft }) {
         meta,
         URI,
         status,
-        destination
+        cost,
+        destination,
+        NFTokenID
     } = nft;
 
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
-    const isSold = (minter !== account) || status > NFToken.MINTED || destination;
-
-    const [isOpenSellDg, setIsOpenSellDg] = useState(false);
-    const [isOpenBuyDg, setIsOpenBuyDg] = useState(false);
-    const [isOpenBurnDg, setIsOpenBurnDg] = useState(false);
-
     const isOwner = accountLogin === account;
+    const isBurnable = (flag & 0x00000001) > 0;
 
     const [isPageLoading, setPageLoading] = useState(false);
-    const [sellOffers, setSellOffers] = useState([]);
-    const [buyOffers, setBuyOffers] = useState([]);
+    // const [sellOffers, setSellOffers] = useState([]);
+    // const [buyOffers, setBuyOffers] = useState([]);
     const [owner, setOwner] = useState('');
+
+    const [openCreateOffer, setOpenCreateOffer] = useState(false);
+    const [isSellOffer, setIsSellOffer] = useState(false);
 
     const fetchOffers = async (mounted) => {
         // setPageLoading(true)
@@ -108,8 +112,29 @@ export default function NFTActions({ nft }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     // console.log("owner", TokenID)
+
+    const handleBurn = () => {
+        openSnackbar('Coming soon!', 'info');
+    }
+
+    const handleCreateSellOffer = () => {
+        setIsSellOffer(true);
+        setOpenCreateOffer(true);
+    }
+
+    const handleCreateBuyOffer = () => {
+        setIsSellOffer(false);
+        setOpenCreateOffer(true);
+    }
+
     return (
         <Stack spacing={2}>
+            <CreateOfferDialog
+                open={openCreateOffer}
+                setOpen={setOpenCreateOffer}
+                nft={nft}
+                isSellOffer={isSellOffer}
+            />
             <Stack spacing={2} sx={{mt:2}}>
                 {/* <Link underline='none' color={'text.primary'}>
                     Name
@@ -123,7 +148,18 @@ export default function NFTActions({ nft }) {
             <Paper sx={{
                 padding: 2,
             }}>
-                {
+                {destination ? (
+                    <Typography variant="s5">This NFT is being transferred to &nbsp;
+                        <Link
+                            color="inherit"
+                            target="_blank"
+                            href={`https://xls20.bithomp.com/explorer/${destination}`}
+                            rel="noreferrer noopener nofollow"
+                        >
+                            <Typography variant="s3" color="#33C2FF">{destination}</Typography>
+                        </Link>.
+                    </Typography>
+                ):(
                     isOwner ? (
                         <Box sx={{
                             display: 'flex',
@@ -133,19 +169,19 @@ export default function NFTActions({ nft }) {
                                 sx={{ borderRadius: 10, width: 200 }}
                                 variant='outlined'
                                 startIcon={<LocalOfferIcon />}
-                                onClick={() => setIsOpenSellDg(true)}
+                                onClick={handleCreateSellOffer}
                                 color='success'
                                 disabled={!accountLogin}
                             >
-                                Sell
+                                Sell NFT
                             </Button>
                             <Button
                                 variant='outlined'
                                 sx={{ borderRadius: 10, width: 200 }}
                                 color='warning'
                                 startIcon={<Icon icon='ps:feedburner' />}
-                                onClick={() => setIsOpenBurnDg(false)}
-                                disabled={!isOwner || !accountLogin} // you cannot burn NFToken if you are not owner
+                                onClick={() => handleBurn()}
+                                disabled={!isOwner || !accountLogin || !isBurnable} // you cannot burn NFToken if you are not owner
                             >
                                 Burn
                             </Button>
@@ -155,14 +191,13 @@ export default function NFTActions({ nft }) {
                             sx={{ borderRadius: 10 }}
                             disabled={!accountLogin}
                             variant='outlined'
-                            // onClick={makeBuyOffer}
-                            onClick={() => setIsOpenBuyDg(false)}
+                            onClick={handleCreateBuyOffer}
                             startIcon={<LocalOfferIcon />}
                         >
                             Buy NFT
                         </Button>
                     )
-                }
+                )}
             </Paper>
             {/* /* Make offer end */}
 
@@ -180,31 +215,17 @@ export default function NFTActions({ nft }) {
                         </Stack>
                     </AccordionSummary>
                     <Divider />
-                    <AccordionDetails sx={{ margin: 3, textAlign: 'center' }}>
-                        {/* {
-                            offers.error ? <Typography>Error: {offers.error.message}</Typography> :
-                                !offers.data ? <Skeleton animation='wave' height={100} width='100%' /> :
-                                    offers.data.sellOffers ?
-                                        <SellOffersList
-                                            id={offers.data.sellOffers.id}
-                                            result={offers.data.sellOffers.result}
-                                            TokenID={TokenID}
-                                            isOwner={isOwner}
-                                        /> :
-                                        <Typography variant='string'>
-                                            No sell offers yet!
-                                        </Typography>
-
-                        } */}
-                        {/* {isPageLoading ?
-                            <Skeleton animation='wave' height={100} width='100%' />
-                            :
+                    <AccordionDetails sx={{ textAlign: 'center' }}>
+                        {sellOffers && sellOffers.length > 0 ? (
                             <SellOffersList
-                                _offers={sellOffers}
-                                _TokenID={TokenID}
-                                _isOwner={isOwner}
+                                NFTokenID={NFTokenID}
+                                offers={sellOffers}
+                                isOwner={isOwner}
                             />
-                        } */}
+                        ):(
+                            <Typography>No Offers yet</Typography>
+                        )
+                        }
                     </AccordionDetails>
                 </Accordion>
                 {/* Sell Offers end */}
@@ -222,28 +243,24 @@ export default function NFTActions({ nft }) {
                         </Stack>
                     </AccordionSummary>
                     <Divider />
-                    <AccordionDetails sx={{ margin: 3, textAlign: 'center' }}>
-                        {/* {isPageLoading ?
-                            <Skeleton animation='wave' height={100} width='100%' />
-                            :
+                    <AccordionDetails sx={{ textAlign: 'center' }}>
+                        {buyOffers && buyOffers.length > 0 ? (
                             <BuyOffersList
-                                _offers={buyOffers}
-                                _TokenID={TokenID}
-                                _isOwner={isOwner}
+                                NFTokenID={NFTokenID}
+                                offers={buyOffers}
+                                isOwner={isOwner}
                             />
-                        } */}
-                        {/* {
-                            offers.error ? <Typography>Error: {offers.error.message}</Typography> :
-                                !offers.data ? <Skeleton animation='wave' height={100} width='100%' /> :
-                                    <BuyOffersList id={offers.data.buyOffers?.id} result={offers.data.buyOffers?.result} isOwner={isOwner} />
-                        } */}
+                        ):(
+                            <Typography>No Offers yet</Typography>
+                        )
+                        }
                     </AccordionDetails>
                 </Accordion>
                 {/* Buy Offers end */}
 
 
                 {/* Price History Start */}
-                <Accordion defaultExpanded >
+                {/* <Accordion defaultExpanded >
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls='panel2a-content'
@@ -257,60 +274,13 @@ export default function NFTActions({ nft }) {
                     <Divider />
                     <AccordionDetails>
                         <TimePeriods />
-                        {/* <img src={activity} /> */}
                         <Typography sx={{ margin: 3, textAlign: 'center' }}>
                             No item activity yet
                         </Typography>
                     </AccordionDetails>
-                </Accordion>
+                </Accordion> */}
                 {/* Price History end */}
             </Stack>
-
-            {/* <BaseDialog
-                isOpen={isOpenSellDg}
-                close={() => {
-                    setIsOpenSellDg(false)
-                }}
-                title={'Create Sell Offer'}
-                render={
-                    <CreateSellOfferDgContent
-                        close={() => {
-                            setIsOpenSellDg(false)
-                        }}
-                        TokenID={TokenID}
-                        setOffers={(offers) => setSellOffers(offers)}
-                    />}
-            /> */}
-            {/* <BaseDialog
-                isOpen={isOpenBurnDg}
-                close={() => {
-                    setIsOpenBurnDg(false)
-                }}
-                title={'Burn NFT'}
-                render={
-                    <BurnNFTDgContent
-                        close={() => {
-                            setIsOpenBurnDg(false)
-                        }}
-                        TokenID={TokenID}
-                    />}
-            /> */}
-            {/* <BaseDialog
-                isOpen={isOpenBuyDg}
-                close={() => {
-                    setIsOpenBuyDg(false)
-                }}
-                title={'Make Buy Offer'}
-                render={
-                    <CreateBuyOfferDgContent
-                        close={() => {
-                            setIsOpenBuyDg(false)
-                        }}
-                        TokenID={TokenID}
-                        setOffers={(offers) => setBuyOffers(offers)}
-                        owner={owner}
-                    />}
-            /> */}
         </Stack>
     )
 }

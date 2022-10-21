@@ -9,10 +9,6 @@ import {
     Toolbar
 } from '@mui/material';
 
-// Context
-import { useContext } from 'react';
-import { AppContext } from 'src/AppContext';
-
 // Components
 import AllCollections from 'src/collection/AllCollections';
 import ScrollToTop from 'src/components/ScrollToTop';
@@ -30,43 +26,11 @@ const OverviewWrapper = styled(Box)(
 `
 );
 
-const BackgroundWrapper = styled(Box)(
-    ({ theme }) => `
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background-size: cover;
-        background-color: ${theme.colors.alpha.white[100]};
-        background-position: center center;
-        opacity: 0.99;
-        z-index: -1;
-        filter: blur(0px);
-        -webkit-mask: linear-gradient(rgb(0, 0, 0), transparent);
-`
-);
-
-function generateRandom(maxLimit = 10){
-    let rand = Math.random() * maxLimit;
-
-    rand = Math.floor(rand);
-
-    return rand;
-}
-
 export default function Overview() {
-    const bgIdx = generateRandom();
-    const { darkMode } = useContext(AppContext);
 
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
-
-            <BackgroundWrapper
-                style={{
-                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`,
-                    opacity: `${darkMode?0.2:0.3}`
-                }}
-            />
 
             <Header />
 

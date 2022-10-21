@@ -1,3 +1,5 @@
+import Decimal from 'decimal.js';
+
 const ieee754Float = require('./IEEE754Float');
 
 /*module.exports.isHex = string => {
@@ -106,7 +108,7 @@ module.exports.utcToRippleEpocheTime = utcTime => {
     return (utcTime/1000)-946684800
 }
 
-module.exports.normalizeCurrencyCodeXummImpl = (currencyCode, maxLength = 20) => {
+function normalizeCurrencyCodeXummImpl(currencyCode, maxLength = 20) {
     if (!currencyCode) return '';
 
     // Native XRP
@@ -157,6 +159,8 @@ module.exports.normalizeCurrencyCodeXummImpl = (currencyCode, maxLength = 20) =>
     return currencyCode;
 };
 
+module.exports.normalizeCurrencyCodeXummImpl = normalizeCurrencyCodeXummImpl;
+
 /* Hex Encoding  ==================================================================== */
 const HexEncoding = {
     toBinary: (hex) => {
@@ -183,3 +187,20 @@ const HexEncoding = {
         return hex;
     },
 };
+
+module.exports.normalizeAmount = (Amount) => {
+    if (!Amount) return {issuer: '', currency: '', amount: ''};
+
+    let issuer = "XRPL";
+    let currency = "XRP";
+    let amount = "";
+    if (typeof Amount === 'object') {
+        issuer = Amount.issuer;
+        currency = Amount.currency;
+        amount = Amount.value;
+    } else {
+        amount = new Decimal(Amount).div(1000000).toString();
+    }
+    let name = normalizeCurrencyCodeXummImpl(currency);
+    return {name, issuer, currency, amount};
+}

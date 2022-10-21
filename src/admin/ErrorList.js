@@ -298,6 +298,8 @@ export default function ErrorList({account}) {
                                 uuid,
                                 name,
                                 collection,
+                                minter,
+                                issuer,
                                 flag,
                                 account,
                                 date,
@@ -391,6 +393,60 @@ export default function ErrorList({account}) {
                                             </Stack>
 
                                             <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">Minter: </Typography>
+                                                <Stack direction="row" spacing={0.2} alignItems="center">
+                                                    <Typography variant="s6">{account}</Typography>
+                                                    <Link
+                                                        underline="none"
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://xls20.bithomp.com/explorer/${minter}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title="Check on Bithomp">
+                                                            <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
+                                                    <CopyToClipboard text={minter} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                        <Tooltip title='Click to copy'>
+                                                            <IconButton size="small">
+                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Stack>
+                                            </Stack>
+
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">Issuer: </Typography>
+                                                <Stack direction="row" spacing={0.2} alignItems="center">
+                                                    <Typography variant="s6">{issuer}</Typography>
+                                                    <Link
+                                                        underline="none"
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://xls20.bithomp.com/explorer/${issuer}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title="Check on Bithomp">
+                                                            <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
+                                                    <CopyToClipboard text={issuer} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                        <Tooltip title='Click to copy'>
+                                                            <IconButton size="small">
+                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Stack>
+                                            </Stack>
+
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s4">Collection: </Typography>
                                                 <Typography variant="s6">{collection}</Typography>
                                             </Stack>
@@ -470,7 +526,7 @@ export default function ErrorList({account}) {
                     </TableBody>
                 </Table>
             </Box>
-            { total > 0 &&
+            {total > 0 &&
                 <ListToolbar
                     count={total}
                     rows={rows}

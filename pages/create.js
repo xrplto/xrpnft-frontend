@@ -1,18 +1,13 @@
-import axios from 'axios'
-import { useState, useEffect, useRef } from 'react';
+// import axios from 'axios'
+// import { useState, useEffect, useRef } from 'react';
 
 // Material
 import {
     Box,
     Container,
-    Grid,
     styled,
     Toolbar
 } from '@mui/material';
-
-// Context
-import { useContext } from 'react';
-import { AppContext } from 'src/AppContext';
 
 // Components
 import Minting from 'src/minting';
@@ -31,42 +26,11 @@ const OverviewWrapper = styled(Box)(
 `
 );
 
-const BackgroundWrapper = styled(Box)(
-    ({ theme }) => `
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background-size: cover;
-        background-color: rgb(32, 34, 37);
-        background-position: center center;
-        z-index: -1;
-        filter: blur(0px);
-        -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);
-`
-);
-
-function generateRandom(maxLimit = 10){
-    let rand = Math.random() * maxLimit;
-
-    rand = Math.floor(rand);
-
-    return rand;
-}
-
 export default function Overview({data}) {
-    const bgIdx = generateRandom();
-    const { darkMode } = useContext(AppContext);
 
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
-
-            <BackgroundWrapper
-                style={{
-                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`,
-                    opacity: `${darkMode?0.8:0.7}`
-                }}
-            />
 
             <Header />
 
