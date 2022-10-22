@@ -158,4 +158,35 @@ export const NFToken = { // 5:30 AM 10/20/2022
     PREOFFER_E1: 141, // Failed to submit the NFTokenCreateOffer transaction
     PREOFFER_E2: 142, // Exception occured to submit the NFTokenCreateOffer transaction
     PREOFFER_E3: 143, // Tried to find out SellOfferID but failed
-  }
+}
+
+const BG_FILES = [
+    "bay1.png",
+    "Fractal_1.png",
+    "bay2.jpg",
+    "Fractal_2.png",
+    "bay3.png",
+    "Fractal_3.png",
+    "bay4.jpg",
+    "Fractal_4.png",
+    "mmc1.png",
+    "Fractal_5.png",
+    "mmc2.png",
+    "Fractal_6.png",
+    "mmc3.png",
+    "Fractal_7.png",
+    "mmc4.jpg",
+    "Fractal_8.png",
+    "mmc5.png",
+    "Fractal_9.png",
+    "Fractal_10.png",
+    "Fractal_11.png"
+];
+
+export function getRandomBG(){
+    let rand = Math.random() * BG_FILES.length;
+
+    rand = Math.floor(rand);
+
+    return BG_FILES[rand];
+}

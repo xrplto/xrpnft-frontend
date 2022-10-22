@@ -27,7 +27,7 @@ export default function Landing({data}) {
         <Grid container spacing={3} justifyContent="center" alignItems="center" display="flex" sx={{mt:2}}>
             <Grid item xs={12} md={7} lg={7}>
                 <AutoStack>
-                    <Typography variant="h1a">Discover, collect, and sell extraordinary NFTs</Typography>
+                    <Typography variant="h1a">Discover, collect and sell extraordinary NFTs</Typography>
                     <Stack sx={{mt:4}}>
                         <Typography variant="s1">XRPNFT.COM is the world's first and largest XRPL NFT Marketplace.</Typography>
                     </Stack>

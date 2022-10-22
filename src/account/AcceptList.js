@@ -1,44 +1,22 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import ModalImage from "react-modal-image";
-import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
-    styled, useTheme,
-    Avatar,
+    useTheme,
     Backdrop,
     Box,
     Button,
-    CardMedia,
-    IconButton,
     Link,
     Stack,
     Table,
     TableBody,
     TableCell,
-    TableHead,
     TableRow,
-    Tooltip,
-    Typography,
-    Divider
+    Typography
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ErrorIcon from '@mui/icons-material/Error';
-import PendingIcon from '@mui/icons-material/Pending';
-import FiberPinIcon from '@mui/icons-material/FiberPin';
-import PushPinIcon from '@mui/icons-material/PushPin';
-import CollectionsIcon from '@mui/icons-material/Collections';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-import FolderZipIcon from '@mui/icons-material/FolderZip';
-import InfoIcon from '@mui/icons-material/Info';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import ApprovalOutlinedIcon from '@mui/icons-material/ApprovalOutlined';
-import CasinoIcon from '@mui/icons-material/Casino';
 
 // Context
 import { useContext } from 'react';
@@ -87,7 +65,7 @@ export default function AcceptList({account}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
-    const accountLocal = accountProfile?.account;
+    const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
     
     const [page, setPage] = useState(0);
@@ -174,11 +152,11 @@ export default function AcceptList({account}) {
     }, [openScanQR, xummUuid]);
 
     const onAcceptNFT = async (nft) => {
-        if (!accountLocal || !accountToken) {
+        if (!accountLogin || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
-        if (accountLocal !== account) {
+        if (accountLogin !== account) {
             openSnackbar('You are not the owner of this account', 'error');
             return;
         }

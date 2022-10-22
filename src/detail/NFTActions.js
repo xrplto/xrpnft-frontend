@@ -17,6 +17,7 @@ import ListIcon from '@mui/icons-material/List';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -32,8 +33,7 @@ import { NFToken } from "src/utils/constants";
 import CreateOfferDialog from './CreateOfferDialog';
 
 import TimePeriods from './TimePeriodsDropdown';
-import SellOffersList from './SellOffersList';
-import BuyOffersList from './BuyOffersList';
+import OffersList from './OffersList';
 
 // const NFT_FLAGS = {
 //     0x00000001: 'lsfBurnable',
@@ -42,7 +42,7 @@ import BuyOffersList from './BuyOffersList';
 //     0x00000008: 'lsfTransferable',
 // }
 
-export default function NFTActions({ nft, buyOffers, sellOffers }) {
+export default function NFTActions({ nft }) {
     const {
         uuid,
         name,
@@ -69,49 +69,10 @@ export default function NFTActions({ nft, buyOffers, sellOffers }) {
     const isBurnable = (flag & 0x00000001) > 0;
 
     const [isPageLoading, setPageLoading] = useState(false);
-    // const [sellOffers, setSellOffers] = useState([]);
-    // const [buyOffers, setBuyOffers] = useState([]);
     const [owner, setOwner] = useState('');
 
     const [openCreateOffer, setOpenCreateOffer] = useState(false);
     const [isSellOffer, setIsSellOffer] = useState(false);
-
-    const fetchOffers = async (mounted) => {
-        // setPageLoading(true)
-        // try {
-        //     const res = await getSellAndBuyOffers(TokenID)
-        //     if (mounted) {
-        //         console.log({ res })
-        //         setBuyOffers(res.buyOffers)
-        //         setSellOffers(res.sellOffers)
-        //         if (res.sellOffers.length) {
-        //             const owner = res.sellOffers[0].owner
-        //             setOwner(owner)
-        //         }
-        //         else if(res.sellOffers.length===0) {
-        //             console.log('No sell Offer.')
-        //             const owner = Issuer
-        //             setOwner(owner)
-        //         }
-        //     }
-        // } catch (e) {
-        //     console.log(e)
-        //     // openSnackbar(e.message, 'error')
-        // }
-        // setPageLoading(false)
-    }
-
-    useEffect(() => {
-        let mounted = true
-        // fetchOffers(mounted)
-
-        return () => {
-            mounted = false
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-    // console.log("owner", TokenID)
 
     const handleBurn = () => {
         openSnackbar('Coming soon!', 'info');
@@ -149,16 +110,22 @@ export default function NFTActions({ nft, buyOffers, sellOffers }) {
                 padding: 2,
             }}>
                 {destination ? (
-                    <Typography variant="s5">This NFT is being transferred to &nbsp;
-                        <Link
-                            color="inherit"
-                            target="_blank"
-                            href={`https://xls20.bithomp.com/explorer/${destination}`}
-                            rel="noreferrer noopener nofollow"
-                        >
-                            <Typography variant="s3" color="#33C2FF">{destination}</Typography>
-                        </Link>.
-                    </Typography>
+                    <>
+                        {destination === accountLogin?
+                            <Typography variant="s5">This NFT is being transferred to you. Click <CheckCircleOutlineIcon color='success'/> to accept it.</Typography>
+                            :
+                            <Typography variant="s5">This NFT is being transferred to &nbsp;
+                                <Link
+                                    color="inherit"
+                                    target="_blank"
+                                    href={`https://xls20.bithomp.com/explorer/${destination}`}
+                                    rel="noreferrer noopener nofollow"
+                                >
+                                    <Typography variant="s3" color="#33C2FF">{destination}</Typography>
+                                </Link>.
+                            </Typography>
+                        }
+                    </>
                 ):(
                     isOwner ? (
                         <Box sx={{
@@ -216,16 +183,7 @@ export default function NFTActions({ nft, buyOffers, sellOffers }) {
                     </AccordionSummary>
                     <Divider />
                     <AccordionDetails sx={{ textAlign: 'center' }}>
-                        {sellOffers && sellOffers.length > 0 ? (
-                            <SellOffersList
-                                NFTokenID={NFTokenID}
-                                offers={sellOffers}
-                                isOwner={isOwner}
-                            />
-                        ):(
-                            <Typography>No Offers yet</Typography>
-                        )
-                        }
+                        <OffersList nft={nft} isSell={true} />
                     </AccordionDetails>
                 </Accordion>
                 {/* Sell Offers end */}
@@ -244,16 +202,7 @@ export default function NFTActions({ nft, buyOffers, sellOffers }) {
                     </AccordionSummary>
                     <Divider />
                     <AccordionDetails sx={{ textAlign: 'center' }}>
-                        {buyOffers && buyOffers.length > 0 ? (
-                            <BuyOffersList
-                                NFTokenID={NFTokenID}
-                                offers={buyOffers}
-                                isOwner={isOwner}
-                            />
-                        ):(
-                            <Typography>No Offers yet</Typography>
-                        )
-                        }
+                        <OffersList nft={nft} isSell={false} />
                     </AccordionDetails>
                 </Accordion>
                 {/* Buy Offers end */}

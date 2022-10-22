@@ -1,5 +1,6 @@
-import axios from 'axios'
-import { useState, useEffect, useRef } from 'react';
+// import axios from 'axios'
+// import { useState, useEffect, useRef } from 'react';
+import { getRandomBG } from 'src/utils/constants';
 
 // Material
 import {
@@ -46,17 +47,9 @@ const BackgroundWrapper = styled(Box)(
 `
 );
 
-function generateRandom(maxLimit = 10){
-    let rand = Math.random() * maxLimit;
-
-    rand = Math.floor(rand);
-
-    return rand;
-}
-
 export default function Overview({data}) {
-    const bgIdx = generateRandom();
     const { darkMode } = useContext(AppContext);
+    const bgFile = getRandomBG();
 
     return (
         <OverviewWrapper>
@@ -64,7 +57,7 @@ export default function Overview({data}) {
 
             <BackgroundWrapper
                 style={{
-                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`,
+                    backgroundImage: `url("/static/landing/${bgFile}")`,
                     opacity: `${darkMode?0.9:0.99}`
                 }}
             />

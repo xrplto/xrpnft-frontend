@@ -130,7 +130,7 @@ export default function CreateOfferDialog({open, setOpen, nft, isSellOffer}) {
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/create/offer/${uuid}?account=${account}`, {headers: {'x-access-token': accountToken}});
+                const ret = await axios.get(`${BASE_URL}/offers/create/${uuid}?account=${account}`, {headers: {'x-access-token': accountToken}});
                 const resolved_at = ret.data?.resolved_at;
                 const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
@@ -179,7 +179,7 @@ export default function CreateOfferDialog({open, setOpen, nft, isSellOffer}) {
             const currency = token.currency;
             const body = { account, uuid, issuer, currency, amount, isSellOffer, owner: nft.account, user_token};
 
-            const res = await axios.post(`${BASE_URL}/create/offer`, body, {headers: {'x-access-token': accountToken}});
+            const res = await axios.post(`${BASE_URL}/offers/create`, body, {headers: {'x-access-token': accountToken}});
 
             if (res.status === 200) {
                 const uuid = res.data.data.uuid;
@@ -201,7 +201,7 @@ export default function CreateOfferDialog({open, setOpen, nft, isSellOffer}) {
     const onDisconnectXumm = async (uuid) => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/create/offer/${uuid}`, {headers: {'x-access-token': accountToken}});
+            const res = await axios.delete(`${BASE_URL}/offers/create/${uuid}`, {headers: {'x-access-token': accountToken}});
             if (res.status === 200) {
                 setUuid(null);
             }

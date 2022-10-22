@@ -31,7 +31,7 @@ import CountdownTimer from './CountDownTimer';
 // cannot accept offer if the expiration time and the closing time of the parent ledger has passed.
 // cannot accept an offer made by you.
 
-export default function BuyOffersList({ NFTokenID, offers, isOwner }) {
+export default function BuyOffersList({ nft, offers, isOwner }) {
     const [loading, setLoading] = useState(false);
     const { accountProfile } = useContext(AppContext);
     const account = accountProfile?.account;

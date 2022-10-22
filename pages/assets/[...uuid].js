@@ -30,7 +30,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="lg">
-                <TokenDetail nft={data.nft} buyOffers={data.buyOffers} sellOffers={data.sellOffers} />
+                <TokenDetail nft={data.nft} />
             </Container>
 
             <ScrollToTop />

@@ -11,7 +11,7 @@ import NFTDetails from './NftDetails';
 import NFTActions from './NFTActions';
 import NFTActionsBulk from './NFTActionsBulk';
 
-export default function Detail({nft, buyOffers, sellOffers}) {
+export default function Detail({nft}) {
     const {
         status,
         costs
@@ -25,7 +25,7 @@ export default function Detail({nft, buyOffers, sellOffers}) {
                 {costs && costs.length > 0 && status === NFToken.SELL_WITH_MINT ?
                     <NFTActionsBulk nft={nft} />
                 :
-                    <NFTActions nft={nft} buyOffers={buyOffers} sellOffers={sellOffers} />
+                    <NFTActions nft={nft} />
                 }
             </Grid>
         </Grid>
