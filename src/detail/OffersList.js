@@ -18,8 +18,8 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
 
 // Loader
-import { PulseLoader, ClockLoader } from "react-spinners";
-import { RotatingSquare, Vortex } from 'react-loader-spinner';
+import { PuffLoader, PulseLoader } from "react-spinners";
+import { ProgressBar, Discuss } from 'react-loader-spinner';
 
 // Utils
 import { getUnixTimeEpochFromRippleEpoch } from 'src/utils/parse';
@@ -30,6 +30,7 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import CountdownTimer from './CountDownTimer';
+import QRDialogNoPush from 'src/components/QRDialogNoPush';
 
 // cannot accept buy offer if you are not the owner of token.
 // cannot accept sell offer if seller is not the owner of token.
@@ -39,8 +40,10 @@ import CountdownTimer from './CountDownTimer';
 
 export default function OffersList({ nft, isSell }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
+    const accountToken = accountProfile?.token;
+
     const isOwner = accountLogin === nft.account;
 
     const [offers, setOffers] = useState([]);
@@ -49,6 +52,7 @@ export default function OffersList({ nft, isSell }) {
     const [xummUuid, setXummUuid] = useState(null);
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
+    const [qrType, setQrType] = useState("NFTokenAcceptOffer");
 
     const [loading, setLoading] = useState(false);
     const [pageLoading, setPageLoading] = useState(false);
@@ -59,6 +63,7 @@ export default function OffersList({ nft, isSell }) {
             axios.get(`${BASE_URL}/offers/${nft.NFTokenID}?sell=${isSell}`)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
+                    console.log(ret);
                     if (ret) {
                         setOffers(ret.offers);
                     }
@@ -81,7 +86,7 @@ export default function OffersList({ nft, isSell }) {
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/offer/accept/${xummUuid}`);
+                const ret = await axios.get(`${BASE_URL}/offers/acceptcancel/${xummUuid}`);
                 const resolved_at = ret.data?.resolved_at;
                 const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
@@ -95,10 +100,10 @@ export default function OffersList({ nft, isSell }) {
                         //         newNfts.push(n);
                         // }
                         // setNfts(newNfts);
-                        openSnackbar('Accepting NFT successful!', 'success');
+                        openSnackbar('Successful!', 'success');
                     }
                     else
-                        openSnackbar('Accepting NFT failed!', 'error');
+                        openSnackbar('Rejected!', 'error');
                     return;
                 }
             } catch (err) {
@@ -120,15 +125,29 @@ export default function OffersList({ nft, isSell }) {
         };
     }, [openScanQR, xummUuid]);
 
-    const doProcessOffer = async (nft, SellOfferID, isAcceptOrCancel) => {
+    const doProcessOffer = async (offer, isAcceptOrCancel) => {
         if (!accountLogin || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
-        if (accountLogin !== account) {
-            openSnackbar('You are not the owner of this account', 'error');
-            return;
+
+        const index = offer.nft_offer_index;
+        const owner = offer.owner;
+
+        if (isAcceptOrCancel) {
+            // Accept mode
+            if (accountLogin === owner) {
+                openSnackbar('You are the owner of this offer, you can not accept it.', 'error');
+                return;
+            }
+        } else {
+            // Cancel mode
+            if (accountLogin !== owner) {
+                openSnackbar('You are not the owner of this account', 'error');
+                return;
+            }
         }
+
         setPageLoading(true);
         try {
             const {
@@ -138,15 +157,30 @@ export default function OffersList({ nft, isSell }) {
 
             const user_token = accountProfile.user_token;
 
-            const body={ account, uuid, NFTokenID, SellOfferID, user_token };
+            const body = {
+                account: accountLogin, 
+                uuid,
+                NFTokenID,
+                index,
+                accept: isAcceptOrCancel?"yes":"no",
+                sell: isSell?"yes":"no",
+                user_token
+            };
 
-            const res = await axios.post(`${BASE_URL}/offer/acceptnft`, body, {headers: {'x-access-token': accountToken}});
+            const res = await axios.post(`${BASE_URL}/offers/acceptcancel`, body, {headers: {'x-access-token': accountToken}});
 
             if (res.status === 200) {
                 const newUuid = res.data.data.uuid;
                 const qrlink = res.data.data.qrUrl;
                 const nextlink = res.data.data.next;
 
+                let newQrType = isAcceptOrCancel?"NFTokenAcceptOffer":"NFTokenCancelOffer";
+                if (isSell)
+                    newQrType += " [Sell Offer]";
+                else
+                    newQrType += " [Buy Offer]";
+
+                setQrType(newQrType);
                 setXummUuid(newUuid);
                 setQrUrl(qrlink);
                 setNextUrl(nextlink);
@@ -161,7 +195,7 @@ export default function OffersList({ nft, isSell }) {
     const onDisconnectXumm = async () => {
         setPageLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/account/acceptnft/${xummUuid}`);
+            const res = await axios.delete(`${BASE_URL}/offers/acceptcancel/${xummUuid}`);
             // if (res.status === 200) {
             //     setXummUuid(null);
             // }
@@ -178,12 +212,32 @@ export default function OffersList({ nft, isSell }) {
         onDisconnectXumm();
     };
 
-    const handleCancelOffer = async (index) => {
-        // doProcessOffer(nft, index, false);
+    const handleCancelOffer = async (offer) => {
+        // Sell Offer
+        /*
+        {
+            "amount": {
+                "currency": "534F4C4F00000000000000000000000000000000",
+                "issuer": "rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz",
+                "value": "10"
+            },
+            "flags": 1,
+            "nft_offer_index": "2212BFA0AAF995E9F9E9B6553DC97A1C37FB97334BBE8C5856CF7C7B1016D20E",
+            "owner": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n"
+        },
+        {
+            "amount": "10000000",
+            "flags": 1,
+            "nft_offer_index": "DF13A4FE5F44FF804015ED5C827F753BB7A1379651D88473CB50454EB0B89F17",
+            "owner": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n"
+        }
+        */
+        
+        doProcessOffer(offer, false);
     }
 
-    const handleAcceptOffer = async (index) => {
-        // doProcessOffer(nft, index, true);
+    const handleAcceptOffer = async (offer) => {
+        doProcessOffer(offer, true);
     }
 
     return (
@@ -192,8 +246,15 @@ export default function OffersList({ nft, isSell }) {
                 sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={pageLoading}
             >
-                <FadeLoader color='lightGreen' size={50} />
-                {/* <Typography>loading...</Typography> */}
+               <ProgressBar
+                    height="80"
+                    width="80"
+                    ariaLabel="progress-bar-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="progress-bar-wrapper"
+                    borderColor = '#F4442E'
+                    barColor = '#51E5FF'
+                />
             </Backdrop>
 
             {loading ? (
@@ -208,6 +269,14 @@ export default function OffersList({ nft, isSell }) {
             )
             }
 
+            <QRDialogNoPush
+                open={openScanQR}
+                type={qrType}
+                onClose={handleScanQRClose}
+                qrUrl={qrUrl}
+                nextUrl={nextUrl}
+            />
+
             <Stack>
                 {
                     offers.map((offer, idx) => {
@@ -217,26 +286,46 @@ export default function OffersList({ nft, isSell }) {
                                 <Stack direction="row" spacing={1} alignItems="center">
 
                                     <Stack>
-                                        {accountLogin && ((isSell && !isOwner) || (!isSell && isOwner)) &&
-                                            <Tooltip title="Accept Offer">
-                                                <IconButton
-                                                    aria-label='close'
-                                                    onClick={() => handleAcceptOffer(offer.nft_offer_index)}
-                                                >
-                                                    <CheckCircleOutlineIcon fontSize='large' color='success' />
-                                                </IconButton>
-                                            </Tooltip>
+                                        {((isSell && !isOwner) || (!isSell && isOwner)) &&
+                                            <>
+                                                {nft.account === offer.owner ?
+                                                    <Tooltip title="Accept Offer">
+                                                        <IconButton
+                                                            aria-label='close'
+                                                            onClick={() => handleAcceptOffer(offer)}
+                                                        >
+                                                            <CheckCircleOutlineIcon fontSize='large' color='success' />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    :
+                                                    <Tooltip title="This is not offered from the NFT owner.">
+                                                        <IconButton aria-label='close'>
+                                                            <CheckCircleOutlineIcon fontSize='large' color='disabled' />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                }
+                                            </>
                                         }
 
-                                        {accountLogin && ((isSell && isOwner) || (!isSell && !isOwner)) &&
-                                            <Tooltip title="Cancel Offer">
-                                                <IconButton
-                                                    aria-label='close'
-                                                    onClick={() => handleCancelOffer(offer.nft_offer_index)}
-                                                >
-                                                    <HighlightOffIcon fontSize='large' color='error' />
-                                                </IconButton>
-                                            </Tooltip>
+                                        {((isSell && isOwner) || (!isSell && !isOwner)) &&
+                                            <>
+                                                {accountLogin === offer.owner ?
+                                                    <Tooltip title="Cancel Offer">
+                                                        <IconButton
+                                                            aria-label='close'
+                                                            onClick={() => handleCancelOffer(offer)}
+                                                        >
+                                                            <HighlightOffIcon fontSize='large' color='error' />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    :
+                                                    <Tooltip title="Only the owner of this offer can cancel.">
+                                                        <IconButton aria-label='close'>
+                                                            <HighlightOffIcon fontSize='large' color='disabled' />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                }
+                                            </>
                                         }
                                     </Stack>
 
