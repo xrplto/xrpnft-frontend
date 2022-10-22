@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { performance } from 'perf_hooks';
-import { useState, useEffect, useRef } from 'react';
 
 // Material
 import {
@@ -15,10 +14,6 @@ import TokenDetail from 'src/detail';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
-
-// overflow: scroll;
-// overflow: auto;
-// overflow: hidden;
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `

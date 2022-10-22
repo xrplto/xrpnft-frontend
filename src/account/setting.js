@@ -7,40 +7,20 @@ import { useState, useEffect, useRef } from 'react';
 import { withStyles } from '@mui/styles';
 import {
     styled,
-    Avatar,
-    Button,
     Card,
-    Divider,
-    FormControl,
     IconButton,
-    Link,
-    MenuItem,
-    Select,
     Stack,
     TextField,
-    ToggleButton,
-    ToggleButtonGroup,
-    Tooltip,
     Typography
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import ImageIcon from '@mui/icons-material/Image';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
-import CancelIcon from '@mui/icons-material/Cancel';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
-
-// Iconify
-import { Icon } from '@iconify/react';
-import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
-
-// Utils
-import { fNumber } from 'src/utils/formatNumber';
 
 // Components
 
@@ -49,7 +29,7 @@ const CardWrapper = styled('div')(
     border: dashed 3px;
     border-radius: 5px;
     padding: 5px;
-    width: fit-content;
+    // width: fit-content;
     &:hover {
         cursor: pointer;
     }
@@ -63,18 +43,6 @@ const CardWrapperCircle = styled('div')(
     padding: 5px;
     width: fit-content;
     overflow: hidden;
-    &:hover {
-        cursor: pointer;
-    }
-`
-);
-
-const CardWrapper3 = styled('div')(
-    ({ theme }) => `
-    border: dashed 3px;
-    border-radius: 5px;
-    padding: 5px;
-    // width: fit-content;
     &:hover {
         cursor: pointer;
     }
@@ -345,7 +313,7 @@ export default function EditProfile() {
 
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Banner image</Typography>
                 <Typography variant='p3'>This image will appear at the top of your account page. Avoid including too much text in this banner image, as the dimensions change on different devices. 1400 x 350 recommended.(Max: 10MB)</Typography>
-                <CardWrapper3>
+                <CardWrapper>
                     <input
                         ref={fileRef2}
                         style={{ display: 'none' }}
@@ -381,7 +349,7 @@ export default function EditProfile() {
                         <img src={fileUrl2} alt='' style={fileUrl2 ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} />
                         <ImageIcon fontSize='large' sx={fileUrl2 ? { display: 'none' } : {width: 100, height: 100}} />
                     </Card>
-                </CardWrapper3>
+                </CardWrapper>
 
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Name <Typography variant='s2'>*</Typography></Typography>
 

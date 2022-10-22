@@ -1,6 +1,3 @@
-// import axios from 'axios'
-// import { useState, useEffect, useRef } from 'react';
-
 // Material
 import {
     styled,
@@ -13,11 +10,6 @@ import {
 import MyCollections from 'src/collection/MyCollections';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
-import Footer from 'src/components/Footer';
-
-// overflow: scroll;
-// overflow: auto;
-// overflow: hidden;
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -39,8 +31,6 @@ export default function Overview() {
             </Container>
 
             <ScrollToTop />
-
-            {/* <Footer /> */}
 
         </OverviewWrapper>
     );

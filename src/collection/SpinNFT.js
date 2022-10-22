@@ -1,10 +1,9 @@
 import axios from 'axios';
-import Decimal from 'decimal.js';
 import useSound from 'use-sound';
 import Confetti from 'react-confetti';
 import { ColorExtractor } from 'react-color-extractor';
 import useWindowSize from 'react-use/lib/useWindowSize';
-import React, { useEffect, useState, createRef } from "react";
+import React, { useEffect, useState } from "react";
 
 // Material
 import { useTheme } from '@mui/material/styles';
@@ -15,7 +14,6 @@ import {
     Container,
     Divider,
     Grid,
-    IconButton,
     Link,
     Stack,
     Typography,
@@ -26,9 +24,6 @@ import EditIcon from '@mui/icons-material/Edit';
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
-
-// Utils
-import { fNumber } from 'src/utils/formatNumber';
 
 // Components
 import BuyMintDialog from './BuyMintDialog';

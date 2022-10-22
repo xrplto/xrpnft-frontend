@@ -1,6 +1,5 @@
-import axios from 'axios';
 import React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 
 // Material
 import { useTheme } from '@mui/material/styles';
@@ -12,14 +11,10 @@ import {
     Tooltip,
     Typography
 } from '@mui/material';
-import SellIcon from '@mui/icons-material/Sell';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
-
-// Loader
-import { FallingLines, Comment } from 'react-loader-spinner';
 
 // Iconify
 import { Icon } from '@iconify/react';

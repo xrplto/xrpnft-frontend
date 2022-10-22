@@ -7,32 +7,19 @@ import { withStyles } from '@mui/styles';
 import {
     alpha, useTheme, useMediaQuery,
     styled,
-    Avatar,
     Backdrop,
     Button,
-    Checkbox,
     Dialog,
     DialogContent,
     DialogTitle,
-    FormControlLabel,
     IconButton,
-    InputAdornment,
-    Link,
-    MenuItem,
     Select,
     Stack,
-    Tooltip,
     Typography,
     TextField
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import StoreIcon from '@mui/icons-material/Store';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-
-// Iconify
-import { Icon } from '@iconify/react';
-import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
 // Context
 import { useContext } from 'react';
@@ -42,11 +29,10 @@ import { AppContext } from 'src/AppContext'
 import { PulseLoader } from "react-spinners";
 
 // Utils
-import { fNumber } from 'src/utils/formatNumber';
 import { XRP_TOKEN } from 'src/utils/constants';
 
 // Components
-import QueryToken from './QueryToken';
+import QueryToken from 'src/components/QueryToken';
 import QRDialogNoPush from 'src/components/QRDialogNoPush';
 
 // ----------------------------------------------------------------------

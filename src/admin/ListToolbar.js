@@ -60,10 +60,10 @@ export default function NftListToolbar({ count, rows, setRows, page, setPage}) {
 
     return (
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Typography>Showing {start} - {end} out of {count}</Typography>
+            <Typography>{start} - {end} out of {count}</Typography>
             <Pagination page={page+1} onChange={handleChangePage} count={page_count}/>
             <Stack direction='row' alignItems='center'>
-                Show Rows
+                Rows
                 <CustomSelect
                     value={rows}
                     onChange={handleChangeRows}

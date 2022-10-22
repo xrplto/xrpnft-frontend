@@ -4,57 +4,29 @@ import ModalImage from "react-modal-image";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
-    styled, useTheme,
+    useTheme,
     Avatar,
-    Backdrop,
     Box,
-    Button,
-    CardMedia,
     IconButton,
-    InputAdornment,
     Link,
     Stack,
     Table,
     TableBody,
     TableCell,
-    TableHead,
     TableRow,
-    TextField,
-    ToggleButton,
-    ToggleButtonGroup,
     Tooltip,
-    Typography,
-    Divider
+    Typography
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ErrorIcon from '@mui/icons-material/Error';
-import PendingIcon from '@mui/icons-material/Pending';
-import FiberPinIcon from '@mui/icons-material/FiberPin';
-import PushPinIcon from '@mui/icons-material/PushPin';
-import CollectionsIcon from '@mui/icons-material/Collections';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-import FolderZipIcon from '@mui/icons-material/FolderZip';
-import InfoIcon from '@mui/icons-material/Info';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import ApprovalOutlinedIcon from '@mui/icons-material/ApprovalOutlined';
-import CasinoIcon from '@mui/icons-material/Casino';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { fIntNumber } from 'src/utils/formatNumber';
 import { NFToken } from 'src/utils/constants';
-
-// Loader
-import { PulseLoader, ClockLoader, ClipLoader } from "react-spinners";
-import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
 import ListToolbar from './ListToolbar';
@@ -96,7 +68,7 @@ function statusToString(status) {
     return ret;
 }
 
-export default function FindNFT() {
+export default function FindNFT({filter, choice, setLoading}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -108,11 +80,6 @@ export default function FindNFT() {
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
     const [nfts, setNfts] = useState([]);
-    const [filter, setFilter] = useState('');
-
-    const [loading, setLoading] = useState(true);
-
-    const [choice, setChoice] = useState('');
 
     useEffect(() => {
         function getNfts() {
@@ -141,55 +108,8 @@ export default function FindNFT() {
         getNfts();
     }, [page, rows, accountAdmin, accountToken, filter, choice]);
 
-    const handleChangeFilter = (e) => {
-        setFilter(e.target.value);
-    }
-
-    const handleChangeChoice = (event, newValue) => {
-        setChoice(newValue);
-    };
-
     return (
         <>
-            <ToggleButtonGroup
-                color="primary"
-                value={choice}
-                exclusive
-                // size="small"
-                
-                onChange={handleChangeChoice}
-            >
-                <ToggleButton value="" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>None</ToggleButton>
-                <ToggleButton value="nonftids" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>No NFTokenID</ToggleButton>
-                <ToggleButton value="nosellofferids" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>No SellOfferID</ToggleButton>
-                <ToggleButton value="stillhavingmint" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Still having Mint</ToggleButton>
-            </ToggleButtonGroup>
-            <Stack direction="row">
-                <TextField
-                    id='textFilter'
-                    // autoFocus
-                    // fullWidth
-                    variant='outlined'
-                    placeholder='Filter'
-                    margin='dense'
-                    onChange={handleChangeFilter}
-                    autoComplete='new-password'
-                    inputProps={{autoComplete: 'off'}}
-                    value={filter}
-                    onFocus={event => {
-                        event.target.select();
-                    }}
-                    sx={{pl:2, pr:2, pt: 0, pb: 0, mt: 4}}
-                    onKeyDown={(e) => e.stopPropagation()}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="start">
-                                {loading && <ClipLoader color='#ff0000' size={15} /> }
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-            </Stack>
             {nfts && nfts.length === 0 &&
                 <Stack alignItems="center" sx={{mt: 5}}>
                     <Typography variant="s7">No Items</Typography>

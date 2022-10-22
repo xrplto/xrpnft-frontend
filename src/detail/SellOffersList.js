@@ -1,33 +1,20 @@
-import { useSnackbar } from 'notistack';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FadeLoader } from 'react-spinners';
 import { normalizeAmount } from 'src/utils/normalizers';
 
 // Material
 import {
-    Avatar,
     Backdrop,
-    Button,
-    ButtonGroup,
-    Container,
     Divider,
-    Grid,
     IconButton,
     Link,
-    List,
-    ListItem,
-    ListItemAvatar,
     Stack,
     Tooltip,
     Typography
 } from '@mui/material';
-// import { deepOrange } from '@mui/material/colors';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
-
-// Iconify
-import { Icon } from '@iconify/react';
 
 // Utils
 import { getUnixTimeEpochFromRippleEpoch } from 'src/utils/parse';
@@ -80,7 +67,6 @@ export default function SellOffersList({ NFTokenID, offers, isOwner }) {
                                                 <IconButton
                                                     aria-label='close'
                                                     onClick={() => handleAcceptOffer(offer.nft_offer_index)}
-                                                    
                                                 >
                                                     <CheckCircleOutlineIcon fontSize='large' color='success' />
                                                 </IconButton>
@@ -92,7 +78,6 @@ export default function SellOffersList({ NFTokenID, offers, isOwner }) {
                                                 <IconButton
                                                     aria-label='close'
                                                     onClick={() => handleCancelOffer(offer.nft_offer_index)}
-                                                    
                                                 >
                                                     <HighlightOffIcon fontSize='large' color='error' />
                                                 </IconButton>

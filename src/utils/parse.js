@@ -98,7 +98,7 @@ const convertToHttpLink = (uriString) => {
 
     if (regex_uri.test(uriString) && uriString.length > 45) {
         if (uriString.slice(0, 10) === 'xrpnft.com') // the tokenURI minted from this site
-            return process.env.REACT_APP_PINATA_GATEWAY + uriString.slice(16)
+            return 'https://gateway.xrpnft.com/ipfs/' + uriString.slice(16)
         else if (uriString === 'cid:QmRxrbqTqK8Y6GN3NojSFdteihWeFA7fgDHQ1imfmhDPTA' || uriString ==='cid:QmPZrV3Vzoiuan2tLjkxUxwEGsg6ZLg8WwsPCvDRoEyBkS' || uriString ==='cid:QmbkgGS15BN1bi6Fv1MniMgkRBqQs5XPX4RS2STEfsHTqj'){
                 return null
             }
@@ -372,7 +372,7 @@ export const getNFTokenInfo = async (tokenURI) => {
     // const uri = parseNFTUri(tokenURI);
 
     const hash = await getNFTfromURI(tokenURI);
-    const uri = `https://xrpnft.mypinata.cloud/ipfs/${hash}`;
+    const uri = `https://gateway.xrpnft.com/ipfs/${hash}`;
 
     let img = '/static/nft.png';
     let data = '';

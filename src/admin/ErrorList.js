@@ -4,64 +4,36 @@ import ModalImage from "react-modal-image";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
-    styled, useTheme,
+    useTheme,
     Avatar,
-    Backdrop,
     Box,
     Button,
-    CardMedia,
     IconButton,
     Link,
     Stack,
     Table,
     TableBody,
     TableCell,
-    TableHead,
     TableRow,
     Tooltip,
     Typography,
     Divider
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ErrorIcon from '@mui/icons-material/Error';
-import PendingIcon from '@mui/icons-material/Pending';
-import FiberPinIcon from '@mui/icons-material/FiberPin';
-import PushPinIcon from '@mui/icons-material/PushPin';
-import CollectionsIcon from '@mui/icons-material/Collections';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-import FolderZipIcon from '@mui/icons-material/FolderZip';
-import InfoIcon from '@mui/icons-material/Info';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import ApprovalOutlinedIcon from '@mui/icons-material/ApprovalOutlined';
-import CasinoIcon from '@mui/icons-material/Casino';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { fIntNumber } from 'src/utils/formatNumber';
 import { NFToken } from 'src/utils/constants';
-
-// Loader
-import { PulseLoader, ClockLoader } from "react-spinners";
-import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
 import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 // ----------------------------------------------------------------------
-
-function truncate(str, n) {
-    if (!str) return '';
-    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
-};
 
 function statusToString(status) {
 
@@ -92,7 +64,7 @@ function statusToString(status) {
     return ret;
 }
 
-export default function ErrorList({account}) {
+export default function ErrorList({filter, choice, setLoading}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -105,8 +77,6 @@ export default function ErrorList({account}) {
     const [total, setTotal] = useState(0);
     const [nfts, setNfts] = useState([]);
     const [sync, setSync] = useState(0);
-
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         function getNfts() {
@@ -229,28 +199,33 @@ export default function ErrorList({account}) {
 
     return (
         <>
-            {loading ? (
-                <Stack alignItems="center">
-                    <PulseLoader color='#00AB55' size={10} />
-                </Stack>
-            ):(
-                nfts && nfts.length === 0 &&
+            {total > 0 ?
+                <>
+                    <Stack direction="row" spacing={1}>
+                        <Button variant="contained" color="primary" size="small" onClick={()=>handleResolveAll()}>
+                            Resolve All
+                        </Button>
+
+                        <Button variant="contained" color="primary" size="small" onClick={()=>handleResolvePage()}>
+                            Resolve Page
+                        </Button>
+                    </Stack>
+                    <ListToolbar
+                        count={total}
+                        rows={rows}
+                        setRows={setRows}
+                        page={page}
+                        setPage={setPage}
+                    />
+                </>
+                :
+                <>
                     <Stack alignItems="center" sx={{mt: 5}}>
                         <Typography variant="s7">No Items</Typography>
                     </Stack>
-            )
+                </>
             }
-            {nfts && nfts.length > 0 &&
-                <Stack direction="row" spacing={1}>
-                    <Button variant="contained" color="primary" size="small" onClick={()=>handleResolveAll()}>
-                        Resolve All
-                    </Button>
 
-                    <Button variant="contained" color="primary" size="small" onClick={()=>handleResolvePage()}>
-                        Resolve Page
-                    </Button>
-                </Stack>
-            }
             <Box
                 sx={{
                     display: "flex",
@@ -526,15 +501,6 @@ export default function ErrorList({account}) {
                     </TableBody>
                 </Table>
             </Box>
-            {total > 0 &&
-                <ListToolbar
-                    count={total}
-                    rows={rows}
-                    setRows={setRows}
-                    page={page}
-                    setPage={setPage}
-                />
-            }
         </>
     );
 }

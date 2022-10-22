@@ -12,13 +12,6 @@ import PaletteIcon from '@mui/icons-material/Palette';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import FacebookIcon from '@mui/icons-material/Facebook';
 
-export const BASE_URL = 'https://api.xrpnft.com/api';
-export const RIPPLE_TEST_NET_URL = 'wss://xls20-sandbox.rippletest.net:51233'
-export const NEW_RIPPLE_TEST_NET_URL = 'wss://s.altnet.rippletest.net:51233'
-export const PINATA_PINNING_FILE_URL = 'https://api.pinata.cloud/pinning/pinFileToIPFS'
-export const PINATA_GATEWAY = 'https://xrpnft.mypinata.cloud/'
-export const XRPNFT_DOMAIN = 'xrpnft.com/ipfs/'
-
 export const SUPPORTED_FILE_TYPES = [
     'JPG',
     'PNG',

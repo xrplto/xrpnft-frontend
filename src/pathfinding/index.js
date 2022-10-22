@@ -1,24 +1,15 @@
 import React from 'react';
 import axios from 'axios'
-import FormData from 'form-data';
-import { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux'
+import { useState, useRef } from 'react';
 import Decimal from 'decimal.js';
 import { utils } from "xrpl-txdata";
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
     styled,
     Avatar,
-    Button,
-    Card,
-    Checkbox,
-    FormControlLabel,
-    FormGroup,
     IconButton,
     Link,
-    MenuItem,
     Select,
     Stack,
     TextField,
@@ -26,25 +17,20 @@ import {
     Typography
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import ImageIcon from '@mui/icons-material/Image';
 import SendIcon from '@mui/icons-material/Send';
-import CloseIcon from '@mui/icons-material/Close';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { SUPPORTED_FILE_TYPES, TOKEN_FLAGS, CATEGORIES, XRP_TOKEN } from 'src/utils/constants';
+import { XRP_TOKEN } from 'src/utils/constants';
 
 // Loader
-import { FallingLines, Comment } from 'react-loader-spinner';
+import { Comment } from 'react-loader-spinner';
 
 // Components
-import QueryToken from './QueryToken';
+import QueryToken from 'src/components/QueryToken';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `

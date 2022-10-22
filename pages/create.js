@@ -1,6 +1,3 @@
-// import axios from 'axios'
-// import { useState, useEffect, useRef } from 'react';
-
 // Material
 import {
     Box,
@@ -14,10 +11,6 @@ import Minting from 'src/minting';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
-
-// overflow: scroll;
-// overflow: auto;
-// overflow: hidden;
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `

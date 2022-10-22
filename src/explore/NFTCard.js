@@ -1,16 +1,12 @@
 import {normalizeCurrencyCodeXummImpl} from "src/utils/normalizers";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { ColorExtractor } from 'react-color-extractor';
 
 // Material
 import {
     styled,
-    Button,
-    CardContent,
-    CardMedia,
     Divider,
     Link,
-    Skeleton,
     Stack,
     Tooltip,
     Typography
@@ -18,16 +14,8 @@ import {
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 
-// Iconify
-import { Icon } from '@iconify/react';
-
-// Utils
-import { getNFTokenInfo, convertHexToString, getNFTfromURI } from 'src/utils/parse';
-import { NFToken } from "src/utils/constants";
-
 // Components
 import FlagsContainer from 'src/components/Flags';
-import PriceContainer from './Price';
 import Label from './Label';
 
 const CardWrapper = styled('div')(
@@ -206,8 +194,6 @@ export default function NFTCard({ nft }) {
                             <Typography variant='s2'>- - -</Typography>
                         )
                     )}
-                    
-                    {/* <PriceContainer price="2000" /> */}
                 </Stack>
                 <Divider sx={{mt:0.8, mb:0.3}}/>
                 <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>

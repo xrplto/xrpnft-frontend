@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { useState, useEffect, useRef } from 'react';
 import { performance } from 'perf_hooks';
 
 // Material
@@ -17,39 +16,12 @@ import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
 
-// overflow: scroll;
-// overflow: auto;
-// overflow: hidden;
-
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
         overflow: hidden;
         flex: 1;
 `
 );
-
-const BackgroundWrapper = styled(Box)(
-    ({ theme }) => `
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background-size: cover;
-        background-color: rgb(32, 34, 37);
-        background-position: center center;
-        z-index: -1;
-        filter: blur(0px);
-        -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);
-`
-);
-
-function generateRandom(maxLimit = 10){
-    let rand = Math.random() * maxLimit;
-
-    rand = Math.floor(rand);
-
-    return rand;
-}
-
 
 const BannerWrapper = styled('div')(
     ({ theme }) => `

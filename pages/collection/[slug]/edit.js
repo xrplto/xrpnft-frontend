@@ -21,10 +21,6 @@ import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
 
-// overflow: scroll;
-// overflow: auto;
-// overflow: hidden;
-
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
         overflow: hidden;
@@ -32,30 +28,7 @@ const OverviewWrapper = styled(Box)(
 `
 );
 
-const BackgroundWrapper = styled(Box)(
-    ({ theme }) => `
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background-size: cover;
-        background-color: rgb(32, 34, 37);
-        background-position: center center;
-        z-index: -1;
-        filter: blur(0px);
-        -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);
-`
-);
-
-function generateRandom(maxLimit = 10){
-    let rand = Math.random() * maxLimit;
-
-    rand = Math.floor(rand);
-
-    return rand;
-}
-
 export default function Overview({data}) {
-    const bgIdx = generateRandom();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { darkMode, accountProfile, openSnackbar } = useContext(AppContext);
 
@@ -96,13 +69,6 @@ export default function Overview({data}) {
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
-
-            <BackgroundWrapper
-                style={{
-                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`,
-                    opacity: `${darkMode?0.3:0.2}`
-                }}
-            />
 
             <Header />
 

@@ -117,14 +117,14 @@ function Status500() {
               <Container maxWidth="sm">
                 <Box textAlign="center">
                   <TypographyPrimary variant="h1" sx={{ my: 2 }}>
-                    XRPL Token Prices, Charts, Market Volume And Activity
+                    XRPNFT, the largest XRPL NFT marketplace
                   </TypographyPrimary>
                   <TypographySecondary
                     variant="h4"
                     fontWeight="normal"
                     sx={{ mb: 4 }}
                   >
-                    High performance React template built with lots of powerful MUI (Material-UI) components across multiple product niches for fast & perfect apps development processes.
+                    A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.
                   </TypographySecondary>
                   <Button href="/" size="large" variant="contained">
                     Overview

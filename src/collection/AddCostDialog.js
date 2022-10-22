@@ -26,7 +26,7 @@ import { fNumber } from 'src/utils/formatNumber';
 import { XRP_TOKEN } from 'src/utils/constants';
 
 // Components
-import QueryToken from './QueryToken';
+import QueryToken from 'src/components/QueryToken';
 
 // ----------------------------------------------------------------------
 const AddDialog = styled(Dialog) (({ theme }) => ({

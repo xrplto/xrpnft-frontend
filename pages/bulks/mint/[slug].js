@@ -1,6 +1,3 @@
-// import axios from 'axios'
-// import { performance } from 'perf_hooks';
-
 // Material
 import {
     Box,
@@ -9,19 +6,11 @@ import {
     Toolbar
 } from '@mui/material';
 
-// Context
-import { useContext } from 'react';
-import { AppContext } from 'src/AppContext';
-
 // Components
 import BulkMint from 'src/bulks/mint';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
-
-// overflow: scroll;
-// overflow: auto;
-// overflow: hidden;
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -30,42 +19,11 @@ const OverviewWrapper = styled(Box)(
 `
 );
 
-const BackgroundWrapper = styled(Box)(
-    ({ theme }) => `
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background-size: cover;
-        background-color: rgb(32, 34, 37);
-        background-position: center center;
-        z-index: -1;
-        filter: blur(0px);
-        -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);
-`
-);
-
-function generateRandom(maxLimit = 10){
-    let rand = Math.random() * maxLimit;
-
-    rand = Math.floor(rand);
-
-    return rand;
-}
-
 export default function Overview({data}) {
-    const bgIdx = generateRandom();
-    const { darkMode } = useContext(AppContext);
 
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
-
-            <BackgroundWrapper
-                style={{
-                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`,
-                    opacity: `${darkMode?0.1:0.2}`
-                }}
-            />
 
             <Header />
 

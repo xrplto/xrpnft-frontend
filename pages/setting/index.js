@@ -1,7 +1,3 @@
-// import axios from 'axios'
-// import { useState, useEffect, useRef } from 'react';
-// import { performance } from 'perf_hooks';
-
 // Material
 import {
     Box,
@@ -15,10 +11,6 @@ import EditProfile from 'src/account/setting';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
-
-// overflow: scroll;
-// overflow: auto;
-// overflow: hidden;
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `

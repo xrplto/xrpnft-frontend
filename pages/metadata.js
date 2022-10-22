@@ -1,5 +1,3 @@
-import axios from 'axios'
-import { useState, useEffect, useRef } from 'react';
 import JSONPretty from 'react-json-pretty';
 
 // Material
@@ -7,15 +5,10 @@ import {
     styled,
     Box,
     Container,
-    Grid,
     Stack,
     Typography,
     Toolbar
 } from '@mui/material';
-
-// Context
-import { useContext } from 'react';
-import { AppContext } from 'src/AppContext';
 
 // Components
 import ScrollToTop from 'src/components/ScrollToTop';
@@ -28,29 +21,6 @@ const OverviewWrapper = styled(Box)(
         flex: 1;
 `
 );
-
-const BackgroundWrapper = styled(Box)(
-    ({ theme }) => `
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background-size: cover;
-        background-color: rgb(32, 34, 37);
-        background-position: center center;
-        opacity: 0.99;
-        z-index: -1;
-        filter: blur(0px);
-        -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);
-`
-);
-
-function generateRandom(maxLimit = 10){
-    let rand = Math.random() * maxLimit;
-
-    rand = Math.floor(rand);
-
-    return rand;
-}
 
 const meta = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -142,19 +112,10 @@ const meta = {
 }
 
 export default function Overview({data}) {
-    const bgIdx = generateRandom();
-    const { darkMode } = useContext(AppContext);
 
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
-
-            <BackgroundWrapper
-                style={{
-                    backgroundImage: `url("/static/fractal/${bgIdx}.png")`,
-                    opacity: `${darkMode?0.3:0.5}`
-                }}
-            />
 
             <Header />
 

@@ -28,7 +28,7 @@ const NotifyWrapper = styled(Box)(({ theme }) => `
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ${alpha(theme.colors.primary.main, 0.4)};
+    background-color: ${alpha(theme.colors.primary.main, 0.8)};
     margin-bottom: ${theme.spacing(0)};
     border-radius: 0px;
     border-bottom: 1px solid ${alpha('#CBCCD2', 0.2)};

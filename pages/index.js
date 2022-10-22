@@ -41,7 +41,7 @@ const BackgroundWrapper = styled(Box)(
         background-position: center center;
         opacity: 0.99;
         z-index: -1;
-        filter: blur(0px);
+        filter: blur(8px);
         -webkit-mask: linear-gradient(rgb(255, 255, 255), transparent);
 `
 );
