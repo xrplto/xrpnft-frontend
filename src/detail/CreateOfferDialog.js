@@ -108,7 +108,7 @@ export default function CreateOfferDialog({open, setOpen, nft, isSellOffer}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-    const { accountProfile, openSnackbar } = useContext(AppContext);
+    const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -138,6 +138,7 @@ export default function CreateOfferDialog({open, setOpen, nft, isSellOffer}) {
                     if (dispatched_result === 'tesSUCCESS') {
                         // const newMints = ret.data.mints;
                         handleClose();
+                        setSync(sync + 1);
                         openSnackbar('Create Offer successful!', 'success');
                     }
                     else
@@ -163,7 +164,7 @@ export default function CreateOfferDialog({open, setOpen, nft, isSellOffer}) {
                 clearInterval(timer)
             }
         };
-    }, [openScanQR, uuid]);
+    }, [openScanQR, uuid, sync]);
 
     const onCreateOfferXumm = async () => {
         if (!account || !accountToken) {

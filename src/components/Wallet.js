@@ -41,7 +41,7 @@ export default function Wallet() {
     // https://github.com/mui/material-ui/issues/10000
     const BASE_URL = 'https://api.xrpnft.com/api';
     const anchorRef = useRef(null);
-    const { accountProfile, setAccountProfile, acceptNfts, setAcceptNfts, setLoading } = useContext(AppContext);
+    const { accountProfile, setAccountProfile, acceptNfts, setAcceptNfts, setLoading, sync } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
     const accountUuid = accountProfile?.xuuid;
@@ -73,14 +73,13 @@ export default function Wallet() {
                     // always executed
                 });
         }
-        console.log(`Get accept NFTs count`);
         getOffersCount();
 
         // const timer = setInterval(() => getOffersCount(), 5000);
         // return () => {
         //     clearInterval(timer);
         // }
-    }, [account, accountToken]);
+    }, [account, accountToken, sync]);
 
     useEffect(() => {
         var timer = null;

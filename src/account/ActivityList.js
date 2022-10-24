@@ -37,6 +37,13 @@ import TokenIcon from '@mui/icons-material/Token';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import CasinoIcon from '@mui/icons-material/Casino';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
+import SportsScoreIcon from '@mui/icons-material/SportsScore';
+import FireplaceIcon from '@mui/icons-material/Fireplace';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 // Context
 import { useContext } from 'react';
@@ -60,26 +67,41 @@ function truncate(str, n) {
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-const Activity = {
+const Activity = { // 9:04 AM 10/24/2022
     LOGIN: 1,
     LOGOUT: 2,
     UPDATE_PROFILE: 3,
-    
+  
     CREATE_COLLECTION: 4,
     UPDATE_COLLECTION: 7,
   
-    SET_NFT_MINTER: 8,
-  
-    MINT_ONE: 9,
     MINT_BULK: 10, // Lazy mint mode, 10k NFTs
   
-    BUY_MINT: 12,
+    BUY_MINT: 12, // Maybe XRPL tx based eventually.
     BUY_RANDOM_NFT: 13,
     BUY_BULK_NFT: 14,
-    BUY_NORMAL_NFT: 15,
   
-    ACCEPT_SELL_OFFER: 16
-}
+    // Tx parse section
+    CREATE_SELL_OFFER: 21, // Owner, NFTokenCreateOffer, status: "created", flags: 1
+    CREATE_BUY_OFFER:  22, // Buyer, NFTokenCreateOffer, status: "created", flags: 0
+  
+    CANCEL_SELL_OFFER: 23, // Owner, NFTokenCancelOffer, status: "deleted", flags: 1
+    CANCEL_BUY_OFFER:  24, // Buyer, NFTokenCancelOffer, status: "deleted", flags: 0
+  
+    ACCEPT_BUY_OFFER:  25, // Owner, NFTokenAcceptOffer, status: "deleted", flags: 0
+    ACCEPT_SELL_OFFER: 26, // Buyer, NFTokenAcceptOffer, status: "deleted", flags: 1
+  
+    OWNER_ACCPETED_YOUR_BUY_OFFER: 27,
+    BUYER_ACCEPTED_YOUR_SELL_OFFER: 28, 
+    YOU_RECEIVED_A_NFT: 29, // Buyer accepted a NFT by Buy Offer or Sell Offer
+  
+    // 
+    MINT_NFT: 31,
+    BURN_NFT: 32, // Owner, 
+  
+    //
+    SET_NFT_MINTER: 41, // AccountSet
+  }
 
 export default function ActivityList({account}) {
     const theme = useTheme();
@@ -263,44 +285,6 @@ export default function ActivityList({account}) {
                                         </>
                                     );
                                     break;
-                                case Activity.SET_NFT_MINTER:
-                                    strActivity = 'Set NFT Minter';
-                                    componentIcon = (<ApprovalIcon />);
-                                    componentActivity = (
-                                        <>
-                                            <Stack direction="row" spacing={1}>
-                                                <Typography variant="s7">Minter: </Typography>
-                                                <Typography variant="s2">{data.NFTokenMinter}</Typography>
-                                            </Stack>
-                                        </>
-                                    );
-                                    break;
-                                case Activity.MINT_ONE:
-                                    strActivity = 'Create a NFT';
-                                    componentIcon = (<TokenIcon />);
-                                    componentActivity = (
-                                        <>
-                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Stack direction="row" spacing={1}>
-                                                    <Avatar alt="C" src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}/>
-                                                    <Stack>
-                                                        <Stack direction="row" spacing={1}>
-                                                            <Typography variant="s7">Name: </Typography>
-                                                            <Typography variant="s2">{data.name}</Typography>
-                                                        </Stack>
-                                                        <Stack direction="row" spacing={1}>
-                                                            <Typography variant="s7">Type: </Typography>
-                                                            <Typography variant="s2">{data.type}</Typography>
-                                                        </Stack>
-                                                    </Stack>
-                                                </Stack>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <FlagsContainer Flags={data.flag}/>
-                                                </Stack>
-                                            </Stack>
-                                        </>
-                                    );
-                                    break;
                                 case Activity.MINT_BULK:
                                     strActivity = 'Mint Bulk NFTs';
                                     componentIcon = (<CollectionsIcon />);
@@ -414,34 +398,110 @@ export default function ActivityList({account}) {
                                         </>
                                     );
                                     break;
-                                case Activity.BUY_NORMAL_NFT:
-                                    strActivity = 'Buy a NFT';
-                                    componentIcon = (<TokenIcon />);
+                                case Activity.CREATE_SELL_OFFER:
+                                    componentIcon = (<LocalOfferIcon />);
+                                    strActivity = 'Create Sell Offer';
+                                    // NFTokenID
                                     componentActivity = (
                                         <>
-                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Stack direction="row" spacing={1}>
-                                                    <Avatar alt="C" src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}/>
-                                                    <Stack>
-                                                        <Stack direction="row" spacing={1}>
-                                                            <Typography variant="s7">Name: </Typography>
-                                                            <Typography variant="s2">{data.name}</Typography>
-                                                        </Stack>
-                                                        <Stack direction="row" spacing={1}>
-                                                            <Typography variant="s7">Type: </Typography>
-                                                            <Typography variant="s2">{data.type}</Typography>
-                                                        </Stack>
-                                                    </Stack>
-                                                </Stack>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <FlagsContainer Flags={data.flag}/>
-                                                </Stack>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">NFTokenID: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                </Link>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+                                case Activity.CREATE_BUY_OFFER:
+                                    componentIcon = (<LocalOfferIcon />);
+                                    strActivity = 'Create Buy Offer';
+                                    // NFTokenID
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">NFTokenID: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                </Link>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+
+                                case Activity.CANCEL_SELL_OFFER:
+                                    componentIcon = (<HighlightOffIcon />);
+                                    strActivity = 'Cancel Sell Offer';
+                                    // NFTokenID
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">NFTokenID: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                </Link>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+                                case Activity.CANCEL_BUY_OFFER:
+                                    componentIcon = (<HighlightOffIcon />);
+                                    strActivity = 'Cancel Buy Offer';
+                                    // NFTokenID
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">NFTokenID: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                </Link>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+
+                                case Activity.ACCEPT_BUY_OFFER:
+                                    componentIcon = (<CheckCircleOutlineIcon />);
+                                    strActivity = 'Accept Buy Offer';
+                                    // NFTokenID
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">NFTokenID: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                </Link>
                                             </Stack>
                                         </>
                                     );
                                     break;
                                 case Activity.ACCEPT_SELL_OFFER:
-                                    componentIcon = (<AssignmentReturnedIcon />);
+                                    componentIcon = (<CheckCircleOutlineIcon />);
                                     strActivity = 'Accept Sell Offer';
                                     // NFTokenID
                                     componentActivity = (
@@ -456,6 +516,157 @@ export default function ActivityList({account}) {
                                                 >
                                                     <Typography variant="s2">{data.NFTokenID}</Typography>
                                                 </Link>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+
+                                case Activity.OWNER_ACCPETED_YOUR_BUY_OFFER:
+                                    componentIcon = (<HowToRegIcon />);
+                                    strActivity = 'NFT Owner accepted your Buy Offer';
+                                    // NFTokenID
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">NFTokenID: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                </Link>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+                                case Activity.BUYER_ACCEPTED_YOUR_SELL_OFFER:
+                                    componentIcon = (<HowToRegIcon />);
+                                    strActivity = 'Buyer accepted your Sell Offer';
+                                    // NFTokenID
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">NFTokenID: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                </Link>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+
+                                case Activity.YOU_RECEIVED_A_NFT:
+                                    componentIcon = (<SportsScoreIcon />);
+                                    strActivity = 'You received a NFT';
+                                    // NFTokenID
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">NFTokenID: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                </Link>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+
+                                case Activity.MINT_NFT:
+                                    strActivity = 'Minted a NFT';
+                                    componentIcon = (<TokenIcon />);
+                                    componentActivity = (
+                                        <>
+                                            {data.meta?
+                                                <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Avatar alt="C" src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}/>
+                                                        <Stack>
+                                                            <Stack direction="row" spacing={1}>
+                                                                <Typography variant="s7">Name: </Typography>
+                                                                <Typography variant="s2">{data.name}</Typography>
+                                                            </Stack>
+                                                            <Stack direction="row" spacing={1}>
+                                                                <Typography variant="s7">Type: </Typography>
+                                                                <Typography variant="s2">{data.type}</Typography>
+                                                            </Stack>
+                                                        </Stack>
+                                                    </Stack>
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <FlagsContainer Flags={data.flag}/>
+                                                    </Stack>
+                                                </Stack>
+                                                :
+                                                <Stack>
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Typography variant="s7">NFTokenID: </Typography>
+                                                        <Link
+                                                            color="inherit"
+                                                            target="_blank"
+                                                            href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                            rel="noreferrer noopener nofollow"
+                                                        >
+                                                            <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                        </Link>
+                                                    </Stack>
+                                                    <Typography variant="s2">{data.URI}</Typography>
+                                                </Stack>
+                                            }
+                                        </>
+                                    );
+                                    break;
+
+                                case Activity.BURN_NFT:
+                                    componentIcon = (<FireplaceIcon />);
+                                    strActivity = 'Burnt a NFT';
+                                    // NFTokenID
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">NFTokenID: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                </Link>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+
+                                case Activity.SET_NFT_MINTER:
+                                    strActivity = 'Set NFT Minter';
+                                    componentIcon = (<ApprovalIcon />);
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">Minter: </Typography>
+                                                <Typography variant="s2">{data.NFTokenMinter}</Typography>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+                                default:
+                                    strActivity = `Unknown Activity: ${activity}`;
+                                    componentIcon = (<HelpOutlineIcon />);
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                
                                             </Stack>
                                         </>
                                     );

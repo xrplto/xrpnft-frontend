@@ -68,7 +68,7 @@ export default function ErrorList({filter, choice, setLoading}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
-    const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
+    const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
     const accountAdmin = accountProfile?.account;
     const accountToken = accountProfile?.token;
     
@@ -76,7 +76,6 @@ export default function ErrorList({filter, choice, setLoading}) {
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
     const [nfts, setNfts] = useState([]);
-    const [sync, setSync] = useState(0);
 
     useEffect(() => {
         function getNfts() {

@@ -40,7 +40,7 @@ import QRDialogNoPush from 'src/components/QRDialogNoPush';
 
 export default function OffersList({ nft, isSell }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { accountProfile, openSnackbar } = useContext(AppContext);
+    const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -63,7 +63,6 @@ export default function OffersList({ nft, isSell }) {
             axios.get(`${BASE_URL}/offers/${nft.NFTokenID}?sell=${isSell}`)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
-                    console.log(ret);
                     if (ret) {
                         setOffers(ret.offers);
                     }
@@ -75,7 +74,7 @@ export default function OffersList({ nft, isSell }) {
                 });
         }
         getOffers();
-    }, []);
+    }, [sync]);
 
     useEffect(() => {
         var timer = null;
@@ -92,14 +91,7 @@ export default function OffersList({ nft, isSell }) {
                 if (resolved_at) {
                     setOpenScanQR(false);
                     if (dispatched_result === 'tesSUCCESS') {
-                        // const offerCount = ret.data.data.offerCount;
-                        // const nftUuid = ret.data.data.nftUuid;
-                        // const newNfts = [];
-                        // for (var n of nfts) {
-                        //     if (n.uuid !== nftUuid)
-                        //         newNfts.push(n);
-                        // }
-                        // setNfts(newNfts);
+                        setSync(sync + 1);
                         openSnackbar('Successful!', 'success');
                     }
                     else
@@ -123,7 +115,7 @@ export default function OffersList({ nft, isSell }) {
                 clearInterval(timer)
             }
         };
-    }, [openScanQR, xummUuid]);
+    }, [openScanQR, xummUuid, sync]);
 
     const doProcessOffer = async (offer, isAcceptOrCancel) => {
         if (!accountLogin || !accountToken) {
@@ -286,9 +278,67 @@ export default function OffersList({ nft, isSell }) {
                                 <Stack direction="row" spacing={1} alignItems="center">
 
                                     <Stack>
-                                        {((isSell && !isOwner) || (!isSell && isOwner)) &&
+                                        {/* Sell Offer List - Not Owner */}
+                                        {isSell && !isOwner &&
                                             <>
-                                                {nft.account === offer.owner ?
+                                                {accountLogin === offer.owner ? 
+                                                    <Tooltip title="Cancel Offer">
+                                                        <IconButton
+                                                            aria-label='close'
+                                                            onClick={() => handleCancelOffer(offer)}
+                                                        >
+                                                            <HighlightOffIcon fontSize='large' color='error' />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    :
+                                                    <>
+                                                        {nft.account === offer.owner ?
+                                                            <Tooltip title="Accept Offer">
+                                                                <IconButton
+                                                                    aria-label='close'
+                                                                    onClick={() => handleAcceptOffer(offer)}
+                                                                >
+                                                                    <CheckCircleOutlineIcon fontSize='large' color='success' />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                            :
+                                                            <Tooltip title="This is not offered from the NFT owner.">
+                                                                <IconButton aria-label='close'>
+                                                                    <CheckCircleOutlineIcon fontSize='large' color='disabled' />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        }
+                                                    </>
+                                                }
+                                            </>
+                                        }
+
+                                        {/* Sell Offer List - Owner */}
+                                        {isSell && isOwner &&
+                                            <>
+                                                {accountLogin === offer.owner ?
+                                                    <Tooltip title="Cancel Offer">
+                                                        <IconButton
+                                                            aria-label='close'
+                                                            onClick={() => handleCancelOffer(offer)}
+                                                        >
+                                                            <HighlightOffIcon fontSize='large' color='error' />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    :
+                                                    <Tooltip title="Only the owner of this offer can cancel.">
+                                                        <IconButton aria-label='close'>
+                                                            <HighlightOffIcon fontSize='large' color='disabled' />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                }
+                                            </>
+                                        }
+
+                                        {/* Buy Offer List - Owner */}
+                                        {!isSell && isOwner &&
+                                            <>
+                                                {accountLogin !== offer.account ?
                                                     <Tooltip title="Accept Offer">
                                                         <IconButton
                                                             aria-label='close'
@@ -298,16 +348,20 @@ export default function OffersList({ nft, isSell }) {
                                                         </IconButton>
                                                     </Tooltip>
                                                     :
-                                                    <Tooltip title="This is not offered from the NFT owner.">
-                                                        <IconButton aria-label='close'>
-                                                            <CheckCircleOutlineIcon fontSize='large' color='disabled' />
+                                                    <Tooltip title="Cancel Offer">
+                                                        <IconButton
+                                                            aria-label='close'
+                                                            onClick={() => handleCancelOffer(offer)}
+                                                        >
+                                                            <HighlightOffIcon fontSize='large' color='error' />
                                                         </IconButton>
                                                     </Tooltip>
                                                 }
                                             </>
                                         }
 
-                                        {((isSell && isOwner) || (!isSell && !isOwner)) &&
+                                        {/* Buy Offer List - Not Owner */}
+                                        {!isSell && !isOwner &&
                                             <>
                                                 {accountLogin === offer.owner ?
                                                     <Tooltip title="Cancel Offer">

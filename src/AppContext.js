@@ -16,6 +16,7 @@ export function ContextProvider({ children, data, openSnackbar }) {
     const [darkMode, setDarkMode] = useState(true);
     const [accountProfile, _setAccountProfile] = useState(null);
     const [acceptNfts, setAcceptNfts] = useState(0);
+    const [sync, setSync] = useState(0);
 
     const store = configureRedux(data);
 
@@ -48,7 +49,7 @@ export function ContextProvider({ children, data, openSnackbar }) {
 
     return (
         <AppContext.Provider
-            value={{ toggleTheme, darkMode, accountProfile, setAccountProfile, setLoading, openSnackbar, acceptNfts, setAcceptNfts }}
+            value={{ toggleTheme, darkMode, accountProfile, setAccountProfile, setLoading, openSnackbar, acceptNfts, setAcceptNfts, sync, setSync }}
         >
             <Backdrop
                 sx={{ color: "#000", zIndex: (theme) => theme.zIndex.drawer + 1 }}

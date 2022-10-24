@@ -21,7 +21,6 @@ import { Icon } from '@iconify/react';
 
 // Components
 import NFTPreview from './NFTPreview';
-import NFTDetailsDescription from './NftDetailsDescription';
 import FlagsContainer from 'src/components/Flags';
 import Properties from 'src/minting/NFTProperties/Properties';
 import Levels from 'src/minting/NFTLevels/Levels';
@@ -202,7 +201,11 @@ export default function NFTDetails({nft}) {
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <NFTDetailsDescription description={meta.description} />
+                        {meta.description ?
+                            <Typography>{meta.description}</Typography>
+                            :
+                            <Typography sx={{ textAlign: 'center' }}>No description for this item</Typography>
+                        }
                     </AccordionDetails>
                 </Accordion>
                 {/* NFT Properties start--- */}

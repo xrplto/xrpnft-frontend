@@ -64,7 +64,7 @@ export default function AcceptList({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
-    const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
+    const { accountProfile, openSnackbar, setAcceptNfts, sync, setSync } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
     
@@ -99,7 +99,7 @@ export default function AcceptList({account}) {
                 });
         }
         getNfts();
-    }, [account, page, rows]);
+    }, [account, page, rows, sync]);
 
     useEffect(() => {
         var timer = null;
@@ -110,22 +110,15 @@ export default function AcceptList({account}) {
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/account/acceptnft/${xummUuid}`);
+                const ret = await axios.get(`${BASE_URL}/offers/acceptcancel/${xummUuid}`);
                 const resolved_at = ret.data?.resolved_at;
                 const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
                     setOpenScanQR(false);
                     if (dispatched_result === 'tesSUCCESS') {
                         // handleClose();
-                        const offerCount = ret.data.data.offerCount;
-                        const nftUuid = ret.data.data.nftUuid;
-                        setAcceptNfts(offerCount);
-                        const newNfts = [];
-                        for (var n of nfts) {
-                            if (n.uuid !== nftUuid)
-                                newNfts.push(n);
-                        }
-                        setNfts(newNfts);
+                        setPage(0);
+                        setSync(sync + 1); // Load NFTs again
                         openSnackbar('Accepting NFT successful!', 'success');
                     }
                     else
@@ -149,7 +142,7 @@ export default function AcceptList({account}) {
                 clearInterval(timer)
             }
         };
-    }, [openScanQR, xummUuid]);
+    }, [openScanQR, xummUuid, sync]);
 
     const onAcceptNFT = async (nft) => {
         if (!accountLogin || !accountToken) {
@@ -170,9 +163,17 @@ export default function AcceptList({account}) {
 
             const user_token = accountProfile.user_token;
 
-            const body={ account, uuid, NFTokenID, SellOfferID, user_token };
+            const body = {
+                account: accountLogin, 
+                uuid,
+                NFTokenID,
+                index: SellOfferID,
+                accept: "yes",
+                sell: "yes",
+                user_token
+            };
 
-            const res = await axios.post(`${BASE_URL}/account/acceptnft`, body, {headers: {'x-access-token': accountToken}});
+            const res = await axios.post(`${BASE_URL}/offers/acceptcancel`, body, {headers: {'x-access-token': accountToken}});
 
             if (res.status === 200) {
                 const newUuid = res.data.data.uuid;
@@ -193,7 +194,7 @@ export default function AcceptList({account}) {
     const onDisconnectXumm = async () => {
         setLoading2(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/account/acceptnft/${xummUuid}`);
+            const res = await axios.delete(`${BASE_URL}/offers/acceptcancel/${xummUuid}`);
             // if (res.status === 200) {
             //     setXummUuid(null);
             // }
