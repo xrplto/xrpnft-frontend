@@ -22,7 +22,7 @@ import { Icon } from '@iconify/react';
 // Components
 import NFTPreview from './NFTPreview';
 import FlagsContainer from 'src/components/Flags';
-import Properties from 'src/minting/NFTProperties/Properties';
+import Properties from './Properties';
 import Levels from 'src/minting/NFTLevels/Levels';
 import { convertHexToString } from 'src/utils/parse';
 
@@ -41,7 +41,7 @@ export default function NFTDetails({nft}) {
         taxon,
         cslug,
         NFTokenID,
-        issuer
+        issuer,
     } = nft;
 
     const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
@@ -64,6 +64,8 @@ export default function NFTDetails({nft}) {
     } catch (e) {}
 
     const collectionName = collection.name || collection;
+
+    const properties = meta?.attributes;
     
     return (
         <Stack spacing={2} sx={{mt: 2}}>
@@ -209,7 +211,7 @@ export default function NFTDetails({nft}) {
                     </AccordionDetails>
                 </Accordion>
                 {/* NFT Properties start--- */}
-                {/* {properties &&
+                {properties &&
                     <Accordion defaultExpanded>
                         <AccordionSummary
                             id="panel3bh-header"
@@ -218,14 +220,14 @@ export default function NFTDetails({nft}) {
                         >
                             <Stack spacing={2} direction='row'>
                                 <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                                <Typography variant='string' >Properties</Typography>
+                                <Typography variant='string'>Properties</Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
                             <Properties properties={properties} />
                         </AccordionDetails>
                     </Accordion>
-                } */}
+                }
                 {/* NFT Properties end--- */}
 
                 {/* NFT Leveled Properties start--- */}

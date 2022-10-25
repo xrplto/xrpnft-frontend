@@ -40,6 +40,7 @@ import FavoritedList from '../account/FavoritedList';
 import ActivityList from '../account/ActivityList';
 import AcceptList from '../account/AcceptList';
 import CheckNFT from './CheckNFT';
+import Summary from './Summary';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -144,8 +145,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['collected', 'created', 'favorited', 'activity', 'accept', 'checknfts'];
-const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept', 'Check NFTs'];
+const tabValues = ['collected', 'created', 'favorited', 'activity', 'accept', 'checknfts', 'summary'];
+const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept', 'Check NFTs', 'Summary'];
 
 function getTabID(tab) {
     if (!tab) return 0;
@@ -255,6 +256,7 @@ export default function Admin() {
                             <Tab value={3} label={tabLabels[3]} {...a11yProps(3)} />
                             <Tab value={4} label={tabLabels[4]} {...a11yProps(4)} />
                             <Tab value={5} label={tabLabels[5]} {...a11yProps(5)} />
+                            <Tab value={6} label={tabLabels[6]} {...a11yProps(6)} />
                         </Tabs>
                     </Stack>
                 </Stack>
@@ -293,6 +295,11 @@ export default function Admin() {
                         <TabPanel value={tabID} id={5}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <CheckNFT />
+                            </Stack>
+                        </TabPanel>
+                        <TabPanel value={tabID} id={6}>
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <Summary />
                             </Stack>
                         </TabPanel>
                     </Grid>
