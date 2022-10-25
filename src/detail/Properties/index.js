@@ -1,8 +1,9 @@
 // Material
 import {
-  Container,
-  Grid,
-  Typography,
+    Box,
+    Container,
+    Grid,
+    Typography,
 } from '@mui/material';
 
 // Components
@@ -49,20 +50,24 @@ import Trait from './Trait';
 ]
 */
 
+const gridItem = {
+    margin: "8px",
+    // border: "1px solid red"
+};
+
+// https://stackoverflow.com/questions/50743402/material-ui-grid-item-height
 export default function Properties({ properties }) {
     return (
         <Container>
-        {
-            properties ? (
-                <Grid container spacing={2}>
-                {
-                    properties.map((property) => (
-                        <Grid item key={property.id}>
-                            <Trait type={property.type} value={property.value} />
-                        </Grid>
-                    ))
-                }
-                </Grid>
+            <Grid container spacing={2}>
+            {
+                properties.map((item, idx) => (
+                    <Box sx={gridItem} key={"Properties" + idx}>
+                        <Trait type={item.type || item.trait_type} value={item.value} />
+                    </Box>
+                ))
+            }
+            </Grid>
         </Container>
     );
 }

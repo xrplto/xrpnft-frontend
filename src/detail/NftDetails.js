@@ -73,6 +73,25 @@ export default function NFTDetails({nft}) {
             <Stack>
                 <Accordion defaultExpanded>
                     <AccordionSummary
+                        id="panel3bh-header"
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel3bh-content"
+                    >
+                        <Stack spacing={2} direction='row'>
+                            <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
+                            <Typography variant='string'>Properties</Typography>
+                        </Stack>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{mt: 2}}>
+                        {properties && properties.length > 0 ?
+                            <Properties properties={properties} />
+                            :
+                            <Typography>No properties.</Typography>
+                        }
+                    </AccordionDetails>
+                </Accordion>
+                <Accordion defaultExpanded>
+                    <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1bh-content"
                         id="panel1bh-header"
@@ -210,25 +229,7 @@ export default function NFTDetails({nft}) {
                         }
                     </AccordionDetails>
                 </Accordion>
-                {/* NFT Properties start--- */}
-                {properties &&
-                    <Accordion defaultExpanded>
-                        <AccordionSummary
-                            id="panel3bh-header"
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel3bh-content"
-                        >
-                            <Stack spacing={2} direction='row'>
-                                <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                                <Typography variant='string'>Properties</Typography>
-                            </Stack>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Properties properties={properties} />
-                        </AccordionDetails>
-                    </Accordion>
-                }
-                {/* NFT Properties end--- */}
+                
 
                 {/* NFT Leveled Properties start--- */}
                 {/* {

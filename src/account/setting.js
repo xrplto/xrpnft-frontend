@@ -213,7 +213,7 @@ export default function EditProfile() {
     };
 
     const processFile = (pickedFile, idx) => {
-        if (!pickedFile) return;
+        if (!pickedFile) return false;
 
         const fileName = pickedFile.name;
         var re = /(?:\.([^.]+))?$/;
@@ -238,18 +238,26 @@ export default function EditProfile() {
                     else if (idx === 2)
                         setFileUrl2(reader.result);
                 }
+                return true;
+            } else {
+                openSnackbar('You can only upload images size less than 10MB', 'error');
             }
         }
+        return false;
     }
 
     const handleFileSelect1 = (e) => {
         const pickedFile = e.target.files[0];
-        processFile(pickedFile, 1);
+        const ret = processFile(pickedFile, 1);
+        if (!ret)
+            fileRef1.current.value = null;
     }
 
     const handleFileSelect2 = (e) => {
         const pickedFile = e.target.files[0];
-        processFile(pickedFile, 2);
+        const ret = processFile(pickedFile, 2);
+        if (!ret)
+            fileRef2.current.value = null;
     }
 
     const handleResetFile1 = (e) => {

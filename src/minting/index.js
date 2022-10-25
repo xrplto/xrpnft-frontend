@@ -291,7 +291,7 @@ export default function Minting() {
             var ext = re.exec(fileName)[1];
             if (ext)
                 ext = ext.toLowerCase();
-            if (ext === 'jpg' || ext === 'png') {
+            if (ext === 'jpg' || ext === 'png' || ext === 'gif') {
                 const size = pickedFile.size;
                 if (size < 10240000) {
                     setFile(pickedFile);
@@ -301,6 +301,9 @@ export default function Minting() {
                     reader.onloadend = function (e) {
                         setFileUrl(reader.result); // data:image/jpeg;base64
                     }
+                } else {
+                    openSnackbar('You can only upload images size less than 10MB', 'error');
+                    fileRef.current.value = null;
                 }
             }
         }
@@ -393,7 +396,7 @@ export default function Minting() {
                         style={{ display: 'none' }}
                         // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
                         // accept='image/*'
-                        accept='.png, .jpg'
+                        accept='.png, .jpg, .gif'
                         id='contained-button-file'
                         // multiple
                         type='file'

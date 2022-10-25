@@ -298,7 +298,7 @@ export default function CreateCollection() {
     };
 
     const processFile = (pickedFile, idx) => {
-        if (!pickedFile) return;
+        if (!pickedFile) return false;
 
         const fileName = pickedFile.name;
         var re = /(?:\.([^.]+))?$/;
@@ -331,28 +331,40 @@ export default function CreateCollection() {
                     else if (idx === 4)
                         setFileUrl4(reader.result);
                 }
+                return true;
+            } else {
+                openSnackbar('You can only upload images size less than 10MB', 'error');
             }
         }
+        return false;
     }
 
     const handleFileSelect1 = (e) => {
         const pickedFile = e.target.files[0];
-        processFile(pickedFile, 1);
+        const ret = processFile(pickedFile, 1);
+        if (!ret)
+            fileRef1.current.value = null;
     }
 
     const handleFileSelect2 = (e) => {
         const pickedFile = e.target.files[0];
-        processFile(pickedFile, 2);
+        const ret = processFile(pickedFile, 2);
+        if (!ret)
+            fileRef2.current.value = null;
     }
 
     const handleFileSelect3 = (e) => {
         const pickedFile = e.target.files[0];
-        processFile(pickedFile, 3);
+        const ret = processFile(pickedFile, 3);
+        if (!ret)
+            fileRef3.current.value = null;
     }
 
     const handleFileSelect4 = (e) => {
         const pickedFile = e.target.files[0];
-        processFile(pickedFile, 4);
+        const ret = processFile(pickedFile, 4);
+        if (!ret)
+            fileRef4.current.value = null;
     }
 
     const handleResetFile1 = (e) => {
@@ -427,7 +439,7 @@ export default function CreateCollection() {
                 <Typography variant="h1a">Create a Collection</Typography>
                 <Typography variant='p2'><Typography variant='s2'>*</Typography> Required fields</Typography>
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Logo image <Typography variant='s2'>*</Typography></Typography>
-                <Typography variant='p3'>This image will also be used for navigation. 350 x 350 recommended.</Typography>
+                <Typography variant='p3'>This image will also be used for navigation. 350 x 350 recommended.(Max: 10MB)</Typography>
                 <CardWrapperCircle>
                     <input
                         ref={fileRef1}
@@ -466,7 +478,7 @@ export default function CreateCollection() {
                     </Card>
                 </CardWrapperCircle>
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Featured image</Typography>
-                <Typography variant='p3'>This image will be used for featuring your collection on the homepage, category pages, or other promotional areas of XRPNFT.COM. 600 x 400 recommended.</Typography>
+                <Typography variant='p3'>This image will be used for featuring your collection on the homepage, category pages, or other promotional areas of XRPNFT.COM. 600 x 400 recommended.(Max: 10MB)</Typography>
                 <CardWrapper>
                     <input
                         ref={fileRef2}
@@ -506,7 +518,7 @@ export default function CreateCollection() {
                 </CardWrapper>
 
                 <Typography variant='p4' sx={{pt:2, pb:1}}>Banner image</Typography>
-                <Typography variant='p3'>This image will appear at the top of your collection page. Avoid including too much text in this banner image, as the dimensions change on different devices. 1400 x 350 recommended.</Typography>
+                <Typography variant='p3'>This image will appear at the top of your collection page. Avoid including too much text in this banner image, as the dimensions change on different devices. 1400 x 350 recommended.(Max: 10MB)</Typography>
                 <CardWrapper3>
                     <input
                         ref={fileRef3}
@@ -737,7 +749,16 @@ export default function CreateCollection() {
                         {type === 'random' &&
                             <>
                                 <Typography variant='p4' sx={{pt:2, pb:1}}>Spinner GIF image</Typography>
-                                <Typography variant='p3'>This image will be used for spinning NFTs. 600 x 400 recommended.</Typography>
+                                <Typography variant='p3'>This image will be used for spinning NFTs. If you don't select, the &nbsp;
+                                    <Link
+                                        target="_blank"
+                                        href={`/static/spin.gif`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        default spinning image
+                                    </Link>
+                                    &nbsp; will be used. 600 x 400 recommended. (Max: 10MB)
+                                </Typography>
                                 <CardWrapper>
                                     <input
                                         ref={fileRef4}

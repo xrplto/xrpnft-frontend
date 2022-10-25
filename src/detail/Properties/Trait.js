@@ -2,6 +2,7 @@ import React from 'react';
 
 // Material
 import {
+    Box,
     Paper,
     Typography,
 } from '@mui/material';
@@ -11,6 +12,7 @@ export default function Trait({ type, value }) {
         <Paper
             sx={{
                 width: 100,
+                height: "100%",
                 borderRadius: '6px',
                 border: '1px solid #00ff7f',
                 padding: '10px',
@@ -21,7 +23,7 @@ export default function Trait({ type, value }) {
             <Typography sx={{ textTransform: 'uppercase', color: 'springgreen', fontWeight: 500, fontSize: 11 }}>
                 {type}
             </Typography>
-            <Typography variant='body1' sx={{fontSize: 15}}>
+            <Typography variant='s8'>
                 {value}
             </Typography>
         </Paper>
