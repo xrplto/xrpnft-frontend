@@ -404,7 +404,7 @@ export default function OffersList({ nft, isSell }) {
                                                 href={`https://xls20.bithomp.com/explorer/${offer.owner}`}
                                                 rel="noreferrer noopener nofollow"
                                             >
-                                                <Typography variant='s6'>{offer.owner}</Typography>
+                                                <Typography variant='s6' style={{ wordWrap: "break-word" }}>{offer.owner}</Typography>
                                             </Link>
                                         </Stack>
 

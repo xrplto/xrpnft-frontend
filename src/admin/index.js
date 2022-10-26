@@ -146,8 +146,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['collected', 'created', 'favorited', 'activity', 'accept', 'checknfts', 'summary', 'bulks'];
-const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept', 'Check NFTs', 'Summary', 'Manage Bulks'];
+const tabValues = ['collected', 'created', 'favorited', 'activity', 'accept', 'checknfts', 'summary', 'checkbulks'];
+const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept', 'Check NFTs', 'Summary', 'Check Bulks'];
 
 function getTabID(tab) {
     if (!tab) return 0;

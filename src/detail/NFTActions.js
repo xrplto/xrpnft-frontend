@@ -19,9 +19,6 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
-// Iconify
-import { Icon } from '@iconify/react';
-
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
@@ -34,6 +31,8 @@ import CreateOfferDialog from './CreateOfferDialog';
 
 import TimePeriods from './TimePeriodsDropdown';
 import OffersList from './OffersList';
+
+import BurnNFT from './BurnNFT';
 
 // const NFT_FLAGS = {
 //     0x00000001: 'lsfBurnable',
@@ -67,9 +66,6 @@ export default function NFTActions({ nft }) {
 
     const isOwner = accountLogin === account;
     const isBurnable = (flag & 0x00000001) > 0;
-
-    const [isPageLoading, setPageLoading] = useState(false);
-    const [owner, setOwner] = useState('');
 
     const [openCreateOffer, setOpenCreateOffer] = useState(false);
     const [isSellOffer, setIsSellOffer] = useState(false);
@@ -142,16 +138,7 @@ export default function NFTActions({ nft }) {
                             >
                                 Sell NFT
                             </Button>
-                            <Button
-                                variant='outlined'
-                                sx={{ borderRadius: 10, width: 200 }}
-                                color='warning'
-                                startIcon={<Icon icon='ps:feedburner' />}
-                                onClick={() => handleBurn()}
-                                disabled={!isOwner || !accountLogin || !isBurnable} // you cannot burn NFToken if you are not owner
-                            >
-                                Burn
-                            </Button>
+                            <BurnNFT nft={nft} />
                         </Box>
                     ):(
                         <Button

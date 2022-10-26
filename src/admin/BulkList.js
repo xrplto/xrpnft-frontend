@@ -10,6 +10,7 @@ import {
     Backdrop,
     Box,
     IconButton,
+    InputAdornment,
     Link,
     Stack,
     Table,
@@ -17,7 +18,10 @@ import {
     TableCell,
     TableHead,
     TableRow,
+    TextField,
     Tooltip,
+    ToggleButton,
+    ToggleButtonGroup,
     Typography,
     Divider
 } from '@mui/material';
@@ -45,57 +49,11 @@ import { AppContext } from 'src/AppContext';
 import { fIntNumber } from 'src/utils/formatNumber';
 
 // Loader
-import { PulseLoader, ClockLoader } from "react-spinners";
+import { PulseLoader, ClipLoader, ClockLoader } from "react-spinners";
 import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
-import QRDialog from 'src/components/QRDialog';
 import ListToolbar from './ListToolbar';
-
-// ----------------------------------------------------------------------
-const CancelTypography = withStyles({
-    root: {
-        color: "#FF6C40",
-        borderRadius: '6px',
-        border: '0.05em solid #FF6C40',
-        //fontSize: '0.5rem',
-        lineHeight: '1',
-        paddingLeft: '3px',
-        paddingRight: '3px',
-    }
-})(Typography);
-
-const BuyTypography = withStyles({
-    root: {
-        color: "#007B55",
-        borderRadius: '6px',
-        border: '0.05em solid #007B55',
-        //fontSize: '0.5rem',
-        lineHeight: '1',
-        paddingLeft: '3px',
-        paddingRight: '3px',
-    }
-})(Typography);
-
-const SellTypography = withStyles({
-    root: {
-        color: "#B72136",
-        borderRadius: '6px',
-        border: '0.05em solid #B72136',
-        //fontSize: '0.5rem',
-        lineHeight: '1',
-        paddingLeft: '3px',
-        paddingRight: '3px',
-    }
-})(Typography);
-
-// ----------------------------------------------------------------------
-
-function truncate(str, n) {
-    if (!str) return '';
-    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
-};
 
 const STATUS_PENDING = 0;
 const STATUS_START = 1;
@@ -169,6 +127,9 @@ export default function BulkList({account}) {
     const [count, setCount] = useState(0);
     const [bulks, setBulks] = useState([]);
 
+    const [filter, setFilter] = useState('');
+    const [choice, setChoice] = useState('all');
+
     const [loading, setLoading] = useState(false);
         
     useEffect(() => {
@@ -179,8 +140,9 @@ export default function BulkList({account}) {
             }
             setLoading(true);
 
-            // https://api.xrpnft.com/api/collection/list?account=rhhh&page=0&limit=10
-            axios.get(`${BASE_URL}/admin/bulks?account=${account}&page=${page}&limit=${rows}`, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
+            const body = { filter, choice };
+
+            axios.post(`${BASE_URL}/admin/bulks?account=${account}&page=${page}&limit=${rows}`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -195,20 +157,72 @@ export default function BulkList({account}) {
                 });
         }
         getBulkCollections();
-    }, [account, accountAdmin, accountToken, page, rows]);
+    }, [account, accountAdmin, accountToken, page, rows, filter, choice]);
+
+    const handleChangeChoice = (event, newValue) => {
+        setChoice(newValue);
+    };
+
+    const handleChangeFilter = (e) => {
+        setFilter(e.target.value);
+    }
 
     return (
         <>
-            {loading ? (
-                <Stack alignItems="center">
-                    <PulseLoader color='#00AB55' size={10} />
-                </Stack>
-            ):(
+            <ToggleButtonGroup
+                color="primary"
+                value={choice}
+                exclusive
+                // size="small"
+                
+                onChange={handleChangeChoice}
+            >
+                <ToggleButton value="all" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>All</ToggleButton>
+                <ToggleButton value="byaccount" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>By Account</ToggleButton>
+            </ToggleButtonGroup>
+
+            <Stack direction="row">
+                <TextField
+                    id='textFilter'
+                    disabled={choice !== 'all'}
+                    // autoFocus
+                    // fullWidth
+                    variant='outlined'
+                    placeholder='Filter'
+                    margin='dense'
+                    onChange={handleChangeFilter}
+                    autoComplete='new-password'
+                    inputProps={{autoComplete: 'off'}}
+                    value={filter}
+                    onFocus={event => {
+                        event.target.select();
+                    }}
+                    sx={{pl:0, pr:0, pt: 0, pb: 0, mt: 4}}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="start">
+                                {loading && <ClipLoader color='#ff0000' size={15} /> }
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+            </Stack>
+            {
                 bulks && bulks.length === 0 &&
                     <Stack alignItems="center" sx={{mt: 5}}>
                         <Typography variant="s7">No Items</Typography>
                     </Stack>
-            )
+            }
+
+            { count > 0 &&
+                <ListToolbar
+                    count={count}
+                    rows={rows}
+                    setRows={setRows}
+                    page={page}
+                    setPage={setPage}
+                />
             }
             <Box
                 sx={{
@@ -254,6 +268,7 @@ export default function BulkList({account}) {
                         // exchs.slice(page * rows, page * rows + rows)
                         bulks && bulks.map((row) => {
                             const {
+                                account,
                                 uuid,
                                 slug,
                                 bulkUrl,
@@ -317,6 +332,37 @@ export default function BulkList({account}) {
                                                     </Tooltip>
                                                 }
                                             </Stack>
+
+                                            <Stack direction="row" spacing={0} alignItems="center">
+                                                    {/* <Typography variant="d3" color="#FFA319">Please check the following CID before Bulk-Mint your items</Typography> */}
+                                                    <Link
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://xls20.bithomp.com/explorer/${account}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Typography variant="d3" color="#33C2FF">{account}</Typography>
+                                                    </Link>
+                                                    <Link
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://xls20.bithomp.com/explorer/${account}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title='Check on Bithomp'>
+                                                            <IconButton>
+                                                                <OpenInNewIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
+                                                    <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                        <Tooltip title='Click to copy'>
+                                                            <IconButton>
+                                                                <ContentCopyIcon />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Stack>
                                             
                                             {infoIPFS && infoIPFS.cid &&
                                                 <Stack direction="row" spacing={1} alignItems="center">
@@ -468,15 +514,6 @@ export default function BulkList({account}) {
                     </TableBody>
                 </Table>
             </Box>
-            { count > 0 &&
-                <ListToolbar
-                    count={count}
-                    rows={rows}
-                    setRows={setRows}
-                    page={page}
-                    setPage={setPage}
-                />
-            }
         </>
     );
 }

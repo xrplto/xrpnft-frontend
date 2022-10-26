@@ -1,5 +1,3 @@
-import useWindowSize from 'react-use/lib/useWindowSize';
-
 // Material
 import {
     Paper,
@@ -7,10 +5,6 @@ import {
 } from '@mui/material';
 
 export default function Trait({ type, value }) {
-    const { width, height } = useWindowSize();
-
-    console.log(width);
-
     return (
         <Paper
             sx={{
