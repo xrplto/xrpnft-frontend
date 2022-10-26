@@ -46,6 +46,7 @@ import { fIntNumber, fNumber } from 'src/utils/formatNumber';
 
 // Components
 // import LoadingTextField from 'src/components/LoadingTextField';
+import WarningMintDialog from './WarningMintDialog';
 
 const CustomSelect = styled(Select)(({ theme }) => ({
     '& .MuiOutlinedInput-notchedOutline' : {
@@ -82,7 +83,7 @@ export default function BulkMint({slug}) {
     const BASE_URL = 'https://api.xrpnft.com/api';    
     
     const { accountProfile, openSnackbar } = useContext(AppContext);
-    const account = accountProfile?.account;
+    const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
     const minterWallet = accountProfile?.minterWallet;
 
@@ -120,9 +121,13 @@ export default function BulkMint({slug}) {
 
     const [checkingMinter, setCheckingMinter] = useState(false);
 
+    const [ipfsCount, setIpfsCount] = useState(0);
+
     // const [validPassword, setValidPassword] = useState(false);
+
+    const [openWarning, setOpenWarning] = useState(false);
     
-    const active = account && accountToken && collection;
+    const active = accountLogin && accountToken && collection;
     let canDownload = active && metadata.length > 0 && isIPFS.cid(ipfsCID);
 
     if (updateName && !nftName) {
@@ -151,20 +156,22 @@ export default function BulkMint({slug}) {
             return;
         }
 
-        if (!account || !accountToken) {
+        if (!accountLogin || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
 
-        axios.get(`${BASE_URL}/collection/${slug}?account=${account}`, {headers: {'x-access-token': accountToken}})
+        axios.get(`${BASE_URL}/collection/${slug}?account=${accountLogin}`, {headers: {'x-access-token': accountToken}})
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {
                     const coll = res.data.collection;
                     if (coll) {
                         setCollection(coll);
-                        if (coll.infoIPFS && coll.infoIPFS.cid)
+                        if (coll.infoIPFS && coll.infoIPFS.cid) {
                             setIpfsCID(coll.infoIPFS.cid);
+                            setIpfsCount(coll.infoIPFS.count);
+                        }
                     }
                 }
             } catch (error) {
@@ -178,12 +185,12 @@ export default function BulkMint({slug}) {
     };
 
     const checkMinter = () => {
-        if (!account || !accountToken) {
+        if (!accountLogin || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
         setCheckingMinter(true);
-        axios.get(`${BASE_URL}/account/info/${account}`, {headers: {'x-access-token': accountToken}})
+        axios.get(`${BASE_URL}/account/info/${accountLogin}`, {headers: {'x-access-token': accountToken}})
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {
@@ -216,29 +223,13 @@ export default function BulkMint({slug}) {
     }, [issuerChoice]);
 
     const onCreateNft = async () => {
-        if (!account || !accountToken) {
-            openSnackbar('Please login', 'error');
-            return;
-        }
-
-        const num = new Decimal(royalty).toNumber();
-        if (num > 50 || num < 0) {
-            openSnackbar('Invalid Royalty', 'error');
-            return;
-        }
-
-        if (num > 0 && ((flag & 0x08) === 0)) {
-            openSnackbar('You should select Transferable flag to set Royalty', 'error');
-            return;
-        }
-
         // POST https://api.xrpnft.com/api/mint
         setLoading(true);
         const newMetaData = getFinalMetaData();
-
         try {
             if (!newMetaData || newMetaData.length > 100000) {
                 openSnackbar('You can not mint NFTs more than 100k', 'error');
+                setLoading(false);
                 return;
             }
 
@@ -250,7 +241,7 @@ export default function BulkMint({slug}) {
             data.collection = collection.name;
 
             if (issuerChoice === 'yes')
-                data.issuer = account;
+                data.issuer = accountLogin;
             else
                 data.issuer = collection.minter;
 
@@ -260,7 +251,7 @@ export default function BulkMint({slug}) {
 
             const body = {};
             body.data = data;
-            body.account = account;
+            body.account = accountLogin;
 
             res = await axios.post(`${BASE_URL}/mint/bulk`, body, {headers: {'x-access-token': accountToken}});
 
@@ -457,8 +448,36 @@ export default function BulkMint({slug}) {
         });
     };
 
+    const onCreateNftWithCheck = () => {
+        if (!accountLogin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        const num = new Decimal(royalty).toNumber();
+        if (num > 50 || num < 0) {
+            openSnackbar('Invalid Royalty', 'error');
+            return;
+        }
+
+        if (num > 0 && ((flag & 0x08) === 0)) {
+            openSnackbar('You should select Transferable flag to set Royalty', 'error');
+            return;
+        }
+
+        if (ipfsCount != metadata.length) {
+            setOpenWarning(true);
+            setLoading(false);
+            return;
+        }
+
+        onCreateNft();
+    }
+
     return (
         <>
+        <WarningMintDialog open={openWarning} setOpen={setOpenWarning} onContinue={onCreateNft} />
+
         <Stack spacing={2} sx={{mt: 4, mb:3}}>
             <Typography variant="h1a" >Bulk Mint Items </Typography>
             <Typography variant='p3'><Typography variant='s2'>*</Typography> Required fields</Typography>
@@ -868,7 +887,7 @@ export default function BulkMint({slug}) {
                         loading={loading}
                         loadingPosition='start'
                         startIcon={<SendIcon />}
-                        onClick={onCreateNft}
+                        onClick={onCreateNftWithCheck}
                         sx={{ mt: 5, mb: 6 }}
                     >
                         Create

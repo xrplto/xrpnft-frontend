@@ -30,5 +30,4 @@ export default function Detail({nft}) {
             </Grid>
         </Grid>
     );
-  
-  }
+}

@@ -50,6 +50,19 @@ import Trait from './Trait';
 ]
 */
 
+// Fixed number of columns
+const gridContainer = {
+    display: "grid",
+    gridTemplateColumns: "repeat(5, 1fr)"
+};
+
+// Variable number of columns
+const gridContainer2 = {
+    display: "grid",
+    gridAutoColumns: "1fr",
+    gridAutoFlow: "column"
+};
+
 const gridItem = {
     margin: "8px",
     // border: "1px solid red"
@@ -68,6 +81,19 @@ export default function Properties({ properties }) {
                 ))
             }
             </Grid>
+
+            {/* <Grid container columnSpacing={1} 
+                // justifyContent='center'
+                alignItems='center'
+            >
+            {
+                properties.map((item, idx) => (
+                    <Grid item md={3} xs={6} key={"Properties" + idx}>
+                        <Trait type={item.type || item.trait_type} value={item.value} />
+                    </Grid>
+                ))
+            }
+            </Grid> */}
         </Container>
     );
 }

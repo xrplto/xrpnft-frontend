@@ -293,14 +293,26 @@ export default function OffersList({ nft, isSell }) {
                                                     :
                                                     <>
                                                         {nft.account === offer.owner ?
-                                                            <Tooltip title="Accept Offer">
-                                                                <IconButton
-                                                                    aria-label='close'
-                                                                    onClick={() => handleAcceptOffer(offer)}
-                                                                >
-                                                                    <CheckCircleOutlineIcon fontSize='large' color='success' />
-                                                                </IconButton>
-                                                            </Tooltip>
+                                                            <>
+                                                                {offer.destination && accountLogin !== offer.destination ?
+                                                                    <>
+                                                                        <Tooltip title="This is not transferred to you, you can not accept.">
+                                                                            <IconButton aria-label='close'>
+                                                                                <CheckCircleOutlineIcon fontSize='large' color='disabled' />
+                                                                            </IconButton>
+                                                                        </Tooltip>
+                                                                    </>
+                                                                    :
+                                                                    <Tooltip title="Accept Offer">
+                                                                        <IconButton
+                                                                            aria-label='close'
+                                                                            onClick={() => handleAcceptOffer(offer)}
+                                                                        >
+                                                                            <CheckCircleOutlineIcon fontSize='large' color='success' />
+                                                                        </IconButton>
+                                                                    </Tooltip>
+                                                                }
+                                                            </>
                                                             :
                                                             <Tooltip title="This is not offered from the NFT owner.">
                                                                 <IconButton aria-label='close'>

@@ -1,17 +1,20 @@
-import React from 'react';
+import useWindowSize from 'react-use/lib/useWindowSize';
 
 // Material
 import {
-    Box,
     Paper,
     Typography,
 } from '@mui/material';
 
 export default function Trait({ type, value }) {
+    const { width, height } = useWindowSize();
+
+    console.log(width);
+
     return (
         <Paper
             sx={{
-                width: 100,
+                width: 91,
                 height: "100%",
                 borderRadius: '6px',
                 border: '1px solid #00ff7f',
