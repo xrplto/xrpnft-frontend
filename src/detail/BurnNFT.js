@@ -20,9 +20,10 @@ import { PulseLoader } from "react-spinners";
 
 // Components
 import QRDialog from 'src/components/QRDialog';
+import ConfirmBurnDialog from './ConfirmBurnDialog';
 
 // ----------------------------------------------------------------------
-export default function BurnNFT({nft}) {
+export default function BurnNFT({nft, onHandleBurn}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -34,7 +35,10 @@ export default function BurnNFT({nft}) {
     const [xummUuid, setXummUuid] = useState(null);
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
+
     const [loading, setLoading] = useState(false);
+
+    const [openConfirm, setOpenConfirm] = useState(false);
 
     const {
         flag,
@@ -59,7 +63,7 @@ export default function BurnNFT({nft}) {
                 if (resolved_at) {
                     setOpenScanQR(false);
                     if (dispatched_result === 'tesSUCCESS') {
-                        handleClose();
+                        onHandleBurn();
                         openSnackbar('Burning NFT successful!', 'success');
                     }
                     else
@@ -135,12 +139,9 @@ export default function BurnNFT({nft}) {
         onDisconnectXumm(xummUuid);
     };
 
-    const handleClose = () => {
-        setOpen(false);
-    }
-
     const handleBurnNFT = () => {
-        onBurnNFTXumm();
+        setOpenConfirm(true);
+        // onBurnNFTXumm();
     }
 
     return (
@@ -151,6 +152,8 @@ export default function BurnNFT({nft}) {
             >
                 <PulseLoader color={"#FF4842"} size={10} />
             </Backdrop>
+
+            <ConfirmBurnDialog open={openConfirm} setOpen={setOpenConfirm} onContinue={onBurnNFTXumm} />
 
             <Button
                 variant='outlined'

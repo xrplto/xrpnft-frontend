@@ -69,10 +69,8 @@ export default function NFTActions({ nft }) {
 
     const [openCreateOffer, setOpenCreateOffer] = useState(false);
     const [isSellOffer, setIsSellOffer] = useState(false);
-
-    const handleBurn = () => {
-        openSnackbar('Coming soon!', 'info');
-    }
+    
+    const [burnt, setBurnt] = useState(status === NFToken.BURNT);
 
     const handleCreateSellOffer = () => {
         setIsSellOffer(true);
@@ -82,6 +80,10 @@ export default function NFTActions({ nft }) {
     const handleCreateBuyOffer = () => {
         setIsSellOffer(false);
         setOpenCreateOffer(true);
+    }
+
+    const onHandleBurn = () => {
+        setBurnt(true);
     }
 
     return (
@@ -105,53 +107,60 @@ export default function NFTActions({ nft }) {
             <Paper sx={{
                 padding: 2,
             }}>
-                {destination ? (
+                {burnt ?
+                    <Typography variant="s5">This NFT is burnt.</Typography>
+                :
                     <>
-                        {destination === accountLogin?
-                            <Typography variant="s5">This NFT is being transferred to you. Click <CheckCircleOutlineIcon color='success'/> to accept it.</Typography>
-                            :
-                            <Typography variant="s5">This NFT is being transferred to &nbsp;
-                                <Link
-                                    color="inherit"
-                                    target="_blank"
-                                    href={`https://xls20.bithomp.com/explorer/${destination}`}
-                                    rel="noreferrer noopener nofollow"
+                        {destination ? (
+                        <>
+                            {destination === accountLogin?
+                                <Typography variant="s5">This NFT is being transferred to you. Click <CheckCircleOutlineIcon color='success'/> to accept it.</Typography>
+                                :
+                                <Typography variant="s5">This NFT is being transferred to &nbsp;
+                                    <Link
+                                        color="inherit"
+                                        target="_blank"
+                                        href={`https://xls20.bithomp.com/explorer/${destination}`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Typography variant="s3" color="#33C2FF">{destination}</Typography>
+                                    </Link>.
+                                </Typography>
+                            }
+                        </>
+                        ):(
+                            isOwner ? (
+                                <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-around'
+                                }}>
+                                    <Button
+                                        sx={{ borderRadius: 10, width: 200 }}
+                                        variant='outlined'
+                                        startIcon={<LocalOfferIcon />}
+                                        onClick={handleCreateSellOffer}
+                                        color='success'
+                                        disabled={!accountLogin || burnt}
+                                    >
+                                        Sell NFT
+                                    </Button>
+                                    <BurnNFT nft={nft} onHandleBurn={onHandleBurn} />
+                                </Box>
+                            ):(
+                                <Button
+                                    sx={{ borderRadius: 10 }}
+                                    disabled={!accountLogin || burnt}
+                                    variant='outlined'
+                                    onClick={handleCreateBuyOffer}
+                                    startIcon={<LocalOfferIcon />}
                                 >
-                                    <Typography variant="s3" color="#33C2FF">{destination}</Typography>
-                                </Link>.
-                            </Typography>
-                        }
+                                    Buy NFT
+                                </Button>
+                            )
+                        )}
                     </>
-                ):(
-                    isOwner ? (
-                        <Box sx={{
-                            display: 'flex',
-                            justifyContent: 'space-around'
-                        }}>
-                            <Button
-                                sx={{ borderRadius: 10, width: 200 }}
-                                variant='outlined'
-                                startIcon={<LocalOfferIcon />}
-                                onClick={handleCreateSellOffer}
-                                color='success'
-                                disabled={!accountLogin}
-                            >
-                                Sell NFT
-                            </Button>
-                            <BurnNFT nft={nft} />
-                        </Box>
-                    ):(
-                        <Button
-                            sx={{ borderRadius: 10 }}
-                            disabled={!accountLogin}
-                            variant='outlined'
-                            onClick={handleCreateBuyOffer}
-                            startIcon={<LocalOfferIcon />}
-                        >
-                            Buy NFT
-                        </Button>
-                    )
-                )}
+                }
+                
             </Paper>
             {/* /* Make offer end */}
 

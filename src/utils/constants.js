@@ -142,13 +142,15 @@ export const COLLECTION_FAMILIES = [
     }
 ];
 
-export const NFToken = { // 5:30 AM 10/20/2022
+export const NFToken = { // 6:30 AM 10/27/2022
     PREMINT: 8, // Submitted the NFTokenMint transaction but not found NFTokenID yet
     SELL_WITH_MINT: 16, // NFTs sell with MINT have this status flag, only in Bulk & Random collections.
   
     PREOFFER: 24, // Submitted the NFTokenCreateOffer transaction but not found SellOfferID yet
   
     FREE: 32,
+
+    BURNT: 40,
   
     ERROR_BASE: 130,
     PREMINT_E1: 131, // Failed to submit the NFTokenMint transaction

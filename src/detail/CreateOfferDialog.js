@@ -33,7 +33,7 @@ import { XRP_TOKEN } from 'src/utils/constants';
 
 // Components
 import QueryToken from 'src/components/QueryToken';
-import QRDialogNoPush from 'src/components/QRDialogNoPush';
+import QRDialog from 'src/components/QRDialog';
 
 // ----------------------------------------------------------------------
 const OfferDialog = styled(Dialog) (({ theme }) => ({
@@ -322,7 +322,7 @@ export default function CreateOfferDialog({open, setOpen, nft, isSellOffer}) {
                 </DialogContent>
             </OfferDialog>
 
-            <QRDialogNoPush
+            <QRDialog
                 open={openScanQR}
                 type="NFTokenCreateOffer"
                 onClose={handleScanQRClose}

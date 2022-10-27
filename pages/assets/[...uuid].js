@@ -96,7 +96,7 @@ export async function getServerSideProps(ctx) {
             account,
             date,
             meta,
-            URI        
+            URI
         } = nft;
     
         /*const ogp = {};
@@ -116,6 +116,13 @@ export async function getServerSideProps(ctx) {
         ogp.desc = meta.description?meta.description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
 
         ret = {data, ogp};
+    } else {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/404'
+            }
+        }
     }
 
     return {

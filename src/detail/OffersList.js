@@ -30,7 +30,7 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import CountdownTimer from './CountDownTimer';
-import QRDialogNoPush from 'src/components/QRDialogNoPush';
+import QRDialog from 'src/components/QRDialog';
 
 // cannot accept buy offer if you are not the owner of token.
 // cannot accept sell offer if seller is not the owner of token.
@@ -261,7 +261,7 @@ export default function OffersList({ nft, isSell }) {
             )
             }
 
-            <QRDialogNoPush
+            <QRDialog
                 open={openScanQR}
                 type={qrType}
                 onClose={handleScanQRClose}

@@ -727,18 +727,16 @@ export default function CreateCollection() {
 
                         <Stack spacing={2} sx={{pl: 0}}>
                             <Typography variant='p2'>
-                                Paste the Google Drive shared link URL here. <Typography variant='s2'>*</Typography>
+                                Paste the Google Drive file shared link URL here. <Typography variant='s2'>*</Typography>
                             </Typography>
-                            <Typography variant='p3'>
+                            <Typography variant='p3'>Upload .zip file contains your NFT images to Google Drive and copy & paste the shared link URL.</Typography>
+                            {/* <Typography variant='p3'>
                                 https://drive.google.com/file/d/1xjA-1bodiMrvSCtdTEMim5x1Cam74bXU/view
-                            </Typography>
-                            <Typography variant='p3'>
-                                https://drive.google.com/file/d/1FqD757nJEvCfGjzqvh4c7jta-ZCV8rj2/view?usp=sharing
-                            </Typography>
+                            </Typography> */}
 
                             <TextField
                                 id='id_bulk_url'
-                                placeholder=''
+                                placeholder='https://drive.google.com/file/d/1xjA-1dkjiMtvSTcSTEMim5x1Cam74bXU/view'
                                 value={bulkUrl}
                                 onChange={(e) => {
                                     setBulkUrl(e.target.value);
