@@ -19,8 +19,10 @@ import baselineBrightness4 from '@iconify/icons-ic/baseline-brightness-4';
 // Utils
 
 // Components
-import Logo from 'src/components/Logo';
-import Wallet from 'src/components/Wallet';
+import Logo from './Logo';
+import Wallet from './Wallet';
+import SearchBar from './SearchBar';
+import PrimarySearchAppBar from './PrimarySearchAppBar';
 
 const NotifyWrapper = styled(Box)(({ theme }) => `
     width: 100%;
@@ -51,6 +53,7 @@ export default function Header(props) {
     const { toggleTheme, darkMode } = useContext(AppContext);
     return (
         <>
+            {/* <PrimarySearchAppBar /> */}
             <NotifyWrapper>
                 <Stack alignItems="center">
                     <Typography variant="s6">You are on the XLS20 NFT-Devnet now. Your data may reset anytime without any notice.</Typography>
@@ -59,9 +62,18 @@ export default function Header(props) {
             <HeaderWrapper>
                 <Container maxWidth="xl">
                     <Box display="flex" alignItems="center" justifyContent="space-between" flex={2} sx={{pl:0, pr:0}}>
-                        <Box>
-                            <Logo />
-                        </Box>
+                        <Stack direction="row" alignItems="center" spacing={5}>
+                            <Box>
+                                <Logo />
+                            </Box>
+
+                            <SearchBar
+                                id='id_search_items_collections_accounts'
+                                placeholder='Search items, collections, and accounts'
+                                type='SEARCH_ITEM_COLLECTION_ACCOUNT'
+                            />
+                        </Stack>
+
                         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
                             <Wallet />
                             <IconButton onClick={() => { toggleTheme() }} >

@@ -62,8 +62,32 @@ const MEDIA_TYPES = [
         icon: (<PhotoLibraryIcon />)
     },
     {
+        title: 'Image/png (.PNG)',
+        value: 'PNG',
+        type: 'image',
+        icon: (<PhotoLibraryIcon />)
+    },
+    {
         title: 'Image/jpg (.jpg)',
         value: 'jpg',
+        type: 'image',
+        icon: (<PhotoLibraryIcon />)
+    },
+    {
+        title: 'Image/jpg (.JPG)',
+        value: 'JPG',
+        type: 'image',
+        icon: (<PhotoLibraryIcon />)
+    },
+    {
+        title: 'Image/jpeg (.jpeg)',
+        value: 'jpeg',
+        type: 'image',
+        icon: (<PhotoLibraryIcon />)
+    },
+    {
+        title: 'Image/jpeg (.JPEG)',
+        value: 'JPEG',
         type: 'image',
         icon: (<PhotoLibraryIcon />)
     },
@@ -344,7 +368,7 @@ export default function BulkMint({slug}) {
         const value = event.target.value;
         setImgExt(value);
         if (sMeta) {
-            if (value === 'png' || value === 'jpg') {
+            if (value === 'png' || value === 'PNG' || value === 'jpg' || value === 'JPG' || value === 'jpeg' || value === 'JPEG') {
                 sMeta.image = ipfsCID + `/1.${value}`;
                 if (sMeta.video) sMeta.video = '';
             } else if (value === 'mp4') {
@@ -635,6 +659,9 @@ export default function BulkMint({slug}) {
                     </Stack>
 
                     <Typography variant='p4'>Content Media Type <Typography variant='s2'>*</Typography></Typography>
+                    <Typography variant='p3'>
+                        Please pay attention to image extensions. (Uppercase & Lowercase)
+                    </Typography>
                     <Select
                         value={imgExt}
                         onChange={handleChangeContentType}
