@@ -3,11 +3,16 @@ import { useState, useEffect } from 'react';
 
 // Material
 import {
+    styled,
     FormControl,
     FormHelperText,
     IconButton,
     InputAdornment,
+    InputBase,
+    InputLabel,
+    MenuItem,
     OutlinedInput,
+    Select,
     Typography
 } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
@@ -23,7 +28,40 @@ import { ClipLoader } from "react-spinners";
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
-export default function SearchBar({ id, placeholder, type, fullSearch, setFullSearch}) {
+const BootstrapInput = styled(InputBase)(({ theme }) => ({
+    'label + &': {
+      marginTop: theme.spacing(3),
+    },
+    '& .MuiInputBase-input': {
+      borderRadius: 4,
+      position: 'relative',
+      backgroundColor: theme.palette.background.paper,
+      border: '1px solid #ced4da',
+      fontSize: 16,
+      padding: '10px 26px 10px 12px',
+      transition: theme.transitions.create(['border-color', 'box-shadow']),
+      // Use the system font instead of the default Roboto font.
+      fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(','),
+      '&:focus': {
+        borderRadius: 4,
+        borderColor: '#80bdff',
+        boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+      },
+    },
+  }));
+
+export default function NavSearchBar({ id, placeholder, type, fullSearch, setFullSearch}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { accountProfile } = useContext(AppContext);
@@ -102,61 +140,22 @@ export default function SearchBar({ id, placeholder, type, fullSearch, setFullSe
 
     return (
         <>
-            <OutlinedInput
-                id={id}
-                placeholder={placeholder}
-                value={search}
-                onChange={handleSearch}
-                // autoFocus
-                // onFocus={event => {
-                //     event.target.select();
-                // }}
-                autoComplete='new-password'
-                inputProps={{autoComplete: 'off', maxLength: 120}}
-                margin='dense'
-                endAdornment={
-                    <InputAdornment position="end">
-                        {loading ?
-                            (
-                                <ClipLoader color='#ff0000' size={15} />
-                            )
-                            :
-                            (search &&
-                                <IconButton
-                                    aria-label='clear'
-                                    onClick={handleClear}
-                                >
-                                    <CloseIcon />
-                                </IconButton>
-                            )
-                        }
-                    </InputAdornment>
-                }
-                startAdornment={
-                    <InputAdornment position="start" sx={{mr:0.7}}>
-                        {fullSearch ?
-                            <IconButton
-                                aria-label='back'
-                                onClick={handleBack}
-                            >
-                                <ArrowBackIcon />
-                            </IconButton>
-                            :
-                            <SearchIcon />
-                        }
-                    </InputAdornment>
-                }
-                sx={{
-                    // width: '100%',
-                    width: { xs: '100%', md: 500 },
-                    '&.MuiTextField-root': {
-                        marginTop: 1
-                    }
-                }}
-            />
-            <div>
-                <Typography variant='h1'>AAAAA</Typography>
-            </div>
+            <FormControl sx={{ m: 1 }} variant="standard">
+                <Select
+                    labelId="demo-customized-select-label"
+                    id="demo-customized-select"
+                    // value={age}
+                    // onChange={handleChange}
+                    input={<BootstrapInput />}
+                >
+                    <MenuItem value="">
+                        <em>None</em>
+                    </MenuItem>
+                    <MenuItem value={10}>Ten</MenuItem>
+                    <MenuItem value={20}>Twenty</MenuItem>
+                    <MenuItem value={30}>Thirty</MenuItem>
+                </Select>
+            </FormControl>
         </>
     );
 }

@@ -2,7 +2,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 // Material
 import {
-    Box,
+    useTheme, useMediaQuery,
     Link
 } from '@mui/material';
 
@@ -11,12 +11,26 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 function Logo() {
+    /*
+        xs: 0,
+        mobile: 450,
+        sm: 600,
+        md: 960,
+        lg: 1280,
+        xl: 1840
+    */
+    const theme = useTheme();
     const { darkMode } = useContext(AppContext);
+    const isMobile = useMediaQuery(theme.breakpoints.down('mobile'));
 
     const img_dark = "/logo/logo-cropped-dark.svg";
     const img_light = "/logo/logo-cropped-light.svg";
+    const img_mobile_dark = "/logo/logo-mobile-dark.svg";
+    const img_mobile_light = "/logo/logo-mobile-light.svg";
     
-    const img = darkMode?img_light:img_dark;
+    let img = darkMode?img_light:img_dark;
+    // if (isMobile)
+    //     img = darkMode?img_mobile_light:img_mobile_dark;
     
     return (
         <Link

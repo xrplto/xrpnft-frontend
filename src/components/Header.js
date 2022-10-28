@@ -1,15 +1,17 @@
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
+import { useState, useEffect } from 'react';
 
 // Material
 import {
-    alpha, styled,
+    alpha, styled, useMediaQuery, useTheme,
     Box,
     Container,
     IconButton,
     Stack,
     Typography
 } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 // Iconify Icons
 import { Icon } from '@iconify/react';
@@ -22,6 +24,7 @@ import baselineBrightness4 from '@iconify/icons-ic/baseline-brightness-4';
 import Logo from './Logo';
 import Wallet from './Wallet';
 import SearchBar from './SearchBar';
+import NavSearchBar from './NavSearchBar';
 import PrimarySearchAppBar from './PrimarySearchAppBar';
 
 const NotifyWrapper = styled(Box)(({ theme }) => `
@@ -50,7 +53,25 @@ const HeaderWrapper = styled(Box)(({ theme }) => `
 );
 
 export default function Header(props) {
+    /*
+        xs: 0,
+        mobile: 450,
+        sm: 600,
+        md: 960,
+        lg: 1280,
+        xl: 1840
+    */
+    const theme = useTheme();
     const { toggleTheme, darkMode } = useContext(AppContext);
+    const isMobile = useMediaQuery(theme.breakpoints.down('mobile'));
+    const hideSearchBar = useMediaQuery(theme.breakpoints.down('sm'));
+
+    const [fullSearch, setFullSearch] = useState(false);
+
+    const handleFullSearch = (e) => {
+        setFullSearch(true);
+    }
+
     return (
         <>
             {/* <PrimarySearchAppBar /> */}
@@ -61,30 +82,65 @@ export default function Header(props) {
             </NotifyWrapper>
             <HeaderWrapper>
                 <Container maxWidth="xl">
-                    <Box display="flex" alignItems="center" justifyContent="space-between" flex={2} sx={{pl:0, pr:0}}>
-                        <Stack direction="row" alignItems="center" spacing={5}>
-                            <Box>
-                                <Logo />
-                            </Box>
-
+                    {fullSearch ?
+                        <>
                             <SearchBar
                                 id='id_search_items_collections_accounts'
                                 placeholder='Search items, collections, and accounts'
                                 type='SEARCH_ITEM_COLLECTION_ACCOUNT'
+                                fullSearch={fullSearch}
+                                setFullSearch={setFullSearch}
                             />
-                        </Stack>
+                        </>
+                        :
+                        <Box display="flex" alignItems="center" justifyContent="space-between" flex={2} sx={{pl:0, pr:0}}>
+                            <Stack direction="row" alignItems="center" spacing={5}>
+                                <Box>
+                                    <Logo />
+                                </Box>
 
-                        <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-                            <Wallet />
-                            <IconButton onClick={() => { toggleTheme() }} >
-                                {darkMode ? (
-                                    <Icon icon={baselineBrightnessHigh} />
-                                ) : (
-                                    <Icon icon={baselineBrightness4} />
-                                )}
-                            </IconButton>
-                        </Stack>
-                    </Box>
+                                {/* {!hideSearchBar &&
+                                    <SearchBar
+                                        id='id_search_items_collections_accounts'
+                                        placeholder='Search items, collections, and accounts'
+                                        type='SEARCH_ITEM_COLLECTION_ACCOUNT'
+                                        fullSearch={fullSearch}
+                                        setFullSearch={setFullSearch}
+                                    />
+                                } */}
+
+                                {!hideSearchBar &&
+                                    <NavSearchBar
+                                        id='id_search_items_collections_accounts'
+                                        placeholder='Search items, collections, and accounts'
+                                        type='SEARCH_ITEM_COLLECTION_ACCOUNT'
+                                        fullSearch={fullSearch}
+                                        setFullSearch={setFullSearch}
+                                    />
+                                }
+
+                            </Stack>
+
+                            <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
+                                {hideSearchBar &&
+                                    <IconButton
+                                        aria-label='search'
+                                        onClick={handleFullSearch}
+                                    >
+                                        <SearchIcon />
+                                    </IconButton>
+                                }
+                                <Wallet />
+                                <IconButton onClick={() => { toggleTheme() }} >
+                                    {darkMode ? (
+                                        <Icon icon={baselineBrightnessHigh} />
+                                    ) : (
+                                        <Icon icon={baselineBrightness4} />
+                                    )}
+                                </IconButton>
+                            </Stack>
+                        </Box>
+                    }
                 </Container>
             </HeaderWrapper>
         </>

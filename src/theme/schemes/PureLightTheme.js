@@ -324,6 +324,7 @@ export const PureLightTheme = createTheme({
   breakpoints: {
     values: {
       xs: 0,
+      mobile: 450,
       sm: 600,
       md: 960,
       lg: 1280,
