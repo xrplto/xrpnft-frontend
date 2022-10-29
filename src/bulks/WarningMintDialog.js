@@ -1,5 +1,3 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
 import Decimal from 'decimal.js';
 
 // Material
@@ -7,45 +5,17 @@ import { withStyles } from '@mui/styles';
 import {
     alpha, useTheme, useMediaQuery,
     styled,
-    Avatar,
-    Backdrop,
     Button,
-    Checkbox,
     Dialog,
     DialogContent,
     DialogTitle,
-    FormControlLabel,
     IconButton,
-    InputAdornment,
-    Link,
-    MenuItem,
     Select,
     Stack,
-    Tooltip,
     Typography,
-    TextField
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import StoreIcon from '@mui/icons-material/Store';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-
-// Iconify
-import { Icon } from '@iconify/react';
-import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
-
-// Context
-import { useContext } from 'react';
-import { AppContext } from 'src/AppContext'
-
-// Components
-import QRDialogNoPush from 'src/components/QRDialogNoPush';
-
-// Loader
-import { PulseLoader } from "react-spinners";
-
-// Utils
-import { fNumber } from 'src/utils/formatNumber';
 
 // ----------------------------------------------------------------------
 const WarningDialog = styled(Dialog) (({ theme }) => ({

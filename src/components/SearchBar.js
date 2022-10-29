@@ -154,9 +154,6 @@ export default function SearchBar({ id, placeholder, type, fullSearch, setFullSe
                     }
                 }}
             />
-            <div>
-                <Typography variant='h1'>AAAAA</Typography>
-            </div>
         </>
     );
 }

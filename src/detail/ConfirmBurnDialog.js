@@ -1,52 +1,17 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
-import Decimal from 'decimal.js';
-
 // Material
-import { withStyles } from '@mui/styles';
 import {
-    alpha, useTheme, useMediaQuery,
+    useTheme, useMediaQuery,
     styled,
-    Avatar,
-    Backdrop,
     Button,
-    Checkbox,
     Dialog,
     DialogContent,
     DialogTitle,
-    FormControlLabel,
     IconButton,
-    InputAdornment,
-    Link,
-    MenuItem,
-    Select,
     Stack,
-    Tooltip,
-    Typography,
-    TextField
+    Typography
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import StoreIcon from '@mui/icons-material/Store';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-
-// Iconify
-import { Icon } from '@iconify/react';
-import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
-
-// Context
-import { useContext } from 'react';
-import { AppContext } from 'src/AppContext'
-
-// Components
-import QRDialogNoPush from 'src/components/QRDialogNoPush';
-
-// Loader
-import { PulseLoader } from "react-spinners";
-
-// Utils
-import { fNumber } from 'src/utils/formatNumber';
-
 // ----------------------------------------------------------------------
 const ConfirmDialog = styled(Dialog) (({ theme }) => ({
     backdropFilter: 'blur(1px)',
@@ -58,7 +23,7 @@ const ConfirmDialog = styled(Dialog) (({ theme }) => ({
         padding: theme.spacing(1),
     },
 }));
-  
+
 const ConfirmDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
@@ -82,27 +47,6 @@ const ConfirmDialogTitle = (props) => {
         </DialogTitle>
     );
 };
-
-const Label = withStyles({
-    root: {
-        color: alpha('#637381', 0.99)
-    }
-})(Typography);
-
-const CustomSelect = styled(Select)(({ theme }) => ({
-    '& .MuiOutlinedInput-notchedOutline' : {
-        border: 'none'
-    }
-}));
-
-function GetNum(amount) {
-    let num = 0;
-    try {
-        num = new Decimal(amount).toNumber();
-        if (num < 0) num = 0;
-    } catch (err) {}
-    return num;
-}
 
 export default function ConfirmBurnDialog({open, setOpen, onContinue }) {
     const theme = useTheme();
