@@ -48,6 +48,7 @@ export async function getServerSideProps(ctx) {
     let data = null;
     let isEditCollection = false;
     let isBuyAssets = false;
+    let isBurnNft = false;
     try {
 
         const params = ctx.params.uuid;
@@ -57,7 +58,8 @@ export async function getServerSideProps(ctx) {
 
         isEditCollection = type === 'editcollection';
         isBuyAssets = type === 'buyassets';
-        if (type !== 'collection' && type !== 'assets' && type !== 'buyassets' && type !=='editcollection') {
+        isBurnNft = type === 'burnnft';
+        if (type !== 'collection' && type !== 'assets' && type !== 'buyassets' && type !== 'burnnft' && type !=='editcollection') {
             return {
                 redirect: {
                     permanent: false,
@@ -68,6 +70,7 @@ export async function getServerSideProps(ctx) {
 
         if (isEditCollection) type = 'collection';
         if (isBuyAssets) type = 'assets';
+        if (isBurnNft) type = 'assets';
 
         var t1 = performance.now();
 
@@ -125,6 +128,7 @@ export async function getServerSideProps(ctx) {
         ogp.desc = meta.description?meta.description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
 
         data.isBuyAssets = isBuyAssets;
+        data.isBurnNft = isBurnNft;
 
         return {
             props: {data, ogp}, // will be passed to the page component as props

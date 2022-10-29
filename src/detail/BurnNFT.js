@@ -65,6 +65,7 @@ export default function BurnNFT({nft, onHandleBurn}) {
                     if (dispatched_result === 'tesSUCCESS') {
                         onHandleBurn();
                         openSnackbar('Burning NFT successful!', 'success');
+                        window.location.href = `/congrats/burnnft/${nft.uuid}`;
                     }
                     else
                         openSnackbar('Burning NFT rejected!', 'error');

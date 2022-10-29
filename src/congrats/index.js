@@ -47,6 +47,7 @@ export default function Congrats({ data }) {
     const collection = data.collection;
     const isEditCollection = data.isEditCollection;
     const isBuyAssets = data.isBuyAssets;
+    const isBurnNft = data.isBurnNft;
 
     const [colors, setColors] = useState([]);
 
@@ -143,6 +144,9 @@ export default function Congrats({ data }) {
                             {isBuyAssets ? (
                                 <Typography variant="d3">You've successfully purchased a NFT.</Typography>
                             ):(
+                                isBurnNft?
+                                <Typography variant="d3">Your NFT has been burnt from the XRP Ledger.</Typography>
+                                :
                                 <Typography variant="d3">Your NFT has been minted on the XRP Ledger.</Typography>
                             )}
                         </>
@@ -212,6 +216,18 @@ export default function Congrats({ data }) {
                                     <Button variant="outlined">Buy another NFT</Button>
                                 </Link>
                             ):(
+                                isBurnNft ?
+                                <>
+                                    <Link
+                                        underline="none"
+                                        color="inherit"
+                                        href={`/collection/${nft.cslug}`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Button variant="contained">Burn another NFT</Button>
+                                    </Link>
+                                </>
+                                :
                                 <>
                                     <Link
                                         underline="none"
