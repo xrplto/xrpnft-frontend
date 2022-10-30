@@ -84,7 +84,7 @@ export default function Header(props) {
                 <Container maxWidth="xl">
                     {fullSearch ?
                         <>
-                            <SearchBar
+                            <NavSearchBar
                                 id='id_search_items_collections_accounts'
                                 placeholder='Search items, collections, and accounts'
                                 type='SEARCH_ITEM_COLLECTION_ACCOUNT'

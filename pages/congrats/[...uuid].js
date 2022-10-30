@@ -49,6 +49,7 @@ export async function getServerSideProps(ctx) {
     let isEditCollection = false;
     let isBuyAssets = false;
     let isBurnNft = false;
+    let isMintNft = false;
     try {
 
         const params = ctx.params.uuid;
@@ -59,6 +60,7 @@ export async function getServerSideProps(ctx) {
         isEditCollection = type === 'editcollection';
         isBuyAssets = type === 'buyassets';
         isBurnNft = type === 'burnnft';
+        isMintNft = type === 'assets';
         if (type !== 'collection' && type !== 'assets' && type !== 'buyassets' && type !== 'burnnft' && type !=='editcollection') {
             return {
                 redirect: {
@@ -129,6 +131,7 @@ export async function getServerSideProps(ctx) {
 
         data.isBuyAssets = isBuyAssets;
         data.isBurnNft = isBurnNft;
+        data.isMintNft = isMintNft;
 
         return {
             props: {data, ogp}, // will be passed to the page component as props

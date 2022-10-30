@@ -4,18 +4,23 @@ import { useState, useEffect } from 'react';
 
 // Material
 import {
+    Avatar,
     Autocomplete,
     CircularProgress,
     IconButton,
     InputAdornment,
-    OutlinedInput,
+    Link,
+    MenuItem,
+    Stack,
     TextField,
+    Tooltip,
     Typography
 } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
+import CasinoIcon from '@mui/icons-material/Casino';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 // Loader
@@ -31,12 +36,13 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const [open, setOpen] = useState(false);
-    const [options, setOptions] = useState(topFilms);
+    const [options, setOptions] = useState([]);
     
     const [search, setSearch] = useState('');
 
     const [nfts, setNfts] = useState([]);
     const [collections, setCollections] = useState([]);
+    const [accounts, setAccounts] = useState([]);
 
     const [loading, setLoading] = useState(false);
 
@@ -45,7 +51,7 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
         // type = SEARCH_ITEM_COLLECTION_ACCOUNT
         // type = SEARCH_ITEM_NAME_OR_ATTRIBUTE
 
-        if (!search) return;
+        // if (!search) return;
   
         setLoading(true);
         const body = {};
@@ -57,8 +63,20 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                 if (res.status === 200 && res.data) {
                     const ret = res.data;
                     console.log(ret);
-                    setNfts(ret.nfts);
-                    setCollections(ret.collections);
+                    const newOptions = [];
+                    for (var nft of ret.nfts) {
+                        nft.option_type = "NFTS";
+                        newOptions.push(nft);
+                    }
+                    for (var collection of ret.collections) {
+                        collection.option_type = "COLLECTIONS";
+                        newOptions.push(collection);
+                    }
+                    for (var account of ret.accounts) {
+                        account.option_type = "ACCOUNTS";
+                        newOptions.push(account);
+                    }
+                    setOptions(newOptions);
                 }
             } catch (error) {
                 console.log(error);
@@ -87,6 +105,7 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
     }, [search]);
 
     const handleSearch = (e) => {
+        console.log('search')
         setSearch(e.target.value);
     }
 
@@ -105,6 +124,11 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
 
     return (
         <Autocomplete
+            freeSolo
+            disableClearable
+            selectOnFocus
+            // clearOnBlur
+            // handleHomeEndKeys
             id={id}
             sx={{
                 // width: '100%',
@@ -120,57 +144,156 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
             onClose={() => {
                 setOpen(false);
             }}
-            isOptionEqualToValue={(option, value) => option.title === value.title}
-            getOptionLabel={(option) => option.title}
+            // isOptionEqualToValue={(option, value) => option.title === value.title}
+            groupBy={(option) => option.option_type}
+            getOptionLabel={(option) => {
+                if (option.option_type === "NFTS") {
+                    return option.meta.name;
+                } else if (option.option_type === "COLLECTIONS") {
+                    return option.name;
+                } else if (option.option_type === "ACCOUNTS") {
+                    return option.name || option.account;
+                }
+            }}
             options={options}
+            renderOption={(props, option) => {
+                if (option.option_type === "NFTS") {
+                    const {
+                        uuid,
+                        name,
+                        meta,
+                        collection,
+                        NFTokenID
+                    } = option;
+                
+                    const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
+                    return (
+                        <Link
+                            key={uuid}
+                            color="inherit"
+                            target="_blank"
+                            underline='none'
+                            href={`/assets/${uuid}`}
+                            rel="noreferrer noopener nofollow"
+                        >
+                            <MenuItem sx={{pt:1, pb:1}}>
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                    <Avatar alt="nft" src={imgUrl} />
+                                    <Typography variant="s5">{name}</Typography>
+                                </Stack>
+                            </MenuItem>
+                        </Link>
+                    );
+                } else if (option.option_type === "COLLECTIONS") {
+                    const {
+                        uuid,
+                        name,
+                        slug,
+                        items,
+                        type,
+                        logoImage,
+                    } = option;
+
+                    const imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
+                    return (
+                        <Link
+                            key={uuid}
+                            color="inherit"
+                            target="_blank"
+                            underline='none'
+                            href={`/collection/${slug}`}
+                            rel="noreferrer noopener nofollow"
+                        >
+                            <MenuItem sx={{pt:1, pb:1}}>
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                    <Avatar alt="nft" src={imgUrl} />
+                                    <Stack>
+                                        <Stack direction="row" spacing={1}>
+                                            <Typography variant="s5">{name}</Typography>
+                                            <Tooltip title="Random Collection">
+                                                <CasinoIcon color='info' fontSize="small"/>
+                                            </Tooltip>
+                                        </Stack>
+                                        <Typography variant="s7">{items} items</Typography>
+                                    </Stack>
+                                </Stack>
+                            </MenuItem>
+                        </Link>
+                    );
+                } else if (option.option_type === "ACCOUNTS") {
+                    const {
+                        account,
+                        name,
+                        logo,
+                        banner,
+                        description,
+                        minterWallet,
+                        timestamp
+                    } = option;
+                    const logoImage = logo?`https://s1.xrpnft.com/profile/${logo}`:'/static/account_logo.png';
+                    return (
+                        <Link
+                            key={account}
+                            color="inherit"
+                            target="_blank"
+                            underline='none'
+                            href={`/account/${account}`}
+                            rel="noreferrer noopener nofollow"
+                        >
+                            <MenuItem sx={{pt:1, pb:1}}>
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                    <Avatar alt="nft" src={logoImage} />
+                                    <Stack>
+                                        <Typography variant="s5">{name||''}</Typography>
+                                        <Typography variant="s7">{account}</Typography>
+                                    </Stack>
+                                </Stack>
+                            </MenuItem>
+                        </Link>
+                    );
+                }
+            }}
             loading={loading}
-            renderInput={(params) => (
-                <TextField
-                    {...params}
-                    placeholder={placeholder}
-                    autoComplete='new-password'
-                    margin='dense'
-                    value={search}
-                    onChange={handleSearch}
-                    InputProps={{
-                        ...params.InputProps,
-                        autoComplete: 'off',
-                        startAdornment: (
-                            <InputAdornment position="start" sx={{mr:0.7}}>
-                                {fullSearch ?
-                                    <IconButton
-                                        aria-label='back'
-                                        onClick={handleBack}
-                                    >
-                                        <ArrowBackIcon />
-                                    </IconButton>
-                                    :
-                                    <SearchIcon />
-                                }
-                            </InputAdornment>
-                        ),
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                {loading ?
-                                    (
-                                        <ClipLoader color='#ff0000' size={15} />
-                                    )
-                                    :
-                                    (search &&
+            renderInput={(params) => {
+                // console.log(params);
+                return (
+                    <TextField
+                        {...params}
+                        placeholder={placeholder}
+                        autoComplete='new-password'
+                        margin='dense'
+                        value={search}
+                        onChange={handleSearch}
+                        InputProps={{
+                            ...params.InputProps,
+                            autoComplete: 'off',
+                            type: 'search',
+                            startAdornment: (
+                                <InputAdornment position="start" sx={{mr:0.7}}>
+                                    {fullSearch ?
                                         <IconButton
-                                            aria-label='clear'
-                                            onClick={handleClear}
+                                            aria-label='back'
+                                            onClick={handleBack}
                                         >
-                                            <CloseIcon />
+                                            <ArrowBackIcon />
                                         </IconButton>
-                                    )
-                                }
-                                {params.InputProps.endAdornment}
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-            )}
+                                        :
+                                        <SearchIcon />
+                                    }
+                                </InputAdornment>
+                            ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    {params.InputProps.endAdornment}
+                                    {/* {loading &&
+                                        <ClipLoader color='#ff0000' size={15} />
+                                    } */}
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
+                )
+            }}
         />
     );
 }

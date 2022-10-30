@@ -48,6 +48,7 @@ export default function Congrats({ data }) {
     const isEditCollection = data.isEditCollection;
     const isBuyAssets = data.isBuyAssets;
     const isBurnNft = data.isBurnNft;
+    const isMintNft = data.isMintNft;
 
     const [colors, setColors] = useState([]);
 
@@ -141,14 +142,15 @@ export default function Congrats({ data }) {
                 <Stack spacing={2} alignItems="center" sx={{pt: 3}}>
                     {nft &&
                         <>
-                            {isBuyAssets ? (
-                                <Typography variant="d3">You've successfully purchased a NFT.</Typography>
-                            ):(
-                                isBurnNft?
-                                <Typography variant="d3">Your NFT has been burnt from the XRP Ledger.</Typography>
-                                :
+                            {isMintNft &&
                                 <Typography variant="d3">Your NFT has been minted on the XRP Ledger.</Typography>
-                            )}
+                            }
+                            {isBuyAssets &&
+                                <Typography variant="d3">You've successfully purchased a NFT.</Typography>
+                            }
+                            {isBurnNft &&
+                                <Typography variant="d3">Your NFT has been burnt from the XRP Ledger.</Typography>
+                            }
                         </>
                     }
                     
@@ -207,7 +209,7 @@ export default function Congrats({ data }) {
 
                     {nft && 
                         <>
-                            {isBuyAssets?(
+                            {isBuyAssets &&
                                 <Link
                                     underline="none"
                                     color="inherit"
@@ -215,8 +217,8 @@ export default function Congrats({ data }) {
                                 >
                                     <Button variant="outlined">Buy another NFT</Button>
                                 </Link>
-                            ):(
-                                isBurnNft ?
+                            }
+                            {isBurnNft &&
                                 <>
                                     <Link
                                         underline="none"
@@ -227,7 +229,8 @@ export default function Congrats({ data }) {
                                         <Button variant="contained">Burn another NFT</Button>
                                     </Link>
                                 </>
-                                :
+                            }
+                            {isMintNft &&
                                 <>
                                     <Link
                                         underline="none"
@@ -247,7 +250,7 @@ export default function Congrats({ data }) {
                                         <Button variant="outlined">Create another NFT</Button>
                                     </Link>
                                 </>
-                            )}
+                            }
                         </>
                     }
 

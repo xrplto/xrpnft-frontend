@@ -1,63 +1,21 @@
 // Material
 import { withStyles } from '@mui/styles';
 import {
-    alpha, styled, useTheme,
-    Avatar,
-    Button,
-    Card,
-    CardActions,
-    CardContent,
-    CardHeader,
-    Link,
+    alpha, styled,
     Stack,
     ToggleButton,
-    Typography,
-    Table,
-    TableRow,
-    TableBody,
-    TableCell
+    Typography
 } from '@mui/material';
-import { tableCellClasses } from "@mui/material/TableCell";
-
-// Iconify
-import { Icon } from '@iconify/react';
-import link45deg from '@iconify/icons-bi/link-45deg';
-import linkExternal from '@iconify/icons-charm/link-external';
-import paperIcon from '@iconify/icons-akar-icons/paper';
-import arrowsExchange from '@iconify/icons-gg/arrows-exchange';
-import listCheck from '@iconify/icons-ci/list-check';
 
 // Utils
-import { fIntNumber, fNumber } from 'src/utils/formatNumber';
+import { fIntNumber } from 'src/utils/formatNumber';
 
 // ----------------------------------------------------------------------
-const StackStyle = styled(Stack)(({ theme }) => ({
-    //boxShadow: theme.customShadows.z0,
-    backdropFilter: 'blur(2px)',
-    WebkitBackdropFilter: 'blur(2px)', // Fix on Mobile
-    //backgroundColor: alpha(theme.palette.background.default, 0.0),
-    borderRadius: '13px',
-    padding: '0em 0.5em 1.5em 0.5em',
-    backgroundColor: alpha("#919EAB", 0.03),
-}));
-
 const Label = withStyles({
     root: {
         color: alpha('#637381', 0.99),
     }
 })(Typography);
-
-const badge24hStyle = {
-    display: 'inline-block',
-    marginLeft: '4px',
-    color: '#C4CDD5',
-    fontSize: '11px',
-    fontWeight: '500',
-    lineHeight: '18px',
-    backgroundColor: '#323546',
-    borderRadius: '4px',
-    padding: '2px 4px'
-};
 
 // ----------------------------------------------------------------------
 
