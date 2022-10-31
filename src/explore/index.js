@@ -38,39 +38,10 @@ import { ClipLoader } from "react-spinners";
 
 // Components
 import NFTCard from './NFTCard';
+import FilterDetail from './FilterDetail';
 // import { getNFTokenInfo } from 'utils/utils';
 
 // import getNFTimage_info from 'components/NFTCard/NFTimage_info'
-
-const drawerWidth = 240;
-
-const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
-    ({ theme, open }) => ({
-      flexGrow: 1,
-      padding: theme.spacing(3),
-      transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-      marginLeft: `-${drawerWidth}px`,
-      ...(open && {
-        transition: theme.transitions.create('margin', {
-          easing: theme.transitions.easing.easeOut,
-          duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: 0,
-      }),
-    }),
-);
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
-}));
 
 export default function ExploreNFT({collection}) {
     const theme = useTheme();
@@ -82,10 +53,11 @@ export default function ExploreNFT({collection}) {
     const [hasMore, setHasMore] = useState(true);
     const [flag, setFlag] = useState(0);
 
-    const [filter, setFilter] = useState('');
+    const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(false);
 
     const [showFilter, setShowFilter] = useState(true);
+    const [filter, setFilter] = useState(0);
 
     const fetchNfts = (nfTokensParam, offsetParam) => {
         const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
@@ -94,17 +66,20 @@ export default function ExploreNFT({collection}) {
 
         setLoading(true);
 
-        const body = { page, limit, flag, cid: collection.uuid, filter};
+        const body = { page, limit, flag, cid: collection.uuid, search, filter};
 
         axios.post(`${BASE_URL}/nfts?page=${page}&limit=30&flag=${flag}`, body)
             .then(res => {
-                if (res.data.nfts.length < 10) {
+                const newNfts = res.data.nfts;
+                if (newNfts.length < 10) {
                     setHasMore(false)
+                } else {
+                    setHasMore(true)
                 }
 
-                if (filter)
-                    setNfTokens(res.data.nfts)
-                else 
+                if (search || filter > 0) {
+                    setNfTokens(newNfts)
+                } else
                     setNfTokens([..._nfTokens, ...res.data.nfts])
                 // enqueueSnackbar('Fetch:' + _offset, {
                 //     variant: 'success'
@@ -118,29 +93,25 @@ export default function ExploreNFT({collection}) {
             });
     };
 
-    const reset = () => {
-        if (!filter)
+    const reset = (search, filter) => {
+        if (!search && !filter)
             setNfTokens([])
         setOffset(0)
         fetchNfts([], 0)
     }
 
     useEffect(() => {
-        reset(filter)
+        reset(search, filter)
         setHasMore(true)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [flag, filter]);
+    }, [flag, search, filter]);
 
-    const handleChangeFilter = (e) => {
-        setFilter(e.target.value);
+    const handleChangeSearch = (e) => {
+        setSearch(e.target.value);
     }
 
     const handleShowFilter = (e) => {
         setShowFilter(!showFilter);
-    }
-
-    const handleDrawerClose = (e) => {
-        setShowFilter(false);
     }
 
     return (
@@ -164,10 +135,10 @@ export default function ExploreNFT({collection}) {
                     // placeholder='Search by name or attribute'
                     placeholder='Search by name'
                     margin='dense'
-                    onChange={handleChangeFilter}
+                    onChange={handleChangeSearch}
                     autoComplete='new-password'
                     inputProps={{autoComplete: 'off'}}
-                    value={filter}
+                    value={search}
                     onFocus={event => {
                         event.target.select();
                     }}
@@ -187,54 +158,13 @@ export default function ExploreNFT({collection}) {
                     }}
                 />
             </Box>
-            <Box sx={{ display: 'flex' }}>
-                <Drawer
-                    sx={{
-                        width: drawerWidth,
-                        flexShrink: 0,
-                        '& .MuiDrawer-paper': {
-                            width: drawerWidth,
-                            boxSizing: 'border-box',
-                        },
-                    }}
-                    variant="persistent"
-                    anchor="left"
-                    open={showFilter}
-                >
-                    <DrawerHeader>
-                        <IconButton onClick={handleDrawerClose}>
-                            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-                        </IconButton>
-                    </DrawerHeader>
-                    <Divider />
-                    <List>
-                        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                            <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
-                    <Divider />
-                    <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                    </List>
-                </Drawer>
-                <Main open={open}>
-                    <DrawerHeader />
+            <Grid container spacing={2} justifyContent='center'>
+                {showFilter &&
+                    <Grid item xs={12} md={3}>
+                        <FilterDetail filter={filter} setFilter={setFilter} />
+                    </Grid>
+                }
+                <Grid item xs={12} md={showFilter?9:12}>
                     <InfiniteScroll
                         dataLength={nfTokens.length}
                         next={() => fetchNfts()}
@@ -266,12 +196,13 @@ export default function ExploreNFT({collection}) {
                                     //  </Grid>
                                 ))
                                 
-                                // .filter(getNFTimage_info(URI)!==null)      
+                                // .filter(getNFTimage_info(URI)!==null)
                             }
                         </Grid>
                     </InfiniteScroll>
-                </Main>
-            </Box>
+                </Grid>
+            </Grid>
+            
         </>
     );
 };

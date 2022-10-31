@@ -62,7 +62,6 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
             try {
                 if (res.status === 200 && res.data) {
                     const ret = res.data;
-                    console.log(ret);
                     const newOptions = [];
                     for (var nft of ret.nfts) {
                         nft.option_type = "NFTS";

@@ -4,10 +4,11 @@ import { useState, useEffect, useRef } from 'react';
 import JSONPretty from 'react-json-pretty';
 import isIPFS from 'is-ipfs';
 import Decimal from 'decimal.js';
+import {filesize} from "filesize";
 
 // Material
 import {
-    styled,
+    styled, useTheme,
     Avatar,
     Button,
     Checkbox,
@@ -20,11 +21,17 @@ import {
     MenuItem,
     Select,
     Stack,
+    Table,
+    TableBody,
+    TableRow,
+    TableCell,
     TextField,
     ToggleButton,
     ToggleButtonGroup,
+    Tooltip,
     Typography
 } from '@mui/material';
+import { tableCellClasses } from "@mui/material/TableCell";
 import { LoadingButton } from '@mui/lab';
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
@@ -103,6 +110,7 @@ const MEDIA_TYPES = [
 // https://stackoverflow.com/questions/39112096/calculate-md5-hash-of-a-large-file-using-javascript
 
 export default function BulkMint({slug}) {
+    const theme = useTheme();
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';    
     
@@ -133,8 +141,7 @@ export default function BulkMint({slug}) {
     const [metadata, setMetaData] = useState([]);
     const [sMeta, setSampleMeta] = useState(null);
 
-    const [jsonFileName, setJsonFileName] = useState(null);
-    const [jsonFileModified, setJsonFileModified] = useState(null);
+    const [jsonFiles, setJsonFiles] = useState([]);
 
     const [includeTime, setIncludeTime] = useState(false);
     const [oldDateField, setOldDateField] = useState('');
@@ -297,60 +304,76 @@ export default function BulkMint({slug}) {
         setLoading(false);
     };
 
-    const handleFileSelect = (e) => {
-        const pickedFile = e.target.files[0];
-        if (pickedFile) {
-            const fileName = pickedFile.name;
-            const type = pickedFile.type;
-            const size = pickedFile.size;
-            const lastModified = pickedFile.lastModifiedDate;
-            if (type === 'application/json' && size < 20480000) {
-                const reader = new FileReader();
-                reader.readAsText(pickedFile)
-                reader.onloadend = function (e) {
-                    let metadata = [];
-                    let valid = false;
-                    try {
-                        metadata = JSON.parse(reader.result);
-                        if (metadata.length > 0)
-                            valid = true;
-                    } catch (e) {
-                    }
-                    if (!valid) {
-                        openSnackbar('Invalid JSON file', 'error');
-                    } else {
-                        let strDateTime = '';
-                        try {
-                            if (lastModified) {
-                                const dt = new Date(lastModified);
-                                const date = dt.toLocaleDateString();
-                                const time = dt.toLocaleTimeString();
-                                strDateTime = `${date} ${time}`;
-                            }
-                        } catch (e) {
-                            console.error(e);
+    const readUploadedFileAsText = (inputFile) => {
+        const temporaryFileReader = new FileReader();
+      
+        return new Promise((resolve, reject) => {
+            temporaryFileReader.onerror = () => {
+                temporaryFileReader.abort();
+                reject(new DOMException("Problem parsing input file."));
+            };
+        
+            temporaryFileReader.onload = () => {
+                resolve(temporaryFileReader.result);
+            };
+            temporaryFileReader.readAsText(inputFile);
+        });
+    };
+
+    const handleFileSelect = async (e) => {
+        // TODO
+        const files = e.target?.files;
+        const newJsonFiles = [];
+        const newMetaData = [];
+        for (var pickedFile of files) {
+            const json = {};
+            json.name = pickedFile.name;
+            json.type = pickedFile.type;
+            json.size = pickedFile.size;
+            try {
+                const lastModified = pickedFile.lastModifiedDate;
+                if (lastModified) {
+                    const dt = new Date(lastModified);
+                    const date = dt.toLocaleDateString();
+                    const time = dt.toLocaleTimeString();
+                    json.dateTime = `${date} ${time}`;
+                }
+            } catch (e) {}
+
+            json.valid = false;
+            if (json.type === 'application/json' && json.size < 20480000) {
+                try {
+                    const fileContents = await readUploadedFileAsText(pickedFile);
+                    const metadata = JSON.parse(fileContents);
+                    if (metadata.length > 0) {
+                        json.valid = true;
+                        json.length = metadata.length;
+                        for (var m of metadata) {
+                            newMetaData.push(m);
                         }
-                        setJsonFileName(fileName);
-                        setMetaData(metadata);
-                        setJsonFileModified(strDateTime);
-
-                        const meta = metadata[0];
-
-                        if (imgExt === 'png' || imgExt === 'jpg') {
-                            meta.image = collection.infoIPFS.cid + `/1.${imgExt}`;
-                            if (meta.video) meta.video = '';
-                        } else if (imgExt === 'mp4') {
-                            meta.video = collection.infoIPFS.cid + `/1.${imgExt}`;
-                            if (meta.image) meta.image = '';
-                        }
-
-                        setSampleMeta({...meta});
-                        // setNftName(meta.name);
-                        // setDescription(meta.description);
-                        // setIpfsCID(meta.image);
                     }
+                } catch (e) {
                 }
             }
+            newJsonFiles.push(json);
+        }
+        setMetaData(newMetaData);
+        setJsonFiles(newJsonFiles);
+
+        if (newMetaData.length > 0) {
+            const meta = newMetaData[0];
+
+            if (imgExt === 'png' || imgExt === 'PNG' || imgExt === 'jpg' || imgExt === 'JPG' || imgExt === 'jpeg' || imgExt === 'JPEG') {
+                meta.image = collection.infoIPFS.cid + `/1.${imgExt}`;
+                if (meta.video) meta.video = '';
+            } else if (imgExt === 'mp4') {
+                meta.video = collection.infoIPFS.cid + `/1.${imgExt}`;
+                if (meta.image) meta.image = '';
+            }
+
+            setSampleMeta({...meta});
+        } else {
+            setSampleMeta(null);
         }
     }
 
@@ -500,19 +523,18 @@ export default function BulkMint({slug}) {
 
     return (
         <>
-        <WarningMintDialog open={openWarning} setOpen={setOpenWarning} onContinue={onCreateNft} />
+        <WarningMintDialog open={openWarning} setOpen={setOpenWarning} onContinue={onCreateNft} ipfsCount={ipfsCount} metaLength={metadata.length} />
 
         <Stack spacing={2} sx={{mt: 4, mb:3}}>
             <Typography variant="h1a" >Bulk Mint Items </Typography>
             <Typography variant='p3'><Typography variant='s2'>*</Typography> Required fields</Typography>
-            <Typography variant='s2'>Please read carefully each fields' description.</Typography>
+            <Typography variant='s2'>Please read carefully each fields' description and before bulk mint your collection, download your final Metadata and check thoroughly again. Thanks!</Typography>
         </Stack>
         
         <Grid container spacing={3}>
             <Grid item lg={6}>
                 <Stack spacing={2} sx={{mb:3}}>
-                    <Typography variant='p4'>Metadata <Typography variant='s2'>*</Typography></Typography>
-                    <Typography variant='p3'>File types: JSON. Max size: 20MB</Typography>
+                    <Typography variant='p4'>Metadata <Typography variant='s2'>*</Typography> <Typography variant='s7'> (File types: JSON. Max size: 20MB)</Typography></Typography>
 
                     <Stack direction="row" alignItems='center' spacing={0} sx={{mt: 2}}>
                         <input
@@ -520,7 +542,7 @@ export default function BulkMint({slug}) {
                             style={{ display: 'none' }}
                             accept='.json'
                             id='contained-button-file1'
-                            // multiple
+                            multiple
                             type='file'
                             onChange={handleFileSelect}
                         />
@@ -530,11 +552,99 @@ export default function BulkMint({slug}) {
                         >
                             Open
                         </Button>
-                        <Stack>
-                            <Typography variant='d4' sx={{pl: 3}}>{jsonFileName}</Typography>
-                            <Typography variant='p3' sx={{pl: 3}}>{jsonFileModified}</Typography>
-                        </Stack>
                     </Stack>
+                    <Table stickyHeader sx={{
+                        [`& .${tableCellClasses.root}`]: {
+                            borderBottom: "1px solid",
+                            borderColor: theme.palette.divider
+                        }
+                    }}>
+                        <TableBody>
+                        {jsonFiles.length > 0 && 
+                            <TableRow
+                                // hover
+                                key={"jsonfilelistheader"}
+                                sx={{
+                                    [`& .${tableCellClasses.root}`]: {
+                                        // color: (error ? '#B72136' : '#B72136')
+                                    }
+                                }}
+                            >
+                                <TableCell align="left">
+                                    <Typography variant="s4">No.</Typography>
+                                </TableCell>
+                                <TableCell align="left">
+                                    <Typography variant="s4">Name</Typography>
+                                </TableCell>
+                                <TableCell align="left">
+                                    <Typography variant="s4">Size</Typography>
+                                </TableCell>
+                                <TableCell align="left">
+                                    <Typography variant="s4">Length</Typography>
+                                </TableCell>
+                                <TableCell align="left">
+                                    <Typography variant="s4">Valid</Typography>
+                                </TableCell>
+                            </TableRow>
+                        }
+                        {
+                            jsonFiles.map((row, idx) => {
+                                const {
+                                    name,
+                                    type,
+                                    length,
+                                    size,
+                                    dateTime,
+                                    valid
+                                } = row;
+                            
+                                return (
+                                    <TableRow
+                                        // hover
+                                        key={"jsonfile" + idx}
+                                        sx={{
+                                            [`& .${tableCellClasses.root}`]: {
+                                                // color: (error ? '#B72136' : '#B72136')
+                                            }
+                                        }}
+                                    >
+                                        {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
+                                        <TableCell align="left">
+                                            <Typography variant="p5">{idx+1}</Typography>
+                                        </TableCell>
+
+                                        <TableCell align="left">
+                                            <Stack spacing={0}>
+                                                <Typography variant="p5">{name}</Typography>
+                                                <Typography variant="s7">{dateTime}</Typography>
+                                            </Stack>
+                                        </TableCell>
+
+                                        <TableCell align="left">
+                                            <Typography variant="p5" color="#CB3C1D">{filesize(size, {base: 2, standard: "jedec"})}</Typography>
+                                        </TableCell>
+
+                                        <TableCell align="left">
+                                            <Typography variant="p5" color="#33C2FF">{length}</Typography>
+                                        </TableCell>
+                                        
+                                        <TableCell align="left">
+                                            {valid?
+                                                <Tooltip title="Valid JSON file">
+                                                    <CheckCircleIcon color="success" />
+                                                </Tooltip>
+                                                :
+                                                <Tooltip title="Invalid JSON file">
+                                                    <ErrorIcon color="error" />
+                                                </Tooltip>
+                                            }
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })
+                        }
+                        </TableBody>
+                    </Table>
                 </Stack>
                 <Stack spacing={2} mb={3}>
                     <Typography variant='p4'>Collection Info<Typography variant='s2'>*</Typography></Typography>

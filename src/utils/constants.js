@@ -120,6 +120,21 @@ export const CATEGORIES = [
     },
 ];
 
+export const FILTER_NFT_FLAGS = [
+    {
+        label: 'Buy with Mints',
+        value: 1
+    },
+    {
+        label: 'Sold & Transfer',
+        value: 2
+    },
+    {
+        label: 'On Sale',
+        value: 4
+    }
+]
+
 export const XRP_TOKEN = {
     md5: 'xrp',
     name: 'XRP',

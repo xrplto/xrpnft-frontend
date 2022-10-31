@@ -74,7 +74,7 @@ function GetNum(amount) {
     return num;
 }
 
-export default function WarningMintDialog({open, setOpen, onContinue }) {
+export default function WarningMintDialog({open, setOpen, onContinue, ipfsCount, metaLength }) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -112,7 +112,7 @@ export default function WarningMintDialog({open, setOpen, onContinue }) {
 
             <DialogContent>
                 <Stack sx={{pl:1, pr:1}}>
-                    <Typography variant="p5" sx={{mt: 2}}>Your IPFS pinned NFT images count and metadata length are not equal. Do you really want to continue?</Typography>
+                    <Typography variant="p5" sx={{mt: 2}}>Your IPFS pinned NFT images count({<Typography variant="s3" color="error">{ipfsCount}</Typography>}) and metadata length({<Typography variant="s3" color="error">{metaLength}</Typography>}) are not equal. Do you really want to continue?</Typography>
                     <Stack direction='row' spacing={2} justifyContent="center" sx={{mt:3, mb:4}}>
                         <Button
                             variant="contained"
