@@ -409,7 +409,7 @@ export default function ActivityList({account}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s2">{data.NFTokenID}</Typography>
@@ -429,7 +429,7 @@ export default function ActivityList({account}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s2">{data.NFTokenID}</Typography>
@@ -450,7 +450,7 @@ export default function ActivityList({account}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s2">{data.NFTokenID}</Typography>
@@ -470,7 +470,7 @@ export default function ActivityList({account}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s2">{data.NFTokenID}</Typography>
@@ -491,7 +491,7 @@ export default function ActivityList({account}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s2">{data.NFTokenID}</Typography>
@@ -511,7 +511,7 @@ export default function ActivityList({account}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s2">{data.NFTokenID}</Typography>
@@ -532,7 +532,7 @@ export default function ActivityList({account}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s2">{data.NFTokenID}</Typography>
@@ -552,7 +552,7 @@ export default function ActivityList({account}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s2">{data.NFTokenID}</Typography>
@@ -573,7 +573,7 @@ export default function ActivityList({account}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s2">{data.NFTokenID}</Typography>
@@ -614,7 +614,7 @@ export default function ActivityList({account}) {
                                                         <Link
                                                             color="inherit"
                                                             target="_blank"
-                                                            href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                            href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                             rel="noreferrer noopener nofollow"
                                                         >
                                                             <Typography variant="s2">{data.NFTokenID}</Typography>
@@ -638,7 +638,7 @@ export default function ActivityList({account}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${data.NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s2">{data.NFTokenID}</Typography>
@@ -698,7 +698,7 @@ export default function ActivityList({account}) {
                                             {/* <Link
                                                 color="inherit"
                                                 target="_blank"
-                                                href={`https://xls20.bithomp.com/explorer/${account}`}
+                                                href={`https://bithomp.com/explorer/${account}`}
                                                 rel="noreferrer noopener nofollow"
                                             >
                                                 <Typography variant="s4" color="#33C2FF">{account}</Typography>

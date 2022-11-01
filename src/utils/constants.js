@@ -12,6 +12,8 @@ import PaletteIcon from '@mui/icons-material/Palette';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import FacebookIcon from '@mui/icons-material/Facebook';
 
+export const MAINNET = "ALIVE"; // NOT_ALIVE for testnet
+
 export const SUPPORTED_FILE_TYPES = [
     'JPG',
     'PNG',
@@ -67,7 +69,7 @@ export const TOKEN_FLAGS = [
     {
         label: 'TrustLine',
         value: 4,
-        desc: 'If set, indicates that the issuer wants a trustline to be automatically created. The lsfTrustLine field is useful when the token can be offered for sale for assets other than XRP and the issuer charges a TransferFee. If this flag is set, a trust line is automatically created as needed to allow the issuer to receive the appropriate transfer fee. If this flag is not set, an attempt to transfer the NFToken for an asset for which the issuer does not have a trustline fails.'
+        desc: 'If set, indicates that the issuer wants a trustline to be automatically created.'
     },
     {
         label: 'Transferable',

@@ -212,7 +212,7 @@ export default function FavoritedList({account}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s6">{NFTokenID}</Typography>

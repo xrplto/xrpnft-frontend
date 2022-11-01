@@ -17,6 +17,10 @@ import {
 import { tableCellClasses } from "@mui/material/TableCell";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
+// Iconify
+import { Icon } from '@iconify/react';
+import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
+
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
@@ -26,7 +30,7 @@ import { PulseLoader, ClockLoader } from "react-spinners";
 import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Utils
-import { fIntNumber, fPercent } from 'src/utils/formatNumber';
+import { fNumber, fIntNumber, fPercent } from 'src/utils/formatNumber';
 import { NFToken } from 'src/utils/constants';
 
 // Components
@@ -87,6 +91,10 @@ export default function Summary({}) {
 
     const [profiles, setProfiles] = useState(0); // Profiles
 
+    const [xrpnftAccounts, setXrpnftAccounts] = useState([]); // XRPNFT.com accounts
+
+    const [buyMintQueue, setBuyMintQueue] = useState(0);
+
     const [loading, setLoading] = useState(true);
 
     let pNfts2 = 0;
@@ -119,6 +127,10 @@ export default function Summary({}) {
 
                         setActivities(ret.activities);
                         setProfiles(ret.profiles);
+
+                        setXrpnftAccounts(ret.xrpnftAccounts);
+
+                        setBuyMintQueue(ret.buyMintQueue);
                     }
                 }).catch(err => {
                     console.log("Error on getting summary!!!", err);
@@ -198,6 +210,52 @@ export default function Summary({}) {
                                 <Typography variant="s6">{fIntNumber(profiles)}</Typography>
                             </TableCell>
                         </TableRow>
+
+                        <TableRow>
+                            <TableCell align="right">
+                                <Typography variant="s4">Buy Mint Queue: </Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                                <Typography variant="s6">{fIntNumber(buyMintQueue)}</Typography>
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+
+                <Table stickyHeader sx={{
+                    [`& .${tableCellClasses.root}`]: {
+                        borderBottom: "0px solid",
+                        borderColor: theme.palette.divider
+                    }
+                }}>
+                    <TableBody>
+                    {
+                        xrpnftAccounts.map((row, idx) => {
+                            const {
+                                account,
+                                balance
+                            } = row;
+                        
+                            return (
+                                <TableRow key={account}>
+                                    <TableCell align="left">
+                                        <Typography variant="s4">XRPNFT {idx+1}</Typography>
+                                    </TableCell>
+
+                                    <TableCell align="left">
+                                        <Stack spacing={0}>
+                                            <Typography variant="s7" color="#CB3C1D">{account}</Typography>
+                                        </Stack>
+                                    </TableCell>
+
+                                    <TableCell align="left">
+                                        {/* <Typography variant="p5" color="#33C2FF">{balance}</Typography> */}
+                                        <Typography variant='d4' color="#33C2FF" sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(balance)}</Typography>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })
+                    }
                     </TableBody>
                 </Table>
             </Stack>

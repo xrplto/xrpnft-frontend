@@ -338,7 +338,7 @@ export default function BulkList({account}) {
                                                     <Link
                                                         color="inherit"
                                                         target="_blank"
-                                                        href={`https://xls20.bithomp.com/explorer/${account}`}
+                                                        href={`https://bithomp.com/explorer/${account}`}
                                                         rel="noreferrer noopener nofollow"
                                                     >
                                                         <Typography variant="d3" color="#33C2FF">{account}</Typography>
@@ -346,7 +346,7 @@ export default function BulkList({account}) {
                                                     <Link
                                                         color="inherit"
                                                         target="_blank"
-                                                        href={`https://xls20.bithomp.com/explorer/${account}`}
+                                                        href={`https://bithomp.com/explorer/${account}`}
                                                         rel="noreferrer noopener nofollow"
                                                     >
                                                         <Tooltip title='Check on Bithomp'>

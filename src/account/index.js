@@ -280,7 +280,7 @@ export default function Account({profile, tab}) {
                     <Link
                         color="inherit"
                         target="_blank"
-                        href={`https://xls20.bithomp.com/explorer/${profile.account}`}
+                        href={`https://bithomp.com/explorer/${profile.account}`}
                         rel="noreferrer noopener nofollow"
                     >
                         <Typography align="center" style={{ wordWrap: "break-word" }} variant="d3">

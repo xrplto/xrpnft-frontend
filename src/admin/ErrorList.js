@@ -347,7 +347,7 @@ export default function ErrorList({filter, choice, setLoading}) {
                                                         underline="none"
                                                         color="inherit"
                                                         target="_blank"
-                                                        href={`https://xls20.bithomp.com/explorer/${account}`}
+                                                        href={`https://bithomp.com/explorer/${account}`}
                                                         rel="noreferrer noopener nofollow"
                                                     >
                                                         <Tooltip title="Check on Bithomp">
@@ -374,7 +374,7 @@ export default function ErrorList({filter, choice, setLoading}) {
                                                         underline="none"
                                                         color="inherit"
                                                         target="_blank"
-                                                        href={`https://xls20.bithomp.com/explorer/${minter}`}
+                                                        href={`https://bithomp.com/explorer/${minter}`}
                                                         rel="noreferrer noopener nofollow"
                                                     >
                                                         <Tooltip title="Check on Bithomp">
@@ -401,7 +401,7 @@ export default function ErrorList({filter, choice, setLoading}) {
                                                         underline="none"
                                                         color="inherit"
                                                         target="_blank"
-                                                        href={`https://xls20.bithomp.com/explorer/${issuer}`}
+                                                        href={`https://bithomp.com/explorer/${issuer}`}
                                                         rel="noreferrer noopener nofollow"
                                                     >
                                                         <Tooltip title="Check on Bithomp">
@@ -442,7 +442,7 @@ export default function ErrorList({filter, choice, setLoading}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s6">{NFTokenID}</Typography>
@@ -461,7 +461,7 @@ export default function ErrorList({filter, choice, setLoading}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${mintHash}`}
+                                                    href={`https://bithomp.com/explorer/${mintHash}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s6">{mintHash}</Typography>
