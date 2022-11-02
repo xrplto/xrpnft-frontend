@@ -194,7 +194,7 @@ export default function ProfileList({setCounterAccount}) {
                                                     underline="none"
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${account}`}
+                                                    href={`https://bithomp.com/explorer/${account}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Tooltip title="Check on Bithomp">
@@ -212,14 +212,33 @@ export default function ProfileList({setCounterAccount}) {
                                                 </CopyToClipboard>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Login: </Typography>
-                                                <Typography variant="s6">{strDateTime}</Typography>
+                                            <Stack direction="row" spacing={0.2} alignItems="center">
+                                                <Typography variant="s7">{minterWallet.address} <Typography variant="s2">({minterWallet.name})</Typography></Typography>
+                                                <Link
+                                                    underline="none"
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://bithomp.com/explorer/${minterWallet.address}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Tooltip title="Check on Bithomp">
+                                                        <IconButton edge="end" aria-label="bithomp" size="small">
+                                                            <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Link>
+                                                <CopyToClipboard text={minterWallet.address} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                    <Tooltip title='Click to copy'>
+                                                        <IconButton size="small">
+                                                            <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </CopyToClipboard>
                                             </Stack>
 
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Minter: </Typography>
-                                                <Typography variant="s7">{minterWallet.address} <Typography variant="s2">({minterWallet.name})</Typography></Typography>
+                                                <Typography variant="s4">Login: </Typography>
+                                                <Typography variant="s6">{strDateTime}</Typography>
                                             </Stack>
                                         </React.Fragment>
                                     }

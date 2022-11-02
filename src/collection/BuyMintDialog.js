@@ -38,7 +38,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext'
 
 // Components
-import QRDialogNoPush from 'src/components/QRDialogNoPush';
+import QRDialog from 'src/components/QRDialog';
 
 // Loader
 import { PulseLoader } from "react-spinners";
@@ -159,7 +159,7 @@ export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/spin/buymint/${uuid}?account=${account}`, {headers: {'x-access-token': accountToken}});
+                const ret = await axios.get(`${BASE_URL}/spin/buymint/${uuid}?account=${account}&cid=${cid}`, {headers: {'x-access-token': accountToken}});
                 const resolved_at = ret.data?.resolved_at;
                 const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
@@ -435,7 +435,7 @@ export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints
                 </DialogContent>
             </BuyDialog>
 
-            <QRDialogNoPush
+            <QRDialog
                 open={openScanQR}
                 type="Payment"
                 onClose={handleScanQRClose}

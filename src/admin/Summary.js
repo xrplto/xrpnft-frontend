@@ -86,6 +86,7 @@ export default function Summary({}) {
     const [nfts1, setNfts1] = useState(0); // XRPL NFTs
     const [nfts2, setNfts2] = useState(0); // XRPNFT.com NFTs
     const [nfts3, setNfts3] = useState(0); // Account/Owner NFTs
+    const [nfts4, setNfts4] = useState(0); // Account/Owner NFTs2
 
     const [activities, setActivities] = useState(0); // Activities
 
@@ -99,14 +100,17 @@ export default function Summary({}) {
 
     let pNfts2 = 0;
     let pNfts3 = 0;
+    let pNfts4 = 0;
 
     if (nfts1 > 0) {
         pNfts2 = new Decimal(nfts2).mul(100).div(nfts1).toDP(1, Decimal.ROUND_DOWN);
         pNfts3 = new Decimal(nfts3).mul(100).div(nfts1).toDP(1, Decimal.ROUND_DOWN);
+        pNfts4 = new Decimal(nfts4).mul(100).div(nfts1).toDP(1, Decimal.ROUND_DOWN);
     }
 
     const dNfts2 = nfts2 - nfts1;
     const dNfts3 = nfts3 - nfts1;
+    const dNfts4 = nfts4 - nfts1;
     
     useEffect(() => {
         function getSummary() {
@@ -124,6 +128,7 @@ export default function Summary({}) {
                         setNfts1(ret.nfts1);
                         setNfts2(ret.nfts2);
                         setNfts3(ret.nfts3);
+                        setNfts4(ret.nfts4);
 
                         setActivities(ret.activities);
                         setProfiles(ret.profiles);
@@ -190,6 +195,15 @@ export default function Summary({}) {
                             </TableCell>
                             <TableCell align="right">
                                 <Typography variant="s6">{fIntNumber(nfts3)} <Typography variant="s6" color="#33C2FF">({fPercent(pNfts3)}%, {fIntNumber(dNfts3)})</Typography></Typography>
+                            </TableCell>
+                        </TableRow>
+
+                        <TableRow>
+                            <TableCell align="right">
+                                <Typography variant="s4">Owner DB NFTs 2: </Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                                <Typography variant="s6">{fIntNumber(nfts4)} <Typography variant="s6" color="#33C2FF">({fPercent(pNfts4)}%, {fIntNumber(dNfts4)})</Typography></Typography>
                             </TableCell>
                         </TableRow>
 

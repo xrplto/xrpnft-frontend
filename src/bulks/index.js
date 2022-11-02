@@ -151,7 +151,7 @@ export default function Bulks() {
                         <Link
                             color="inherit"
                             target="_blank"
-                            href={`https://xls20.bithomp.com/explorer/${minterWallet.address}`}
+                            href={`https://bithomp.com/explorer/${minterWallet.address}`}
                             rel="noreferrer noopener nofollow"
                         >
                             <Typography variant="s6">{minterWallet.address} <Typography variant="s3" color="error">({minterWallet.name})</Typography></Typography>

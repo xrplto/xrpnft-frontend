@@ -42,6 +42,8 @@ import AcceptList from '../account/AcceptList';
 import CheckNFT from './CheckNFT';
 import Summary from './Summary';
 import BulkList from './BulkList';
+import CheckPass from './CheckPass';
+import TrustSet from './TrustSet';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -146,8 +148,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['collected', 'created', 'favorited', 'activity', 'accept', 'checknfts', 'summary', 'checkbulks'];
-const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept', 'Check NFTs', 'Summary', 'Check Bulks'];
+const tabValues = ['collected', 'created', 'favorited', 'activity', 'accept', 'checknfts', 'summary', 'checkbulks', 'checkpassphrase', 'trustset'];
+const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept', 'Check NFTs', 'Summary', 'Check Bulks', 'Check Passphrase', 'Auto TrustLine'];
 
 function getTabID(tab) {
     if (!tab) return 0;
@@ -231,7 +233,7 @@ export default function Admin() {
                                 <Link
                                     color="inherit"
                                     target="_blank"
-                                    href={`https://xls20.bithomp.com/explorer/${account}`}
+                                    href={`https://bithomp.com/explorer/${account}`}
                                     rel="noreferrer noopener nofollow"
                                 >
                                     <Typography align="center" style={{ wordWrap: "break-word" }} variant="d3">
@@ -259,6 +261,8 @@ export default function Admin() {
                             <Tab value={5} label={tabLabels[5]} {...a11yProps(5)} />
                             <Tab value={6} label={tabLabels[6]} {...a11yProps(6)} />
                             <Tab value={7} label={tabLabels[7]} {...a11yProps(7)} />
+                            <Tab value={8} label={tabLabels[8]} {...a11yProps(8)} />
+                            <Tab value={9} label={tabLabels[9]} {...a11yProps(9)} />
                         </Tabs>
                     </Stack>
                 </Stack>
@@ -307,6 +311,16 @@ export default function Admin() {
                         <TabPanel value={tabID} id={7}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <BulkList account={counterAccount} />
+                            </Stack>
+                        </TabPanel>
+                        <TabPanel value={tabID} id={8}>
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <CheckPass account={counterAccount} />
+                            </Stack>
+                        </TabPanel>
+                        <TabPanel value={tabID} id={9}>
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <TrustSet />
                             </Stack>
                         </TabPanel>
                     </Grid>

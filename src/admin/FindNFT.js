@@ -181,6 +181,7 @@ export default function FindNFT({filter, choice, setLoading}) {
                                 URI,
                                 NFTokenID,
                                 mintHash,
+                                offerHash,
                                 status,
                                 error,
                                 resolve
@@ -247,7 +248,7 @@ export default function FindNFT({filter, choice, setLoading}) {
                                                             underline="none"
                                                             color="inherit"
                                                             target="_blank"
-                                                            href={`https://xls20.bithomp.com/explorer/${account}`}
+                                                            href={`https://bithomp.com/explorer/${account}`}
                                                             rel="noreferrer noopener nofollow"
                                                         >
                                                             <Tooltip title="Check on Bithomp">
@@ -291,7 +292,7 @@ export default function FindNFT({filter, choice, setLoading}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${NFTokenID}`}
+                                                    href={`https://bithomp.com/explorer/${NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s6">{NFTokenID}</Typography>
@@ -310,10 +311,21 @@ export default function FindNFT({filter, choice, setLoading}) {
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
-                                                    href={`https://xls20.bithomp.com/explorer/${mintHash}`}
+                                                    href={`https://bithomp.com/explorer/${mintHash}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant="s6">{mintHash}</Typography>
+                                                </Link>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">offerHash: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://bithomp.com/explorer/${offerHash}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s6">{offerHash}</Typography>
                                                 </Link>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">

@@ -36,7 +36,13 @@ export default function LoginDialog(props) {
     };
 
     return (
-        <QRDialog onClose={onClose} open={props.open}>
+        <QRDialog
+            open={props.open}
+            onClose={onClose}
+            disableScrollLock
+            // disablePortal
+            // keepMounted
+        >
             {/* <DialogTitle>Scan the QR code from your XUMM app</DialogTitle> */}
             {/* <Divider /> */}
             <div

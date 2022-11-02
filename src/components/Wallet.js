@@ -32,6 +32,9 @@ import { AppContext } from 'src/AppContext';
 import { Icon } from '@iconify/react';
 import userLock from '@iconify/icons-fa-solid/user-lock';
 
+// Utils
+import { MAINNET } from 'src/utils/constants';
+
 // Components
 import LoginDialog from './LoginDialog';
 import XLS20Dialog from './XLS20Dialog';
@@ -187,6 +190,7 @@ export default function Wallet() {
     };
 
     const handleLogin = () => {
+        setOpen(false);
         setOpenXLS20Dialog(false);
         onConnectXumm();
     };
@@ -318,7 +322,7 @@ export default function Wallet() {
                                 <Link
                                     color="inherit"
                                     target="_blank"
-                                    href={`https://xls20.bithomp.com/explorer/${account}`}
+                                    href={`https://bithomp.com/explorer/${account}`}
                                     rel="noreferrer noopener nofollow"
                                 >
                                     <Typography align="center" style={{ wordWrap: "break-word" }} variant="body2" sx={{ width: 180, color: 'text.secondary' }} >
@@ -348,7 +352,7 @@ export default function Wallet() {
                     ) : (
                         <MenuItem
                             key="xumm"
-                            onClick={handleXLS20Login}
+                            onClick={MAINNET==="NOT_ALIVE"?handleXLS20Login:handleLogin}
                             sx={{ typography: 'body2', py: 2, px: 2.5 }}
                         >
                             <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>

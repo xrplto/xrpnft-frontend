@@ -19,13 +19,12 @@ import baselineBrightnessHigh from '@iconify/icons-ic/baseline-brightness-high';
 import baselineBrightness4 from '@iconify/icons-ic/baseline-brightness-4';
 
 // Utils
+import { MAINNET } from 'src/utils/constants';
 
 // Components
 import Logo from './Logo';
 import Wallet from './Wallet';
-import SearchBar from './SearchBar';
 import NavSearchBar from './NavSearchBar';
-import PrimarySearchAppBar from './PrimarySearchAppBar';
 
 const NotifyWrapper = styled(Box)(({ theme }) => `
     width: 100%;
@@ -74,12 +73,14 @@ export default function Header(props) {
 
     return (
         <>
-            {/* <PrimarySearchAppBar /> */}
-            <NotifyWrapper>
-                <Stack alignItems="center">
-                    <Typography variant="s6">You are on the XLS20 NFT-Devnet now. Your data may reset anytime without any notice.</Typography>
-                </Stack>
-            </NotifyWrapper>
+            {MAINNET==="NOT_ALIVE" &&
+                <NotifyWrapper>
+                    <Stack alignItems="center">
+                        <Typography variant="s6">You are on the XLS20 NFT-Devnet now. Your data may reset anytime without any notice.</Typography>
+                        {/* <Typography variant="s6">XRPNFT.com will reset all data and will be combined with mainnet in 12 hours.</Typography> */}
+                    </Stack>
+                </NotifyWrapper>
+            }
             <HeaderWrapper>
                 <Container maxWidth="xl">
                     {fullSearch ?

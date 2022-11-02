@@ -186,8 +186,10 @@ export default function CreateCollection() {
 
     const [valid1, setValid1] = useState(false); // Name validation check
     const [valid2, setValid2] = useState(false); // Slug validation check
+    const [passphrase, setPassPhrase] = useState('');
+    const [validPassword, setValidPassword] = useState(false);
 
-    let canCreate = file1 && name && slug && valid1 && valid2;
+    let canCreate = file1 && name && slug && valid1 && valid2 && validPassword;
 
     if (type !== 'normal') {
         if (!bulkUrl || costs.length < 1)
@@ -256,6 +258,8 @@ export default function CreateCollection() {
                 data.costs = costs;
                 data.bulkUrl = bulkUrl;
             }
+
+            data.passphrase = passphrase;
 
             formdata.append('account', account);
             formdata.append('data', JSON.stringify(data));
@@ -857,6 +861,35 @@ export default function CreateCollection() {
                     <ToggleButton value="no" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>No</ToggleButton>
                     <ToggleButton value="yes" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}}>Yes</ToggleButton>
                 </ToggleButtonGroup>
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Passphrase <Typography variant='s2'>*</Typography></Typography>
+                <Typography variant='p3'>
+                    Contact support to get your own passphrase for your account. Once you get your passphrase, you can use it for 10 times only, if you want more, contact support again to get the new passphrase.
+                </Typography>
+
+                <Link
+                    href="https://xrpnft.com/discord"
+                    sx={{ mt: 1.5, display: 'inline-flex' }}
+                    underline="none"
+                    target="_blank"
+                    rel="noreferrer noopener nofollow"
+                >
+                    <Typography variant='s2' color="#33C2FF">Contact us on Discord</Typography>
+                </Link>
+
+                <LoadingTextField
+                    id='id_create_collection_passphrase'
+                    type='PASSPHRASE_CREATE_COLLECTION'
+                    placeholder='Passphrase'
+                    startText=''
+                    value={passphrase}
+                    setValid={setValidPassword}
+                    onChange={(e) => {
+                        setPassPhrase(e.target.value)
+                    }}
+                />
             </Stack>
 
             <Stack alignItems='right'>

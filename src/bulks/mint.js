@@ -135,7 +135,7 @@ export default function BulkMint({slug}) {
     const [issuerChoice, setIssuerChoice] = useState('yes');
     const [updateName, setUpdateName] = useState(true);
 
-    const [flag, setFlag] = useState(0x0D); // Burnable, /*Only XRP*/, Trustline, Transferable
+    const [flag, setFlag] = useState(0x08); // /*Burnable, Only XRP, Trustline*/, Transferable
     // const [passphrase, setPassPhrase] = useState('');
     
     const [metadata, setMetaData] = useState([]);
@@ -379,8 +379,10 @@ export default function BulkMint({slug}) {
 
     const handleFlagChange = (e) => {
         const value = e.target.value;
-        if (value !== '8' && value !== '4') // Disable TRANSFERABLE & TRUSTLINE flag unchecking, 
+        if (value === '1')
             setFlag(flag ^ value);
+        // if (value !== '8' && value !== '4') // Disable TRANSFERABLE & TRUSTLINE flag unchecking, 
+        //     setFlag(flag ^ value);
     }
 
     const handleTimestampCheck = (e) => {
@@ -899,7 +901,7 @@ export default function BulkMint({slug}) {
                             <Typography variant='s2'>OnlyXRP:</Typography> If set, nft can only be offered or sold for XRP.
                         </Typography>
                         <Typography variant='p3'>
-                            <Typography variant='s2'>TrustLine:</Typography> If set, indicates that the issuer wants a trustline to be automatically created. This is useful when the token can be offered for sale for assets other than XRP and the issuer charges a TransferFee. If this flag is set, a trust line is automatically created as needed to allow the issuer to receive the appropriate transfer fee. If this flag is not set, an attempt to transfer the NFToken for an asset for which the issuer does not have a trustline fails. You can't uncheck it.
+                            <Typography variant='s2'>TrustLine:</Typography> If set, indicates that the issuer wants a trustline to be automatically created. You can't check it.
                         </Typography>
                         <Typography variant='p3'>
                             <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer. You can't uncheck it.
