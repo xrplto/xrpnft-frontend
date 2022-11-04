@@ -17,6 +17,12 @@ function XRPNFTApp(props) {
     const ogp = pageProps.ogp || {};
     const data = pageProps.data;
 
+    if (ogp.isVideo) {
+        ogp.type = "video";
+    } else {
+        ogp.type = "image";
+    }
+
     return (
         <>
             <Head>
@@ -41,7 +47,7 @@ function XRPNFTApp(props) {
                 <meta property="og:type" content="website"/>
                 <meta property="og:title" content={`${ogp.title} | XRPNFT.COM`}/>
                 <meta property="og:description" content={ogp.desc}/>
-                <meta property="og:image" content={ogp.imgUrl}/>
+                <meta property={`og:${ogp.type}`} content={ogp.imgUrl}/>
                 {/* <!-- Twitter Meta Tags --> */}
                 <meta name="twitter:card" content="summary_large_image"/>
                 <meta property="twitter:domain" content="xrpnft.com"/>
@@ -49,8 +55,8 @@ function XRPNFTApp(props) {
                 <meta name="twitter:title" content={`${ogp.title} | XRPNFT.COM`}/>
                 <meta name="twitter:description" content={ogp.desc}/>
                 {/* <!-- <meta name="twitter:image" content="/static/ogp.png"/> --> */}
-                <meta name="twitter:image" content={ogp.imgUrl}/>
-                <meta name="twitter:image:src" content={ogp.imgUrl}/>
+                <meta name={`twitter:${ogp.type}`} content={ogp.imgUrl}/>
+                <meta name={`twitter:${ogp.type}:src`} content={ogp.imgUrl}/>
                 {/* <!-- Meta Tags Generated via https://www.opengraph.xyz --> */}
             </Head>
             <ContextProvider data={data} openSnackbar={openSnackbar}>

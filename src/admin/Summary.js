@@ -7,11 +7,15 @@ import Decimal from 'decimal.js';
 // Material
 import {
     useTheme,
+    Avatar,
+    IconButton,
+    Link,
     Stack,
     Table,
     TableBody,
     TableCell,
     TableRow,
+    Tooltip,
     Typography
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
@@ -86,7 +90,6 @@ export default function Summary({}) {
     const [nfts1, setNfts1] = useState(0); // XRPL NFTs
     const [nfts2, setNfts2] = useState(0); // XRPNFT.com NFTs
     const [nfts3, setNfts3] = useState(0); // Account/Owner NFTs
-    const [nfts4, setNfts4] = useState(0); // Account/Owner NFTs2
 
     const [activities, setActivities] = useState(0); // Activities
 
@@ -96,21 +99,22 @@ export default function Summary({}) {
 
     const [buyMintQueue, setBuyMintQueue] = useState(0);
 
+    const [nftScanner, setNftScanner] = useState({index: 0, nfts: 0});
+    const [txScanner, setTxScanner] = useState({index: 0, nfts: 0});
+    const [txScannerReal, setTxScannerReal] = useState({index: 0, nfts: 0});
+
     const [loading, setLoading] = useState(true);
 
     let pNfts2 = 0;
     let pNfts3 = 0;
-    let pNfts4 = 0;
 
     if (nfts1 > 0) {
         pNfts2 = new Decimal(nfts2).mul(100).div(nfts1).toDP(1, Decimal.ROUND_DOWN);
         pNfts3 = new Decimal(nfts3).mul(100).div(nfts1).toDP(1, Decimal.ROUND_DOWN);
-        pNfts4 = new Decimal(nfts4).mul(100).div(nfts1).toDP(1, Decimal.ROUND_DOWN);
     }
 
     const dNfts2 = nfts2 - nfts1;
     const dNfts3 = nfts3 - nfts1;
-    const dNfts4 = nfts4 - nfts1;
     
     useEffect(() => {
         function getSummary() {
@@ -128,7 +132,6 @@ export default function Summary({}) {
                         setNfts1(ret.nfts1);
                         setNfts2(ret.nfts2);
                         setNfts3(ret.nfts3);
-                        setNfts4(ret.nfts4);
 
                         setActivities(ret.activities);
                         setProfiles(ret.profiles);
@@ -136,6 +139,10 @@ export default function Summary({}) {
                         setXrpnftAccounts(ret.xrpnftAccounts);
 
                         setBuyMintQueue(ret.buyMintQueue);
+
+                        setNftScanner(ret.nftScanner);
+                        setTxScanner(ret.txScanner);
+                        setTxScannerReal(ret.txScannerReal);
                     }
                 }).catch(err => {
                     console.log("Error on getting summary!!!", err);
@@ -173,15 +180,6 @@ export default function Summary({}) {
 
                         <TableRow>
                             <TableCell align="right">
-                                <Typography variant="s4">XRPL NFTs: </Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                                <Typography variant="s6">{fIntNumber(nfts1)}</Typography>
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell align="right">
                                 <Typography variant="s4">XRPNFT.com NFTs: </Typography>
                             </TableCell>
                             <TableCell align="right">
@@ -191,19 +189,19 @@ export default function Summary({}) {
 
                         <TableRow>
                             <TableCell align="right">
-                                <Typography variant="s4">Owner DB NFTs: </Typography>
+                                <Typography variant="s4">XRPL NFTs (30 min): </Typography>
                             </TableCell>
                             <TableCell align="right">
-                                <Typography variant="s6">{fIntNumber(nfts3)} <Typography variant="s6" color="#33C2FF">({fPercent(pNfts3)}%, {fIntNumber(dNfts3)})</Typography></Typography>
+                                <Typography variant="s6">{fIntNumber(nfts1)} / {fIntNumber(txScanner.nfts)} <Typography variant="s6" color="#33C2FF">(#{fIntNumber(txScanner.index)})</Typography></Typography>
                             </TableCell>
                         </TableRow>
 
                         <TableRow>
                             <TableCell align="right">
-                                <Typography variant="s4">Owner DB NFTs 2: </Typography>
+                                <Typography variant="s4">XRPL NFTs (Realtime): </Typography>
                             </TableCell>
                             <TableCell align="right">
-                                <Typography variant="s6">{fIntNumber(nfts4)} <Typography variant="s6" color="#33C2FF">({fPercent(pNfts4)}%, {fIntNumber(dNfts4)})</Typography></Typography>
+                                <Typography variant="s5" color="error">{fIntNumber(nfts3)} <Typography variant="s6" color="#CB3C1D">({fPercent(pNfts3)}%, {fIntNumber(dNfts3)})</Typography> <Typography variant="s6" color="#33C2FF">(#{fIntNumber(txScannerReal.index)})</Typography></Typography>
                             </TableCell>
                         </TableRow>
 
@@ -257,14 +255,34 @@ export default function Summary({}) {
                                     </TableCell>
 
                                     <TableCell align="left">
-                                        <Stack spacing={0}>
-                                            <Typography variant="s7" color="#CB3C1D">{account}</Typography>
+                                        <Stack direction="row" spacing={0.2} alignItems="center">
+                                            <Typography variant="s6">{account}</Typography>
+                                            <Link
+                                                underline="none"
+                                                color="inherit"
+                                                target="_blank"
+                                                href={`https://bithomp.com/explorer/${account}`}
+                                                rel="noreferrer noopener nofollow"
+                                            >
+                                                <Tooltip title="Check on Bithomp">
+                                                    <IconButton edge="end" aria-label="bithomp" size="small">
+                                                        <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Link>
+                                            <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                <Tooltip title='Click to copy'>
+                                                    <IconButton size="small">
+                                                        <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </CopyToClipboard>
                                         </Stack>
                                     </TableCell>
 
                                     <TableCell align="left">
                                         {/* <Typography variant="p5" color="#33C2FF">{balance}</Typography> */}
-                                        <Typography variant='d4' color="#33C2FF" sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(balance)}</Typography>
+                                        <Typography variant='d4' color={balance<200?"error":"#33C2FF"} sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(balance)}</Typography>
                                     </TableCell>
                                 </TableRow>
                             );

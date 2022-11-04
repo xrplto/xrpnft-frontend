@@ -8,6 +8,7 @@ import {
     Backdrop,
     Box,
     Button,
+    CardMedia,
     Link,
     Stack,
     Table,
@@ -293,7 +294,8 @@ export default function AcceptList({account}) {
                                 status
                             } = row;
                         
-                            const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
+                            const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+                            const isVideo = meta.video;
 
                             let strDateTime = '';
 
@@ -325,19 +327,34 @@ export default function AcceptList({account}) {
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
                                     <TableCell align="left">
                                         <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-                                            <ModalImage
-                                                className='nftpreview1'
-                                                small={imgUrl}
-                                                large={imgUrl}
-                                                alt={name}
-                                                hideDownload
-                                                hideZoom
-                                                style={{
-                                                    width: 96,
-                                                    height: 96,
-                                                    filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
-                                                }}
-                                            />
+                                            {isVideo?
+                                                <CardMedia
+                                                    component="video"
+                                                    image={imgUrl}
+                                                    title='title'
+                                                    controls
+                                                    style={{
+                                                        width: 96,
+                                                        height: 96,
+                                                        filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
+                                                    }}
+                                                />
+                                                :
+                                                <ModalImage
+                                                    className='nftpreview1'
+                                                    small={imgUrl}
+                                                    large={imgUrl}
+                                                    alt={name}
+                                                    hideDownload
+                                                    hideZoom
+                                                    style={{
+                                                        width: 96,
+                                                        height: 96,
+                                                        filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
+                                                    }}
+                                                />
+                                            }
+                                            
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row" spacing={2} alignItems="center">
                                                     <Typography variant="h3" color="#33C2FF">{name}</Typography>

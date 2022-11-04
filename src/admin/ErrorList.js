@@ -9,6 +9,7 @@ import {
     Avatar,
     Box,
     Button,
+    CardMedia,
     IconButton,
     Link,
     Stack,
@@ -288,7 +289,8 @@ export default function ErrorList({filter, choice, setLoading}) {
                                 resolve
                             } = row;
                         
-                            const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
+                            const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+                            const isVideo = meta.video;
 
                             let strDateTime = '';
 
@@ -319,25 +321,43 @@ export default function ErrorList({filter, choice, setLoading}) {
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
                                     <TableCell align="left">
-                                        <ModalImage
-                                            className='nftpreview1'
-                                            small={imgUrl}
-                                            large={imgUrl}
-                                            alt={name}
-                                            hideDownload
-                                            hideZoom
-                                            style={{
-                                                width: 96,
-                                                height: 96,
-                                                filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
-                                            }}
-                                        />
+                                        {isVideo?
+                                            <CardMedia
+                                                component="video"
+                                                image={imgUrl}
+                                                title='title'
+                                                controls
+                                                style={{
+                                                    width: 96,
+                                                    height: 96,
+                                                    filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
+                                                }}
+                                            />
+                                            :
+                                            <ModalImage
+                                                className='nftpreview1'
+                                                small={imgUrl}
+                                                large={imgUrl}
+                                                alt={name}
+                                                hideDownload
+                                                hideZoom
+                                                style={{
+                                                    width: 96,
+                                                    height: 96,
+                                                    filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
+                                                }}
+                                            />
+                                        }
                                     </TableCell>
                                     
                                     <TableCell align="left">
                                         <Stack spacing={0.5}>
                                             <Stack direction="row" justifyContent="space-between">
                                                 <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">UUID: </Typography>
+                                                <Typography variant="s6">{uuid}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s4">Account: </Typography>

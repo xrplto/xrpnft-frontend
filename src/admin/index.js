@@ -44,6 +44,7 @@ import Summary from './Summary';
 import BulkList from './BulkList';
 import CheckPass from './CheckPass';
 import TrustSet from './TrustSet';
+import BuyMintQueue from './BuyMintQueue';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -148,8 +149,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['collected', 'created', 'favorited', 'activity', 'accept', 'checknfts', 'summary', 'checkbulks', 'checkpassphrase', 'trustset'];
-const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept', 'Check NFTs', 'Summary', 'Check Bulks', 'Check Passphrase', 'Auto TrustLine'];
+const tabValues = ['collected', 'created', 'favorited', 'activity', 'accept', 'checknfts', 'summary', 'checkbulks', 'checkpassphrase', 'trustset', 'buymintqueue'];
+const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept', 'Check NFTs', 'Summary', 'Check Bulks', 'Check Passphrase', 'Auto TrustLine', 'Buy Mint Queue'];
 
 function getTabID(tab) {
     if (!tab) return 0;
@@ -263,6 +264,7 @@ export default function Admin() {
                             <Tab value={7} label={tabLabels[7]} {...a11yProps(7)} />
                             <Tab value={8} label={tabLabels[8]} {...a11yProps(8)} />
                             <Tab value={9} label={tabLabels[9]} {...a11yProps(9)} />
+                            <Tab value={10} label={tabLabels[10]} {...a11yProps(10)} />
                         </Tabs>
                     </Stack>
                 </Stack>
@@ -321,6 +323,11 @@ export default function Admin() {
                         <TabPanel value={tabID} id={9}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <TrustSet />
+                            </Stack>
+                        </TabPanel>
+                        <TabPanel value={tabID} id={10}>
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <BuyMintQueue />
                             </Stack>
                         </TabPanel>
                     </Grid>

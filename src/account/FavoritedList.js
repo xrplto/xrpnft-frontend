@@ -6,6 +6,7 @@ import ModalImage from "react-modal-image";
 import {
     useTheme,
     Box,
+    CardMedia,
     Link,
     Stack,
     Table,
@@ -145,7 +146,8 @@ export default function FavoritedList({account}) {
                                 NFTokenID
                             } = row;
                         
-                            const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
+                            const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+                            const isVideo = meta.video;
 
                             let strDateTime = '';
 
@@ -174,19 +176,33 @@ export default function FavoritedList({account}) {
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
                                     <TableCell align="left">
-                                        <ModalImage
-                                            className='nftpreview1'
-                                            small={imgUrl}
-                                            large={imgUrl}
-                                            alt={name}
-                                            hideDownload
-                                            hideZoom
-                                            style={{
-                                                width: 96,
-                                                height: 96,
-                                                filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
-                                            }}
-                                        />
+                                        {isVideo?
+                                            <CardMedia
+                                                component="video"
+                                                image={imgUrl}
+                                                title='title'
+                                                controls
+                                                style={{
+                                                    width: 96,
+                                                    height: 96,
+                                                    filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
+                                                }}
+                                            />
+                                            :
+                                            <ModalImage
+                                                className='nftpreview1'
+                                                small={imgUrl}
+                                                large={imgUrl}
+                                                alt={name}
+                                                hideDownload
+                                                hideZoom
+                                                style={{
+                                                    width: 96,
+                                                    height: 96,
+                                                    filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
+                                                }}
+                                            />
+                                        }
                                     </TableCell>
                                     
                                     <TableCell align="left">

@@ -10,6 +10,7 @@ import {filesize} from "filesize";
 import {
     styled, useTheme,
     Avatar,
+    Box,
     Button,
     Checkbox,
     FormControlLabel,
@@ -124,6 +125,7 @@ export default function BulkMint({slug}) {
     const [collection, setCollection] = useState(null);
 
     const [nftName, setNftName] = useState('');
+    const [nftNameIndex, setNftNameIndex] = useState('1');
     const [imgExt, setImgExt] = useState('png');
     const [extLink, setExtLink] = useState('');
     const [ipfsCID, setIpfsCID] = useState('');
@@ -177,6 +179,11 @@ export default function BulkMint({slug}) {
     }
 
     if (collection && (!collection.infoIPFS || !collection.infoIPFS.cid)) {
+        canDownload = false;
+        canCreate = false;
+    }
+
+    if (!nftNameIndex) {
         canDownload = false;
         canCreate = false;
     }
@@ -245,6 +252,25 @@ export default function BulkMint({slug}) {
     useEffect(() => {
         getCollection();
     }, [slug]);
+
+    useEffect(() => {
+        if (!sMeta) return;
+
+        const newMeta = {...sMeta};
+        
+        newMeta.name = nftName + ' #' + nftNameIndex;
+
+        // imgExt change
+        if (imgExt === 'png' || imgExt === 'PNG' || imgExt === 'jpg' || imgExt === 'JPG' || imgExt === 'jpeg' || imgExt === 'JPEG') {
+            newMeta.image = ipfsCID + `/${nftNameIndex}.${imgExt}`;
+            if (newMeta.video) newMeta.video = '';
+        } else if (imgExt === 'mp4') {
+            newMeta.video = ipfsCID + `/${nftNameIndex}.${imgExt}`;
+            if (newMeta.image) newMeta.image = '';
+        }
+
+        setSampleMeta(newMeta);
+    }, [imgExt, ipfsCID, nftName, nftNameIndex]);
 
     useEffect(() => {
         if (issuerChoice === 'yes') {
@@ -362,15 +388,6 @@ export default function BulkMint({slug}) {
 
         if (newMetaData.length > 0) {
             const meta = newMetaData[0];
-
-            if (imgExt === 'png' || imgExt === 'PNG' || imgExt === 'jpg' || imgExt === 'JPG' || imgExt === 'jpeg' || imgExt === 'JPEG') {
-                meta.image = collection.infoIPFS.cid + `/1.${imgExt}`;
-                if (meta.video) meta.video = '';
-            } else if (imgExt === 'mp4') {
-                meta.video = collection.infoIPFS.cid + `/1.${imgExt}`;
-                if (meta.image) meta.image = '';
-            }
-
             setSampleMeta({...meta});
         } else {
             setSampleMeta(null);
@@ -379,7 +396,7 @@ export default function BulkMint({slug}) {
 
     const handleFlagChange = (e) => {
         const value = e.target.value;
-        if (value === '1')
+        if (value === '1') // Only burnnable flag changes
             setFlag(flag ^ value);
         // if (value !== '8' && value !== '4') // Disable TRANSFERABLE & TRUSTLINE flag unchecking, 
         //     setFlag(flag ^ value);
@@ -392,15 +409,6 @@ export default function BulkMint({slug}) {
     const handleChangeContentType = (event) => {
         const value = event.target.value;
         setImgExt(value);
-        if (sMeta) {
-            if (value === 'png' || value === 'PNG' || value === 'jpg' || value === 'JPG' || value === 'jpeg' || value === 'JPEG') {
-                sMeta.image = ipfsCID + `/1.${value}`;
-                if (sMeta.video) sMeta.video = '';
-            } else if (value === 'mp4') {
-                sMeta.video = ipfsCID + `/1.${value}`;
-                if (sMeta.image) sMeta.image = '';
-            }
-        }
     };
 
     const handleChangeCategory = (event) => {
@@ -418,8 +426,17 @@ export default function BulkMint({slug}) {
     const handleChangeRoyalty = (e) => {
         const value = e.target.value;
         try {
-            const val = value?value.replace(/[^0-9.]/g, ""):'0';
+            const val = value?value.replace(/[^0-9.]/g, ""):'';
             setRoyalty(val);
+        } catch (e) {
+        }
+    }
+
+    const handleChangeNameIndex = (e) => {
+        const value = e.target.value;
+        try {
+            const val = value?value.replace(/[^0-9]/g, ""):'';
+            setNftNameIndex(val);
         } catch (e) {
         }
     }
@@ -445,19 +462,19 @@ export default function BulkMint({slug}) {
 
     const getFinalMetaData = () => {
         const timestamp = Date.now(); // new Date().getTime();
-        let count = 1;
+        let pos = nftNameIndex?Number(nftNameIndex):1;
         const newMetaData = [];
         for (var meta of metadata) {
             const newMeta = {...meta};
             if (updateName)
-                newMeta.name = nftName + ' #' + count;
+                newMeta.name = nftName + ' #' + pos;
             // TODO
 
             if (imgExt === 'png' || imgExt === 'jpg') {
-                newMeta.image = ipfsCID + `/${count}.${imgExt}`;
+                newMeta.image = ipfsCID + `/${pos}.${imgExt}`;
                 if (newMeta.video) newMeta.video = '';
             } else if (imgExt === 'mp4') {
-                newMeta.video = ipfsCID + `/${count}.${imgExt}`;
+                newMeta.video = ipfsCID + `/${pos}.${imgExt}`;
                 if (newMeta.image) newMeta.image = '';
             }
 
@@ -482,7 +499,7 @@ export default function BulkMint({slug}) {
             }
 
             newMetaData.push(newMeta);
-            count++;
+            pos++;
         }
         return newMetaData;
     }
@@ -675,25 +692,42 @@ export default function BulkMint({slug}) {
                         <Typography variant='p3'>
                         {'Indexed numbers will be automatically appended at the end. ex; NAME #1,  NAME #2 ...'}
                         </Typography>
-                        <Typography variant='s2'>Don't include indexed numbers like #1</Typography>
-                        <TextField required placeholder='Item name' margin='dense'
-                            id='id_nft_name'
-                            autoComplete='new-password'
-                            disabled={!updateName}
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                setNftName(value);
-                                if (sMeta) {
-                                    sMeta.name = value + ' #1';
-                                }
-                            }}
-                            value={nftName}
-                            sx={{
-                                '&.MuiTextField-root': {
-                                    marginTop: 0.5
-                                }
-                            }}
-                        />
+                        <Typography variant='s2'>Don't include indexed numbers like #1 in Item name text field and you can change start index number.</Typography>
+                        <Stack direction="row" spacing={0} alignItems="center">
+                            <TextField required placeholder='Item name' margin='dense'
+                                id='id_nft_name'
+                                autoComplete='new-password'
+                                fullWidth
+                                onChange={(e) => {
+                                    const value = e.target.value;
+                                    setNftName(value);
+                                }}
+                                value={nftName}
+                                sx={{
+                                    '&.MuiTextField-root': {
+                                        marginTop: 0.5
+                                    }
+                                }}
+                            />
+                            <Typography variant="s3" sx={{ml: 5, mr: 0.5}}>#</Typography>
+                            <TextField required placeholder='index' margin='dense'
+                                id='id_nft_name_index'
+                                autoComplete='new-password'
+                                onChange={handleChangeNameIndex}
+                                value={nftNameIndex}
+                                onFocus={event => {
+                                    event.target.select();
+                                }}
+                                inputProps={{min: 0, style: { textAlign: 'center' }}}
+                                sx={{
+                                    width: 100,
+                                    '&.MuiTextField-root': {
+                                        marginTop: 0.5
+                                    }
+                                }}
+                            />
+                        </Stack>
+                        <Typography variant='s2'>Indexed numbers also affects to IPFS image index, we strongly recommend that you download final Metadata before bulk minting.</Typography>
                     </>
                     }
 
@@ -1042,9 +1076,21 @@ export default function BulkMint({slug}) {
                     {metadata.length > 0 &&
                         <Typography variant='s2' mt={0.5}>(Total {fIntNumber(metadata.length)} metadata in length)</Typography>
                     }
-                    <Stack alignItems='center'>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            gap: 1,
+                            py: 1,
+                            overflow: "auto",
+                            width: "100%",
+                            "& > *": {
+                                scrollSnapAlign: "center",
+                            },
+                            "::-webkit-scrollbar": { display: "none" },
+                        }}
+                    >
                         <JSONPretty id="json-pretty" data={sMeta || ''} space="4"></JSONPretty>
-                    </Stack>
+                    </Box>
                 </Stack>
             </Grid>
         </Grid>

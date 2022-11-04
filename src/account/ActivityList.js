@@ -196,8 +196,6 @@ export default function ActivityList({account}) {
                                 data,
                                 timestamp
                             } = row;
-                        
-                            // const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
 
                             const nDate = new Date(timestamp);
                             const year = nDate.getFullYear();
