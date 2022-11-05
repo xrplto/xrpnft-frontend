@@ -11,6 +11,7 @@ import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import PaletteIcon from '@mui/icons-material/Palette';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import FacebookIcon from '@mui/icons-material/Facebook';
+import CycloneIcon from '@mui/icons-material/Cyclone';
 
 export const MAINNET = "ALIVE"; // NOT_ALIVE for testnet
 
@@ -120,6 +121,10 @@ export const CATEGORIES = [
         title: 'Virtual Worlds',
         icon: (<ViewInArIcon />)
     },
+    {
+        title: 'Phygital',
+        icon: (<CycloneIcon />)
+    }
 ];
 
 export const FILTER_NFT_FLAGS = [

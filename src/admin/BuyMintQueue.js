@@ -197,7 +197,12 @@ export default function BuyMintQueue() {
                                 cslug,
                                 amount,
                                 quantity,
-                                cost
+                                cost,
+
+                                meta,
+                                resolved,
+                                resolved_at,
+                                dispatched_result
                             } = row;
                         
                             let strDateTime = '';
@@ -216,6 +221,29 @@ export default function BuyMintQueue() {
                                 strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
                                 // const strTime = `${hour}:${min}:${sec}`;
                             }
+
+                            /*
+                            { meta
+                                exists: true,
+                                uuid: 'a5c3e591-40c6-4774-b753-a26654ac07d4',
+                                multisign: false,
+                                submit: true,
+                                pathfinding: null,
+                                destination: 'r3AGSrv9SHzzhe5BxqG8sFiRSxNs26tEVs',
+                                resolved_destination: 'r3AGSrv9SHzzhe5BxqG8sFiRSxNs26tEVs',
+                                resolved: true,
+                                signed: false,
+                                cancelled: true,
+                                expired: true,
+                                pushed: true,
+                                app_opened: true,
+                                opened_by_deeplink: true,
+                                return_url_app: null,
+                                return_url_web: null,
+                                is_xapp: false,
+                                signers: null
+                            }
+                            */
 
                             return (
                                 <TableRow
@@ -265,6 +293,15 @@ export default function BuyMintQueue() {
                                                         </Tooltip>
                                                     </CopyToClipboard>
                                                 </Stack>
+
+                                                <Typography variant='s7'>XUUID: {xuuid}</Typography>
+
+                                                <Stack direction="row">
+                                                    <Stack spacing={0.2} alignItems="center">
+                                                        <Typography variant='s7'>Resolved: {resolved?'Yes':'No'}</Typography>
+                                                        <Typography variant='s7'>Expired: {meta?.expired?'Yes':'No'}</Typography>
+                                                    </Stack>
+                                                </Stack>
                                             </Stack>
                                         </Stack>
                                     </TableCell>
@@ -290,7 +327,11 @@ export default function BuyMintQueue() {
                                                 <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 2)}>
                                                     Remove
                                                 </Button>
-                                                <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 3)}>
+                                                <Button variant="outlined" color="primary" size="small"
+                                                    onClick={()=>{
+                                                        /*handleResolve(row, 3)*/
+                                                    }}
+                                                >
                                                     Give user Mints
                                                 </Button>
                                             </Stack>

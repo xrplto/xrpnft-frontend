@@ -251,7 +251,8 @@ export default function SpinNFT({ collection, setView }) {
 
     const [spinning, setSpinning] = useState(false);
 
-    let nftImgUrl = nft?`https://gateway.xrpnft.com/ipfs/${nft.meta.image}`:'/static/unknown.png';
+    let nftImgUrl = nft?`https://gateway.xrpnft.com/ipfs/${nft.meta.image||nft.meta.video}`:'/static/unknown.png';
+    const isVideo = nft?.meta.video;
 
     const spinImgUrl = spinnerImage?`https://s1.xrpnft.com/collection/${spinnerImage}`:'/static/spin.gif';
 

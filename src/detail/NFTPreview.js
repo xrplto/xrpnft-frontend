@@ -16,8 +16,12 @@ import {
 } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
-export default function NFTPreview({ image, title, favorites }) {
-    const imgUrl = `https://gateway.xrpnft.com/ipfs/${image}`;
+export default function NFTPreview({ meta, title, favorites }) {
+    const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+    const isVideo = meta.video;
+
+    // const imgUrl = 'https://xrpnft.com/static/test.mp4';
+    // const isVideo = 'test.mp4';
 
     const [open, setOpen] = useState(false);
 
@@ -44,12 +48,16 @@ export default function NFTPreview({ image, title, favorites }) {
             <Link
                 component="button"
                 underline="none"
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                    if (!isVideo)
+                        setOpen(true)
+                }}
             >
                 <CardMedia
-                    component='img'
+                    component={isVideo?'video':'img'}
                     image={imgUrl}
                     alt={'NFT'}
+                    controls={isVideo}
                 />
             </Link>
 
@@ -64,7 +72,7 @@ export default function NFTPreview({ image, title, favorites }) {
                 DialogProps={{ disableScrollLock: true }}
             /> */}
 
-            {open &&
+            {open && !isVideo &&
                 <Lightbox
                     small={imgUrl}
                     large={imgUrl}

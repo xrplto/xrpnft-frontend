@@ -5,6 +5,7 @@ import { ColorExtractor } from 'react-color-extractor';
 // Material
 import {
     styled,
+    CardMedia,
     Divider,
     Link,
     Stack,
@@ -74,7 +75,8 @@ export default function NFTCard({ nft }) {
 
     const isSold = false;
 
-    const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
+    const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+    const isVideo = meta.video;
 
     const getColors = colors => {
         setColors(c => [...c, ...colors]);
@@ -137,8 +139,12 @@ export default function NFTCard({ nft }) {
                         SOLD
                     </Label>
                 )}
-                <ColorExtractor getColors={getColors}>
-                    <img src={imgUrl}
+                {isVideo ?
+                    <CardMedia
+                        component={isVideo?'video':'img'}
+                        image={imgUrl}
+                        alt={'NFT'}
+                        controls={isVideo}
                         style={{
                             width: 250,
                             height: 220,
@@ -147,7 +153,19 @@ export default function NFTCard({ nft }) {
                             objectFit: 'cover'
                         }}
                     />
-                </ColorExtractor>
+                    :
+                    <ColorExtractor getColors={getColors}>
+                        <img src={imgUrl}
+                            style={{
+                                width: 250,
+                                height: 220,
+                                marginTop: 5,
+                                borderRadius: 20,
+                                objectFit: 'cover'
+                            }}
+                        />
+                    </ColorExtractor>
+                }
                 {/* {
                   !loading
                     ?

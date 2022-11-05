@@ -26,6 +26,52 @@ import Properties from './Properties';
 import Levels from 'src/minting/NFTLevels/Levels';
 import { convertHexToString } from 'src/utils/parse';
 
+function getProperties(meta) {
+    const properties = [];
+    if (!meta) return [];
+
+    // Attributes
+    try {
+        const attributes = meta.attributes;
+        if (attributes && attributes.length > 0) {
+            for (const attr of attributes) {
+                const type = attr.type || attr.trait_type;
+                const value = attr.value;
+                properties.push({type, value});
+            }
+        }
+    } catch (e) {}
+
+    // Other props
+    const props = [
+        'Rarity',
+        'Signature',
+        'Background',
+        'Base',
+        'Mouth',
+        'Accessories',
+        'Base Effects',
+        // ==============
+        'Blade Effect',
+        'End Scene',
+        'Music',
+        'Blades In Video',
+        // ==============
+        'Special',
+    ];
+
+    try {
+        for (const prop of props) {
+            if (meta[prop]) {
+                properties.push({type: prop, value: meta[prop]});
+            }
+        }
+    } catch (e) {}
+
+    return properties;
+
+}
+
 export default function NFTDetails({nft}) {
 
     const {
@@ -43,8 +89,6 @@ export default function NFTDetails({nft}) {
         NFTokenID,
         issuer,
     } = nft;
-
-    const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
 
     const ParsedURI = convertHexToString(URI);
     const hrefURI = `https://gateway.xrpnft.com/ipfs/${ParsedURI}`;
@@ -65,11 +109,11 @@ export default function NFTDetails({nft}) {
 
     const collectionName = collection.name || collection;
 
-    const properties = meta?.attributes;
+    const properties = getProperties(meta);
     
     return (
         <Stack spacing={2} sx={{mt: 2}}>
-            <NFTPreview image={meta.image} title={name} favorites={0} />
+            <NFTPreview meta={meta} title={name} favorites={0} />
             <Stack>
                 <Accordion defaultExpanded>
                     <AccordionSummary

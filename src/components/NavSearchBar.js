@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import {
     Avatar,
     Autocomplete,
+    CardMedia,
     CircularProgress,
     IconButton,
     InputAdornment,
@@ -164,8 +165,9 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                         collection,
                         NFTokenID
                     } = option;
-                
-                    const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image}`;
+
+                    const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+                    const isVideo = meta.video;
                     return (
                         <Link
                             key={uuid}
@@ -177,7 +179,23 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                         >
                             <MenuItem sx={{pt:1, pb:1}}>
                                 <Stack direction="row" spacing={1} alignItems="center">
-                                    <Avatar alt="nft" src={imgUrl} />
+                                    {isVideo ?
+                                        <Avatar alt="nft">
+                                            <CardMedia
+                                                component="video"
+                                                image={imgUrl}
+                                                title='title'
+                                                controls
+                                                style={{
+                                                    width: 96,
+                                                    height: 96,
+                                                    filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
+                                                }}
+                                            />
+                                        </Avatar>
+                                        :
+                                        <Avatar alt="nft" src={imgUrl} />
+                                    }
                                     <Typography variant="s5">{name}</Typography>
                                 </Stack>
                             </MenuItem>

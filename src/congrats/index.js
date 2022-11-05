@@ -11,6 +11,7 @@ import { useTheme } from '@mui/material/styles';
 import {
     styled,
     Button,
+    CardMedia,
     Link,
     Stack,
     Typography,
@@ -55,6 +56,7 @@ export default function Congrats({ data }) {
     const [congrats, setCongrats] = useState(true);
 
     let imgUrl;
+    let isVideo = false;
     let url, title, desc;
     if (nft) {
         // {
@@ -79,7 +81,8 @@ export default function Congrats({ data }) {
             collection,
             meta,
         } = nft;
-        imgUrl = `https://gateway.xrpnft.com/ipfs/${nft.meta.image}`;
+        imgUrl = `https://gateway.xrpnft.com/ipfs/${nft.meta.image||nft.meta.video}`;
+        isVideo = nft.meta.video;
         url = `https://xrpnft.com/assets/${uuid}`;
         title = `${name}`;
         desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
@@ -193,9 +196,12 @@ export default function Congrats({ data }) {
                                 )`,
                         }}
                     >
-
-                        <ColorExtractor getColors={getColors}>
-                            <img src={imgUrl}
+                        {isVideo ?
+                            <CardMedia
+                                component={isVideo?'video':'img'}
+                                image={imgUrl}
+                                alt={'NFT'}
+                                controls={isVideo}
                                 style={{
                                     width: fullScreen?'480px':'280px',
                                     height: fullScreen?'480px':'280px',
@@ -204,7 +210,19 @@ export default function Congrats({ data }) {
                                     objectFit: 'cover'
                                 }}
                             />
-                        </ColorExtractor>
+                            :
+                            <ColorExtractor getColors={getColors}>
+                                <img src={imgUrl}
+                                    style={{
+                                        width: fullScreen?'480px':'280px',
+                                        height: fullScreen?'480px':'280px',
+                                        // marginTop: 5,
+                                        borderRadius: 20,
+                                        objectFit: 'cover'
+                                    }}
+                                />
+                            </ColorExtractor>
+                        }
                     </CardWrapper>
 
                     {nft && 

@@ -12,6 +12,7 @@ import {
     Avatar,
     Button,
     Card,
+    CardMedia,
     Checkbox,
     FormControlLabel,
     FormGroup,
@@ -109,6 +110,7 @@ export default function Minting() {
     
     const [fileUrl, setFileUrl] = useState(null);
     const [file, setFile] = useState(null);
+    const [isVideo, setIsVideo] = useState(false);
 
     const [openScanQR, setOpenScanQR] = useState(false);
     const [uuidNft, setUuidNft] = useState('null');
@@ -229,6 +231,7 @@ export default function Minting() {
             data.royalty = royalty;
             data.explicit = explicit;
             data.flag = flag;
+            data.isVideo = isVideo;
             if (properties && properties.length > 0)
                 data.properties = properties;
 
@@ -305,6 +308,21 @@ export default function Minting() {
                     openSnackbar('You can only upload images size less than 10MB', 'error');
                     fileRef.current.value = null;
                 }
+            } else if (ext === 'mp4') {
+                const size = pickedFile.size;
+                if (size < 102400000) {
+                    setFile(pickedFile);
+                    setIsVideo(true);
+                    // This is used as src of image
+                    const reader = new FileReader();
+                    reader.readAsDataURL(pickedFile)
+                    reader.onloadend = function (e) {
+                        setFileUrl(reader.result); // data:image/jpeg;base64
+                    }
+                } else {
+                    openSnackbar('You can only upload video size less than 100MB', 'error');
+                    fileRef.current.value = null;
+                }
             }
         }
     }
@@ -349,7 +367,7 @@ export default function Minting() {
     const handleChangeRoyalty = (e) => {
         const value = e.target.value;
         try {
-            const val = value?value.replace(/[^0-9.]/g, ""):'0';
+            const val = value?value.replace(/[^0-9.]/g, ""):'';
             setRoyalty(val);
         } catch (e) {
         }
@@ -391,14 +409,14 @@ export default function Minting() {
                 <Typography variant="h1a" >Create New Item</Typography>
                 <Typography variant='p3'><Typography variant='s2'>*</Typography> Required fields</Typography>
                 <Typography variant='p4'>Image, Video, Audio, or 3D Model <Typography variant='s2'>*</Typography></Typography>
-                <Typography variant='p3'>File types supported: {SUPPORTED_FILE_TYPES.join(', ')}.   Max size: 10MB</Typography>
+                <Typography variant='p3'>File types supported: {SUPPORTED_FILE_TYPES.join(', ')}. (Max size: 10MB) MP4 (Max size: 100MB)</Typography>
                 <CardWrapper>
                     <input
                         ref={fileRef}
                         style={{ display: 'none' }}
                         // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
                         // accept='image/*'
-                        accept='.png, .jpg, .gif'
+                        accept='.png, .jpg, .gif, .mp4'
                         id='contained-button-file'
                         // multiple
                         type='file'
@@ -425,7 +443,16 @@ export default function Minting() {
                                 <CloseIcon color='white' />
                             </IconButton>
                         </CardOverlay>
-                        <img src={fileUrl} alt='' style={fileUrl ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} />
+                        {/* <img src={fileUrl} alt='' style={fileUrl ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} /> */}
+
+                        <CardMedia
+                            component={isVideo?'video':'img'}
+                            image={fileUrl}
+                            alt={'NFT'}
+                            controls={isVideo}
+                            style={fileUrl ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }}
+                        />
+
                         <ImageIcon fontSize='large' sx={fileUrl ? { display: 'none' } : {width: 100, height: 100}} />
                     </Card>
                 </CardWrapper>
