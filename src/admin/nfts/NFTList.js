@@ -30,7 +30,7 @@ import { AppContext } from 'src/AppContext';
 import { NFToken } from 'src/utils/constants';
 
 // Components
-import ListToolbar from './ListToolbar';
+import ListToolbar from '../ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 // ----------------------------------------------------------------------
 
@@ -69,11 +69,11 @@ function statusToString(status) {
     return ret;
 }
 
-export default function FindNFT({filter, choice, setLoading}) {
+export default function NFTList({account, filter, choice, setLoading}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
-    const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountAdmin = accountProfile?.account;
     const accountToken = accountProfile?.token;
     
@@ -90,9 +90,9 @@ export default function FindNFT({filter, choice, setLoading}) {
             }
             setLoading(true);
 
-            const body = { filter, choice };
+            const body = { account, filter, choice };
 
-            axios.post(`${BASE_URL}/admin/findnft?page=${page}&limit=${rows}`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
+            axios.post(`${BASE_URL}/admin/nfts?page=${page}&limit=${rows}`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -107,7 +107,7 @@ export default function FindNFT({filter, choice, setLoading}) {
                 });
         }
         getNfts();
-    }, [page, rows, accountAdmin, accountToken, filter, choice]);
+    }, [page, rows, account, accountAdmin, accountToken, filter, choice]);
 
     return (
         <>
@@ -185,7 +185,8 @@ export default function FindNFT({filter, choice, setLoading}) {
                                 offerHash,
                                 status,
                                 error,
-                                resolve
+                                resolve,
+                                SellOfferID
                             } = row;
                         
                             const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
@@ -221,7 +222,7 @@ export default function FindNFT({filter, choice, setLoading}) {
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
                                     <TableCell align="left">
                                         <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-                                            {isVideo?
+                                            {/* {isVideo?
                                                 <CardMedia
                                                     component="video"
                                                     image={imgUrl}
@@ -247,7 +248,7 @@ export default function FindNFT({filter, choice, setLoading}) {
                                                         filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
                                                     }}
                                                 />
-                                            }
+                                            } */}
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row" justifyContent="space-between">
                                                     <Typography variant="h3" color="#33C2FF">{name}</Typography>
@@ -343,6 +344,10 @@ export default function FindNFT({filter, choice, setLoading}) {
                                                 >
                                                     <Typography variant="s6">{offerHash}</Typography>
                                                 </Link>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">SellOfferID: </Typography>
+                                                <Typography variant="s6">{SellOfferID}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s4">Status: </Typography>

@@ -26,9 +26,11 @@ There are 3 collections types ```Normal```, ```Bulk``` and ```Random```.
 
 ```Normal```: You can mint NFTs one by one for this collection.
 
-```Bulk```: You can upload bulk NFTs and sell with costs. Your IPFS NFT images are public in this mode. (Lazy mint mode)
+```Bulk```: You can upload bulk NFTs and sell with Mints. All NFTs are listed in a collection.
 
-```Random```: You can upload bulk NFTs and sell NFTs randomly one by one with Mints. Mints are bought by costs. (Lazy mint mode)
+```Random```: You can upload bulk NFTs and sell NFTs randomly one by one with Mints. Only Minted NFTs are listed in a collection. Mints are bought by costs.
+
+```Sequence```: You can upload bulk NFTs and sell NFTs sequently one by one with Mints. Only Minted NFTs are listed in a collection. Mints are bought by costs.
 
 If you select ```Bulk``` or ```Random```, you should add cost for each NFT and google drive shared link that indicates .zip file that contains all NFT images.
 For now, XRPNFT.com only support Google Drive image uploading, you should zip your images and then upload to Google Drive and make sharable link.

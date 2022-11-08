@@ -23,6 +23,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import CasinoIcon from '@mui/icons-material/Casino';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import AnimationIcon from '@mui/icons-material/Animation';
 
 // Loader
 import { ClipLoader } from "react-spinners";
@@ -227,9 +228,16 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                                     <Stack>
                                         <Stack direction="row" spacing={1}>
                                             <Typography variant="s5">{name}</Typography>
-                                            <Tooltip title="Random Collection">
-                                                <CasinoIcon color='info' fontSize="small"/>
-                                            </Tooltip>
+                                            {type === "random" &&
+                                                <Tooltip title="Random Collection">
+                                                    <CasinoIcon color='info' fontSize="small"/>
+                                                </Tooltip>
+                                            }
+                                            {type === "sequence" &&
+                                                <Tooltip title="Sequence Collection">
+                                                    <AnimationIcon color='info' fontSize="small"/>
+                                                </Tooltip>
+                                            }
                                         </Stack>
                                         <Typography variant="s7">{items} items</Typography>
                                     </Stack>

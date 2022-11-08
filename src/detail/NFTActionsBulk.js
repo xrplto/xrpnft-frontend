@@ -30,7 +30,7 @@ import BuyMintDialog from 'src/collection/BuyMintDialog';
 export default function NFTActionsBulk({nft}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
-    const { accountProfile, setAcceptNfts, openSnackbar } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -105,21 +105,19 @@ export default function NFTActionsBulk({nft}) {
 
         const body = { account: accountLogin, cid, uuid };
 
-        // https://api.xrpnft.com/api/spin/buynft
-        axios.post(`${BASE_URL}/spin/buynft`, body, {headers: {'x-access-token': accountToken}})
+        axios.post(`${BASE_URL}/spin/buybulknft`, body, {headers: {'x-access-token': accountToken}})
             .then(res => {
                 let ret = res.status === 200 ? res.data : undefined;
                 if (ret) {
                     const status = ret.status;
-                    const mints = ret.mints;
-                    const offerCount = ret.offerCount;
                     if (status) {
                         openSnackbar('Buy NFT successful!', 'success');
                         window.location.href = `/congrats/buyassets/${uuid}`;
+                    } else {
+                        openSnackbar(ret.error, 'error');
                     }
                     
-                    setBought(true);
-                    setAcceptNfts(ret.offerCount);
+                    // setBought(true);
                 }
             }).catch(err => {
                 console.log("Error on choosing NFT!!!", err);

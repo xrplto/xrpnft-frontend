@@ -20,6 +20,8 @@ import {
     TableCell,
     TableHead,
     TableRow,
+    ToggleButton,
+    ToggleButtonGroup,
     Tooltip,
     Typography,
     Divider
@@ -44,6 +46,7 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import FireplaceIcon from '@mui/icons-material/Fireplace';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AnimationIcon from '@mui/icons-material/Animation';
 
 // Context
@@ -69,21 +72,35 @@ function truncate(str, n) {
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-export default function ActivityList({account}) {
+export default function ActivityList({counterAccount}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
+
+    const { accountProfile, openSnackbar } = useContext(AppContext);
+    const accountAdmin = accountProfile?.account;
+    const accountToken = accountProfile?.token;
    
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
     const [acts, setActs] = useState([]);
 
+    const [choice, setChoice] = useState('account');
+
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         function getActivities() {
+            if (!accountAdmin || !accountToken) {
+                openSnackbar('Please login', 'error');
+                return;
+            }
+            
             setLoading(true);
-            axios.get(`${BASE_URL}/account/activity?account=${account}&page=${page}&limit=${rows}`)
+
+            const body = { account: counterAccount, choice };
+
+            axios.post(`${BASE_URL}/admin/activity?page=${page}&limit=${rows}`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -98,10 +115,25 @@ export default function ActivityList({account}) {
                 });
         }
         getActivities();
-    }, [account, page, rows]);
+    }, [page, rows, counterAccount, accountAdmin, accountToken, choice]);
+
+    const handleChangeChoice = (event, newValue) => {
+        setChoice(newValue);
+    };
 
     return (
         <>
+            <ToggleButtonGroup
+                color="primary"
+                value={choice}
+                exclusive
+                onChange={handleChangeChoice}
+            >
+                <ToggleButton value="account" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>By Account</ToggleButton>
+                <ToggleButton value="all" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>All</ToggleButton>
+                <ToggleButton value="admin" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Admin</ToggleButton>
+            </ToggleButtonGroup>
+
             {loading ? (
                 <Stack alignItems="center">
                     <PulseLoader color='#00AB55' size={10} />
@@ -155,7 +187,7 @@ export default function ActivityList({account}) {
                         //     }
                         // }
                         // exchs.slice(page * rows, page * rows + rows)
-                        acts && acts.map((row) => {
+                        acts && acts.map((row, idx) => {
                             const {
                                 account,
                                 activity,
@@ -249,6 +281,31 @@ export default function ActivityList({account}) {
                                         </>
                                     );
                                     break;
+                                case Activity.REMOVE_A_COLLECTION:
+                                    strActivity = 'Removed a Collection';
+                                    componentIcon = (<GridOnIcon />);
+                                    // {name, type, slug, logo: data.logoImage}
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Stack>
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Typography variant="s7">Name: </Typography>
+                                                        <Typography variant="s2">{data.name}</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Typography variant="s7">Type: </Typography>
+                                                        <Typography variant="s2">{data.type}</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Typography variant="s7">Slug: </Typography>
+                                                        <Typography variant="s2">{data.slug}</Typography>
+                                                    </Stack>
+                                                </Stack>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
                                 case Activity.MINT_BULK:
                                     strActivity = 'Mint Bulk NFTs';
                                     componentIcon = (<CollectionsIcon />);
@@ -331,6 +388,10 @@ export default function ActivityList({account}) {
                                                             <Typography variant="s7">uuid: </Typography>
                                                             <Typography variant="s2">{data.uuid}</Typography>
                                                         </Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">cid: </Typography>
+                                                            <Typography variant="s2">{data.cid}</Typography>
+                                                        </Stack>
                                                     </Stack>
                                                 </Stack>
                                                 <Stack direction="row" spacing={1} alignItems="center">
@@ -390,6 +451,10 @@ export default function ActivityList({account}) {
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">uuid: </Typography>
                                                             <Typography variant="s2">{data.uuid}</Typography>
+                                                        </Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">cid: </Typography>
+                                                            <Typography variant="s2">{data.cid}</Typography>
                                                         </Stack>
                                                     </Stack>
                                                 </Stack>
@@ -678,7 +743,7 @@ export default function ActivityList({account}) {
                             return (
                                 <TableRow
                                     // hover
-                                    key={timestamp}
+                                    key={timestamp + "" + idx}
                                     sx={{
                                         [`& .${tableCellClasses.root}`]: {
                                             // color: (error ? '#B72136' : '#B72136')
@@ -695,6 +760,29 @@ export default function ActivityList({account}) {
                                             <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
                                                 <Typography variant="s2">{strActivity}</Typography>
                                                 <Typography variant="s7">{strDateTime}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={0.2} alignItems="center">
+                                                <Typography variant="s6">{account}</Typography>
+                                                <Link
+                                                    underline="none"
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://bithomp.com/explorer/${account}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Tooltip title="Check on Bithomp">
+                                                        <IconButton edge="end" aria-label="bithomp" size="small">
+                                                            <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Link>
+                                                <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                    <Tooltip title='Click to copy'>
+                                                        <IconButton size="small">
+                                                            <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </CopyToClipboard>
                                             </Stack>
                                             {componentActivity}
                                             {/* <Link

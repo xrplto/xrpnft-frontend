@@ -31,6 +31,7 @@ import { AppContext } from 'src/AppContext';
 // Components
 import CountdownTimer from './CountDownTimer';
 import QRDialog from 'src/components/QRDialog';
+import ConfirmAcceptOfferDialog from './ConfirmAcceptOfferDialog';
 
 // cannot accept buy offer if you are not the owner of token.
 // cannot accept sell offer if seller is not the owner of token.
@@ -56,6 +57,9 @@ export default function OffersList({ nft, isSell }) {
 
     const [loading, setLoading] = useState(false);
     const [pageLoading, setPageLoading] = useState(false);
+
+    const [acceptOffer, setAcceptOffer] = useState(null);
+    const [openConfirm, setOpenConfirm] = useState(false);
 
     useEffect(() => {
         function getOffers() {
@@ -135,7 +139,7 @@ export default function OffersList({ nft, isSell }) {
         } else {
             // Cancel mode
             if (accountLogin !== owner) {
-                openSnackbar('You are not the owner of this account', 'error');
+                openSnackbar('You are not the owner of this offer', 'error');
                 return;
             }
         }
@@ -229,7 +233,12 @@ export default function OffersList({ nft, isSell }) {
     }
 
     const handleAcceptOffer = async (offer) => {
-        doProcessOffer(offer, true);
+        setAcceptOffer(offer);
+        setOpenConfirm(true);
+    }
+
+    const onContinueAccept = async () => {
+        doProcessOffer(acceptOffer, true);
     }
 
     return (
@@ -260,6 +269,8 @@ export default function OffersList({ nft, isSell }) {
                     </Stack>
             )
             }
+
+            <ConfirmAcceptOfferDialog open={openConfirm} setOpen={setOpenConfirm} offer={acceptOffer} onContinue={onContinueAccept} />
 
             <QRDialog
                 open={openScanQR}

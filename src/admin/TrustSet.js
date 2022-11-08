@@ -155,6 +155,7 @@ export default function TrustSet() {
                                 cost,
                                 amount,
                                 status,
+                                txHash,
                                 date
                             } = row;
                         
@@ -227,6 +228,19 @@ export default function TrustSet() {
                                                             </IconButton>
                                                         </Tooltip>
                                                     </Link>
+                                                    <Link
+                                                        underline="none"
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://api.xrpnft.com/api/account/lines/${minter}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title="Check on API">
+                                                            <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                <CheckCircleIcon fontSize="small" color="success" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
                                                     <CopyToClipboard text={minter} onCopy={()=>openSnackbar('Copied!', 'success')}>
                                                         <Tooltip title='Click to copy'>
                                                             <IconButton size="small">
@@ -236,6 +250,29 @@ export default function TrustSet() {
                                                     </CopyToClipboard>
                                                 </Stack>
                                                 <Typography variant="s7">{strDateTime}</Typography>
+                                                <Stack direction="row" spacing={0.2} alignItems="center">
+                                                    <Typography variant="s7">{txHash}</Typography>
+                                                    <Link
+                                                        underline="none"
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://bithomp.com/explorer/${txHash}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title="Check on Bithomp">
+                                                            <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
+                                                    <CopyToClipboard text={txHash} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                        <Tooltip title='Click to copy'>
+                                                            <IconButton size="small">
+                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Stack>
                                             </Stack>
                                         </Stack>
                                     </TableCell>

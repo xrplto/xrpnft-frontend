@@ -334,6 +334,9 @@ export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints
                         {type === "random" &&
                             <Typography variant="p5" sx={{mt: 0}}>To power up the spinner, you need at least 1 or more Mints. This will enable you to purchase NFTs that is randomly selected from this collection.</Typography>
                         }
+                        {type === "sequence" &&
+                            <Typography variant="p5" sx={{mt: 0}}>To power up the spinner, you need at least 1 or more Mints. This will enable you to purchase NFTs that is sequently selected from this collection.</Typography>
+                        }
                         <Typography variant="p5" sx={{mt: 2}}>Mints purchased for this collection can not be used on the other collections.</Typography>
                         
                         <Stack spacing={2} sx={{mt: 2}}>

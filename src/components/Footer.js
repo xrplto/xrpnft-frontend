@@ -37,8 +37,8 @@ const FooterWrapper = styled(Box)(
 function Footer() {
     const { darkMode } = useContext(AppContext);
 
-    const img_dark = "/logo/logo-cropped-dark.svg";
-    const img_light = "/logo/logo-cropped-light.svg";
+    const img_dark = "/logo/logo-dark.svg";
+    const img_light = "/logo/logo-light.svg";
     
     const img = darkMode?img_light:img_dark;
     return (
@@ -52,11 +52,11 @@ function Footer() {
                             underline="none"
                             rel="noreferrer noopener nofollow"
                         >
-                            {/* <Box component="img" src={img} sx={{ height: 46 }} /> */}
-                            <LazyLoadImage
+                            <Box component="img" src={img} sx={{ height: 72 }} />
+                            {/* <LazyLoadImage
                                 src={img}
-                                height={46}
-                            />
+                                height={64}
+                            /> */}
                         </Link>
                     </Grid>
                     

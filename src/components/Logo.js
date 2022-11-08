@@ -3,6 +3,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 // Material
 import {
     useTheme, useMediaQuery,
+    Box,
     Link
 } from '@mui/material';
 
@@ -21,12 +22,12 @@ function Logo() {
     */
     const theme = useTheme();
     const { darkMode } = useContext(AppContext);
-    const isMobile = useMediaQuery(theme.breakpoints.down('mobile'));
+    // const isMobile = useMediaQuery(theme.breakpoints.down('mobile'));
 
-    const img_dark = "/logo/logo-cropped-dark.svg";
-    const img_light = "/logo/logo-cropped-light.svg";
-    const img_mobile_dark = "/logo/logo-mobile-dark.svg";
-    const img_mobile_light = "/logo/logo-mobile-light.svg";
+    const img_dark = "/logo/logo-dark.svg";
+    const img_light = "/logo/logo-light.svg";
+    // const img_mobile_dark = "/logo/logo-mobile-dark.svg";
+    // const img_mobile_light = "/logo/logo-mobile-light.svg";
     
     let img = darkMode?img_light:img_dark;
     // if (isMobile)
@@ -39,11 +40,11 @@ function Logo() {
             underline="none"
             rel="noreferrer noopener nofollow"
         >
-            {/* <Box component="img" src={img} sx={{ height: 46 }} /> */}
-            <LazyLoadImage
+            <Box component="img" src={img} sx={{ height: 72 }} />
+            {/* <LazyLoadImage
                 src={img}
-                height={46}
-            />
+                height={64}
+            /> */}
         </Link>
     );
 }

@@ -34,17 +34,15 @@ import { fNumber } from 'src/utils/formatNumber';
 // Components
 import ProfileList from './ProfileList';
 
-import CollectedList from '../account/CollectedList';
-import CreatedList from '../account/CreatedList';
-import FavoritedList from '../account/FavoritedList';
-import ActivityList from '../account/ActivityList';
-import AcceptList from '../account/AcceptList';
-import CheckNFT from './CheckNFT';
 import Summary from './Summary';
-import BulkList from './BulkList';
-import CheckPass from './CheckPass';
+import Passphrase from './Passphrase';
+import Collections from './collections';
+import NFTs from './nfts';
+import Activity from './Activity';
+import Errors from './errors';
 import TrustSet from './TrustSet';
-import BuyMintQueue from './BuyMintQueue';
+import Mints from './Mints';
+import AutoPay from './AutoPay';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -149,8 +147,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['collected', 'created', 'favorited', 'activity', 'accept', 'checknfts', 'summary', 'checkbulks', 'checkpassphrase', 'trustset', 'buymintqueue'];
-const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept', 'Check NFTs', 'Summary', 'Check Bulks', 'Check Passphrase', 'Auto TrustLine', 'Buy Mint Queue'];
+const tabValues = ['summary', 'passphrase', 'collections', 'nfts', 'activity', 'errors', 'autotrustlines', 'mints', 'autopay'];
+const tabLabels = ['Summary', 'Passphrase', 'Collections', 'NFTs', 'Activity', 'Errors', 'Auto TrustLine', 'Mints', 'Auto Pay'];
 
 function getTabID(tab) {
     if (!tab) return 0;
@@ -161,7 +159,7 @@ function getTabID(tab) {
 }
 
 export default function Admin() {
-    const { accountProfile, openSnackbar, acceptNfts } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile.account;
     const accountToken = accountProfile.token;
     const accountUuid = accountProfile.xuuid;
@@ -263,8 +261,6 @@ export default function Admin() {
                             <Tab value={6} label={tabLabels[6]} {...a11yProps(6)} />
                             <Tab value={7} label={tabLabels[7]} {...a11yProps(7)} />
                             <Tab value={8} label={tabLabels[8]} {...a11yProps(8)} />
-                            <Tab value={9} label={tabLabels[9]} {...a11yProps(9)} />
-                            <Tab value={10} label={tabLabels[10]} {...a11yProps(10)} />
                         </Tabs>
                     </Stack>
                 </Stack>
@@ -277,57 +273,53 @@ export default function Admin() {
                     <Grid container item xs={12} md={7}>
                         <TabPanel value={tabID} id={0}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <CollectedList account={counterAccount} />
+                                <Summary />
                             </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={1}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <CreatedList account={counterAccount} />
+                                <Passphrase account={counterAccount} />
                             </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={2}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <FavoritedList account={counterAccount} />
+                                <Collections account={counterAccount} />
                             </Stack>
                         </TabPanel>
+
                         <TabPanel value={tabID} id={3}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <ActivityList account={counterAccount} />
+                                <NFTs account={counterAccount} />
                             </Stack>
                         </TabPanel>
+
                         <TabPanel value={tabID} id={4}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <AcceptList account={counterAccount} />
+                                <Activity counterAccount={counterAccount} />
                             </Stack>
                         </TabPanel>
+                        
                         <TabPanel value={tabID} id={5}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <CheckNFT />
+                                <Errors />
                             </Stack>
                         </TabPanel>
+                        
                         <TabPanel value={tabID} id={6}>
-                            <Stack sx={{minHeight: '20vh'}}>
-                                <Summary />
-                            </Stack>
-                        </TabPanel>
-                        <TabPanel value={tabID} id={7}>
-                            <Stack sx={{minHeight: '20vh'}}>
-                                <BulkList account={counterAccount} />
-                            </Stack>
-                        </TabPanel>
-                        <TabPanel value={tabID} id={8}>
-                            <Stack sx={{minHeight: '20vh'}}>
-                                <CheckPass account={counterAccount} />
-                            </Stack>
-                        </TabPanel>
-                        <TabPanel value={tabID} id={9}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <TrustSet />
                             </Stack>
                         </TabPanel>
-                        <TabPanel value={tabID} id={10}>
+
+                        <TabPanel value={tabID} id={7}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <BuyMintQueue />
+                                <Mints />
+                            </Stack>
+                        </TabPanel>
+
+                        <TabPanel value={tabID} id={8}>
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <AutoPay />
                             </Stack>
                         </TabPanel>
                     </Grid>

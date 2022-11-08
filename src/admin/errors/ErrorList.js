@@ -32,7 +32,7 @@ import { AppContext } from 'src/AppContext';
 import { NFToken } from 'src/utils/constants';
 
 // Components
-import ListToolbar from './ListToolbar';
+import ListToolbar from '../ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 // ----------------------------------------------------------------------
 
@@ -65,11 +65,18 @@ function statusToString(status) {
     return ret;
 }
 
+const NFTFix = { // 4:14 PM 11/06/2022
+    RESOLVE_ONE: 1,
+    RESOLVE_PAGE: 2,
+    RESOLVE_ALL: 3,
+    RESOLVE_PREOFFER_E2: 4
+}
+
 export default function ErrorList({filter, choice, setLoading}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
-    const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountAdmin = accountProfile?.account;
     const accountToken = accountProfile?.token;
     
@@ -78,6 +85,8 @@ export default function ErrorList({filter, choice, setLoading}) {
     const [total, setTotal] = useState(0);
     const [nfts, setNfts] = useState([]);
 
+    const [sync, setSync] = useState(0);
+
     useEffect(() => {
         function getNfts() {
             if (!accountAdmin || !accountToken) {
@@ -85,7 +94,10 @@ export default function ErrorList({filter, choice, setLoading}) {
                 return;
             }
             setLoading(true);
-            axios.get(`${BASE_URL}/admin/errors?page=${page}&limit=${rows}`, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
+
+            const body = {filter, choice};
+
+            axios.post(`${BASE_URL}/admin/errors?page=${page}&limit=${rows}`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -100,38 +112,9 @@ export default function ErrorList({filter, choice, setLoading}) {
                 });
         }
         getNfts();
-    }, [page, rows, accountAdmin, accountToken, sync]);
+    }, [accountAdmin, accountToken, page, rows, filter, choice, sync]);
 
-    const onResolveNFT = async (nft) => {
-        if (!accountAdmin || !accountToken) {
-            openSnackbar('Please login', 'error');
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const {
-                uuid,
-                status
-            } = nft;
-
-            const body = { uuid, status };
-
-            const res = await axios.post(`${BASE_URL}/admin/resolve`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
-
-            let ret = res.status === 200 ? res.data : undefined;
-            if (ret) {
-                openSnackbar('Successfully submitted', 'success');
-                setSync(sync + 1);
-            }
-        } catch (err) {
-            console.error(err);
-            openSnackbar('Error', 'error');
-        }
-        setLoading(false);
-    };
-
-    const onResolvePageNFT = async () => {
+    const onResolveNFT = async (nfts, type) => {
         if (!accountAdmin || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
@@ -144,39 +127,18 @@ export default function ErrorList({filter, choice, setLoading}) {
                 uuidset.push(nft.uuid);
             }
 
-            const body = { uuidset };
+            const body = { uuidset, type };
 
-            const res = await axios.post(`${BASE_URL}/admin/resolvepage`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
+            const res = await axios.post(`${BASE_URL}/admin/resolve_nft`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
 
-            let ret = res.status === 200 ? res.data : undefined;
+            const ret = res.data;
             if (ret) {
-                openSnackbar('Successfully submitted', 'success');
-                setSync(sync + 1);
-            }
-        } catch (err) {
-            console.error(err);
-            openSnackbar('Error', 'error');
-        }
-        setLoading(false);
-    };
-
-    const onResolveAllNFT = async () => {
-        if (!accountAdmin || !accountToken) {
-            openSnackbar('Please login', 'error');
-            return;
-        }
-
-        setLoading(true);
-        try {
-
-            const body = { total };
-
-            const res = await axios.post(`${BASE_URL}/admin/resolveall`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
-
-            let ret = res.status === 200 ? res.data : undefined;
-            if (ret) {
-                openSnackbar('Successfully submitted', 'success');
-                setSync(sync + 1);
+                if (ret.status) {
+                    openSnackbar('Successfully submitted', 'success');
+                    setSync(sync + 1);
+                } else {
+                    openSnackbar(ret.err, 'error');
+                }
             }
         } catch (err) {
             console.error(err);
@@ -186,30 +148,36 @@ export default function ErrorList({filter, choice, setLoading}) {
     };
 
     const handleResolve = (nft) => {
-        onResolveNFT(nft);
+        let type = NFTFix.RESOLVE_ONE;
+        if (nft.status === NFToken.PREOFFER_E2)
+            type = NFTFix.RESOLVE_PREOFFER_E2;
+
+        onResolveNFT([nft], type);
     }
 
     const handleResolvePage = () => {
-        onResolvePageNFT();
+        onResolveNFT(nfts, NFTFix.RESOLVE_PAGE);
     }
 
     const handleResolveAll = () => {
-        onResolveAllNFT();
+        onResolveNFT([], NFTFix.RESOLVE_ALL);
     }
 
     return (
         <>
             {total > 0 ?
                 <>
-                    <Stack direction="row" spacing={1}>
-                        <Button variant="contained" color="primary" size="small" onClick={()=>handleResolveAll()}>
-                            Resolve All
-                        </Button>
+                    {(choice === "error" || choice === "nodest") &&
+                        <Stack direction="row" spacing={1}>
+                            <Button variant="contained" color="primary" size="small" onClick={()=>handleResolveAll()}>
+                                Resolve All
+                            </Button>
 
-                        <Button variant="contained" color="primary" size="small" onClick={()=>handleResolvePage()}>
-                            Resolve Page
-                        </Button>
-                    </Stack>
+                            <Button variant="contained" color="primary" size="small" onClick={()=>handleResolvePage()}>
+                                Resolve Page
+                            </Button>
+                        </Stack>
+                    }
                     <ListToolbar
                         count={total}
                         rows={rows}
@@ -284,9 +252,11 @@ export default function ErrorList({filter, choice, setLoading}) {
                                 URI,
                                 NFTokenID,
                                 mintHash,
+                                offerHash,
                                 status,
                                 error,
-                                resolve
+                                resolve,
+                                SellOfferID
                             } = row;
                         
                             const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
@@ -320,7 +290,7 @@ export default function ErrorList({filter, choice, setLoading}) {
                                     }}
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
-                                    <TableCell align="left">
+                                    {/* <TableCell align="left">
                                         {isVideo?
                                             <CardMedia
                                                 component="video"
@@ -348,7 +318,7 @@ export default function ErrorList({filter, choice, setLoading}) {
                                                 }}
                                             />
                                         }
-                                    </TableCell>
+                                    </TableCell> */}
                                     
                                     <TableCell align="left">
                                         <Stack spacing={0.5}>
@@ -488,6 +458,21 @@ export default function ErrorList({filter, choice, setLoading}) {
                                                 </Link>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">offerHash: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://bithomp.com/explorer/${offerHash}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s6">{offerHash}</Typography>
+                                                </Link>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s4">SellOfferID: </Typography>
+                                                <Typography variant="s6">{SellOfferID}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s4">Status: </Typography>
                                                 <Typography variant="s6">{status} - {statusToString(status)}</Typography>
                                             </Stack>
@@ -495,18 +480,20 @@ export default function ErrorList({filter, choice, setLoading}) {
                                                 <Typography variant="s4">Error: </Typography>
                                                 <Typography variant="s6">{JSON.stringify(error)}</Typography>
                                             </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                {resolve?(
-                                                    <Button disabled variant="contained" color="primary" size="small">
-                                                        Resolving ...
-                                                    </Button>
-                                                ):(
-                                                    <Button variant="contained" color="primary" size="small" onClick={()=>handleResolve(row)}>
-                                                        Resolve
-                                                    </Button>
-                                                )
-                                                }
-                                            </Stack>
+                                            {(choice === "error" || choice === "nodest") &&
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    {resolve?(
+                                                        <Button disabled variant="contained" color="primary" size="small">
+                                                            Resolving ...
+                                                        </Button>
+                                                    ):(
+                                                        <Button variant="contained" color="primary" size="small" onClick={()=>handleResolve(row)}>
+                                                            {status === NFToken.PREOFFER_E2?"Set to PREOFFER":"Resolve"}
+                                                        </Button>
+                                                    )
+                                                    }
+                                                </Stack>
+                                            }
                                         </Stack>
                                     </TableCell>
                                     

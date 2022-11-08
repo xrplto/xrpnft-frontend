@@ -26,6 +26,8 @@ const OverviewWrapper = styled(Box)(
 export default function Overview({data}) {
     const { darkMode, accountProfile, openSnackbar } = useContext(AppContext);
 
+    const isAdmin = accountProfile?.admin;
+
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
@@ -33,7 +35,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="xl">
-                {accountProfile &&
+                {isAdmin &&
                     <Admin />
                 }
             </Container>
