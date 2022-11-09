@@ -35,7 +35,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Loader
-import { PulseLoader } from "react-spinners";
+import { PulseLoader, ClipLoader } from "react-spinners";
 
 // Utils
 import { NFToken, Mint } from 'src/utils/constants';
@@ -44,7 +44,6 @@ import { NFToken, Mint } from 'src/utils/constants';
 import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 import ConfirmResolveDialog from './ConfirmResolveDialog';
-import { timelineDotClasses } from '@mui/lab';
 
 function statusToString(status) {
 
@@ -58,8 +57,25 @@ function statusToString(status) {
     // }
 }
 
+function formatTime(time) {
+    if (!time) return '';
+    const nDate = new Date(time);
+    const year = nDate.getFullYear();
+    const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
+    const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
+    const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+    const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+    const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+
+    //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
+    //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
+    const strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
+    // const strTime = `${hour}:${min}:${sec}`;
+    return strDateTime;
+}
+
 // ----------------------------------------------------------------------
-export default function Mints() {
+export default function Mints({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -80,6 +96,10 @@ export default function Mints() {
 
     const [resolveMint, setResolveMint] = useState(null);
 
+    const [choice, setChoice] = useState('all');
+
+    const [filter, setFilter] = useState('');
+
     useEffect(() => {
         function getMints() {
             if (!accountAdmin || !accountToken) {
@@ -88,7 +108,9 @@ export default function Mints() {
             }
             setLoading(true);
 
-            axios.get(`${BASE_URL}/admin/mints?page=${page}&limit=${rows}`, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
+            const body = { account, choice, filter };
+
+            axios.post(`${BASE_URL}/admin/mints?page=${page}&limit=${rows}`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -103,7 +125,7 @@ export default function Mints() {
                 });
         }
         getMints();
-    }, [page, rows, accountAdmin, accountToken, sync]);
+    }, [page, rows, accountAdmin, accountToken, account, filter, choice, sync]);
 
     const onResolveMint = async (mint) => {
         if (!accountAdmin || !accountToken) {
@@ -139,12 +161,8 @@ export default function Mints() {
     const handleResolve = (mint, action) => {
         mint.action = action;
         if (action === 2) { // Remove
-            if (mint.status !== Mint.CANCEL) {
-                openSnackbar('You can only remove cancelled Mints.', 'error');
-            } else {
-                setResolveMint(mint);
-                setOpenConfirm(true);
-            }
+            setResolveMint(mint);
+            setOpenConfirm(true);
         } else if (action === 4) { // If action is Resolve, call directly, don't show confirm dialog
             onResolveMint(mint);
         } else {
@@ -157,18 +175,57 @@ export default function Mints() {
         onResolveMint(resolveMint);
     }
 
+    const handleChangeChoice = (event, newValue) => {
+        setChoice(newValue);
+    };
+
+    const handleChangeFilter = (e) => {
+        setFilter(e.target.value);
+    }
+
     return (
         <>
-            {loading ? (
-                <Stack alignItems="center">
-                    <PulseLoader color='#00AB55' size={10} />
+            <ToggleButtonGroup
+                color="primary"
+                value={choice}
+                exclusive
+                onChange={handleChangeChoice}
+            >
+                <ToggleButton value="all" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>All</ToggleButton>
+                <ToggleButton value="account" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>By Account</ToggleButton>
+                <ToggleButton value="notpaid" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Not Paid</ToggleButton>
+                <ToggleButton value="statusremove" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Status Remove</ToggleButton>
+            </ToggleButtonGroup>
+
+            <TextField
+                id='textFilter'
+                // autoFocus
+                // fullWidth
+                variant='outlined'
+                placeholder='Invoice'
+                margin='dense'
+                onChange={handleChangeFilter}
+                autoComplete='new-password'
+                inputProps={{autoComplete: 'off'}}
+                value={filter}
+                onFocus={event => {
+                    event.target.select();
+                }}
+                sx={{pl:2, pr:2, pt: 0, pb: 0, mt: 4, mb: 4}}
+                onKeyDown={(e) => e.stopPropagation()}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="start">
+                            {loading && <ClipLoader color='#ff0000' size={15} /> }
+                        </InputAdornment>
+                    ),
+                }}
+            />
+
+            {mints && mints.length === 0 &&
+                <Stack alignItems="center" sx={{mt: 5}}>
+                    <Typography variant="s7">No Items</Typography>
                 </Stack>
-            ):(
-                mints && mints.length === 0 &&
-                    <Stack alignItems="center" sx={{mt: 5}}>
-                        <Typography variant="s7">No Items</Typography>
-                    </Stack>
-            )
             }
 
             {total > 0 &&
@@ -207,42 +264,48 @@ export default function Mints() {
                         mints && mints.map((row) => {
                             // {xuuid, InvoiceID, account, destination: collection.minter, cid, cname: collection.name, cslug: collection.slug, amount: Amount, quantity, cost, time}
                             const {
-                                date,
                                 xuuid,
+                                uuid,
                                 InvoiceID,
                                 account,
-                                destination,
                                 cid,
-                                cname,
                                 cslug,
+                                cname,
                                 amount,
                                 quantity,
                                 cost,
-                                time,
+                                minter,
+                                dest,
                                 status,
+                                time,
 
+                                // XUMM
                                 meta,
                                 resolved,
                                 resolved_at,
-                                dispatched_result
+                                dispatched_result,
+                                xumm_signer,
+                                xumm_account,
+                                xumm_txid,
+
+
+                                // 
+                                t1,
+                                t2,
+                                t3,
+                                t4,
+                                t5
                             } = row;
                         
-                            let strDateTime = '';
+                            const strDateTime = formatTime(time);
 
-                            if (timelineDotClasses) {
-                                const nDate = new Date(time);
-                                const year = nDate.getFullYear();
-                                const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                                const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                                const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
+                            const time1 = formatTime(t1);
+                            const time2 = formatTime(t2);
+                            const time3 = formatTime(t3);
+                            const time4 = formatTime(t4);
+                            const time5 = formatTime(t5);
 
-                                //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-                                //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-                                strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-                                // const strTime = `${hour}:${min}:${sec}`;
-                            }
+                            // InvoiceID: 18E0E841D26B9B4A5EA2B217C71781A59C4D82AE4C999CBBC0E242B89E498670
 
                             /*
                             { meta
@@ -312,6 +375,30 @@ export default function Mints() {
                                                     </CopyToClipboard>
                                                 </Stack>
 
+                                                <Stack direction="row" spacing={0.2} alignItems="center">
+                                                    <Typography variant="s6">{minter}</Typography>
+                                                    <Link
+                                                        underline="none"
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://bithomp.com/explorer/${minter}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title="Check on Bithomp">
+                                                            <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
+                                                    <CopyToClipboard text={minter} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                        <Tooltip title='Copy Minter'>
+                                                            <IconButton size="small">
+                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Stack>
+
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     <Typography variant="s7">Collection: </Typography>
                                                     <Typography variant="s6">{cname}</Typography>
@@ -325,10 +412,44 @@ export default function Mints() {
                                                     <Typography variant="s6">{status} - {statusToString(status)}</Typography>
                                                 </Stack>
 
-                                                <Stack direction="row" spacing={1}>
-                                                    <Typography variant='s7'>XUMM - Resolved: {resolved?'Yes':'No'}</Typography>
-                                                    <Typography variant='s7'>Expired: {meta?.expired?'Yes':'No'}</Typography>
-                                                </Stack>
+                                                {resolved &&
+                                                    <Stack spacing={0.5}>
+                                                        <Typography variant='s7'>XUMM</Typography>
+                                                        <Typography variant='s7'>Resolved_at: {resolved_at}</Typography>
+                                                        <Typography variant='s7'>Dispatched_result: {dispatched_result}</Typography>
+                                                        <Typography variant='s7'>Expired: {meta?.expired?'Yes':'No'}</Typography>
+                                                        <Typography variant='s7'>Cancelled: {meta?.cancelled?'Yes':'No'}</Typography>
+                                                        <Typography variant='s7'>App Opened: {meta?.app_opened?'Yes':'No'}</Typography>
+                                                        <Typography variant='s7'>Open Deeplink: {meta?.opened_by_deeplink?'Yes':'No'}</Typography>
+                                                        <Typography variant='s7'>Signer: {xumm_signer}</Typography>
+                                                        <Typography variant='s7'>Account: {xumm_account}</Typography>
+                                                        <Stack direction="row" spacing={0.5} alignItems="center">
+                                                            <Typography variant='s7'>Tx: {xumm_txid}</Typography>
+                                                            {xumm_txid &&
+                                                                <Link
+                                                                    underline="none"
+                                                                    color="inherit"
+                                                                    target="_blank"
+                                                                    href={`https://bithomp.com/explorer/${xumm_txid}`}
+                                                                    rel="noreferrer noopener nofollow"
+                                                                >
+                                                                    <Tooltip title="Check on Bithomp">
+                                                                        <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                            <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                                        </IconButton>
+                                                                    </Tooltip>
+                                                                </Link>
+                                                            }
+                                                        </Stack>
+                                                        {/* <Typography variant='s7'>meta: {JSON.stringify(meta)}</Typography> */}
+                                                    </Stack>
+                                                }
+
+                                                <Typography variant="s7">T1: {time1} - Mint.BUY</Typography>
+                                                <Typography variant="s7">T2: {time2} - Mint.REMOVE</Typography>
+                                                <Typography variant="s7">T3: {time3} - Mint.CANCEL</Typography>
+                                                <Typography variant="s7">T4: {time4} - Mint.PAID(tx)</Typography>
+                                                <Typography variant="s7">T5: {time5} - Mint.PAID(api)</Typography>
                                             </Stack>
                                         </Stack>
                                     </TableCell>
@@ -352,11 +473,7 @@ export default function Mints() {
                                                     <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 2)}>
                                                         Remove
                                                     </Button>
-                                                    <Button variant="outlined" color="primary" size="small"
-                                                        onClick={()=>{
-                                                            /*handleResolve(row, 3)*/
-                                                        }}
-                                                    >
+                                                    <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 3)}>
                                                         Set as Paid
                                                     </Button>
                                                 </Stack>

@@ -75,7 +75,7 @@ function statusToString(status) {
     return ret;
 }
 
-export default function CheckPass({account}) {
+export default function Passphrase({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 

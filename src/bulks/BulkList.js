@@ -36,6 +36,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ApprovalOutlinedIcon from '@mui/icons-material/ApprovalOutlined';
 import CasinoIcon from '@mui/icons-material/Casino';
+import AnimationIcon from '@mui/icons-material/Animation';
 
 // Context
 import { useContext } from 'react';
@@ -304,6 +305,11 @@ export default function BulkList() {
                                                 {type === "random" &&
                                                     <Tooltip title='Random Collection'>
                                                         <CasinoIcon color='info'/>
+                                                    </Tooltip>
+                                                }
+                                                {type === "sequence" &&
+                                                    <Tooltip title='Sequence Collection'>
+                                                        <AnimationIcon color='info'/>
                                                     </Tooltip>
                                                 }
                                             </Stack>

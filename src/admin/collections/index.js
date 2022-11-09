@@ -13,6 +13,8 @@ import {
     IconButton,
     InputAdornment,
     Link,
+    MenuItem,
+    Select,
     Stack,
     Table,
     TableBody,
@@ -117,6 +119,12 @@ function StatusContainer({bulk, flag}) {
     )
 }
 
+const CustomSelect = styled(Select)(({ theme }) => ({
+    '& .MuiOutlinedInput-notchedOutline' : {
+        border: 'none'
+    }
+}));
+
 export default function Collections({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -140,6 +148,8 @@ export default function Collections({account}) {
     const [sync, setSync] = useState(0);
 
     const [removeCid, setRemoveCid] = useState('');
+
+    const [costIdx, setCostIdx] = useState(0);
 
     useEffect(() => {
         function getCollections() {
@@ -244,6 +254,12 @@ export default function Collections({account}) {
         setFilter(e.target.value);
     }
 
+    const handleChangeCost = (e) => {
+        const value = e.target.value;
+
+        setCostIdx(newCost);
+    };
+
     return (
         <>
             <ToggleButtonGroup
@@ -345,6 +361,7 @@ export default function Collections({account}) {
                                 minterName,
                                 type,
                                 items,
+                                costs
                             } = row;
                             const nDate = new Date(created);
                             const year = nDate.getFullYear();
@@ -407,38 +424,90 @@ export default function Collections({account}) {
                                                         <AnimationIcon color='info'/>
                                                     </Tooltip>
                                                 }
+
+                                                {costs && costs.length > 0 &&
+                                                    <Stack direction="row" spacing={2} alignItems="center">
+                                                        <Typography variant="p4">Cost</Typography>
+                                                        <CustomSelect
+                                                            id='select_cost'
+                                                            value={costIdx}
+                                                            onChange={handleChangeCost}
+                                                        >
+                                                            {costs.map((cost, idx) => (
+                                                                <MenuItem
+                                                                    key={cost.md5}
+                                                                    value={idx}
+                                                                >
+                                                                    <Stack direction='row' alignItems="center">
+                                                                        <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} sx={{ width: 28, height:28, mr: 1 }} />
+                                                                        <Typography variant='d4' color="#EB5757">{cost.amount} {cost.name}</Typography>
+                                                                    </Stack>
+                                                                </MenuItem>
+                                                            ))}
+                                                        </CustomSelect>
+                                                    </Stack>
+                                                }
                                             </Stack>
 
                                             <Stack direction="row" spacing={0} alignItems="center">
-                                                    {/* <Typography variant="d3" color="#FFA319">Please check the following CID before Bulk-Mint your items</Typography> */}
-                                                    <Link
-                                                        color="inherit"
-                                                        target="_blank"
-                                                        href={`https://bithomp.com/explorer/${account}`}
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        <Typography variant="d3" color="#33C2FF">{account}</Typography>
-                                                    </Link>
-                                                    <Link
-                                                        color="inherit"
-                                                        target="_blank"
-                                                        href={`https://bithomp.com/explorer/${account}`}
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        <Tooltip title='Check on Bithomp'>
-                                                            <IconButton>
-                                                                <OpenInNewIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </Link>
-                                                    <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                        <Tooltip title='Click to copy'>
-                                                            <IconButton>
-                                                                <ContentCopyIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </CopyToClipboard>
-                                                </Stack>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://bithomp.com/explorer/${account}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="d3" color="#33C2FF"><Typography variant="s7">Creator:</Typography> {account}</Typography>
+                                                </Link>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://bithomp.com/explorer/${account}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Tooltip title='Check on Bithomp'>
+                                                        <IconButton>
+                                                            <OpenInNewIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Link>
+                                                <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                    <Tooltip title='Click to copy'>
+                                                        <IconButton>
+                                                            <ContentCopyIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </CopyToClipboard>
+                                            </Stack>
+
+                                            <Stack direction="row" spacing={0} alignItems="center">
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://bithomp.com/explorer/${minter}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="d3" color="#33C2FF"><Typography variant="s7">Minter:</Typography> {minter}</Typography>
+                                                </Link>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://bithomp.com/explorer/${minter}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Tooltip title='Check on Bithomp'>
+                                                        <IconButton>
+                                                            <OpenInNewIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </Link>
+                                                <CopyToClipboard text={minter} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                    <Tooltip title='Click to copy'>
+                                                        <IconButton>
+                                                            <ContentCopyIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </CopyToClipboard>
+                                            </Stack>
                                             
                                             {infoIPFS && infoIPFS.cid &&
                                                 <Stack direction="row" spacing={1} alignItems="center">

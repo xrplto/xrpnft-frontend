@@ -43,6 +43,7 @@ import Errors from './errors';
 import TrustSet from './TrustSet';
 import Mints from './Mints';
 import AutoPay from './AutoPay';
+import Invoices from './Invoices';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -147,8 +148,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['summary', 'passphrase', 'collections', 'nfts', 'activity', 'errors', 'autotrustlines', 'mints', 'autopay'];
-const tabLabels = ['Summary', 'Passphrase', 'Collections', 'NFTs', 'Activity', 'Errors', 'Auto TrustLine', 'Mints', 'Auto Pay'];
+const tabValues = ['summary', 'passphrase', 'collections', 'nfts', 'activity', 'errors', 'autotrustlines', 'mints', 'invoices', 'autopay'];
+const tabLabels = ['Summary', 'Passphrase', 'Collections', 'NFTs', 'Activity', 'Errors', 'Auto TrustLine', 'Mints', 'Invoice', 'Auto Pay'];
 
 function getTabID(tab) {
     if (!tab) return 0;
@@ -261,6 +262,7 @@ export default function Admin() {
                             <Tab value={6} label={tabLabels[6]} {...a11yProps(6)} />
                             <Tab value={7} label={tabLabels[7]} {...a11yProps(7)} />
                             <Tab value={8} label={tabLabels[8]} {...a11yProps(8)} />
+                            <Tab value={9} label={tabLabels[9]} {...a11yProps(9)} />
                         </Tabs>
                     </Stack>
                 </Stack>
@@ -295,7 +297,7 @@ export default function Admin() {
 
                         <TabPanel value={tabID} id={4}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <Activity counterAccount={counterAccount} />
+                                <Activity account={counterAccount} />
                             </Stack>
                         </TabPanel>
                         
@@ -313,13 +315,19 @@ export default function Admin() {
 
                         <TabPanel value={tabID} id={7}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <Mints />
+                                <Mints account={counterAccount}/>
                             </Stack>
                         </TabPanel>
 
                         <TabPanel value={tabID} id={8}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <AutoPay />
+                                <Invoices />
+                            </Stack>
+                        </TabPanel>
+
+                        <TabPanel value={tabID} id={9}>
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <AutoPay account={counterAccount}/>
                             </Stack>
                         </TabPanel>
                     </Grid>

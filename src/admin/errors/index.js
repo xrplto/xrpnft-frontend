@@ -13,14 +13,13 @@ import {
 import { ClipLoader } from "react-spinners";
 
 // Components
-import FindNFT from './FindNFT';
 import ErrorList from './ErrorList';
 // ----------------------------------------------------------------------
 
-export default function CheckNFT() {
+export default function NFTs() {
     const [filter, setFilter] = useState('');
     const [loading, setLoading] = useState(true);
-    const [choice, setChoice] = useState('');
+    const [choice, setChoice] = useState('error');
 
     const handleChangeFilter = (e) => {
         setFilter(e.target.value);
@@ -40,11 +39,11 @@ export default function CheckNFT() {
                 
                 onChange={handleChangeChoice}
             >
-                <ToggleButton value="" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>None</ToggleButton>
                 <ToggleButton value="error" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Error</ToggleButton>
                 <ToggleButton value="nonftids" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>No NFTokenID</ToggleButton>
                 <ToggleButton value="nosellofferids" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>No SellOfferID</ToggleButton>
                 <ToggleButton value="stillhavingmint" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Still having Mint</ToggleButton>
+                <ToggleButton value="nodest" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>No Dest</ToggleButton>
             </ToggleButtonGroup>
             <Stack direction="row">
                 <TextField
@@ -73,19 +72,11 @@ export default function CheckNFT() {
                 />
             </Stack>
 
-            {choice !== 'error' ?
-                <FindNFT
-                    choice={choice}
-                    fitler={filter}
-                    setLoading={setLoading}
-                />
-                :
-                <ErrorList
-                    choice={choice}
-                    fitler={filter}
-                    setLoading={setLoading}
-                />
-            }
+            <ErrorList
+                choice={choice}
+                fitler={filter}
+                setLoading={setLoading}
+            />
         </>
     );
 }

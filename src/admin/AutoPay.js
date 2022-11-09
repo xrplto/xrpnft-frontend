@@ -43,9 +43,7 @@ import { NFToken, Mint } from 'src/utils/constants';
 
 // Components
 import ListToolbar from './ListToolbar';
-import FlagsContainer from 'src/components/Flags';
 import ConfirmResolveDialog from './ConfirmResolveDialog';
-import { timelineDotClasses } from '@mui/lab';
 
 // ----------------------------------------------------------------------
 
@@ -61,7 +59,13 @@ function statusToString(status) {
     // }
 }
 
-export default function AutoPay() {
+function truncate(str, n) {
+    if (!str) return '';
+    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
+    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
+};
+
+export default function AutoPay({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -82,6 +86,8 @@ export default function AutoPay() {
 
     const [resolveAutoPay, setResolveAutoPay] = useState(null);
 
+    const [choice, setChoice] = useState('all');
+
     useEffect(() => {
         function getAutoPays() {
             if (!accountAdmin || !accountToken) {
@@ -90,7 +96,9 @@ export default function AutoPay() {
             }
             setLoading(true);
 
-            axios.get(`${BASE_URL}/admin/autopays?page=${page}&limit=${rows}`, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
+            const body = { account, choice };
+
+            axios.post(`${BASE_URL}/admin/autopays?page=${page}&limit=${rows}`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -105,7 +113,7 @@ export default function AutoPay() {
                 });
         }
         getAutoPays();
-    }, [page, rows, accountAdmin, accountToken, sync]);
+    }, [page, rows, account, accountAdmin, accountToken, choice, sync]);
 
     const onResolveAutoPay = async (autoPay) => {
         if (!accountAdmin || !accountToken) {
@@ -116,11 +124,11 @@ export default function AutoPay() {
         setLoading(true);
         try {
             const {
-                xuuid,
+                uuid,
                 action
             } = autoPay;
 
-            const body = { xuuid, action };
+            const body = { uuid, action };
 
             const res = await axios.post(`${BASE_URL}/admin/resolve_autopay`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
 
@@ -148,8 +156,23 @@ export default function AutoPay() {
         onResolveAutoPay(resolveAutoPay);
     }
 
+    const handleChangeChoice = (event, newValue) => {
+        setChoice(newValue);
+    };
+
     return (
         <>
+            <ToggleButtonGroup
+                color="primary"
+                value={choice}
+                exclusive
+                onChange={handleChangeChoice}
+            >
+                <ToggleButton value="all" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>All</ToggleButton>
+                <ToggleButton value="notfunded" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Not Funded</ToggleButton>
+                <ToggleButton value="error" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Error</ToggleButton>
+            </ToggleButtonGroup>
+
             {loading ? (
                 <Stack alignItems="center">
                     <PulseLoader color='#00AB55' size={10} />
@@ -212,16 +235,12 @@ export default function AutoPay() {
                                 hash,
                                 status,
                                 royalty,
-
-                                meta,
-                                resolved,
-                                resolved_at,
-                                dispatched_result
+                                error
                             } = row;
                         
                             let strDateTime = '';
 
-                            if (timelineDotClasses) {
+                            if (time) {
                                 const nDate = new Date(time);
                                 const year = nDate.getFullYear();
                                 const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
@@ -274,7 +293,10 @@ export default function AutoPay() {
                                             {/* <Avatar alt="C" src='/static/account_logo.png' /> */}
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row" spacing={0.2} alignItems="center">
-                                                    <Typography variant="s6">{account}</Typography>
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <Typography variant="s7">Src: </Typography>
+                                                        <Typography variant="s8">{account}</Typography>
+                                                    </Stack>
                                                     <Link
                                                         underline="none"
                                                         color="inherit"
@@ -303,13 +325,70 @@ export default function AutoPay() {
                                                         </Tooltip>
                                                     </CopyToClipboard>
                                                 </Stack>
+                                                <Stack direction="row" spacing={0.2} alignItems="center">
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <Typography variant="s7">Dest: </Typography>
+                                                        <Typography variant="s8">{dest}</Typography>
+                                                    </Stack>
+                                                    <Link
+                                                        underline="none"
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://bithomp.com/explorer/${dest}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title="Check on Bithomp">
+                                                            <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
+                                                    <CopyToClipboard text={dest} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                        <Tooltip title='Click to copy'>
+                                                            <IconButton size="small">
+                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Stack>
                                                 <Typography variant='s7'>UUID: {uuid}</Typography>
-                                                <Typography variant='s7'>Hash: {hash}</Typography>
+                                                <Stack direction="row" spacing={0.2} alignItems="center">
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <Typography variant="s7">Hash: </Typography>
+                                                        <Typography variant="s8">{truncate(hash, 35)}</Typography>
+                                                    </Stack>
+                                                    <Link
+                                                        underline="none"
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://bithomp.com/explorer/${hash}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title="Check on Bithomp">
+                                                            <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
+                                                    <CopyToClipboard text={hash} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                        <Tooltip title='Click to copy'>
+                                                            <IconButton size="small">
+                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Stack>
                                                 <Typography variant="s7">{strDateTime}</Typography>
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     <Typography variant="s7">Status: </Typography>
                                                     <Typography variant="s6">{status} - {statusToString(status)}</Typography>
                                                 </Stack>
+                                                {error &&
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <Typography variant="s7">Error: </Typography>
+                                                        <Typography variant="s6">{JSON.stringify(error)}</Typography>
+                                                    </Stack>
+                                                }
                                             </Stack>
                                         </Stack>
                                     </TableCell>
@@ -323,7 +402,7 @@ export default function AutoPay() {
                                                     <Typography variant='s2'>{cost.name}</Typography>
                                                 </Stack>
                                                 <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant='p4' color="#33C2FF">{royalty} %</Typography>
+                                                    <Typography variant='p4' color="#33C2FF">{100 - royalty} %</Typography>
                                                     <RequestQuoteIcon />
                                                 </Stack>
                                             </Stack>
@@ -352,16 +431,18 @@ export default function AutoPay() {
                                                 </CopyToClipboard>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Stack direction="row" spacing={1}>
-                                                    <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 2)}>
-                                                        Fund
-                                                    </Button>
-                                                    <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 3)}>
-                                                        Set as Funded
-                                                    </Button>
+                                            {status !== Mint.FUNDED &&
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 2)}>
+                                                            Fund
+                                                        </Button>
+                                                        <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 3)}>
+                                                            Set as Funded
+                                                        </Button>
+                                                    </Stack>
                                                 </Stack>
-                                            </Stack>
+                                            }
                                         </Stack>
                                     </TableCell>
                                 </TableRow>

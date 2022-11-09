@@ -46,7 +46,7 @@ import ConfirmResolveDialog from './ConfirmResolveDialog';
 
 // ----------------------------------------------------------------------
 
-export default function BuyMintQueue() {
+export default function MintsOld() {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -58,7 +58,7 @@ export default function BuyMintQueue() {
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
 
-    const [buyMints, setBuyMints] = useState([]);
+    const [mints, setMints] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const [sync, setSync] = useState(0);
@@ -68,28 +68,28 @@ export default function BuyMintQueue() {
     const [resolveQueue, setResolveQueue] = useState(null);
 
     useEffect(() => {
-        function getBuyMints() {
+        function getMints() {
             if (!accountAdmin || !accountToken) {
                 openSnackbar('Please login', 'error');
                 return;
             }
             setLoading(true);
 
-            axios.get(`${BASE_URL}/admin/buymints?page=${page}&limit=${rows}`, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
+            axios.get(`${BASE_URL}/admin/mints?page=${page}&limit=${rows}`, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
                         setTotal(ret.total);
-                        setBuyMints(ret.buyMints);
+                        setMints(ret.mints);
                     }
                 }).catch(err => {
-                    console.log("Error on getting buymints list!!!", err);
+                    console.log("Error on getting mints list!!!", err);
                 }).then(function () {
                     // always executed
                     setLoading(false);
                 });
         }
-        getBuyMints();
+        getMints();
     }, [page, rows, accountAdmin, accountToken, sync]);
 
     const onResolveBuyMint = async (buyMint) => {
@@ -144,7 +144,7 @@ export default function BuyMintQueue() {
                     <PulseLoader color='#00AB55' size={10} />
                 </Stack>
             ):(
-                buyMints && buyMints.length === 0 &&
+                mints && mints.length === 0 &&
                     <Stack alignItems="center" sx={{mt: 5}}>
                         <Typography variant="s7">No Items</Typography>
                     </Stack>
@@ -184,25 +184,13 @@ export default function BuyMintQueue() {
                 }}>
                     <TableBody>
                     {
-                        buyMints && buyMints.map((row) => {
+                        mints && mints.map((row, idx) => {
                             // {date, xuuid, InvoiceID, account, destination: collection.minter, cid, cname: collection.name, cslug: collection.slug, amount: Amount, quantity, cost}
                             const {
-                                date,
-                                xuuid,
-                                InvoiceID,
                                 account,
-                                destination,
                                 cid,
-                                cname,
-                                cslug,
-                                amount,
                                 quantity,
-                                cost,
-
-                                meta,
-                                resolved,
-                                resolved_at,
-                                dispatched_result
+                                date
                             } = row;
                         
                             let strDateTime = '';
@@ -222,33 +210,10 @@ export default function BuyMintQueue() {
                                 // const strTime = `${hour}:${min}:${sec}`;
                             }
 
-                            /*
-                            { meta
-                                exists: true,
-                                uuid: 'a5c3e591-40c6-4774-b753-a26654ac07d4',
-                                multisign: false,
-                                submit: true,
-                                pathfinding: null,
-                                destination: 'r3AGSrv9SHzzhe5BxqG8sFiRSxNs26tEVs',
-                                resolved_destination: 'r3AGSrv9SHzzhe5BxqG8sFiRSxNs26tEVs',
-                                resolved: true,
-                                signed: false,
-                                cancelled: true,
-                                expired: true,
-                                pushed: true,
-                                app_opened: true,
-                                opened_by_deeplink: true,
-                                return_url_app: null,
-                                return_url_web: null,
-                                is_xapp: false,
-                                signers: null
-                            }
-                            */
-
                             return (
                                 <TableRow
                                     // hover
-                                    key={xuuid}
+                                    key={account + "" + cid + idx + quantity}
                                     sx={{
                                         [`& .${tableCellClasses.root}`]: {
                                             // color: (error ? '#B72136' : '#B72136')
@@ -283,59 +248,23 @@ export default function BuyMintQueue() {
                                                     </CopyToClipboard>
                                                 </Stack>
                                                 <Typography variant="s7">{strDateTime}</Typography>
-                                                <Stack direction="row" spacing={0.2} alignItems="center">
-                                                    <Typography variant='s7'>{InvoiceID}</Typography>
-                                                    <CopyToClipboard text={InvoiceID} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                        <Tooltip title='Click to copy'>
-                                                            <IconButton size="small">
-                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </CopyToClipboard>
-                                                </Stack>
 
-                                                <Typography variant='s7'>XUUID: {xuuid}</Typography>
+                                                <Typography variant='s7'>CID: {cid}</Typography>
 
-                                                <Stack direction="row">
-                                                    <Stack spacing={0.2} alignItems="center">
-                                                        <Typography variant='s7'>Resolved: {resolved?'Yes':'No'}</Typography>
-                                                        <Typography variant='s7'>Expired: {meta?.expired?'Yes':'No'}</Typography>
-                                                    </Stack>
-                                                </Stack>
                                             </Stack>
                                         </Stack>
                                     </TableCell>
 
-                                    <TableCell align="left">
+                                    {/* <TableCell align="left">
                                         <Stack direction='row' spacing={0.8} alignItems="center">
                                             <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} />
                                             <Typography variant='p4' color="#EB5757">{cost.amount}</Typography>
                                             <Typography variant='s2'>{cost.name}</Typography>
                                         </Stack>
-                                    </TableCell>
+                                    </TableCell> */}
 
                                     <TableCell align="left">
                                         <Typography variant='p4' color="#33C2FF">{quantity}</Typography>
-                                    </TableCell>
-
-                                    <TableCell align="left">
-                                        <Stack direction="row" spacing={1} alignItems="center">
-                                            <Stack spacing={1}>
-                                                <Button variant="contained" color="primary" size="small" onClick={()=>handleResolve(row, 4)}>
-                                                    Resolve
-                                                </Button>
-                                                <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 2)}>
-                                                    Remove
-                                                </Button>
-                                                <Button variant="outlined" color="primary" size="small"
-                                                    onClick={()=>{
-                                                        /*handleResolve(row, 3)*/
-                                                    }}
-                                                >
-                                                    Give user Mints
-                                                </Button>
-                                            </Stack>
-                                        </Stack>
                                     </TableCell>
                                 </TableRow>
                             );

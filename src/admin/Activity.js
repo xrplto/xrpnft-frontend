@@ -72,7 +72,7 @@ function truncate(str, n) {
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-export default function ActivityList({counterAccount}) {
+export default function ActivityList({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -98,7 +98,7 @@ export default function ActivityList({counterAccount}) {
             
             setLoading(true);
 
-            const body = { account: counterAccount, choice };
+            const body = { account, choice };
 
             axios.post(`${BASE_URL}/admin/activity?page=${page}&limit=${rows}`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
@@ -115,7 +115,7 @@ export default function ActivityList({counterAccount}) {
                 });
         }
         getActivities();
-    }, [page, rows, counterAccount, accountAdmin, accountToken, choice]);
+    }, [page, rows, account, accountAdmin, accountToken, choice]);
 
     const handleChangeChoice = (event, newValue) => {
         setChoice(newValue);
