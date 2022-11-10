@@ -166,7 +166,7 @@ export const COLLECTION_FAMILIES = [
 
 export const NFToken = { // 6:30 AM 10/27/2022
     PREMINT: 8, // Submitted the NFTokenMint transaction but not found NFTokenID yet
-    SELL_WITH_MINT: 16, // NFTs sell with MINT have this status flag, only in Bulk & Random collections.
+    SELL_WITH_MINT: 16, // NFTs sell with MINT have this status flag, only in Bulk & Random & Sequence collections.
   
     PREOFFER: 24, // Submitted the NFTokenCreateOffer transaction but not found SellOfferID yet
   
@@ -182,6 +182,65 @@ export const NFToken = { // 6:30 AM 10/27/2022
     PREOFFER_E1: 141, // Failed to submit the NFTokenCreateOffer transaction
     PREOFFER_E2: 142, // Exception occured to submit the NFTokenCreateOffer transaction
     PREOFFER_E3: 143, // Tried to find out SellOfferID but failed
+}
+
+export const Activity = { // 05:00 AM 11/08/2022
+    LOGIN: 1,
+    LOGOUT: 2,
+    UPDATE_PROFILE: 3,
+  
+    CREATE_COLLECTION: 4,
+    UPDATE_COLLECTION: 7,
+  
+    MINT_BULK: 10, // Lazy mint mode, 10k NFTs
+  
+    BUY_MINT: 12, // Maybe XRPL tx based eventually.
+    BUY_RANDOM_NFT: 13,
+    BUY_BULK_NFT: 14,
+    BUY_SEQUENCE_NFT: 15,
+  
+    // Tx parse section
+    CREATE_SELL_OFFER: 21, // Owner, NFTokenCreateOffer, status: "created", flags: 1
+    CREATE_BUY_OFFER:  22, // Buyer, NFTokenCreateOffer, status: "created", flags: 0
+  
+    CANCEL_SELL_OFFER: 23, // Owner, NFTokenCancelOffer, status: "deleted", flags: 1
+    CANCEL_BUY_OFFER:  24, // Buyer, NFTokenCancelOffer, status: "deleted", flags: 0
+  
+    ACCEPT_BUY_OFFER:  25, // Owner, NFTokenAcceptOffer, status: "deleted", flags: 0
+    ACCEPT_SELL_OFFER: 26, // Buyer, NFTokenAcceptOffer, status: "deleted", flags: 1
+  
+    OWNER_ACCPETED_YOUR_BUY_OFFER: 27,
+    BUYER_ACCEPTED_YOUR_SELL_OFFER: 28, 
+    YOU_RECEIVED_A_NFT: 29, // Buyer accepted a NFT by Buy Offer or Sell Offer
+  
+    // 
+    MINT_NFT: 31,
+    BURN_NFT: 32, // Owner, 
+  
+    //
+    SET_NFT_MINTER: 41, // AccountSet
+  
+    FUND_CREATOR: 51, // Minter account funded to Collection creator.
+  
+    GAVE_MINTS_TO_USER: 88,
+  
+    REMOVE_A_COLLECTION: 129,
+    SET_COLLECTION_TRUSTLINES: 130,
+}
+
+export const Mint = { // 4:50 AM 11/9/2022
+    BUY: 1,
+    PAID: 2,
+    CANCEL: 3,
+    REMOVE: 4,
+  
+    // Fund to creator
+    PENDING: 9,
+    FUND: 10,
+    FUNDED: 11,
+    ERROR_BASE: 80,
+    FUND_E1: 81,
+    FUND_E2: 82
 }
 
 const BG_FILES = [
@@ -213,4 +272,27 @@ export function getRandomBG(){
     rand = Math.floor(rand);
 
     return BG_FILES[rand];
+}
+
+export function getMinterName(minter) {
+    switch (minter) {
+        case 'rzVH4G8GjTbvXhxJHvnri3MJ1aqf9WFGE':
+            return 'XRPNFT 1';
+            break;
+        case 'rw94PYuzGQknjTsi8GWn8Cgk16TZuVn6Wn':
+            return 'XRPNFT 2';
+            break;
+        case 'rESvnQrpWVho8kEiHEVKXMBoiUzdkYVtDL':
+            return 'XRPNFT 3';
+            break;
+        case 'r3AGSrv9SHzzhe5BxqG8sFiRSxNs26tEVs':
+            return 'XRPNFT 4';
+            break;
+        case 'rwDcDemfFpnw4kD7mVz35jVXxBfY4EePbn':
+            return 'XRPNFT 5';
+            break;
+        default:
+            return '';
+            break;
+    }
 }

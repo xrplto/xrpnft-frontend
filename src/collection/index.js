@@ -13,7 +13,7 @@ export default function Collection({data}) {
     
     return (
         <>
-            {view === 'random' && pendingNfts > 0 ? (
+            {(view === 'random' || view === 'sequence') && pendingNfts > 0 ? (
                 <SpinNFT
                     collection={data.collection}
                     setView={setView}

@@ -11,6 +11,7 @@ import {
     styled,
     Box,
     Button,
+    CardMedia,
     Container,
     Divider,
     Grid,
@@ -167,7 +168,7 @@ export default function SpinNFT({ collection, setView }) {
     const [play, { stop }] = useSound('/static/sounds/mixkit-fireworks-bang-in-sky-2989.wav');
     const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
 
-    const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
+    const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -293,7 +294,7 @@ export default function SpinNFT({ collection, setView }) {
                 });
         }
         getMints();
-    }, [account, accountToken]);
+    }, [account, accountToken, sync]);
 
     useEffect(() => {
         if (congrats) {
@@ -303,7 +304,7 @@ export default function SpinNFT({ collection, setView }) {
         }
     }, [congrats]);
 
-    const getRandomNFT = () => {
+    const getOneNFT = () => {
         if (spinning) return;
 
         if (!account || !accountToken) {
@@ -331,22 +332,14 @@ export default function SpinNFT({ collection, setView }) {
                 let ret = res.status === 200 ? res.data : undefined;
                 if (ret) {
                     const newNft = ret.nft;
-                    const newPendingNfts = ret.pendingNfts;
                     if (newNft) {
                         setNft(newNft);
+                        setSync(sync + 1);
                         setCongrats(true);
                         play();
                     } else {
-                        if (newPendingNfts > 0)
-                            openSnackbar(ret.result, 'error');
-                        else
-                            openSnackbar('There are not any NFTs left.', 'error');
-                        
+                        openSnackbar(ret.error, 'error');
                     }
-                    setMints(ret.mints);
-                    setXrpBalance(ret.xrpBalance);
-                    setPendingNfts(ret.pendingNfts);
-                    setAcceptNfts(ret.offerCount);
                 }
             }).catch(err => {
                 console.log("Error on choosing NFT!!!", err);
@@ -429,7 +422,6 @@ export default function SpinNFT({ collection, setView }) {
                                     )`,
                             }}
                         >
-
                             <SlotBox key={11} id={12}>
                                 <ColorExtractor getColors={getColors}>
                                     <img src={spinImgUrl}
@@ -443,16 +435,33 @@ export default function SpinNFT({ collection, setView }) {
                                         }}
                                     />
                                 </ColorExtractor>
-                                <img src={nftImgUrl}
-                                    style={{
-                                        width: fullScreen?'480px':'280px',
-                                        height: fullScreen?'400px':'200px',
-                                        // marginTop: 5,
-                                        // borderRadius: 20,
-                                        objectFit: 'cover',
-                                        display: spinning?'none':'block'
-                                    }}
-                                />
+                                {isVideo?
+                                    <CardMedia
+                                        component="video"
+                                        image={nftImgUrl}
+                                        title='title'
+                                        controls
+                                        style={{
+                                            width: fullScreen?'480px':'280px',
+                                            height: fullScreen?'400px':'200px',
+                                            // marginTop: 5,
+                                            // borderRadius: 20,
+                                            objectFit: 'cover',
+                                            display: spinning?'none':'block'
+                                        }}
+                                    />
+                                    :
+                                    <img src={nftImgUrl}
+                                        style={{
+                                            width: fullScreen?'480px':'280px',
+                                            height: fullScreen?'400px':'200px',
+                                            // marginTop: 5,
+                                            // borderRadius: 20,
+                                            objectFit: 'cover',
+                                            display: spinning?'none':'block'
+                                        }}
+                                    />
+                                }
                             </SlotBox>
                             
                             
@@ -463,7 +472,7 @@ export default function SpinNFT({ collection, setView }) {
                             <Button
                                 variant='contained'
                                 disabled={spinning}
-                                onClick={() => getRandomNFT()}
+                                onClick={() => getOneNFT()}
                                 sx={{pl:3, pr:3}}
                             >
                                 Mint
@@ -473,7 +482,7 @@ export default function SpinNFT({ collection, setView }) {
 
                     <Grid container item xs={12} md={6} justifyContent="flex-start" alignItems="flex-start">
                         <Stack spacing={1} sx={{mb:6}}>
-                            <Typography variant="p5">To mint a random NFT from this collection, you need to purchase Mints.</Typography>
+                            <Typography variant="p5">To mint a {type} NFT from this collection, you need to purchase Mints.</Typography>
                             <Typography variant="p5">It can be used against the purchase of only <Typography variant="s5" color="#57CA22">{collection.name}</Typography> Collection.</Typography>
                             <Typography variant="p5">You currently have <Typography variant="s5" color="#33C2FF">{mints} Mints</Typography> available and <Typography variant="s5" color="#33C2FF">{xrpBalance} XRP</Typography> tokens in your wallet.</Typography>
                             <Typography variant="p5" sx={{pb: 3}}>There are currently <Typography variant="s5" color="error">{pendingNfts}</Typography> / <Typography variant="s4" color="#33C2FF">{collection.items}</Typography> NFTs left in this collection.</Typography>

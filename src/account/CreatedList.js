@@ -17,14 +17,17 @@ import {
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
 
+// Utils
+import { formatDateTime } from 'src/utils/formatTime';
+
 // Loader
 import { PulseLoader } from "react-spinners";
 
 // Components
 import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
-// ----------------------------------------------------------------------
 
+// ----------------------------------------------------------------------
 export default function CreatedList({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -131,20 +134,7 @@ export default function CreatedList({account}) {
                             const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
                             const isVideo = meta.video;
 
-                            let strDateTime = '';
-
-                            const nDate = new Date(date);
-                            const year = nDate.getFullYear();
-                            const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                            const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                            const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                            const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                            const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-
-                            //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-                            //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-                            strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-                            // const strTime = `${hour}:${min}:${sec}`;
+                            const strDateTime = formatDateTime(date);
 
                             return (
                                 <TableRow

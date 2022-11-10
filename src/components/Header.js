@@ -62,7 +62,7 @@ export default function Header(props) {
     */
     const theme = useTheme();
     const { toggleTheme, darkMode } = useContext(AppContext);
-    const isMobile = useMediaQuery(theme.breakpoints.down('mobile'));
+    // const isMobile = useMediaQuery(theme.breakpoints.down('mobile'));
     const hideSearchBar = useMediaQuery(theme.breakpoints.down('sm'));
 
     const [fullSearch, setFullSearch] = useState(false);
@@ -99,16 +99,6 @@ export default function Header(props) {
                                 <Box>
                                     <Logo />
                                 </Box>
-
-                                {/* {!hideSearchBar &&
-                                    <SearchBar
-                                        id='id_search_items_collections_accounts'
-                                        placeholder='Search items, collections, and accounts'
-                                        type='SEARCH_ITEM_COLLECTION_ACCOUNT'
-                                        fullSearch={fullSearch}
-                                        setFullSearch={setFullSearch}
-                                    />
-                                } */}
 
                                 {!hideSearchBar &&
                                     <NavSearchBar
