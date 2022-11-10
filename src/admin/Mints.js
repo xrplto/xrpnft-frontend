@@ -38,7 +38,8 @@ import { AppContext } from 'src/AppContext';
 import { PulseLoader, ClipLoader } from "react-spinners";
 
 // Utils
-import { NFToken, Mint } from 'src/utils/constants';
+import { formatDateTime } from 'src/utils/formatTime';
+import { NFToken, Mint, getMinterName } from 'src/utils/constants';
 
 // Components
 import ListToolbar from './ListToolbar';
@@ -55,23 +56,6 @@ function statusToString(status) {
     // switch (status) {
     //     case NFToken
     // }
-}
-
-function formatTime(time) {
-    if (!time) return '';
-    const nDate = new Date(time);
-    const year = nDate.getFullYear();
-    const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-    const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-    const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-    const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-    const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-
-    //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-    //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-    const strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-    // const strTime = `${hour}:${min}:${sec}`;
-    return strDateTime;
 }
 
 // ----------------------------------------------------------------------
@@ -297,13 +281,13 @@ export default function Mints({account}) {
                                 t5
                             } = row;
                         
-                            const strDateTime = formatTime(time);
+                            const strDateTime = formatDateTime(time);
 
-                            const time1 = formatTime(t1);
-                            const time2 = formatTime(t2);
-                            const time3 = formatTime(t3);
-                            const time4 = formatTime(t4);
-                            const time5 = formatTime(t5);
+                            const time1 = formatDateTime(t1);
+                            const time2 = formatDateTime(t2);
+                            const time3 = formatDateTime(t3);
+                            const time4 = formatDateTime(t4);
+                            const time5 = formatDateTime(t5);
 
                             // InvoiceID: 18E0E841D26B9B4A5EA2B217C71781A59C4D82AE4C999CBBC0E242B89E498670
 
@@ -376,7 +360,7 @@ export default function Mints({account}) {
                                                 </Stack>
 
                                                 <Stack direction="row" spacing={0.2} alignItems="center">
-                                                    <Typography variant="s6">{minter}</Typography>
+                                                    <Typography variant="s7">{minter} <Typography variant="s2">({getMinterName(minter)})</Typography></Typography>
                                                     <Link
                                                         underline="none"
                                                         color="inherit"

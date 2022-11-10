@@ -35,6 +35,9 @@ import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
+// Utils
+import { formatDateTime } from 'src/utils/formatTime';
+
 // Loader
 import { PulseLoader } from "react-spinners";
 
@@ -238,22 +241,7 @@ export default function AutoPay({account}) {
                                 error
                             } = row;
                         
-                            let strDateTime = '';
-
-                            if (time) {
-                                const nDate = new Date(time);
-                                const year = nDate.getFullYear();
-                                const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                                const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                                const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-
-                                //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-                                //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-                                strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-                                // const strTime = `${hour}:${min}:${sec}`;
-                            }
+                            const strDateTime = formatDateTime(time);
 
                             /*
                             { meta
@@ -355,7 +343,7 @@ export default function AutoPay({account}) {
                                                 <Stack direction="row" spacing={0.2} alignItems="center">
                                                     <Stack direction="row" spacing={1} alignItems="center">
                                                         <Typography variant="s7">Hash: </Typography>
-                                                        <Typography variant="s8">{truncate(hash, 35)}</Typography>
+                                                        <Typography variant="s7">{truncate(hash, 31)}</Typography>
                                                     </Stack>
                                                     <Link
                                                         underline="none"

@@ -29,6 +29,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
+import { formatDateTime } from 'src/utils/formatTime';
 import { NFToken } from 'src/utils/constants';
 
 // Components
@@ -262,22 +263,7 @@ export default function ErrorList({filter, choice, setLoading}) {
                             const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
                             const isVideo = meta.video;
 
-                            let strDateTime = '';
-
-                            if (date) {
-                                const nDate = new Date(date);
-                                const year = nDate.getFullYear();
-                                const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                                const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                                const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-
-                                //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-                                //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-                                strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-                                // const strTime = `${hour}:${min}:${sec}`;
-                            }
+                            const strDateTime = formatDateTime(date);
 
                             return (
                                 <TableRow

@@ -642,10 +642,13 @@ export default function CreateCollection() {
                         <Typography variant='s2'>Normal:</Typography> You can mint NFTs one by one for this collection.
                     </Typography>
                     <Typography variant='p3'>
-                        <Typography variant='s2'>Bulk:</Typography> You can upload bulk NFTs and sell with costs. Your IPFS NFT images are public in this mode. (Lazy mint mode)
+                        <Typography variant='s2'>Bulk:</Typography> You can upload bulk NFTs and sell NFTs with Mints.
                     </Typography>
                     <Typography variant='p3'>
-                        <Typography variant='s2'>Random:</Typography> You can upload bulk NFTs and sell NFTs randomly one by one with Mints. Mints are bought by costs. (Lazy mint mode)
+                        <Typography variant='s2'>Random:</Typography> You can upload bulk NFTs and sell NFTs randomly with Mints.
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Sequence:</Typography> You can upload bulk NFTs and sell NFTs sequently with Mints.
                     </Typography>
                 </Stack>
 
@@ -659,6 +662,7 @@ export default function CreateCollection() {
                     <ToggleButton value="normal" sx={{pl:2, pr:2}}>Normal</ToggleButton>
                     <ToggleButton value="bulk" sx={{pl:3, pr:3}}>Bulk</ToggleButton>
                     <ToggleButton value="random" sx={{pl:3, pr:3}}>Random</ToggleButton>
+                    <ToggleButton value="sequence" sx={{pl:3, pr:3}}>Sequence</ToggleButton>
                 </ToggleButtonGroup>
 
                 {type !== 'normal' &&
@@ -748,7 +752,7 @@ export default function CreateCollection() {
                             />
                         </Stack>
 
-                        {type === 'random' &&
+                        {(type === 'random' || type === 'sequence') &&
                             <>
                                 <Typography variant='p4' sx={{pt:2, pb:1}}>Spinner GIF image</Typography>
                                 <Typography variant='p3'>This image will be used for spinning NFTs. If you don't select, the &nbsp;

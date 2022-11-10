@@ -44,6 +44,7 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { fIntNumber } from 'src/utils/formatNumber';
+import { formatDateTime } from 'src/utils/formatTime';
 
 // Loader
 import { PulseLoader, ClockLoader } from "react-spinners";
@@ -261,18 +262,8 @@ export default function BulkList() {
                                 minterName,
                                 type
                             } = row;
-                            const nDate = new Date(created);
-                            const year = nDate.getFullYear();
-                            const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                            const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                            const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                            const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                            const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
 
-                            //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-                            //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-                            const strDate = `${year}-${month}-${day}`;
-                            const strTime = `${hour}:${min}:${sec}`;
+                            const strDateTime = formatDateTime(created);
 
                             return (
                                 <TableRow
@@ -350,7 +341,7 @@ export default function BulkList() {
                                                 <Typography variant="d4" sx={{mb: 1}}>{description}</Typography>
                                             }
                                             <Stack direction="row" spacing={2} alignItems="center">
-                                                <Typography variant="p3">{`${strDate} ${strTime}`}</Typography>
+                                                <Typography variant="p3">{strDateTime}</Typography>
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"

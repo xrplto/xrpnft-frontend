@@ -42,6 +42,7 @@ import { NFToken, Mint } from 'src/utils/constants';
 
 // Components
 import ListToolbar from './ListToolbar';
+import { formatDateTime } from 'src/utils/formatTime';
 
 function statusToString(status) {
 
@@ -199,22 +200,7 @@ export default function Invoices({}) {
                                 time
                             } = row;
                         
-                            let strDateTime = '';
-
-                            if (time) {
-                                const nDate = new Date(time);
-                                const year = nDate.getFullYear();
-                                const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                                const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                                const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                                const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-
-                                //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-                                //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-                                strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-                                // const strTime = `${hour}:${min}:${sec}`;
-                            }
+                            let strDateTime = formatDateTime(time);
 
                             return (
                                 <TableRow
@@ -247,7 +233,7 @@ export default function Invoices({}) {
                                                 href={`https://bithomp.com/explorer/${hash}`}
                                                 rel="noreferrer noopener nofollow"
                                             >
-                                                <Typography variant="s8">{hash}</Typography>
+                                                <Typography variant="s7">{hash}</Typography>
                                             </Link>
                                             <Link
                                                 underline="none"
@@ -266,17 +252,17 @@ export default function Invoices({}) {
 
                                         <Stack direction="row" spacing={1} alignItems="center">
                                             <Typography variant="s7">Src: </Typography>
-                                            <Typography variant="s8">{src}</Typography>
+                                            <Typography variant="s7">{src}</Typography>
                                         </Stack>
 
                                         <Stack direction="row" spacing={1} alignItems="center">
                                             <Typography variant="s7">Dest: </Typography>
-                                            <Typography variant="s8">{dest}</Typography>
+                                            <Typography variant="s7">{dest}</Typography>
                                         </Stack>
 
                                         <Stack direction="row" spacing={1} alignItems="center">
                                             <Typography variant="s7">Type: </Typography>
-                                            <Typography variant="s8">{type === 1?'Buy Mint':'Auto Pay'}</Typography>
+                                            <Typography variant="s7">{type === 1?'Buy Mint':'Auto Pay'}</Typography>
                                         </Stack>
 
                                         <Stack direction="row" spacing={1} alignItems="center">

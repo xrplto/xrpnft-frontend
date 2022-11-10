@@ -40,14 +40,12 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { fIntNumber } from 'src/utils/formatNumber';
+import { formatDateTime } from 'src/utils/formatTime';
 
 // Loader
 import { PulseLoader, ClockLoader, ClipLoader } from "react-spinners";
-import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
-import QRDialog from 'src/components/QRDialog';
 import ListToolbar from './ListToolbar';
 // ----------------------------------------------------------------------
 
@@ -158,20 +156,8 @@ export default function ProfileList({setCounterAccount}) {
                 
                     const logoImage = logo?`https://s1.xrpnft.com/profile/${logo}`:'/static/account_logo.png';
 
-                    let strDateTime = '';
+                    const strDateTime = formatDateTime(timestamp);
 
-                    const nDate = new Date(timestamp);
-                    const year = nDate.getFullYear();
-                    const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                    const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                    const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                    const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                    const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-
-                    //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-                    //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-                    strDateTime = `${year}-${month}-${day} ${hour}:${min}:${sec}`;
-                    // const strTime = `${hour}:${min}:${sec}`;
                     return (
                         <Stack key={account}>
                             <ListItemButton

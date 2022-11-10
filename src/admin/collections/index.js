@@ -44,6 +44,8 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ApprovalOutlinedIcon from '@mui/icons-material/ApprovalOutlined';
 import CasinoIcon from '@mui/icons-material/Casino';
 import AnimationIcon from '@mui/icons-material/Animation';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 // Context
 import { useContext } from 'react';
@@ -51,6 +53,7 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { fIntNumber } from 'src/utils/formatNumber';
+import { formatDateTime } from 'src/utils/formatTime';
 
 // Loader
 import { PulseLoader, ClipLoader, ClockLoader } from "react-spinners";
@@ -363,18 +366,8 @@ export default function Collections({account}) {
                                 items,
                                 costs
                             } = row;
-                            const nDate = new Date(created);
-                            const year = nDate.getFullYear();
-                            const month = (nDate.getMonth() + 1).toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                            const day = nDate.getDate().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});;
-                            const hour = nDate.getHours().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                            const min = nDate.getMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
-                            const sec = nDate.getSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
 
-                            //const strTime = (new Date(date)).toLocaleTimeString('en-US', { hour12: false });
-                            //const strTime = nDate.format("YYYY-MM-DD HH:mm:ss");
-                            const strDate = `${year}-${month}-${day}`;
-                            const strTime = `${hour}:${min}:${sec}`;
+                            const strDateTime = formatDateTime(created);
 
                             return (
                                 <TableRow
@@ -398,13 +391,13 @@ export default function Collections({account}) {
                                                 }}
                                             />
 
-                                            <Button variant="contained" color="primary" size="small" onClick={()=>handleSetTrustlines(row)}>
-                                                Set Trustlines
-                                            </Button>
-                                        
-                                            <Button variant="outlined" color="primary" size="small" onClick={()=>handleRemove(row)}>
-                                                Remove
-                                            </Button>
+                                            <Stack direction="row" justifyContent="center">
+                                                <Tooltip title='Remove Collection'>
+                                                    <IconButton onClick={()=>handleRemove(row)}>
+                                                        <DeleteForeverIcon fontSize="large" color="error" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </Stack>
                                         </Stack>
                                     </TableCell>
                                     
@@ -426,8 +419,8 @@ export default function Collections({account}) {
                                                 }
 
                                                 {costs && costs.length > 0 &&
-                                                    <Stack direction="row" spacing={2} alignItems="center">
-                                                        <Typography variant="p4">Cost</Typography>
+                                                    <Stack direction="row" spacing={0} alignItems="center">
+                                                        {/* <Typography variant="p4">Cost</Typography> */}
                                                         <CustomSelect
                                                             id='select_cost'
                                                             value={costIdx}
@@ -445,6 +438,11 @@ export default function Collections({account}) {
                                                                 </MenuItem>
                                                             ))}
                                                         </CustomSelect>
+                                                        <Tooltip title='Set Trustlines Manually'>
+                                                            <IconButton onClick={()=>handleSetTrustlines(row)}>
+                                                                <AdminPanelSettingsIcon fontSize="large" color="success" />
+                                                            </IconButton>
+                                                        </Tooltip>
                                                     </Stack>
                                                 }
                                             </Stack>
@@ -456,7 +454,7 @@ export default function Collections({account}) {
                                                     href={`https://bithomp.com/explorer/${account}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="d3" color="#33C2FF"><Typography variant="s7">Creator:</Typography> {account}</Typography>
+                                                    <Typography variant="s7" color="#33C2FF"><Typography variant="s7">Creator:</Typography> {account}</Typography>
                                                 </Link>
                                                 <Link
                                                     color="inherit"
@@ -465,49 +463,51 @@ export default function Collections({account}) {
                                                     rel="noreferrer noopener nofollow"
                                                 >
                                                     <Tooltip title='Check on Bithomp'>
-                                                        <IconButton>
-                                                            <OpenInNewIcon />
+                                                        <IconButton size="small">
+                                                            <OpenInNewIcon fontSize="small" sx={{ width: 16, height: 16 }} />
                                                         </IconButton>
                                                     </Tooltip>
                                                 </Link>
                                                 <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
                                                     <Tooltip title='Click to copy'>
-                                                        <IconButton>
-                                                            <ContentCopyIcon />
+                                                        <IconButton size="small">
+                                                            <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }} />
                                                         </IconButton>
                                                     </Tooltip>
                                                 </CopyToClipboard>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={0} alignItems="center">
-                                                <Link
-                                                    color="inherit"
-                                                    target="_blank"
-                                                    href={`https://bithomp.com/explorer/${minter}`}
-                                                    rel="noreferrer noopener nofollow"
-                                                >
-                                                    <Typography variant="d3" color="#33C2FF"><Typography variant="s7">Minter:</Typography> {minter}</Typography>
-                                                </Link>
-                                                <Link
-                                                    color="inherit"
-                                                    target="_blank"
-                                                    href={`https://bithomp.com/explorer/${minter}`}
-                                                    rel="noreferrer noopener nofollow"
-                                                >
-                                                    <Tooltip title='Check on Bithomp'>
-                                                        <IconButton>
-                                                            <OpenInNewIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </Link>
-                                                <CopyToClipboard text={minter} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                    <Tooltip title='Click to copy'>
-                                                        <IconButton>
-                                                            <ContentCopyIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </CopyToClipboard>
-                                            </Stack>
+                                            {minter &&
+                                                <Stack direction="row" spacing={0} alignItems="center">
+                                                    <Link
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://bithomp.com/explorer/${minter}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Typography variant="s7" color="#33C2FF"><Typography variant="s7">Minter:</Typography> {minter} <Typography variant="s2">({minterName})</Typography></Typography>
+                                                    </Link>
+                                                    <Link
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://bithomp.com/explorer/${minter}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title='Check on Bithomp'>
+                                                            <IconButton size="small">
+                                                                <OpenInNewIcon fontSize="small" sx={{ width: 16, height: 16 }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
+                                                    <CopyToClipboard text={minter} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                        <Tooltip title='Click to copy'>
+                                                            <IconButton size="small">
+                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Stack>
+                                            }
                                             
                                             {infoIPFS && infoIPFS.cid &&
                                                 <Stack direction="row" spacing={1} alignItems="center">
@@ -542,10 +542,10 @@ export default function Collections({account}) {
                                                 </Stack>
                                             }
                                             {description &&
-                                                <Typography variant="d4" sx={{mb: 1}}>{description}</Typography>
+                                                <Typography variant="s7" sx={{mb: 1}}>{description}</Typography>
                                             }
                                             <Stack direction="row" spacing={2} alignItems="center">
-                                                <Typography variant="p3">{`${strDate} ${strTime}`}</Typography>
+                                                <Typography variant="p3">{strDateTime}</Typography>
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
