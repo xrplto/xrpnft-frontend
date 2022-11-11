@@ -97,8 +97,6 @@ export default function Summary({}) {
 
     const [xrpnftAccounts, setXrpnftAccounts] = useState([]); // XRPNFT.com accounts
 
-    const [buyMintQueue, setBuyMintQueue] = useState(0);
-
     const [nftScanner, setNftScanner] = useState({index: 0, nfts: 0});
     const [txScanner, setTxScanner] = useState({index: 0, nfts: 0});
     const [txScannerReal, setTxScannerReal] = useState({index: 0, nfts: 0});
@@ -137,8 +135,6 @@ export default function Summary({}) {
                         setProfiles(ret.profiles);
 
                         setXrpnftAccounts(ret.xrpnftAccounts);
-
-                        setBuyMintQueue(ret.buyMintQueue);
 
                         setNftScanner(ret.nftScanner);
                         setTxScanner(ret.txScanner);
@@ -220,15 +216,6 @@ export default function Summary({}) {
                             </TableCell>
                             <TableCell align="right">
                                 <Typography variant="s6">{fIntNumber(profiles)}</Typography>
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell align="right">
-                                <Typography variant="s4">Buy Mint Queue: </Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                                <Typography variant="s6">{fIntNumber(buyMintQueue)}</Typography>
                             </TableCell>
                         </TableRow>
                     </TableBody>

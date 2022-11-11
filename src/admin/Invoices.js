@@ -38,7 +38,7 @@ import { AppContext } from 'src/AppContext';
 import { PulseLoader, ClipLoader } from "react-spinners";
 
 // Utils
-import { NFToken, Mint } from 'src/utils/constants';
+import { NFToken, Mint, getMinterName } from 'src/utils/constants';
 
 // Components
 import ListToolbar from './ListToolbar';
@@ -201,6 +201,8 @@ export default function Invoices({}) {
                             } = row;
                         
                             let strDateTime = formatDateTime(time);
+                            const srcName = getMinterName(src);
+                            const destName = getMinterName(dest);
 
                             return (
                                 <TableRow
@@ -252,12 +254,12 @@ export default function Invoices({}) {
 
                                         <Stack direction="row" spacing={1} alignItems="center">
                                             <Typography variant="s7">Src: </Typography>
-                                            <Typography variant="s7">{src}</Typography>
+                                            <Typography variant="s7">{src} {srcName && <Typography variant="s2">({srcName})</Typography>}</Typography>
                                         </Stack>
 
                                         <Stack direction="row" spacing={1} alignItems="center">
                                             <Typography variant="s7">Dest: </Typography>
-                                            <Typography variant="s7">{dest}</Typography>
+                                            <Typography variant="s7">{dest} {destName && <Typography variant="s2">({destName})</Typography>}</Typography>
                                         </Stack>
 
                                         <Stack direction="row" spacing={1} alignItems="center">
