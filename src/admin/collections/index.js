@@ -46,6 +46,7 @@ import CasinoIcon from '@mui/icons-material/Casino';
 import AnimationIcon from '@mui/icons-material/Animation';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Context
 import { useContext } from 'react';
@@ -132,7 +133,7 @@ export default function Collections({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
-    const { accountProfile, openSnackbar } = useContext(AppContext);
+    const { accountProfile, openSnackbar, setLoading } = useContext(AppContext);
     const accountAdmin = accountProfile?.account;
     const accountToken = accountProfile?.token;
     
@@ -146,7 +147,7 @@ export default function Collections({account}) {
 
     const [openConfirm, setOpenConfirm] = useState(false);
 
-    const [loading, setLoading] = useState(false);
+    const [loading1, setLoading1] = useState(false);
 
     const [sync, setSync] = useState(0);
 
@@ -160,7 +161,7 @@ export default function Collections({account}) {
                 openSnackbar('Please login', 'error');
                 return;
             }
-            setLoading(true);
+            setLoading1(true);
 
             const body = { filter, choice };
 
@@ -175,7 +176,7 @@ export default function Collections({account}) {
                     console.log("Error on getting bulk list!!!", err);
                 }).then(function () {
                     // always executed
-                    setLoading(false);
+                    setLoading1(false);
                 });
         }
         getCollections();
@@ -187,7 +188,7 @@ export default function Collections({account}) {
             return;
         }
 
-        setLoading(true);
+        setLoading1(true);
         try {
             const body = { cid };
 
@@ -204,10 +205,35 @@ export default function Collections({account}) {
             console.error(err);
             openSnackbar('Error', 'error');
         }
-        setLoading(false);
+        setLoading1(false);
     };
 
     const onSetTrustlines = async (cid) => {
+        if (!accountAdmin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        setLoading1(true);
+        try {
+            const body = { cid };
+
+            const res = await axios.post(`${BASE_URL}/admin/set_trustlines`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
+
+            let ret = res.data;
+            if (ret.status) {
+                openSnackbar(ret.msg, 'success');
+            } else {
+                openSnackbar(ret.err, 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            openSnackbar('Error', 'error');
+        }
+        setLoading1(false);
+    };
+
+    const onSetVerified = async (cid) => {
         if (!accountAdmin || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
@@ -217,11 +243,12 @@ export default function Collections({account}) {
         try {
             const body = { cid };
 
-            const res = await axios.post(`${BASE_URL}/admin/set_trustlines`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
+            const res = await axios.post(`${BASE_URL}/admin/set_verified`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
 
             let ret = res.data;
             if (ret.status) {
                 openSnackbar(ret.msg, 'success');
+                setSync(sync + 1);
             } else {
                 openSnackbar(ret.err, 'error');
             }
@@ -259,9 +286,12 @@ export default function Collections({account}) {
 
     const handleChangeCost = (e) => {
         const value = e.target.value;
-
-        setCostIdx(newCost);
+        setCostIdx(value);
     };
+
+    const handleSetVerified = (collection) => {
+        onSetVerified(collection.uuid);
+    }
 
     return (
         <>
@@ -299,7 +329,7 @@ export default function Collections({account}) {
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="start">
-                                {loading && <ClipLoader color='#ff0000' size={15} /> }
+                                {loading1 && <ClipLoader color='#ff0000' size={15} /> }
                             </InputAdornment>
                         ),
                     }}
@@ -364,7 +394,8 @@ export default function Collections({account}) {
                                 minterName,
                                 type,
                                 items,
-                                costs
+                                costs,
+                                verified
                             } = row;
 
                             const strDateTime = formatDateTime(created);
@@ -403,10 +434,15 @@ export default function Collections({account}) {
                                     
                                     <TableCell align="left">
                                         <Stack>
-                                            <Stack direction="row" spacing={2} alignItems="center">
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Link href={`/collection/${slug}`}>
                                                     <Typography variant="s9" color="#33C2FF">{name} <Typography variant="s3" color="error">({items} items)</Typography></Typography>
                                                 </Link>
+                                                <Tooltip title='Click to toggle verified'>
+                                                    <IconButton onClick={()=>handleSetVerified(row)}>
+                                                        <VerifiedIcon color={verified === 'yes' ? "success":""} />
+                                                    </IconButton>
+                                                </Tooltip>
                                                 {type === "random" &&
                                                     <Tooltip title='Random Collection'>
                                                         <CasinoIcon color='info'/>

@@ -47,6 +47,7 @@ import { NFToken, Mint } from 'src/utils/constants';
 // Components
 import ListToolbar from './ListToolbar';
 import ConfirmResolveDialog from './ConfirmResolveDialog';
+import Decimal from 'decimal.js';
 
 // ----------------------------------------------------------------------
 
@@ -243,6 +244,8 @@ export default function AutoPay({account}) {
                         
                             const strDateTime = formatDateTime(time);
 
+                            const value = typeof amount === 'object' ? amount.value : new Decimal(amount).div(1000000).toString();
+
                             /*
                             { meta
                                 exists: true,
@@ -386,7 +389,7 @@ export default function AutoPay({account}) {
                                             <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between" mr={3}>
                                                 <Stack direction='row' spacing={0.8} alignItems="center">
                                                     <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} />
-                                                    <Typography variant='p4' color="#EB5757">{amount.value || amount}</Typography>
+                                                    <Typography variant='p4' color="#EB5757">{value}</Typography>
                                                     <Typography variant='s2'>{cost.name}</Typography>
                                                 </Stack>
                                                 <Stack direction="row" spacing={1} alignItems="center">

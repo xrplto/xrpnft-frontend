@@ -24,6 +24,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import CasinoIcon from '@mui/icons-material/Casino';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AnimationIcon from '@mui/icons-material/Animation';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Loader
 import { ClipLoader } from "react-spinners";
@@ -210,6 +211,7 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                         items,
                         type,
                         logoImage,
+                        verified
                     } = option;
 
                     const imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
@@ -228,6 +230,11 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                                     <Stack>
                                         <Stack direction="row" spacing={1}>
                                             <Typography variant="s5">{name}</Typography>
+                                            {verified === 'yes' &&
+                                                <Tooltip title='Verified'>
+                                                    <VerifiedIcon fontSize="small" color="success" />
+                                                </Tooltip>
+                                            }
                                             {type === "random" &&
                                                 <Tooltip title="Random Collection">
                                                     <CasinoIcon color='info' fontSize="small"/>

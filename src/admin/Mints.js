@@ -147,7 +147,7 @@ export default function Mints({account}) {
         if (action === 2) { // Remove
             setResolveMint(mint);
             setOpenConfirm(true);
-        } else if (action === 4) { // If action is Resolve, call directly, don't show confirm dialog
+        } else if (action === 4 || action === 5) { // If action is XUMM get or cancel, call directly, don't show confirm dialog
             onResolveMint(mint);
         } else {
             setResolveMint(mint);
@@ -453,6 +453,9 @@ export default function Mints({account}) {
                                                 <Stack direction="row" spacing={1}>
                                                     <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 4)}>
                                                         XUMM
+                                                    </Button>
+                                                    <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 5)}>
+                                                        Cancel
                                                     </Button>
                                                     <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 2)}>
                                                         Remove

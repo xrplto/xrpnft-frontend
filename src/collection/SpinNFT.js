@@ -17,10 +17,12 @@ import {
     Grid,
     Link,
     Stack,
+    Tooltip,
     Typography,
     useMediaQuery
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Context
 import { useContext } from 'react';
@@ -240,7 +242,8 @@ export default function SpinNFT({ collection, setView }) {
         spinnerImage,
         timestamp,
         costs,
-        minter
+        minter,
+        verified
     } = collection;
 
     // const description = "This is the test collection that spinns the nfts very fast and you can won and purchase nfts"
@@ -392,7 +395,14 @@ export default function SpinNFT({ collection, setView }) {
                         }
                     </IconWrapper>
                 </IconCover>
-                <Typography variant="h1a">{name}</Typography>
+                <Stack direction="row" spacing={1}>
+                    <Typography variant="h1a">{name}</Typography>
+                    {verified === 'yes' &&
+                        <Tooltip title='Verified'>
+                            <VerifiedIcon color="success" />
+                        </Tooltip>
+                    }
+                </Stack>
                 {description &&
                     <Typography variant="d3" maxWidth='600px'>{description}</Typography>
                 }

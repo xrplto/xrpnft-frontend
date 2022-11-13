@@ -9,9 +9,11 @@ import {
     IconButton,
     Link,
     Stack,
+    Tooltip,
     Typography
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -135,7 +137,8 @@ export default function CollectionCard({ item, isAll }) {
         logoImage,
         featuredImage,
         bannerImage,
-        timestamp
+        timestamp,
+        verified
     } = item;
 
     const [colors, setColors] = useState([]);
@@ -176,7 +179,15 @@ export default function CollectionCard({ item, isAll }) {
                         <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
                     </IconWrapper>
                 </IconCover>
-                <Typography variant="p1" sx={{pt:2}}>{name}</Typography>
+                
+                <Stack direction="row" spacing={0.5} sx={{pt: 2}}>
+                    <Typography variant="p1">{name}</Typography>
+                    {verified === 'yes' &&
+                        <Tooltip title='Verified'>
+                            <VerifiedIcon fontSize="small" color="success" />
+                        </Tooltip>
+                    }
+                </Stack>
             </Stack>
 
             <Link href={`/collection/${slug}`} underline='none'>

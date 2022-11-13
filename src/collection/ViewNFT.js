@@ -15,6 +15,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -154,7 +155,8 @@ export default function ViewNFT({collection}) {
         timestamp,
         costs,
         extra,
-        minter
+        minter,
+        verified
     } = collection;
 
     const [countOwner, setCountOwner] = useState(0);
@@ -182,7 +184,14 @@ export default function ViewNFT({collection}) {
                 </IconWrapper>
             </IconCover>
             <Stack direction={fullScreen ? "column":"row"} spacing={2} justifyContent="space-between" sx={{mt: 1, mb:1}}>
-                <Typography variant="h1a">{name}</Typography>
+                <Stack direction="row" spacing={1}>
+                    <Typography variant="h1a">{name}</Typography>
+                    {verified === 'yes' &&
+                        <Tooltip title='Verified'>
+                            <VerifiedIcon color="success" />
+                        </Tooltip>
+                    }
+                </Stack>
                 
                 <Stack direction="row" alignItems="center" spacing={1}>
                     {account === collection.account &&
