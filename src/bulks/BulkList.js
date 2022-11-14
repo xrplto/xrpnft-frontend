@@ -260,6 +260,7 @@ export default function BulkList() {
                                 infoMINT, // {count: 0, length: metadata.length};
                                 minter,
                                 minterName,
+                                category,
                                 type
                             } = row;
 
@@ -303,6 +304,9 @@ export default function BulkList() {
                                                         <AnimationIcon color='info'/>
                                                     </Tooltip>
                                                 }
+                                                <Tooltip title="Category">
+                                                    <Typography variant="s7" color="#4fa94d">{category}</Typography>
+                                                </Tooltip>
                                             </Stack>
                                             
                                             {infoIPFS && infoIPFS.cid &&

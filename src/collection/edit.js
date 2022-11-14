@@ -41,7 +41,7 @@ import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
 // Utils
 import { fNumber } from 'src/utils/formatNumber';
-import { COLLECTION_FAMILIES } from 'src/utils/constants';
+import { CATEGORIES } from 'src/utils/constants';
 
 // Components
 import LoadingTextField from 'src/components/LoadingTextField';
@@ -190,7 +190,7 @@ export default function EditCollection({collection}) {
     //     }
     // }
     const [name, setName] = useState(collection.name);
-    const [family, setFamily] = useState('');
+    const [category, setCategory] = useState(collection.category || 'NONE');
     const [slug, setSlug] = useState(collection.slug);
     const [description, setDescription] = useState(collection.description || '');
     const [type, setType] = useState(collection.type);
@@ -232,8 +232,6 @@ export default function EditCollection({collection}) {
             return true;
         else if (fileUrl4 !== spinnerImageUrl)
             return true;
-
-        if (family !== collection.family) return true;
 
         if (stringCompare(description, collection.description)) return true;
 
@@ -313,7 +311,7 @@ export default function EditCollection({collection}) {
 
             const data = {};
             data.name = name;
-            data.family = family;
+            data.category = category;
             data.slug = slug;
             data.origSlug = collection.slug;
             data.description = description;
@@ -474,11 +472,6 @@ export default function EditCollection({collection}) {
         setPrivateCollection(newValue);
     };
 
-    const handleChangeFamily = (event) => {
-        const value = event.target.value;
-        setFamily(value);
-    }
-
     const handleAddCost = (cost) => {
         let exist = false;
         const newCosts = [];
@@ -502,6 +495,11 @@ export default function EditCollection({collection}) {
                 newCosts.push(c);
         }
         setCosts(newCosts);
+    }
+
+    const handleChangeCategory = (event) => {
+        const value = event.target.value;
+        setCategory(value);
     }
 
     return (
@@ -651,38 +649,31 @@ export default function EditCollection({collection}) {
                 />
             </Stack>
 
-            <Stack direction="row" mb={3} alignItems='center' sx={{ minHeight: 60 }}>
-                <Typography variant='d4'>Collection Family</Typography>
-                <FormControl sx={{ ml:2, pt: 0, minWidth: 120 }} size="small">
-                    <CustomSelect
-                        value={family}
-                        onChange={handleChangeFamily}
-                        MenuProps={{ disableScrollLock: true }}
-                    >
-                        {COLLECTION_FAMILIES.map((family, idx) => (
-                            <MenuItem
-                                key={idx}
-                                value={family.value}
-                                sx={{pt:2, pb:2}}
-                            >
-                                <Stack direction='row' spacing={1} alignItems="center">
-                                    {family.icon}
-                                    {/* <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${col.logoImage}`} sx={{ mr:2, width: 32, height: 32 }} /> */}
-                                    <Typography variant='d4'>{family.title}</Typography>
-                                </Stack>
-                            </MenuItem>
-                        ))}
-                    </CustomSelect>
-                </FormControl>
-
-                <IconButton
-                    aria-label='cancel' onClick={(e) => {
-                        setFamily('');
-                    }}
-                    sx={family ? { display: 'block' } : { display: 'none' }}
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Category</Typography>
+                <Typography variant='p3'>
+                    This helps your NFT to be found when people search by Category.
+                </Typography>
+                <CustomSelect
+                    disabled
+                    id='select_category'
+                    value={category}
+                    onChange={handleChangeCategory}
+                    MenuProps={{ disableScrollLock: true }}
                 >
-                    <CancelIcon />
-                </IconButton>
+                    {CATEGORIES.map((cat, idx) => (
+                        <MenuItem
+                            key={idx}
+                            value={cat.title}
+                            sx={{pt:2, pb:2}}
+                        >
+                            <Stack direction='row' spacing={1} alignItems="center">
+                                {cat.icon}
+                                <Typography variant='d4'>{cat.title}</Typography>
+                            </Stack>
+                        </MenuItem>
+                    ))}
+                </CustomSelect>
             </Stack>
 
             <Stack spacing={2} mb={3}>

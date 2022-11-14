@@ -52,7 +52,7 @@ export default function FilterDetail({filter, setFilter}) {
                             FILTER_NFT_FLAGS.map((f) => (
                                 <FormControlLabel
                                     key={f.value}
-                                    label={<Typography variant='p5'>{f.label}</Typography>}
+                                    label={<Typography variant='s3'>{f.label}</Typography>}
                                     value={f.value}
                                     control={
                                         <Checkbox checked={(filter & f.value) !== 0} onChange={handleFlagChange} />

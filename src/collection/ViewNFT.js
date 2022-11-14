@@ -21,6 +21,9 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import { Icon } from '@iconify/react';
 import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
+// Utils
+import { formatMonthYear } from 'src/utils/formatTime';
+
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
@@ -127,7 +130,7 @@ export default function ViewNFT({collection}) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const { accountProfile, openSnackbar } = useContext(AppContext);
-    const account = accountProfile?.account;
+    const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
     // "collection": {
@@ -144,6 +147,8 @@ export default function ViewNFT({collection}) {
     //     "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
     // }
     const {
+        account,
+        accountName,
         name,
         slug,
         items,
@@ -156,7 +161,8 @@ export default function ViewNFT({collection}) {
         costs,
         extra,
         minter,
-        verified
+        verified,
+        created
     } = collection;
 
     const [countOwner, setCountOwner] = useState(0);
@@ -168,7 +174,7 @@ export default function ViewNFT({collection}) {
             <IconCover>
                 <IconWrapper>
                     <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
-                    {account === collection.account &&
+                    {accountLogin === collection.account &&
                         <Link href={`/collection/${slug}/edit`} underline='none'>
                             <CardOverlay>
                                 <EditIcon
@@ -194,7 +200,7 @@ export default function ViewNFT({collection}) {
                 </Stack>
                 
                 <Stack direction="row" alignItems="center" spacing={1}>
-                    {account === collection.account &&
+                    {accountLogin === collection.account &&
                         <Link href={`/collection/${slug}/edit`} underline='none'>
                             <Tooltip title="Edit your collection">
                                 <IconButton size='medium' sx={{ padding: 1 }}>
@@ -229,6 +235,19 @@ export default function ViewNFT({collection}) {
                         <MoreHorizIcon />
                     </IconButton>
                 </Stack>
+            </Stack>
+
+            <Stack direction="row" sx={{mt: 2, mb:3}} spacing={1}>
+                <Typography variant="s5">By</Typography>
+                <Link
+                    color="inherit"
+                    target="_blank"
+                    href={`/account/${account}`}
+                    rel="noreferrer noopener nofollow"
+                >
+                    <Typography variant="s5" color="#33C2FF">{accountName || account}</Typography>
+                </Link>
+                <Typography variant="s10">&nbsp;&nbsp;·&nbsp;Created <Typography variant="s3">{formatMonthYear(created)}</Typography></Typography>
             </Stack>
 
             {description &&

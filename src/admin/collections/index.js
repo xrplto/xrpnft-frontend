@@ -395,7 +395,8 @@ export default function Collections({account}) {
                                 type,
                                 items,
                                 costs,
-                                verified
+                                verified,
+                                category
                             } = row;
 
                             const strDateTime = formatDateTime(created);
@@ -544,6 +545,11 @@ export default function Collections({account}) {
                                                     </CopyToClipboard>
                                                 </Stack>
                                             }
+
+                                            <Stack direction="row" spacing={0.3} alignItems="center">
+                                                <Typography variant="s7">Category: </Typography>
+                                                <Typography variant="s7" color="#33C2FF">{category}</Typography>
+                                            </Stack>
                                             
                                             {infoIPFS && infoIPFS.cid &&
                                                 <Stack direction="row" spacing={1} alignItems="center">

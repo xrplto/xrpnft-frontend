@@ -192,7 +192,7 @@ export default function SpinNFT({ collection, setView }) {
     //     "_id": "6332e893d799f7b10ec627a2",
     //     "account": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
     //     "name": "spinner1",
-    //     "family": "",
+    //     "category": "",
     //     "slug": "spin1",
     //     "type": "random",
     //     "items": 6568,
