@@ -112,7 +112,7 @@ const ImageBackdrop = styled('span')(({ theme }) => ({
     transition: theme.transitions.create('opacity'),
 }));
   
-export default function CollectionCard({ item, isAll }) {
+export default function CollectionCard({ item, isMine }) {
 
     // {
     //     "_id": "6310c27cf81fe46884ef89ba",
@@ -141,6 +141,12 @@ export default function CollectionCard({ item, isAll }) {
         verified
     } = item;
 
+    // const featuredImageUrl = '/static/covers/6.jpg';
+    // const logoImageUrl = '/static/covers/icon1.png';
+
+    const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;
+    const logoImageUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
+
     const [colors, setColors] = useState([]);
 
     const getColors = colors => {
@@ -162,7 +168,7 @@ export default function CollectionCard({ item, isAll }) {
             }}
         >
             <ColorExtractor getColors={getColors}>
-                <img src={`https://s1.xrpnft.com/collection/${featuredImage}`}
+                <img src={featuredImageUrl}
                     style={{
                         width: 320,
                         height: 220,
@@ -176,7 +182,7 @@ export default function CollectionCard({ item, isAll }) {
             <Stack direction="row" spacing={1.5} sx={{p:3, mt:-6}} alignItems="center">
                 <IconCover>
                     <IconWrapper>
-                        <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
+                        <IconImage src={logoImageUrl}/>
                     </IconWrapper>
                 </IconCover>
                 
@@ -194,7 +200,7 @@ export default function CollectionCard({ item, isAll }) {
                 <ImageBackdrop className="MuiImageBackdrop-root" />
             </Link>
 
-            {!isAll &&
+            {isMine &&
                 <Link href={`/collection/${slug}/edit`} underline='none'>
                     <IconButton
                         className="MuiIconEditButton-root"

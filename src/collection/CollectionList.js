@@ -8,6 +8,9 @@ import {
     Grid
 } from '@mui/material';
 
+// Utils
+import { CollectionListType } from 'src/utils/constants';
+
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
@@ -15,7 +18,7 @@ import { AppContext } from 'src/AppContext';
 // Components
 import CollectionCard from "./CollectionCard";
 
-export default function CollectionList({isAll}) {
+export default function CollectionList({type, category}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { accountProfile, openSnackbar } = useContext(AppContext);
@@ -26,15 +29,24 @@ export default function CollectionList({isAll}) {
     const [offset, setOffset] = useState(0);
     const [hasMore, setHasMore] = useState(true);
 
+    const isMine = type === CollectionListType.MINE;
+
     const loadCollections=(offset) => {
-        if (!isAll && (!account || !accountToken)) {
+        if (isMine && (!account || !accountToken)) {
             openSnackbar('Please login', 'error');
             return;
         }
-        // console.log(`loadCollections page: ${offset}`);
-        // https://api.xrpnft.com/api/collection/list?account=rKVd5WtB8ugrxaTDTbJv6pVH7WunmyryLq
+
+        const body = {type, page: offset, limit: 20};
+
+        if (type === CollectionListType.ALL) {
+        } else if (type === CollectionListType.MINE) {
+            body.account = account;
+        } else if (type === CollectionListType.CATEGORY) {
+            body.category = category;
+        }
         
-        axios.get(`${BASE_URL}/collection/list?account=${account}&all=${isAll}&page=${offset}&limit=20`, {headers: {'x-access-token': accountToken}})
+        axios.post(`${BASE_URL}/collection/getlist`, body, {headers: {'x-access-token': accountToken}})
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {
@@ -87,7 +99,7 @@ export default function CollectionList({isAll}) {
                 {   
                     collections.map((item,index) => (
                         // <Grid item key={index + "s"}>
-                            <CollectionCard key={index} item={item} isAll={isAll} />
+                            <CollectionCard key={index} item={item} isMine={isMine} />
                         // </Grid>
                     ))
                     

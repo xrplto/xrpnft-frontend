@@ -87,42 +87,62 @@ export const CATEGORIES = [
     },
     {
         title: 'Art',
+        slug: 'art',
+        count: 0,
         icon: (<PaletteIcon />)
     },
     {
         title: 'Collectables',
+        slug: 'collectables',
+        count: 0,
         icon: (<CollectionsIcon />)
     },
     {
         title: 'Domain Names',
+        slug: 'domain-names',
+        count: 0,
         icon: (<DnsIcon />)
     },
     {
         title: 'Music',
+        slug: 'music',
+        count: 0,
         icon: (<LibraryMusicIcon />)
     },
     {
         title: 'Photography',
+        slug: 'photography',
+        count: 0,
         icon: (<WallpaperIcon />)
     },
     {
         title: 'Sports',
+        slug: 'sports',
+        count: 0,
         icon: (<SportsBasketballIcon />)
     },
     {
         title: 'Trading Cards',
+        slug: 'trading-cards',
+        count: 0,
         icon: (<PaymentsIcon />)
     },
     {
         title: 'Utility',
+        slug: 'utility',
+        count: 0,
         icon: (<HomeRepairServiceIcon />)
     },
     {
         title: 'Virtual Worlds',
+        slug: 'virtual-worlds',
+        count: 0,
         icon: (<ViewInArIcon />)
     },
     {
         title: 'Phygital',
+        slug: 'phygital',
+        count: 0,
         icon: (<CycloneIcon />)
     }
 ];
@@ -241,6 +261,12 @@ export const Mint = { // 4:50 AM 11/9/2022
     ERROR_BASE: 80,
     FUND_E1: 81,
     FUND_E2: 82
+}
+
+export const CollectionListType = { // 4:15 AM 11/15/2022
+    ALL: 1,
+    MINE: 2,
+    CATEGORY: 3,
 }
 
 const BG_FILES = [

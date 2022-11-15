@@ -1,3 +1,5 @@
+import axios from 'axios';
+import { useRef, useState, useEffect } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 // Material
@@ -15,6 +17,10 @@ import {
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
+
+// Utils
+import { CATEGORIES } from 'src/utils/constants';
+import { fIntNumber } from 'src/utils/formatNumber';
 
 // const FooterWrapper = styled(Container)(
 //     ({ theme }) => `
@@ -35,7 +41,34 @@ const FooterWrapper = styled(Box)(
 );
 
 function Footer() {
+    const BASE_URL = 'https://api.xrpnft.com/api';
     const { darkMode } = useContext(AppContext);
+
+    const [categories, setCategories] = useState(CATEGORIES);
+
+    useEffect(() => {
+        function getFooterInfo() {
+            const body = {cats: CATEGORIES}
+            axios.post(`${BASE_URL}/info/footer`, body)
+                .then(res => {
+                    const data = res?.data;
+                    const categories = data?.categories;
+                    if (categories) {
+                        setCategories(categories);
+                    }
+                }).catch(err => {
+                    console.log("Error on getting footer info!!!", err);
+                }).then(function () {
+                    // always executed
+                });
+        }
+        getFooterInfo();
+
+        // const timer = setInterval(() => getFooterInfo(), 5000);
+        // return () => {
+        //     clearInterval(timer);
+        // }
+    }, []);
 
     const img_dark = "/logo/logo-dark.svg";
     const img_light = "/logo/logo-light.svg";
@@ -74,96 +107,29 @@ function Footer() {
                                     >
                                         <Typography variant='link'>All NFTs</Typography>
                                     </Link>
-                                    <Link
-                                        href="/category/art"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Art</Typography>
-                                    </Link>
-                                    <Link
-                                        href="/category/collectables"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Collectables</Typography>
-                                    </Link>
-                                    <Link
-                                        href="/category/domain-names"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Domain Name</Typography>
-                                    </Link>
-                                    <Link
-                                        href="/category/music"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Music</Typography>
-                                    </Link>
-                                    <Link
-                                        href="/category/photography"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Photography</Typography>
-                                    </Link>
-                                    <Link
-                                        href="/category/sports"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Sports</Typography>
-                                    </Link>
-                                    <Link
-                                        href="/category/trading-cards"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Trading Cards</Typography>
-                                    </Link>
-                                    <Link
-                                        href="/category/utility"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Utility</Typography>
-                                    </Link>
-                                    <Link
-                                        href="/category/virtual-worlds"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Virtual Worlds</Typography>
-                                    </Link>
-                                    <Link
-                                        href="/category/phygital"
-                                        sx={{ mt: 1.5, display: 'inline-flex' }}
-                                        underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant='link'>Phygital</Typography>
-                                    </Link>
+                                    {categories.map((cat, idx) => {
+                                        const title = cat.title;
+                                        const slug = cat.slug;
+                                        const count = cat.count;
+                                        if (!title || title === 'NONE') return;
+
+                                        return (
+                                            <Link
+                                                key={slug + "" + idx}
+                                                href={`/category/${slug}`}
+                                                sx={{ mt: 1.5, display: 'inline-flex' }}
+                                                underline="none"
+                                                target="_blank"
+                                                rel="noreferrer noopener nofollow"
+                                            >
+                                                {count > 0 ?
+                                                    <Typography variant='link'>{title} ({fIntNumber(count)})</Typography>
+                                                    :
+                                                    <Typography variant='link'>{title}</Typography>
+                                                }
+                                            </Link>
+                                        )
+                                    })}
                                 </Stack>
                             </Grid>
                             <Grid item xs={6} sm={6} md={3} lg={3} sx={{ mt: 3 }}>
