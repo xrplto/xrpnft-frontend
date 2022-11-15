@@ -155,6 +155,15 @@ function Footer() {
                                     >
                                         <Typography variant='link'>Virtual Worlds</Typography>
                                     </Link>
+                                    <Link
+                                        href="/category/phygital"
+                                        sx={{ mt: 1.5, display: 'inline-flex' }}
+                                        underline="none"
+                                        target="_blank"
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Typography variant='link'>Phygital</Typography>
+                                    </Link>
                                 </Stack>
                             </Grid>
                             <Grid item xs={6} sm={6} md={3} lg={3} sx={{ mt: 3 }}>

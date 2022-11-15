@@ -56,7 +56,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { TOKEN_FLAGS, CATEGORIES } from 'src/utils/constants';
+import { TOKEN_FLAGS } from 'src/utils/constants';
 import { fIntNumber, fNumber } from 'src/utils/formatNumber';
 
 // Components
@@ -156,7 +156,6 @@ export default function BulkMint2({slug}) {
     const [ipfsCID, setIpfsCID] = useState('');
     const [description, setDescription] = useState('');
 
-    const [category, setCategory] = useState('NONE');
     const [royalty, setRoyalty] = useState('0');
     const [explicit, setExplicit] = useState(false);
     const [issuerChoice, setIssuerChoice] = useState('yes');
@@ -330,7 +329,6 @@ export default function BulkMint2({slug}) {
             else
                 data.issuer = collection.minter;
 
-            data.category = category;
             data.royalty = royalty;
             data.explicit = explicit;
 
@@ -390,18 +388,6 @@ export default function BulkMint2({slug}) {
         const value = event.target.value;
         setImgExt(value);
     };
-
-    const handleChangeCategory = (event) => {
-        const value = event.target.value;
-        setCategory(value);
-        if (sMeta) {
-            if (!value || value === 'NONE') {
-                sMeta.category = undefined;
-            } else {
-                sMeta.category = value;
-            }
-        }
-    }
 
     const handleChangeRoyalty = (e) => {
         const value = e.target.value;
@@ -464,14 +450,12 @@ export default function BulkMint2({slug}) {
                 
             if (description)
                 newMeta.description = description;
-            
-            if (category && category !== 'NONE')
-                newMeta.category = category;
 
-            const metaCollection = {name: collection.name};
-            if (collection.family)
-                metaCollection.family = collection.family;
-            newMeta.collection = metaCollection;
+            let category = collection.category;
+            if (!category || category === 'NONE')
+                category = '';
+
+            newMeta.collection = {name: collection.name, family: category};
 
             if (includeTime && dateField) {
                 newMeta['date'] = undefined;
@@ -644,30 +628,6 @@ export default function BulkMint2({slug}) {
                         />
                     </Stack>
                     <Typography variant='s2'>Indexed numbers also affects to IPFS image index, we strongly recommend that you download final Metadata before bulk minting.</Typography>
-
-                    <Typography variant='p4'>Category</Typography>
-                    <Typography variant='p3'>
-                        This helps your NFT to be found when people search by Category.
-                    </Typography>
-                    <CustomSelect
-                        id='select_category'
-                        value={category}
-                        onChange={handleChangeCategory}
-                        MenuProps={{ disableScrollLock: true }}
-                    >
-                        {CATEGORIES.map((cat, idx) => (
-                            <MenuItem
-                                key={idx}
-                                value={cat.title}
-                                sx={{pt:2, pb:2}}
-                            >
-                                <Stack direction='row' spacing={1} alignItems="center">
-                                    {cat.icon}
-                                    <Typography variant='d4'>{cat.title}</Typography>
-                                </Stack>
-                            </MenuItem>
-                        ))}
-                    </CustomSelect>
 
                     <Typography variant='p4'>Royalty <Typography variant='s2'>*</Typography><Typography variant='s7'> (Transfer fee)</Typography></Typography>
                     <Typography variant='p3'>Between 0.00% and 50.00% in increments of 0.001.</Typography>
