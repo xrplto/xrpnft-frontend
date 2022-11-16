@@ -37,7 +37,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { SUPPORTED_FILE_TYPES, TOKEN_FLAGS, CATEGORIES } from 'src/utils/constants';
+import { SUPPORTED_FILE_TYPES, TOKEN_FLAGS } from 'src/utils/constants';
 
 // Components
 import QRDialogNoPush from 'src/components/QRDialogNoPush';
@@ -101,7 +101,6 @@ export default function Minting() {
     const [extLink, setExtLink] = useState('');
     const [description, setDescription] = useState('');
     const [collectionName, setCollectionName] = useState('')
-    const [category, setCategory] = useState('NONE');
     const [properties, setProperties] = useState([]);
     const [royalty, setRoyalty] = useState('0');
     const [explicit, setExplicit] = useState(false);
@@ -227,7 +226,6 @@ export default function Minting() {
             data.external_link = extLink;
             data.description = description;
             data.collection = collectionName;
-            data.category = category;
             data.royalty = royalty;
             data.explicit = explicit;
             data.flag = flag;
@@ -358,11 +356,6 @@ export default function Minting() {
         setCollectionName(value);
         setFilter('');
     };
-
-    const handleChangeCategory = (event) => {
-        const value = event.target.value;
-        setCategory(value);
-    }
 
     const handleChangeRoyalty = (e) => {
         const value = e.target.value;
@@ -537,32 +530,6 @@ export default function Minting() {
                 /> */}
                 {/* <PropertySection />
                 <LevelsSection /> */}
-            </Stack>
-
-            <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Category</Typography>
-                <Typography variant='p3'>
-                    This helps your NFT to be found when people search by Category.
-                </Typography>
-                <CustomSelect
-                    id='select_category'
-                    value={category}
-                    onChange={handleChangeCategory}
-                    MenuProps={{ disableScrollLock: true }}
-                >
-                    {CATEGORIES.map((cat, idx) => (
-                        <MenuItem
-                            key={idx}
-                            value={cat.title}
-                            sx={{pt:2, pb:2}}
-                        >
-                            <Stack direction='row' spacing={1} alignItems="center">
-                                {cat.icon}
-                                <Typography variant='d4'>{cat.title}</Typography>
-                            </Stack>
-                        </MenuItem>
-                    ))}
-                </CustomSelect>
             </Stack>
 
             <Stack spacing={2} mb={3}>

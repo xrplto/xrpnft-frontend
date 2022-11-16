@@ -66,7 +66,7 @@ export default function ExploreNFT({collection}) {
 
         setLoading(true);
 
-        const body = { page, limit, flag, cid: collection.uuid, search, filter};
+        const body = { page, limit, flag, cid: collection?.uuid, search, filter};
 
         axios.post(`${BASE_URL}/nfts?page=${page}&limit=30&flag=${flag}`, body)
             .then(res => {
@@ -191,7 +191,6 @@ export default function ExploreNFT({collection}) {
                                         <NFTCard
                                             key={nft.uuid}
                                             nft={nft}
-                                            collection={collection}
                                         />
                                     //  </Grid>
                                 ))

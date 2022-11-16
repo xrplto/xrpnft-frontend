@@ -1,6 +1,3 @@
-import axios from 'axios'
-import { useState, useEffect, useRef } from 'react';
-
 // Material
 import {
     styled,

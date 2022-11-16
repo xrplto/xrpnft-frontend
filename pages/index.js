@@ -1,12 +1,9 @@
-// import axios from 'axios'
-// import { useState, useEffect, useRef } from 'react';
 import { getRandomBG } from 'src/utils/constants';
 
 // Material
 import {
     Box,
     Container,
-    Grid,
     styled,
     Toolbar
 } from '@mui/material';

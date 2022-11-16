@@ -45,7 +45,7 @@ export default function Wallet() {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const anchorRef = useRef(null);
     const { accountProfile, setAccountProfile, acceptNfts, setAcceptNfts, setLoading, sync } = useContext(AppContext);
-    const account = accountProfile?.account;
+    const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
     const accountUuid = accountProfile?.xuuid;
 
@@ -60,11 +60,11 @@ export default function Wallet() {
 
     useEffect(() => {
         function getOffersCount() {
-            if (!account || !accountToken) {
+            if (!accountLogin || !accountToken) {
                 return;
             }
 
-            axios.get(`${BASE_URL}/account/count_offered?account=${account}`, {headers: {'x-access-token': accountToken}})
+            axios.get(`${BASE_URL}/account/count_offered?account=${accountLogin}`, {headers: {'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret && acceptNfts !== ret.count) {
@@ -82,7 +82,7 @@ export default function Wallet() {
         // return () => {
         //     clearInterval(timer);
         // }
-    }, [account, accountToken, sync]);
+    }, [accountLogin, accountToken, sync]);
 
     useEffect(() => {
         var timer = null;
@@ -159,7 +159,7 @@ export default function Wallet() {
     const onLogoutXumm = async () => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/account/logout/${account}/${accountUuid}`, {headers: {'x-access-token': accountToken}});
+            const res = await axios.delete(`${BASE_URL}/account/logout/${accountLogin}/${accountUuid}`, {headers: {'x-access-token': accountToken}});
             if (res.status === 200) {
                 setAccountProfile(null);
                 setUuid(null);
@@ -240,14 +240,14 @@ export default function Wallet() {
                     }
                 }}
             >
-                {account ? (
+                {accountLogin ? (
                         <>
                             {acceptNfts > 0 &&
                                 <MenuItem
                                     key="account_accept_nft_offer"
                                     sx={{ typography: 'body2', py: 2, px: 2.5, mt: 1 }}
                                 >
-                                    <NextLink href={`/account/${account}/accept`} passHref>
+                                    <NextLink href={`/account/${accountLogin}/accept`} passHref>
                                         <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                             <Badge color="primary" badgeContent={acceptNfts}>
                                                 <AssignmentReturnedIcon sx={{ width: 24, height: 24 }}/>
@@ -261,7 +261,7 @@ export default function Wallet() {
                                 key="account_profile"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}
                             >
-                                <NextLink href={`/account/${account}`} passHref>
+                                <NextLink href={`/account/${accountLogin}`} passHref>
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <AccountBoxIcon />
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>Profile</Typography>
@@ -322,15 +322,15 @@ export default function Wallet() {
                                 <Link
                                     color="inherit"
                                     target="_blank"
-                                    href={`https://bithomp.com/explorer/${account}`}
+                                    href={`https://bithomp.com/explorer/${accountLogin}`}
                                     rel="noreferrer noopener nofollow"
                                 >
                                     <Typography align="center" style={{ wordWrap: "break-word" }} variant="body2" sx={{ width: 180, color: 'text.secondary' }} >
-                                        {account}
+                                        {accountLogin}
                                     </Typography>
                                 </Link>
 
-                                {/* <CopyToClipboard text={account} onCopy={()=>{}}>
+                                {/* <CopyToClipboard text={accountLogin} onCopy={()=>{}}>
                                     <Tooltip title='Click to copy your address'>
                                         <IconButton>
                                             <ContentCopyIcon fontSize="small" />
@@ -341,7 +341,7 @@ export default function Wallet() {
                                     <Button variant="contained" onClick={handleLogout} size="small">
                                         Logout
                                     </Button>
-                                    <CopyToClipboard text={account} onCopy={()=>{}}>
+                                    <CopyToClipboard text={accountLogin} onCopy={()=>{}}>
                                         <Button variant="contained" size="small" color="info">
                                             Copy
                                         </Button>

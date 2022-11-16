@@ -6,6 +6,9 @@ import {
     Typography
 } from '@mui/material';
 
+// Utils
+import { CollectionListType } from 'src/utils/constants';
+
 // Components
 import CollectionList from './CollectionList';
 
@@ -20,7 +23,7 @@ export default function MyCollections() {
                 Create a collection
             </Button>
             <Stack sx={{mt:5, minHeight: '50vh'}}>
-                <CollectionList isAll={false}/>
+                <CollectionList type={CollectionListType.MINE}/>
             </Stack>
         </>
     );

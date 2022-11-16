@@ -6,6 +6,9 @@ import {
     Typography
 } from '@mui/material';
 
+// Utils
+import { CollectionListType } from 'src/utils/constants';
+
 // Components
 import CollectionList from './CollectionList';
 
@@ -17,7 +20,7 @@ export default function Collections() {
             </Stack>
             
             <Stack sx={{mt:5, minHeight: '50vh'}}>
-                <CollectionList isAll={true}/>
+                <CollectionList type={CollectionListType.ALL}/>
             </Stack>
         </>
     );
