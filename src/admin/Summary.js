@@ -197,7 +197,7 @@ export default function Summary({}) {
                                 <Typography variant="s4">XRPL NFTs (Realtime): </Typography>
                             </TableCell>
                             <TableCell align="right">
-                                <Typography variant="s5" color="error">{fIntNumber(nfts3)} <Typography variant="s6" color="#CB3C1D">({fPercent(pNfts3)}%, {fIntNumber(dNfts3)})</Typography> <Typography variant="s6" color="#33C2FF">(#{fIntNumber(txScannerReal.index)})</Typography></Typography>
+                                <Typography variant="s5" color="error">{fIntNumber(nfts3)} <Typography variant="s6" color="#CB3C1D">({fPercent(pNfts3)}%, {dNfts3>0?'+':''}{fIntNumber(dNfts3)})</Typography> <Typography variant="s6" color="#33C2FF">(#{fIntNumber(txScannerReal.index)})</Typography></Typography>
                             </TableCell>
                         </TableRow>
 

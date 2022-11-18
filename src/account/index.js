@@ -27,35 +27,12 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
-// Utils
-import { fNumber } from 'src/utils/formatNumber';
-
 // Components
 import CollectedList from './CollectedList';
 import CreatedList from './CreatedList';
 import FavoritedList from './FavoritedList';
 import ActivityList from './ActivityList';
 import AcceptList from './AcceptList';
-
-const CardWrapper = styled('div')(
-    ({ theme }) => `
-        width: 300px;
-        height: 340px;
-        @media (min-width: ${theme.breakpoints.values.md}px) {
-            width: 500px;
-            height: 540px;
-        }
-        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-        border-radius: 30px;
-        backdrop-filter: blur(50px);
-        background: rgb(2, 0, 36);
-        padding: 10px;
-        text-align: center;
-        object-fit: cover;
-        transition: width 1s ease-in-out, height .5s ease-in-out !important;
-        -webkit-tap-highlight-color: transparent;
-  `
-);
 
 const IconCover = styled('div')(
     ({ theme }) => `

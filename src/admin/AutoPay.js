@@ -174,7 +174,7 @@ export default function AutoPay({account}) {
             >
                 <ToggleButton value="all" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>All</ToggleButton>
                 <ToggleButton value="notfunded" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Not Funded</ToggleButton>
-                <ToggleButton value="error" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Error</ToggleButton>
+                {/* <ToggleButton value="error" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Error</ToggleButton> */}
             </ToggleButtonGroup>
 
             {loading ? (

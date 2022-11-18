@@ -47,6 +47,9 @@ import AnimationIcon from '@mui/icons-material/Animation';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import VerifiedIcon from '@mui/icons-material/Verified';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import ViewCompactIcon from '@mui/icons-material/ViewCompact';
+import GridOnIcon from '@mui/icons-material/GridOn';
 
 // Context
 import { useContext } from 'react';
@@ -233,6 +236,31 @@ export default function Collections({account}) {
         setLoading1(false);
     };
 
+    const onCalcProps = async (cid) => {
+        if (!accountAdmin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        setLoading1(true);
+        try {
+            const body = { cid };
+
+            const res = await axios.post(`${BASE_URL}/admin/calc_props`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
+
+            let ret = res.data;
+            if (ret.status) {
+                openSnackbar(ret.msg, 'success');
+            } else {
+                openSnackbar(ret.err, 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            openSnackbar('Error', 'error');
+        }
+        setLoading1(false);
+    };
+
     const onSetVerified = async (cid) => {
         if (!accountAdmin || !accountToken) {
             openSnackbar('Please login', 'error');
@@ -261,6 +289,10 @@ export default function Collections({account}) {
 
     const handleSetTrustlines = (collection) => {
         onSetTrustlines(collection.uuid);
+    }
+
+    const handleCalcProperties = (collection) => {
+        onCalcProps(collection.uuid);
     }
 
     const handleRemove = (collection) => {
@@ -300,7 +332,6 @@ export default function Collections({account}) {
                 value={choice}
                 exclusive
                 // size="small"
-                
                 onChange={handleChangeChoice}
             >
                 <ToggleButton value="all" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>All</ToggleButton>
@@ -419,7 +450,7 @@ export default function Collections({account}) {
                                                     mr:2,
                                                     width: 128,
                                                     height: 128,
-                                                    filter: infoIPFS && infoIPFS.cid?`drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`:'grayscale(100%)',
+                                                    filter: ((type !== 'normal') && (!infoIPFS || !infoIPFS.cid))?'grayscale(100%)':`drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`,
                                                 }}
                                             />
 
@@ -436,14 +467,16 @@ export default function Collections({account}) {
                                     <TableCell align="left">
                                         <Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Link href={`/collection/${slug}`}>
-                                                    <Typography variant="s9" color="#33C2FF">{name} <Typography variant="s3" color="error">({items} items)</Typography></Typography>
-                                                </Link>
-                                                <Tooltip title='Click to toggle verified'>
-                                                    <IconButton onClick={()=>handleSetVerified(row)}>
-                                                        <VerifiedIcon color={verified === 'yes' ? "success":""} />
-                                                    </IconButton>
-                                                </Tooltip>
+                                                {type === "normal" &&
+                                                    <Tooltip title='Normal Collection'>
+                                                        <GridOnIcon color='info'/>
+                                                    </Tooltip>
+                                                }
+                                                {type === "bulk" &&
+                                                    <Tooltip title='Bulk Collection'>
+                                                        <ViewCompactIcon color='info'/>
+                                                    </Tooltip>
+                                                }
                                                 {type === "random" &&
                                                     <Tooltip title='Random Collection'>
                                                         <CasinoIcon color='info'/>
@@ -454,35 +487,55 @@ export default function Collections({account}) {
                                                         <AnimationIcon color='info'/>
                                                     </Tooltip>
                                                 }
+                                                <Link href={`/collection/${slug}`}>
+                                                    <Typography variant="s9" color="#33C2FF">{name} <Typography variant="s3" color="error">({items} items)</Typography></Typography>
+                                                </Link>
+                                                
+                                                
 
-                                                {costs && costs.length > 0 &&
-                                                    <Stack direction="row" spacing={0} alignItems="center">
-                                                        {/* <Typography variant="p4">Cost</Typography> */}
-                                                        <CustomSelect
-                                                            id='select_cost'
-                                                            value={costIdx}
-                                                            onChange={handleChangeCost}
-                                                        >
-                                                            {costs.map((cost, idx) => (
-                                                                <MenuItem
-                                                                    key={cost.md5}
-                                                                    value={idx}
-                                                                >
-                                                                    <Stack direction='row' alignItems="center">
-                                                                        <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} sx={{ width: 28, height:28, mr: 1 }} />
-                                                                        <Typography variant='d4' color="#EB5757">{cost.amount} {cost.name}</Typography>
-                                                                    </Stack>
-                                                                </MenuItem>
-                                                            ))}
-                                                        </CustomSelect>
-                                                        <Tooltip title='Set Trustlines Manually'>
-                                                            <IconButton onClick={()=>handleSetTrustlines(row)}>
-                                                                <AdminPanelSettingsIcon fontSize="large" color="success" />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </Stack>
-                                                }
+                                                <Tooltip title='Click to toggle verified'>
+                                                    <IconButton onClick={()=>handleSetVerified(row)}>
+                                                        <VerifiedIcon color={verified === 'yes' ? "success":""} />
+                                                    </IconButton>
+                                                </Tooltip>
+
+                                                <Tooltip title='Calc Properties Rarity % again'>
+                                                    <IconButton onClick={()=>handleCalcProperties(row)}>
+                                                        <AssignmentIcon fontSize="medium" color="success" />
+                                                    </IconButton>
+                                                </Tooltip>
                                             </Stack>
+
+                                            {costs && costs.length > 0 &&
+                                                <Stack direction="row" spacing={0.5} alignItems="center">
+                                                        <Typography variant="s7">Costs:</Typography>
+                                                        <Stack direction="row" spacing={0} alignItems="center">
+                                                            {/* <Typography variant="p4">Cost</Typography> */}
+                                                            <CustomSelect
+                                                                id='select_cost'
+                                                                value={costIdx}
+                                                                onChange={handleChangeCost}
+                                                            >
+                                                                {costs.map((cost, idx) => (
+                                                                    <MenuItem
+                                                                        key={cost.md5}
+                                                                        value={idx}
+                                                                    >
+                                                                        <Stack direction='row' alignItems="center">
+                                                                            <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} sx={{ width: 24, height:24, mr: 1 }} />
+                                                                            <Typography variant='d4' color="#EB5757">{cost.amount} {cost.name}</Typography>
+                                                                        </Stack>
+                                                                    </MenuItem>
+                                                                ))}
+                                                            </CustomSelect>
+                                                            <Tooltip title='Set Trustlines manually again'>
+                                                                <IconButton onClick={()=>handleSetTrustlines(row)}>
+                                                                    <AdminPanelSettingsIcon fontSize="medium" color="success" />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </Stack>
+                                                </Stack>
+                                            }
 
                                             <Stack direction="row" spacing={0} alignItems="center">
                                                 <Link
@@ -552,15 +605,15 @@ export default function Collections({account}) {
                                             </Stack>
                                             
                                             {infoIPFS && infoIPFS.cid &&
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    {/* <Typography variant="d3" color="#FFA319">Please check the following CID before Bulk-Mint your items</Typography> */}
+                                                <Stack direction="row" spacing={0} alignItems="center">
+                                                    <Typography variant="s7">IPFS CID:&nbsp;</Typography>
                                                     <Link
                                                         color="inherit"
                                                         target="_blank"
                                                         href={`https://gateway.xrpnft.com/ipfs/${infoIPFS.cid}`}
                                                         rel="noreferrer noopener nofollow"
                                                     >
-                                                        <Typography variant="d3" color="#33C2FF">{infoIPFS.cid}</Typography>
+                                                        <Typography variant="s7" color="#33C2FF">{infoIPFS.cid}</Typography>
                                                     </Link>
                                                     <Link
                                                         color="inherit"
@@ -570,14 +623,14 @@ export default function Collections({account}) {
                                                     >
                                                         <Tooltip title='Check on IPFS'>
                                                             <IconButton>
-                                                                <OpenInNewIcon />
+                                                                <OpenInNewIcon fontSize="small" sx={{ width: 16, height: 16 }} />
                                                             </IconButton>
                                                         </Tooltip>
                                                     </Link>
                                                     <CopyToClipboard text={`${infoIPFS.cid}`} onCopy={()=>openSnackbar('Copied!', 'success')}>
                                                         <Tooltip title='Click to copy'>
                                                             <IconButton>
-                                                                <ContentCopyIcon />
+                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }} />
                                                             </IconButton>
                                                         </Tooltip>
                                                     </CopyToClipboard>

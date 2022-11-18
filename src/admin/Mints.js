@@ -176,9 +176,9 @@ export default function Mints({account}) {
                 onChange={handleChangeChoice}
             >
                 <ToggleButton value="all" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>All</ToggleButton>
-                <ToggleButton value="account" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>By Account</ToggleButton>
+                <ToggleButton value="paid" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Paid</ToggleButton>
                 <ToggleButton value="notpaid" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Not Paid</ToggleButton>
-                <ToggleButton value="statusremove" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Status Remove</ToggleButton>
+                <ToggleButton value="account" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>By Account</ToggleButton>
             </ToggleButtonGroup>
 
             <TextField
@@ -449,22 +449,24 @@ export default function Mints({account}) {
                                                 <Typography variant='p4' color="#33C2FF">{quantity}</Typography>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Stack direction="row" spacing={1}>
-                                                    <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 4)}>
-                                                        XUMM
-                                                    </Button>
-                                                    <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 5)}>
-                                                        Cancel
-                                                    </Button>
-                                                    <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 2)}>
-                                                        Remove
-                                                    </Button>
-                                                    <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 3)}>
-                                                        Set as Paid
-                                                    </Button>
+                                            {status !== Mint.PAID &&
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 4)}>
+                                                            XUMM
+                                                        </Button>
+                                                        <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 5)}>
+                                                            Cancel
+                                                        </Button>
+                                                        <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 2)}>
+                                                            Remove
+                                                        </Button>
+                                                        <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 3)}>
+                                                            Set as Paid
+                                                        </Button>
+                                                    </Stack>
                                                 </Stack>
-                                            </Stack>
+                                            }
                                         </Stack>
                                     </TableCell>
                                 </TableRow>

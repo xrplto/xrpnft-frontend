@@ -22,7 +22,6 @@ import {
 } from '@mui/icons-material';
 
 // Utils
-import { fNumber } from 'src/utils/formatNumber';
 import { XRP_TOKEN } from 'src/utils/constants';
 
 // Components

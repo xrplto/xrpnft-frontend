@@ -28,9 +28,6 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
-// Utils
-import { fNumber } from 'src/utils/formatNumber';
-
 // Components
 import ProfileList from './ProfileList';
 

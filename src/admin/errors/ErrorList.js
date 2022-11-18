@@ -66,11 +66,12 @@ function statusToString(status) {
     return ret;
 }
 
-const NFTFix = { // 4:14 PM 11/06/2022
+const NFTFix = { // 4:00 AM 11/17/2022
     RESOLVE_ONE: 1,
     RESOLVE_PAGE: 2,
     RESOLVE_ALL: 3,
-    RESOLVE_PREOFFER_E2: 4
+    RESOLVE_PREOFFER_E2: 4,
+    RESOLVE_PREMINT_E3: 5,
 }
 
 export default function ErrorList({filter, choice, setLoading}) {
@@ -148,12 +149,44 @@ export default function ErrorList({filter, choice, setLoading}) {
         setLoading(false);
     };
 
+    const onRemoveNFT = async (uuid) => {
+        if (!accountAdmin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const body = { uuid };
+
+            const res = await axios.post(`${BASE_URL}/admin/remove_nft`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
+
+            const ret = res.data;
+            if (ret) {
+                if (ret.status) {
+                    openSnackbar('Successfully removed!', 'success');
+                    setSync(sync + 1);
+                } else {
+                    openSnackbar(ret.err, 'error');
+                }
+            }
+        } catch (err) {
+            console.error(err);
+            openSnackbar('Error', 'error');
+        }
+        setLoading(false);
+    };
+
     const handleResolve = (nft) => {
         let type = NFTFix.RESOLVE_ONE;
         if (nft.status === NFToken.PREOFFER_E2)
             type = NFTFix.RESOLVE_PREOFFER_E2;
 
         onResolveNFT([nft], type);
+    }
+
+    const handleRemove = (nft) => {
+        onRemoveNFT(nft.uuid);
     }
 
     const handleResolvePage = () => {
@@ -473,9 +506,22 @@ export default function ErrorList({filter, choice, setLoading}) {
                                                             Resolving ...
                                                         </Button>
                                                     ):(
-                                                        <Button variant="contained" color="primary" size="small" onClick={()=>handleResolve(row)}>
-                                                            {status === NFToken.PREOFFER_E2?"Set to PREOFFER":"Resolve"}
-                                                        </Button>
+                                                        <>
+                                                        {status === NFToken.PREMINT_E3r1 ?
+                                                            <>
+                                                                <Button variant="contained" color="primary" size="small" onClick={()=>handleResolve(row)}>
+                                                                    Resolve Again
+                                                                </Button>
+                                                                <Button variant="contained" color="primary" size="small" onClick={()=>handleRemove(row)}>
+                                                                    Remove
+                                                                </Button>
+                                                            </>
+                                                            :
+                                                            <Button variant="contained" color="primary" size="small" onClick={()=>handleResolve(row)}>
+                                                                {status === NFToken.PREOFFER_E2?"Set to PREOFFER":"Resolve"}
+                                                            </Button>
+                                                        }
+                                                        </>
                                                     )
                                                     }
                                                 </Stack>

@@ -77,6 +77,8 @@ export default function Overview({data}) {
         timestamp
     } = data.collection;
 
+    const bannerImgUrl = bannerImage?`https://s1.xrpnft.com/collection/${bannerImage}`:'/static/collection_banner.png';
+
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
@@ -91,7 +93,7 @@ export default function Overview({data}) {
                 >
                     <BannerImage
                         alt={name}
-                        src={`https://s1.xrpnft.com/collection/${bannerImage}`}
+                        src={bannerImgUrl}
                         decoding="async"
                     />
                 </div>
