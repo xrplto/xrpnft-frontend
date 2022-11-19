@@ -88,6 +88,8 @@ export default function NFTDetails({nft}) {
         cslug,
         NFTokenID,
         issuer,
+        props,
+        total
     } = nft;
 
     const ParsedURI = convertHexToString(URI);
@@ -109,7 +111,7 @@ export default function NFTDetails({nft}) {
 
     const collectionName = collection.name || collection;
 
-    const properties = getProperties(meta);
+    const properties = props || getProperties(meta);
     
     return (
         <Stack spacing={2} sx={{mt: 2}}>
@@ -128,9 +130,11 @@ export default function NFTDetails({nft}) {
                     </AccordionSummary>
                     <AccordionDetails sx={{mt: 2}}>
                         {properties && properties.length > 0 ?
-                            <Properties properties={properties} />
+                            <Properties properties={properties} total={total} />
                             :
-                            <Typography>No properties.</Typography>
+                            <Stack alignItems="center">
+                                <Typography>No Properties</Typography>
+                            </Stack>
                         }
                     </AccordionDetails>
                 </Accordion>

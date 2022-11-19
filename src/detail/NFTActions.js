@@ -24,7 +24,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { NFToken } from "src/utils/constants";
+import { NFToken, getMinterName } from "src/utils/constants";
 
 // Components
 import CreateOfferDialog from './CreateOfferDialog';
@@ -111,7 +111,7 @@ export default function NFTActions({ nft }) {
                     <Typography variant="s5">This NFT is burnt.</Typography>
                 :
                     <>
-                        {destination ? (
+                        {destination && getMinterName(account) ? (
                         <>
                             {destination === accountLogin?
                                 <Typography variant="s5">This NFT is being transferred to you. Click <CheckCircleOutlineIcon color='success'/> to accept it.</Typography>

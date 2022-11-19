@@ -622,14 +622,14 @@ export default function Collections({account}) {
                                                         rel="noreferrer noopener nofollow"
                                                     >
                                                         <Tooltip title='Check on IPFS'>
-                                                            <IconButton>
+                                                            <IconButton size="small">
                                                                 <OpenInNewIcon fontSize="small" sx={{ width: 16, height: 16 }} />
                                                             </IconButton>
                                                         </Tooltip>
                                                     </Link>
                                                     <CopyToClipboard text={`${infoIPFS.cid}`} onCopy={()=>openSnackbar('Copied!', 'success')}>
                                                         <Tooltip title='Click to copy'>
-                                                            <IconButton>
+                                                            <IconButton size="small">
                                                                 <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }} />
                                                             </IconButton>
                                                         </Tooltip>

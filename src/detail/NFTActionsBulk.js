@@ -183,7 +183,7 @@ export default function NFTActionsBulk({nft}) {
                         <Stack direction="row" spacing={2}>
                             <Button
                                 sx={{ borderRadius: 10 }}
-                                disabled={!accountLogin || status != NFToken.SELL_WITH_MINT}
+                                disabled={!accountLogin || status != NFToken.SELL_WITH_MINT_BULK}
                                 variant='contained'
                                 onClick={() => buyBulkNFT()}
                                 startIcon={<LocalOfferIcon />}

@@ -21,7 +21,6 @@ import {
 } from '@mui/icons-material';
 
 // Utils
-import { fNumber } from 'src/utils/formatNumber';
 import Decimal from 'decimal.js';
 
 // ----------------------------------------------------------------------

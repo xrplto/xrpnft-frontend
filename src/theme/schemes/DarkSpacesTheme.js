@@ -1197,7 +1197,8 @@ export const DarkSpacesTheme = createTheme({
           p2: 'p',
           p3: 'p',
           p4: 'p',
-          p5: 'p'
+          p5: 'p',
+          p6: 'p'
         }
       },
       styleOverrides: {
@@ -1281,6 +1282,11 @@ export const DarkSpacesTheme = createTheme({
       fontWeight: 400,
       fontSize: 16,
       color: colors.alpha.black[100]
+    },
+    p6: {
+      fontWeight: 400,
+      fontSize: 12,
+      color: colors.alpha.black[50]
     },
     s2: {
       fontWeight: 500,

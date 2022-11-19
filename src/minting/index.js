@@ -318,7 +318,7 @@ export default function Minting() {
                         setFileUrl(reader.result); // data:image/jpeg;base64
                     }
                 } else {
-                    openSnackbar('You can only upload video size less than 100MB', 'error');
+                    openSnackbar('You can only upload video size less than 50MB', 'error');
                     fileRef.current.value = null;
                 }
             }
@@ -402,7 +402,7 @@ export default function Minting() {
                 <Typography variant="h1a" >Create New Item</Typography>
                 <Typography variant='p3'><Typography variant='s2'>*</Typography> Required fields</Typography>
                 <Typography variant='p4'>Image, Video, Audio, or 3D Model <Typography variant='s2'>*</Typography></Typography>
-                <Typography variant='p3'>File types supported: {SUPPORTED_FILE_TYPES.join(', ')}. (Max size: 10MB) MP4 (Max size: 100MB)</Typography>
+                <Typography variant='p3'>File types supported: {SUPPORTED_FILE_TYPES.join(', ')}. (Max size: 10MB) MP4 (Max size: 50MB)</Typography>
                 <CardWrapper>
                     <input
                         ref={fileRef}

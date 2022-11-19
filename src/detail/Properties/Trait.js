@@ -1,10 +1,21 @@
+import Decimal from 'decimal.js';
+
 // Material
 import {
     Paper,
+    Stack,
     Typography,
 } from '@mui/material';
 
-export default function Trait({ type, value }) {
+export default function Trait({ prop, total }) {
+    const type = prop.type || prop.trait_type;
+    const value = prop.value;
+    const count = prop.count || 0;
+
+    let rarity = 0;
+    if (total > 0 && count > 0)
+        rarity = new Decimal(count).mul(100).div(total).toDP(2, Decimal.ROUND_DOWN).toNumber();
+
     return (
         <Paper
             sx={{
@@ -23,6 +34,9 @@ export default function Trait({ type, value }) {
             <Typography variant='s8'>
                 {value}
             </Typography>
+            {total > 0 &&
+                <Typography variant="p3" sx={{mt:1}}>{rarity} %</Typography>
+            }
         </Paper>
     );
 }

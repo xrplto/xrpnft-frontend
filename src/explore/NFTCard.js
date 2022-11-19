@@ -15,6 +15,9 @@ import {
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 
+// Utils
+import { NFToken, getMinterName } from "src/utils/constants";
+
 // Components
 import FlagsContainer from 'src/components/Flags';
 import Label from './Label';
@@ -200,7 +203,7 @@ export default function NFTCard({ nft }) {
 
                 <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>
                     <Typography variant='s2'>Price</Typography>
-                    {destination ? (
+                    {destination && getMinterName(account) ? (
                         // <Typography variant='s2'>TRANSFER</Typography>
                         <Tooltip title={`Sold & Transfer`}>
                             <SportsScoreIcon />

@@ -22,7 +22,7 @@ export default function Detail({nft}) {
                 <NFTDetails nft={nft} />
             </Grid>
             <Grid item xs={12} md={7}>
-                {costs && costs.length > 0 && status === NFToken.SELL_WITH_MINT ?
+                {costs && costs.length > 0 && status === NFToken.SELL_WITH_MINT_BULK ?
                     <NFTActionsBulk nft={nft} />
                 :
                     <NFTActions nft={nft} />

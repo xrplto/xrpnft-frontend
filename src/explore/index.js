@@ -58,6 +58,7 @@ export default function ExploreNFT({collection}) {
 
     const [showFilter, setShowFilter] = useState(true);
     const [filter, setFilter] = useState(0);
+    const [subFilter, setSubFilter] = useState('pricexrpasc');
 
     const fetchNfts = (nfTokensParam, offsetParam) => {
         const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
@@ -66,7 +67,7 @@ export default function ExploreNFT({collection}) {
 
         setLoading(true);
 
-        const body = { page, limit, flag, cid: collection?.uuid, search, filter};
+        const body = { page, limit, flag, cid: collection?.uuid, search, filter, subFilter};
 
         axios.post(`${BASE_URL}/nfts?page=${page}&limit=30&flag=${flag}`, body)
             .then(res => {
@@ -93,7 +94,7 @@ export default function ExploreNFT({collection}) {
             });
     };
 
-    const reset = (search, filter) => {
+    const reset = (search, filter, subFilter) => {
         if (!search && !filter)
             setNfTokens([])
         setOffset(0)
@@ -101,10 +102,10 @@ export default function ExploreNFT({collection}) {
     }
 
     useEffect(() => {
-        reset(search, filter)
+        reset(search, filter, subFilter)
         setHasMore(true)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [flag, search, filter]);
+    }, [flag, search, filter, subFilter]);
 
     const handleChangeSearch = (e) => {
         setSearch(e.target.value);
@@ -132,8 +133,7 @@ export default function ExploreNFT({collection}) {
                     // autoFocus
                     fullWidth
                     variant='outlined'
-                    // placeholder='Search by name or attribute'
-                    placeholder='Search by name'
+                    placeholder='Search by name or attribute'
                     margin='dense'
                     onChange={handleChangeSearch}
                     autoComplete='new-password'
@@ -161,7 +161,7 @@ export default function ExploreNFT({collection}) {
             <Grid container spacing={2} justifyContent='center'>
                 {showFilter &&
                     <Grid item xs={12} md={3}>
-                        <FilterDetail filter={filter} setFilter={setFilter} />
+                        <FilterDetail collection={collection} filter={filter} setFilter={setFilter} subFilter={subFilter} setSubFilter={setSubFilter} />
                     </Grid>
                 }
                 <Grid item xs={12} md={showFilter?9:12}>
@@ -177,7 +177,7 @@ export default function ExploreNFT({collection}) {
                                 display: 'grid',
                                 justifyContent: 'center',
                                 alignContent: 'flex-start',
-                                gridGap: '50px',
+                                gridGap: '20px',
                                 gridTemplateColumns: 'repeat(auto-fill, 300px)',
                                 marginTop: '30px'
                             }}
