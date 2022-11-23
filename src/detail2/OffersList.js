@@ -29,7 +29,6 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import CountdownTimer from './CountDownTimer';
 import QRDialog from 'src/components/QRDialog';
 import ConfirmAcceptOfferDialog from './ConfirmAcceptOfferDialog';
 
@@ -428,17 +427,6 @@ export default function OffersList({ nft, isSell }) {
                                                 <Typography variant='s6'>{offer.destination}</Typography>
                                             </Stack>
                                         }
-
-                                        {/* {offer.expiration ?
-                                            <Stack direction="row" alignItems="center">
-                                                <Typography variant='s4'>Expires by {new Date(getUnixTimeEpochFromRippleEpoch(offer.expiration)).toLocaleString()}</Typography>
-                                                <CountdownTimer targetDate={getUnixTimeEpochFromRippleEpoch(offer.expiration)} />
-                                            </Stack>
-                                            :
-                                            <Stack direction="row" alignItems="center">
-                                                <Typography variant='string'>No Expiration</Typography>
-                                            </Stack>
-                                        } */}
                                     </Stack>
                                 </Stack>
                                 <Divider sx={{mt:2}} />

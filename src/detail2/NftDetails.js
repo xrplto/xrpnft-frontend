@@ -35,68 +35,16 @@ import Properties from './Properties';
 import Levels from 'src/minting/NFTLevels/Levels';
 import { convertHexToString, parseNFTokenID } from 'src/utils/parse';
 
-function getProperties(meta) {
-    const properties = [];
-    if (!meta) return [];
-
-    // Attributes
-    try {
-        const attributes = meta.attributes;
-        if (attributes && attributes.length > 0) {
-            for (const attr of attributes) {
-                const type = attr.type || attr.trait_type;
-                const value = attr.value;
-                properties.push({type, value});
-            }
-        }
-    } catch (e) {}
-
-    // Other props
-    const props = [
-        'Rarity',
-        'Signature',
-        'Background',
-        'Base',
-        'Mouth',
-        'Accessories',
-        'Base Effects',
-        // ==============
-        'Blade Effect',
-        'End Scene',
-        'Music',
-        'Blades In Video',
-        // ==============
-        'Special',
-    ];
-
-    try {
-        for (const prop of props) {
-            if (meta[prop]) {
-                properties.push({type: prop, value: meta[prop]});
-            }
-        }
-    } catch (e) {}
-
-    return properties;
-
-}
-
 export default function NFTDetails({nft}) {
 
     const { accountProfile, openSnackbar } = useContext(AppContext);
 
-    const {
-        uuid,
-        name,
-        collection,
+    const { // {account, NFTokenID, URI, hash, time}
         account,
-        date,
-        meta,
-        URI,
-        cslug,
         NFTokenID,
-        props,
-        total
+        URI,
+        hash,
+        time
     } = nft;
 
     const ParsedURI = convertHexToString(URI);
@@ -108,49 +56,23 @@ export default function NFTDetails({nft}) {
     const issuer = ParsedID.issuer;
     const taxon = ParsedID.taxon;
 
-    let strDateTime = '';
-    if (date) {
-        const dt = new Date(date); // .toLocaleDateString().split('.')[0].replace('T', ' ')
-        const strDate = dt.toLocaleDateString();
-        const strTime = dt.toLocaleTimeString();
-        strDateTime = `${strDate} ${strTime}`;
-    }
-
     let transferFee = 0;
     try {
         if (royalty)
             transferFee = Decimal.div(royalty, '1000').toDP(3, Decimal.ROUND_DOWN).toNumber();
     } catch (e) {}
 
-    const collectionName = collection.name || collection;
+    let strDateTime = '';
+    if (time) {
+        const dt = new Date(time); // .toLocaleDateString().split('.')[0].replace('T', ' ')
+        const strDate = dt.toLocaleDateString();
+        const strTime = dt.toLocaleTimeString();
+        strDateTime = `${strDate} ${strTime}`;
+    }
 
-    const properties = props || getProperties(meta);
-    
     return (
         <Stack spacing={2} sx={{mt: 2}}>
-            <NFTPreview meta={meta} title={name} favorites={0} />
             <Stack>
-                <Accordion defaultExpanded>
-                    <AccordionSummary
-                        id="panel3bh-header"
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel3bh-content"
-                    >
-                        <Stack spacing={2} direction='row'>
-                            <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                            <Typography variant='string'>Properties</Typography>
-                        </Stack>
-                    </AccordionSummary>
-                    <AccordionDetails sx={{mt: 2}}>
-                        {properties && properties.length > 0 ?
-                            <Properties properties={properties} total={total} />
-                            :
-                            <Stack alignItems="center">
-                                <Typography>No Properties</Typography>
-                            </Stack>
-                        }
-                    </AccordionDetails>
-                </Accordion>
                 <Accordion defaultExpanded>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
@@ -168,22 +90,14 @@ export default function NFTDetails({nft}) {
                             <FlagsContainer Flags={flag}/>
                             <Typography variant="s6">{strDateTime}</Typography>
                         </Stack>
+
                         <Stack direction="row" spacing={2} sx={{mt: 2}}>
                             <Typography variant="caption">Taxon</Typography>
                             <Typography variant="s6">{taxon}</Typography>
                             <Typography variant="caption">Transfer Fee</Typography>
                             <Typography variant="s6">{transferFee} %</Typography>
                         </Stack>
-                        <Stack direction="row" spacing={2} sx={{mt: 2}}>
-                            <Typography variant='caption'>Collection</Typography>
-                            {cslug ? (
-                                <Link href={`/collection/${cslug}`} underline='none'>
-                                    <Typography sx={{pl:1}}>{collectionName}</Typography>
-                                </Link>
-                            ):(
-                                <Typography sx={{pl:1}}>{collectionName}</Typography>
-                            )}
-                        </Stack>
+
                         <Divider sx={{mt:2, mb:2}}/>
 
                         <Stack spacing={1}>
@@ -257,7 +171,7 @@ export default function NFTDetails({nft}) {
                             </Stack>
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
-                    
+
                         <Stack spacing={1}>
                             <Typography variant="caption">NFTokenID</Typography>
                             <Link
@@ -289,71 +203,9 @@ export default function NFTDetails({nft}) {
                             </Link>
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
-
-                        {
-                            meta.external_link && (
-                                <>
-                                    <Stack spacing={1}>
-                                        <Typography variant='caption'>Link</Typography>
-                                        <Link
-                                            href={`${meta.external_link}`}
-                                            sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
-                                            underline='hover'
-                                            target="_blank"
-                                            variant='info'
-                                            rel="noreferrer noopener nofollow"
-                                        >
-                                            <Typography sx={{ml:1}}>{meta.external_link}</Typography>
-                                        </Link>
-                                    </Stack>
-                                    <Divider sx={{mt:2, mb:2}}/>
-                                </>
-                            )
-                        }
-
                     </AccordionDetails>
                 </Accordion>
-                <Accordion defaultExpanded>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel2bh-content"
-                        id="panel2bh-header"
-                    >
-                        <Stack spacing={2} direction='row'>
-                            <DescriptionIcon />
-                            <Typography variant='string' >Description</Typography>
-                        </Stack>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        {meta.description ?
-                            <Typography>{meta.description}</Typography>
-                            :
-                            <Typography sx={{ textAlign: 'center' }}>No description for this item</Typography>
-                        }
-                    </AccordionDetails>
-                </Accordion>
-                
 
-                {/* NFT Leveled Properties start--- */}
-                {/* {
-                    levels &&
-                    <Accordion defaultExpanded>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel4bh-content"
-                            id="panel4bh-header"
-                        >
-                            <Stack spacing={2} direction='row'>
-                                <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                                <Typography variant='string' >Level Properties</Typography>
-                            </Stack>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Levels levels={data.description?.levels} />
-                        </AccordionDetails>
-                    </Accordion>
-                } */}
-                {/* NFT Leveled Properties end--- */}
             </Stack>
         </Stack>
     );

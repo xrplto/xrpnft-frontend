@@ -33,6 +33,7 @@ import CreatedList from './CreatedList';
 import FavoritedList from './FavoritedList';
 import ActivityList from './ActivityList';
 import AcceptList from './AcceptList';
+import OrphanedList from './OrphanedList';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -176,8 +177,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['', 'created', 'favorited', 'activity', 'accept'];
-const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept'];
+const tabValues = ['', 'created', 'favorited', 'activity', 'accept', 'orphaned'];
+const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept', 'Orphaned Offers'];
 
 function getTabID(tab) {
     if (!tab) return 0;
@@ -287,6 +288,7 @@ export default function Account({profile, tab}) {
                     <Tab value={2} label={tabLabels[2]} {...a11yProps(2)} />
                     <Tab value={3} label={tabLabels[3]} {...a11yProps(3)} />
                     <Tab value={4} label={tabLabels[4]} {...a11yProps(4)} />
+                    <Tab value={5} label={tabLabels[5]} {...a11yProps(5)} />
                 </Tabs>
                 <TabPanel value={tabID} id={0}>
                     <Stack sx={{minHeight: '20vh'}}>
@@ -311,6 +313,11 @@ export default function Account({profile, tab}) {
                 <TabPanel value={tabID} id={4}>
                     <Stack sx={{minHeight: '20vh'}}>
                         <AcceptList account={profile.account} />
+                    </Stack>
+                </TabPanel>
+                <TabPanel value={tabID} id={5}>
+                    <Stack sx={{minHeight: '20vh'}}>
+                        <OrphanedList account={profile.account} />
                     </Stack>
                 </TabPanel>
             </Stack>

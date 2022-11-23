@@ -23,6 +23,7 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
+import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 
 // Context
 import { useContext } from 'react';
@@ -44,7 +45,7 @@ export default function Wallet() {
     // https://github.com/mui/material-ui/issues/10000
     const BASE_URL = 'https://api.xrpnft.com/api';
     const anchorRef = useRef(null);
-    const { accountProfile, setAccountProfile, acceptNfts, setAcceptNfts, setLoading, sync } = useContext(AppContext);
+    const { accountProfile, setAccountProfile, acceptNfts, setAcceptNfts, orphanedOffers, setOrphanedOffers, setLoading, sync } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
     const accountUuid = accountProfile?.xuuid;
@@ -64,11 +65,12 @@ export default function Wallet() {
                 return;
             }
 
-            axios.get(`${BASE_URL}/account/count_offered?account=${accountLogin}`, {headers: {'x-access-token': accountToken}})
+            axios.get(`${BASE_URL}/account/count_notify?account=${accountLogin}`, {headers: {'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
-                    if (ret && acceptNfts !== ret.count) {
-                        setAcceptNfts(ret.offerCount);
+                    if (ret) {
+                        setAcceptNfts(ret.acceptNfts);
+                        setOrphanedOffers(ret.orphanedOffers);
                     }
                 }).catch(err => {
                     console.log("Error on getting accept nfts count!!!", err);
@@ -214,7 +216,7 @@ export default function Wallet() {
                 onClick={handleOpen}
                 // onMouseOver={handleOpen}
             >
-                <Badge color="primary" badgeContent={acceptNfts}>
+                <Badge color="primary" badgeContent={acceptNfts + orphanedOffers}>
                     {logoImageUrl?(
                         <Avatar alt="user" src={logoImageUrl} sx={{ width: 32, height: 32 }}/>
                     ):(
@@ -253,6 +255,21 @@ export default function Wallet() {
                                                 <AssignmentReturnedIcon sx={{ width: 24, height: 24 }}/>
                                             </Badge>
                                             <Typography variant='s3' style={{marginLeft: '10px'}}>Accept NFTs</Typography>
+                                        </Stack>
+                                    </NextLink>
+                                </MenuItem>
+                            }
+                            {orphanedOffers > 0 &&
+                                <MenuItem
+                                    key="account_orphaned_offers"
+                                    sx={{ typography: 'body2', py: 2, px: 2.5, mt: 1 }}
+                                >
+                                    <NextLink href={`/account/${accountLogin}/orphaned`} passHref>
+                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                            <Badge color="primary" badgeContent={acceptNfts}>
+                                                <DeleteSweepIcon sx={{ width: 24, height: 24 }}/>
+                                            </Badge>
+                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Orphaned Offers</Typography>
                                         </Stack>
                                     </NextLink>
                                 </MenuItem>
