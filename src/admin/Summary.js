@@ -95,6 +95,10 @@ export default function Summary({}) {
 
     const [profiles, setProfiles] = useState(0); // Profiles
 
+    const [orphaned, setOrphaned] = useState(0); // Orphaned Offers
+
+    const [calcPrices, setCalcPrices] = useState(0); // Calc Prices
+
     const [xrpnftAccounts, setXrpnftAccounts] = useState([]); // XRPNFT.com accounts
 
     const [nftScanner, setNftScanner] = useState({index: 0, nfts: 0});
@@ -133,6 +137,8 @@ export default function Summary({}) {
 
                         setActivities(ret.activities);
                         setProfiles(ret.profiles);
+                        setOrphaned(ret.orphaned);
+                        setCalcPrices(ret.calcPrices);
 
                         setXrpnftAccounts(ret.xrpnftAccounts);
 
@@ -203,10 +209,10 @@ export default function Summary({}) {
 
                         <TableRow>
                             <TableCell align="right">
-                                <Typography variant="s4">Total Activities: </Typography>
+                                <Typography variant="s4">Activities (1 Month): </Typography>
                             </TableCell>
                             <TableCell align="right">
-                                <Typography variant="s6">{fIntNumber(activities)}</Typography>
+                                <Typography variant="s6">{fIntNumber(activities)} <Typography variant="s2" color="#33C2FF">(XRPL)</Typography></Typography>
                             </TableCell>
                         </TableRow>
 
@@ -216,6 +222,24 @@ export default function Summary({}) {
                             </TableCell>
                             <TableCell align="right">
                                 <Typography variant="s6">{fIntNumber(profiles)}</Typography>
+                            </TableCell>
+                        </TableRow>
+
+                        <TableRow>
+                            <TableCell align="right">
+                                <Typography variant="s4">Orphaned Offers: </Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                                <Typography variant="s6">{fIntNumber(orphaned)} <Typography variant="s2" color="#33C2FF">(XRPL)</Typography></Typography>
+                            </TableCell>
+                        </TableRow>
+
+                        <TableRow>
+                            <TableCell align="right">
+                                <Typography variant="s4">Calc Prices: </Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                                <Typography variant="s6">{fIntNumber(calcPrices)}</Typography>
                             </TableCell>
                         </TableRow>
                     </TableBody>

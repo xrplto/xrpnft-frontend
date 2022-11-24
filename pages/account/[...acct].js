@@ -98,7 +98,7 @@ export default function Overview({data}) {
 export async function getServerSideProps(ctx) {
     const BASE_URL = 'http://65.109.54.46/api';
 
-    let data = null;
+    let data = {};
     const params = ctx.params.acct;
     const acct = params[0];
     const tab = params[1];
@@ -148,8 +148,8 @@ export async function getServerSideProps(ctx) {
         ogp.imgUrl = imgUrl;
         ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
 
-        if (tab === 'accept')
-            data.tab = 'accept';
+        if (tab)
+            data.tab = tab;
 
         return {
             props: {data, ogp}, // will be passed to the page component as props

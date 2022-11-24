@@ -461,7 +461,7 @@ export default function ActivityList({account}) {
                                     // NFTokenID
                                     componentActivity = (
                                         <>
-                                            <Stack direction="row" spacing={1}>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s7">NFTokenID: </Typography>
                                                 <Link
                                                     color="inherit"
@@ -481,7 +481,7 @@ export default function ActivityList({account}) {
                                     // NFTokenID
                                     componentActivity = (
                                         <>
-                                            <Stack direction="row" spacing={1}>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s7">NFTokenID: </Typography>
                                                 <Link
                                                     color="inherit"
@@ -502,7 +502,7 @@ export default function ActivityList({account}) {
                                     // NFTokenID
                                     componentActivity = (
                                         <>
-                                            <Stack direction="row" spacing={1}>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s7">NFTokenID: </Typography>
                                                 <Link
                                                     color="inherit"
@@ -522,7 +522,7 @@ export default function ActivityList({account}) {
                                     // NFTokenID
                                     componentActivity = (
                                         <>
-                                            <Stack direction="row" spacing={1}>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s7">NFTokenID: </Typography>
                                                 <Link
                                                     color="inherit"
@@ -543,7 +543,7 @@ export default function ActivityList({account}) {
                                     // NFTokenID
                                     componentActivity = (
                                         <>
-                                            <Stack direction="row" spacing={1}>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s7">NFTokenID: </Typography>
                                                 <Link
                                                     color="inherit"
@@ -563,7 +563,7 @@ export default function ActivityList({account}) {
                                     // NFTokenID
                                     componentActivity = (
                                         <>
-                                            <Stack direction="row" spacing={1}>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s7">NFTokenID: </Typography>
                                                 <Link
                                                     color="inherit"
@@ -584,7 +584,7 @@ export default function ActivityList({account}) {
                                     // NFTokenID
                                     componentActivity = (
                                         <>
-                                            <Stack direction="row" spacing={1}>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s7">NFTokenID: </Typography>
                                                 <Link
                                                     color="inherit"
@@ -604,7 +604,7 @@ export default function ActivityList({account}) {
                                     // NFTokenID
                                     componentActivity = (
                                         <>
-                                            <Stack direction="row" spacing={1}>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s7">NFTokenID: </Typography>
                                                 <Link
                                                     color="inherit"
@@ -625,7 +625,7 @@ export default function ActivityList({account}) {
                                     // NFTokenID
                                     componentActivity = (
                                         <>
-                                            <Stack direction="row" spacing={1}>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s7">NFTokenID: </Typography>
                                                 <Link
                                                     color="inherit"
@@ -666,7 +666,7 @@ export default function ActivityList({account}) {
                                                 </Stack>
                                                 :
                                                 <Stack>
-                                                    <Stack direction="row" spacing={1}>
+                                                    <Stack direction="row" spacing={1} alignItems="center">
                                                         <Typography variant="s7">NFTokenID: </Typography>
                                                         <Link
                                                             color="inherit"
@@ -690,7 +690,7 @@ export default function ActivityList({account}) {
                                     // NFTokenID
                                     componentActivity = (
                                         <>
-                                            <Stack direction="row" spacing={1}>
+                                            <Stack direction="row" spacing={1} alignItems="center">
                                                 <Typography variant="s7">NFTokenID: </Typography>
                                                 <Link
                                                     color="inherit"

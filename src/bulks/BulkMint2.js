@@ -108,6 +108,18 @@ const MEDIA_TYPES = [
         icon: (<PhotoLibraryIcon />)
     },
     {
+        title: 'Image/gif (.gif)',
+        value: 'gif',
+        type: 'image',
+        icon: (<PhotoLibraryIcon />)
+    },
+    {
+        title: 'Image/gif (.GIF)',
+        value: 'GIF',
+        type: 'image',
+        icon: (<PhotoLibraryIcon />)
+    },
+    {
         title: 'Video/mp4 (.mp4)',
         value: 'mp4',
         type: 'video',
@@ -288,7 +300,7 @@ export default function BulkMint2({slug}) {
         newMeta.name = nftName + ' #' + nftNameIndex;
 
         // imgExt change
-        if (imgExt === 'png' || imgExt === 'PNG' || imgExt === 'jpg' || imgExt === 'JPG' || imgExt === 'jpeg' || imgExt === 'JPEG') {
+        if (imgExt === 'png' || imgExt === 'PNG' || imgExt === 'jpg' || imgExt === 'JPG' || imgExt === 'jpeg' || imgExt === 'JPEG' || imgExt === 'gif' || imgExt === 'GIF') {
             newMeta.image = ipfsCID + `/${nftNameIndex}.${imgExt}`;
             if (newMeta.video) newMeta.video = '';
         } else if (imgExt === 'mp4') {
@@ -437,7 +449,7 @@ export default function BulkMint2({slug}) {
             newMeta.name = nftName + ' #' + pos;
             // TODO
 
-            if (imgExt === 'png' || imgExt === 'jpg') {
+            if (imgExt === 'png' || imgExt === 'PNG' || imgExt === 'jpg' || imgExt === 'JPG' || imgExt === 'jpeg' || imgExt === 'JPEG' || imgExt === 'gif' || imgExt === 'GIF') {
                 newMeta.image = ipfsCID + `/${pos}.${imgExt}`;
                 if (newMeta.video) newMeta.video = '';
             } else if (imgExt === 'mp4') {

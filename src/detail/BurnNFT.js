@@ -46,7 +46,8 @@ export default function BurnNFT({nft, onHandleBurn}) {
         NFTokenID
     } = nft;
 
-    const isBurnable = (flag & 0x00000001) > 0;
+    // const isBurnable = (flag & 0x00000001) > 0;
+    const isBurnable = accountLogin === account;
 
     useEffect(() => {
         var timer = null;

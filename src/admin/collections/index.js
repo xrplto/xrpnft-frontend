@@ -296,12 +296,17 @@ export default function Collections({account}) {
     }
 
     const handleRemove = (collection) => {
+        setRemoveCid(collection.uuid);
+        setOpenConfirm(true);
+
+        /*
         if (collection.items > 0) {
             openSnackbar('You can not remove this collection. (items > 0)', 'error');
         } else {
             setRemoveCid(collection.uuid);
             setOpenConfirm(true);
         }
+        */
     }
 
     const onContinueRemove = () => {

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { FadeLoader } from 'react-spinners';
 import { normalizeAmount } from 'src/utils/normalizers';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import Decimal from 'decimal.js';
 
 // Material
 import {
@@ -63,27 +64,27 @@ export default function OrphanedList({ account }) {
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
-                        // setTotal(ret.total);
-                        // setOffers(ret.offers);
+                        setTotal(ret.total);
+                        setOffers(ret.offers);
 
-                        const newOffers = [{
-                            "_id": "637ddcf72430cc4537c4a8f5",
-                            "status": "created",
-                            "amount": "500000",
-                            "flags": 1,
-                            "nftokenID": "0008000051A8DF348A9C2E8EF14AD99B699E4651C5BE0C0A535753250000001A",
-                            "owner": "r3S8px1Qx6ctoQGv8puFwahoLWGjVZksQv",
-                            "index": "84F0D691282969DB2ECA1DF333E563CBF5C9523AF3124A8A9743489F6267F842",
-                            "type": "NFTokenCreateOffer",
-                            "account": "r3S8px1Qx6ctoQGv8puFwahoLWGjVZksQv",
-                            "Account": "r3S8px1Qx6ctoQGv8puFwahoLWGjVZksQv",
-                            "hash": "C000D46D3230B777B6984AA5C92B9AB4405CD71C4AC0C1903CBFC57B146A24CC",
-                            "date": null,
-                            "ledger_index": 75946713,
-                            "orphaned": "yes"
-                        }];
-                        setTotal(1);
-                        setOffers(newOffers);
+                        // const newOffers = [{
+                        //     "_id": "637ddcf72430cc4537c4a8f5",
+                        //     "status": "created",
+                        //     "amount": "500000",
+                        //     "flags": 1,
+                        //     "NFTokenID": "0008000051A8DF348A9C2E8EF14AD99B699E4651C5BE0C0A535753250000001A",
+                        //     "owner": "r3S8px1Qx6ctoQGv8puFwahoLWGjVZksQv",
+                        //     "index": "84F0D691282969DB2ECA1DF333E563CBF5C9523AF3124A8A9743489F6267F842",
+                        //     "type": "NFTokenCreateOffer",
+                        //     "account": "r3S8px1Qx6ctoQGv8puFwahoLWGjVZksQv",
+                        //     "Account": "r3S8px1Qx6ctoQGv8puFwahoLWGjVZksQv",
+                        //     "hash": "C000D46D3230B777B6984AA5C92B9AB4405CD71C4AC0C1903CBFC57B146A24CC",
+                        //     "date": null,
+                        //     "ledger_index": 75946713,
+                        //     "orphaned": "yes"
+                        // }];
+                        // setTotal(1);
+                        // setOffers(newOffers);
                     }
                 }).catch(err => {
                     console.log("Error on getting orphaned offers list!!!", err);
@@ -233,9 +234,9 @@ export default function OrphanedList({ account }) {
             </Backdrop>
 
             <Typography variant="s7">When you create several Sell Offers on your NFT and if one is accepted by another account, your NFT will</Typography>
-            <Typography variant="s7">goes to another account and the remaining Sell Offers are still owned to you and they are orphaned offers.</Typography>
-            <Typography variant="s7">Or if you accept the buy offer of your NFT from another account, your NFT will goes to another account, </Typography>
-            <Typography variant="s7">and Sell Offers will become the orphaned offers. You must cancel them to save your account XRP reserve.</Typography>
+            <Typography variant="s7">go to another account and the remaining Sell Offers are still owned to you and they are orphaned offers.</Typography>
+            <Typography variant="s7">Or if you accept the buy offer of your NFT from another account, your NFT will go to another account, </Typography>
+            <Typography variant="s7">and Sell Offers will become orphaned offers. You must cancel them to save your account XRP reserve.</Typography>
 
             {loading ? (
                 <Stack alignItems="center">
@@ -243,8 +244,8 @@ export default function OrphanedList({ account }) {
                 </Stack>
             ):(
                 offers && offers.length === 0 &&
-                    <Stack alignItems="center" sx={{mt: 1, mb: 1}}>
-                        <Typography variant="s7">No Orphaned Offers</Typography>
+                    <Stack alignItems="center" sx={{mt: 2, mb: 1}}>
+                        <Typography variant="s2">[ No Orphaned Offers ]</Typography>
                     </Stack>
             )
             }
@@ -257,21 +258,12 @@ export default function OrphanedList({ account }) {
                 nextUrl={nextUrl}
             />
 
-            { total > 0 &&
-                <ListToolbar
-                    count={total}
-                    rows={rows}
-                    setRows={setRows}
-                    page={page}
-                    setPage={setPage}
-                />
-            }
-
             <Stack>
                 {
                     offers.map((offer, idx) => {
-                        const NFTokenID = offer.nftokenID;
+                        const NFTokenID = offer.NFTokenID;
                         const price = normalizeAmount(offer.amount);
+                        const index = offer.index;
 
                         const ParsedID = parseNFTokenID(NFTokenID);
                         const flag = ParsedID.flag;
@@ -279,8 +271,14 @@ export default function OrphanedList({ account }) {
                         const issuer = ParsedID.issuer;
                         const taxon = ParsedID.taxon;
 
+                        let transferFee = 0;
+                        try {
+                            if (royalty)
+                                transferFee = Decimal.div(royalty, '1000').toDP(3, Decimal.ROUND_DOWN).toNumber();
+                        } catch (e) {}
+
                         return (
-                            <Stack key={offer.nft_offer_index} sx={{mt: 2}}>
+                            <Stack key={index} sx={{mt: 2}}>
                                 <Stack direction="row" spacing={1} alignItems="center">
 
                                     <Stack>
@@ -304,7 +302,9 @@ export default function OrphanedList({ account }) {
 
                                     <Stack spacing={1}>
                                         <Stack direction="row" spacing={2} alignItems="center">
+                                            <Typography variant='s7'>Offer Price </Typography>
                                             <Typography variant='s6' color='#33C2FF'>{price.amount} {price.name}</Typography>
+                                            <Typography variant='s7'>Flag </Typography>
                                             <FlagsContainer Flags={flag}/>
                                             {/* <Link
                                                 color="inherit"
@@ -314,6 +314,10 @@ export default function OrphanedList({ account }) {
                                             >
                                                 <Typography variant='s6' style={{ wordWrap: "break-word" }}>{issuer}</Typography>
                                             </Link> */}
+                                            <Typography variant='s7'>Taxon </Typography>
+                                            <Typography variant='s6'>{taxon}</Typography>
+                                            <Typography variant="s7">Transfer Fee</Typography>
+                                            <Typography variant="s6">{transferFee} %</Typography>
                                         </Stack>
 
                                         {offer.destination &&
@@ -368,6 +372,16 @@ export default function OrphanedList({ account }) {
                     })
                 }
             </Stack>
+
+            { total > 0 &&
+                <ListToolbar
+                    count={total}
+                    rows={rows}
+                    setRows={setRows}
+                    page={page}
+                    setPage={setPage}
+                />
+            }
         </>
     );
 }
