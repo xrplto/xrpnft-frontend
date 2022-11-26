@@ -206,7 +206,7 @@ export const NFToken = { // 11:42 AM 11/18/2022
     PREOFFER_E3: 143, // Tried to find out SellOfferID but failed
   }
 
-export const Activity = { // 05:00 AM 11/08/2022
+export const Activity = { // 07:29 AM 11/26/2022
     LOGIN: 1,
     LOGOUT: 2,
     UPDATE_PROFILE: 3,
@@ -243,14 +243,15 @@ export const Activity = { // 05:00 AM 11/08/2022
     SET_NFT_MINTER: 41, // AccountSet
   
     FUND_CREATOR: 51, // Minter account funded to Collection creator.
+    REFUND_BUYER: 52, // Refund Mint amount to the buyer.
   
     GAVE_MINTS_TO_USER: 88,
   
     REMOVE_A_COLLECTION: 129,
     SET_COLLECTION_TRUSTLINES: 130,
-}
+  }
 
-export const Mint = { // 4:50 AM 11/9/2022
+export const Mint = { // 6:41 AM 11/26/2022
     BUY: 1,
     PAID: 2,
     CANCEL: 3,
@@ -260,10 +261,18 @@ export const Mint = { // 4:50 AM 11/9/2022
     PENDING: 9,
     FUND: 10,
     FUNDED: 11,
+  
+    // Refund to Buyer
+    REFUND: 21,
+    REFUNDED: 22,
+  
     ERROR_BASE: 80,
     FUND_E1: 81,
-    FUND_E2: 82
-}
+    FUND_E2: 82,
+  
+    REFUND_E1: 91,
+    REFUND_E2: 92
+  }
 
 export const CollectionListType = { // 4:15 AM 11/15/2022
     ALL: 1,

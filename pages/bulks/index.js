@@ -14,7 +14,7 @@ import Footer from 'src/components/Footer';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
-        overflow: hidden;
+        // overflow: hidden;
         flex: 1;
 `
 );

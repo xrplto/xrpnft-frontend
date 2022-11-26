@@ -65,15 +65,21 @@ export default function Wallet() {
                 return;
             }
 
-            axios.get(`${BASE_URL}/account/count_notify?account=${accountLogin}`, {headers: {'x-access-token': accountToken}})
+            const body = {
+                account: accountLogin
+            };
+
+            axios.post(`${BASE_URL}/info/header`, body, {headers: {'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
                         setAcceptNfts(ret.acceptNfts);
                         setOrphanedOffers(ret.orphanedOffers);
+
+                        // setOrphanedOffers(1);
                     }
                 }).catch(err => {
-                    console.log("Error on getting accept nfts count!!!", err);
+                    console.log("Error on getting header info!!!", err);
                 }).then(function () {
                     // always executed
                 });
@@ -266,7 +272,7 @@ export default function Wallet() {
                                 >
                                     <NextLink href={`/account/${accountLogin}/orphaned`} passHref>
                                         <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                            <Badge color="primary" badgeContent={acceptNfts}>
+                                            <Badge color="primary" badgeContent={orphanedOffers}>
                                                 <DeleteSweepIcon sx={{ width: 24, height: 24 }}/>
                                             </Badge>
                                             <Typography variant='s3' style={{marginLeft: '10px'}}>Orphaned Offers</Typography>

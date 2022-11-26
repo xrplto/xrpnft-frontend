@@ -1240,11 +1240,11 @@ export const PureLightTheme = createTheme({
           props: { variant: 's1' },
           style: ({ theme }) => ({
             fontWeight: 400,
-            fontSize: 18,
+            fontSize: 16,
             lineHeight: 1.4,
-            color: colors.alpha.black[70],
+            color: colors.alpha.black[100],
             [theme.breakpoints.up('md')]: {
-              fontSize: 24,
+              fontSize: 20,
             },
           })
         }

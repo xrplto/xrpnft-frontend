@@ -48,8 +48,8 @@ export default function ExploreNFT({collection}) {
     const BASE_URL = 'https://api.xrpnft.com/api'
 
     const { enqueueSnackbar } = useSnackbar();
-    const [nfTokens, setNfTokens] = useState([]);
-    const [offset, setOffset] = useState(0);
+    const [nfts, setNfts] = useState([]);
+    const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const [flag, setFlag] = useState(0);
 
@@ -60,32 +60,27 @@ export default function ExploreNFT({collection}) {
     const [filter, setFilter] = useState(0);
     const [subFilter, setSubFilter] = useState('pricexrpasc');
 
-    const fetchNfts = (nfTokensParam, offsetParam) => {
-        const _nfTokens = nfTokensParam ? nfTokensParam : nfTokens
-        const page = offsetParam === 0 ? offsetParam : offset
-        const limit = 30;
+    const [sync, setSync] = useState(0);
 
+    const fetchNfts = () => {
         setLoading(true);
+
+        const limit = 20;
 
         const body = { page, limit, flag, cid: collection?.uuid, search, filter, subFilter};
 
-        axios.post(`${BASE_URL}/nfts?page=${page}&limit=30&flag=${flag}`, body)
+        axios.post(`${BASE_URL}/nfts`, body)
             .then(res => {
                 const newNfts = res.data.nfts;
-                if (newNfts.length < 10) {
+                const length = newNfts.length;
+                if (length < 10) {
                     setHasMore(false)
                 } else {
                     setHasMore(true)
                 }
-
-                if (search || filter > 0) {
-                    setNfTokens(newNfts)
-                } else
-                    setNfTokens([..._nfTokens, ...res.data.nfts])
-                // enqueueSnackbar('Fetch:' + _offset, {
-                //     variant: 'success'
-                // })
-                setOffset(page + 1)
+                if (length > 0) {
+                    setNfts([...nfts, ...newNfts])
+                }
             }).catch(err => {
                 console.log("Error on getting nfts!", err);
             }).then(function () {
@@ -94,18 +89,17 @@ export default function ExploreNFT({collection}) {
             });
     };
 
-    const reset = (search, filter, subFilter) => {
-        if (!search && !filter)
-            setNfTokens([])
-        setOffset(0)
-        fetchNfts([], 0)
-    }
-
     useEffect(() => {
-        reset(search, filter, subFilter)
-        setHasMore(true)
+        setNfts([]);
+        setPage(0);
+        setHasMore(true);
+        setSync(sync + 1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [flag, search, filter, subFilter]);
+
+    useEffect(() => {
+        fetchNfts();
+    }, [sync]);
 
     const handleChangeSearch = (e) => {
         setSearch(e.target.value);
@@ -166,8 +160,11 @@ export default function ExploreNFT({collection}) {
                 }
                 <Grid item xs={12} md={showFilter?9:12}>
                     <InfiniteScroll
-                        dataLength={nfTokens.length}
-                        next={() => fetchNfts()}
+                        dataLength={nfts.length}
+                        next={() => {
+                            setPage(page + 1);
+                            setSync(sync + 1);
+                        }}
                         hasMore={hasMore}
                         // loader={<p>loading...</p>}
                     >   
@@ -184,7 +181,7 @@ export default function ExploreNFT({collection}) {
                         >
                             {   
                             
-                                nfTokens.map((nft) => (
+                                nfts.map((nft) => (
                                     
                                     // <Grid item key={nft.uuid}
                                     // >

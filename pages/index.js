@@ -24,7 +24,7 @@ import Footer from 'src/components/Footer';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
-        overflow: hidden;
+        // overflow: hidden;
         flex: 1;
 `
 );
@@ -32,7 +32,7 @@ const OverviewWrapper = styled(Box)(
 const BackgroundWrapper = styled(Box)(
     ({ theme }) => `
         width: 100%;
-        height: 100%;
+        height: 90%;
         position: absolute;
         background-size: cover;
         background-color: rgb(32, 34, 37);
@@ -55,7 +55,7 @@ export default function Overview({data}) {
             <BackgroundWrapper
                 style={{
                     backgroundImage: `url("/static/landing/${bgFile}")`,
-                    opacity: `${darkMode?0.9:0.99}`
+                    opacity: `${darkMode?0.2:0.3}`
                 }}
             />
 

@@ -1240,9 +1240,9 @@ export const DarkSpacesTheme = createTheme({
             fontWeight: 400,
             fontSize: 18,
             lineHeight: 1.4,
-            color: colors.alpha.black[70],
+            color: colors.alpha.black[100],
             [theme.breakpoints.up('md')]: {
-              fontSize: 24,
+              fontSize: 20,
             },
           })
         }

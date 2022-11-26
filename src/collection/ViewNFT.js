@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+import Decimal from 'decimal.js';
 
 // Material
 import { useTheme } from '@mui/material/styles';
@@ -23,13 +24,13 @@ import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
 // Utils
 import { formatMonthYear } from 'src/utils/formatTime';
+import { fNumber, fIntNumber, fPercent } from 'src/utils/formatNumber';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import BuyMintDialog from './BuyMintDialog';
 import ExploreNFT from 'src/explore';
 
 const IconCover = styled('div')(
@@ -162,12 +163,21 @@ export default function ViewNFT({collection}) {
         extra,
         minter,
         verified,
-        created
+        created,
+        volume,
+        floor
     } = collection;
 
     const [countOwner, setCountOwner] = useState(0);
-    const [totalVolume, setTotalVolume] = useState('0.00');
-    const [floorPrice, setFloorPrice] = useState('---');
+
+    const floorPrice = floor?.amount || 0;
+    // let totalVolume = volume || 0;
+
+    // if (totalVolume > 1) {
+    //     totalVolume = new Decimal(totalVolume).toDP(0, Decimal.ROUND_DOWN).toNumber();
+    // }
+
+    const totalVolume = 0;
 
     return (
         <>
@@ -266,12 +276,15 @@ export default function ViewNFT({collection}) {
                 <Stack>
                     <Stack direction="row" spacing={0.5} alignItems='center'>
                         <Icon icon={rippleSolid} />
-                        <Typography variant="d2" noWrap>{totalVolume}</Typography>
+                        <Typography variant="d2" noWrap>{fNumber(totalVolume)}</Typography>
                     </Stack>
                     <Typography variant='s4'>total volume</Typography>
                 </Stack>
                 <Stack>
-                    <Typography variant='d2'>{floorPrice}</Typography>
+                    <Stack direction="row" spacing={0.5} alignItems='center'>
+                        <Icon icon={rippleSolid} />
+                        <Typography variant="d2" noWrap>{fNumber(floorPrice)}</Typography>
+                    </Stack>
                     <Typography variant='s4'>floor price</Typography>
                 </Stack>
             </Stack>

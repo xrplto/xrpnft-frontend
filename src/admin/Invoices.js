@@ -124,6 +124,7 @@ export default function Invoices({}) {
                 <ToggleButton value="all" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>All</ToggleButton>
                 <ToggleButton value="buymint" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Buy Mint</ToggleButton>
                 <ToggleButton value="autopay" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Auto Pay</ToggleButton>
+                <ToggleButton value="refund" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Refund</ToggleButton>
             </ToggleButtonGroup>
 
             <TextField
@@ -204,6 +205,14 @@ export default function Invoices({}) {
                             const srcName = getMinterName(src);
                             const destName = getMinterName(dest);
 
+                            let strType = '';
+                            if (type === 1)
+                                strType = 'Buy Mint';
+                            else if (type === 2)
+                                strType = 'Auto Pay';
+                            else if (type === 3)
+                                strType = 'Refund';
+
                             return (
                                 <TableRow
                                     // hover
@@ -264,7 +273,7 @@ export default function Invoices({}) {
 
                                         <Stack direction="row" spacing={1} alignItems="center">
                                             <Typography variant="s7">Type: </Typography>
-                                            <Typography variant="s7">{type === 1?'Buy Mint':'Auto Pay'}</Typography>
+                                            <Typography variant="s7">{strType}</Typography>
                                         </Stack>
 
                                         <Stack direction="row" spacing={1} alignItems="center">

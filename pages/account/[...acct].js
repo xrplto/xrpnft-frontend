@@ -17,7 +17,7 @@ import Footer from 'src/components/Footer';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
-        overflow: hidden;
+        // overflow: hidden;
         flex: 1;
 `
 );
@@ -26,7 +26,7 @@ const BannerWrapper = styled('div')(
     ({ theme }) => `
     position: relative;
     max-height: 320px;
-    overflow: hidden;
+    // overflow: hidden;
 `
 );
 

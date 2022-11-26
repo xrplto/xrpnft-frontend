@@ -41,6 +41,7 @@ import TrustSet from './TrustSet';
 import Mints from './Mints';
 import AutoPay from './AutoPay';
 import Invoices from './Invoices';
+import RefundMint from './RefundMint';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -145,8 +146,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['summary', 'passphrase', 'collections', 'nfts', 'activity', 'errors', 'autotrustlines', 'mints', 'invoices', 'autopay'];
-const tabLabels = ['Summary', 'Passphrase', 'Collections', 'NFTs', 'Activity', 'Errors', 'Auto TrustLine', 'Mints', 'Invoice', 'Auto Pay'];
+const tabValues = ['summary', 'passphrase', 'collections', 'nfts', 'activity', 'errors', 'autotrustlines', 'mints', 'invoices', 'autopay', 'refund'];
+const tabLabels = ['Summary', 'Passphrase', 'Collections', 'NFTs', 'Activity', 'Errors', 'Auto TrustLine', 'Mints', 'Invoice', 'Auto Pay', 'Refund'];
 
 function getTabID(tab) {
     if (!tab) return 0;
@@ -260,6 +261,7 @@ export default function Admin() {
                             <Tab value={7} label={tabLabels[7]} {...a11yProps(7)} />
                             <Tab value={8} label={tabLabels[8]} {...a11yProps(8)} />
                             <Tab value={9} label={tabLabels[9]} {...a11yProps(9)} />
+                            <Tab value={10} label={tabLabels[10]} {...a11yProps(10)} />
                         </Tabs>
                     </Stack>
                 </Stack>
@@ -324,7 +326,13 @@ export default function Admin() {
 
                         <TabPanel value={tabID} id={9}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <AutoPay account={counterAccount}/>
+                                <AutoPay />
+                            </Stack>
+                        </TabPanel>
+
+                        <TabPanel value={tabID} id={10}>
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <RefundMint />
                             </Stack>
                         </TabPanel>
                     </Grid>
