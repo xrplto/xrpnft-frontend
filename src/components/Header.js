@@ -44,10 +44,14 @@ const HeaderWrapper = styled(Box)(({ theme }) => `
     height: ${theme.spacing(10)};
     display: flex;
     align-items: center;
-    background-color: ${theme.colors.alpha.white[10]};
+    background-color: ${theme.colors.nav.background};
     margin-bottom: ${theme.spacing(0)};
     border-radius: 0px;
-    border-bottom: 1px solid ${alpha('#CBCCD2', 0.2)};
+    border-bottom: 0px solid ${alpha('#CBCCD2', 0.2)};
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 10000;
 `
 );
 

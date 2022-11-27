@@ -4,6 +4,7 @@ import { replace } from 'lodash';
 import { format, formatDistanceToNow } from 'date-fns';
 import {encodeAccountID} from 'ripple-address-codec';
 import isIPFS from 'is-ipfs';
+import Decimal from 'decimal.js';
 
 // ----------------------------------------------------------------------
 function extractUrisFromString(uris_string) {
@@ -198,6 +199,20 @@ export function cipheredTaxon(tokenSeq, taxon) {
     //               were generated with the old code.
     // tslint:disable-next-line:no-bitwise
     return taxon ^ (384160001 * tokenSeq + 2459);
+}
+
+export function parseNFTokenID(NFTokenID) {
+    //   A   B                      C                        D        E
+    // 0008 1388 2177B00DF84CA4B8DD59778594F472EF0F56E435 99AE2184 00000DEA
+    if (!NFTokenID || NFTokenID.length !== 64) return {flag: 0, royalty: 0, issuer: '', taxon: 0};
+    const flag = new Decimal('0x' + NFTokenID.slice(0, 4)).toNumber();
+    const royalty = new Decimal('0x' + NFTokenID.slice(4, 8)).toNumber();
+    const issuer = encodeAccountID(Buffer.from(NFTokenID.slice(8, 48), "hex"));
+    const scrambledTaxon = new Decimal('0x' + NFTokenID.slice(48, 56)).toNumber();
+    const tokenSeq = new Decimal('0x' + NFTokenID.slice(56, 64)).toNumber();
+
+    const taxon = cipheredTaxon(tokenSeq, scrambledTaxon);
+    return {flag, royalty, issuer, taxon};
 }
 
 export function parseNftFlag(flags_number) {

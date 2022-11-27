@@ -194,13 +194,14 @@ module.exports.normalizeAmount = (Amount) => {
     let issuer = "XRPL";
     let currency = "XRP";
     let amount = "";
+    let name = "XRP";
     if (typeof Amount === 'object') {
         issuer = Amount.issuer;
         currency = Amount.currency;
-        amount = Amount.value;
+        amount = new Decimal(Amount.value).toNumber();
+        name = normalizeCurrencyCodeXummImpl(currency);
     } else {
-        amount = new Decimal(Amount).div(1000000).toString();
+        amount = new Decimal(Amount).div(1000000).toNumber();
     }
-    let name = normalizeCurrencyCodeXummImpl(currency);
     return {name, issuer, currency, amount};
 }

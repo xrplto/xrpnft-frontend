@@ -29,7 +29,7 @@ export default function Landing({data}) {
                 <AutoStack>
                     <Typography variant="h1a">Discover, collect and sell extraordinary NFTs</Typography>
                     <Stack sx={{mt:4}}>
-                        <Typography variant="s1">XRPNFT.COM is the world's first and largest XRPL NFT Marketplace.</Typography>
+                        <Typography variant="s1">XRPNFT is an NFT Marketplace on the XRP Ledger where creators and collectors <Typography variant="s1a">trade XRPL NFTs without fees.</Typography></Typography>
                     </Stack>
 
                     <Stack direction="row" spacing={2} sx={{mt: 3}}>

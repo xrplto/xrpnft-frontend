@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import ModalImage from "react-modal-image";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { normalizeAmount } from 'src/utils/normalizers';
 
 // Material
 import {
@@ -144,10 +145,7 @@ export default function Mints({account}) {
 
     const handleResolve = (mint, action) => {
         mint.action = action;
-        if (action === 2) { // Remove
-            setResolveMint(mint);
-            setOpenConfirm(true);
-        } else if (action === 4 || action === 5) { // If action is XUMM get or cancel, call directly, don't show confirm dialog
+        if (action === 4 || action === 5) { // If action is XUMM get or cancel, call directly, don't show confirm dialog
             onResolveMint(mint);
         } else {
             setResolveMint(mint);
@@ -463,6 +461,16 @@ export default function Mints({account}) {
                                                         </Button>
                                                         <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 3)}>
                                                             Set as Paid
+                                                        </Button>
+                                                    </Stack>
+                                                </Stack>
+                                            }
+
+                                            {status === Mint.PAID &&
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row, 10)}>
+                                                            Refund
                                                         </Button>
                                                     </Stack>
                                                 </Stack>

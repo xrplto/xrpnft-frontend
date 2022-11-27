@@ -69,7 +69,7 @@ function truncate(str, n) {
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-export default function AutoPay({account}) {
+export default function AutoPay() {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -100,7 +100,7 @@ export default function AutoPay({account}) {
             }
             setLoading(true);
 
-            const body = { account, choice };
+            const body = { choice };
 
             axios.post(`${BASE_URL}/admin/autopays?page=${page}&limit=${rows}`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
                 .then(res => {
@@ -117,7 +117,7 @@ export default function AutoPay({account}) {
                 });
         }
         getAutoPays();
-    }, [page, rows, account, accountAdmin, accountToken, choice, sync]);
+    }, [page, rows, accountAdmin, accountToken, choice, sync]);
 
     const onResolveAutoPay = async (autoPay) => {
         if (!accountAdmin || !accountToken) {

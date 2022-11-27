@@ -17,6 +17,7 @@ import SportsScoreIcon from '@mui/icons-material/SportsScore';
 
 // Utils
 import { NFToken, getMinterName } from "src/utils/constants";
+import { fNumber } from 'src/utils/formatNumber';
 
 // Components
 import FlagsContainer from 'src/components/Flags';
@@ -68,6 +69,7 @@ export default function NFTCard({ nft }) {
         account,
         minter,
         cost,
+        costb,
         issuer,
         date,
         meta,
@@ -209,11 +211,18 @@ export default function NFTCard({ nft }) {
                             <SportsScoreIcon />
                         </Tooltip>
                     ):(
-                        cost ? (
-                            <Typography variant='s2'>{cost.amount} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
-                        ):(
-                            <Typography variant='s2'>- - -</Typography>
-                        )
+                        <Stack>
+                            {cost ? (
+                                <Typography variant='s2'>{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
+                            ):(
+                                <Typography variant='s2'>- - -</Typography>
+                            )}
+                            {costb ? (
+                                <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>
+                            ):(
+                                <Typography variant='s2' color="#00AB55">- - -</Typography>
+                            )}
+                        </Stack>
                     )}
                 </Stack>
                 <Divider sx={{mt:0.8, mb:0.3}}/>

@@ -410,7 +410,7 @@ export default function SpinNFT({ collection, setView }) {
                     component="button"
                     underline="always"
                     variant="body2"
-                    color="#33C2FF"
+                    // color="#33C2FF"
                     onClick={() => {
                         setView('');
                     }}

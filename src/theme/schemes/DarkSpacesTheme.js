@@ -3,8 +3,8 @@ import '@mui/lab/themeAugmentation';
 
 // import i18n from 'src/i18n/i18n';
 
-const themeColors = {
-  primary: '#CB3C1D',
+const themeColors = { // #2de370
+  primary: '#94979A', // '#CB3C1D', #04CD58
   secondary: '#A1A1A1',
   success: '#57CA22',
   warning: '#FFA319',
@@ -134,6 +134,9 @@ const colors = {
 export const DarkSpacesTheme = createTheme({
   // direction: i18n.dir(),
   colors: {
+    nav: {
+      background: '#121619'
+    },
     gradients: {
       blue1: colors.gradients.blue1,
       blue2: colors.gradients.blue2,
@@ -616,6 +619,24 @@ export const DarkSpacesTheme = createTheme({
         endIcon: {
           marginRight: -8
         },
+        containedPrimary: {
+          // backgroundColor: '#F4F5FB',
+          color: colors.alpha.white[100],
+          '&:hover, &.MuiSelected': {
+            // backgroundColor: '#BEC5CB',
+            color: colors.alpha.white[100]
+          }
+        },
+        outlinedPrimary: {
+          // backgroundColor: colors.secondary.main,
+          color: colors.alpha.black[100],
+          // border: '1px solid ' + alpha('#BEC5CB', 0.3),
+          '&:hover, &.MuiSelected': {
+            // backgroundColor: alpha('#BEC5CB', 0.1),
+            // border: '1px solid ' + alpha('#BEC5CB', 0.1),
+            // color: colors.alpha.black[100]
+          }
+        },
         containedSecondary: {
           backgroundColor: colors.secondary.main,
           color: colors.alpha.white[100],
@@ -767,7 +788,8 @@ export const DarkSpacesTheme = createTheme({
     },
     MuiLink: {
       defaultProps: {
-        underline: 'hover'
+        underline: 'hover',
+        color: '#2de370'
       }
     },
     MuiLinearProgress: {
@@ -941,7 +963,7 @@ export const DarkSpacesTheme = createTheme({
         root: {
           '.MuiAutocomplete-inputRoot.MuiOutlinedInput-root .MuiAutocomplete-endAdornment':
             {
-              right: 14
+              right: 14,
             }
         },
         clearIndicator: {
@@ -1183,6 +1205,7 @@ export const DarkSpacesTheme = createTheme({
           body1: 'div',
           body2: 'div',
           s1: 'span',
+          s1a: 'span',
           s2: 'span',
           s3: 'span',
           s4: 'span',
