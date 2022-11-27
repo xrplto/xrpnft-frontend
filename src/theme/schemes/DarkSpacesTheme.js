@@ -3,7 +3,7 @@ import '@mui/lab/themeAugmentation';
 
 // import i18n from 'src/i18n/i18n';
 
-const themeColors = { // #2de370
+const themeColors = {
   primary: '#94979A', // '#CB3C1D', #04CD58
   secondary: '#A1A1A1',
   success: '#57CA22',
@@ -45,14 +45,14 @@ const colors = {
       '0px 1px 4px rgba(162, 48, 23, 0.25), 0px 3px 12px 2px rgba(162, 48, 23, 0.35)',
     warning:
       '0px 1px 4px rgba(255, 163, 25, 0.25), 0px 3px 12px 2px rgba(255, 163, 25, 0.35)',
-    card: '0px 0px 2px #996a6a',
-    cardSm: '0px 0px 2px #996a6a',
+    card: '0px 0px 2px #ffffff29',
+    cardSm: '0px 0px 2px #ffffff29',
     cardLg:
       '0 0rem 14rem 0 rgb(255 255 255 / 20%), 0 0.8rem 2.3rem rgb(111 130 156 / 3%), 0 0.2rem 0.7rem rgb(17 29 57 / 15%)'
   },
   layout: {
     general: {
-      bodyBg: '#1C1C1C'
+      bodyBg: '#121619', //'#1C1C1C'
     },
     sidebar: {
       background: themeColors.primaryAlt,
@@ -1205,7 +1205,6 @@ export const DarkSpacesTheme = createTheme({
           body1: 'div',
           body2: 'div',
           s1: 'span',
-          s1a: 'span',
           s2: 'span',
           s3: 'span',
           s4: 'span',
@@ -1334,7 +1333,7 @@ export const DarkSpacesTheme = createTheme({
     s6: {
       fontWeight: 500,
       fontSize: 14,
-      color: colors.alpha.black[100]
+      // color: colors.alpha.black[100]
     },
     s7: {
       fontWeight: 400,

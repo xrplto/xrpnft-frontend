@@ -4,7 +4,7 @@ import '@mui/lab/themeAugmentation';
 // import i18n from 'src/i18n/i18n';
 
 const themeColors = {
-  primary: '#5569ff',
+  primary: '#222222', // '#5569ff',
   secondary: '#6E759F',
   success: '#57CA22',
   warning: '#FFA319',
@@ -1207,7 +1207,6 @@ export const PureLightTheme = createTheme({
           body1: 'div',
           body2: 'div',
           s1: 'span',
-          s1a: 'span',
           s2: 'span',
           s3: 'span',
           s4: 'span',
@@ -1266,18 +1265,6 @@ export const PureLightTheme = createTheme({
             fontSize: 16,
             lineHeight: 1.4,
             color: colors.alpha.black[100],
-            [theme.breakpoints.up('md')]: {
-              fontSize: 20,
-            },
-          })
-        },
-        {
-          props: { variant: 's1a' },
-          style: ({ theme }) => ({
-            fontWeight: 400,
-            fontSize: 18,
-            lineHeight: 1.4,
-            color: '#2304a1',
             [theme.breakpoints.up('md')]: {
               fontSize: 20,
             },
@@ -1348,7 +1335,7 @@ export const PureLightTheme = createTheme({
     s6: {
       fontWeight: 500,
       fontSize: 14,
-      color: colors.alpha.black[100]
+      // color: colors.alpha.black[100]
     },
     s7: {
       fontWeight: 400,

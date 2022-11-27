@@ -205,11 +205,11 @@ export default function ActivityList({account}) {
                                                 <Stack>
                                                     <Stack direction="row" spacing={1}>
                                                         <Typography variant="s7">Name: </Typography>
-                                                        <Typography variant="s2">{data.name}</Typography>
+                                                        <Typography variant="s8">{data.name}</Typography>
                                                     </Stack>
                                                     <Stack direction="row" spacing={1}>
                                                         <Typography variant="s7">Type: </Typography>
-                                                        <Typography variant="s2">{data.type}</Typography>
+                                                        <Typography variant="s8">{data.type}</Typography>
                                                     </Stack>
                                                 </Stack>
                                             </Stack>
@@ -227,11 +227,11 @@ export default function ActivityList({account}) {
                                                 <Stack>
                                                     <Stack direction="row" spacing={1}>
                                                         <Typography variant="s7">Name: </Typography>
-                                                        <Typography variant="s2">{data.name}</Typography>
+                                                        <Typography variant="s8">{data.name}</Typography>
                                                     </Stack>
                                                     <Stack direction="row" spacing={1}>
                                                         <Typography variant="s7">Type: </Typography>
-                                                        <Typography variant="s2">{data.type}</Typography>
+                                                        <Typography variant="s8">{data.type}</Typography>
                                                     </Stack>
                                                 </Stack>
                                             </Stack>
@@ -250,15 +250,15 @@ export default function ActivityList({account}) {
                                                     <Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Minter: </Typography>
-                                                            <Typography variant="s2">{data.minter}</Typography>
+                                                            <Typography variant="s8">{data.minter}</Typography>
                                                         </Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Issuer: </Typography>
-                                                            <Typography variant="s2">{data.issuer}</Typography>
+                                                            <Typography variant="s8">{data.issuer}</Typography>
                                                         </Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Total: </Typography>
-                                                            <Typography variant="s2">{data.count}</Typography>
+                                                            <Typography variant="s8">{data.count}</Typography>
                                                         </Stack>
                                                     </Stack>
                                                 </Stack>
@@ -281,7 +281,7 @@ export default function ActivityList({account}) {
                                                     <Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Collection: </Typography>
-                                                            <Typography variant="s2">{data.cname}</Typography>
+                                                            <Typography variant="s8">{data.cname}</Typography>
                                                         </Stack>
                                                         <Stack direction='row' spacing={0.8} alignItems="center">
                                                             <Typography variant='p4' color="#EB5757">{data.cost?.amount}</Typography>
@@ -292,7 +292,7 @@ export default function ActivityList({account}) {
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     <Stack direction="row" spacing={1}>
                                                         <Typography variant="s7">Quantity: </Typography>
-                                                        <Typography variant="s2">{data.quantity}</Typography>
+                                                        <Typography variant="s8">{data.quantity}</Typography>
                                                     </Stack>
                                                 </Stack>
                                             </Stack>
@@ -310,15 +310,15 @@ export default function ActivityList({account}) {
                                                     <Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Name: </Typography>
-                                                            <Typography variant="s2">{data.name}</Typography>
+                                                            <Typography variant="s8">{data.name}</Typography>
                                                         </Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Type: </Typography>
-                                                            <Typography variant="s2">{data.type}</Typography>
+                                                            <Typography variant="s8">{data.type}</Typography>
                                                         </Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">uuid: </Typography>
-                                                            <Typography variant="s2">{data.uuid}</Typography>
+                                                            <Typography variant="s8">{data.uuid}</Typography>
                                                         </Stack>
                                                     </Stack>
                                                 </Stack>
@@ -340,15 +340,15 @@ export default function ActivityList({account}) {
                                                     <Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Name: </Typography>
-                                                            <Typography variant="s2">{data.name}</Typography>
+                                                            <Typography variant="s8">{data.name}</Typography>
                                                         </Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Type: </Typography>
-                                                            <Typography variant="s2">{data.type}</Typography>
+                                                            <Typography variant="s8">{data.type}</Typography>
                                                         </Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">uuid: </Typography>
-                                                            <Typography variant="s2">{data.uuid}</Typography>
+                                                            <Typography variant="s8">{data.uuid}</Typography>
                                                         </Stack>
                                                     </Stack>
                                                 </Stack>
@@ -370,15 +370,15 @@ export default function ActivityList({account}) {
                                                     <Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Name: </Typography>
-                                                            <Typography variant="s2">{data.name}</Typography>
+                                                            <Typography variant="s8">{data.name}</Typography>
                                                         </Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Type: </Typography>
-                                                            <Typography variant="s2">{data.type}</Typography>
+                                                            <Typography variant="s8">{data.type}</Typography>
                                                         </Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">uuid: </Typography>
-                                                            <Typography variant="s2">{data.uuid}</Typography>
+                                                            <Typography variant="s8">{data.uuid}</Typography>
                                                         </Stack>
                                                     </Stack>
                                                 </Stack>
@@ -403,7 +403,7 @@ export default function ActivityList({account}) {
                                                     href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                    <Typography variant="s8">{data.NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
                                         </>
@@ -423,7 +423,7 @@ export default function ActivityList({account}) {
                                                     href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                    <Typography variant="s8">{data.NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
                                         </>
@@ -444,7 +444,7 @@ export default function ActivityList({account}) {
                                                     href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                    <Typography variant="s8">{data.NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
                                         </>
@@ -464,7 +464,7 @@ export default function ActivityList({account}) {
                                                     href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                    <Typography variant="s8">{data.NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
                                         </>
@@ -485,7 +485,7 @@ export default function ActivityList({account}) {
                                                     href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                    <Typography variant="s8">{data.NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
                                         </>
@@ -505,7 +505,7 @@ export default function ActivityList({account}) {
                                                     href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                    <Typography variant="s8">{data.NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
                                         </>
@@ -526,7 +526,7 @@ export default function ActivityList({account}) {
                                                     href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                    <Typography variant="s8">{data.NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
                                         </>
@@ -546,7 +546,7 @@ export default function ActivityList({account}) {
                                                     href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                    <Typography variant="s8">{data.NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
                                         </>
@@ -567,7 +567,7 @@ export default function ActivityList({account}) {
                                                     href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                    <Typography variant="s8">{data.NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
                                         </>
@@ -586,11 +586,11 @@ export default function ActivityList({account}) {
                                                         <Stack>
                                                             <Stack direction="row" spacing={1}>
                                                                 <Typography variant="s7">Name: </Typography>
-                                                                <Typography variant="s2">{data.name}</Typography>
+                                                                <Typography variant="s8">{data.name}</Typography>
                                                             </Stack>
                                                             <Stack direction="row" spacing={1}>
                                                                 <Typography variant="s7">Type: </Typography>
-                                                                <Typography variant="s2">{data.type}</Typography>
+                                                                <Typography variant="s8">{data.type}</Typography>
                                                             </Stack>
                                                         </Stack>
                                                     </Stack>
@@ -608,10 +608,10 @@ export default function ActivityList({account}) {
                                                             href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                             rel="noreferrer noopener nofollow"
                                                         >
-                                                            <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                            <Typography variant="s8">{data.NFTokenID}</Typography>
                                                         </Link>
                                                     </Stack>
-                                                    {/* <Typography variant="s2">{data.URI}</Typography> */}
+                                                    {/* <Typography variant="s8">{data.URI}</Typography> */}
                                                 </Stack>
                                             }
                                         </>
@@ -632,7 +632,7 @@ export default function ActivityList({account}) {
                                                     href={`https://bithomp.com/explorer/${data.NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s2">{data.NFTokenID}</Typography>
+                                                    <Typography variant="s8">{data.NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
                                         </>
@@ -646,7 +646,7 @@ export default function ActivityList({account}) {
                                         <>
                                             <Stack direction="row" spacing={1}>
                                                 <Typography variant="s7">Minter: </Typography>
-                                                <Typography variant="s2">{data.NFTokenMinter}</Typography>
+                                                <Typography variant="s8">{data.NFTokenMinter}</Typography>
                                             </Stack>
                                         </>
                                     );
@@ -682,7 +682,7 @@ export default function ActivityList({account}) {
                                     <TableCell align="left">
                                         <Stack spacing={0.5}>
                                             <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Typography variant="s2">{strActivity}</Typography>
+                                                <Typography variant="s8">{strActivity}</Typography>
                                                 <Typography variant="s7">{strDateTime}</Typography>
                                             </Stack>
                                             {componentActivity}

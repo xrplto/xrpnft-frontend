@@ -27,7 +27,7 @@ const BannerWrapper = styled('div')(
     ({ theme }) => `
     position: relative;
     max-height: 320px;
-    // overflow: hidden;
+    overflow: hidden;
 `
 );
 

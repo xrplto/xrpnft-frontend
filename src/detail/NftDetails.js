@@ -151,7 +151,7 @@ export default function NFTDetails({nft}) {
                         }
                     </AccordionDetails>
                 </Accordion>
-                <Accordion defaultExpanded>
+                <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1bh-content"
@@ -190,11 +190,11 @@ export default function NFTDetails({nft}) {
                             <Typography variant="caption">Owner</Typography>
                             <Stack direction="row" spacing={0.2} alignItems="center" sx={{display: 'inline-flex', overflowWrap: 'anywhere' }}>
                                 <Link
-                                    href={`https://bithomp.com/explorer/${account}`}
+                                    href={`/account/${account}`}
                                     underline='hover'
-                                    target="_blank"
+                                    // target="_blank"
                                     variant='info'
-                                    rel="noreferrer noopener nofollow"
+                                    // rel="noreferrer noopener nofollow"
                                 >
                                     <Typography sx={{ml:1}}>{account}</Typography>
                                 </Link>
@@ -226,11 +226,11 @@ export default function NFTDetails({nft}) {
                             <Typography variant="caption">Issuer</Typography>
                             <Stack direction="row" spacing={0.2} alignItems="center" sx={{display: 'inline-flex', overflowWrap: 'anywhere' }}>
                                 <Link
-                                    href={`https://bithomp.com/explorer/${issuer}`}
+                                    href={`/account/${issuer}`}
                                     underline='hover'
-                                    target="_blank"
+                                    // target="_blank"
                                     variant='info'
-                                    rel="noreferrer noopener nofollow"
+                                    // rel="noreferrer noopener nofollow"
                                 >
                                     <Typography sx={{ml:1}}>{issuer}</Typography>
                                 </Link>
@@ -313,7 +313,7 @@ export default function NFTDetails({nft}) {
 
                     </AccordionDetails>
                 </Accordion>
-                <Accordion defaultExpanded>
+                <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel2bh-content"

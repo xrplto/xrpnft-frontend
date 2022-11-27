@@ -201,10 +201,10 @@ export default function NFTCard({ nft }) {
                     <Typography variant='s2'>{type.toUpperCase()}</Typography>
                     <Typography variant='s2'>Price</Typography>
                 </Stack> */}
-                <Typography variant='s4' color="#33C2FF">{name}</Typography>
+                <Typography variant='s10'>{name}</Typography>
 
                 <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>
-                    <Typography variant='s2'>Price</Typography>
+                    <Typography variant='s8'>Price</Typography>
                     {destination && getMinterName(account) ? (
                         // <Typography variant='s2'>TRANSFER</Typography>
                         <Tooltip title={`Sold & Transfer`}>
@@ -213,9 +213,9 @@ export default function NFTCard({ nft }) {
                     ):(
                         <Stack>
                             {cost ? (
-                                <Typography variant='s2'>{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
+                                <Typography variant='s8'>{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
                             ):(
-                                <Typography variant='s2'>- - -</Typography>
+                                <Typography variant='s8'>- - -</Typography>
                             )}
                             {costb ? (
                                 <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>

@@ -129,11 +129,13 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
             freeSolo
             disableClearable
             selectOnFocus
+            disablePortal
             // clearOnBlur
             // handleHomeEndKeys
             id={id}
             sx={{
                 // width: '100%',
+                // zIndex: 10001,
                 width: { xs: '100%', md: 500 },
                 '&.MuiTextField-root': {
                     marginTop: 1
@@ -174,10 +176,10 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                         <Link
                             key={uuid}
                             color="inherit"
-                            target="_blank"
+                            // target="_blank"
                             underline='none'
                             href={`/assets/${uuid}`}
-                            rel="noreferrer noopener nofollow"
+                            // rel="noreferrer noopener nofollow"
                         >
                             <MenuItem sx={{pt:1, pb:1}}>
                                 <Stack direction="row" spacing={1} alignItems="center">
@@ -219,10 +221,10 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                         <Link
                             key={uuid}
                             color="inherit"
-                            target="_blank"
+                            // target="_blank"
                             underline='none'
                             href={`/collection/${slug}`}
-                            rel="noreferrer noopener nofollow"
+                            // rel="noreferrer noopener nofollow"
                         >
                             <MenuItem sx={{pt:1, pb:1}}>
                                 <Stack direction="row" spacing={1} alignItems="center">
@@ -267,10 +269,10 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                         <Link
                             key={account}
                             color="inherit"
-                            target="_blank"
+                            // target="_blank"
                             underline='none'
                             href={`/account/${account}`}
-                            rel="noreferrer noopener nofollow"
+                            // rel="noreferrer noopener nofollow"
                         >
                             <MenuItem sx={{pt:1, pb:1}}>
                                 <Stack direction="row" spacing={1} alignItems="center">

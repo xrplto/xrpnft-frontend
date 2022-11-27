@@ -122,7 +122,7 @@ export default function NFTActions({ nft }) {
                                         href={`https://bithomp.com/explorer/${destination}`}
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant="s3" color="#33C2FF">{destination}</Typography>
+                                        <Typography variant="s3">{destination}</Typography>
                                     </Link>.
                                 </Typography>
                             }
@@ -141,7 +141,7 @@ export default function NFTActions({ nft }) {
                                         color='success'
                                         disabled={!accountLogin || burnt}
                                     >
-                                        Sell NFT
+                                        Sell
                                     </Button>
                                     <BurnNFT nft={nft} onHandleBurn={onHandleBurn} />
                                 </Box>
@@ -151,9 +151,10 @@ export default function NFTActions({ nft }) {
                                     disabled={!accountLogin || burnt}
                                     variant='outlined'
                                     onClick={handleCreateBuyOffer}
+                                    color='success'
                                     startIcon={<LocalOfferIcon />}
                                 >
-                                    Buy NFT
+                                    Make Offer
                                 </Button>
                             )
                         )}

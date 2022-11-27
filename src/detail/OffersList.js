@@ -412,7 +412,7 @@ export default function OffersList({ nft, isSell }) {
                                         <Stack direction="row" spacing={2} alignItems="center">
                                             <Typography variant='s6' color='#33C2FF'>{price.amount} {price.name}</Typography>
                                             <Link
-                                                color="inherit"
+                                                // color="inherit"
                                                 target="_blank"
                                                 href={`https://bithomp.com/explorer/${offer.owner}`}
                                                 rel="noreferrer noopener nofollow"

@@ -142,7 +142,7 @@ export default function NFTActions({ nft }) {
                                         color='success'
                                         disabled={!accountLogin || burnt}
                                     >
-                                        Sell NFT
+                                        Sell
                                     </Button>
                                     <BurnNFT nft={nft} onHandleBurn={onHandleBurn} />
                                 </Box>
@@ -151,10 +151,11 @@ export default function NFTActions({ nft }) {
                                     sx={{ borderRadius: 10 }}
                                     disabled={!accountLogin || burnt}
                                     variant='outlined'
+                                    color='success'
                                     onClick={handleCreateBuyOffer}
                                     startIcon={<LocalOfferIcon />}
                                 >
-                                    Buy NFT
+                                    Make Offer
                                 </Button>
                             )
                         )}
