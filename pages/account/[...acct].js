@@ -9,6 +9,10 @@ import {
     Toolbar
 } from '@mui/material';
 
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
+
 // Components
 import Account from 'src/account';
 import ScrollToTop from 'src/components/ScrollToTop';
@@ -53,6 +57,8 @@ const BannerImage = styled('img')(
 );
 
 export default function Overview({data}) {
+    const { darkMode } = useContext(AppContext);
+
     const {
         name,
         description,
@@ -61,7 +67,9 @@ export default function Overview({data}) {
         timestamp
     } = data.profile;
 
-    const bannerImage = banner?`https://s1.xrpnft.com/profile/${banner}`:'/static/account_banner.png';
+    let default_banner = darkMode?'/static/account_banner_black.png':'/static/account_banner_white.png';
+
+    const bannerImage = banner?`https://s1.xrpnft.com/profile/${banner}`:default_banner;
 
     return (
         <OverviewWrapper>

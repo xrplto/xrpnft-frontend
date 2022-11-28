@@ -212,7 +212,14 @@ export function parseNFTokenID(NFTokenID) {
     const tokenSeq = new Decimal('0x' + NFTokenID.slice(56, 64)).toNumber();
 
     const taxon = cipheredTaxon(tokenSeq, scrambledTaxon);
-    return {flag, royalty, issuer, taxon};
+
+    let transferFee = 0;
+    try {
+        if (royalty)
+            transferFee = Decimal.div(royalty, '1000').toDP(3, Decimal.ROUND_DOWN).toNumber();
+    } catch (e) {}
+
+    return {flag, royalty, issuer, taxon, transferFee};
 }
 
 export function parseNftFlag(flags_number) {

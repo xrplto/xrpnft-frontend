@@ -50,17 +50,13 @@ export default function NFTDetails({nft}) {
     const ParsedURI = convertHexToString(URI);
     const hrefURI = `https://gateway.xrpnft.com/ipfs/${ParsedURI}`;
 
-    const ParsedID = parseNFTokenID(NFTokenID);
-    const flag = ParsedID.flag;
-    const royalty = ParsedID.royalty;
-    const issuer = ParsedID.issuer;
-    const taxon = ParsedID.taxon;
-
-    let transferFee = 0;
-    try {
-        if (royalty)
-            transferFee = Decimal.div(royalty, '1000').toDP(3, Decimal.ROUND_DOWN).toNumber();
-    } catch (e) {}
+    const {
+        flag,
+        royalty,
+        issuer,
+        taxon,
+        transferFee
+    } = parseNFTokenID(NFTokenID);
 
     let strDateTime = '';
     if (time) {

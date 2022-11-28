@@ -32,6 +32,21 @@ function XRPNFTApp(props) {
                 />
                 <meta name="google-site-verification" content="dDLV5BZHngydfQXYGuUX34wnShMPqM-f5dHS2BRVdsQ" />
 
+                {/* 
+                    <meta name="apple-mobile-web-app-title" content="Snippit"/>
+                    <meta name="application-name" content="<APP NAME>"/>
+                    <meta name="msapplication-TileColor" content="#ffc40d"/>
+                    <meta name="theme-color" content="#ffffff"/>
+                */}
+
+                <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+                <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+                <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+                <link rel="manifest" href="/site.webmanifest" />
+                <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#121619" />
+                <meta name="msapplication-TileColor" content="#121619" />
+                <meta name="theme-color" content="#ffffff"/>
+
                 {/* <meta name="robots" content="nofollow"/> */}
 
                 {/* <link rel="preload" as="image" href="/static/collection/NFT_Labs_Images4.png"/> */}
@@ -45,14 +60,14 @@ function XRPNFTApp(props) {
                 {/* <!-- Facebook Meta Tags --> */}
                 <meta property="og:url" content={ogp.url}/>
                 <meta property="og:type" content="website"/>
-                <meta property="og:title" content={`${ogp.title} | XRPNFT.COM`}/>
+                <meta property="og:title" content={`${ogp.title} | XRPNFT`}/>
                 <meta property="og:description" content={ogp.desc}/>
                 <meta property={`og:${ogp.type}`} content={ogp.imgUrl}/>
                 {/* <!-- Twitter Meta Tags --> */}
                 <meta name="twitter:card" content="summary_large_image"/>
                 <meta property="twitter:domain" content="xrpnft.com"/>
                 <meta property="twitter:url" content={ogp.url}/>
-                <meta name="twitter:title" content={`${ogp.title} | XRPNFT.COM`}/>
+                <meta name="twitter:title" content={`${ogp.title} | XRPNFT`}/>
                 <meta name="twitter:description" content={ogp.desc}/>
                 {/* <!-- <meta name="twitter:image" content="/static/ogp.png"/> --> */}
                 <meta name={`twitter:${ogp.type}`} content={ogp.imgUrl}/>

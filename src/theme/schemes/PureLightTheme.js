@@ -52,7 +52,7 @@ const colors = {
   },
   layout: {
     general: {
-      bodyBg: '#f2f5f9'
+      bodyBg: '#ffffff', // '#f2f5f9'
     },
     sidebar: {
       background: themeColors.white,
@@ -306,7 +306,7 @@ export const PureLightTheme = createTheme({
       disabled: colors.alpha.black[50]
     },
     background: {
-      paper: colors.alpha.white[100],
+      paper: '#F4F5FB', // colors.alpha.white[100],
       default: colors.layout.general.bodyBg
     },
     action: {
@@ -540,7 +540,7 @@ export const PureLightTheme = createTheme({
     MuiAccordion: {
       styleOverrides: {
         root: {
-          boxShadow: 'none',
+          // boxShadow: 'none',
 
           '&.Mui-expanded': {
             margin: 0
@@ -867,8 +867,8 @@ export const PureLightTheme = createTheme({
           height: 38,
           minHeight: 38,
           borderRadius: 6,
-          border: '1px solid ' + colors.primary.dark,
-          boxShadow: '0px 2px 10px ' + colors.primary.light
+          // border: '1px solid ' + colors.primary.dark,
+          // boxShadow: '0px 2px 10px ' + colors.primary.light
         },
         scrollableX: {
           overflow: 'visible !important'

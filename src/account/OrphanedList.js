@@ -268,17 +268,13 @@ export default function OrphanedList({ account }) {
                         const price = normalizeAmount(offer.amount);
                         const index = offer.index;
 
-                        const ParsedID = parseNFTokenID(NFTokenID);
-                        const flag = ParsedID.flag;
-                        const royalty = ParsedID.royalty;
-                        const issuer = ParsedID.issuer;
-                        const taxon = ParsedID.taxon;
-
-                        let transferFee = 0;
-                        try {
-                            if (royalty)
-                                transferFee = Decimal.div(royalty, '1000').toDP(3, Decimal.ROUND_DOWN).toNumber();
-                        } catch (e) {}
+                        const {
+                            flag,
+                            royalty,
+                            issuer,
+                            taxon,
+                            transferFee
+                        } = parseNFTokenID(NFTokenID);
 
                         return (
                             <Stack key={index} sx={{mt: 2}}>

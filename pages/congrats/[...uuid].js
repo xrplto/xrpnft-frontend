@@ -124,7 +124,7 @@ export async function getServerSideProps(ctx) {
     
         let ogp = {};
         ogp.canonical = `https://xrpnft.com/assets/${uuid}`;
-        ogp.title = `${name} - XRPNFT, the largest XRPL NFT marketplace`;
+        ogp.title = `${name} - XRP NFT Marketplace, Buy, Sell & Collect NFTs`;
         ogp.url = `https://xrpnft.com/assets/${uuid}`;
         ogp.imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
         ogp.desc = meta.description?meta.description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;

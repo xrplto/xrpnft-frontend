@@ -4,7 +4,7 @@ import '@mui/lab/themeAugmentation';
 // import i18n from 'src/i18n/i18n';
 
 const themeColors = {
-  primary: '#94979A', // '#CB3C1D', #04CD58
+  primary: '#f4f5fb', // '#CB3C1D', #04CD58
   secondary: '#A1A1A1',
   success: '#57CA22',
   warning: '#FFA319',
@@ -299,7 +299,7 @@ export const DarkSpacesTheme = createTheme({
       disabled: colors.alpha.black[50]
     },
     background: {
-      paper: colors.alpha.white[100],
+      paper: '#21252B', // colors.alpha.white[100],
       default: colors.layout.general.bodyBg
     },
     action: {
@@ -533,7 +533,7 @@ export const DarkSpacesTheme = createTheme({
     MuiAccordion: {
       styleOverrides: {
         root: {
-          boxShadow: 'none',
+          // boxShadow: 'none',
 
           '&.Mui-expanded': {
             margin: 0
@@ -692,7 +692,7 @@ export const DarkSpacesTheme = createTheme({
           transition: 'all .2s',
 
           '&:hover, &.Mui-selected, &.Mui-selected:hover': {
-            color: themeColors.trueWhite,
+            color: colors.alpha.white[100],
             background: colors.primary.main
           }
         }
@@ -831,10 +831,10 @@ export const DarkSpacesTheme = createTheme({
             }
           },
           '& .MuiListItem-root.MuiButtonBase-root.Mui-selected': {
-            backgroundColor: colors.alpha.black[10]
+            backgroundColor: alpha(colors.primary.lighter, 0.4)
           },
           '& .MuiMenuItem-root.MuiButtonBase-root:active': {
-            backgroundColor: alpha(colors.primary.lighter, 0.2)
+            backgroundColor: alpha(colors.primary.lighter, 0.4)
           },
           '& .MuiMenuItem-root.MuiButtonBase-root .MuiTouchRipple-root': {
             opacity: 0.2
@@ -861,8 +861,8 @@ export const DarkSpacesTheme = createTheme({
           height: 38,
           minHeight: 38,
           borderRadius: 6,
-          border: '1px solid ' + colors.primary.dark,
-          boxShadow: '0px 2px 10px ' + colors.primary.light
+          // border: '1px solid ' + colors.primary.dark,
+          // boxShadow: '0px 2px 10px ' + colors.primary.light
         },
         scrollableX: {
           overflow: 'visible !important'
@@ -886,11 +886,11 @@ export const DarkSpacesTheme = createTheme({
             marginRight: 4
           },
           '&.Mui-selected, &.Mui-selected:hover': {
-            color: colors.alpha.trueWhite[100],
+            color: colors.alpha.white[100],
             zIndex: 5
           },
           '&:hover': {
-            color: colors.alpha.trueWhite[70]
+            color: colors.alpha.black[100]
           }
         }
       }
@@ -1015,7 +1015,7 @@ export const DarkSpacesTheme = createTheme({
           transition: 'background-color .2s',
 
           '&.MuiTableRow-hover:hover': {
-            backgroundColor: alpha(colors.alpha.black[5], 0.05)
+            backgroundColor: colors.alpha.black[5]
           }
         }
       }

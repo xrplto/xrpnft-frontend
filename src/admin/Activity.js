@@ -48,6 +48,7 @@ import FireplaceIcon from '@mui/icons-material/Fireplace';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AnimationIcon from '@mui/icons-material/Animation';
+import PaymentIcon from '@mui/icons-material/Payment';
 
 // Context
 import { useContext } from 'react';
@@ -56,6 +57,7 @@ import { AppContext } from 'src/AppContext';
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';
 import { Activity } from 'src/utils/constants';
+import { normalizeAmount } from 'src/utils/normalizers';
 
 // Loader
 import { PulseLoader, ClockLoader } from "react-spinners";
@@ -713,6 +715,44 @@ export default function ActivityList({account}) {
                                             <Stack direction="row" spacing={1}>
                                                 <Typography variant="s7">Minter: </Typography>
                                                 <Typography variant="s2">{data.NFTokenMinter}</Typography>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+                                case Activity.REFUND_BUYER:
+                                    strActivity = 'Refund Mint Amount to Buyer';
+                                    componentIcon = (<PaymentIcon />);
+                                    const amount = normalizeAmount(data.amount);
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                                <Stack direction="row" spacing={1}>
+                                                    <Avatar alt="C" src={`https://xrpl.to/static/tokens/${data.cost?.md5}.${data.cost?.ext}`} />
+                                                    <Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">Collection: </Typography>
+                                                            <Typography variant="s8">{data.cname}</Typography>
+                                                        </Stack>
+                                                        <Stack direction='row' spacing={0.8} alignItems="center">
+                                                            <Typography variant="s7">Cost x Quantity: </Typography>
+                                                            <Typography variant='s8'>{data.cost?.amount}</Typography>
+                                                            <Typography variant='s8'>{data.cost?.name}</Typography>
+                                                            <Typography variant='s8'>x</Typography>
+                                                            <Typography variant='s8'>{data.quantity}</Typography>
+                                                        </Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            <Typography variant="s7">To: </Typography>
+                                                            <Typography variant="s8">{data.dest}</Typography>
+                                                        </Stack>
+                                                    </Stack>
+                                                </Stack>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Typography variant="s7">Amount: </Typography>
+                                                        <Typography variant="s8">{amount.amount}</Typography>
+                                                        <Typography variant='s8'>{data.cost?.name}</Typography>
+                                                    </Stack>
+                                                </Stack>
                                             </Stack>
                                         </>
                                     );

@@ -117,7 +117,7 @@ function Status500() {
               <Container maxWidth="sm">
                 <Box textAlign="center">
                   <TypographyPrimary variant="h1" sx={{ my: 2 }}>
-                    XRPNFT, the largest XRPL NFT marketplace
+                    XRP NFT Marketplace, Buy, Sell & Collect NFTs
                   </TypographyPrimary>
                   <TypographySecondary
                     variant="h4"

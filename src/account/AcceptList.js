@@ -27,6 +27,7 @@ import { AppContext } from 'src/AppContext';
 import { formatDateTime } from 'src/utils/formatTime';
 import { fIntNumber } from 'src/utils/formatNumber';
 import { NFToken } from 'src/utils/constants';
+import { parseNFTokenID } from 'src/utils/parse';
 
 // Loader
 import { PulseLoader, ClockLoader } from "react-spinners";
@@ -283,7 +284,6 @@ export default function AcceptList({account}) {
                                 uuid,
                                 name,
                                 collection,
-                                flag,
                                 account,
                                 date,
                                 meta,
@@ -294,6 +294,14 @@ export default function AcceptList({account}) {
                                 mintHash,
                                 status
                             } = row;
+
+                            const {
+                                flag,
+                                royalty,
+                                issuer,
+                                taxon,
+                                transferFee
+                            } = parseNFTokenID(NFTokenID);
                         
                             const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
                             const isVideo = meta.video;
@@ -320,8 +328,8 @@ export default function AcceptList({account}) {
                                                     title='title'
                                                     controls
                                                     style={{
-                                                        width: 96,
-                                                        height: 96,
+                                                        width: 128,
+                                                        height: 128,
                                                         filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
                                                     }}
                                                 />
@@ -334,8 +342,8 @@ export default function AcceptList({account}) {
                                                     hideDownload
                                                     hideZoom
                                                     style={{
-                                                        width: 96,
-                                                        height: 96,
+                                                        width: 128,
+                                                        height: 128,
                                                         filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
                                                     }}
                                                 />
@@ -351,47 +359,45 @@ export default function AcceptList({account}) {
                                                     ):(
                                                         <Stack>
                                                             <Typography variant="s5">Pending ...</Typography>
-                                                            <Typography variant="s4">Code: {status}</Typography>
+                                                            <Typography variant="s7">Code: {status}</Typography>
                                                         </Stack>
                                                     )
                                                     }
                                                 </Stack>
                                                 <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s4">Collection: </Typography>
+                                                    <Typography variant="s7">Collection: </Typography>
                                                     <Typography variant="s6">{collection}</Typography>
                                                 </Stack>
                                                 <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s4">Offered On: </Typography>
+                                                    <Typography variant="s7">Offered On: </Typography>
                                                     <Typography variant="s6">{strDateTime}</Typography>
                                                 </Stack>
                                                 <Stack direction="row" spacing={2} alignItems="center">
-                                                    <Typography variant="s4">Flags: </Typography>
+                                                    <Typography variant="s7">Flags: </Typography>
                                                     <FlagsContainer Flags={flag}/>
                                                     {/* <Typography variant="s6">{strDateTime}</Typography> */}
+                                                    <Typography variant='s7'>Taxon </Typography>
+                                                    <Typography variant='s6'>{taxon}</Typography>
+                                                    <Typography variant="s7">Transfer Fee</Typography>
+                                                    <Typography variant="s6">{transferFee} %</Typography>
+                                                </Stack>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Typography variant="s7">NFTokenID: </Typography>
+                                                    <Link
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://bithomp.com/explorer/${NFTokenID}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Typography variant="s6">{NFTokenID}</Typography>
+                                                    </Link>
+                                                </Stack>
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Typography variant="s7">URI: </Typography>
+                                                    <Typography variant="s6">{convertHexToString(URI)}</Typography>
                                                 </Stack>
                                             </Stack>
                                         </Stack>
-                                        <Stack spacing={0.5}>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">TokenID: </Typography>
-                                                <Link
-                                                    color="inherit"
-                                                    target="_blank"
-                                                    href={`https://bithomp.com/explorer/${NFTokenID}`}
-                                                    rel="noreferrer noopener nofollow"
-                                                >
-                                                    <Typography variant="s6">{NFTokenID}</Typography>
-                                                </Link>
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">URI: </Typography>
-                                                <Typography variant="s6">{convertHexToString(URI)}</Typography>
-                                            </Stack>
-                                        </Stack>
-                                    </TableCell>
-                                    
-                                    <TableCell align="left">
-                                        
                                     </TableCell>
                                 </TableRow>
                             );

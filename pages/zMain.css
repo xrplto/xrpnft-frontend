@@ -1,7 +1,7 @@
 
 .nftpreview1 {
-  width: 96px;
-  height: 96px;
+  width: 128px;
+  height: 128px;
   filter: drop-shadow(16px 16px 10px rgba(0,0,0,0.8));
   border-radius: 8px;
   object-fit: cover;
