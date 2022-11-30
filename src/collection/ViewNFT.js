@@ -168,16 +168,14 @@ export default function ViewNFT({collection}) {
         floor
     } = collection;
 
-    const [countOwner, setCountOwner] = useState(0);
-
     const floorPrice = floor?.amount || 0;
-    // let totalVolume = volume || 0;
+    let totalVolume = volume || 0;
 
-    // if (totalVolume > 1) {
-    //     totalVolume = new Decimal(totalVolume).toDP(0, Decimal.ROUND_DOWN).toNumber();
-    // }
-
-    const totalVolume = 0;
+    if (totalVolume > 1) {
+        totalVolume = new Decimal(totalVolume).toDP(0, Decimal.ROUND_DOWN).toNumber();
+    } else {
+        totalVolume = fNumber(totalVolume);
+    }
 
     return (
         <>
@@ -276,7 +274,7 @@ export default function ViewNFT({collection}) {
                 <Stack>
                     <Stack direction="row" spacing={0.5} alignItems='center'>
                         <Icon icon={rippleSolid} />
-                        <Typography variant="d2" noWrap>{fNumber(totalVolume)}</Typography>
+                        <Typography variant="d2" noWrap>{totalVolume}</Typography>
                     </Stack>
                     <Typography variant='s4'>total volume</Typography>
                 </Stack>

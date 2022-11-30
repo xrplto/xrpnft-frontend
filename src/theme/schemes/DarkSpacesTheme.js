@@ -725,7 +725,11 @@ export const DarkSpacesTheme = createTheme({
         root: {
           '& .MuiTouchRipple-root': {
             opacity: 0.3
-          }
+          },
+          // '&:hover, &.Mui-selected, &.Mui-selected:hover': {
+          //   color: colors.alpha.white[70],
+          //   background: colors.alpha.white[70],
+          // }
         }
       }
     },

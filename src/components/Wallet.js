@@ -365,7 +365,7 @@ export default function Wallet() {
                                         Logout
                                     </Button>
                                     <CopyToClipboard text={accountLogin} onCopy={()=>{}}>
-                                        <Button variant="contained" size="small" color="info">
+                                        <Button variant="outlined" size="small">
                                             Copy
                                         </Button>
                                     </CopyToClipboard>

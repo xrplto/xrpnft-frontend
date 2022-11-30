@@ -296,6 +296,7 @@ export default function Minting() {
                 const size = pickedFile.size;
                 if (size < 10240000) {
                     setFile(pickedFile);
+                    setIsVideo(false);
                     // This is used as src of image
                     const reader = new FileReader();
                     reader.readAsDataURL(pickedFile)
@@ -661,7 +662,7 @@ export default function Minting() {
                         <Typography variant='s2'>OnlyXRP:</Typography> If set, nft can only be offered or sold for XRP.
                     </Typography>
                     <Typography variant='p3'>
-                        <Typography variant='s2'>TrustLine:</Typography> If set, indicates that the issuer wants a trustline to be automatically created. You can't check it.
+                        <Typography variant='s2'>TrustLine:</Typography> If set, indicates that the issuer wants a trustline to be automatically created. You can't set now.
                     </Typography>
                     <Typography variant='p3'>
                         <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer. You can't uncheck it.
