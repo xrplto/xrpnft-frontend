@@ -87,6 +87,8 @@ export default function Summary({}) {
 
     const [tookTime, setTookTime] = useState('');
 
+    const [collections, setCollections] = useState(0) // XRPNFT.com Collections
+
     const [nfts1, setNfts1] = useState(0); // XRPL NFTs
     const [nfts2, setNfts2] = useState(0); // XRPNFT.com NFTs
     const [nfts3, setNfts3] = useState(0); // Account/Owner NFTs
@@ -95,9 +97,9 @@ export default function Summary({}) {
 
     const [profiles, setProfiles] = useState(0); // Profiles
 
-    const [orphaned, setOrphaned] = useState(0); // Orphaned Offers
+    const [offers, setOffers] = useState(0); // Offers
 
-    const [calcPrices, setCalcPrices] = useState(0); // Calc Prices
+    const [orphaned, setOrphaned] = useState(0); // Orphaned Offers
 
     const [xrpnftAccounts, setXrpnftAccounts] = useState([]); // XRPNFT.com accounts
 
@@ -131,14 +133,15 @@ export default function Summary({}) {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
                         setTookTime(ret.took);
+                        setCollections(ret.collections);
                         setNfts1(ret.nfts1);
                         setNfts2(ret.nfts2);
                         setNfts3(ret.nfts3);
 
                         setActivities(ret.activities);
                         setProfiles(ret.profiles);
+                        setOffers(ret.offers);
                         setOrphaned(ret.orphaned);
-                        setCalcPrices(ret.calcPrices);
 
                         setXrpnftAccounts(ret.xrpnftAccounts);
 
@@ -172,74 +175,74 @@ export default function Summary({}) {
                 }}>
                     <TableBody>
                         <TableRow>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s4">Time: </Typography>
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s6">{tookTime} ms</Typography>
                             </TableCell>
                         </TableRow>
 
                         <TableRow>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
+                                <Typography variant="s4">Collections: </Typography>
+                            </TableCell>
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
+                                <Typography variant="s6">{fIntNumber(collections)}</Typography>
+                            </TableCell>
+                        </TableRow>
+
+                        <TableRow>
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s4">XRPNFT.com NFTs: </Typography>
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s6">{fIntNumber(nfts2)} <Typography variant="s6" color="#33C2FF">({fPercent(pNfts2)}%, {fIntNumber(dNfts2)})</Typography></Typography>
                             </TableCell>
                         </TableRow>
 
                         <TableRow>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s4">XRPL NFTs (30 min): </Typography>
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s6">{fIntNumber(nfts1)} / {fIntNumber(txScanner.nfts)} <Typography variant="s6" color="#33C2FF">(#{fIntNumber(txScanner.index)})</Typography></Typography>
                             </TableCell>
                         </TableRow>
 
                         <TableRow>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s4">XRPL NFTs (Realtime): </Typography>
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s5" color="error">{fIntNumber(nfts3)} <Typography variant="s6" color="#CB3C1D">({fPercent(pNfts3)}%, {dNfts3>0?'+':''}{fIntNumber(dNfts3)})</Typography> <Typography variant="s6" color="#33C2FF">(#{fIntNumber(txScannerReal.index)})</Typography></Typography>
                             </TableCell>
                         </TableRow>
 
                         <TableRow>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s4">Activities (2 Weeks): </Typography>
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s6">{fIntNumber(activities)} <Typography variant="s2" color="#33C2FF">(XRPL)</Typography></Typography>
                             </TableCell>
                         </TableRow>
 
                         <TableRow>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s4">Registered Users: </Typography>
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s6">{fIntNumber(profiles)}</Typography>
                             </TableCell>
                         </TableRow>
 
                         <TableRow>
-                            <TableCell align="right">
-                                <Typography variant="s4">Orphaned Offers: </Typography>
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
+                                <Typography variant="s4">Offers <Typography variant="s2" color="#33C2FF">(Orphaned)</Typography>: </Typography>
                             </TableCell>
-                            <TableCell align="right">
-                                <Typography variant="s6">{fIntNumber(orphaned)} <Typography variant="s2" color="#33C2FF">(XRPL)</Typography></Typography>
-                            </TableCell>
-                        </TableRow>
-
-                        <TableRow>
-                            <TableCell align="right">
-                                <Typography variant="s4">Calc Prices: </Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                                <Typography variant="s6">{fIntNumber(calcPrices)}</Typography>
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
+                                <Typography variant="s6">{fIntNumber(offers)} <Typography variant="s2" color="#33C2FF">({fIntNumber(orphaned)})</Typography></Typography>
                             </TableCell>
                         </TableRow>
                     </TableBody>
@@ -261,11 +264,11 @@ export default function Summary({}) {
                         
                             return (
                                 <TableRow key={account}>
-                                    <TableCell align="left">
+                                    <TableCell align="left" sx={{pt: 1, pb: 1}}>
                                         <Typography variant="s4">XRPNFT {idx+1}</Typography>
                                     </TableCell>
 
-                                    <TableCell align="left">
+                                    <TableCell align="left" sx={{pt: 1, pb: 1}}>
                                         <Stack direction="row" spacing={0.2} alignItems="center">
                                             <Typography variant="s6">{account}</Typography>
                                             <Link
@@ -291,7 +294,7 @@ export default function Summary({}) {
                                         </Stack>
                                     </TableCell>
 
-                                    <TableCell align="left">
+                                    <TableCell align="left" sx={{pt: 1, pb: 1}}>
                                         {/* <Typography variant="p5" color="#33C2FF">{balance}</Typography> */}
                                         <Typography variant='d4' color={balance<200?"error":"#33C2FF"} sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(balance)}</Typography>
                                     </TableCell>

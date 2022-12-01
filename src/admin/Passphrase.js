@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import LockResetIcon from '@mui/icons-material/LockReset';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -106,7 +107,7 @@ export default function Passphrase({account}) {
                             setPass({password: '', count: 0});
                     }
                 }).catch(err => {
-                    console.log("Error on getting summary!!!", err);
+                    console.log("Error on getting passphrase!!!", err);
                 }).then(function () {
                     // always executed
                     setLoading(false);
@@ -114,6 +115,35 @@ export default function Passphrase({account}) {
         }
         getAccountPass();
     }, [account, accountAdmin, accountToken]);
+
+    const doResetPassphrase = async () => {
+        if (!accountAdmin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+        setLoading(true);
+
+        axios.get(`${BASE_URL}/admin/reset_passphrase?account=${account}`, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}})
+            .then(res => {
+                let ret = res.status === 200 ? res.data : undefined;
+                if (ret) {
+                    setTookTime(ret.took);
+                    if (ret.pass)
+                        setPass(ret.pass);
+                    else
+                        setPass({password: '', count: 0});
+                }
+            }).catch(err => {
+                console.log("Error on resetting passphrase!!!", err);
+            }).then(function () {
+                // always executed
+                setLoading(false);
+            });
+    }
+
+    const onResetPassphrase = async () => {
+        doResetPassphrase();
+    }
 
     return (
         <>
@@ -169,6 +199,11 @@ export default function Passphrase({account}) {
                                             </IconButton>
                                         </Tooltip>
                                     </CopyToClipboard>
+                                    <Tooltip title='Click to reset'>
+                                        <IconButton size="small" onClick={onResetPassphrase}>
+                                            <LockResetIcon fontSize="small" sx={{ width: 24, height: 24 }} color="#33C2FF" />
+                                        </IconButton>
+                                    </Tooltip>
                                 </Stack>
                             </TableCell>
                         </TableRow>

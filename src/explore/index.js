@@ -57,10 +57,14 @@ export default function ExploreNFT({collection}) {
     const [loading, setLoading] = useState(false);
 
     const [showFilter, setShowFilter] = useState(true);
-    const [filter, setFilter] = useState(0);
+    const [filter, setFilter] = useState(4);
     const [subFilter, setSubFilter] = useState('pricexrpasc');
 
+    const [filterAttrs, _setFilterAttrs] = useState({});
+
     const [sync, setSync] = useState(0);
+
+    const [attrSync, setAttrSync] = useState(0);
 
     const fetchNfts = () => {
         setLoading(true);
@@ -95,7 +99,7 @@ export default function ExploreNFT({collection}) {
         setHasMore(true);
         setSync(sync + 1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [flag, search, filter, subFilter]);
+    }, [flag, search, filter, subFilter, attrSync]);
 
     useEffect(() => {
         fetchNfts();
@@ -107,6 +111,11 @@ export default function ExploreNFT({collection}) {
 
     const handleShowFilter = (e) => {
         setShowFilter(!showFilter);
+    }
+
+    const setFilterAttrs = (value) => {
+        _setFilterAttrs(value);
+        setAttrSync(attrSync + 1);
     }
 
     return (
@@ -155,7 +164,15 @@ export default function ExploreNFT({collection}) {
             <Grid container spacing={2} justifyContent='center'>
                 {showFilter &&
                     <Grid item xs={12} md={3}>
-                        <FilterDetail collection={collection} filter={filter} setFilter={setFilter} subFilter={subFilter} setSubFilter={setSubFilter} />
+                        <FilterDetail
+                            collection={collection}
+                            filter={filter}
+                            setFilter={setFilter}
+                            subFilter={subFilter}
+                            setSubFilter={setSubFilter}
+                            filterAttrs={filterAttrs}
+                            setFilterAttrs={setFilterAttrs}
+                        />
                     </Grid>
                 }
                 <Grid item xs={12} md={showFilter?9:12}>

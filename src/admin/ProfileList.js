@@ -114,7 +114,7 @@ export default function ProfileList({setCounterAccount}) {
                 // autoFocus
                 // fullWidth
                 variant='outlined'
-                placeholder='Filter'
+                placeholder='Account Name or Address'
                 margin='dense'
                 onChange={handleChangeFilter}
                 autoComplete='new-password'

@@ -24,6 +24,8 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ArticleIcon from '@mui/icons-material/Article';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
+import EditAttributesIcon from '@mui/icons-material/EditAttributes';
+import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -31,11 +33,13 @@ import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Components
 import { FILTER_NFT_FLAGS } from 'src/utils/constants';
+import FilterAttribute from './FilterAttribute';
 
-export default function FilterDetail({collection, filter, setFilter, subFilter, setSubFilter}) {
+export default function FilterDetail({collection, filter, setFilter, subFilter, setSubFilter, filterAttrs, setFilterAttrs}) {
 
     const type = collection?.type;
     const extra = collection?.extra;
+    const attrs = collection?.attrs || [];
 
     const handleFlagChange = (e) => {
         const value = e.target.value;
@@ -128,6 +132,28 @@ export default function FilterDetail({collection, filter, setFilter, subFilter, 
                     </FormGroup>
 
                     
+                </AccordionDetails>
+            </Accordion>
+
+            <Accordion defaultExpanded style={{margin: 0}}>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel2bh-content"
+                    id="panel2bh-header2"
+                >
+                    <Stack spacing={2} direction='row'>
+                        <BookmarkAddedIcon />
+                        <Typography variant='s3'>Attributes <Typography variant='s2'>(Comming soon!)</Typography></Typography>
+                    </Stack>
+                </AccordionSummary>
+                <AccordionDetails style={{padding: 0}}>
+                    {!attrs || attrs.length === 0 ?
+                        <Stack alignItems="center">
+                            <Typography variant='s7'>No Attributes</Typography>
+                        </Stack>
+                        :
+                        <FilterAttribute attrs={attrs} filterAttrs={filterAttrs} setFilterAttrs={setFilterAttrs} />
+                    }
                 </AccordionDetails>
             </Accordion>
         </Stack>
