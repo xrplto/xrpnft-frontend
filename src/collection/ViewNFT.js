@@ -21,10 +21,11 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 // Iconify
 import { Icon } from '@iconify/react';
 import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
+import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Utils
 import { formatMonthYear } from 'src/utils/formatTime';
-import { fNumber, fIntNumber, fPercent } from 'src/utils/formatNumber';
+import { fNumber, fIntNumber, fPercent, fVolume } from 'src/utils/formatNumber';
 
 // Context
 import { useContext } from 'react';
@@ -165,17 +166,13 @@ export default function ViewNFT({collection}) {
         verified,
         created,
         volume,
+        totalVolume,
         floor
     } = collection;
 
     const floorPrice = floor?.amount || 0;
-    let totalVolume = volume || 0;
-
-    if (totalVolume > 1) {
-        totalVolume = new Decimal(totalVolume).toDP(0, Decimal.ROUND_DOWN).toNumber();
-    } else {
-        totalVolume = fNumber(totalVolume);
-    }
+    let volume1 = fVolume(volume || 0);
+    let volume2 = fVolume(totalVolume || 0);
 
     return (
         <>
@@ -274,7 +271,19 @@ export default function ViewNFT({collection}) {
                 <Stack>
                     <Stack direction="row" spacing={0.5} alignItems='center'>
                         <Icon icon={rippleSolid} />
-                        <Typography variant="d2" noWrap>{totalVolume}</Typography>
+                        <Typography variant="d2" noWrap>{volume1}</Typography>
+                        <Stack direction="row" sx={{pb: 1.5}}>
+                            <Tooltip 
+                                title={
+                                    <Stack alignItems="center">
+                                        <Typography variant="body2">Volume on XRPL</Typography>
+                                        <Typography variant="body2">{volume2}</Typography>
+                                    </Stack>
+                                }
+                            >
+                                <Icon icon={infoFilled} />
+                            </Tooltip>
+                        </Stack>
                     </Stack>
                     <Typography variant='s4'>total volume</Typography>
                 </Stack>

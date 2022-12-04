@@ -9,6 +9,7 @@ import Decimal from 'decimal.js';
 import {
     Avatar,
     Backdrop,
+    Button,
     Divider,
     IconButton,
     Link,
@@ -217,6 +218,10 @@ export default function OrphanedList({ account }) {
         doProcessOffer(offer);
     }
 
+    const handleCancelAll = async (e) => {
+        // doCancelAll();
+    }
+
     return (
         <>
             <Backdrop
@@ -251,6 +256,18 @@ export default function OrphanedList({ account }) {
                         <Typography variant="s2">[ No Orphaned Offers ]</Typography>
                     </Stack>
             )
+            }
+
+            {offers && offers.length > 0 &&
+                <Button
+                    disabled={accountLogin !== account}
+                    variant='contained'
+                    color='success'
+                    onClick={handleCancelAll}
+                    startIcon={<HighlightOffIcon />}
+                >
+                    Cancel All
+                </Button>
             }
 
             <QRDialog

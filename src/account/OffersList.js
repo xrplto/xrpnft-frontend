@@ -6,6 +6,7 @@ import { normalizeAmount } from 'src/utils/normalizers';
 // Material
 import {
     Backdrop,
+    Button,
     Divider,
     IconButton,
     Link,
@@ -205,6 +206,40 @@ export default function OffersList({ account, type }) {
         setPageLoading(false);
     };
 
+    const doCancelAllOrphaned = async () => {
+        if (!accountLogin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        setPageLoading(true);
+        try {
+            const user_token = accountProfile.user_token;
+
+            const body = {
+                account: accountLogin,
+                user_token
+            };
+
+            const res = await axios.post(`${BASE_URL}/offers/cancelall`, body, {headers: {'x-access-token': accountToken}});
+
+            if (res.status === 200) {
+                const newUuid = res.data.data.uuid;
+                const qrlink = res.data.data.qrUrl;
+                const nextlink = res.data.data.next;
+
+                setQrType('Cancel Orphaned Offers');
+                setXummUuid(newUuid);
+                setQrUrl(qrlink);
+                setNextUrl(nextlink);
+                setOpenScanQR(true);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+        setPageLoading(false);
+    };
+
     const onDisconnectXumm = async () => {
         setPageLoading(true);
         try {
@@ -238,6 +273,10 @@ export default function OffersList({ account, type }) {
         doProcessOffer(acceptOffer, true);
     }
 
+    const handleCancelAll = async (e) => {
+        doCancelAllOrphaned();
+    }
+
     return (
         <>
             <Backdrop
@@ -263,6 +302,20 @@ export default function OffersList({ account, type }) {
                     <Typography variant="s7">and Sell Offers will become orphaned offers. Or when you create several Buy Offers on the other NFT and</Typography>
                     <Typography variant="s7">the NFT owner accepted one of your Buy Offers, the remaining Buy Offers will become orphaned offers too.</Typography>
                     <Typography variant="s7">You must cancel them to save your account XRP reserve.</Typography>
+
+                    {offers && offers.length > 0 &&
+                        <Stack direction="row" justifyContent="right">
+                            <Button
+                                disabled={accountLogin !== account || loading}
+                                variant='outlined'
+                                color='error'
+                                onClick={handleCancelAll}
+                                startIcon={<HighlightOffIcon />}
+                            >
+                                Cancel ALL
+                            </Button>
+                        </Stack>
+                    }
                 </>
             }
 

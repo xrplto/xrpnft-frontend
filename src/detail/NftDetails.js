@@ -23,10 +23,15 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 // Iconify
 import { Icon } from '@iconify/react';
+import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
+import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
+
+// Utils
+import { fVolume } from 'src/utils/formatNumber';
 
 // Components
 import NFTPreview from './NFTPreview';
@@ -96,7 +101,8 @@ export default function NFTDetails({nft}) {
         cslug,
         NFTokenID,
         props,
-        total
+        total,
+        volume
     } = nft;
 
     const ParsedURI = convertHexToString(URI);
@@ -179,6 +185,16 @@ export default function NFTDetails({nft}) {
                             ):(
                                 <Typography sx={{pl:1}}>{collectionName}</Typography>
                             )}
+                        </Stack>
+                        <Stack direction="row" spacing={2} sx={{mt: 2}}>
+                            <Typography variant="caption">Volume</Typography>
+                            <Stack direction="row" spacing={0.5} alignItems='center'>
+                                <Icon icon={rippleSolid} />
+                                <Typography variant="s6">{fVolume(volume || 0)}</Typography>
+                                <Tooltip title={<Typography variant="body2">Traded volume on XRPL</Typography>}>
+                                    <Icon icon={infoFilled} />
+                                </Tooltip>
+                            </Stack>
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
 

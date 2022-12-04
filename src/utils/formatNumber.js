@@ -1,3 +1,4 @@
+import Decimal from 'decimal.js';
 import numeral from 'numeral';
 
 // ----------------------------------------------------------------------
@@ -13,6 +14,21 @@ import numeral from 'numeral';
         return `${getLocalizedCurrencySymbol(language, currency)} ${numberString}`;
     return numberString;
 }*/
+
+export function fVolume(vol) {
+    let volume = new Decimal(vol).toNumber();
+    if (volume > 1) {
+        volume = new Decimal(volume).toDP(0, Decimal.ROUND_DOWN).toNumber();
+        if (volume > 1000) {
+            volume = new Decimal(volume).div(1000).toDP(2, Decimal.ROUND_DOWN).toString() + "K";
+        } else {
+            volume = fIntNumber(volume);
+        }
+    } else {
+        volume = fNumber(volume);
+    }
+    return volume;
+}
 
 export function fNumber(num) {
     if (!num) return 0;
