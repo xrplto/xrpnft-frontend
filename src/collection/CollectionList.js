@@ -5,7 +5,10 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 // Material
 import {
-    Grid
+    Box,
+    Table,
+    TableBody,
+    TableCell
 } from '@mui/material';
 
 // Utils
@@ -16,7 +19,12 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import CollectionCard from "./CollectionCard";
+import SearchToolbar from './SearchToolbar';
+import CollectionCard from './CollectionCard';
+import CollectionRow from './CollectionRow';
+import CollectionListHead from './CollectionListHead';
+import CollectionListToolbar from './CollectionListToolbar';
+
 
 export default function CollectionList({type, category}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -25,87 +33,131 @@ export default function CollectionList({type, category}) {
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
+    const [filter, setFilter] = useState('');
+    const [page, setPage] = useState(0);
+    const [rows, setRows] = useState(10);
+    const [order, setOrder] = useState('desc');
+    const [orderBy, setOrderBy] = useState('volume');
+
+    const [total, setTotal] = useState(0);
     const [collections, setCollections] = useState([]);
-    const [offset, setOffset] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
+
+    const [sync, setSync] = useState(0);
+
 
     const isMine = type === CollectionListType.MINE;
 
-    const loadCollections=(offset) => {
-        if (isMine && (!account || !accountToken)) {
-            openSnackbar('Please login', 'error');
-            return;
-        }
-
-        const body = {type, page: offset, limit: 20};
-
-        if (type === CollectionListType.ALL) {
-        } else if (type === CollectionListType.MINE) {
-            body.account = account;
-        } else if (type === CollectionListType.CATEGORY) {
-            body.category = category;
-        }
-        
-        axios.post(`${BASE_URL}/collection/getlist`, body, {headers: {'x-access-token': accountToken}})
-        .then(res => {
-            try {
-                if (res.status === 200 && res.data) {
-                    const ret = res.data;
-                    if (ret.collections.length < 10) {
-                        setHasMore(false)
-                    }
-                    if (offset === 0)
-                        setCollections(ret.collections);
-                    else
-                        setCollections([...collections, ...ret.collections]);
-                    setOffset(offset + 1);
-                    // setCollections(ret.collections);
-                }
-            } catch (error) {
-                console.log(error);
+    useEffect(() => {
+        const loadCollections=() => {
+            if (isMine && (!account || !accountToken)) {
+                openSnackbar('Please login', 'error');
+                return;
             }
-        }).catch(err => {
-            console.log("err->>", err);
-        }).then(function () {
-            // Always executed
-        });
-    };
-
-    const reset = () => {
-        setCollections([]);
-        setOffset(0);
-        loadCollections(0);
-    }
+    
+            const body = {filter, type, page, limit: rows, order, orderBy};
+    
+            if (type === CollectionListType.ALL) {
+            } else if (type === CollectionListType.MINE) {
+                body.account = account;
+            } else if (type === CollectionListType.CATEGORY) {
+                body.category = category;
+            }
+            
+            axios.post(`${BASE_URL}/collection/getlistbyorder`, body, {headers: {'x-access-token': accountToken}})
+            .then(res => {
+                try {
+                    if (res.status === 200 && res.data) {
+                        const ret = res.data;
+                        setTotal(ret.count);
+                        setCollections(ret.collections);
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }).catch(err => {
+                console.log("err->>", err);
+            }).then(function () {
+                // Always executed
+            });
+        };
+        loadCollections();
+    }, [sync, order, orderBy, page, rows, account]);
 
     useEffect(() => {
-        reset();
-    }, [account]);
+        var timer = null;
+
+        const handleValue = () => {
+            setPage(0);
+            setSync(sync + 1);
+        }
+
+        timer = setTimeout(handleValue, 500);
+        return () => {
+            if (timer) {
+                clearTimeout(timer);
+            }
+        };
+    }, [filter]);
+
+    const handleRequestSort = (event, id) => {
+        const isDesc = orderBy === id && order === 'desc';
+        setOrder(isDesc ? 'asc' : 'desc');
+        setOrderBy(id);
+        setPage(0);
+        setSync(sync + 1);
+    };
 
     return (
-        <InfiniteScroll
-            dataLength={collections.length}
-            next={() => loadCollections(offset)}
-            hasMore={hasMore}
-            // loader={<p>loading...</p>}
-        >
-            <Grid container spacing={0}
-                style={{
-                    justifyContent: 'space-around',
-                    alignItems: 'start',
-                    gridGap: '20px',
-                    gridTemplateColumns: 'repeat(auto-fill, 300px)'
+        <>
+            <SearchToolbar
+                filter={filter}
+                setFilter={setFilter}
+                rows={rows}
+                setRows={setRows}
+            />
+
+            <Box
+                sx={{
+                    display: "flex",
+                    gap: 1,
+                    py: 1,
+                    overflow: "auto",
+                    width: "100%",
+                    "& > *": {
+                        scrollSnapAlign: "center",
+                    },
+                    "::-webkit-scrollbar": { display: "none" },
                 }}
             >
-                {   
-                    collections.map((item,index) => (
-                        // <Grid item key={index + "s"}>
-                            <CollectionCard key={index} item={item} isMine={isMine} />
-                        // </Grid>
-                    ))
-                    
-                    // .filter(getNFTimage_info(URI)!==null)      
-                }
-            </Grid>
-        </InfiniteScroll>
+                <Table>
+                    <CollectionListHead
+                        order={order}
+                        orderBy={orderBy}
+                        onRequestSort={handleRequestSort}
+                    />
+                    <TableBody>
+                        {
+                            collections.map((row, idx) => {
+                                    return (
+                                        <CollectionRow
+                                            key={idx}
+                                            id={page * rows + idx + 1}
+                                            item={row}
+                                            isMine={isMine}
+                                        />
+                                    );
+                                })
+                        }
+                    </TableBody>
+                </Table>
+            </Box>
+            <CollectionListToolbar
+                rows={rows}
+                setRows={setRows}
+                page={page}
+                setPage={setPage}
+                total={total}
+            />
+        </>
     )
 };

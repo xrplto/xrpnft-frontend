@@ -1032,11 +1032,14 @@ export const PureLightTheme = createTheme({
           fontSize: 14
         },
         head: {
-          textTransform: 'uppercase',
+          // textTransform: 'uppercase',
           fontSize: 13,
-          fontWeight: 'bold',
-          color: colors.alpha.black[70]
-        }
+          whiteSpace: 'nowrap',
+          // fontWeight: 'bold',
+          // color: colors.alpha.black[70],
+          // background: 'inherit'
+          background: colors.alpha.white[100]
+        },
       }
     },
     MuiAlert: {

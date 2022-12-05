@@ -148,12 +148,12 @@ export default function NFTActions({ nft }) {
                                 </Box>
                             ):(
                                 <Button
-                                    sx={{ borderRadius: 10 }}
+                                    // sx={{ borderRadius: 10 }}
                                     disabled={!accountLogin || burnt}
                                     variant='outlined'
-                                    color='success'
+                                    // color='success'
                                     onClick={handleCreateBuyOffer}
-                                    startIcon={<LocalOfferIcon />}
+                                    // startIcon={<LocalOfferIcon />}
                                 >
                                     Make Offer
                                 </Button>
