@@ -362,7 +362,7 @@ export default function OffersList({ nft, isSell }) {
                                         {/* Buy Offer List - Owner */}
                                         {!isSell && isOwner &&
                                             <>
-                                                {accountLogin !== offer.account ?
+                                                {accountLogin !== offer.owner ?
                                                     <Tooltip title="Accept Offer">
                                                         <IconButton
                                                             aria-label='close'

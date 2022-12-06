@@ -26,10 +26,11 @@ const TABLE_HEAD = [
     { no: 0, id: 'id', label: '#', align: 'left', width: '', order: false },
     { no: 1, id: 'name', label: 'Name', align: 'left', width: '10%', order: true },
     { no: 2, id: 'items', label: 'Items', align: 'right', width: '10%', order: true },
-    { no: 3, id: 'floor.amount', label: 'Floor Price', align: 'right', width: '10%', order: true },
-    { no: 4, id: 'volume', label: 'Volume', align: 'right', width: '10%', order: true },
-    { no: 5, id: 'totalVolume', label: 'Total Volume', align: 'right', width: '15%', order: true },
-    { no: 6, id: 'created', label: 'Date', align: 'right', width: '15%', order: true },
+    { no: 3, id: 'owners', label: 'Owners', align: 'right', width: '10%', order: true },
+    { no: 4, id: 'floor.amount', label: 'Floor Price', align: 'right', width: '10%', order: true },
+    { no: 5, id: 'volume', label: 'Volume', align: 'right', width: '10%', order: true },
+    { no: 6, id: 'totalVolume', label: 'Total Volume', align: 'right', width: '15%', order: true },
+    { no: 7, id: 'created', label: 'Date', align: 'right', width: '15%', order: true },
     { id: '' }
 ];
 

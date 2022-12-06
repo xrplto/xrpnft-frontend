@@ -1199,6 +1199,7 @@ export const DarkSpacesTheme = createTheme({
           h1a: 'h1',
           h2: 'h2',
           h2a: 'h2',
+          h2b: 'h2',
           h3: 'div',
           h4: 'div',
           h5: 'div',
@@ -1370,6 +1371,11 @@ export const DarkSpacesTheme = createTheme({
     h2: {
       fontWeight: 700,
       fontSize: 30
+    },
+    h2b: {
+      fontSize: '1rem',
+      lineHeight: '1.5rem',
+      fontWeight: 400
     },
     h3: {
       fontWeight: 700,

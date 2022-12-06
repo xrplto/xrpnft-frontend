@@ -109,12 +109,12 @@ export default function CollectionList({type, category}) {
 
     return (
         <>
-            <SearchToolbar
+            {/* <SearchToolbar
                 filter={filter}
                 setFilter={setFilter}
                 rows={rows}
                 setRows={setRows}
-            />
+            /> */}
 
             <Box
                 sx={{

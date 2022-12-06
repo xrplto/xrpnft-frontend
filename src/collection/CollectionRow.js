@@ -237,11 +237,11 @@ export default function CollectionRow({ id, item, isMine }) {
 
     const strDateTime = formatMonthYearDate(created);
 
-    const featuredImageUrl = '/static/covers/6.jpg';
-    const logoImageUrl = '/static/covers/icon1.png';
+    // const featuredImageUrl = '/static/covers/6.jpg';
+    // const logoImageUrl = '/static/covers/icon1.png';
 
-    // const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;
-    // const logoImageUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
+    const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;
+    const logoImageUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
 
     const [colors, setColors] = useState([]);
 
@@ -302,6 +302,15 @@ export default function CollectionRow({ id, item, isMine }) {
                 }}
             >
                 <Typography variant="d3" noWrap>{fIntNumber(items)}</Typography>
+            </TableCell>
+
+            <TableCell align="right"
+                sx={{
+                    pl:0,
+                    pr:0
+                }}
+            >
+                <Typography variant="d3" noWrap>{fIntNumber(extra.owners)}</Typography>
             </TableCell>
 
             <TableCell align="right" sx={{pl:0, pr:0}}>

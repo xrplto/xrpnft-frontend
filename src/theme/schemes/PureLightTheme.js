@@ -1197,6 +1197,7 @@ export const PureLightTheme = createTheme({
           h1a: 'h1',
           h2: 'h2',
           h2a: 'h2',
+          h2b: 'h2',
           h3: 'div',
           h4: 'div',
           h5: 'div',
@@ -1367,7 +1368,12 @@ export const PureLightTheme = createTheme({
     },
     h2: {
       fontWeight: 700,
-      fontSize: 30
+      fontSize: 30,
+      fontWeight: 400
+    },
+    h2b: {
+      fontSize: '1rem',
+      lineHeight: '1.5rem',
     },
     h3: {
       fontWeight: 700,

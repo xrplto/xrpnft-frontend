@@ -434,7 +434,7 @@ export default function OffersList({ account, type }) {
                                         {/* Buy Offer List - Owner */}
                                         {!isSell && isOwner &&
                                             <>
-                                                {accountLogin !== offer.account ?
+                                                {accountLogin !== offer.owner ?
                                                     <Tooltip title="Accept Offer">
                                                         <IconButton
                                                             aria-label='close'
