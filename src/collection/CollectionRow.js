@@ -228,7 +228,8 @@ export default function CollectionRow({ id, item, isMine }) {
         created,
         volume,
         totalVolume,
-        floor
+        floor,
+        owners
     } = item;
 
     const floorPrice = floor?.amount || 0;
@@ -254,9 +255,9 @@ export default function CollectionRow({ id, item, isMine }) {
             hover
             key={uuid}
         >
-            <TableCell align="left">{id}</TableCell>
             <TableCell align="left" sx={{p:0}}>
                 <Stack direction="row" alignItems="center" spacing={2} sx={{pt: 2, pb: 2}}>
+                    <Typography variant="d3">{id}</Typography>
                     <Link href={isMine?`/collection/${slug}/edit`:`/collection/${slug}`} underline='none'>
                         <IconCover>
                             <IconWrapper>
@@ -283,38 +284,26 @@ export default function CollectionRow({ id, item, isMine }) {
                         underline="none"
                         href={`/collection/${slug}`}
                     >
-                    
-                        <Stack direction="row" spacing={0.5} sx={{pt: 0}}>
-                            <Typography variant="d3" noWrap>{name}</Typography>
-                            {verified === 'yes' &&
-                                <Tooltip title='Verified'>
-                                    <VerifiedIcon fontSize="small" color="success" />
-                                </Tooltip>
-                            }
+                        <Stack spacing={0.4}>
+                            <Stack direction="row" spacing={0.5} sx={{pt: 0}}>
+                                <Typography variant="d3" noWrap>{name}</Typography>
+                                {verified === 'yes' &&
+                                    <Tooltip title='Verified'>
+                                        <VerifiedIcon fontSize="small" color="success" />
+                                    </Tooltip>
+                                }
+                            </Stack>
+                            <Typography variant="s7" noWrap>{strDateTime}</Typography>
                         </Stack>
                     </Link>
                 </Stack>
             </TableCell>
-            <TableCell align="right"
-                sx={{
-                    pl:0,
-                    pr:0
-                }}
-            >
-                <Typography variant="d3" noWrap>{fIntNumber(items)}</Typography>
-            </TableCell>
-
-            <TableCell align="right"
-                sx={{
-                    pl:0,
-                    pr:0
-                }}
-            >
-                <Typography variant="d3" noWrap>{fIntNumber(extra.owners)}</Typography>
-            </TableCell>
 
             <TableCell align="right" sx={{pl:0, pr:0}}>
                 <Typography variant="d3" noWrap><Icon icon={rippleSolid} width={12} height={12} /> {fNumber(floorPrice)}</Typography>
+            </TableCell>
+
+            <TableCell align="right" sx={{pl:0, pr:0}}>
             </TableCell>
 
             <TableCell align="right" sx={{pl:0, pr:0}}>
@@ -325,8 +314,22 @@ export default function CollectionRow({ id, item, isMine }) {
                 <Typography variant="d3" noWrap><Icon icon={rippleSolid} width={12} height={12} /> {volume2}</Typography>
             </TableCell>
 
-            <TableCell align="right">
-                <Typography variant="d4" noWrap>{strDateTime}</Typography>
+            <TableCell align="right"
+                sx={{
+                    pl:0,
+                    pr:0
+                }}
+            >
+                <Typography variant="d3" noWrap>{fIntNumber(owners || 0)}</Typography>
+            </TableCell>
+
+            <TableCell align="right"
+                sx={{
+                    pl:0,
+                    pr:0
+                }}
+            >
+                <Typography variant="d3" noWrap>{fIntNumber(items)}</Typography>
             </TableCell>
 
             <TableCell align="right">

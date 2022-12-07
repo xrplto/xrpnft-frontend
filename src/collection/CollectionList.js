@@ -8,7 +8,9 @@ import {
     Box,
     Table,
     TableBody,
-    TableCell
+    TableCell,
+    ToggleButton,
+    ToggleButtonGroup
 } from '@mui/material';
 
 // Utils
@@ -42,8 +44,9 @@ export default function CollectionList({type, category}) {
     const [total, setTotal] = useState(0);
     const [collections, setCollections] = useState([]);
 
-    const [sync, setSync] = useState(0);
+    const [choice, setChoice] = useState('verified');
 
+    const [sync, setSync] = useState(0);
 
     const isMine = type === CollectionListType.MINE;
 
@@ -54,13 +57,14 @@ export default function CollectionList({type, category}) {
                 return;
             }
     
-            const body = {filter, type, page, limit: rows, order, orderBy};
+            const body = {filter, type, page, limit: rows, order, orderBy, choice};
     
             if (type === CollectionListType.ALL) {
             } else if (type === CollectionListType.MINE) {
                 body.account = account;
             } else if (type === CollectionListType.CATEGORY) {
                 body.category = category;
+            } else if (type === CollectionListType.LANDING) {
             }
             
             axios.post(`${BASE_URL}/collection/getlistbyorder`, body, {headers: {'x-access-token': accountToken}})
@@ -107,6 +111,13 @@ export default function CollectionList({type, category}) {
         setSync(sync + 1);
     };
 
+    const handleChangeChoice = (event, newValue) => {
+        if (newValue && choice !== newValue) {
+            setChoice(newValue);
+            setSync(sync + 1);
+        }
+    };
+
     return (
         <>
             {/* <SearchToolbar
@@ -115,6 +126,18 @@ export default function CollectionList({type, category}) {
                 rows={rows}
                 setRows={setRows}
             /> */}
+
+            {type !== CollectionListType.LANDING &&
+                <ToggleButtonGroup
+                    color="primary"
+                    value={choice}
+                    exclusive
+                    onChange={handleChangeChoice}
+                >
+                    <ToggleButton value="all" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>All</ToggleButton>
+                    <ToggleButton value="verified" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Verified</ToggleButton>
+                </ToggleButtonGroup>
+            }
 
             <Box
                 sx={{
@@ -151,13 +174,15 @@ export default function CollectionList({type, category}) {
                     </TableBody>
                 </Table>
             </Box>
-            <CollectionListToolbar
-                rows={rows}
-                setRows={setRows}
-                page={page}
-                setPage={setPage}
-                total={total}
-            />
+            {type !== CollectionListType.LANDING &&
+                <CollectionListToolbar
+                    rows={rows}
+                    setRows={setRows}
+                    page={page}
+                    setPage={setPage}
+                    total={total}
+                />
+            }
         </>
     )
 };

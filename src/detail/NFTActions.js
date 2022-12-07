@@ -135,7 +135,7 @@ export default function NFTActions({ nft }) {
                                     justifyContent: 'space-around'
                                 }}>
                                     <Button
-                                        sx={{ borderRadius: 10, width: 200 }}
+                                        sx={{ minWidth: 150 }}
                                         variant='outlined'
                                         startIcon={<LocalOfferIcon />}
                                         onClick={handleCreateSellOffer}

@@ -1037,7 +1037,7 @@ export const DarkSpacesTheme = createTheme({
           // fontWeight: 'bold',
           // color: colors.alpha.black[70],
           // background: 'inherit'
-          background: colors.layout.general.bodyBg
+          background: alpha(colors.layout.general.bodyBg, 0)
         },
       }
     },

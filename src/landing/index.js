@@ -11,6 +11,10 @@ import {
 // Components
 import CollectionPreview from './CollectionPreview';
 import SampleList from './SampleList';
+import CollectionList from 'src/collection/CollectionList';
+
+// Utils
+import { CollectionListType } from 'src/utils/constants';
 
 const AutoStack = styled(Stack)(
     ({ theme }) => `
@@ -60,9 +64,10 @@ export default function Landing({data}) {
 
             <Grid item xs={12} md={12} lg={12} sx={{mt:10}} alignItems="center">
                 <Stack alignItems="center" sx={{mt:1, mb:4}}>
-                    <Typography variant='h2a'>Hot NFTs</Typography>
+                    <Typography variant='h2a'>Top Collections Today</Typography>
                 </Stack>
-                <SampleList />
+                {/* <SampleList /> */}
+                <CollectionList type={CollectionListType.LANDING}/>
             </Grid>
         </Grid>
     )

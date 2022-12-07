@@ -1038,7 +1038,7 @@ export const PureLightTheme = createTheme({
           // fontWeight: 'bold',
           // color: colors.alpha.black[70],
           // background: 'inherit'
-          background: colors.alpha.white[100]
+          background: alpha(colors.layout.general.bodyBg, 0)
         },
       }
     },

@@ -159,7 +159,7 @@ export default function BurnNFT({nft, onHandleBurn}) {
 
             <Button
                 variant='outlined'
-                sx={{ borderRadius: 10, width: 200 }}
+                sx={{ minWidth: 150 }}
                 color='warning'
                 startIcon={<Icon icon='ps:feedburner' />}
                 onClick={() => handleBurnNFT()}

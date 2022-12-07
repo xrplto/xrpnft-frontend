@@ -19,7 +19,9 @@ export function fVolume(vol) {
     let volume = new Decimal(vol).toNumber();
     if (volume > 1) {
         volume = new Decimal(volume).toDP(0, Decimal.ROUND_DOWN).toNumber();
-        if (volume > 1000) {
+        if (volume > 1000000) {
+            volume = new Decimal(volume).div(1000000).toDP(2, Decimal.ROUND_DOWN).toString() + "M";
+        } else if (volume > 1000) {
             volume = new Decimal(volume).div(1000).toDP(2, Decimal.ROUND_DOWN).toString() + "K";
         } else {
             volume = fIntNumber(volume);

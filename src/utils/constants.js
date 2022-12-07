@@ -274,10 +274,11 @@ export const Mint = { // 6:41 AM 11/26/2022
     REFUND_E2: 92
   }
 
-export const CollectionListType = { // 4:15 AM 11/15/2022
+export const CollectionListType = { // 4:22 PM 12/07/2022
     ALL: 1,
     MINE: 2,
     CATEGORY: 3,
+    LANDING: 4
 }
 
 const BG_FILES = [
