@@ -87,7 +87,7 @@ export default function NFTActions({ nft }) {
     }
 
     return (
-        <Stack spacing={2}>
+        <Stack spacing={2} style={{overflow: 'hidden'}}>
             <CreateOfferDialog
                 open={openCreateOffer}
                 setOpen={setOpenCreateOffer}
@@ -98,9 +98,7 @@ export default function NFTActions({ nft }) {
                 {/* <Link underline='none' color={'text.primary'}>
                     Name
                 </Link> */}
-                <Typography variant='subtitle' gutterBottom fontSize={30} overflow='hidden' fontWeight={600}>
-                    {name}
-                </Typography>
+                <Typography variant='h2a'>{name}</Typography>
             </Stack>
 
             {/* Make offer start */}

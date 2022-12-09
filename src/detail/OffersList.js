@@ -410,7 +410,7 @@ export default function OffersList({ nft, isSell }) {
 
                                     <Stack spacing={1}>
                                         <Stack direction="row" spacing={2} alignItems="center">
-                                            <Typography variant='s6' color='#33C2FF'>{price.amount} {price.name}</Typography>
+                                            <Typography variant='s6' color='#33C2FF' noWrap>{price.amount} {price.name}</Typography>
                                             <Link
                                                 // color="inherit"
                                                 target="_blank"

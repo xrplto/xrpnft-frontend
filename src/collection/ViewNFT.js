@@ -6,6 +6,7 @@ import Decimal from 'decimal.js';
 import { useTheme } from '@mui/material/styles';
 import {
     styled, useMediaQuery,
+    Box,
     IconButton,
     Link,
     Stack,
@@ -243,7 +244,7 @@ export default function ViewNFT({collection}) {
             </Stack>
 
             <Stack direction="row" sx={{mt: 2, mb:3}} spacing={1}>
-                <Typography variant="s5">By</Typography>
+                <Typography variant="s5" style={{ wordBreak: "break-word"}}>By&nbsp;
                 <Link
                     color="inherit"
                     target="_blank"
@@ -253,48 +254,64 @@ export default function ViewNFT({collection}) {
                     <Typography variant="s5" color="#33C2FF">{accountName || account}</Typography>
                 </Link>
                 <Typography variant="s10">&nbsp;&nbsp;·&nbsp;Created <Typography variant="s3">{formatMonthYear(created)}</Typography></Typography>
+                </Typography>
             </Stack>
 
             {description &&
-                <Typography variant="d3">{description}</Typography>
+                <Typography variant="d3" style={{ wordBreak: "break-word"}}>{description}</Typography>
             }
 
-            <Stack direction="row" sx={{mt: 2, mb:3}} spacing={5}>
-                <Stack>
-                    <Typography variant='d2'>{items}</Typography>
-                    <Typography variant='s4'>items</Typography>
-                </Stack>
-                <Stack>
-                    <Typography variant='d2'>{extra.owners}</Typography>
-                    <Typography variant='s4'>owners</Typography>
-                </Stack>
-                <Stack>
-                    <Stack direction="row" spacing={0.5} alignItems='center'>
-                        <Icon icon={rippleSolid} />
-                        <Typography variant="d2" noWrap>{volume1}</Typography>
-                        <Stack direction="row" sx={{pb: 1.5}}>
-                            <Tooltip 
-                                title={
-                                    <Stack alignItems="center">
-                                        <Typography variant="body2">Volume on XRPL</Typography>
-                                        <Typography variant="body2">{volume2}</Typography>
-                                    </Stack>
-                                }
-                            >
-                                <Icon icon={infoFilled} />
-                            </Tooltip>
+            <Box
+                sx={{
+                    display: "flex",
+                    gap: 1,
+                    py: 1,
+                    overflow: "auto",
+                    width: "100%",
+                    "& > *": {
+                        scrollSnapAlign: "center",
+                    },
+                    "::-webkit-scrollbar": { display: "none" },
+                }}
+            >
+
+                <Stack direction="row" sx={{mt: 2, mb:3}} spacing={5}>
+                    <Stack>
+                        <Typography variant='d2'>{items}</Typography>
+                        <Typography variant='s4'>items</Typography>
+                    </Stack>
+                    <Stack>
+                        <Typography variant='d2'>{extra.owners}</Typography>
+                        <Typography variant='s4'>owners</Typography>
+                    </Stack>
+                    <Stack>
+                        <Stack direction="row" spacing={0.5} alignItems='center'>
+                            <Icon icon={rippleSolid} />
+                            <Typography variant="d2" noWrap>{volume1}</Typography>
+                            <Stack direction="row" sx={{pb: 1.5}}>
+                                <Tooltip 
+                                    title={
+                                        <Stack alignItems="center">
+                                            <Typography variant="body2">Volume on XRPL</Typography>
+                                            <Typography variant="body2">{volume2}</Typography>
+                                        </Stack>
+                                    }
+                                >
+                                    <Icon icon={infoFilled} />
+                                </Tooltip>
+                            </Stack>
                         </Stack>
+                        <Typography variant='s4' noWrap>total volume</Typography>
                     </Stack>
-                    <Typography variant='s4'>total volume</Typography>
-                </Stack>
-                <Stack>
-                    <Stack direction="row" spacing={0.5} alignItems='center'>
-                        <Icon icon={rippleSolid} />
-                        <Typography variant="d2" noWrap>{fNumber(floorPrice)}</Typography>
+                    <Stack>
+                        <Stack direction="row" spacing={0.5} alignItems='center'>
+                            <Icon icon={rippleSolid} />
+                            <Typography variant="d2" noWrap>{fNumber(floorPrice)}</Typography>
+                        </Stack>
+                        <Typography variant='s4' noWrap>floor price</Typography>
                     </Stack>
-                    <Typography variant='s4'>floor price</Typography>
                 </Stack>
-            </Stack>
+            </Box>
 
             <ExploreNFT collection={collection} />
 

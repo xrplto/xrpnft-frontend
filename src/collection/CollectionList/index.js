@@ -24,8 +24,8 @@ import { AppContext } from 'src/AppContext';
 import SearchToolbar from './SearchToolbar';
 import CollectionCard from './CollectionCard';
 import CollectionRow from './CollectionRow';
-import CollectionListHead from './CollectionListHead';
-import CollectionListToolbar from './CollectionListToolbar';
+import ListHead from './ListHead';
+import ListToolbar from './ListToolbar';
 
 
 export default function CollectionList({type, category}) {
@@ -153,7 +153,7 @@ export default function CollectionList({type, category}) {
                 }}
             >
                 <Table>
-                    <CollectionListHead
+                    <ListHead
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
@@ -174,15 +174,13 @@ export default function CollectionList({type, category}) {
                     </TableBody>
                 </Table>
             </Box>
-            {type !== CollectionListType.LANDING &&
-                <CollectionListToolbar
-                    rows={rows}
-                    setRows={setRows}
-                    page={page}
-                    setPage={setPage}
-                    total={total}
-                />
-            }
+            <ListToolbar
+                rows={rows}
+                setRows={setRows}
+                page={page}
+                setPage={setPage}
+                total={total}
+            />
         </>
     )
 };

@@ -9,17 +9,7 @@ import {
     Select,
     MenuItem
 } from '@mui/material';
-// ----------------------------------------------------------------------
-// Redux
-import { useSelector } from "react-redux";
-import { selectFilteredCount } from "src/redux/statusSlice";
-// ----------------------------------------------------------------------
-const RootStyle = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    // borderBottom: `1px solid ${alpha('#CBCCD2', 0.1)}`,
-}));
+
 // ----------------------------------------------------------------------
 
 const CustomSelect = styled(Select)(({ theme }) => ({
@@ -28,7 +18,7 @@ const CustomSelect = styled(Select)(({ theme }) => ({
     }
 }));
 
-export default function CollectionListToolbar({ rows, setRows, page, setPage, total}) {
+export default function ListToolbar({ rows, setRows, page, setPage, total}) {
     const num = total / rows;
     let page_count = Math.floor(num)
     if (num % 1 != 0) page_count++;

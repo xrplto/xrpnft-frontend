@@ -11,7 +11,7 @@ import {
 // Components
 import CollectionPreview from './CollectionPreview';
 import SampleList from './SampleList';
-import CollectionList from 'src/collection/CollectionList';
+import CollectionList from './CollectionList';
 
 // Utils
 import { CollectionListType } from 'src/utils/constants';
@@ -67,7 +67,17 @@ export default function Landing({data}) {
                     <Typography variant='h2a'>Top Collections Today</Typography>
                 </Stack>
                 {/* <SampleList /> */}
-                <CollectionList type={CollectionListType.LANDING}/>
+                <CollectionList />
+                <Stack alignItems="center" sx={{mt:1, mb:4}}>
+                    <Link
+                        underline="none"
+                        color="inherit"
+                        href={`/explore-collections`}
+                        rel="noreferrer noopener nofollow"
+                    >
+                        <Button variant="contained">See all collections</Button>
+                    </Link>
+                </Stack>
             </Grid>
         </Grid>
     )

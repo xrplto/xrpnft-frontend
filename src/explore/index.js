@@ -161,7 +161,7 @@ export default function ExploreNFT({collection}) {
                     }}
                 />
             </Box>
-            <Grid container spacing={2} justifyContent='center'>
+            <Grid container spacing={0} justifyContent='center'>
                 {showFilter &&
                     <Grid item xs={12} md={3}>
                         <FilterDetail

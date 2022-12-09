@@ -33,7 +33,7 @@ const TABLE_HEAD = [
     { id: '' }
 ];
 
-export default function TokenListHead({
+export default function ListHead({
     order,
     orderBy,
     onRequestSort

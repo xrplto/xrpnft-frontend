@@ -70,14 +70,14 @@ function Footer() {
         // }
     }, []);
 
-    const img_dark = "/logo/logo-dark.svg";
-    const img_light = "/logo/logo-light.svg";
+    const img_dark = "/logo/xrpnft-logo-black.png";
+    const img_light = "/logo/xrpnft-logo-white.png";
     
     const img = darkMode?img_light:img_dark;
     return (
         <FooterWrapper>
             <Container maxWidth="xl" sx={{ mt: 8, mb: 8 }}>
-                <Grid container sx={{ml:5}}>
+                <Grid container sx={{pl:3}}>
                     <Grid item xs={12} md={5} lg={5} sx={{ mt: 3 }}>
                         <Link
                             href="/"

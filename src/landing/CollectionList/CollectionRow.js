@@ -25,7 +25,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Components
-import CollectionMoreMenu from './CollectionMoreMenu';
 
 // Utils
 import { formatDateTime, formatMonthYearDate } from 'src/utils/formatTime';
@@ -207,7 +206,7 @@ function getPriceColor(token) {
     return color;
 }
 
-export default function CollectionRow({ id, item, isMine }) {
+export default function CollectionRow({ id, item }) {
     const {
         uuid,
         account,
@@ -250,35 +249,32 @@ export default function CollectionRow({ id, item, isMine }) {
         setColors(c => [...c, ...colors]);
     }
 
+    const handleRowClick = () => {
+        // history.push(`/collection/${slug}`);
+        // onclick="document.location = 'links.html';"
+        document.location = `/collection/${slug}`;
+    }
+
     return (
         <TableRow
             hover
             key={uuid}
+            onClick={handleRowClick}
+            style={{cursor: 'pointer'}}
         >
+            <TableCell align="right" sx={{pl:0,pr:0}}>
+            </TableCell>
+
             <TableCell align="left" sx={{p:0}}>
                 <Stack direction="row" alignItems="center" spacing={2} sx={{pt: 2, pb: 2}}>
                     <Typography variant="d3">{id}</Typography>
-                    <Link href={isMine?`/collection/${slug}/edit`:`/collection/${slug}`} underline='none'>
+                    <Link href={`/collection/${slug}`} underline='none'>
                         <IconCover>
                             <IconWrapper>
                                 <IconImage src={logoImageUrl}/>
                             </IconWrapper>
-
-                            {isMine ?
-                                <IconButton
-                                    className="MuiIconEditButton-root"
-                                    aria-label='edit'
-                                    sx={{ position: 'absolute', left: '0vw', top: '0vh', opacity: 0, zIndex: 1, width: '70px', height: '70px' }}
-                                >
-                                    <EditIcon />
-                                </IconButton>
-                                :
-                                <ImageBackdrop className="MuiImageBackdrop-root" />
-                            }
                         </IconCover>
                     </Link>
-
-                    
 
                     <Link
                         underline="none"
@@ -314,26 +310,15 @@ export default function CollectionRow({ id, item, isMine }) {
                 <Typography variant="d3" noWrap><Icon icon={rippleSolid} width={12} height={12} /> {volume2}</Typography>
             </TableCell>
 
-            <TableCell align="right"
-                sx={{
-                    pl:0,
-                    pr:0
-                }}
-            >
+            <TableCell align="right" sx={{pl:0,pr:0}}>
                 <Typography variant="d3" noWrap>{fIntNumber(owners || 0)}</Typography>
             </TableCell>
 
-            <TableCell align="right"
-                sx={{
-                    pl:0,
-                    pr:0
-                }}
-            >
+            <TableCell align="right" sx={{pl:0,pr:0}}>
                 <Typography variant="d3" noWrap>{fIntNumber(items)}</Typography>
             </TableCell>
 
-            <TableCell align="right">
-                {/* <CollectionMoreMenu collection={item} isMine={isMine} /> */}
+            <TableCell align="right" sx={{pl:0,pr:0}}>
             </TableCell>
         </TableRow>
     );

@@ -24,8 +24,8 @@ function Logo() {
     const { darkMode } = useContext(AppContext);
     // const isMobile = useMediaQuery(theme.breakpoints.down('mobile'));
 
-    const img_dark = "/logo/logo-dark.svg";
-    const img_light = "/logo/logo-light.svg";
+    const img_dark = "/logo/xrpnft-logo-black.png";
+    const img_light = "/logo/xrpnft-logo-white.png";
     // const img_mobile_dark = "/logo/logo-mobile-dark.svg";
     // const img_mobile_light = "/logo/logo-mobile-light.svg";
     

@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 // ----------------------------------------------------------------------
 
-export default function CollectionMoreMenu({token, admin, setEditToken, setTrustToken}) {
+export default function MoreMenu({token, admin, setEditToken, setTrustToken}) {
     const ref = useRef(null);
     const {
         issuer,

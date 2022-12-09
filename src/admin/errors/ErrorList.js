@@ -207,9 +207,11 @@ export default function ErrorList({filter, choice, setLoading}) {
                                 Resolve All
                             </Button>
 
-                            <Button variant="contained" color="primary" size="small" onClick={()=>handleResolvePage()}>
+                            <Typography variant="s2">Click only once and be patient!</Typography>
+
+                            {/* <Button variant="contained" color="primary" size="small" onClick={()=>handleResolvePage()}>
                                 Resolve Page
-                            </Button>
+                            </Button> */}
                         </Stack>
                     }
                     <ListToolbar
