@@ -123,7 +123,7 @@ export default function ExploreNFT({collection}) {
             <Box
                 display="flex"
                 alignItems="center"
-                sx={{ margin: 1, padding: 1 }}
+                // sx={{ margin: 1, padding: 1 }}
             >
                 <IconButton
                     aria-label='filter'
@@ -145,7 +145,7 @@ export default function ExploreNFT({collection}) {
                     onFocus={event => {
                         event.target.select();
                     }}
-                    sx={{pl:2, pr:2, pt: 0, pb: 0, mt: 0}}
+                    sx={{pl:2, pr:0, pt: 0, pb: 0, mt: 0}}
                     onKeyDown={(e) => e.stopPropagation()}
                     InputProps={{
                         startAdornment: (
@@ -161,7 +161,7 @@ export default function ExploreNFT({collection}) {
                     }}
                 />
             </Box>
-            <Grid container spacing={0} justifyContent='center'>
+            <Grid container spacing={0} justifyContent='space-between'>
                 {showFilter &&
                     <Grid item xs={12} md={3}>
                         <FilterDetail
@@ -186,13 +186,13 @@ export default function ExploreNFT({collection}) {
                         // loader={<p>loading...</p>}
                     >   
                     
-                        <Grid container spacing={2}
+                        <Grid container spacing={0}
                             style={{
                                 display: 'grid',
-                                justifyContent: 'center',
+                                justifyContent: 'space-between',
                                 alignContent: 'flex-start',
                                 gridGap: '20px',
-                                gridTemplateColumns: 'repeat(auto-fill, 300px)',
+                                gridTemplateColumns: 'repeat(auto-fill, 280px)',
                                 marginTop: '30px'
                             }}
                         >

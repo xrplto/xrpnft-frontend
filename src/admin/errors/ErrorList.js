@@ -66,12 +66,13 @@ function statusToString(status) {
     return ret;
 }
 
-const NFTFix = { // 4:00 AM 11/17/2022
+const NFTFix = { // 4:23 PM 12/11/2022
     RESOLVE_ONE: 1,
     RESOLVE_PAGE: 2,
     RESOLVE_ALL: 3,
     RESOLVE_PREOFFER_E2: 4,
     RESOLVE_PREMINT_E3: 5,
+    RESOLVE_PREMINT: 6
 }
 
 export default function ErrorList({filter, choice, setLoading}) {
@@ -181,6 +182,8 @@ export default function ErrorList({filter, choice, setLoading}) {
         let type = NFTFix.RESOLVE_ONE;
         if (nft.status === NFToken.PREOFFER_E2)
             type = NFTFix.RESOLVE_PREOFFER_E2;
+        else if (nft.status === NFToken.PREMINT)
+            type = NFTFix.RESOLVE_PREMINT;
 
         onResolveNFT([nft], type);
     }
@@ -202,7 +205,7 @@ export default function ErrorList({filter, choice, setLoading}) {
             {total > 0 ?
                 <>
                     {(choice === "error" || choice === "nodest") &&
-                        <Stack direction="row" spacing={1}>
+                        <Stack direction="row" spacing={1} alignItems="center">
                             <Button variant="contained" color="primary" size="small" onClick={()=>handleResolveAll()}>
                                 Resolve All
                             </Button>
@@ -343,17 +346,23 @@ export default function ErrorList({filter, choice, setLoading}) {
                                     
                                     <TableCell align="left">
                                         <Stack spacing={0.5}>
-                                            <Stack direction="row" justifyContent="space-between">
-                                                <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                            <Stack direction="row" spacing={2} alignItems="row">
+                                                <Typography variant="s3" color="#33C2FF">{name}</Typography>
+                                                <FlagsContainer Flags={flag}/>
+                                                <Typography variant="s7">{strDateTime}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">UUID: </Typography>
-                                                <Typography variant="s6">{uuid}</Typography>
+                                                <Typography variant="s7">Collection: </Typography>
+                                                <Typography variant="s6">{collection}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Account: </Typography>
+                                                <Typography variant="s7">UUID: </Typography>
+                                                <Typography variant="s7">{uuid}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s7">Account: </Typography>
                                                 <Stack direction="row" spacing={0.2} alignItems="center">
-                                                    <Typography variant="s6">{account}</Typography>
+                                                    <Typography variant="s7">{account}</Typography>
                                                     <Link
                                                         underline="none"
                                                         color="inherit"
@@ -378,9 +387,9 @@ export default function ErrorList({filter, choice, setLoading}) {
                                             </Stack>
 
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Minter: </Typography>
+                                                <Typography variant="s7">Minter: </Typography>
                                                 <Stack direction="row" spacing={0.2} alignItems="center">
-                                                    <Typography variant="s6">{account}</Typography>
+                                                    <Typography variant="s7">{account}</Typography>
                                                     <Link
                                                         underline="none"
                                                         color="inherit"
@@ -405,9 +414,9 @@ export default function ErrorList({filter, choice, setLoading}) {
                                             </Stack>
 
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Issuer: </Typography>
+                                                <Typography variant="s7">Issuer: </Typography>
                                                 <Stack direction="row" spacing={0.2} alignItems="center">
-                                                    <Typography variant="s6">{issuer}</Typography>
+                                                    <Typography variant="s7">{issuer}</Typography>
                                                     <Link
                                                         underline="none"
                                                         color="inherit"
@@ -430,75 +439,61 @@ export default function ErrorList({filter, choice, setLoading}) {
                                                     </CopyToClipboard>
                                                 </Stack>
                                             </Stack>
-
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Collection: </Typography>
-                                                <Typography variant="s6">{collection}</Typography>
+                                                <Typography variant="s7">Destination: </Typography>
+                                                <Typography variant="s7">{destination}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Date: </Typography>
-                                                <Typography variant="s6">{strDateTime}</Typography>
-                                            </Stack>
-                                            <Stack direction="row" spacing={2} alignItems="center">
-                                                <Typography variant="s4">Flags: </Typography>
-                                                <FlagsContainer Flags={flag}/>
-                                                {/* <Typography variant="s6">{strDateTime}</Typography> */}
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Destination: </Typography>
-                                                <Typography variant="s6">{destination}</Typography>
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">TokenID: </Typography>
+                                                <Typography variant="s7">NFTokenID: </Typography>
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
                                                     href={`https://bithomp.com/explorer/${NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s6">{NFTokenID}</Typography>
+                                                    <Typography variant="s7">{NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">URI(string): </Typography>
-                                                <Typography variant="s6">{convertHexToString(URI)}</Typography>
+                                                <Typography variant="s7">URI(string): </Typography>
+                                                <Typography variant="s7">{convertHexToString(URI)}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">URI(hex): </Typography>
-                                                <Typography variant="s6">{URI}</Typography>
+                                                <Typography variant="s7">URI(hex): </Typography>
+                                                <Typography variant="s7">{URI}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">TxMint: </Typography>
+                                                <Typography variant="s7">TxMint: </Typography>
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
                                                     href={`https://bithomp.com/explorer/${mintHash}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s6">{mintHash}</Typography>
+                                                    <Typography variant="s7">{mintHash}</Typography>
                                                 </Link>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">offerHash: </Typography>
+                                                <Typography variant="s7">offerHash: </Typography>
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
                                                     href={`https://bithomp.com/explorer/${offerHash}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s6">{offerHash}</Typography>
+                                                    <Typography variant="s7">{offerHash}</Typography>
                                                 </Link>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">SellOfferID: </Typography>
-                                                <Typography variant="s6">{SellOfferID}</Typography>
+                                                <Typography variant="s7">SellOfferID: </Typography>
+                                                <Typography variant="s7">{SellOfferID}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Status: </Typography>
+                                                <Typography variant="s7">Status: </Typography>
                                                 <Typography variant="s6">{status} - {statusToString(status)}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Error: </Typography>
+                                                <Typography variant="s7">Error: </Typography>
                                                 <Typography variant="s6">{JSON.stringify(error)}</Typography>
                                             </Stack>
                                             {(choice === "error" || choice === "nodest") &&
@@ -524,6 +519,20 @@ export default function ErrorList({filter, choice, setLoading}) {
                                                             </Button>
                                                         }
                                                         </>
+                                                    )
+                                                    }
+                                                </Stack>
+                                            }
+                                            {choice === "nonftids" &&
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    {resolve?(
+                                                        <Button disabled variant="outlined" color="primary" size="small">
+                                                            Resolving ...
+                                                        </Button>
+                                                    ):(
+                                                        <Button variant="outlined" color="primary" size="small" onClick={()=>handleResolve(row)}>
+                                                            Set as NOT MINTED
+                                                        </Button>
                                                     )
                                                     }
                                                 </Stack>

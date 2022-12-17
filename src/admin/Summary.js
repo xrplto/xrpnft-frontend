@@ -20,6 +20,8 @@ import {
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -99,6 +101,8 @@ export default function Summary({}) {
 
     const [offers, setOffers] = useState(0); // Offers
 
+    const [dNFTs, setDNFTs] = useState(0); // Duplicated NFTs
+
     const [orphaned, setOrphaned] = useState(0); // Orphaned Offers
 
     const [xrpnftAccounts, setXrpnftAccounts] = useState([]); // XRPNFT.com accounts
@@ -143,6 +147,8 @@ export default function Summary({}) {
                         setOffers(ret.offers);
                         setOrphaned(ret.orphaned);
 
+                        setDNFTs(ret.dNFTs);
+
                         setXrpnftAccounts(ret.xrpnftAccounts);
 
                         setNftScanner(ret.nftScanner);
@@ -158,6 +164,41 @@ export default function Summary({}) {
         }
         getSummary();
     }, [accountAdmin, accountToken]);
+
+    const onResolveDuplicated = async (type) => {
+        if (!accountAdmin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const body = { type };
+
+            const res = await axios.post(`${BASE_URL}/admin/resolve_duplicate`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
+
+            const ret = res.data;
+            if (ret) {
+                if (ret.status) {
+                    openSnackbar('Successfully submitted', 'success');
+                } else {
+                    openSnackbar(ret.err, 'error');
+                }
+            }
+        } catch (err) {
+            console.error(err);
+            openSnackbar('Error', 'error');
+        }
+        setLoading(false);
+    };
+
+    const handleCheckDuplicatedAgain = (e) => {
+        onResolveDuplicated(1);
+    }
+
+    const handleBurnDuplicatedNFTs = (e) => {
+        onResolveDuplicated(2);
+    }
 
     return (
         <>
@@ -243,6 +284,27 @@ export default function Summary({}) {
                             </TableCell>
                             <TableCell align="right" sx={{pt: 1, pb: 1}}>
                                 <Typography variant="s6">{fIntNumber(offers)} <Typography variant="s2" color="#33C2FF">({fIntNumber(orphaned)})</Typography></Typography>
+                            </TableCell>
+                        </TableRow>
+
+                        <TableRow>
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
+                                <Typography variant="s4">Duplicated NFTs: </Typography>
+                            </TableCell>
+                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
+                                <Stack direction="row" sx={{width: "100%"}} spacing={0.2} alignItems="center" justifyContent="end">
+                                    <Typography variant="s6" pr={2}>{fIntNumber(dNFTs)}</Typography>
+                                    <Tooltip title="Check duplicated NFTs again">
+                                        <IconButton size="small" onClick={handleCheckDuplicatedAgain}>
+                                            <RefreshIcon fontSize="small" color="warning" />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title='Burn these NFTs'>
+                                        <IconButton size="small" onClick={handleBurnDuplicatedNFTs}>
+                                            <DeleteForeverIcon fontSize="small" color="error" />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Stack>
                             </TableCell>
                         </TableRow>
                     </TableBody>

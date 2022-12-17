@@ -35,7 +35,6 @@ import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
 import QRDialog from 'src/components/QRDialog';
-import QRDialogNoPush from 'src/components/QRDialogNoPush';
 import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 // ----------------------------------------------------------------------
@@ -415,7 +414,7 @@ export default function AcceptList({account}) {
                     setPage={setPage}
                 />
             }
-            <QRDialogNoPush
+            <QRDialog
                 open={openScanQR}
                 type="NFTokenAcceptOffer"
                 onClose={handleScanQRClose}

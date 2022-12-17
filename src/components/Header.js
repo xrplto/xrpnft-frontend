@@ -41,7 +41,7 @@ const NotifyWrapper = styled(Box)(({ theme }) => `
 
 const HeaderWrapper = styled(Box)(({ theme }) => `
     width: 100%;
-    height: ${theme.spacing(10)};
+    height: ${theme.spacing(9)};
     display: flex;
     align-items: center;
     background-color: ${theme.colors.nav.background};

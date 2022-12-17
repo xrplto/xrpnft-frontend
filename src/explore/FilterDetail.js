@@ -62,7 +62,7 @@ export default function FilterDetail({collection, filter, setFilter, subFilter, 
     };
 
     return (
-        <Stack spacing={2} sx={{mt: 2, pr: 0}}>
+        <Stack spacing={2} sx={{mt: 2, mr: 3, pr: 0}}>
             <Accordion defaultExpanded>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -77,24 +77,25 @@ export default function FilterDetail({collection, filter, setFilter, subFilter, 
                 <AccordionDetails>
                     {/* owners, pendingNfts, buyWithMints, boughtWithMints, onSaleCount */}
                     <FormGroup sx={{ flexDirection: 'col' }}>
+                        {type === "bulk" &&
+                            <FormControlLabel
+                                label={
+                                    <Stack direction="row" spacing={0.5}>
+                                        <Typography variant='s3'>Buy with Mints <Typography variant='s7'>({extra?.buyWithMints})</Typography></Typography>
+                                        <Tooltip title="Disabled on Spinning collections, only enabled on Bulk collections.">
+                                            <Icon icon={infoFilled} />
+                                        </Tooltip>
+                                    </Stack>
+                                }
+                                value={1}
+                                control={<Checkbox checked={(filter & 1) !== 0} onChange={handleFlagChange} />}
+                            />
+                        }
                         <FormControlLabel
-                            disabled={type !== "bulk"}
                             label={
                                 <Stack direction="row" spacing={0.5}>
-                                    <Typography variant={type !== "bulk"?'s4':'s3'}>Buy with Mints <Typography variant='s7'>({extra?.buyWithMints})</Typography></Typography>
-                                    <Tooltip title="Disabled on Spinning collections, only enabled on Bulk collections.">
-                                        <Icon icon={infoFilled} />
-                                    </Tooltip>
-                                </Stack>
-                            }
-                            value={1}
-                            control={<Checkbox checked={(filter & 1) !== 0} onChange={handleFlagChange} />}
-                        />
-                        <FormControlLabel
-                            label={
-                                <Stack direction="row" spacing={0.5}>
-                                    <Typography variant='s3'>Bought with Mints <Typography variant='s7'>({extra?.boughtWithMints})</Typography></Typography>
-                                    <Tooltip title="Display NFTs that bought with Mints and being transferred to users. Or NFTs that pending to be accepted by users.">
+                                    <Typography variant='s3'>Recently Minted <Typography variant='s7'>({extra?.boughtWithMints})</Typography></Typography>
+                                    <Tooltip title="Display recently Minted NFTs and being transferred to users. Or NFTs that pending to be accepted by users.">
                                         <Icon icon={infoFilled} />
                                     </Tooltip>
                                 </Stack>
@@ -149,7 +150,7 @@ export default function FilterDetail({collection, filter, setFilter, subFilter, 
                 <AccordionDetails style={{padding: 0}}>
                     {!attrs || attrs.length === 0 ?
                         <Stack alignItems="center">
-                            <Typography variant='s7'>No Attributes</Typography>
+                            <Typography variant='s7' mb={2}>No Attributes</Typography>
                         </Stack>
                         :
                         <FilterAttribute attrs={attrs} filterAttrs={filterAttrs} setFilterAttrs={setFilterAttrs} />

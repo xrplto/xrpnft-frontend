@@ -448,7 +448,7 @@ export default function Collections({account}) {
                                     }}
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
-                                    <TableCell align="left" width='15%'>
+                                    {/* <TableCell align="left" width='15%'>
                                         <Stack spacing={1}>
                                             <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${logoImage}`}
                                                 sx={{
@@ -458,16 +458,8 @@ export default function Collections({account}) {
                                                     filter: ((type !== 'normal') && (!infoIPFS || !infoIPFS.cid))?'grayscale(100%)':`drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`,
                                                 }}
                                             />
-
-                                            <Stack direction="row" justifyContent="center">
-                                                <Tooltip title='Remove Collection'>
-                                                    <IconButton onClick={()=>handleRemove(row)}>
-                                                        <DeleteForeverIcon fontSize="large" color="error" />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </Stack>
                                         </Stack>
-                                    </TableCell>
+                                    </TableCell> */}
                                     
                                     <TableCell align="left">
                                         <Stack>
@@ -493,11 +485,9 @@ export default function Collections({account}) {
                                                     </Tooltip>
                                                 }
                                                 <Link href={`/collection/${slug}`}>
-                                                    <Typography variant="s9" color="#33C2FF">{name} <Typography variant="s3" color="error">({items} items)</Typography></Typography>
+                                                    <Typography variant="s3" color="#33C2FF">{name} <Typography variant="s3" color="error">({items} items)</Typography></Typography>
                                                 </Link>
                                                 
-                                                
-
                                                 <Tooltip title='Click to toggle verified'>
                                                     <IconButton onClick={()=>handleSetVerified(row)}>
                                                         <VerifiedIcon color={verified === 'yes' ? "success":""} />
@@ -507,6 +497,12 @@ export default function Collections({account}) {
                                                 <Tooltip title='Calc Properties Rarity % again'>
                                                     <IconButton onClick={()=>handleCalcProperties(row)}>
                                                         <AssignmentIcon fontSize="medium" color="success" />
+                                                    </IconButton>
+                                                </Tooltip>
+
+                                                <Tooltip title='Remove Collection'>
+                                                    <IconButton onClick={()=>handleRemove(row)}>
+                                                        <DeleteForeverIcon fontSize="medium" color="error" />
                                                     </IconButton>
                                                 </Tooltip>
                                             </Stack>

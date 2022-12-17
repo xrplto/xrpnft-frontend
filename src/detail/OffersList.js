@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { FadeLoader } from 'react-spinners';
 import { normalizeAmount } from 'src/utils/normalizers';
+import Decimal from 'decimal.js';
 
 // Material
 import {
@@ -68,7 +69,40 @@ export default function OffersList({ nft, isSell }) {
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
-                        setOffers(ret.offers);
+                        const newOffers = []
+                        for (const offer of ret.offers) {
+
+                            if (isSell) {
+                                // Sell Offers
+                                if (isOwner) {
+                                    // I am the Owner of NFT
+                                    if (accountLogin === offer.owner) {
+                                        newOffers.push(offer);
+                                    }
+                                } else {
+                                    // I am not the Owner of NFT
+                                    if (accountLogin === offer.owner) {
+                                        newOffers.push(offer);
+                                    } else {
+                                        if (nft.account === offer.owner && (!offer.destination || accountLogin === offer.destination)) {
+                                            newOffers.push(offer);
+                                        }
+                                    }
+                                }
+                            } else {
+                                // Buy Offers
+                                if (isOwner) {
+                                    // I am the Owner of NFT
+                                } else {
+                                    // I am not the Owner of NFT
+                                }
+
+                                if (!offer.destination || accountLogin === offer.destination)
+                                    newOffers.push(offer);
+                            }
+                        }
+                        
+                        setOffers(newOffers);
                     }
                 }).catch(err => {
                     console.log("Error on getting nft offers list!!!", err);
@@ -286,6 +320,11 @@ export default function OffersList({ nft, isSell }) {
                 {
                     offers.map((offer, idx) => {
                         const price = normalizeAmount(offer.amount);
+                        let priceAmount = price.amount;
+                        if (priceAmount < 1) {
+                        } else {
+                            priceAmount = new Decimal(price.amount).toDP(2, Decimal.ROUND_DOWN).toNumber();
+                        }
                         return (
                             <Stack key={offer.nft_offer_index} sx={{mt: 2}}>
                                 <Stack direction="row" spacing={1} alignItems="center">
@@ -410,7 +449,7 @@ export default function OffersList({ nft, isSell }) {
 
                                     <Stack spacing={1}>
                                         <Stack direction="row" spacing={2} alignItems="center">
-                                            <Typography variant='s6' color='#33C2FF' noWrap>{price.amount} {price.name}</Typography>
+                                            <Typography variant='s6' color='#33C2FF' noWrap>{priceAmount} {price.name}</Typography>
                                             <Link
                                                 // color="inherit"
                                                 target="_blank"

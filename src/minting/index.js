@@ -40,7 +40,7 @@ import { AppContext } from 'src/AppContext';
 import { SUPPORTED_FILE_TYPES, TOKEN_FLAGS } from 'src/utils/constants';
 
 // Components
-import QRDialogNoPush from 'src/components/QRDialogNoPush';
+import QRDialog from 'src/components/QRDialog';
 // import PropertySection from './NFTProperties/PropertySection';
 // import LevelsSection from './NFTLevels/LevelSection';
 // import LoadingTextField from 'src/components/LoadingTextField';
@@ -697,7 +697,7 @@ export default function Minting() {
                 </LoadingButton>
             </Stack>
 
-            <QRDialogNoPush
+            <QRDialog
                 open={openScanQR}
                 type="NFTokenMint"
                 onClose={handleScanQRClose}

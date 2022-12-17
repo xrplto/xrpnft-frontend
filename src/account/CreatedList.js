@@ -186,7 +186,9 @@ export default function CreatedList({account}) {
                                             }
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row" justifyContent="space-between">
-                                                    <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                                    <Link href={`/assets/${uuid}`} underline="none">
+                                                        <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                                    </Link>
                                                 </Stack>
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     <Typography variant="s7">Collection: </Typography>

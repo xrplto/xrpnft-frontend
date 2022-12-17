@@ -286,7 +286,7 @@ export default function ViewNFT({collection}) {
                     </Stack>
                     <Stack>
                         <Stack direction="row" spacing={0.5} alignItems='center'>
-                            <Icon icon={rippleSolid} />
+                            <Icon icon={rippleSolid} width="20" height="20" />
                             <Typography variant="d2" noWrap>{volume1}</Typography>
                             <Stack direction="row" sx={{pb: 1.5}}>
                                 <Tooltip 
@@ -305,7 +305,7 @@ export default function ViewNFT({collection}) {
                     </Stack>
                     <Stack>
                         <Stack direction="row" spacing={0.5} alignItems='center'>
-                            <Icon icon={rippleSolid} />
+                            <Icon icon={rippleSolid} width="20" height="20" />
                             <Typography variant="d2" noWrap>{fNumber(floorPrice)}</Typography>
                         </Stack>
                         <Typography variant='s4' noWrap>floor price</Typography>

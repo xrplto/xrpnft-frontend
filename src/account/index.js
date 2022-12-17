@@ -43,7 +43,6 @@ import CreatedList from './CreatedList';
 import FavoritedList from './FavoritedList';
 import ActivityList from './ActivityList';
 import AcceptList from './AcceptList';
-import OrphanedList from './OrphanedList';
 import OffersList from './OffersList';
 
 const IconCover = styled('div')(
@@ -188,8 +187,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['', 'created', 'favorited', 'activity', 'accept', 'more'];
-const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Accept', 'More'];
+const tabValues = ['', 'created', 'favorited', 'activity', 'transfers', 'more'];
+const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Transfers', 'More'];
 
 const tabMoreValues = ['sells', 'buys', 'orphaned'];
 const tabMoreLabels = ['Sell Offers', 'Buy Offers', 'Orphaned Offers'];

@@ -206,7 +206,7 @@ export default function OffersList({ account, type }) {
         setPageLoading(false);
     };
 
-    const doCancelAllOrphaned = async () => {
+    const doCancelAll = async () => {
         if (!accountLogin || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
@@ -218,6 +218,7 @@ export default function OffersList({ account, type }) {
 
             const body = {
                 account: accountLogin,
+                type,
                 user_token
             };
 
@@ -228,7 +229,7 @@ export default function OffersList({ account, type }) {
                 const qrlink = res.data.data.qrUrl;
                 const nextlink = res.data.data.next;
 
-                setQrType('Cancel Orphaned Offers');
+                setQrType('Cancel Offers');
                 setXummUuid(newUuid);
                 setQrUrl(qrlink);
                 setNextUrl(nextlink);
@@ -274,7 +275,7 @@ export default function OffersList({ account, type }) {
     }
 
     const handleCancelAll = async (e) => {
-        doCancelAllOrphaned();
+        doCancelAll();
     }
 
     return (
@@ -303,20 +304,22 @@ export default function OffersList({ account, type }) {
                     <Typography variant="s7">the NFT owner accepted one of your Buy Offers, the remaining Buy Offers will become orphaned offers too.</Typography>
                     <Typography variant="s7">You must cancel them to save your account XRP reserve.</Typography>
 
-                    {offers && offers.length > 0 &&
-                        <Stack direction="row" justifyContent="right">
-                            <Button
-                                disabled={accountLogin !== account || loading}
-                                variant='outlined'
-                                color='error'
-                                onClick={handleCancelAll}
-                                startIcon={<HighlightOffIcon />}
-                            >
-                                Cancel ALL
-                            </Button>
-                        </Stack>
-                    }
+                    
                 </>
+            }
+
+            {offers && offers.length > 0 &&
+                <Stack direction="row" justifyContent="right">
+                    <Button
+                        disabled={accountLogin !== account || loading}
+                        variant='outlined'
+                        color='error'
+                        onClick={handleCancelAll}
+                        startIcon={<HighlightOffIcon />}
+                    >
+                        Cancel ALL
+                    </Button>
+                </Stack>
             }
 
             {loading ? (

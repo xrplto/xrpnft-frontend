@@ -107,7 +107,6 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
     }, [search]);
 
     const handleSearch = (e) => {
-        console.log('search')
         setSearch(e.target.value);
     }
 
@@ -130,6 +129,7 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
             disableClearable
             selectOnFocus
             disablePortal
+            // size="small"
             // clearOnBlur
             // handleHomeEndKeys
             id={id}
@@ -295,7 +295,7 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                         {...params}
                         placeholder={placeholder}
                         autoComplete='new-password'
-                        margin='dense'
+                        // margin='dense'
                         value={search}
                         onChange={handleSearch}
                         InputProps={{

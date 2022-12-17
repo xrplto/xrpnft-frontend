@@ -15,6 +15,11 @@ import {
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 
+// Iconify
+import { Icon } from '@iconify/react';
+import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
+import infoFilled from '@iconify/icons-ep/info-filled';
+
 // Utils
 import { NFToken, getMinterName } from "src/utils/constants";
 import { fNumber } from 'src/utils/formatNumber';
@@ -29,7 +34,7 @@ const CardWrapper = styled('div')(
         border-radius: 30px;
         backdrop-filter: blur(50px);
         background: rgb(2, 0, 36);
-        padding: 10px;
+        padding: 0px;
         text-align: center;
         object-fit: cover;
         cursor: pointer;
@@ -151,10 +156,12 @@ export default function NFTCard({ nft }) {
                         alt={'NFT'}
                         controls={isVideo}
                         style={{
-                            width: 250,
-                            height: 220,
-                            marginTop: 5,
+                            width: 280,
+                            height: 250,
+                            marginTop: 0,
                             borderRadius: 20,
+                            borderBottomLeftRadius: 0,
+                            borderBottomRightRadius: 0,
                             objectFit: 'cover'
                         }}
                     />
@@ -162,10 +169,12 @@ export default function NFTCard({ nft }) {
                     <ColorExtractor getColors={getColors}>
                         <img src={imgUrl}
                             style={{
-                                width: 250,
-                                height: 220,
-                                marginTop: 5,
+                                width: 280,
+                                height: 250,
+                                marginTop: 0,
                                 borderRadius: 20,
+                                borderBottomLeftRadius: 0,
+                                borderBottomRightRadius: 0,
                                 objectFit: 'cover'
                             }}
                         />
@@ -203,38 +212,47 @@ export default function NFTCard({ nft }) {
                 </Stack> */}
                 <Typography variant='s10'>{name}</Typography>
 
-                <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>
-                    <Typography variant='s8'>Price</Typography>
+                <Stack direction="row" justifyContent='space-between' sx={{mt:1, pl:2, pr:2}}>
+                    {/* <Typography variant='s8'>Price</Typography> */}
                     {destination && getMinterName(account) ? (
                         // <Typography variant='s2'>TRANSFER</Typography>
                         <Tooltip title={`Sold & Transfer`}>
                             <SportsScoreIcon />
                         </Tooltip>
                     ):(
-                        <Stack>
+                        <Stack alignItems="left">
                             {cost ? (
-                                <Typography variant='s8'>{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
+                                cost.currency === "XRP" ?
+                                    <Stack direction="row" spacing={0.5} alignItems="center">
+                                        <Typography variant='s3' pt={0.8}><Icon icon={rippleSolid} width="16" height="16" /></Typography>
+                                        <Typography variant='s3'>{fNumber(cost.amount)}</Typography>
+                                    </Stack>
+                                    :
+                                    <Typography variant='s3'>{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
+                                
                             ):(
                                 <Typography variant='s8'>- - -</Typography>
                             )}
-                            {costb ? (
-                                <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>
-                            ):(
-                                <Typography variant='s2' color="#00AB55">- - -</Typography>
-                            )}
+
+                            {costb && costb.currency === "XRP" &&
+                                <Stack direction="row" spacing={0.5} alignItems="center">
+                                    <Icon icon={rippleSolid} color="#00AB55" width="12" height="12" />
+                                    <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)}</Typography>
+                                </Stack>
+                            }
+
+                            {costb && costb.currency !== "XRP" &&
+                                <Typography variant='s2' color="#00AB55">Offer {fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>
+                            }
                         </Stack>
                     )}
                 </Stack>
-                <Divider sx={{mt:0.8, mb:0.3}}/>
-                <Stack direction="row" justifyContent='space-between' sx={{mt:1}}>
+                {/* <Divider sx={{mt:0.8, mb:0.3}}/>
+                <Stack direction="row" justifyContent='space-between' sx={{mt:1, pl:1, pr:1}}>
                     <FlagsContainer Flags={flag} />
-                    {/* <IconButton aria-label='buy'> */}
-                      {/* <Icon icon="bxs:cart-alt" /> */}
-                    {/* </IconButton> */}
-                    {/* <IconButton aria-label='share'> */}
-                      <FavoriteIcon />
-                    {/* </IconButton> */}
-                </Stack>
+                    <FavoriteIcon />
+                </Stack> */}
+
             </CardWrapper>
         </Link>
     );
