@@ -143,7 +143,7 @@ export default function NFTDetails({nft}) {
                             <Typography variant='string'>Properties</Typography>
                         </Stack>
                     </AccordionSummary>
-                    <AccordionDetails sx={{mt: 2}}>
+                    <AccordionDetails>
                         {properties && properties.length > 0 ?
                             <Properties properties={properties} total={total} />
                             :

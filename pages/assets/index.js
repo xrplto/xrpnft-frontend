@@ -57,7 +57,7 @@ export default function Overview({}) {
 
             <Header />
 
-            <Container maxWidth="xl">
+            <Container maxWidth="xxl">
                 <AllNFT />
             </Container>
 

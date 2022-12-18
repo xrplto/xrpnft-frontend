@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 // Material
 import {
+    useTheme,
     Accordion,
     AccordionDetails,
     AccordionSummary,
@@ -42,6 +43,7 @@ import BurnNFT from './BurnNFT';
 // }
 
 export default function NFTActions({ nft }) {
+    const theme = useTheme();
     const {
         uuid,
         name,
@@ -87,7 +89,7 @@ export default function NFTActions({ nft }) {
     }
 
     return (
-        <Stack spacing={2} style={{overflow: 'hidden'}}>
+        <Stack spacing={2}>
             <CreateOfferDialog
                 open={openCreateOffer}
                 setOpen={setOpenCreateOffer}
@@ -102,9 +104,12 @@ export default function NFTActions({ nft }) {
             </Stack>
 
             {/* Make offer start */}
-            <Paper sx={{
-                padding: 2,
-            }}>
+            <Paper
+                variant="outlined"
+                sx={{
+                    padding: 2,
+                }}
+            >
                 {burnt ?
                     <Typography variant="s5">This NFT is burnt.</Typography>
                 :
@@ -176,7 +181,7 @@ export default function NFTActions({ nft }) {
                             <Typography variant='string' >Sell Offers</Typography>
                         </Stack>
                     </AccordionSummary>
-                    <Divider />
+                    {/* <Divider /> */}
                     <AccordionDetails sx={{ textAlign: 'center' }}>
                         <OffersList nft={nft} isSell={true} />
                     </AccordionDetails>
@@ -192,11 +197,11 @@ export default function NFTActions({ nft }) {
                     >
                         <Stack direction='row' spacing={2}>
                             <ListIcon />
-                            <Typography variant='string' >Buy Offers</Typography>
+                            <Typography variant='string'>Buy Offers</Typography>
                         </Stack>
                     </AccordionSummary>
-                    <Divider />
-                    <AccordionDetails sx={{ textAlign: 'center' }}>
+                    {/* <Divider /> */}
+                    <AccordionDetails>
                         <OffersList nft={nft} isSell={false} />
                     </AccordionDetails>
                 </Accordion>

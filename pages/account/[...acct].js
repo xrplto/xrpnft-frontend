@@ -91,7 +91,7 @@ export default function Overview({data}) {
                 </div>
             </BannerWrapper>
 
-            <Container maxWidth="xl">
+            <Container maxWidth="xxl">
                 <Account profile={data.profile} tab={data.tab} />
             </Container>
 

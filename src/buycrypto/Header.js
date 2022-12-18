@@ -41,7 +41,7 @@ export default function Header(props) {
 
     return (
         <HeaderWrapper>
-            <Container maxWidth="xl">
+            <Container maxWidth="xxl">
                 <Box display="flex" alignItems="center" justifyContent="space-between" flex={2} sx={{pl:0, pr:0}}>
                     <Box>
                         <Logo />

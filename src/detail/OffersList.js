@@ -6,6 +6,7 @@ import Decimal from 'decimal.js';
 
 // Material
 import {
+    useTheme,
     Backdrop,
     Divider,
     IconButton,
@@ -14,6 +15,7 @@ import {
     Tooltip,
     Typography
 } from '@mui/material';
+import { tableCellClasses } from "@mui/material/TableCell";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
@@ -24,6 +26,7 @@ import { ProgressBar, Discuss } from 'react-loader-spinner';
 
 // Utils
 import { getUnixTimeEpochFromRippleEpoch } from 'src/utils/parse';
+import { formatDateTime } from 'src/utils/formatTime';
 
 // Context
 import { useContext } from 'react';
@@ -41,6 +44,7 @@ import ConfirmAcceptOfferDialog from './ConfirmAcceptOfferDialog';
 // cannot accept an offer made by you.
 
 export default function OffersList({ nft, isSell }) {
+    const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
@@ -325,6 +329,16 @@ export default function OffersList({ nft, isSell }) {
                         } else {
                             priceAmount = new Decimal(price.amount).toDP(2, Decimal.ROUND_DOWN).toNumber();
                         }
+
+                        let expired = false;
+                        if (offer.expiration) {
+                            const now = Date.now();
+                            const expire = offer.expiration * 1000;
+
+                            if (expire < now)
+                                expired = true;
+                        }
+
                         return (
                             <Stack key={offer.nft_offer_index} sx={{mt: 2}}>
                                 <Stack direction="row" spacing={1} alignItems="center">
@@ -468,6 +482,12 @@ export default function OffersList({ nft, isSell }) {
                                             </Stack>
                                         }
 
+                                        {offer.expiration &&
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant='s7'>{expired?'Expired':'Expires'} on {formatDateTime(offer.expiration * 1000)}</Typography>
+                                            </Stack>
+                                        }
+
                                         {/* {offer.expiration ?
                                             <Stack direction="row" alignItems="center">
                                                 <Typography variant='s4'>Expires by {new Date(getUnixTimeEpochFromRippleEpoch(offer.expiration)).toLocaleString()}</Typography>
@@ -480,7 +500,7 @@ export default function OffersList({ nft, isSell }) {
                                         } */}
                                     </Stack>
                                 </Stack>
-                                <Divider sx={{mt:2}} />
+                                {/* <Divider sx={{mt:2}} /> */}
                             </Stack>
                         )
                     })

@@ -34,7 +34,7 @@ export default function Overview({data}) {
 
             <Header />
 
-            <Container maxWidth="xl">
+            <Container maxWidth="xxl">
                 {isAdmin &&
                     <Admin />
                 }

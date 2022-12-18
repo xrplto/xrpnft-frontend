@@ -99,7 +99,7 @@ export default function Overview({data}) {
                 </div>
             </BannerWrapper>
 
-            <Container maxWidth="xl">
+            <Container maxWidth="xxl">
                 <Collection data={data}/>
             </Container>
 

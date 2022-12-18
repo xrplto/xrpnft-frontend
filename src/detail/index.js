@@ -7,7 +7,7 @@ import {
 import { NFToken } from "src/utils/constants";
 
 // Components
-import NFTDetails from './NftDetails';
+import NFTDetails from './NFTDetails';
 import NFTActions from './NFTActions';
 import NFTActionsBulk from './NFTActionsBulk';
 

@@ -5,14 +5,8 @@ import ModalImage from "react-modal-image";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
-    styled, useTheme,
     Avatar,
-    Backdrop,
-    Box,
-    Button,
-    CardMedia,
     Divider,
     IconButton,
     InputAdornment,
@@ -20,14 +14,8 @@ import {
     List,
     ListItemAvatar,
     ListItemButton,
-    ListItemIcon,
     ListItemText,
     Stack,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
     TextField,
     Tooltip,
     Typography
@@ -56,7 +44,6 @@ function truncate(str, n) {
 };
 
 export default function ProfileList({setCounterAccount}) {
-    const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { accountProfile, openSnackbar } = useContext(AppContext);

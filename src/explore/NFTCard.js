@@ -30,8 +30,10 @@ import Label from './Label';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
-        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-        border-radius: 30px;
+        box-shadow: 0px -0.5px 4px rgba(100, 100, 111, 0.9);
+        // filter: drop-shadow(16px 16px 10px rgba(0,0,0,0.8));
+        // filter: drop-shadow(0 0 0.2rem rgba(0,0,0,0.8));
+        border-radius: 20px;
         backdrop-filter: blur(50px);
         background: rgb(2, 0, 36);
         padding: 0px;
@@ -159,7 +161,8 @@ export default function NFTCard({ nft }) {
                             width: 280,
                             height: 250,
                             marginTop: 0,
-                            borderRadius: 20,
+                            borderTopLeftRadius: 20,
+                            borderTopRightRadius: 20,
                             borderBottomLeftRadius: 0,
                             borderBottomRightRadius: 0,
                             objectFit: 'cover'
@@ -172,7 +175,8 @@ export default function NFTCard({ nft }) {
                                 width: 280,
                                 height: 250,
                                 marginTop: 0,
-                                borderRadius: 20,
+                                borderTopLeftRadius: 20,
+                                borderTopRightRadius: 20,
                                 borderBottomLeftRadius: 0,
                                 borderBottomRightRadius: 0,
                                 objectFit: 'cover'
@@ -210,7 +214,10 @@ export default function NFTCard({ nft }) {
                     <Typography variant='s2'>{type.toUpperCase()}</Typography>
                     <Typography variant='s2'>Price</Typography>
                 </Stack> */}
-                <Typography variant='s10'>{name}</Typography>
+
+                <Stack direction="row" sx={{mt:1, pl:2, pr:2}}>
+                    <Typography variant='s10'>{name}</Typography>
+                </Stack>
 
                 <Stack direction="row" justifyContent='space-between' sx={{mt:1, pl:2, pr:2}}>
                     {/* <Typography variant='s8'>Price</Typography> */}
@@ -234,15 +241,21 @@ export default function NFTCard({ nft }) {
                                 <Typography variant='s8'>- - -</Typography>
                             )}
 
-                            {costb && costb.currency === "XRP" &&
-                                <Stack direction="row" spacing={0.5} alignItems="center">
-                                    <Icon icon={rippleSolid} color="#00AB55" width="12" height="12" />
-                                    <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)}</Typography>
-                                </Stack>
-                            }
-
-                            {costb && costb.currency !== "XRP" &&
-                                <Typography variant='s2' color="#00AB55">Offer {fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>
+                            {costb &&
+                                <>
+                                {costb.currency === "XRP" ?
+                                    <Stack direction="row" spacing={0.5} alignItems="center">
+                                        <Typography variant='s7'>Offer</Typography>
+                                        <Icon icon={rippleSolid} color="#00AB55" width="12" height="12" />
+                                        <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)}</Typography>
+                                    </Stack>
+                                    :
+                                    <Stack direction="row" spacing={0.5} alignItems="center">
+                                        <Typography variant='s7'>Offer</Typography>
+                                        <Typography variant='s2' color="#00AB55">Offer {fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>
+                                    </Stack>
+                                }
+                                </>
                             }
                         </Stack>
                     )}

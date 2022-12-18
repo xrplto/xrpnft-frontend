@@ -23,6 +23,7 @@ import { PuffLoader, PulseLoader } from "react-spinners";
 import { ProgressBar, Discuss } from 'react-loader-spinner';
 
 // Utils
+import { formatDateTime } from 'src/utils/formatTime';
 import { getUnixTimeEpochFromRippleEpoch, parseNFTokenID } from 'src/utils/parse';
 
 // Context
@@ -360,6 +361,17 @@ export default function OffersList({ account, type }) {
                             transferFee
                         } = parseNFTokenID(NFTokenID);
 
+                        // offer.expiration = 1669585409; // Delete this line.
+
+                        let expired = false;
+                        if (offer.expiration) {
+                            const now = Date.now();
+                            const expire = offer.expiration * 1000;
+
+                            if (expire < now)
+                                expired = true;
+                        }
+
                         return (
                             <Stack key={offer.index} sx={{mt: 2}}>
                                 <Stack direction="row" spacing={1} alignItems="center">
@@ -511,6 +523,12 @@ export default function OffersList({ account, type }) {
                                             <Typography variant='s6'>{taxon}</Typography>
                                             <Typography variant="s7">Transfer Fee</Typography>
                                             <Typography variant="s6">{transferFee} %</Typography>
+                                            {offer.expiration &&
+                                                <>
+                                                    <Typography variant="s7">{expired?'Expired':'Expires'} on</Typography>
+                                                    <Typography variant='s6'>{formatDateTime(offer.expiration * 1000)}</Typography>
+                                                </>
+                                            }
                                         </Stack>
 
                                         <Stack direction="row" spacing={1} alignItems="center">

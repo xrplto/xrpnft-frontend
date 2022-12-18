@@ -23,7 +23,8 @@ export default function Trait({ prop, total }) {
                 height: "100%",
                 borderRadius: '6px',
                 border: '1px solid #00ff7f',
-                padding: '10px',
+                padding: 1,
+                // margin: 1,
                 textAlign: 'center',
                 background: '#00ff7f10'
             }}

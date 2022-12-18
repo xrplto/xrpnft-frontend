@@ -86,7 +86,7 @@ export default function Header(props) {
                 </NotifyWrapper>
             }
             <HeaderWrapper>
-                <Container maxWidth="xl">
+                <Container maxWidth="xxl">
                     {fullSearch ?
                         <>
                             <NavSearchBar

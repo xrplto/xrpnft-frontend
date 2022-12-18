@@ -64,36 +64,35 @@ const gridContainer2 = {
 };
 
 const gridItem = {
-    margin: "8px",
+    margin: "0px",
     // border: "1px solid red"
 };
 
 // https://stackoverflow.com/questions/50743402/material-ui-grid-item-height
 export default function Properties({ properties, total }) {
     return (
-        <Container>
-            <Grid container spacing={2}>
-            {
-                properties.map((item, idx) => (
-                    <Box sx={gridItem} key={"Properties" + idx}>
-                        <Trait prop={item} total={total || 0} />
-                    </Box>
-                ))
-            }
-            </Grid>
-
-            {/* <Grid container columnSpacing={1} 
-                // justifyContent='center'
-                alignItems='center'
-            >
-            {
-                properties.map((item, idx) => (
-                    <Grid item md={3} xs={6} key={"Properties" + idx}>
-                        <Trait type={item.type || item.trait_type} value={item.value} />
-                    </Grid>
-                ))
-            }
-            </Grid> */}
-        </Container>
+        <Grid container spacing={1}>
+        {
+            properties.map((item, idx) => (
+                <Grid item key={"Properties" + idx}>
+                    <Trait prop={item} total={total || 0} />
+                </Grid>
+            ))
+        }
+        </Grid>
     );
 }
+
+// export default function Properties({ properties, total }) {
+//     return (
+//         <Grid container spacing={2}>
+//         {
+//             properties.map((item, idx) => (
+//                 <Box key={"Properties" + idx}>
+//                     <Trait prop={item} total={total || 0} />
+//                 </Box>
+//             ))
+//         }
+//         </Grid>
+//     );
+// }

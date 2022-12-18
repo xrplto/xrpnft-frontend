@@ -76,7 +76,7 @@ function Footer() {
     const img = darkMode?img_light:img_dark;
     return (
         <FooterWrapper>
-            <Container maxWidth="xl" sx={{ mt: 8, mb: 8 }}>
+            <Container maxWidth="xxl" sx={{ mt: 8, mb: 8 }}>
                 <Grid container sx={{pl:3}}>
                     <Grid item xs={12} md={5} lg={5} sx={{ mt: 3 }}>
                         <Link

@@ -321,9 +321,10 @@ export const DarkSpacesTheme = createTheme({
       xs: 0,
       mobile: 450,
       sm: 600,
-      md: 960,
-      lg: 1280,
-      xl: 1840
+      md: 900,
+      lg: 1200,
+      xl: 1536,
+      xxl: 2248
     }
   },
   components: {
@@ -541,6 +542,13 @@ export const DarkSpacesTheme = createTheme({
           '&::before': {
             display: 'none'
           }
+        }
+      }
+    },
+    MuiAccordionDetails: {
+      styleOverrides: {
+        root: {
+          background: colors.layout.general.bodyBg
         }
       }
     },
@@ -770,24 +778,24 @@ export const DarkSpacesTheme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          backgroundImage: 'none',
+          background: '#21252B',
           padding: 0
         },
-        elevation0: {
-          boxShadow: 'none'
-        },
-        elevation: {
-          boxShadow: colors.shadows.card
-        },
-        elevation2: {
-          boxShadow: colors.shadows.cardSm
-        },
-        elevation24: {
-          boxShadow: colors.shadows.cardLg
-        },
-        outlined: {
-          boxShadow: colors.shadows.card
-        }
+        // elevation0: {
+        //   boxShadow: 'none'
+        // },
+        // elevation: {
+        //   boxShadow: colors.shadows.card
+        // },
+        // elevation2: {
+        //   boxShadow: colors.shadows.cardSm
+        // },
+        // elevation24: {
+        //   boxShadow: colors.shadows.cardLg
+        // },
+        // outlined: {
+        //   boxShadow: colors.shadows.card
+        // }
       }
     },
     MuiLink: {

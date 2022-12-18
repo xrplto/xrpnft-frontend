@@ -145,7 +145,7 @@ export default function ExploreNFT({collection}) {
                     onFocus={event => {
                         event.target.select();
                     }}
-                    sx={{pl:2, pr:0, pt: 0, pb: 0, mt: 0}}
+                    sx={{pl:2, pr:1, pt: 0, pb: 0, mt: 0}}
                     onKeyDown={(e) => e.stopPropagation()}
                     InputProps={{
                         startAdornment: (
@@ -193,7 +193,8 @@ export default function ExploreNFT({collection}) {
                                 alignContent: 'flex-start',
                                 gridGap: '20px',
                                 gridTemplateColumns: 'repeat(auto-fill, 280px)',
-                                marginTop: '30px'
+                                marginTop: '10px',
+                                padding: '10px'
                             }}
                         >
                             {   
