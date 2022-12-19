@@ -186,7 +186,7 @@ export default function CreatedList({account}) {
                                             }
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row" justifyContent="space-between">
-                                                    <Link href={`/assets/${uuid}`} underline="none">
+                                                    <Link href={`/nft/${NFTokenID}`} underline="none">
                                                         <Typography variant="h3" color="#33C2FF">{name}</Typography>
                                                     </Link>
                                                 </Stack>

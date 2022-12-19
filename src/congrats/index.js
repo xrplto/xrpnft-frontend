@@ -79,11 +79,12 @@ export default function Congrats({ data }) {
             name,
             description,
             collection,
+            NFTokenID,
             meta,
         } = nft;
         imgUrl = `https://gateway.xrpnft.com/ipfs/${nft.meta.image||nft.meta.video}`;
         isVideo = nft.meta.video;
-        url = `https://xrpnft.com/assets/${uuid}`;
+        url = `https://xrpnft.com/nft/${NFTokenID}`;
         title = `${name}`;
         desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
     } else {
@@ -253,7 +254,7 @@ export default function Congrats({ data }) {
                                     <Link
                                         underline="none"
                                         color="inherit"
-                                        href={`/assets/${nft.uuid}`}
+                                        href={`/nft/${nft.NFTokenID}`}
                                         rel="noreferrer noopener nofollow"
                                     >
                                         <Button variant="contained">View NFT Detail</Button>

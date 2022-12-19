@@ -6,7 +6,7 @@ const Sitemap = () => {};
 
 export const getServerSideProps = async ({ res }) => {
     const BASE_URL = 'http://65.109.54.46/api';
-    let slugs = [];
+    let nfts = [];
     let count = 0;
     // const time = new Date().toISOString();
     // try {
@@ -43,10 +43,10 @@ export const getServerSideProps = async ({ res }) => {
         <lastmod>${time}</lastmod>
         <changefreq>always</changefreq>
     </url>
-    ${slugs.map((slug) => {
+    ${nfts.map((slug) => {
     return `
     <url>
-        <loc>https://xrpnft.com/assets/${slug}</loc>
+        <loc>https://xrpnft.com/nft/${slug}</loc>
         <lastmod>${time}</lastmod>
         <changefreq>always</changefreq>
     </url>`}).join('')

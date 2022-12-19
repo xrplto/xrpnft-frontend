@@ -16,9 +16,12 @@ import {
 } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
+// Utils
+import { getImgUrl } from 'src/utils/parse';
+
 export default function NFTPreview({ meta, title, favorites }) {
-    const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
-    const isVideo = meta.video;
+    const imgUrl = getImgUrl(meta); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+    const isVideo = meta?.video?true:false;
 
     // const imgUrl = 'https://xrpnft.com/static/test.mp4';
     // const isVideo = 'test.mp4';

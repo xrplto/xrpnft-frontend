@@ -193,7 +193,7 @@ export default function CollectedList({account}) {
                                                     <Link
                                                         color="inherit"
                                                         target="_blank"
-                                                        href={`/assets/${uuid}`}
+                                                        href={`/nft/${NFTokenID}`}
                                                         rel="noreferrer noopener nofollow"
                                                     >
                                                         <Typography variant="h3" color="#33C2FF">{name}</Typography>
@@ -203,7 +203,7 @@ export default function CollectedList({account}) {
                                                         underline="none"
                                                         color="inherit"
                                                         target="_blank"
-                                                        href={`/assets/${uuid}`}
+                                                        href={`/nft/${NFTokenID}`}
                                                         rel="noreferrer noopener nofollow"
                                                     >
                                                         <Tooltip title="Make Sell on this NFT">

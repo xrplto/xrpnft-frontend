@@ -80,6 +80,7 @@ export default function NFTCard({ nft }) {
         issuer,
         date,
         meta,
+        NFTokenID,
         URI,
         status,
         destination
@@ -94,36 +95,8 @@ export default function NFTCard({ nft }) {
         setColors(c => [...c, ...colors]);
     }
 
-    // useEffect(() => {
-    //     let mounted = true
-    //     const getImgUrl = async () => {
-    //         setLoading(true);
-
-    //         const res = await getNFTokenInfo(URI);
-    //         setType(res.type);
-
-    //         console.log(res);
-            
-    //         if (mounted) {
-    //             setImgUrl('/static/nft.png');
-    //             // setImgUrl(res.image)
-
-    //             // console.log("image url", res.image);
-    //         }
-    //         setLoading(false);
-    //         // if(res.description.name){
-    //         // setName(res.description.name)}
-    //     }
-
-    //     getImgUrl()
-
-    //     return () => {
-    //         mounted = false
-    //     }
-    // }, [URI])
-
     return (
-        <Link href={`/assets/${uuid}`} underline='none'>
+        <Link href={`/nft/${NFTokenID}`} underline='none'>
             <CardWrapper
                 style={{
                     width: 280,

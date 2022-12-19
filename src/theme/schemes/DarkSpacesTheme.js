@@ -548,7 +548,9 @@ export const DarkSpacesTheme = createTheme({
     MuiAccordionDetails: {
       styleOverrides: {
         root: {
-          background: colors.layout.general.bodyBg
+          background: alpha(colors.layout.general.bodyBg, 1),
+          borderBottomLeftRadius: '10px',
+          borderBottomRightRadius: '10px'
         }
       }
     },
@@ -779,7 +781,8 @@ export const DarkSpacesTheme = createTheme({
       styleOverrides: {
         root: {
           background: '#21252B',
-          padding: 0
+          padding: 0,
+          border: '1px solid #32373C'
         },
         // elevation0: {
         //   boxShadow: 'none'

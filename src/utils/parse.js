@@ -494,6 +494,29 @@ export const getNFTokenInfoNew = (res, tokenURI) => {
     }
 }
 
+export const getImgUrl = (meta) => {
+    if (!meta) return '';
+    const image = meta.image;
+    const video = meta.video;
+
+    if (!image && !video) return '';
+
+    let url = image || video;
+
+    if (isIPFS.multihash(url)) {
+        url = `https://gateway.xrpnft.com/ipfs/${url}`;
+    } else if (isIPFS.cidPath(url)) {
+        url = `https://gateway.xrpnft.com/ipfs/${url}`;
+    } else if (url.startsWith("https://")) {
+    } else if (url.startsWith("ipfs://")) {
+        url = url.replace("ipfs://", "https://gateway.xrpnft.com/ipfs/");
+    } else if (url.startsWith("cid:")) {
+        url = URI.replace("cid:", "https://gateway.xrpnft.com/ipfs/");
+    }
+
+    return url;
+}
+
 /**
  * used as fetcher for SWR
  * @param {string} url

@@ -62,7 +62,8 @@ export default function FilterDetail({collection, filter, setFilter, subFilter, 
     };
 
     return (
-        <Stack spacing={2} sx={{mt: 2, mr: 2, pr: 0}}>
+        <>
+        <Stack sx={{mt: 2, mr: 2, pr: 0}}>
             <Accordion defaultExpanded>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -136,6 +137,9 @@ export default function FilterDetail({collection, filter, setFilter, subFilter, 
                 </AccordionDetails>
             </Accordion>
 
+        </Stack>
+        <Stack sx={{mt: 2, mr: 2, pr: 0}}>
+
             <Accordion defaultExpanded style={{margin: 0}}>
                 <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -158,5 +162,6 @@ export default function FilterDetail({collection, filter, setFilter, subFilter, 
                 </AccordionDetails>
             </Accordion>
         </Stack>
+        </>
     );
 }

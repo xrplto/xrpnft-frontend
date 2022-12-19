@@ -9,6 +9,9 @@ import {
     Toolbar
 } from '@mui/material';
 
+// Utils
+import { getImgUrl } from 'src/utils/parse';
+
 // Components
 import TokenDetail from 'src/detail';
 import ScrollToTop from 'src/components/ScrollToTop';
@@ -47,21 +50,22 @@ export async function getServerSideProps(ctx) {
     let data = null;
     try {
 
-        const params = ctx.params.uuid;
+        const params = ctx.params.nftokenid;
 
-        const uuid = params[0];
+        const NFTokenID = params[0];
 
         var t1 = performance.now();
 
-        // https://api.xrpnft.com/api/assets/f0f2513dd72042bfb46fde46c4a4d514
-        const res = await axios.get(`${BASE_URL}/assets/${uuid}`);
+        // Self: true  https://api.xrpnft.com/api/nft/00081388A47691FB124F91B5FF0F5246AED2B5275385689F9494918200001FE8
+        // Self: false https://api.xrpnft.com/api/nft/00081388C182B4F213B82CCFA4C6F59AD76F0AFCFBDF04D5048B654B00000070
+        const res = await axios.get(`${BASE_URL}/nft/${NFTokenID}`);
 
         data = res.data;
 
         var t2 = performance.now();
         var dt = (t2 - t1).toFixed(2);
 
-        console.log(`2. getServerSideProps uuid: ${uuid} took: ${dt}ms`);
+        console.log(`2. getServerSideProps NFTokenID: ${NFTokenID} took: ${dt}ms`);
     } catch (e) {
         console.log(e);
     }
@@ -89,32 +93,20 @@ export async function getServerSideProps(ctx) {
         } */
 
         const {
-            uuid,
-            name,
-            collection,
-            flag,
-            account,
-            date,
-            meta,
-            URI
+            NFTokenID,
+            meta
         } = nft;
+
+        const name = meta?.name || "No Name";
+        const description = meta?.description;
     
-        /*const ogp = {};
-        ogp.canonical = 'https://xrpnft.com';
-        ogp.title = 'XRP NFT Marketplace, Buy, Sell & Collect NFTs';
-        ogp.url = 'https://xrpnft.com/';
-        ogp.imgUrl = 'https://xrpnft.com/static/ogp.png';
-        ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
-
-        ret = {data, ogp};*/
-
         let ogp = {};
-        ogp.canonical = `https://xrpnft.com/assets/${uuid}`;
+        ogp.canonical = `https://xrpnft.com/nft/${NFTokenID}`;
         ogp.title = `${name} - XRP NFT Marketplace, Buy, Sell & Collect NFTs`;
-        ogp.url = `https://xrpnft.com/assets/${uuid}`;
-        ogp.imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
-        ogp.desc = meta.description?meta.description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
-        ogp.isVideo = meta.video?true:false;
+        ogp.url = `https://xrpnft.com/nft/${NFTokenID}`;
+        ogp.imgUrl = getImgUrl(meta);
+        ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+        ogp.isVideo = meta?.video?true:false;
 
         ret = {data, ogp};
     } else {

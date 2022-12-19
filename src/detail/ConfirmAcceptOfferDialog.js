@@ -85,7 +85,7 @@ export default function ConfirmAcceptOfferDialog({open, setOpen, offer, onContin
             <ConfirmDialogTitle id="customized-dialog-title" onClose={handleClose}>
                 <Stack direction="row" spacing={1}>
                     <ErrorOutlineIcon color="error" />
-                    <Typography variant="p4" color="error"></Typography>
+                    <Typography variant="p4" color="error">Confirm</Typography>
                 </Stack>
             </ConfirmDialogTitle>
 

@@ -106,7 +106,7 @@ export default function NFTDetails({nft}) {
     } = nft;
 
     const ParsedURI = convertHexToString(URI);
-    const hrefURI = `https://gateway.xrpnft.com/ipfs/${ParsedURI}`;
+    // const hrefURI = `https://gateway.xrpnft.com/ipfs/${ParsedURI}`;
 
     const {
         flag,
@@ -124,7 +124,7 @@ export default function NFTDetails({nft}) {
         strDateTime = `${strDate} ${strTime}`;
     }
 
-    const collectionName = collection.name || collection;
+    const collectionName = meta?.collection?.name || '[No Collection]';
 
     const properties = props || getProperties(meta);
     
@@ -153,6 +153,8 @@ export default function NFTDetails({nft}) {
                         }
                     </AccordionDetails>
                 </Accordion>
+            </Stack>
+            <Stack>
                 <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
@@ -289,16 +291,7 @@ export default function NFTDetails({nft}) {
                         
                         <Stack spacing={1} mt={1}>
                             <Typography variant='caption'>URI</Typography>
-                            <Link
-                                href={hrefURI}
-                                sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
-                                underline='hover'
-                                target="_blank"
-                                variant='info'
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <Typography sx={{ml:1}}>{ParsedURI}</Typography>
-                            </Link>
+                            <Typography sx={{ml:1}} style={{ wordWrap: "break-word" }}>{ParsedURI}</Typography>
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
 
@@ -325,13 +318,15 @@ export default function NFTDetails({nft}) {
 
                     </AccordionDetails>
                 </Accordion>
+            </Stack>
+            <Stack>
                 <Accordion>
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel2bh-content"
                         id="panel2bh-header"
                     >
-                        <Stack spacing={2} direction='row'>
+                        <Stack spacing={2} direction='row' borderRadius={20}>
                             <DescriptionIcon />
                             <Typography variant='string' >Description</Typography>
                         </Stack>

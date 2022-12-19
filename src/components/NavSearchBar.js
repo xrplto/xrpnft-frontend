@@ -178,7 +178,7 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                             color="inherit"
                             // target="_blank"
                             underline='none'
-                            href={`/assets/${uuid}`}
+                            href={`/nft/${NFTokenID}`}
                             // rel="noreferrer noopener nofollow"
                         >
                             <MenuItem sx={{pt:1, pb:1}}>

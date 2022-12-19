@@ -171,7 +171,6 @@ export default function Minting() {
                     if (dispatched_result === 'tesSUCCESS') {
                         // handleClose();
                         openSnackbar('NFTokenMint successful!', 'success');
-                        // window.location.href = `/assets/${uuidNft}`;
                         window.location.href = `/congrats/assets/${uuidNft}`;
                     }
                     else {

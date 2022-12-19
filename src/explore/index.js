@@ -56,7 +56,7 @@ export default function ExploreNFT({collection}) {
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const [showFilter, setShowFilter] = useState(true);
+    const [showFilter, setShowFilter] = useState(false);
     const [filter, setFilter] = useState(4);
     const [subFilter, setSubFilter] = useState('pricexrpasc');
 
