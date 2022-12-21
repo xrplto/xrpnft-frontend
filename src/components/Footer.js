@@ -70,9 +70,9 @@ function Footer() {
         // }
     }, []);
 
-    const img_dark = "/logo/xrpnft-logo-black.png";
-    const img_light = "/logo/xrpnft-logo-white.png";
-    
+    const img_dark = "/logo/xrpnft-logo-black.svg";
+    const img_light = "/logo/xrpnft-logo-white.svg";
+
     const img = darkMode?img_light:img_dark;
     return (
         <FooterWrapper>
@@ -85,14 +85,14 @@ function Footer() {
                             underline="none"
                             rel="noreferrer noopener nofollow"
                         >
-                            <Box component="img" src={img} sx={{ height: 72 }} />
+                            <Box component="img" src={img} sx={{ height: 48 }} />
                             {/* <LazyLoadImage
                                 src={img}
                                 height={64}
                             /> */}
                         </Link>
                     </Grid>
-                    
+
                     <Grid item xs={12} md={7} lg={7} sx={{ mt: 3 }}>
                         <Grid container>
                             <Grid item xs={6} sm={6} md={3} lg={3} sx={{ mt: 3 }}>

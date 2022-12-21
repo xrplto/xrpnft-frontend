@@ -24,15 +24,15 @@ function Logo() {
     const { darkMode } = useContext(AppContext);
     // const isMobile = useMediaQuery(theme.breakpoints.down('mobile'));
 
-    const img_dark = "/logo/xrpnft-logo-black.png";
-    const img_light = "/logo/xrpnft-logo-white.png";
+    const img_dark = "/logo/xrpnft-logo-black.svg";
+    const img_light = "/logo/xrpnft-logo-white.svg";
     // const img_mobile_dark = "/logo/logo-mobile-dark.svg";
     // const img_mobile_light = "/logo/logo-mobile-light.svg";
-    
+
     let img = darkMode?img_light:img_dark;
     // if (isMobile)
     //     img = darkMode?img_mobile_light:img_mobile_dark;
-    
+
     return (
         <Link
             href="/"
@@ -40,7 +40,7 @@ function Logo() {
             underline="none"
             rel="noreferrer noopener nofollow"
         >
-            <Box component="img" src={img} sx={{ height: 72 }} />
+            <Box component="img" src={img} sx={{ height: 48 }} />
             {/* <LazyLoadImage
                 src={img}
                 height={64}
