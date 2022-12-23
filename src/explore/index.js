@@ -57,7 +57,8 @@ export default function ExploreNFT({collection}) {
     const [loading, setLoading] = useState(false);
 
     const [showFilter, setShowFilter] = useState(false);
-    const [filter, setFilter] = useState(4);
+    const [filter, setFilter] = useState(collection?.imported === 'yes'?0:4);
+
     const [subFilter, setSubFilter] = useState('pricexrpasc');
 
     const [filterAttrs, _setFilterAttrs] = useState({});
@@ -184,8 +185,8 @@ export default function ExploreNFT({collection}) {
                         }}
                         hasMore={hasMore}
                         // loader={<p>loading...</p>}
-                    >   
-                    
+                    >
+
                         <Grid container spacing={0}
                             style={{
                                 display: 'grid',
@@ -197,10 +198,10 @@ export default function ExploreNFT({collection}) {
                                 padding: '10px'
                             }}
                         >
-                            {   
-                            
+                            {
+
                                 nfts.map((nft) => (
-                                    
+
                                     // <Grid item key={nft.uuid}
                                     // >
                                         <NFTCard
@@ -209,14 +210,14 @@ export default function ExploreNFT({collection}) {
                                         />
                                     //  </Grid>
                                 ))
-                                
+
                                 // .filter(getNFTimage_info(URI)!==null)
                             }
                         </Grid>
                     </InfiniteScroll>
                 </Grid>
             </Grid>
-            
+
         </>
     );
 };

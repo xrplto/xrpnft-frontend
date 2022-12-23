@@ -92,18 +92,20 @@ export default function FilterDetail({collection, filter, setFilter, subFilter, 
                                 control={<Checkbox checked={(filter & 1) !== 0} onChange={handleFlagChange} />}
                             />
                         }
-                        <FormControlLabel
-                            label={
-                                <Stack direction="row" spacing={0.5}>
-                                    <Typography variant='s3'>Recently Minted <Typography variant='s7'>({extra?.boughtWithMints})</Typography></Typography>
-                                    <Tooltip title="Display recently Minted NFTs and being transferred to users. Or NFTs that pending to be accepted by users.">
-                                        <Icon icon={infoFilled} />
-                                    </Tooltip>
-                                </Stack>
-                            }
-                            value={2}
-                            control={<Checkbox checked={(filter & 2) !== 0} onChange={handleFlagChange} />}
-                        />
+                        {type !== "normal" &&
+                            <FormControlLabel
+                                label={
+                                    <Stack direction="row" spacing={0.5}>
+                                        <Typography variant='s3'>Recently Minted <Typography variant='s7'>({extra?.boughtWithMints})</Typography></Typography>
+                                        <Tooltip title="Display recently Minted NFTs and being transferred to users. Or NFTs that pending to be accepted by users.">
+                                            <Icon icon={infoFilled} />
+                                        </Tooltip>
+                                    </Stack>
+                                }
+                                value={2}
+                                control={<Checkbox checked={(filter & 2) !== 0} onChange={handleFlagChange} />}
+                            />
+                        }
                         <FormControlLabel
                             label={<Typography variant='s3'>On Sale <Typography variant='s7'>({extra?.onSaleCount})</Typography></Typography>}
                             value={4}
@@ -133,7 +135,7 @@ export default function FilterDetail({collection, filter, setFilter, subFilter, 
                         />
                     </FormGroup>
 
-                    
+
                 </AccordionDetails>
             </Accordion>
 
@@ -154,7 +156,7 @@ export default function FilterDetail({collection, filter, setFilter, subFilter, 
                 <AccordionDetails style={{padding: 0}}>
                     {!attrs || attrs.length === 0 ?
                         <Stack alignItems="center">
-                            <Typography variant='s7' mb={2}>No Attributes</Typography>
+                            <Typography variant='s7' mt={2} mb={2}>No Attributes</Typography>
                         </Stack>
                         :
                         <FilterAttribute attrs={attrs} filterAttrs={filterAttrs} setFilterAttrs={setFilterAttrs} />

@@ -23,6 +23,7 @@ import infoFilled from '@iconify/icons-ep/info-filled';
 // Utils
 import { NFToken, getMinterName } from "src/utils/constants";
 import { fNumber } from 'src/utils/formatNumber';
+import { getImgUrl } from 'src/utils/parse';
 
 // Components
 import FlagsContainer from 'src/components/Flags';
@@ -88,7 +89,7 @@ export default function NFTCard({ nft }) {
 
     const isSold = false;
 
-    const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+    const imgUrl = getImgUrl(meta); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
     const isVideo = meta.video;
 
     const getColors = colors => {
@@ -174,7 +175,7 @@ export default function NFTCard({ nft }) {
                     :
                     <Skeleton
                         animation='wave'
-                        variant='rectangular' 
+                        variant='rectangular'
                         style={{
                             width: 260,
                             height: 220,
@@ -209,7 +210,7 @@ export default function NFTCard({ nft }) {
                                     </Stack>
                                     :
                                     <Typography variant='s3'>{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
-                                
+
                             ):(
                                 <Typography variant='s8'>- - -</Typography>
                             )}

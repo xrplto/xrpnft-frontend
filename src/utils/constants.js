@@ -188,88 +188,93 @@ export const NFToken = { // 11:42 AM 11/18/2022
     PREMINT: 8, // Submitted the NFTokenMint transaction but not found NFTokenID yet
     SELL_WITH_MINT: 16, // NFTs sell with MINT have this status flag, only in Random & Sequence collections.
     SELL_WITH_MINT_BULK: 17, // NFTs sell with MINT have this status flag, only in Bulk collections.
-  
+
     PREOFFER: 24, // Submitted the NFTokenCreateOffer transaction but not found SellOfferID yet
-  
+
     FREE: 32,
-  
+
     BURNT: 40,
-  
+
     ERROR_BASE: 130,
     PREMINT_E1: 131, // Failed to submit the NFTokenMint transaction
     PREMINT_E2: 132, // Exception occured to submit the NFTokenMint transaction
     PREMINT_E3: 133, // Tried to find out NFTokenID but failed, only used in mint one
     PREMINT_E3r1: 134, // Tried to find out NFTokenID but failed again
-  
+
     PREOFFER_E1: 141, // Failed to submit the NFTokenCreateOffer transaction
     PREOFFER_E2: 142, // Exception occured to submit the NFTokenCreateOffer transaction
     PREOFFER_E3: 143, // Tried to find out SellOfferID but failed
   }
 
-export const Activity = { // 07:29 AM 11/26/2022
+export const Activity = { // 08:58 AM 12/20/2022
     LOGIN: 1,
     LOGOUT: 2,
     UPDATE_PROFILE: 3,
-  
+
     CREATE_COLLECTION: 4,
     UPDATE_COLLECTION: 7,
-  
-    MINT_BULK: 10, // Lazy mint mode, 10k NFTs
-  
-    BUY_MINT: 12, // Maybe XRPL tx based eventually.
+    IMPORT_COLLECTION: 9,
+
+    MINT_BULK: 10, // Lazy mint mode, ie. 10k NFTs
+
+    BUY_MINT: 12,
     BUY_RANDOM_NFT: 13,
     BUY_BULK_NFT: 14,
     BUY_SEQUENCE_NFT: 15,
-  
+
     // Tx parse section
     CREATE_SELL_OFFER: 21, // Owner, NFTokenCreateOffer, status: "created", flags: 1
     CREATE_BUY_OFFER:  22, // Buyer, NFTokenCreateOffer, status: "created", flags: 0
-  
+
     CANCEL_SELL_OFFER: 23, // Owner, NFTokenCancelOffer, status: "deleted", flags: 1
     CANCEL_BUY_OFFER:  24, // Buyer, NFTokenCancelOffer, status: "deleted", flags: 0
-  
+
     ACCEPT_BUY_OFFER:  25, // Owner, NFTokenAcceptOffer, status: "deleted", flags: 0
     ACCEPT_SELL_OFFER: 26, // Buyer, NFTokenAcceptOffer, status: "deleted", flags: 1
-  
+
     OWNER_ACCPETED_YOUR_BUY_OFFER: 27,
-    BUYER_ACCEPTED_YOUR_SELL_OFFER: 28, 
+    BUYER_ACCEPTED_YOUR_SELL_OFFER: 28,
     YOU_RECEIVED_A_NFT: 29, // Buyer accepted a NFT by Buy Offer or Sell Offer
-  
-    // 
+
+    //
     MINT_NFT: 31,
-    BURN_NFT: 32, // Owner, 
-  
+    BURN_NFT: 32, // Owner,
+
+    // Broker
+    BROKER_ACCEPTED_YOUR_BUY_OFFER: 35,
+    BROKER_ACCEPTED_YOUR_SELL_OFFER: 36,
+
     //
     SET_NFT_MINTER: 41, // AccountSet
-  
+
     FUND_CREATOR: 51, // Minter account funded to Collection creator.
     REFUND_BUYER: 52, // Refund Mint amount to the buyer.
-  
+
     GAVE_MINTS_TO_USER: 88,
-  
+
     REMOVE_A_COLLECTION: 129,
     SET_COLLECTION_TRUSTLINES: 130,
-  }
+}
 
 export const Mint = { // 6:41 AM 11/26/2022
     BUY: 1,
     PAID: 2,
     CANCEL: 3,
     REMOVE: 4,
-  
+
     // Fund to creator
     PENDING: 9,
     FUND: 10,
     FUNDED: 11,
-  
+
     // Refund to Buyer
     REFUND: 21,
     REFUNDED: 22,
-  
+
     ERROR_BASE: 80,
     FUND_E1: 81,
     FUND_E2: 82,
-  
+
     REFUND_E1: 91,
     REFUND_E2: 92
   }
