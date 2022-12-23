@@ -46,6 +46,7 @@ export async function getServerSideProps(ctx) {
     const BASE_URL = 'http://65.109.54.46/api';
 
     let data = null;
+    let isImportCollection = false;
     let isEditCollection = false;
     let isBuyAssets = false;
     let isBurnNft = false;
@@ -57,11 +58,12 @@ export async function getServerSideProps(ctx) {
         let type = params[0];
         const uuid = params[1];
 
+        isImportCollection = type === 'importcollection';
         isEditCollection = type === 'editcollection';
         isBuyAssets = type === 'buyassets';
         isBurnNft = type === 'burnnft';
         isMintNft = type === 'assets';
-        if (type !== 'collection' && type !== 'assets' && type !== 'buyassets' && type !== 'burnnft' && type !=='editcollection') {
+        if (type !== 'collection' && type !== 'assets' && type !== 'buyassets' && type !== 'burnnft' && type !=='editcollection' && type !=='importcollection') {
             return {
                 redirect: {
                     permanent: false,
@@ -70,6 +72,7 @@ export async function getServerSideProps(ctx) {
             }
         }
 
+        if (isImportCollection) type = 'collection';
         if (isEditCollection) type = 'collection';
         if (isBuyAssets) type = 'assets';
         if (isBurnNft) type = 'assets';
@@ -110,7 +113,7 @@ export async function getServerSideProps(ctx) {
                 "TokenID": "000D000011BBE0160B08A0743C13E22918573B2AAC759E9E16E5DA9C00000001"
             }
         } */
-        
+
         const {
             uuid,
             name,
@@ -122,7 +125,7 @@ export async function getServerSideProps(ctx) {
             NFTokenID,
             URI
         } = data.nft;
-    
+
         let ogp = {};
         ogp.canonical = `https://xrpnft.com/nft/${NFTokenID}`;
         ogp.title = `${name} - XRP NFT Marketplace, Buy, Sell & Collect NFTs`;
@@ -157,7 +160,7 @@ export async function getServerSideProps(ctx) {
                 "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
             }
         } */
-        
+
         const {
             name,
             featuredImage,
@@ -176,6 +179,7 @@ export async function getServerSideProps(ctx) {
         ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
 
         data.isEditCollection = isEditCollection;
+        data.isImportCollection = isImportCollection;
         return {
             props: {data, ogp}, // will be passed to the page component as props
         }

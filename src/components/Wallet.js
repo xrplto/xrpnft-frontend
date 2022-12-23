@@ -24,6 +24,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import ImportExportIcon from '@mui/icons-material/ImportExport';
 
 // Context
 import { useContext } from 'react';
@@ -49,6 +50,7 @@ export default function Wallet() {
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
     const accountUuid = accountProfile?.xuuid;
+    const isAdmin = accountProfile?.admin;
 
     const [open, setOpen] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
@@ -291,6 +293,19 @@ export default function Wallet() {
                                     </Stack>
                                 </NextLink>
                             </MenuItem>
+                            {isAdmin > 0 &&
+                                <MenuItem
+                                    key="import_collection"
+                                    sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                                >
+                                    <NextLink href="/collection/import" passHref>
+                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                            <ImportExportIcon />
+                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Import Collection</Typography>
+                                        </Stack>
+                                    </NextLink>
+                                </MenuItem>
+                            }
                             <MenuItem
                                 key="collection"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}

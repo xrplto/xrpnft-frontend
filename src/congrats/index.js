@@ -37,7 +37,7 @@ const CardWrapper = styled('div')(
         -webkit-tap-highlight-color: transparent;
   `
 );
-  
+
 export default function Congrats({ data }) {
     const theme = useTheme();
     const { width, height } = useWindowSize();
@@ -47,6 +47,8 @@ export default function Congrats({ data }) {
     const nft = data.nft;
     const collection = data.collection;
     const isEditCollection = data.isEditCollection;
+    const isImportCollection = data.isImportCollection;
+    const isCreateCollection = !isEditCollection && !isImportCollection;
     const isBuyAssets = data.isBuyAssets;
     const isBurnNft = data.isBurnNft;
     const isMintNft = data.isMintNft;
@@ -157,14 +159,17 @@ export default function Congrats({ data }) {
                             }
                         </>
                     }
-                    
+
                     {collection &&
                         <>
-                            {isEditCollection ? (
-                                <Typography variant="d3" >Your collection has been edited.</Typography>
-                            ):(
-                                <Typography variant="d3" >Your collection has been created.</Typography>
-                            )
+                            {isCreateCollection &&
+                                <Typography variant="d3">Your collection has been created.</Typography>
+                            }
+                            {isEditCollection &&
+                                <Typography variant="d3">Your collection has been edited.</Typography>
+                            }
+                            {isImportCollection &&
+                                <Typography variant="d3">Import Collection successful.</Typography>
                             }
                         </>
                     }
@@ -226,7 +231,7 @@ export default function Congrats({ data }) {
                         }
                     </CardWrapper>
 
-                    {nft && 
+                    {nft &&
                         <>
                             {isBuyAssets &&
                                 <Link
@@ -273,7 +278,7 @@ export default function Congrats({ data }) {
                         </>
                     }
 
-                    {collection && 
+                    {collection &&
                         <>
                             {collection.type !== 'normal' &&
                                 <Link
@@ -295,17 +300,19 @@ export default function Congrats({ data }) {
                                 <Button variant="contained">View Collection</Button>
                             </Link>
 
-                            <Link
-                                underline="none"
-                                color="inherit"
-                                href={`/collection/create`}
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <Button variant="outlined">Create another Collection</Button>
-                            </Link>
+                            {isCreateCollection &&
+                                <Link
+                                    underline="none"
+                                    color="inherit"
+                                    href={`/collection/create`}
+                                    rel="noreferrer noopener nofollow"
+                                >
+                                    <Button variant="outlined">Create another Collection</Button>
+                                </Link>
+                            }
                         </>
                     }
-                    
+
                 </Stack>
 
             </Stack>
