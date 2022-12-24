@@ -2,7 +2,7 @@ import axios from 'axios';
 import numeral from 'numeral';
 import { replace } from 'lodash';
 import { format, formatDistanceToNow } from 'date-fns';
-import {encodeAccountID} from 'ripple-address-codec';
+import { encodeAccountID } from 'ripple-address-codec';
 import isIPFS from 'is-ipfs';
 import Decimal from 'decimal.js';
 
@@ -85,9 +85,9 @@ export function parseURI(nftoken_uri_hex) {
     return uris_obj;
 }
 
-export const getdataFromjosn= async (tokenURI)=>{
+export const getdataFromjosn = async (tokenURI) => {
     const data = await axios.get(tokenURI)
-    return(data)
+    return (data)
 }
 
 export const getResponseType = (res) => {
@@ -100,9 +100,9 @@ const convertToHttpLink = (uriString) => {
     if (regex_uri.test(uriString) && uriString.length > 45) {
         if (uriString.slice(0, 10) === 'xrpnft.com') // the tokenURI minted from this site
             return 'https://gateway.xrpnft.com/ipfs/' + uriString.slice(16)
-        else if (uriString === 'cid:QmRxrbqTqK8Y6GN3NojSFdteihWeFA7fgDHQ1imfmhDPTA' || uriString ==='cid:QmPZrV3Vzoiuan2tLjkxUxwEGsg6ZLg8WwsPCvDRoEyBkS' || uriString ==='cid:QmbkgGS15BN1bi6Fv1MniMgkRBqQs5XPX4RS2STEfsHTqj'){
-                return null
-            }
+        else if (uriString === 'cid:QmRxrbqTqK8Y6GN3NojSFdteihWeFA7fgDHQ1imfmhDPTA' || uriString === 'cid:QmPZrV3Vzoiuan2tLjkxUxwEGsg6ZLg8WwsPCvDRoEyBkS' || uriString === 'cid:QmbkgGS15BN1bi6Fv1MniMgkRBqQs5XPX4RS2STEfsHTqj') {
+            return null
+        }
         else if (uriString.slice(0, 5) === 'https') {
             return uriString.replace('infura.', '')
         }
@@ -111,7 +111,7 @@ const convertToHttpLink = (uriString) => {
         }
         else if (uriString.slice(0, 7) === 'ipfs://') {
             // if (uriString.slice(8,15) === 'bafybei') {
-            //     return null                
+            //     return null
             // }
             return process.env.REACT_APP_IFPS_GATEWAY + uriString.slice(7)
         }
@@ -147,12 +147,12 @@ export const getImgUrlFromJSONResponse = (_param) => {
     return convertToHttpLink(uri)
 }
 
-export const GetImgUrlFromHTMLResponse = (res, tokenuri)=>{
+export const GetImgUrlFromHTMLResponse = (res, tokenuri) => {
     const metadata = tokenuri + "/metadata.json"
     const imageurl = tokenuri + "/data.jpeg"
     // const text = convert(res,{
     //     wordwrap:130
-    // }) 
+    // })
     // const [imageurl, setImageurl] = useState("")
     // try{
     //     if(text.jpeg){
@@ -170,7 +170,7 @@ export const GetImgUrlFromHTMLResponse = (res, tokenuri)=>{
     // if(!image){
     //     const image =tokenuri + "/data.png"
     // }
-    return(
+    return (
         {
             image: imageurl,
             metadata: metadata
@@ -204,7 +204,7 @@ export function cipheredTaxon(tokenSeq, taxon) {
 export function parseNFTokenID(NFTokenID) {
     //   A   B                      C                        D        E
     // 0008 1388 2177B00DF84CA4B8DD59778594F472EF0F56E435 99AE2184 00000DEA
-    if (!NFTokenID || NFTokenID.length !== 64) return {flag: 0, royalty: 0, issuer: '', taxon: 0};
+    if (!NFTokenID || NFTokenID.length !== 64) return { flag: 0, royalty: 0, issuer: '', taxon: 0 };
     const flag = new Decimal('0x' + NFTokenID.slice(0, 4)).toNumber();
     const royalty = new Decimal('0x' + NFTokenID.slice(4, 8)).toNumber();
     const issuer = encodeAccountID(Buffer.from(NFTokenID.slice(8, 48), "hex"));
@@ -217,9 +217,9 @@ export function parseNFTokenID(NFTokenID) {
     try {
         if (royalty)
             transferFee = Decimal.div(royalty, '1000').toDP(3, Decimal.ROUND_DOWN).toNumber();
-    } catch (e) {}
+    } catch (e) { }
 
-    return {flag, royalty, issuer, taxon, transferFee};
+    return { flag, royalty, issuer, taxon, transferFee };
 }
 
 export function parseNftFlag(flags_number) {
@@ -320,6 +320,17 @@ export function getUnixTimeEpochFromRippleEpoch(rippleEpoch) {
     return (rippleEpoch + 946684800) * 1000
 }
 
+export function checkExpiration(expiration) {
+    if (expiration) {
+
+        const now = Date.now();
+        const expire = (expiration > 946684800 ? expiration : expiration + 946684800) * 1000;
+
+        if (expire < now)
+            return true
+    } else return false
+}
+
 export function fDate(date) {
     return format(new Date(date), 'dd MMMM yyyy');
 }
@@ -371,7 +382,7 @@ export const getNFTfromURI = async (URI) => {
     let strURI = '';
     try {
         strURI = convertHexToString(URI);
-    } catch(e) {}
+    } catch (e) { }
 
     let hash = 'default';
 
@@ -416,7 +427,7 @@ export const getNFTokenInfo = async (tokenURI) => {
             data = res.data;
             img = uri;
         }
-        else if (type.slice(0, 4)==='text'){ //if the response is text/html
+        else if (type.slice(0, 4) === 'text') { //if the response is text/html
             const NFTinfo = GetImgUrlFromHTMLResponse(res.data, uri)
             const des = getdataFromjosn(NFTinfo.metadata)
             // console.log("text description:", des.data)
@@ -425,8 +436,7 @@ export const getNFTokenInfo = async (tokenURI) => {
         }
         // else if (type.slice==='application/pdf'){
         // }
-        else if(type==='application/x-dbf')
-        {
+        else if (type === 'application/x-dbf') {
             data = res.data;
             img = getImgUrlFromJSONResponse(res.data);
         }
@@ -434,7 +444,7 @@ export const getNFTokenInfo = async (tokenURI) => {
         console.log(e.message)
     }
 
-    return {type, data, img};
+    return { type, data, img };
 }
 /**
  * get image link from token URI, hex_uri
@@ -450,41 +460,40 @@ export const getNFTokenInfoNew = (res, tokenURI) => {
         // const res = await axios.get(tokenURI)
         const type = res.headers['content-type']
 
-    if (type === 'application/json') { // if the response data is JSON object
-        return {
-            description: res.data,
-            image: getImgUrlFromJSONResponse(res.data)
-        }
-    }
-    else if (type.slice(0, 5) === 'image') { // if the response is image
-        return {
-            description: null,
-            image: tokenURI
-        }
-    }
-    else if (type.slice(0, 4)==='text') { //if the response is HTML/text
-        const NFTinfo = GetImgUrlFromHTMLResponse(res.data, tokenURI)
-        const des = getdataFromjosn(NFTinfo.metadata)
-        return {
-            description: des.data,
-            image: NFTinfo.image
-        }
-    }
-    else if(type==='application/x-dbf')
-        {
+        if (type === 'application/json') { // if the response data is JSON object
             return {
-            description: res.data,
-            image:getImgUrlFromJSONResponse(res.data)
+                description: res.data,
+                image: getImgUrlFromJSONResponse(res.data)
             }
         }
-    else {
-        console.log('Unknown file type: ', res)
-        return {
-            description: null,
-            image: null
+        else if (type.slice(0, 5) === 'image') { // if the response is image
+            return {
+                description: null,
+                image: tokenURI
+            }
+        }
+        else if (type.slice(0, 4) === 'text') { //if the response is HTML/text
+            const NFTinfo = GetImgUrlFromHTMLResponse(res.data, tokenURI)
+            const des = getdataFromjosn(NFTinfo.metadata)
+            return {
+                description: des.data,
+                image: NFTinfo.image
+            }
+        }
+        else if (type === 'application/x-dbf') {
+            return {
+                description: res.data,
+                image: getImgUrlFromJSONResponse(res.data)
+            }
+        }
+        else {
+            console.log('Unknown file type: ', res)
+            return {
+                description: null,
+                image: null
+            }
         }
     }
-}
     catch (e) {
         console.log(e.message)
         return {
@@ -501,7 +510,7 @@ export const getImgUrl = (meta) => {
 
     if (!image && !video) return '';
 
-    let url = image || video;
+    let url = video || image;
 
     if (isIPFS.multihash(url)) {
         url = `https://gateway.xrpnft.com/ipfs/${url}`;
@@ -538,7 +547,7 @@ export const fetcher = url => axios.get(url).then(res => res)
 //       orders: asset.orders ? asset.orders.map(orderFromJSON) : null,
 //       sellOrders: asset.sell_orders ? asset.sell_orders.map(orderFromJSON) : null,
 //       buyOrders: asset.buy_orders ? asset.buy_orders.map(orderFromJSON) : null,
-  
+
 //       isPresale: asset.is_presale,
 //       // Don't use previews if it's a special image
 //       imageUrl:
@@ -548,7 +557,7 @@ export const fetcher = url => axios.get(url).then(res => res)
 //       imagePreviewUrl: asset.image_preview_url,
 //       imageUrlOriginal: asset.image_original_url,
 //       imageUrlThumbnail: asset.image_thumbnail_url,
-  
+
 //       externalLink: asset.external_link,
 //       Link: asset.permalink,
 //       traits: asset.traits,
@@ -557,7 +566,7 @@ export const fetcher = url => axios.get(url).then(res => res)
 //       backgroundColor: asset.background_color
 //         ? `#${asset.background_color}`
 //         : null,
-  
+
 //       transferFee: asset.transfer_fee ? makeBigNumber(asset.transfer_fee) : null,
 //       transferFeePaymentToken: asset.transfer_fee_payment_token
 //         ? tokenFromJSON(asset.transfer_fee_payment_token)
@@ -574,7 +583,7 @@ export const fetcher = url => axios.get(url).then(res => res)
 //     }
 //     return fromJSON;
 //   };
-  
+
 //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 //   export const assetEventFromJSON = (assetEvent: any): AssetEvent => {
 //     return {
@@ -590,7 +599,7 @@ export const fetcher = url => axios.get(url).then(res => res)
 //         : null,
 //     };
 //   };
-  
+
 //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 //   export const transactionFromJSON = (transaction: any): Transaction => {
 //     return {
@@ -605,7 +614,7 @@ export const fetcher = url => axios.get(url).then(res => res)
 //       timestamp: new Date(`${transaction.timestamp}Z`),
 //     };
 //   };
-  
+
 //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 //   export const accountFromJSON = (account: any): Account => {
 //     return {
@@ -615,4 +624,3 @@ export const fetcher = url => axios.get(url).then(res => res)
 //       user: account.user ? userFromJSON(account.user) : null,
 //     };
 //   };
-  

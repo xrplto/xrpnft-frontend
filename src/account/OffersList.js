@@ -24,7 +24,7 @@ import { ProgressBar, Discuss } from 'react-loader-spinner';
 
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';
-import { getUnixTimeEpochFromRippleEpoch, parseNFTokenID } from 'src/utils/parse';
+import { checkExpiration, getUnixTimeEpochFromRippleEpoch, parseNFTokenID } from 'src/utils/parse';
 
 // Context
 import { useContext } from 'react';
@@ -173,23 +173,23 @@ export default function OffersList({ account, type }) {
             const user_token = accountProfile.user_token;
 
             const body = {
-                account: accountLogin, 
+                account: accountLogin,
                 NFTokenID,
                 index,
                 destination,
-                accept: isAcceptOrCancel?"yes":"no",
-                sell: isSell?"yes":"no",
+                accept: isAcceptOrCancel ? "yes" : "no",
+                sell: isSell ? "yes" : "no",
                 user_token
             };
 
-            const res = await axios.post(`${BASE_URL}/offers/acceptcancel`, body, {headers: {'x-access-token': accountToken}});
+            const res = await axios.post(`${BASE_URL}/offers/acceptcancel`, body, { headers: { 'x-access-token': accountToken } });
 
             if (res.status === 200) {
                 const newUuid = res.data.data.uuid;
                 const qrlink = res.data.data.qrUrl;
                 const nextlink = res.data.data.next;
 
-                let newQrType = isAcceptOrCancel?"NFTokenAcceptOffer":"NFTokenCancelOffer";
+                let newQrType = isAcceptOrCancel ? "NFTokenAcceptOffer" : "NFTokenCancelOffer";
                 if (isSell)
                     newQrType += " [Sell Offer]";
                 else
@@ -223,7 +223,7 @@ export default function OffersList({ account, type }) {
                 user_token
             };
 
-            const res = await axios.post(`${BASE_URL}/offers/cancelall`, body, {headers: {'x-access-token': accountToken}});
+            const res = await axios.post(`${BASE_URL}/offers/cancelall`, body, { headers: { 'x-access-token': accountToken } });
 
             if (res.status === 200) {
                 const newUuid = res.data.data.uuid;
@@ -249,7 +249,7 @@ export default function OffersList({ account, type }) {
             // if (res.status === 200) {
             //     setXummUuid(null);
             // }
-        } catch(err) {
+        } catch (err) {
             console.error(err);
         }
         setXummUuid(null);
@@ -285,14 +285,14 @@ export default function OffersList({ account, type }) {
                 sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={pageLoading}
             >
-               <ProgressBar
+                <ProgressBar
                     height="80"
                     width="80"
                     ariaLabel="progress-bar-loading"
                     wrapperStyle={{}}
                     wrapperClass="progress-bar-wrapper"
-                    borderColor = '#F4442E'
-                    barColor = '#51E5FF'
+                    borderColor='#F4442E'
+                    barColor='#51E5FF'
                 />
             </Backdrop>
 
@@ -305,7 +305,7 @@ export default function OffersList({ account, type }) {
                     <Typography variant="s7">the NFT owner accepted one of your Buy Offers, the remaining Buy Offers will become orphaned offers too.</Typography>
                     <Typography variant="s7">You must cancel them to save your account XRP reserve.</Typography>
 
-                    
+
                 </>
             }
 
@@ -327,11 +327,11 @@ export default function OffersList({ account, type }) {
                 <Stack alignItems="center">
                     <PulseLoader color='#00AB55' size={10} />
                 </Stack>
-            ):(
+            ) : (
                 offers && offers.length === 0 &&
-                    <Stack alignItems="center" sx={{mt: 2, mb: 1}}>
-                        <Typography variant="s6" color='#2de370'>[ No Offers ]</Typography>
-                    </Stack>
+                <Stack alignItems="center" sx={{ mt: 2, mb: 1 }}>
+                    <Typography variant="s6" color='#2de370'>[ No Offers ]</Typography>
+                </Stack>
             )
             }
 
@@ -363,24 +363,26 @@ export default function OffersList({ account, type }) {
 
                         // offer.expiration = 1669585409; // Delete this line.
 
-                        let expired = false;
-                        if (offer.expiration) {
-                            const now = Date.now();
-                            const expire = offer.expiration * 1000;
+                        const expired = checkExpiration(offer.expiration);
 
-                            if (expire < now)
-                                expired = true;
-                        }
+                        // let expired = false;
+                        // if (offer.expiration) {
+                        //     const now = Date.now();
+                        //     const expire = (offer.expiration > 946684800 ? offer.expiration: offer.expiration + 946684800) * 1000;
+
+                        //     if (expire < now)
+                        //         expired = true;
+                        // }
 
                         return (
-                            <Stack key={offer.index} sx={{mt: 2}}>
+                            <Stack key={offer.index} sx={{ mt: 2 }}>
                                 <Stack direction="row" spacing={1} alignItems="center">
 
                                     <Stack>
                                         {/* Sell Offer List - Not Owner */}
                                         {isSell && !isOwner &&
                                             <>
-                                                {accountLogin === offer.owner ? 
+                                                {accountLogin === offer.owner ?
                                                     <Tooltip title="Cancel Offer">
                                                         <IconButton
                                                             aria-label='close'
@@ -517,7 +519,7 @@ export default function OffersList({ account, type }) {
 
                                         <Stack direction="row" spacing={2} alignItems="center">
                                             <Typography variant="s7">Flags: </Typography>
-                                            <FlagsContainer Flags={flag}/>
+                                            <FlagsContainer Flags={flag} />
                                             {/* <Typography variant="s6">{strDateTime}</Typography> */}
                                             <Typography variant='s7'>Taxon </Typography>
                                             <Typography variant='s6'>{taxon}</Typography>
@@ -525,7 +527,7 @@ export default function OffersList({ account, type }) {
                                             <Typography variant="s6">{transferFee} %</Typography>
                                             {offer.expiration &&
                                                 <>
-                                                    <Typography variant="s7">{expired?'Expired':'Expires'} on</Typography>
+                                                    <Typography variant="s7">{expired ? 'Expired' : 'Expires'} on</Typography>
                                                     <Typography variant='s6'>{formatDateTime(offer.expiration * 1000)}</Typography>
                                                 </>
                                             }
@@ -544,14 +546,14 @@ export default function OffersList({ account, type }) {
                                         </Stack>
                                     </Stack>
                                 </Stack>
-                                <Divider sx={{mt:2}} />
+                                <Divider sx={{ mt: 2 }} />
                             </Stack>
                         )
                     })
                 }
             </Stack>
 
-            { total > 0 &&
+            {total > 0 &&
                 <ListToolbar
                     count={total}
                     rows={rows}

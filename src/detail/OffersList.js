@@ -24,7 +24,7 @@ import { PuffLoader, PulseLoader } from "react-spinners";
 import { ProgressBar, Discuss } from 'react-loader-spinner';
 
 // Utils
-import { getUnixTimeEpochFromRippleEpoch } from 'src/utils/parse';
+import { checkExpiration, getUnixTimeEpochFromRippleEpoch } from 'src/utils/parse';
 import { formatDateTime } from 'src/utils/formatTime';
 import { normalizeAmount } from 'src/utils/normalizers';
 
@@ -66,14 +66,16 @@ export default function OffersList({ nft, offers, handleAcceptOffer, handleCance
                             priceAmount = new Decimal(price.amount).toDP(2, Decimal.ROUND_DOWN).toNumber();
                         }
 
-                        let expired = false;
-                        if (offer.expiration) {
-                            const now = Date.now();
-                            const expire = offer.expiration * 1000;
+                        const expired = checkExpiration(offer.expiration);
 
-                            if (expire < now)
-                                expired = true;
-                        }
+                        // let expired = false;
+                        // if (offer.expiration) {
+                        //     const now = Date.now();
+                        //     const expire = (offer.expiration > 946684800 ? offer.expiration: offer.expiration + 946684800) * 1000;
+
+                        //     if (expire < now)
+                        //         expired = true;
+                        // }
 
                         return (
                             <Stack key={offer.nft_offer_index} sx={{mt: 0}}>
@@ -123,7 +125,7 @@ export default function OffersList({ nft, offers, handleAcceptOffer, handleCance
                                         {/* Sell Offer List - Not Owner */}
                                         {isSell && !isOwner &&
                                             <>
-                                                {accountLogin === offer.owner ? 
+                                                {accountLogin === offer.owner ?
                                                     <Tooltip title="Cancel Offer">
                                                         <IconButton
                                                             aria-label='close'

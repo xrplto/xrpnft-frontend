@@ -90,7 +90,7 @@ export default function NFTCard({ nft }) {
     const isSold = false;
 
     const imgUrl = getImgUrl(meta); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
-    const isVideo = meta.video;
+    const isVideo = meta?.video?true:false;
 
     const getColors = colors => {
         setColors(c => [...c, ...colors]);

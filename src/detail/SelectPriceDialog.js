@@ -33,9 +33,10 @@ import { AppContext } from 'src/AppContext'
 // Utils
 import { normalizeAmount } from 'src/utils/normalizers';
 import { formatDateTime } from 'src/utils/formatTime';
+import { checkExpiration } from 'src/utils/parse';
 
 // ----------------------------------------------------------------------
-const PriceDialog = styled(Dialog) (({ theme }) => ({
+const PriceDialog = styled(Dialog)(({ theme }) => ({
     backdropFilter: 'blur(1px)',
     WebkitBackdropFilter: 'blur(1px)', // Fix on Mobile
     '& .MuiDialogContent-root': {
@@ -77,7 +78,7 @@ const Label = withStyles({
 })(Typography);
 
 const CustomSelect = styled(Select)(({ theme }) => ({
-    '& .MuiOutlinedInput-notchedOutline' : {
+    '& .MuiOutlinedInput-notchedOutline': {
         border: 'none'
     }
 }));
@@ -87,11 +88,11 @@ function GetNum(amount) {
     try {
         num = new Decimal(amount).toNumber();
         if (num < 0) num = 0;
-    } catch (err) {}
+    } catch (err) { }
     return num;
 }
 
-export default function SelectPriceDialog({open, setOpen, offers, handleAccept}) {
+export default function SelectPriceDialog({ open, setOpen, offers, handleAccept }) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -140,58 +141,60 @@ export default function SelectPriceDialog({open, setOpen, offers, handleAccept})
                 </PriceDialogTitle>
 
                 <DialogContent>
-                {
-                    offers.map((offer, idx) => {
-                        const price = normalizeAmount(offer.amount);
-                        let priceAmount = price.amount;
-                        if (priceAmount < 1) {
-                        } else {
-                            priceAmount = new Decimal(price.amount).toDP(2, Decimal.ROUND_DOWN).toNumber();
-                        }
+                    {
+                        offers.map((offer, idx) => {
+                            const price = normalizeAmount(offer.amount);
+                            let priceAmount = price.amount;
+                            if (priceAmount < 1) {
+                            } else {
+                                priceAmount = new Decimal(price.amount).toDP(2, Decimal.ROUND_DOWN).toNumber();
+                            }
 
-                        let expired = false;
-                        if (offer.expiration) {
-                            const now = Date.now();
-                            const expire = offer.expiration * 1000;
+                            // let expired = false;
+                            const expired = checkExpiration(offer.expiration);
 
-                            if (expire < now)
-                                expired = true;
-                        }
+                            // if (offer.expiration) {
+                            //     const now = Date.now();
+                            //     const expire = (offer.expiration > 946684800 ? offer.expiration: offer.expiration + 946684800) * 1000;
 
-                        return (
-                            <Stack key={offer.nft_offer_index}>
-                                {idx > 0 &&
-                                    <Divider sx={{mt:1, mb:1}} />
-                                }
-                                <ListItemButton
-                                    selected={selectedIndex === idx}
-                                    onClick={(event) => handleListItemClick(event, idx)}
-                                    sx={{pt: 2, pb: 2}}
-                                >
-                                    <Stack spacing={1}>
-                                        <Stack direction="row" spacing={2} alignItems="center">
-                                            <Typography variant='s9' color='#33C2FF' noWrap>{priceAmount} {price.name}</Typography>
-                                            <Stack>
-                                                {/* <Typography variant='s8' style={{ wordBreak: "break-all" }}> {offer.owner}</Typography> */}
-                                                {offer.destination &&
-                                                    <Stack direction="row" spacing={1} alignItems="center">
-                                                        {/* <Typography variant='s4'>Destination</Typography> */}
-                                                        <TransferWithinAStationIcon />
-                                                        <Typography variant='s6'>{offer.destination}</Typography>
-                                                    </Stack>
-                                                }
+                            //     if (expire < now)
+                            //         expired = true;
+                            // }
 
-                                                {offer.expiration &&
-                                                    <Stack direction="row" spacing={1} alignItems="center">
-                                                        <Typography variant='s7'>{expired?'Expired':'Expires'} on {formatDateTime(offer.expiration * 1000)}</Typography>
-                                                    </Stack>
-                                                }
+                            return (
+                                <Stack key={offer.nft_offer_index}>
+                                    {idx > 0 &&
+                                        <Divider sx={{ mt: 1, mb: 1 }} />
+                                    }
+                                    <ListItemButton
+                                        selected={selectedIndex === idx}
+                                        onClick={(event) => handleListItemClick(event, idx)}
+                                        sx={{ pt: 2, pb: 2 }}
+                                    >
+                                        <Stack spacing={1}>
+                                            <Stack direction="row" spacing={2} alignItems="center">
+                                                <Typography variant='s9' color='#33C2FF' noWrap>{priceAmount} {price.name}</Typography>
+                                                <Stack>
+                                                    {/* <Typography variant='s8' style={{ wordBreak: "break-all" }}> {offer.owner}</Typography> */}
+                                                    {offer.destination &&
+                                                        <Stack direction="row" spacing={1} alignItems="center">
+                                                            {/* <Typography variant='s4'>Destination</Typography> */}
+                                                            <TransferWithinAStationIcon />
+                                                            <Typography variant='s6'>{offer.destination}</Typography>
+                                                        </Stack>
+                                                    }
+
+                                                    {offer.expiration &&
+                                                        <Stack direction="row" spacing={1} alignItems="center">
+                                                            <Typography variant='s7'>{expired ? 'Expired' : 'Expires'} on {formatDateTime(offer.expiration * 1000)}</Typography>
+                                                        </Stack>
+                                                    }
+                                                </Stack>
                                             </Stack>
-                                        </Stack>
 
 
 
-                                        {/* {offer.expiration ?
+                                            {/* {offer.expiration ?
                                             <Stack direction="row" alignItems="center">
                                                 <Typography variant='s4'>Expires by {new Date(getUnixTimeEpochFromRippleEpoch(offer.expiration)).toLocaleString()}</Typography>
                                                 <CountdownTimer targetDate={getUnixTimeEpochFromRippleEpoch(offer.expiration)} />
@@ -201,19 +204,19 @@ export default function SelectPriceDialog({open, setOpen, offers, handleAccept})
                                                 <Typography variant='string'>No Expiration</Typography>
                                             </Stack>
                                         } */}
-                                    </Stack>
-                                </ListItemButton>
-                            </Stack>
-                        )
-                    })
-                }
+                                        </Stack>
+                                    </ListItemButton>
+                                </Stack>
+                            )
+                        })
+                    }
 
-                    <Stack direction='row' spacing={2} justifyContent="center" sx={{mt:3, mb:4}}>
+                    <Stack direction='row' spacing={2} justifyContent="center" sx={{ mt: 3, mb: 4 }}>
                         <Button
                             variant="outlined"
                             onClick={handleOK}
                             color='primary'
-                            // size='medium'
+                        // size='medium'
                         >
                             OK
                         </Button>

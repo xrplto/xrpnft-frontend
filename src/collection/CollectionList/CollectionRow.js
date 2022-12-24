@@ -153,7 +153,7 @@ const IconImage = styled('img')(
     border-radius: 0px;
   `
 );
-  
+
 const ImageBackdrop = styled('span')(({ theme }) => ({
     position: 'absolute',
     left: 0,
@@ -229,7 +229,8 @@ export default function CollectionRow({ id, item, isMine }) {
         volume,
         totalVolume,
         floor,
-        owners
+        owners,
+        vol24h
     } = item;
 
     const floorPrice = floor?.amount || 0;
@@ -249,7 +250,7 @@ export default function CollectionRow({ id, item, isMine }) {
     const getColors = colors => {
         setColors(c => [...c, ...colors]);
     }
-    
+
     const handleRowClick = () => {
         // history.push(`/collection/${slug}`);
         // onclick="document.location = 'links.html';"
@@ -286,7 +287,7 @@ export default function CollectionRow({ id, item, isMine }) {
                         </IconCover>
                     </Link>
 
-                    
+
 
                     <Link
                         underline="none"
@@ -312,6 +313,7 @@ export default function CollectionRow({ id, item, isMine }) {
             </TableCell>
 
             <TableCell align="right" sx={{pl:0, pr:0}}>
+                <Typography variant="d3" noWrap><Icon icon={rippleSolid} width={12} height={12} /> {fNumber(vol24h)}</Typography>
             </TableCell>
 
             <TableCell align="right" sx={{pl:0, pr:0}}>

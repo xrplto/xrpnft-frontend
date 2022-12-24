@@ -152,7 +152,7 @@ const IconImage = styled('img')(
     border-radius: 0px;
   `
 );
-  
+
 const ImageBackdrop = styled('span')(({ theme }) => ({
     position: 'absolute',
     left: 0,
@@ -228,7 +228,8 @@ export default function CollectionRow({ id, item }) {
         volume,
         totalVolume,
         floor,
-        owners
+        owners,
+        vol24h
     } = item;
 
     const floorPrice = floor?.amount || 0;
@@ -300,6 +301,7 @@ export default function CollectionRow({ id, item }) {
             </TableCell>
 
             <TableCell align="right" sx={{pl:0, pr:0}}>
+                <Typography variant="d3" noWrap><Icon icon={rippleSolid} width={12} height={12} /> {fNumber(vol24h)}</Typography>
             </TableCell>
 
             <TableCell align="right" sx={{pl:0, pr:0}}>

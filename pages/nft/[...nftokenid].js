@@ -99,7 +99,7 @@ export async function getServerSideProps(ctx) {
 
         const name = meta?.name || "No Name";
         const description = meta?.description;
-    
+
         let ogp = {};
         ogp.canonical = `https://xrpnft.com/nft/${NFTokenID}`;
         ogp.title = `${name} - XRP NFT Marketplace, Buy, Sell & Collect NFTs`;
@@ -128,12 +128,12 @@ export async function getServerSideProps(ctx) {
 //     // Call an external API endpoint to get posts
 //     const res = await fetch('https://.../posts')
 //     const posts = await res.json()
-  
+
 //     // Get the paths we want to pre-render based on posts
 //     const paths = posts.map((post) => ({
 //       params: { id: post.id },
 //     }))
-  
+
 //     // We'll pre-render only these paths at build time.
 //     // { fallback: false } means other routes should 404.
 //     return { paths, fallback: false }

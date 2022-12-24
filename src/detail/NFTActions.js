@@ -138,7 +138,7 @@ export default function NFTActions({ nft }) {
 
     const [openCreateOffer, setOpenCreateOffer] = useState(false);
     const [isSellOffer, setIsSellOffer] = useState(false);
-    
+
     const [burnt, setBurnt] = useState(status === NFToken.BURNT);
 
     const [sellOffers, setSellOffers] = useState([]);
@@ -261,7 +261,7 @@ export default function NFTActions({ nft }) {
             const user_token = accountProfile.user_token;
 
             const body = {
-                account: accountLogin, 
+                account: accountLogin,
                 uuid,
                 NFTokenID,
                 index,
@@ -346,6 +346,7 @@ export default function NFTActions({ nft }) {
                 }
 
                 if (!offer.destination || accountLogin === offer.destination)
+                // if ((!offer.destination || accountLogin === offer.destination) && offer.)
                     newOffers.push(offer);
             }
         }
@@ -387,7 +388,7 @@ export default function NFTActions({ nft }) {
             "owner": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n"
         }
         */
-        
+
         doProcessOffer(offer, false);
     }
 
@@ -521,7 +522,7 @@ export default function NFTActions({ nft }) {
                                                         </Stack>
                                                         :
                                                         <Typography variant='s3'>{fNumber(cost.amount)} {cost.name}</Typography>
-                                                    
+
                                                 ):(
                                                     <Typography variant='s8'>- - -</Typography>
                                                 )
@@ -560,7 +561,7 @@ export default function NFTActions({ nft }) {
                         )}
                     </>
                 }
-                
+
             </Paper>
             {/* /* Make offer end */}
 
@@ -615,7 +616,7 @@ export default function NFTActions({ nft }) {
                     </AccordionDetails>
                 </Accordion>
                 {/* Buy Offers end */}
-            
+
 
 
                 {/* Price History Start */}
