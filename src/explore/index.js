@@ -43,7 +43,7 @@ import FilterDetail from './FilterDetail';
 
 // import getNFTimage_info from 'components/NFTCard/NFTimage_info'
 
-export default function ExploreNFT({collection}) {
+export default function ExploreNFT({ collection }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api'
 
@@ -57,7 +57,7 @@ export default function ExploreNFT({collection}) {
     const [loading, setLoading] = useState(false);
 
     const [showFilter, setShowFilter] = useState(false);
-    const [filter, setFilter] = useState(collection?.imported === 'yes'?0:4);
+    const [filter, setFilter] = useState(collection?.imported === 'yes' ? 0 : 4);
 
     const [subFilter, setSubFilter] = useState('pricexrpasc');
 
@@ -72,7 +72,7 @@ export default function ExploreNFT({collection}) {
 
         const limit = 20;
 
-        const body = { page, limit, flag, cid: collection?.uuid, search, filter, subFilter};
+        const body = { page, limit, flag, cid: collection?.uuid, search, filter, subFilter };
 
         axios.post(`${BASE_URL}/nfts`, body)
             .then(res => {
@@ -124,7 +124,7 @@ export default function ExploreNFT({collection}) {
             <Box
                 display="flex"
                 alignItems="center"
-                // sx={{ margin: 1, padding: 1 }}
+            // sx={{ margin: 1, padding: 1 }}
             >
                 <IconButton
                     aria-label='filter'
@@ -141,22 +141,22 @@ export default function ExploreNFT({collection}) {
                     margin='dense'
                     onChange={handleChangeSearch}
                     autoComplete='new-password'
-                    inputProps={{autoComplete: 'off'}}
+                    inputProps={{ autoComplete: 'off' }}
                     value={search}
                     onFocus={event => {
                         event.target.select();
                     }}
-                    sx={{pl:2, pr:1, pt: 0, pb: 0, mt: 0}}
+                    sx={{ pl: 2, pr: 1, pt: 0, pb: 0, mt: 0 }}
                     onKeyDown={(e) => e.stopPropagation()}
                     InputProps={{
                         startAdornment: (
-                            <InputAdornment position="start" sx={{mr:0.7}}>
+                            <InputAdornment position="start" sx={{ mr: 0.7 }}>
                                 <SearchIcon />
                             </InputAdornment>
                         ),
                         endAdornment: (
                             <InputAdornment position="start">
-                                {loading && <ClipLoader color='#ff0000' size={15} /> }
+                                {loading && <ClipLoader color='#ff0000' size={15} />}
                             </InputAdornment>
                         ),
                     }}
@@ -176,7 +176,7 @@ export default function ExploreNFT({collection}) {
                         />
                     </Grid>
                 }
-                <Grid item xs={12} md={showFilter?9:12}>
+                <Grid item xs={12} md={showFilter ? 9 : 12}>
                     <InfiniteScroll
                         dataLength={nfts.length}
                         next={() => {
@@ -184,31 +184,31 @@ export default function ExploreNFT({collection}) {
                             setSync(sync + 1);
                         }}
                         hasMore={hasMore}
-                        // loader={<p>loading...</p>}
+                    // loader={<p>loading...</p>}
                     >
 
-                        <Grid container spacing={0}
-                            style={{
-                                display: 'grid',
-                                justifyContent: 'space-between',
-                                alignContent: 'flex-start',
-                                gridGap: '20px',
-                                gridTemplateColumns: 'repeat(auto-fill, 280px)',
-                                marginTop: '10px',
-                                padding: '10px'
-                            }}
+                        <Grid container spacing={2} mt={1} alignItems='center' justifyContent='center'
+                        // style={{
+                        //     display: 'grid',
+                        //     justifyContent: 'space-between',
+                        //     alignContent: 'flex-start',
+                        //     gridGap: '20px',
+                        //     gridTemplateColumns: 'repeat(auto-fill, 280px)',
+                        //     marginTop: '10px',
+                        //     padding: '10px'
+                        // }}
                         >
                             {
 
                                 nfts.map((nft) => (
 
-                                    // <Grid item key={nft.uuid}
-                                    // >
+                                    <Grid item xs={6} sm={4} md={3} xl={2} key={nft.uuid}
+                                    >
                                         <NFTCard
-                                            key={nft.uuid}
+                                            // key={nft.uuid}
                                             nft={nft}
                                         />
-                                    //  </Grid>
+                                    </Grid>
                                 ))
 
                                 // .filter(getNFTimage_info(URI)!==null)

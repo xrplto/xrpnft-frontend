@@ -74,7 +74,7 @@ export default function Properties({ properties, total }) {
         <Grid container spacing={1}>
         {
             properties.map((item, idx) => (
-                <Grid item key={"Properties" + idx}>
+                <Grid item key={"Properties" + idx} xs={6} sm={4} md={3}>
                     <Trait prop={item} total={total || 0} />
                 </Grid>
             ))

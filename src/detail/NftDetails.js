@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+// import axios from 'axios';
+// import { useEffect, useState } from 'react';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Decimal from 'decimal.js';
 
@@ -127,7 +127,7 @@ export default function NFTDetails({nft}) {
     const collectionName = meta?.collection?.name || '[No Collection]';
 
     const properties = props || getProperties(meta);
-    
+
     return (
         <Stack spacing={2} sx={{mt: 2}}>
             <NFTPreview meta={meta} title={name} favorites={0} />
@@ -271,7 +271,7 @@ export default function NFTDetails({nft}) {
                             </Stack>
                         </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
-                    
+
                         <Stack spacing={1}>
                             <Typography variant="caption">NFTokenID</Typography>
                             <Link
@@ -288,7 +288,7 @@ export default function NFTDetails({nft}) {
                                 </Typography>
                             </Link>
                         </Stack>
-                        
+
                         <Stack spacing={1} mt={1}>
                             <Typography variant='caption'>URI</Typography>
                             <Typography sx={{ml:1}} style={{ wordWrap: "break-word" }}>{ParsedURI}</Typography>
@@ -339,7 +339,7 @@ export default function NFTDetails({nft}) {
                         }
                     </AccordionDetails>
                 </Accordion>
-                
+
 
                 {/* NFT Leveled Properties start--- */}
                 {/* {

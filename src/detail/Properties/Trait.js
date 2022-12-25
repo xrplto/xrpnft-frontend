@@ -1,9 +1,7 @@
 import Decimal from 'decimal.js';
 
-// Material
 import {
     Paper,
-    Stack,
     Typography,
 } from '@mui/material';
 
@@ -19,7 +17,9 @@ export default function Trait({ prop, total }) {
     return (
         <Paper
             sx={{
-                width: 91,
+                width: '100%',
+                // width: 91,
+                // maxWidth
                 height: "100%",
                 borderRadius: '6px',
                 border: '1px solid #00ff7f',
@@ -29,14 +29,14 @@ export default function Trait({ prop, total }) {
                 background: '#00ff7f10'
             }}
         >
-            <Typography sx={{ textTransform: 'uppercase', color: 'springgreen', fontWeight: 500, fontSize: 11 }}>
+            <Typography sx={{ overflowWrap: 'break-word', textTransform: 'uppercase', color: 'springgreen', fontWeight: 500, fontSize: 11 }}>
                 {type}
             </Typography>
             <Typography variant='s8'>
                 {value}
             </Typography>
             {total > 0 &&
-                <Typography variant="p3" sx={{mt:1}}>{rarity} %</Typography>
+                <Typography variant="p3" sx={{ mt: 1 }}>{rarity} %</Typography>
             }
         </Paper>
     );

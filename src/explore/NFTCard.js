@@ -1,4 +1,4 @@
-import {normalizeCurrencyCodeXummImpl} from "src/utils/normalizers";
+import { normalizeCurrencyCodeXummImpl } from "src/utils/normalizers";
 import { useState } from "react";
 import { ColorExtractor } from 'react-color-extractor';
 
@@ -12,13 +12,13 @@ import {
     Tooltip,
     Typography
 } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+// import FavoriteIcon from '@mui/icons-material/Favorite';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 
 // Iconify
 import { Icon } from '@iconify/react';
 import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
-import infoFilled from '@iconify/icons-ep/info-filled';
+// import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Utils
 import { NFToken, getMinterName } from "src/utils/constants";
@@ -26,7 +26,7 @@ import { fNumber } from 'src/utils/formatNumber';
 import { getImgUrl } from 'src/utils/parse';
 
 // Components
-import FlagsContainer from 'src/components/Flags';
+// import FlagsContainer from 'src/components/Flags';
 import Label from './Label';
 
 const CardWrapper = styled('div')(
@@ -48,12 +48,12 @@ const CardWrapper = styled('div')(
 
 export default function NFTCard({ nft }) {
     // const [imgUrl, setImgUrl] = useState('');
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
-    const [isLike, setIsLike] = useState(false);
+    // const [isLike, setIsLike] = useState(false);
     const [colors, setColors] = useState([]);
 
-    const like = () => setIsLike(!isLike);
+    // const like = () => setIsLike(!isLike);
 
     // {
     //     "_id": "630b722e2aa4d0244dcfc62b",
@@ -90,7 +90,7 @@ export default function NFTCard({ nft }) {
     const isSold = false;
 
     const imgUrl = getImgUrl(meta); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
-    const isVideo = meta?.video?true:false;
+    const isVideo = meta?.video ? true : false;
 
     const getColors = colors => {
         setColors(c => [...c, ...colors]);
@@ -100,7 +100,10 @@ export default function NFTCard({ nft }) {
         <Link href={`/nft/${NFTokenID}`} underline='none'>
             <CardWrapper
                 style={{
-                    width: 280,
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    width: '100%',
+                    maxWidth: 280,
                     height: 360,
                     background: `radial-gradient(
                             circle,
@@ -127,12 +130,13 @@ export default function NFTCard({ nft }) {
                 )}
                 {isVideo ?
                     <CardMedia
-                        component={isVideo?'video':'img'}
+                        component={isVideo ? 'video' : 'img'}
                         image={imgUrl}
-                        alt={'NFT'}
+                        alt={'NFT' + uuid}
                         controls={isVideo}
                         style={{
-                            width: 280,
+                            width: '100%',
+                            maxWidth: 280,
                             height: 250,
                             marginTop: 0,
                             borderTopLeftRadius: 20,
@@ -146,7 +150,8 @@ export default function NFTCard({ nft }) {
                     <ColorExtractor getColors={getColors}>
                         <img src={imgUrl}
                             style={{
-                                width: 280,
+                                width: '100%',
+                                maxWidth: 280,
                                 height: 250,
                                 marginTop: 0,
                                 borderTopLeftRadius: 20,
@@ -189,18 +194,18 @@ export default function NFTCard({ nft }) {
                     <Typography variant='s2'>Price</Typography>
                 </Stack> */}
 
-                <Stack direction="row" sx={{mt:1, pl:2, pr:2}}>
+                <Stack direction="row" sx={{ mt: 1, pl: 2, pr: 2 }}>
                     <Typography variant='s10'>{name}</Typography>
                 </Stack>
 
-                <Stack direction="row" justifyContent='space-between' sx={{mt:1, pl:2, pr:2}}>
+                <Stack direction="row" justifyContent='space-between' sx={{ mt: 1, pl: 2, pr: 2 }}>
                     {/* <Typography variant='s8'>Price</Typography> */}
                     {destination && getMinterName(account) ? (
                         // <Typography variant='s2'>TRANSFER</Typography>
                         <Tooltip title={`Sold & Transfer`}>
                             <SportsScoreIcon />
                         </Tooltip>
-                    ):(
+                    ) : (
                         <Stack alignItems="left">
                             {cost ? (
                                 cost.currency === "XRP" ?
@@ -211,24 +216,24 @@ export default function NFTCard({ nft }) {
                                     :
                                     <Typography variant='s3'>{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
 
-                            ):(
+                            ) : (
                                 <Typography variant='s8'>- - -</Typography>
                             )}
 
                             {costb &&
                                 <>
-                                {costb.currency === "XRP" ?
-                                    <Stack direction="row" spacing={0.5} alignItems="center">
-                                        <Typography variant='s7'>Offer</Typography>
-                                        <Icon icon={rippleSolid} color="#00AB55" width="12" height="12" />
-                                        <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)}</Typography>
-                                    </Stack>
-                                    :
-                                    <Stack direction="row" spacing={0.5} alignItems="center">
-                                        <Typography variant='s7'>Offer</Typography>
-                                        <Typography variant='s2' color="#00AB55">Offer {fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>
-                                    </Stack>
-                                }
+                                    {costb.currency === "XRP" ?
+                                        <Stack direction="row" spacing={0.5} alignItems="center">
+                                            <Typography variant='s7'>Offer</Typography>
+                                            <Icon icon={rippleSolid} color="#00AB55" width="12" height="12" />
+                                            <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)}</Typography>
+                                        </Stack>
+                                        :
+                                        <Stack direction="row" spacing={0.5} alignItems="center">
+                                            <Typography variant='s7'>Offer</Typography>
+                                            <Typography variant='s2' color="#00AB55">Offer {fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>
+                                        </Stack>
+                                    }
                                 </>
                             }
                         </Stack>
