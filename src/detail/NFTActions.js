@@ -266,19 +266,19 @@ export default function NFTActions({ nft }) {
                 NFTokenID,
                 index,
                 destination,
-                accept: isAcceptOrCancel?"yes":"no",
-                sell: isSell?"yes":"no",
+                accept: isAcceptOrCancel ? "yes" : "no",
+                sell: isSell ? "yes" : "no",
                 user_token
             };
 
-            const res = await axios.post(`${BASE_URL}/offers/acceptcancel`, body, {headers: {'x-access-token': accountToken}});
+            const res = await axios.post(`${BASE_URL}/offers/acceptcancel`, body, { headers: { 'x-access-token': accountToken } });
 
             if (res.status === 200) {
                 const newUuid = res.data.data.uuid;
                 const qrlink = res.data.data.qrUrl;
                 const nextlink = res.data.data.next;
 
-                let newQrType = isAcceptOrCancel?"NFTokenAcceptOffer":"NFTokenCancelOffer";
+                let newQrType = isAcceptOrCancel ? "NFTokenAcceptOffer" : "NFTokenCancelOffer";
                 if (isSell)
                     newQrType += " [Sell Offer]";
                 else
@@ -303,7 +303,7 @@ export default function NFTActions({ nft }) {
             // if (res.status === 200) {
             //     setXummUuid(null);
             // }
-        } catch(err) {
+        } catch (err) {
             console.error(err);
         }
         setXummUuid(null);
@@ -346,7 +346,7 @@ export default function NFTActions({ nft }) {
                 }
 
                 if (!offer.destination || accountLogin === offer.destination)
-                // if ((!offer.destination || accountLogin === offer.destination) && offer.)
+                    // if ((!offer.destination || accountLogin === offer.destination) && offer.)
                     newOffers.push(offer);
             }
         }
@@ -415,14 +415,14 @@ export default function NFTActions({ nft }) {
                 sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={pageLoading}
             >
-               <ProgressBar
+                <ProgressBar
                     height="80"
                     width="80"
                     ariaLabel="progress-bar-loading"
                     wrapperStyle={{}}
                     wrapperClass="progress-bar-wrapper"
-                    borderColor = '#F4442E'
-                    barColor = '#51E5FF'
+                    borderColor='#F4442E'
+                    barColor='#51E5FF'
                 />
             </Backdrop>
 
@@ -450,7 +450,7 @@ export default function NFTActions({ nft }) {
                 handleAccept={handleAcceptOffer}
             />
 
-            <Stack spacing={2} sx={{mt:2}}>
+            <Stack spacing={2} sx={{ mt: 2 }}>
                 {/* <Link underline='none' color={'text.primary'}>
                     Name
                 </Link> */}
@@ -469,33 +469,35 @@ export default function NFTActions({ nft }) {
             >
                 {burnt ?
                     <Typography variant="s5">This NFT is burnt.</Typography>
-                :
+                    :
                     <>
                         {destination && getMinterName(account) ? (
-                        <>
-                            {destination === accountLogin?
-                                <Typography variant="s5">This NFT is being transferred to you. Click <CheckCircleOutlineIcon color='success'/> to accept it.</Typography>
-                                :
-                                <Typography variant="s5">This NFT is being transferred to &nbsp;
-                                    <Link
-                                        color="inherit"
-                                        target="_blank"
-                                        href={`https://bithomp.com/explorer/${destination}`}
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography variant="s3" color="#33C2FF">{destination}</Typography>
-                                    </Link>.
-                                </Typography>
-                            }
-                        </>
-                        ):(
+                            <>
+                                {destination === accountLogin ?
+                                    <Typography variant="s5">This NFT is being transferred to you. Click <CheckCircleOutlineIcon color='success' /> to accept it.</Typography>
+                                    :
+                                    <Typography variant="s5">This NFT is being transferred to &nbsp;
+                                        <Link
+                                            color="inherit"
+                                            target="_blank"
+                                            href={`https://bithomp.com/explorer/${destination}`}
+                                            rel="noreferrer noopener nofollow"
+                                        >
+                                            <Typography variant="s3" color="#33C2FF">{destination}</Typography>
+                                        </Link>.
+                                    </Typography>
+                                }
+                            </>
+                        ) : (
                             isOwner ? (
                                 <Box sx={{
                                     display: 'flex',
-                                    justifyContent: 'space-around'
+                                    justifyContent: 'space-around',
+                                    gap: 1
                                 }}>
                                     <Button
-                                        sx={{ minWidth: 150 }}
+                                        fullWidth
+                                        // sx={{ minWidth: 150 }}
                                         variant='outlined'
                                         startIcon={<LocalOfferIcon />}
                                         onClick={handleCreateSellOffer}
@@ -506,14 +508,14 @@ export default function NFTActions({ nft }) {
                                     </Button>
                                     <BurnNFT nft={nft} onHandleBurn={onHandleBurn} />
                                 </Box>
-                            ):(
+                            ) : (
                                 <Grid container>
                                     <Grid item xs={12} sm={7}>
                                         <Typography variant="s7">Current Price</Typography>
-                                        <Stack alignItems="center" sx={{mt: 1, mb: 2}}>
+                                        <Stack alignItems="center" sx={{ mt: 1, mb: 2 }}>
                                             {loading ? (
                                                 <PulseLoader color='#00AB55' size={10} />
-                                            ):(
+                                            ) : (
                                                 cost ? (
                                                     cost.currency === "XRP" ?
                                                         <Stack direction="row" spacing={0.5} alignItems="center">
@@ -523,7 +525,7 @@ export default function NFTActions({ nft }) {
                                                         :
                                                         <Typography variant='s3'>{fNumber(cost.amount)} {cost.name}</Typography>
 
-                                                ):(
+                                                ) : (
                                                     <Typography variant='s8'>- - -</Typography>
                                                 )
                                             )}
@@ -535,22 +537,24 @@ export default function NFTActions({ nft }) {
                                             spacing={{ xs: 1, sm: 2 }}
                                         >
                                             <Button
-                                                sx={{ minWidth: 150 }}
+                                                fullWidth
+                                                // sx={{ minWidth: 150 }}
                                                 disabled={!cost || burnt}
                                                 variant='contained'
                                                 // color='success'
                                                 onClick={handleBuyNow}
-                                                // startIcon={<LocalOfferIcon />}
+                                            // startIcon={<LocalOfferIcon />}
                                             >
                                                 Buy Now
                                             </Button>
                                             <Button
-                                                sx={{ minWidth: 150 }}
+                                                fullWidth
+                                                // sx={{ minWidth: 150 }}
                                                 disabled={!accountLogin || burnt}
                                                 variant='outlined'
                                                 // color='success'
                                                 onClick={handleCreateBuyOffer}
-                                                // startIcon={<LocalOfferIcon />}
+                                            // startIcon={<LocalOfferIcon />}
                                             >
                                                 Make Offer
                                             </Button>

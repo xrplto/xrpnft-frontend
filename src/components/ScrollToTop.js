@@ -13,13 +13,14 @@ import {
     boxShadow: 'none',
     backdropFilter: 'blur(2px)',
     WebkitBackdropFilter: 'blur(2px)', // Fix on Mobile
-    //backgroundColor: alpha(theme.palette.background.default, 0.9),
+    // border: 'solid 1px' + theme.palette.primary.dark,
+    // backgroundColor: alpha(theme.palette.background.default, 0.9),
     //color: alpha("#00AB88", 0.7),
     //backgroundColor: alpha("#00AB88", 0.7),
-    backgroundColor: alpha("#9E86FF", 0.7),
-    '&:hover': {
-        backgroundColor: alpha("#9E86FF", 0.4),
-    },
+    // backgroundColor: alpha("#9E86FF", 0.7),
+    // '&:hover': {
+    //     backgroundColor: alpha("#9E86FF", 0.4),
+    // },
 }));
 
  ScrollToTop.propTypes = {
@@ -40,12 +41,12 @@ export default function ScrollToTop(props) {
         disableHysteresis: true,
         threshold: 100,
     });
-  
+
     const handleClick = (event) => {
       const anchor = (event.target.ownerDocument || document).querySelector(
         '#back-to-top-anchor',
       );
-  
+
       if (anchor) {
         anchor.scrollIntoView({
             behavior: 'smooth',
@@ -53,7 +54,7 @@ export default function ScrollToTop(props) {
         });
       }
     };
-  
+
     return (
         <Zoom in={trigger}>
             <Box

@@ -977,9 +977,9 @@ export const DarkSpacesTheme = createTheme({
         },
         root: {
           '.MuiAutocomplete-inputRoot.MuiOutlinedInput-root .MuiAutocomplete-endAdornment':
-            {
-              right: 14,
-            }
+          {
+            right: 14,
+          }
         },
         clearIndicator: {
           background: alpha(colors.error.lighter, 0.2),
@@ -1372,7 +1372,7 @@ export const DarkSpacesTheme = createTheme({
     },
     s10: {
       fontWeight: 400,
-      fontSize: 16,
+      fontSize: { xs: 11, sm: 16 },
       color: colors.alpha.black[100]
     },
     h1: {

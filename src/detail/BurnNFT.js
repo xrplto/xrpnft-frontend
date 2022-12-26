@@ -23,7 +23,7 @@ import QRDialog from 'src/components/QRDialog';
 import ConfirmBurnDialog from './ConfirmBurnDialog';
 
 // ----------------------------------------------------------------------
-export default function BurnNFT({nft, onHandleBurn}) {
+export default function BurnNFT({ nft, onHandleBurn }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -58,7 +58,7 @@ export default function BurnNFT({nft, onHandleBurn}) {
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/burn/one/${xummUuid}?account=${accountLogin}`, {headers: {'x-access-token': accountToken}});
+                const ret = await axios.get(`${BASE_URL}/burn/one/${xummUuid}?account=${accountLogin}`, { headers: { 'x-access-token': accountToken } });
                 const resolved_at = ret.data?.resolved_at;
                 const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
@@ -102,10 +102,10 @@ export default function BurnNFT({nft, onHandleBurn}) {
         setLoading(true);
         try {
             const user_token = accountProfile?.user_token;
-            
+
             const body = { account: accountLogin, NFTokenID, owner: account, user_token };
 
-            const res = await axios.post(`${BASE_URL}/burn/one`, body, {headers: {'x-access-token': accountToken}});
+            const res = await axios.post(`${BASE_URL}/burn/one`, body, { headers: { 'x-access-token': accountToken } });
 
             if (res.status === 200) {
                 const uuid = res.data.data.uuid;
@@ -127,11 +127,11 @@ export default function BurnNFT({nft, onHandleBurn}) {
     const onDisconnectXumm = async (uuid) => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/offers/create/${uuid}`, {headers: {'x-access-token': accountToken}});
+            const res = await axios.delete(`${BASE_URL}/offers/create/${uuid}`, { headers: { 'x-access-token': accountToken } });
             if (res.status === 200) {
                 setXummUuid(null);
             }
-        } catch(err) {
+        } catch (err) {
         }
         setLoading(false);
     };
@@ -159,7 +159,8 @@ export default function BurnNFT({nft, onHandleBurn}) {
 
             <Button
                 variant='outlined'
-                sx={{ minWidth: 150 }}
+                fullWidth
+                // sx={{ minWidth: 150 }}
                 color='warning'
                 startIcon={<Icon icon='ps:feedburner' />}
                 onClick={() => handleBurnNFT()}

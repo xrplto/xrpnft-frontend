@@ -1369,7 +1369,8 @@ export const PureLightTheme = createTheme({
     },
     s10: {
       fontWeight: 400,
-      fontSize: 16,
+      fontSize: { xs: 11, sm: 16 },
+      // fontSize: 16,
       color: colors.alpha.black[100]
     },
     h1: {

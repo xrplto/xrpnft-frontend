@@ -27,7 +27,7 @@ import { AppContext } from 'src/AppContext';
 // Components
 import BuyMintDialog from 'src/collection/BuyMintDialog';
 
-export default function NFTActionsBulk({nft}) {
+export default function NFTActionsBulk({ nft }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { accountProfile, openSnackbar } = useContext(AppContext);
@@ -74,7 +74,7 @@ export default function NFTActionsBulk({nft}) {
             }
 
             // https://api.xrpnft.com/api/spin/count?account=rhhh
-            axios.get(`${BASE_URL}/spin/count?account=${accountLogin}&cid=${cid}`, {headers: {'x-access-token': accountToken}})
+            axios.get(`${BASE_URL}/spin/count?account=${accountLogin}&cid=${cid}`, { headers: { 'x-access-token': accountToken } })
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -105,7 +105,7 @@ export default function NFTActionsBulk({nft}) {
 
         const body = { account: accountLogin, cid, uuid };
 
-        axios.post(`${BASE_URL}/spin/buybulknft`, body, {headers: {'x-access-token': accountToken}})
+        axios.post(`${BASE_URL}/spin/buybulknft`, body, { headers: { 'x-access-token': accountToken } })
             .then(res => {
                 let ret = res.status === 200 ? res.data : undefined;
                 if (ret) {
@@ -116,7 +116,7 @@ export default function NFTActionsBulk({nft}) {
                     } else {
                         openSnackbar(ret.error, 'error');
                     }
-                    
+
                     // setBought(true);
                 }
             }).catch(err => {
@@ -151,8 +151,8 @@ export default function NFTActionsBulk({nft}) {
                         ariaLabel="progress-bar-loading"
                         wrapperStyle={{}}
                         wrapperClass="progress-bar-wrapper"
-                        borderColor = '#F4442E'
-                        barColor = '#51E5FF'
+                        borderColor='#F4442E'
+                        barColor='#51E5FF'
                     />
                 </Stack>
             </Backdrop>
@@ -167,7 +167,7 @@ export default function NFTActionsBulk({nft}) {
                 setXrpBalance={setXrpBalance}
             />
 
-            <Stack spacing={2} sx={{mt: 2}}>
+            <Stack spacing={2} sx={{ mt: 2 }}>
                 {/* <Link underline='none' color={'text.primary'}>
                     Name
                 </Link> */}
@@ -204,5 +204,5 @@ export default function NFTActionsBulk({nft}) {
             </Stack>
         </>
     );
-  
-  }
+
+}

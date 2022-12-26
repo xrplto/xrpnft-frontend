@@ -25,7 +25,7 @@ const StickyTableCell = withStyles((theme) => ({
 const TABLE_HEAD = [
     { no: 0, id: 'name', label: 'Collection', align: 'left', width: '10%', order: false },
     { no: 1, id: 'floor.amount', label: 'Floor', align: 'right', width: '10%', order: true },
-    { no: 2, id: '24hvol', label: '24h Vol', align: 'right', width: '10%', order: true },
+    { no: 2, id: 'vol24h', label: '24h Vol', align: 'right', width: '10%', order: true },
     { no: 3, id: 'volume', label: 'Volume', align: 'right', width: '10%', order: true },
     { no: 4, id: 'totalVolume', label: 'Total Vol', align: 'right', width: '15%', order: true },
     { no: 5, id: 'owners', label: 'Owners', align: 'right', width: '10%', order: true },

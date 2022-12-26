@@ -1,6 +1,6 @@
 import React from 'react';
-import { useState } from 'react';
-import Decimal from 'decimal.js';
+// import { useState } from 'react';
+// import Decimal from 'decimal.js';
 
 // Material
 import { useTheme } from '@mui/material/styles';
@@ -128,7 +128,7 @@ const CardOverlay = styled('div')(
 `
 );
 
-export default function ViewNFT({collection}) {
+export default function ViewNFT({ collection }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -179,7 +179,7 @@ export default function ViewNFT({collection}) {
         <>
             <IconCover>
                 <IconWrapper>
-                    <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
+                    <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`} />
                     {accountLogin === collection.account &&
                         <Link href={`/collection/${slug}/edit`} underline='none'>
                             <CardOverlay>
@@ -195,7 +195,7 @@ export default function ViewNFT({collection}) {
                     }
                 </IconWrapper>
             </IconCover>
-            <Stack direction={fullScreen ? "column":"row"} spacing={2} justifyContent="space-between" sx={{mt: 1, mb:1}}>
+            <Stack direction={fullScreen ? "column" : "row"} spacing={2} justifyContent="space-between" sx={{ mt: 1, mb: 1 }}>
                 <Stack direction="row" spacing={1}>
                     <Typography variant="h1a">{name}</Typography>
                     {verified === 'yes' &&
@@ -204,7 +204,7 @@ export default function ViewNFT({collection}) {
                         </Tooltip>
                     }
                 </Stack>
-                
+
                 <Stack direction="row" alignItems="center" spacing={1}>
                     {accountLogin === collection.account &&
                         <Link href={`/collection/${slug}/edit`} underline='none'>
@@ -243,22 +243,22 @@ export default function ViewNFT({collection}) {
                 </Stack>
             </Stack>
 
-            <Stack direction="row" sx={{mt: 2, mb:3}} spacing={1}>
-                <Typography variant="s5" style={{ wordBreak: "break-word"}}>By&nbsp;
-                <Link
-                    color="inherit"
-                    target="_blank"
-                    href={`/account/${account}`}
-                    rel="noreferrer noopener nofollow"
-                >
-                    <Typography variant="s5" color="#33C2FF">{accountName || account}</Typography>
-                </Link>
-                <Typography variant="s10">&nbsp;&nbsp;·&nbsp;Created <Typography variant="s3">{formatMonthYear(created)}</Typography></Typography>
+            <Stack direction="row" sx={{ mt: 2, mb: 3 }} spacing={1}>
+                <Typography variant="s5" style={{ wordBreak: "break-word" }}>By&nbsp;
+                    <Link
+                        color="inherit"
+                        target="_blank"
+                        href={`/account/${account}`}
+                        rel="noreferrer noopener nofollow"
+                    >
+                        <Typography variant="s5" color="#33C2FF">{accountName || account}</Typography>
+                    </Link>
+                    <Typography variant="s10">&nbsp;&nbsp;·&nbsp;Created <Typography variant="s3">{formatMonthYear(created)}</Typography></Typography>
                 </Typography>
             </Stack>
 
             {description &&
-                <Typography variant="d3" style={{ wordBreak: "break-word"}}>{description}</Typography>
+                <Typography variant="d3" style={{ wordBreak: "break-word" }}>{description}</Typography>
             }
 
             <Box
@@ -275,7 +275,7 @@ export default function ViewNFT({collection}) {
                 }}
             >
 
-                <Stack direction="row" sx={{mt: 2, mb:3}} spacing={5}>
+                <Stack direction="row" sx={{ mt: 2, mb: 3 }} spacing={5}>
                     <Stack>
                         <Typography variant='d2'>{items}</Typography>
                         <Typography variant='s4'>items</Typography>
@@ -288,8 +288,8 @@ export default function ViewNFT({collection}) {
                         <Stack direction="row" spacing={0.5} alignItems='center'>
                             <Icon icon={rippleSolid} width="20" height="20" />
                             <Typography variant="d2" noWrap>{volume1}</Typography>
-                            <Stack direction="row" sx={{pb: 1.5}}>
-                                <Tooltip 
+                            <Stack direction="row" sx={{ pb: 1.5 }}>
+                                <Tooltip
                                     title={
                                         <Stack alignItems="center">
                                             <Typography variant="body2">Volume on XRPL</Typography>

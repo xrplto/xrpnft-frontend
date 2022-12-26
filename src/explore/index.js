@@ -56,7 +56,7 @@ export default function ExploreNFT({ collection }) {
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const [showFilter, setShowFilter] = useState(false);
+    const [showFilter, setShowFilter] = useState(true);
     const [filter, setFilter] = useState(collection?.imported === 'yes' ? 0 : 4);
 
     const [subFilter, setSubFilter] = useState('pricexrpasc');
@@ -162,9 +162,9 @@ export default function ExploreNFT({ collection }) {
                     }}
                 />
             </Box>
-            <Grid container spacing={0} justifyContent='space-between'>
+            <Grid container spacing={1} justifyContent='space-between' mt={1}>
                 {showFilter &&
-                    <Grid item xs={12} md={3}>
+                    <Grid item xs={12} md={3} xl={2}>
                         <FilterDetail
                             collection={collection}
                             filter={filter}
@@ -176,7 +176,7 @@ export default function ExploreNFT({ collection }) {
                         />
                     </Grid>
                 }
-                <Grid item xs={12} md={showFilter ? 9 : 12}>
+                <Grid item xs={12} md={showFilter ? 9 : 12} xl={showFilter ? 10 : 12}>
                     <InfiniteScroll
                         dataLength={nfts.length}
                         next={() => {
@@ -187,7 +187,7 @@ export default function ExploreNFT({ collection }) {
                     // loader={<p>loading...</p>}
                     >
 
-                        <Grid container spacing={2} mt={1} alignItems='center' justifyContent='center'
+                        <Grid container spacing={2} px={0.5}
                         // style={{
                         //     display: 'grid',
                         //     justifyContent: 'space-between',
@@ -202,7 +202,7 @@ export default function ExploreNFT({ collection }) {
 
                                 nfts.map((nft) => (
 
-                                    <Grid item xs={6} sm={4} md={3} xl={2} key={nft.uuid}
+                                    <Grid item xs={6} sm={4} md={3} lg={2} xl={1.5} key={nft.uuid}
                                     >
                                         <NFTCard
                                             // key={nft.uuid}
