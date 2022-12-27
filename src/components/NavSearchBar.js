@@ -40,7 +40,7 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
 
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
-    
+
     const [search, setSearch] = useState('');
 
     const [nfts, setNfts] = useState([]);
@@ -55,7 +55,7 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
         // type = SEARCH_ITEM_NAME_OR_ATTRIBUTE
 
         // if (!search) return;
-  
+
         setLoading(true);
         const body = {};
         body.search = search;
@@ -152,7 +152,7 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
             groupBy={(option) => option.option_type}
             getOptionLabel={(option) => {
                 if (option.option_type === "NFTS") {
-                    return option.meta.name;
+                    return option.meta?.name;
                 } else if (option.option_type === "COLLECTIONS") {
                     return option.name;
                 } else if (option.option_type === "ACCOUNTS") {
@@ -170,8 +170,8 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                         NFTokenID
                     } = option;
 
-                    const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
-                    const isVideo = meta.video;
+                    const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta?.image||meta?.video}`;
+                    const isVideo = meta?.video;
                     return (
                         <Link
                             key={uuid}

@@ -17,6 +17,7 @@ import Landing from 'src/landing';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
+import XAppBar from 'src/components/XAppBar';
 
 // overflow: scroll;
 // overflow: auto;
@@ -59,7 +60,8 @@ export default function Overview({data}) {
                 }}
             />
 
-            <Header />
+            {/* <Header /> */}
+            <XAppBar />
 
             <Container maxWidth="lg">
                 <Landing />

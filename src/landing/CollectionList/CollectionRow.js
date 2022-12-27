@@ -259,7 +259,7 @@ export default function CollectionRow({ id, item }) {
     return (
         <TableRow
             hover
-            key={uuid}
+            // key={uuid}
             onClick={handleRowClick}
             style={{cursor: 'pointer'}}
         >

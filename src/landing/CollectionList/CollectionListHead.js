@@ -17,25 +17,24 @@ const StickyTableCell = withStyles((theme) => ({
         zIndex: 1000,
         top: 0
     }
-})) (TableCell);
+}))(TableCell);
 
 const TABLE_HEAD = [
     { id: '' },
-    { no: 0, id: 'name', label: 'Collection', align: 'left', width: '10%' },
+    { no: 0, id: 'name', label: 'Collection', align: 'center', width: '10%' },
     { no: 1, id: 'floor.amount', label: 'Floor', align: 'right', width: '10%' },
-    { no: 2, id: '24hvol', label: '24h Vol', align: 'right', width: '10%' },
+    { no: 2, id: 'vol24h', label: '24h Vol', align: 'right', width: '10%' },
     { no: 3, id: 'volume', label: 'Volume', align: 'right', width: '10%' },
     { no: 4, id: 'totalVolume', label: 'Total Vol', align: 'right', width: '15%' },
     { no: 5, id: 'owners', label: 'Owners', align: 'right', width: '10%' },
     { no: 6, id: 'items', label: 'Items', align: 'right', width: '10%' },
-    { id: '' }
 ];
 
-export default function TokenListHead({}) {
+export default function TokenListHead({ }) {
     return (
         <TableHead>
             <TableRow
-                style={{background: '#00000000'}}
+                style={{ background: '#00000000' }}
             >
                 {TABLE_HEAD.map((headCell) => (
                     <StickyTableCell
@@ -44,9 +43,11 @@ export default function TokenListHead({}) {
                         sortDirection={false}
                         width={headCell.width}
                         sx={{
+                            padding: 0,
+                            py: 1,
                             ...(headCell.id > 0 && {
-                                pl:0,
-                                pr:0,
+                                pl: 0,
+                                pr: 0,
                             })
                         }}
                     >
