@@ -503,6 +503,37 @@ export const getNFTokenInfoNew = (res, tokenURI) => {
     }
 }
 
+const getGatewayUriFromHexURI = (hexURI) => {
+    if (!hexURI) return null
+    const parsedURI = parseNFTUri(hexURI)
+    if (isIPFS.multihash(parsedURI)) {
+        return `https://gateway.xrpnft.com/ipfs/${parsedURI}`;
+    } else if (isIPFS.cidPath(parsedURI)) {
+        return `https://gateway.xrpnft.com/ipfs/${parsedURI}`;
+    } else if (parsedURI.startsWith("ipfs://")) {
+        return parsedURI.replace("ipfs://", "https://gateway.xrpnft.com/ipfs/");
+    } else if (parsedURI.startsWith("cid:")) {
+        return parsedURI.replace("cid:", "https://gateway.xrpnft.com/ipfs/");
+    } else if (parsedURI.startsWith('undefined')) {
+        return parsedURI.replace('undefined', 'https://gateway.xrpnft.com/ipfs/')
+    } else return null
+}
+
+/**
+ * @description Get metadata from URI field, when the meta field of NFT is null, and URI exists.
+ * @param {string} URI Hex URI
+ * @returns {Object} Metadata
+ */
+export const getMetadata = async (URI) => {
+
+    const ipfsUrl = getGatewayUriFromHexURI(URI)
+
+    if (ipfsUrl) {
+        const res = await axios.get(ipfsUrl)
+        return res.data
+    } else return null
+}
+
 export const getImgUrl = (meta) => {
     if (!meta) return '';
     const image = meta.image;

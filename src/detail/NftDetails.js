@@ -296,7 +296,7 @@ export default function NFTDetails({nft}) {
                         <Divider sx={{mt:2, mb:2}}/>
 
                         {
-                            meta.external_link && (
+                            meta?.external_link && (
                                 <>
                                     <Stack spacing={1}>
                                         <Typography variant='caption'>Link</Typography>
@@ -332,7 +332,7 @@ export default function NFTDetails({nft}) {
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
-                        {meta.description ?
+                        {meta?.description ?
                             <Typography>{meta.description}</Typography>
                             :
                             <Typography sx={{ textAlign: 'center' }}>No description for this item</Typography>

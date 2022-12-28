@@ -73,7 +73,7 @@ function XAppBar() {
     }
     return (
         <HeaderWrapper position="sticky" enableColorOnDark={true} sx={{ py: 1 }}>
-            <Container maxWidth="xl">
+            <Container maxWidth="xxl">
                 <Toolbar disableGutters>
                     <Box id='nav-menu-mobile'
                         sx={{ flexGrow: 0, display: { sm: 'flex', md: 'none' } }}
@@ -189,7 +189,7 @@ function XAppBar() {
                             setFullSearch={setFullSearch}
                         />
                     }
-                    <Box sx={{ flexGrow: 2, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
+                    <Box sx={{ flexGrow: 3, display: { xs: 'none', md: 'flex' }, justifyContent: 'end' }}>
                         <Link
                             underline="none"
                             color="inherit"

@@ -652,12 +652,30 @@ export const PureLightTheme = createTheme({
             color: colors.alpha.black[100]
           }
         },
+        textPrimary: {
+          // backgroundColor: colors.secondary.main,
+          color: colors.alpha.black[100],
+          // border: '1px solid ' + alpha('#121619', 0.3),
+          '&:hover, &.MuiSelected': {
+            // backgroundColor: alpha('#121619', 0.1),
+            // border: '1px solid ' + alpha('#121619', 0.1),
+            color: colors.alpha.black[100]
+          }
+        },
         containedSecondary: {
           backgroundColor: colors.secondary.main,
           color: colors.alpha.white[100],
           border: '1px solid ' + colors.alpha.black[30]
         },
         outlinedSecondary: {
+          backgroundColor: colors.alpha.white[100],
+
+          '&:hover, &.MuiSelected': {
+            backgroundColor: colors.alpha.black[5],
+            color: colors.alpha.black[100]
+          }
+        },
+        textSecondary: {
           backgroundColor: colors.alpha.white[100],
 
           '&:hover, &.MuiSelected': {
