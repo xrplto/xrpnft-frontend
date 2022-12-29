@@ -100,7 +100,7 @@ const IconImage = styled('img')(
     border-radius: 0px;
   `
 );
-  
+
 const ImageBackdrop = styled('span')(({ theme }) => ({
     position: 'absolute',
     left: 0,
@@ -111,7 +111,7 @@ const ImageBackdrop = styled('span')(({ theme }) => ({
     opacity: 0,
     transition: theme.transitions.create('opacity'),
 }));
-  
+
 export default function CollectionCard({ item, isMine }) {
 
     // {
@@ -185,12 +185,12 @@ export default function CollectionCard({ item, isMine }) {
                         <IconImage src={logoImageUrl}/>
                     </IconWrapper>
                 </IconCover>
-                
+
                 <Stack direction="row" spacing={0.5} sx={{pt: 2}}>
                     <Typography variant="p1">{name}</Typography>
                     {verified === 'yes' &&
                         <Tooltip title='Verified'>
-                            <VerifiedIcon fontSize="small" color="success" />
+                            <VerifiedIcon fontSize="small" color="info" />
                         </Tooltip>
                     }
                 </Stack>

@@ -10,7 +10,7 @@ const themeColors = {
   warning: '#FFA319',
   error: '#FF1943',
   info: '#33C2FF',
-  black: '#223354',
+  black: '#000000',
   white: '#ffffff',
   primaryAlt: '#000C57'
 };

@@ -60,7 +60,9 @@ export default function NFTPreview({ meta, title, favorites }) {
                     component={isVideo?'video':'img'}
                     image={imgUrl}
                     alt={'NFT'}
-                    controls={isVideo}
+                    // controls={isVideo}
+                    autoPlay={isVideo}
+                    loop={isVideo}
                 />
             </Link>
 

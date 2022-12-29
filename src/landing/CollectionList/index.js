@@ -23,7 +23,7 @@ export default function CollectionList() {
     const [collections, setCollections] = useState([]);
 
     useEffect(() => {
-        const loadCollections=() => {
+        const loadCollections = () => {
             const body = {
                 filter: '',
                 type: CollectionListType.LANDING,
@@ -33,22 +33,22 @@ export default function CollectionList() {
                 orderBy: 'volume',
                 choice: 'all'
             };
-            
+
             axios.post(`${BASE_URL}/collection/getlistbyorder`, body)
-            .then(res => {
-                try {
-                    if (res.status === 200 && res.data) {
-                        const ret = res.data;
-                        setCollections(ret.collections);
+                .then(res => {
+                    try {
+                        if (res.status === 200 && res.data) {
+                            const ret = res.data;
+                            setCollections(ret.collections);
+                        }
+                    } catch (error) {
+                        console.log(error);
                     }
-                } catch (error) {
-                    console.log(error);
-                }
-            }).catch(err => {
-                console.log("err->>", err);
-            }).then(function () {
-                // Always executed
-            });
+                }).catch(err => {
+                    console.log("err->>", err);
+                }).then(function () {
+                    // Always executed
+                });
         };
         loadCollections();
     }, []);
@@ -72,15 +72,14 @@ export default function CollectionList() {
                     <CollectionListHead />
                     <TableBody>
                         {
-                            collections.map((row, idx) => {
-                                return (
-                                    <CollectionRow
-                                        key={idx}
-                                        id={idx + 1}
-                                        item={row}
-                                    />
-                                );
-                            })
+                            collections.map((row, idx) =>
+                                <CollectionRow
+                                    // key={row.id}
+                                    key={idx}
+                                    id={idx + 1}
+                                    item={row}
+                                />
+                            )
                         }
                     </TableBody>
                 </Table>

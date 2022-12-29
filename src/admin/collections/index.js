@@ -139,7 +139,7 @@ export default function Collections({account}) {
     const { accountProfile, openSnackbar, setLoading } = useContext(AppContext);
     const accountAdmin = accountProfile?.account;
     const accountToken = accountProfile?.token;
-    
+
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [count, setCount] = useState(0);
@@ -460,7 +460,7 @@ export default function Collections({account}) {
                                             />
                                         </Stack>
                                     </TableCell> */}
-                                    
+
                                     <TableCell align="left">
                                         <Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
@@ -487,10 +487,10 @@ export default function Collections({account}) {
                                                 <Link href={`/collection/${slug}`}>
                                                     <Typography variant="s3" color="#33C2FF">{name} <Typography variant="s3" color="error">({items} items)</Typography></Typography>
                                                 </Link>
-                                                
+
                                                 <Tooltip title='Click to toggle verified'>
                                                     <IconButton onClick={()=>handleSetVerified(row)}>
-                                                        <VerifiedIcon color={verified === 'yes' ? "success":""} />
+                                                        <VerifiedIcon color={verified === 'yes' ? "info":""} />
                                                     </IconButton>
                                                 </Tooltip>
 
@@ -604,7 +604,7 @@ export default function Collections({account}) {
                                                 <Typography variant="s7">Category: </Typography>
                                                 <Typography variant="s7" color="#33C2FF">{category}</Typography>
                                             </Stack>
-                                            
+
                                             {infoIPFS && infoIPFS.cid &&
                                                 <Stack direction="row" spacing={0} alignItems="center">
                                                     <Typography variant="s7">IPFS CID:&nbsp;</Typography>
@@ -703,7 +703,7 @@ export default function Collections({account}) {
                                             }
                                         </Stack>
                                     </TableCell>
-                                    
+
                                     <TableCell align="left">
                                         {infoIPFS && infoIPFS.cid && status === 0x3F && // 0x3F = b0011 1111
                                             <Stack alignItems="center">
@@ -744,8 +744,8 @@ export default function Collections({account}) {
                                                         colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
                                                     />
                                                 )}
-                                                
-                                                
+
+
                                                 <Typography variant="d4" color="#33C2FF">{infoMINT.count} / {infoMINT.length}</Typography>
                                             </Stack>
                                         }

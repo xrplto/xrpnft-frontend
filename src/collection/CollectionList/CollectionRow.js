@@ -298,7 +298,7 @@ export default function CollectionRow({ id, item, isMine }) {
                                 <Typography variant="d3" noWrap>{name}</Typography>
                                 {verified === 'yes' &&
                                     <Tooltip title='Verified'>
-                                        <VerifiedIcon fontSize="small" color="success" />
+                                        <VerifiedIcon fontSize="small" color="info" />
                                     </Tooltip>
                                 }
                             </Stack>
