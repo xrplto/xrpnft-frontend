@@ -32,10 +32,11 @@ import { getImgUrl } from 'src/utils/parse';
 // Components
 // import FlagsContainer from 'src/components/Flags';
 import Label from './Label';
+import { Box } from "@mui/system";
 
 const CardWrapper = styled(Card)(
     ({ theme }) => `
-        box-shadow: 0px -0.5px 4px rgba(100, 100, 111, 0.9);
+        // box-shadow: 0px -0.5px 4px rgba(100, 100, 111, 0.9);
         // filter: drop-shadow(16px 16px 10px rgba(0,0,0,0.8));
         // filter: drop-shadow(0 0 0.2rem rgba(0,0,0,0.8));
         border-radius: 10px;
@@ -126,6 +127,7 @@ export default function NFTCard({ nft }) {
         setLoadingImg(false)
     }
 
+
     return (
         <Link href={`/nft/${NFTokenID}`} underline='none'>
             <CardWrapper
@@ -135,7 +137,7 @@ export default function NFTCard({ nft }) {
                     width: '100%',
                     maxWidth: 280,
                     // height: 250,
-                    aspectRatio: '3 / 4',
+                    aspectRatio: '9 / 14',
                     // minHeight: 250,
                     // background: `radial-gradient(
                     //         circle,
@@ -173,7 +175,7 @@ export default function NFTCard({ nft }) {
                             /> :
                             isVideo ? 'video' : 'img'}
                     image={imgUrl}
-                    loading={loadingImg}
+                    loading={loadingImg.toString()}
                     alt={'NFT' + uuid}
                     // controls={isVideo}
                     // autoPlay={isVideo}
@@ -273,20 +275,21 @@ export default function NFTCard({ nft }) {
                 <CardContent
                     sx={{ padding: 0 }}
                 >
-
-                    <Typography
-                        variant='h6'
-                        sx={{
-                            textOverflow: 'ellipsis',
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap',
-                            px: 1
-                        }}>{name}</Typography>
-                    {/* <Typography variant='h6'>{name}</Typography> */}
-                    {/* </Stack> */}
-
-                    <Stack direction="row" justifyContent='space-between' sx={{ px: 1 }}>
-                        {/* <Typography variant='s8'>Price</Typography> */}
+                    <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'} px={1}>
+                        <Box display='flex'>
+                            <Typography variant='h6'
+                                textOverflow='ellipsis'
+                                overflow='hidden'
+                                whiteSpace='nowrap'
+                            >
+                                {name.slice(0, -5)}
+                            </Typography>
+                            <Typography
+                                variant='h6'
+                                style={{ width: 45 }}>
+                                {name.slice(-5)}
+                            </Typography>
+                        </Box>
                         {destination && getMinterName(account) ? (
                             // <Typography variant='s2'>TRANSFER</Typography>
                             <Tooltip title={`Sold & Transfer`}>
@@ -294,36 +297,37 @@ export default function NFTCard({ nft }) {
                             </Tooltip>
                         ) : (
                             <Grid container alignItems='center'>
-                                <Grid item xs={6}>
+                                <Grid item xs={12}>
                                     {cost ? (
                                         cost.currency === "XRP" ?
                                             <Stack direction="row" spacing={0.5} alignItems="center">
-                                                <Typography variant='s3' pt={0.8}><Icon icon={rippleSolid} width="16" height="16" /></Typography>
-                                                <Typography variant='s3'>{fNumber(cost.amount)}</Typography>
+                                                <Icon icon={rippleSolid} width="16" height="16" />
+                                                <Typography >{fNumber(cost.amount)}</Typography>
                                             </Stack>
                                             :
-                                            <Typography variant='s3'>{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
+                                            <Typography >{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
 
                                     ) : (
                                         <Typography>- - -</Typography>
                                     )}
                                 </Grid>
-                                <Grid item xs={6}>
-                                    {costb &&
-                                        <>
-                                            {costb.currency === "XRP" ?
-                                                <Stack direction="row" spacing={0.5} alignItems="center">
-                                                    <Typography variant='s7'>Offer</Typography>
-                                                    <Icon icon={rippleSolid} color="#00AB55" width="12" height="12" />
-                                                    <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)}</Typography>
-                                                </Stack>
-                                                :
-                                                <Stack direction="row" spacing={0.5} alignItems="center">
-                                                    <Typography variant='s7'>Offer</Typography>
-                                                    <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>
-                                                </Stack>
-                                            }
-                                        </>
+                                <Grid item xs={12}>
+                                    {
+                                        costb ?
+                                            <>
+                                                {costb.currency === "XRP" ?
+                                                    <Stack direction="row" spacing={0.5} alignItems="center">
+                                                        <Typography variant='s7'>Offer</Typography>
+                                                        <Icon icon={rippleSolid} color="#00AB55" width="12" height="12" />
+                                                        <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)}</Typography>
+                                                    </Stack>
+                                                    :
+                                                    <Stack direction="row" spacing={0.5} alignItems="center">
+                                                        <Typography variant='s7'>Offer</Typography>
+                                                        <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>
+                                                    </Stack>
+                                                }
+                                            </> : <Typography variant='s7'>No Offer</Typography>
                                     }
                                 </Grid>
                             </Grid>
@@ -359,7 +363,7 @@ export default function NFTCard({ nft }) {
                             //     }
                             // </Stack>
                         )}
-                    </Stack>
+                    </Box>
                 </CardContent>
                 {/* <Divider sx={{mt:0.8, mb:0.3}}/>
                 <Stack direction="row" justifyContent='space-between' sx={{mt:1, pl:1, pr:1}}>
@@ -368,6 +372,6 @@ export default function NFTCard({ nft }) {
                 </Stack> */}
 
             </CardWrapper>
-        </Link>
+        </Link >
     );
 };

@@ -77,7 +77,7 @@ export default function NFTList({account, filter, choice, setLoading}) {
     const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountAdmin = accountProfile?.account;
     const accountToken = accountProfile?.token;
-    
+
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
@@ -127,7 +127,7 @@ export default function NFTList({account, filter, choice, setLoading}) {
                     setPage={setPage}
                 />
             }
-            
+
             <Box
                 sx={{
                     display: "flex",
@@ -179,19 +179,14 @@ export default function NFTList({account, filter, choice, setLoading}) {
                                 account,
                                 date,
                                 destination,
-                                meta,
                                 URI,
                                 NFTokenID,
                                 mintHash,
                                 offerHash,
                                 status,
                                 error,
-                                resolve,
                                 SellOfferID
                             } = row;
-                        
-                            const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
-                            const isVideo = meta.video;
 
                             const strDateTime = formatDateTime(date);
 
@@ -345,9 +340,9 @@ export default function NFTList({account, filter, choice, setLoading}) {
                                             </Stack>
                                         </Stack>
                                     </TableCell>
-                                    
+
                                     <TableCell align="left">
-                                        
+
                                     </TableCell>
                                 </TableRow>
                             );

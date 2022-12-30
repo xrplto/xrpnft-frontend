@@ -63,6 +63,7 @@ export default function NFTPreview({ meta, title, favorites }) {
                     // controls={isVideo}
                     autoPlay={isVideo}
                     loop={isVideo}
+                    muted
                 />
             </Link>
 

@@ -552,6 +552,8 @@ export const getImgUrl = (meta) => {
         url = url.replace("ipfs://", "https://gateway.xrpnft.com/ipfs/");
     } else if (url.startsWith("cid:")) {
         url = URI.replace("cid:", "https://gateway.xrpnft.com/ipfs/");
+    } else if (url.startsWith("https://ipfs.filebase.io")) {
+        url = URI.replace("https://ipfs.filebase.io", "https://gateway.xrpnft.com");
     }
 
     return url;
