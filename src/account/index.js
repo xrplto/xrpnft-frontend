@@ -21,7 +21,8 @@ import {
     Tabs,
     Tooltip,
     Typography,
-    useMediaQuery
+    useMediaQuery,
+    Avatar
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -44,24 +45,27 @@ import FavoritedList from './FavoritedList';
 import ActivityList from './ActivityList';
 import AcceptList from './AcceptList';
 import OffersList from './OffersList';
+import CollectedNFTs from './CollectedNFTs';
+import { height } from '@mui/system';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 const IconCover = styled('div')(
     ({ theme }) => `
         width: 102px;
         height: 102px;
-        margin-top: -56px;
+        // margin-top: -56px;
         margin-bottom: 16px;
         @media (min-width: ${theme.breakpoints.values.sm}px) {
             width: 132px;
             height: 132px;
-            margin-top: -86px;
+            // margin-top: -86px;
         }
         @media (min-width: ${theme.breakpoints.values.md}px) {
             width: 192px;
             height: 192px;
-            margin-top: -156px;
+            // margin-top: -156px;
         }
-        border: 6px solid ${theme.colors.alpha.black[50]};
+        border: 50% solid ${theme.colors.alpha.black[50]};
         border-radius: 10px;
         box-shadow: rgb(0 0 0 / 8%) 0px 5px 10px;
         background-color: ${theme.colors.alpha.white[70]};
@@ -116,7 +120,7 @@ const IconImage = styled('img')(
   `
 );
 
-const SlotBox = styled('div') (
+const SlotBox = styled('div')(
     ({ theme }) => `
         // padding-top: 40px;
         width: 280px;
@@ -159,7 +163,7 @@ const CardOverlay = styled('div')(
 
 function TabPanel(props) {
     const { children, value, id, ...other } = props;
- 
+
     return (
         <div
             role="tabpanel"
@@ -170,8 +174,8 @@ function TabPanel(props) {
         >
             {value === id && (
                 <Box sx={{
-                    p: { xs: 0, md: 3 },
-                    pt: { xs: 3 },
+                    // p: { xs: 0, md: 3 },
+                    // pt: { xs: 3 },
                 }}>
                     {children}
                 </Box>
@@ -228,9 +232,9 @@ const StyledMenu = styled((props) => (
             horizontal: 'right',
         }}
         {...props}
-        />
-    ))(({ theme }) => ({
-        '& .MuiPaper-root': {
+    />
+))(({ theme }) => ({
+    '& .MuiPaper-root': {
         borderRadius: 6,
         marginTop: theme.spacing(1),
         minWidth: 180,
@@ -243,21 +247,21 @@ const StyledMenu = styled((props) => (
         },
         '& .MuiMenuItem-root': {
             '& .MuiSvgIcon-root': {
-            fontSize: 18,
-            color: theme.palette.text.secondary,
-            marginRight: theme.spacing(1.5),
+                fontSize: 18,
+                color: theme.palette.text.secondary,
+                marginRight: theme.spacing(1.5),
             },
             '&:active': {
-            backgroundColor: alpha(
-                theme.palette.primary.main,
-                theme.palette.action.selectedOpacity,
-            ),
+                backgroundColor: alpha(
+                    theme.palette.primary.main,
+                    theme.palette.action.selectedOpacity,
+                ),
             },
         },
     },
-  }));
+}));
 
-export default function Account({profile, tab}) {
+export default function Account({ profile, tab }) {
     const { accountProfile, openSnackbar, acceptNfts } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
@@ -279,7 +283,7 @@ export default function Account({profile, tab}) {
         minterWallet
     } = profile;
 
-    const logoImage = logo?`https://s1.xrpnft.com/profile/${logo}`:'/static/account_logo.png';
+    const logoImage = logo ? `https://s1.xrpnft.com/profile/${logo}` : '/static/account_logo.png';
 
     const handleClickMore = (event) => {
         setAnchorEl(event.currentTarget);
@@ -292,7 +296,7 @@ export default function Account({profile, tab}) {
     const handleSelectMore = (event, menu) => {
         setMoreMenu(menu);
         setAnchorEl(null);
-        
+
         const url = `/account/${profile.account}/${tabMoreValues[menu]}`;
         window.history.pushState({}, null, url);
 
@@ -306,7 +310,7 @@ export default function Account({profile, tab}) {
         const anchor = (event.target.ownerDocument || document).querySelector(
             '#back-to-top-tab-anchor',
         );
-    
+
         if (anchor) {
             anchor.scrollIntoView({
                 behavior: 'smooth',
@@ -328,74 +332,89 @@ export default function Account({profile, tab}) {
         setTabID(newID);
         gotoTabView(event);
     };
-    
+
     return (
-        <>
-            <Stack alignItems="center" sx={{mb: 5}}>
-                <IconCover>
-                    <IconWrapper>
-                        <IconImage src={logoImage}/>
-                        {account === profile.account &&
-                            <Link href={`/setting`} underline='none'>
-                                <CardOverlay>
-                                    <EditIcon
-                                        className="MuiIconEditButton-root"
-                                        // color='primary'
-                                        fontSize="large"
-                                        sx={{ opacity: 0, zIndex: 1 }}
-                                    />
-                                </CardOverlay>
-                                <ImageBackdrop className="MuiImageBackdrop-root" />
-                            </Link>
-                        }
-                    </IconWrapper>
-                </IconCover>
-                {name &&
-                    <Typography variant="h1a">{name}</Typography>
-                }
-                <Stack direction="row" alignItems="center">
-                    <Link
-                        color="inherit"
-                        target="_blank"
-                        href={`https://bithomp.com/explorer/${profile.account}`}
-                        rel="noreferrer noopener nofollow"
-                    >
-                        <Typography align="center" style={{ wordWrap: "break-word" }} variant="d3">
-                            {profile.account}
+        <Container maxWidth='xxl'>
+            <Box
+                sx={{
+                    display: 'flex',
+                    gap: 3,
+                    alignItems: 'center',
+                    my: 2
+                }}
+            >
+                <Avatar
+                    sx={{
+                        width: { md: 90, xs: 50 },
+                        height: { md: 90, xs: 50 }
+                    }}>
+                    <IconImage src={logoImage} />
+                    {account === profile.account &&
+                        <Link href={`/setting`} underline='none'>
+                            <CardOverlay>
+                                <EditIcon
+                                    className="MuiIconEditButton-root"
+                                    // color='primary'
+                                    fontSize="large"
+                                    sx={{ opacity: 0, zIndex: 1 }}
+                                />
+                            </CardOverlay>
+                            <ImageBackdrop className="MuiImageBackdrop-root" />
+                        </Link>
+                    }
+                </Avatar>
+                <Box>
+                    <Typography variant='h3'>{name || profile.account?.toString().slice(0, 5)}</Typography>
+                    <Box display='flex' alignItems={'center'}>
+                        <Typography style={{ wordWrap: "break-word" }} variant="d3">
+                            {profile.account.slice(0, 4) + '...' + profile.account.slice(-4)}
                         </Typography>
-                    </Link>
-                    <CopyToClipboard text={profile.account} onCopy={()=>{openSnackbar("Copied!", "success")}}>
-                        <Tooltip title='Click to copy'>
+                        <CopyToClipboard text={profile.account} onCopy={() => { openSnackbar("Copied!", "success") }}>
+                            <Tooltip title='Click to copy'>
+                                <IconButton>
+                                    <ContentCopyIcon fontSize="small" />
+                                </IconButton>
+                            </Tooltip>
+                        </CopyToClipboard>
+                        <Link
+                            color="inherit"
+                            target="_blank"
+                            href={`https://bithomp.com/explorer/${profile.account}`}
+                            rel="noreferrer noopener nofollow"
+                        >
                             <IconButton>
-                                <ContentCopyIcon fontSize="small" />
+                                <OpenInNewIcon />
                             </IconButton>
-                        </Tooltip>
-                    </CopyToClipboard>
-                </Stack>
+                        </Link>
+                    </Box>
+                </Box>
 
                 {description &&
                     <Typography variant="d3" maxWidth='600px'>{description}</Typography>
                 }
+            </Box>
+            <Tabs
+                value={tabID}
+                onChange={handleChangeTab}
+                variant="scrollable"
+                scrollButtons='auto'
+                aria-label="token-tabs"
+            >
+                <Tab value={0} label={tabLabels[0]} {...a11yProps(0)} />
+                <Tab value={1} label={tabLabels[1]} {...a11yProps(1)} />
+                <Tab value={2} label={tabLabels[2]} {...a11yProps(2)} />
+                <Tab value={3} label={tabLabels[3]} {...a11yProps(3)} />
+                <Tab value={4} label={tabLabels[4]} {...a11yProps(4)} />
+                <Tab
+                    value={5}
+                    label={tabLabels[5]}
+                    icon={<KeyboardArrowDownIcon />}
+                    iconPosition='end'
+                    {...a11yProps(5)}
+                    onClick={handleClickMore}
+                />
 
-                <Stack sx={{mt: 3}}>
 
-                </Stack>
-
-                <Tabs value={tabID} onChange={handleChangeTab} variant="scrollable" scrollButtons="auto" aria-label="token-tabs">
-                    <Tab value={0} label={tabLabels[0]} {...a11yProps(0)} />
-                    <Tab value={1} label={tabLabels[1]} {...a11yProps(1)} />
-                    <Tab value={2} label={tabLabels[2]} {...a11yProps(2)} />
-                    <Tab value={3} label={tabLabels[3]} {...a11yProps(3)} />
-                    <Tab value={4} label={tabLabels[4]} {...a11yProps(4)} />
-                    <Tab
-                        value={5}
-                        label={tabLabels[5]}
-                        icon={<KeyboardArrowDownIcon />}
-                        iconPosition='end'
-                        {...a11yProps(5)}
-                        onClick={handleClickMore}
-                    />
-                </Tabs>
                 <StyledMenu
                     id="demo-customized-menu"
                     MenuListProps={{
@@ -405,53 +424,56 @@ export default function Account({profile, tab}) {
                     open={open}
                     onClose={handleCloseMore}
                 >
-                    <MenuItem onClick={(event)=>handleSelectMore(event, 0)} sx={{ py: 1 }} disableRipple>
+                    <MenuItem onClick={(event) => handleSelectMore(event, 0)} sx={{ py: 1 }} disableRipple>
                         <LocalOfferIcon />
                         <Typography variant='s6'>{tabMoreLabels[0]}</Typography>
                     </MenuItem>
-                    <MenuItem onClick={(event)=>handleSelectMore(event, 1)} sx={{ py: 1 }} disableRipple>
+                    <MenuItem onClick={(event) => handleSelectMore(event, 1)} sx={{ py: 1 }} disableRipple>
                         <ListIcon />
                         <Typography variant='s6'>{tabMoreLabels[1]}</Typography>
                     </MenuItem>
 
                     <Divider />
 
-                    <MenuItem onClick={(event)=>handleSelectMore(event, 2)} sx={{ py: 1 }} disableRipple>
+                    <MenuItem onClick={(event) => handleSelectMore(event, 2)} sx={{ py: 1 }} disableRipple>
                         <NearbyErrorIcon />
                         <Typography variant='s6'>{tabMoreLabels[2]}</Typography>
                     </MenuItem>
                 </StyledMenu>
+            </Tabs>
+            <Box sx={{ my: 1 }}>
                 <TabPanel value={tabID} id={0}>
-                    <Stack sx={{minHeight: '20vh'}}>
-                        <CollectedList account={profile.account} />
+                    <Stack sx={{ minHeight: '20vh' }}>
+                        {/* <CollectedList account={profile.account} /> */}
+                        <CollectedNFTs account={profile.account} />
                     </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={1}>
-                    <Stack sx={{minHeight: '20vh'}}>
+                    <Stack sx={{ minHeight: '20vh' }}>
                         <CreatedList account={profile.account} />
                     </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={2}>
-                    <Stack sx={{minHeight: '20vh'}}>
+                    <Stack sx={{ minHeight: '20vh' }}>
                         <FavoritedList account={profile.account} />
                     </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={3}>
-                    <Stack sx={{minHeight: '20vh'}}>
+                    <Stack sx={{ minHeight: '20vh' }}>
                         <ActivityList account={profile.account} />
                     </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={4}>
-                    <Stack sx={{minHeight: '20vh'}}>
+                    <Stack sx={{ minHeight: '20vh' }}>
                         <AcceptList account={profile.account} />
                     </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={5}>
-                    <Stack sx={{minHeight: '20vh'}}>
+                    <Stack sx={{ minHeight: '20vh' }}>
                         <OffersList account={profile.account} type={tabMoreValues[moreMenu]} />
                     </Stack>
                 </TabPanel>
-            </Stack>
-        </>
+            </Box>
+        </Container >
     );
 }

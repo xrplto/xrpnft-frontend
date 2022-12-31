@@ -899,7 +899,7 @@ export const PureLightTheme = createTheme({
           // boxShadow: '0px 2px 10px ' + colors.primary.light
         },
         scrollableX: {
-          overflow: 'visible !important'
+          // overflow: 'visible !important'
         }
       }
     },

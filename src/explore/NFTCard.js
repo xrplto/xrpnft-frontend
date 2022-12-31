@@ -277,7 +277,7 @@ export default function NFTCard({ nft }) {
                 >
                     <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'} px={1}>
                         <Box display='flex'>
-                            <Typography variant='h6'
+                            <Typography
                                 textOverflow='ellipsis'
                                 overflow='hidden'
                                 whiteSpace='nowrap'
@@ -285,7 +285,6 @@ export default function NFTCard({ nft }) {
                                 {name.slice(0, -5)}
                             </Typography>
                             <Typography
-                                variant='h6'
                                 style={{ width: 45 }}>
                                 {name.slice(-5)}
                             </Typography>
@@ -308,7 +307,7 @@ export default function NFTCard({ nft }) {
                                             <Typography >{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
 
                                     ) : (
-                                        <Typography>- - -</Typography>
+                                        <Typography variant='s7'>Unlisted</Typography>
                                     )}
                                 </Grid>
                                 <Grid item xs={12}>

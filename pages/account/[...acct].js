@@ -80,7 +80,7 @@ export default function Overview({data}) {
             <BannerWrapper>
                 <div style={{
                     height: 0,
-                    paddingBottom: '25%',
+                    paddingBottom: '10%',
                 }}
                 >
                     <BannerImage
@@ -138,7 +138,7 @@ export async function getServerSideProps(ctx) {
                 "timestamp": 1664894197862
             }
         } */
-        
+
         const {
             account,
             name,
