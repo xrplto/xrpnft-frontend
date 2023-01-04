@@ -150,7 +150,7 @@ export default function FilterDetail({ collection, filter, setFilter, subFilter,
                     >
                         <Stack spacing={2} direction='row'>
                             <BookmarkAddedIcon />
-                            <Typography variant='s3'>Attributes <Typography variant='s2'>(Comming soon!)</Typography></Typography>
+                            <Typography variant='s3'>Attributes <Typography variant='s2'>(Coming soon!)</Typography></Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails style={{ padding: 0 }}>

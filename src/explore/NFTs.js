@@ -33,8 +33,8 @@ export default function NFTs({ collection }) {
     const [loading, setLoading] = useState(false);
 
     const [showFilter, setShowFilter] = useState(true);
-    const [filter, setFilter] = useState(collection?.imported === 'yes' ? 0 : 4);
-
+    // const [filter, setFilter] = useState(collection?.imported === 'yes' ? 0 : 4);
+    const [filter, setFilter] = useState(0);
     const [subFilter, setSubFilter] = useState('pricexrpasc');
 
     const [filterAttrs, _setFilterAttrs] = useState({});
@@ -103,6 +103,9 @@ export default function NFTs({ collection }) {
             // sx={{ margin: 1, padding: 1 }}
             >
                 <IconButton
+                    sx={{
+                        pl: [0, 1]
+                    }}
                     aria-label='filter'
                     onClick={handleShowFilter}
                 >
@@ -122,7 +125,7 @@ export default function NFTs({ collection }) {
                     onFocus={event => {
                         event.target.select();
                     }}
-                    sx={{ pl: 2, pr: 1, pt: 0, pb: 0, mt: 0 }}
+                    sx={{ pl: 2, pr: [0, 1], pt: 0, pb: 0, mt: 0 }}
                     onKeyDown={(e) => e.stopPropagation()}
                     InputProps={{
                         startAdornment: (
@@ -163,7 +166,8 @@ export default function NFTs({ collection }) {
                     // loader={<p>loading...</p>}
                     >
 
-                        <Grid container spacing={1} px={0.5} py={0.5}
+                        <Grid container spacing={1}
+                            sx={{ px: [0, 0.5], py: 0.5 }}
                         // style={{
                         //     display: 'grid',
                         //     justifyContent: 'space-between',
@@ -178,7 +182,10 @@ export default function NFTs({ collection }) {
 
                                 nfts.map((nft) => (
 
-                                    <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.uuid}
+                                    <Grid item xs={6}
+                                        sm={4} md={3}
+                                        lg={2.4} xl={1.5}
+                                        key={nft.uuid}
                                     >
                                         <NFTCard
                                             // key={nft.uuid}
