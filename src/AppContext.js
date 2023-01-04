@@ -4,7 +4,7 @@ import { Backdrop } from "@mui/material";
 
 // Redux
 import { Provider } from "react-redux";
-import {configureRedux} from "src/redux/statusSlice";
+import { configureRedux } from "src/redux/statusSlice";
 
 // Loader
 import { PuffLoader } from "react-spinners";
@@ -39,7 +39,7 @@ export function ContextProvider({ children, data, openSnackbar }) {
         if (profile) {
             try {
                 _setAccountProfile(JSON.parse(profile));
-            } catch (e){}
+            } catch (e) { }
         }
     }, [])
 
