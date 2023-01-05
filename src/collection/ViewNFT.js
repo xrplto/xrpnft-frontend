@@ -263,7 +263,7 @@ export default function ViewNFT({ collection }) {
 
             {description &&
                 <Typography variant="d3" style={{ wordBreak: "break-word" }}>{seenMore ? description : description?.split(' ', width > 758 ? 15 : 9).join(' ')}{!seenMore && '...'}
-                    <div onClick={() => setSeenMore(!seenMore)} className='mx-1 cursor-pointer'>See {seenMore ? 'less' : `more`}</div>
+                    <div onClick={() => setSeenMore(!seenMore)} className='viewMore'>See {seenMore ? 'less' : `more`}</div>
                 </Typography>
             }
 

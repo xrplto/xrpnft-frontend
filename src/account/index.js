@@ -394,7 +394,7 @@ export default function Account({ profile, tab }) {
 
                 {description &&
                     <Typography variant="d3" maxWidth='600px'>{seenMore ? description : description?.split(' ', width > 758 ? 18 : 9).join(' ')}{!seenMore && '...'}
-                        <div onClick={() => setSeenMore(!seenMore)} className='mx-1 cursor-pointer'>See {seenMore ? 'less' : `more`}</div>
+                        <div onClick={() => setSeenMore(!seenMore)} className='viewMore'>See {seenMore ? 'less' : `more`}</div>
                     </Typography>
                 }
             </Box>
