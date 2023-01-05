@@ -28,7 +28,7 @@ export default function ExploreNFT({ collection }) {
                             <Tab label="Activities" value="tab-activities" />
                         </TabList>
                     </Box>
-                    <TabPanel value="tab-nfts">
+                    <TabPanel sx={{ px: 0 }} value="tab-nfts">
                         <NFTs collection={collection} />
                     </TabPanel>
                     <TabPanel value="tab-activities">

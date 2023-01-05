@@ -4,12 +4,11 @@ import ThemeProvider from 'src/theme/ThemeProvider';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ContextProvider } from 'src/AppContext';
 import "./zMain.css";
-import 'styles/globals.css'
 
 // Components
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
-import ViewportProvider from 'utils/ViewportProvider';
+import ViewportProvider from 'src/utils/ViewportProvider';
 
 function XRPNFTApp(props) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();

@@ -2,7 +2,6 @@ import axios from 'axios';
 import useSound from 'use-sound';
 import Confetti from 'react-confetti';
 import { ColorExtractor } from 'react-color-extractor';
-import useWindowSize from 'react-use/lib/useWindowSize';
 import React, { useEffect, useState } from "react";
 
 // Material
@@ -30,6 +29,7 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import BuyMintDialog from './BuyMintDialog';
+import { useViewPort } from 'src/hooks/useViewPort';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -166,7 +166,7 @@ const CardOverlay = styled('div')(
 export default function SpinNFT({ collection, setView }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { width, height } = useWindowSize();
+    const { width, height } = useViewPort();
     const [play, { stop }] = useSound('/static/sounds/mixkit-fireworks-bang-in-sky-2989.wav');
     const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -409,7 +409,7 @@ export default function SpinNFT({ collection, setView }) {
                 } */}
                 {description &&
                     <Typography variant="d3" maxWidth='600px'>{seenMore ? description : description?.split(' ', width > 758 ? 18 : 9).join(' ')}{!seenMore && '...'}
-                        <div onClick={() => setSeenMore(!seenMore)} className='mx-1 cursor-pointer'>See {seenMore ? 'less' : `more`}</div>
+                        <div className='viewMore' onClick={() => setSeenMore(!seenMore)}>See {seenMore ? 'less' : `more`}</div>
                     </Typography>
                 }
                 <Link

@@ -6,6 +6,9 @@
   border-radius: 8px;
   object-fit: cover;
 }
+.viewMore {
+  cursor: pointer;
+}
 
 @keyframes spinner {
   from {
