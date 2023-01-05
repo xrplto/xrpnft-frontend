@@ -122,7 +122,7 @@ export async function getServerSideProps(ctx) {
         var t2 = performance.now();
         var dt = (t2 - t1).toFixed(2);
 
-        console.log(`3. getServerSideProps(profile) account: ${acct} took: ${dt}ms`);
+        // console.log(`3. getServerSideProps(profile) account: ${acct} took: ${dt}ms`);
     } catch (e) {
         console.log(e);
     }

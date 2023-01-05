@@ -33,7 +33,8 @@ export default function NFTs({ collection }) {
     const [loading, setLoading] = useState(false);
 
     const [showFilter, setShowFilter] = useState(true);
-    const [filter, setFilter] = useState(collection?.imported === 'yes' ? 0 : 4);
+    // const [filter, setFilter] = useState(collection?.imported === 'yes' ? 0 : 4);
+    const [filter, setFilter] = useState(0);
 
     // const [subFilter, setSubFilter] = useState('pricexrpasc');
     const [subFilter, setSubFilter] = useState(0);
@@ -161,19 +162,12 @@ export default function NFTs({ collection }) {
                             setSync(sync + 1);
                         }}
                         hasMore={hasMore}
-                    // loader={<p>loading...</p>}
+                        scrollThreshold={0.6}
                     >
 
-                        <Grid container spacing={1} px={0.5} py={0.5}
-                        // style={{
-                        //     display: 'grid',
-                        //     justifyContent: 'space-between',
-                        //     alignContent: 'flex-start',
-                        //     gridGap: '20px',
-                        //     gridTemplateColumns: 'repeat(auto-fill, 280px)',
-                        //     marginTop: '10px',
-                        //     padding: '10px'
-                        // }}
+                        <Grid
+                            container
+                            spacing={1}
                         >
                             {
 
@@ -182,7 +176,6 @@ export default function NFTs({ collection }) {
                                     <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.uuid}
                                     >
                                         <NFTCard
-                                            // key={nft.uuid}
                                             nft={nft}
                                         />
                                     </Grid>

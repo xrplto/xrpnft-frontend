@@ -18,7 +18,6 @@ import { fIntNumber } from 'src/utils/formatNumber';
 
 export default function AttributeFilter({ attrs, setFilterAttrs }) {
 
-    const [expanded, setExpanded] = useState(false);
     const [attrFilter, setAttrFilter] = useState([])
 
     useEffect(() => {
@@ -32,10 +31,6 @@ export default function AttributeFilter({ attrs, setFilterAttrs }) {
         setAttrFilter(tempAttrs)
 
     }, [attrs])
-
-    const handleAccordionChange = (panel) => (event, isExpanded) => {
-        setExpanded(isExpanded ? panel : false);
-    };
 
     const handleAttrChange = (title, key) => {
 
@@ -62,20 +57,24 @@ export default function AttributeFilter({ attrs, setFilterAttrs }) {
                 attrs.map((attr, idx) => {
                     const title = attr.title;
                     const items = attr.items;
-
                     const count = Object.keys(items).length;
 
                     return (
                         <Accordion
                             key={title}
-                            expanded={expanded === 'panel' + idx}
-                            onChange={handleAccordionChange('panel' + idx)}
-                            square
+                            defaultExpanded={idx === 0}
                             disableGutters
+                            sx={{
+                                borderBottom: 0,
+                                borderLeft: 0,
+                                borderRight: 0,
+                                '&:first-of-type': {
+                                    borderRadius: 0,
+                                },
+                            }}
                         >
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
-                                // square
                                 disableGutters
                             >
                                 <Stack direction="row" justifyContent="space-between" alignItems="center" width='100%' pr={1}>

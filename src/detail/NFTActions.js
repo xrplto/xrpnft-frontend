@@ -51,6 +51,8 @@ import OffersList from './OffersList';
 import SelectPriceDialog from './SelectPriceDialog';
 
 import BurnNFT from './BurnNFT';
+import { useCallback } from 'react';
+import { getMetadata } from 'src/utils/parse';
 
 // const NFT_FLAGS = {
 //     0x00000001: 'lsfBurnable',
@@ -161,6 +163,25 @@ export default function NFTActions({ nft }) {
 
     const [sync, setSync] = useState(0);
 
+
+    const [metadata, setMetadata] = useState(null)
+
+    const fetchMetadata = useCallback(async (URI) => {
+        const data = await getMetadata(URI);
+
+        setMetadata(data);
+    }, [URI])
+
+    useEffect(() => {
+
+        if (meta) {
+            setMetadata(meta)
+        } else if (URI) {
+            // When meta == null, but URI != null, then fetch NFT metadata from URI field.
+            fetchMetadata(URI)
+        } else setMetadata(null)
+    }, [meta, URI])
+
     useEffect(() => {
         function getOffers() {
             setLoading(true);
@@ -190,7 +211,7 @@ export default function NFTActions({ nft }) {
         var isRunning = false;
         var counter = 150;
         async function getPayload() {
-            console.log(counter + " " + isRunning, xummUuid);
+            // console.log(counter + " " + isRunning, xummUuid);
             if (isRunning) return;
             isRunning = true;
             try {
@@ -454,11 +475,11 @@ export default function NFTActions({ nft }) {
                 {/* <Link underline='none' color={'text.primary'}>
                     Name
                 </Link> */}
-                <Typography variant='h2a'>{meta?.name || '[No Name]'}</Typography>
+                <Typography variant='h2a'>{metadata?.name || '[No Name]'}</Typography>
             </Stack>
 
-            {meta?.description &&
-                <Typography variant="s7">{meta.description}</Typography>
+            {metadata?.description &&
+                <Typography variant="s7">{metadata.description}</Typography>
             }
 
             {/* Make offer start */}
