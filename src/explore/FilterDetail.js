@@ -34,8 +34,9 @@ import infoFilled from '@iconify/icons-ep/info-filled';
 // Components
 import { FILTER_NFT_FLAGS } from 'src/utils/constants';
 import FilterAttribute from './FilterAttribute';
+import AttributeFilter from './AttributeFilter';
 
-export default function FilterDetail({ collection, filter, setFilter, subFilter, setSubFilter, filterAttrs, setFilterAttrs }) {
+export default function FilterDetail({ collection, filter, setFilter, subFilter, setSubFilter, setFilterAttrs }) {
 
     const type = collection?.type;
     const extra = collection?.extra;
@@ -159,7 +160,11 @@ export default function FilterDetail({ collection, filter, setFilter, subFilter,
                                 <Typography variant='s7' mt={2} mb={2}>No Attributes</Typography>
                             </Stack>
                             :
-                            <FilterAttribute attrs={attrs} filterAttrs={filterAttrs} setFilterAttrs={setFilterAttrs} />
+                            <AttributeFilter
+                                setFilterAttrs={setFilterAttrs}
+                                attrs={attrs}
+                            />
+                            // <FilterAttribute attrs={attrs} filterAttrs={filterAttrs} setFilterAttrs={setFilterAttrs} />
                         }
                     </AccordionDetails>
                 </Accordion>
