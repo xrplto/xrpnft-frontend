@@ -3,6 +3,7 @@ import { SnackbarProvider } from 'notistack';
 import ThemeProvider from 'src/theme/ThemeProvider';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ContextProvider } from 'src/AppContext';
+import ViewportProvider from 'src/utils/ViewportProvider';
 import "./zMain.css";
 
 // Components
@@ -43,47 +44,49 @@ function XRPNFTApp(props) {
                 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
                 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
                 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-96x96.png" />
-                
+
                 <link rel="manifest" href="/site.webmanifest" />
                 {/* <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#121619" /> */}
                 <meta name="msapplication-TileColor" content="#121619" />
-                <meta name="theme-color" content="#ffffff"/>
+                <meta name="theme-color" content="#ffffff" />
 
                 {/* <meta name="robots" content="nofollow"/> */}
 
                 {/* <link rel="preload" as="image" href="/static/collection/NFT_Labs_Images4.png"/> */}
 
-                <link rel="canonical" href={ogp.canonical}/>
+                <link rel="canonical" href={ogp.canonical} />
 
                 {/* <!-- HTML Meta Tags --> */}
                 <title>{ogp.title}</title>
-                <meta name="description" content={ogp.desc}/>
+                <meta name="description" content={ogp.desc} />
 
                 {/* <!-- Facebook Meta Tags --> */}
-                <meta property="og:url" content={ogp.url}/>
-                <meta property="og:type" content="website"/>
-                <meta property="og:title" content={`${ogp.title} | XRPNFT`}/>
-                <meta property="og:description" content={ogp.desc}/>
-                <meta property={`og:${ogp.type}`} content={ogp.imgUrl}/>
+                <meta property="og:url" content={ogp.url} />
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content={`${ogp.title} | XRPNFT`} />
+                <meta property="og:description" content={ogp.desc} />
+                <meta property={`og:${ogp.type}`} content={ogp.imgUrl} />
                 {/* <!-- Twitter Meta Tags --> */}
-                <meta name="twitter:card" content="summary_large_image"/>
-                <meta property="twitter:domain" content="xrpnft.com"/>
-                <meta property="twitter:url" content={ogp.url}/>
-                <meta name="twitter:title" content={`${ogp.title} | XRPNFT`}/>
-                <meta name="twitter:description" content={ogp.desc}/>
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta property="twitter:domain" content="xrpnft.com" />
+                <meta property="twitter:url" content={ogp.url} />
+                <meta name="twitter:title" content={`${ogp.title} | XRPNFT`} />
+                <meta name="twitter:description" content={ogp.desc} />
                 {/* <!-- <meta name="twitter:image" content="/static/ogp.png"/> --> */}
-                <meta name={`twitter:${ogp.type}`} content={ogp.imgUrl}/>
-                <meta name={`twitter:${ogp.type}:src`} content={ogp.imgUrl}/>
+                <meta name={`twitter:${ogp.type}`} content={ogp.imgUrl} />
+                <meta name={`twitter:${ogp.type}:src`} content={ogp.imgUrl} />
                 {/* <!-- Meta Tags Generated via https://www.opengraph.xyz --> */}
             </Head>
             <ContextProvider data={data} openSnackbar={openSnackbar}>
-                <ThemeProvider>
-                    <SnackbarProvider maxSnack={3}>
-                        <CssBaseline />
-                        <Component {...pageProps} />
-                        <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
-                    </SnackbarProvider>
-                </ThemeProvider>
+                <ViewportProvider>
+                    <ThemeProvider>
+                        <SnackbarProvider maxSnack={3}>
+                            <CssBaseline />
+                            <Component {...pageProps} />
+                            <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
+                        </SnackbarProvider>
+                    </ThemeProvider>
+                </ViewportProvider>
             </ContextProvider>
         </>
     );

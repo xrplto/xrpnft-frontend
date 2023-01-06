@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 // import { useState } from 'react';
 // import Decimal from 'decimal.js';
 
@@ -34,6 +34,7 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import ExploreNFT from 'src/explore';
+import { useViewPort } from 'src/hooks/useViewPort';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -133,6 +134,8 @@ export default function ViewNFT({ collection }) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const { accountProfile, openSnackbar } = useContext(AppContext);
+    const { width } = useViewPort()
+    const [seenMore, setSeenMore] = useState(false)
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -258,7 +261,9 @@ export default function ViewNFT({ collection }) {
             </Stack>
 
             {description &&
-                <Typography variant="d3" style={{ wordBreak: "break-word" }}>{description}</Typography>
+                <Typography variant="d3" style={{ wordBreak: "break-word" }}>{seenMore ? description : description?.split(' ', width > 758 ? 15 : 9).join(' ')}{!seenMore && '...'}
+                    <div onClick={() => setSeenMore(!seenMore)} className='viewMore'>See {seenMore ? 'less' : `more`}</div>
+                </Typography>
             }
 
             <Box
@@ -275,7 +280,7 @@ export default function ViewNFT({ collection }) {
                 }}
             >
 
-                <Stack direction="row" sx={{ mt: 2, mb: 3 }} spacing={5}>
+                <Stack direction="row" sx={{ mt: 2, mb: 3, flexWrap: 'wrap', justifyContent: 'space-between', width: ['100%', '80%', '70%', '35%'] }}>
                     <Stack>
                         <Typography variant='d2'>{items}</Typography>
                         <Typography variant='s4'>items</Typography>

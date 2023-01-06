@@ -103,7 +103,7 @@ export default function NFTs({ collection }) {
             <Box
                 display="flex"
                 alignItems="center"
-            // sx={{ margin: 1, padding: 1 }}
+                sx={{ padding: 0 }}
             >
                 <IconButton
                     aria-label='filter'
