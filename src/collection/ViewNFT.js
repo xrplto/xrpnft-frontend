@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import { useState } from 'react';
 // import Decimal from 'decimal.js';
 
 // Material
@@ -280,7 +279,7 @@ export default function ViewNFT({ collection }) {
                 }}
             >
 
-                <Stack direction="row" sx={{ mt: 2, mb: 3, flexWrap: 'wrap', justifyContent: 'space-between', width: ['100%', '80%', '70%', '35%'] }}>
+                <Stack direction="row" sx={{ mt: 2, mb: 3, flexWrap: 'wrap', justifyContent: 'space-between', width: { xs: '100%', sm: '70%', md: '60%', lg: '35%' } }}>
                     <Stack>
                         <Typography variant='d2'>{items}</Typography>
                         <Typography variant='s4'>items</Typography>
