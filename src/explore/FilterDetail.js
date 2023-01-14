@@ -83,7 +83,7 @@ export default function FilterDetail({ collection, filter, setFilter, subFilter,
                             {type !== "normal" &&
                                 <FormControlLabel
                                     label={
-                                        <Stack direction="row" spacing={0.5}>
+                                        <Stack direction="row" alignItems='center' spacing={0.5}>
                                             <Typography variant='s3'>Recently Minted <Typography variant='s7'>({extra?.boughtWithMints})</Typography></Typography>
                                             <Tooltip title="Display recently Minted NFTs and being transferred to users. Or NFTs that pending to be accepted by users.">
                                                 <Icon icon={infoFilled} />

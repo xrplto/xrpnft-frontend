@@ -198,7 +198,7 @@ export default function ViewNFT({ collection }) {
                 </IconWrapper>
             </IconCover>
             <Stack direction={fullScreen ? "column" : "row"} spacing={2} justifyContent="space-between" sx={{ mt: 1, mb: 1 }}>
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" alignItems='center' spacing={1}>
                     <Typography variant="h1a">{name}</Typography>
                     {verified === 'yes' &&
                         <Tooltip title='Verified'>
@@ -290,9 +290,9 @@ export default function ViewNFT({ collection }) {
                     </Stack>
                     <Stack>
                         <Stack direction="row" spacing={0.5} alignItems='center'>
-                            <Icon icon={rippleSolid} width="20" height="20" />
+                            <Icon icon={rippleSolid} width="15" height="15" />
                             <Typography variant="d2" noWrap>{volume1}</Typography>
-                            <Stack direction="row" sx={{ pb: 1.5 }}>
+                            <Stack direction="row" sx={{ pb: 0 }}>
                                 <Tooltip
                                     title={
                                         <Stack alignItems="center">
@@ -309,7 +309,7 @@ export default function ViewNFT({ collection }) {
                     </Stack>
                     <Stack>
                         <Stack direction="row" spacing={0.5} alignItems='center'>
-                            <Icon icon={rippleSolid} width="20" height="20" />
+                            <Icon icon={rippleSolid} width="15" height="15" />
                             <Typography variant="d2" noWrap>{fNumber(floorPrice)}</Typography>
                         </Stack>
                         <Typography variant='s4' noWrap>floor price</Typography>

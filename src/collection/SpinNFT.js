@@ -397,7 +397,7 @@ export default function SpinNFT({ collection, setView }) {
                         }
                     </IconWrapper>
                 </IconCover>
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" alignItems='center' spacing={1}>
                     <Typography variant="h1a">{name}</Typography>
                     {verified === 'yes' &&
                         <Tooltip title='Verified'>
