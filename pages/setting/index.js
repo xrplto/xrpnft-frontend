@@ -11,6 +11,7 @@ import EditProfile from 'src/account/setting';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
+import XAppBar from 'src/components/XAppBar';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -25,7 +26,7 @@ export default function Overview({data}) {
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <Header />
+            <XAppBar />
 
             <Container maxWidth="sm">
                 <EditProfile />
@@ -99,7 +100,7 @@ export async function getStaticProps() {
 //                 "timestamp": 1664894197862
 //             }
 //         } */
-        
+
 //         const {
 //             account,
 //             name,

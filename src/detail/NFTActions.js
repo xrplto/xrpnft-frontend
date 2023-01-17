@@ -23,6 +23,7 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import PanToolIcon from '@mui/icons-material/PanTool';
+import SendIcon from '@mui/icons-material/Send';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -51,6 +52,7 @@ import OffersList from './OffersList';
 import SelectPriceDialog from './SelectPriceDialog';
 
 import BurnNFT from './BurnNFT';
+import TransferDialog from './TransferDialog';
 
 // const NFT_FLAGS = {
 //     0x00000001: 'lsfBurnable',
@@ -137,6 +139,7 @@ export default function NFTActions({ nft }) {
     const isBurnable = (flag & 0x00000001) > 0;
 
     const [openCreateOffer, setOpenCreateOffer] = useState(false);
+    const [openTransfer, setOpenTransfer] = useState(false);
     const [isSellOffer, setIsSellOffer] = useState(false);
 
     const [burnt, setBurnt] = useState(status === NFToken.BURNT);
@@ -359,6 +362,10 @@ export default function NFTActions({ nft }) {
         setOpenCreateOffer(true);
     }
 
+    const handleTransfer = () => {
+        setOpenTransfer(true);
+    }
+
     const handleCreateBuyOffer = () => {
         setIsSellOffer(false);
         setOpenCreateOffer(true);
@@ -442,6 +449,11 @@ export default function NFTActions({ nft }) {
                 nft={nft}
                 isSellOffer={isSellOffer}
             />
+            <TransferDialog
+                open={openTransfer}
+                setOpen={setOpenTransfer}
+                nft={nft}
+            />
 
             <SelectPriceDialog
                 open={openSelectPrice}
@@ -505,6 +517,17 @@ export default function NFTActions({ nft }) {
                                         disabled={!accountLogin || burnt}
                                     >
                                         Sell
+                                    </Button>
+                                    <Button
+                                        fullWidth
+                                        // sx={{ minWidth: 150 }}
+                                        variant='outlined'
+                                        startIcon={<SendIcon />}
+                                        onClick={handleTransfer}
+                                        color='info'
+                                        disabled={!accountLogin || burnt}
+                                    >
+                                        Transfer
                                     </Button>
                                     <BurnNFT nft={nft} onHandleBurn={onHandleBurn} />
                                 </Box>

@@ -15,9 +15,8 @@ import { AppContext } from 'src/AppContext';
 // Components
 import Landing from 'src/landing';
 import ScrollToTop from 'src/components/ScrollToTop';
-import Header from 'src/components/Header';
-import Footer from 'src/components/Footer';
 import XAppBar from 'src/components/XAppBar';
+import Footer from 'src/components/Footer';
 
 // overflow: scroll;
 // overflow: auto;
@@ -60,7 +59,7 @@ export default function Overview({data}) {
                 }}
             />
 
-            {/* <Header /> */}
+            {/* <XAppBar /> */}
             <XAppBar />
 
             <Container maxWidth="lg">

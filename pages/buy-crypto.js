@@ -14,6 +14,7 @@ import BuyCrypto from 'src/buycrypto';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
+import XAppBar from 'src/components/XAppBar';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -28,7 +29,7 @@ export default function Overview({data}) {
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <Header />
+            <XAppBar />
 
             <Container maxWidth="sm">
                 <BuyCrypto
@@ -62,7 +63,7 @@ export async function getStaticProps() {
         var t2 = performance.now();
         var dt = (t2 - t1).toFixed(2);
 
-        console.log(`2. getStaticProps fiats: ${data.fiats.length} took: ${dt}ms`);
+        // console.log(`2. getStaticProps fiats: ${data.fiats.length} took: ${dt}ms`);
     } catch (e) {
         console.log(e);
     }

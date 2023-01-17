@@ -15,6 +15,7 @@ import { getImgUrl } from 'src/utils/parse';
 // Components
 import TokenDetail from 'src/detail';
 import ScrollToTop from 'src/components/ScrollToTop';
+import XAppBar from 'src/components/XAppBar';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
 
@@ -30,7 +31,7 @@ export default function Overview({data}) {
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <Header />
+            <XAppBar />
 
             <Container maxWidth="lg">
                 <TokenDetail nft={data.nft} />

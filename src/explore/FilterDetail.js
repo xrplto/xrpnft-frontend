@@ -1,30 +1,19 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import Decimal from 'decimal.js';
-
-// Material
 import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
     Checkbox,
-    Divider,
     FormControl,
     FormControlLabel,
     FormGroup,
-    FormLabel,
-    Link,
     Radio,
     RadioGroup,
     Stack,
     Tooltip,
     Typography,
 } from '@mui/material'
-import DescriptionIcon from '@mui/icons-material/Description';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ArticleIcon from '@mui/icons-material/Article';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
-import EditAttributesIcon from '@mui/icons-material/EditAttributes';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
 
 // Iconify
@@ -32,10 +21,9 @@ import { Icon } from '@iconify/react';
 import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Components
-import { FILTER_NFT_FLAGS } from 'src/utils/constants';
-import FilterAttribute from './FilterAttribute';
+import AttributeFilter from './AttributeFilter';
 
-export default function FilterDetail({ collection, filter, setFilter, subFilter, setSubFilter, filterAttrs, setFilterAttrs }) {
+export default function FilterDetail({ collection, filter, setFilter, subFilter, setSubFilter, setFilterAttrs }) {
 
     const type = collection?.type;
     const extra = collection?.extra;
@@ -150,16 +138,18 @@ export default function FilterDetail({ collection, filter, setFilter, subFilter,
                     >
                         <Stack spacing={2} direction='row'>
                             <BookmarkAddedIcon />
-                            <Typography variant='s3'>Attributes <Typography variant='s2'>(Coming soon!)</Typography></Typography>
+                            <Typography variant='s3'>Attributes</Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails style={{ padding: 0 }}>
                         {!attrs || attrs.length === 0 ?
                             <Stack alignItems="center">
                                 <Typography variant='s7' mt={2} mb={2}>No Attributes</Typography>
-                            </Stack>
-                            :
-                            <FilterAttribute attrs={attrs} filterAttrs={filterAttrs} setFilterAttrs={setFilterAttrs} />
+                            </Stack> :
+                            <AttributeFilter
+                                setFilterAttrs={setFilterAttrs}
+                                attrs={attrs}
+                            />
                         }
                     </AccordionDetails>
                 </Accordion>

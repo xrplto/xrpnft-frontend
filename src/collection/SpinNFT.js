@@ -122,7 +122,7 @@ const IconImage = styled('img')(
   `
 );
 
-const SlotBox = styled('div')(
+const SlotBox = styled('div') (
     ({ theme }) => `
         // padding-top: 40px;
         width: 280px;
@@ -162,7 +162,7 @@ const CardOverlay = styled('div')(
     inset: 0;
 `
 );
-
+  
 export default function SpinNFT({ collection, setView }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -187,7 +187,6 @@ export default function SpinNFT({ collection, setView }) {
     const [xrpBalance, setXrpBalance] = useState(0);
 
     const [pendingNfts, setPendingNfts] = useState(0);
-    const [seenMore, setSeenMore] = useState(false)
 
     // "collection": {
     //     "_id": "6332e893d799f7b10ec627a2",
@@ -256,10 +255,10 @@ export default function SpinNFT({ collection, setView }) {
 
     const [spinning, setSpinning] = useState(false);
 
-    let nftImgUrl = nft ? `https://gateway.xrpnft.com/ipfs/${nft.meta.image || nft.meta.video}` : '/static/unknown.png';
+    let nftImgUrl = nft?`https://gateway.xrpnft.com/ipfs/${nft.meta.image||nft.meta.video}`:'/static/unknown.png';
     const isVideo = nft?.meta.video;
 
-    const spinImgUrl = spinnerImage ? `https://s1.xrpnft.com/collection/${spinnerImage}` : '/static/spin.gif';
+    const spinImgUrl = spinnerImage?`https://s1.xrpnft.com/collection/${spinnerImage}`:'/static/spin.gif';
 
     // useEffect(() => {
     //     window.addEventListener("resize", () => {
@@ -282,7 +281,7 @@ export default function SpinNFT({ collection, setView }) {
             }
 
             // https://api.xrpnft.com/api/spin/count?account=rhhh
-            axios.get(`${BASE_URL}/spin/count?account=${account}&cid=${collection.uuid}`, { headers: { 'x-access-token': accountToken } })
+            axios.get(`${BASE_URL}/spin/count?account=${account}&cid=${collection.uuid}`, {headers: {'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -331,7 +330,7 @@ export default function SpinNFT({ collection, setView }) {
 
         const body = { account, cid: collection.uuid };
 
-        axios.post(`${BASE_URL}/spin/chooseone`, body, { headers: { 'x-access-token': accountToken } })
+        axios.post(`${BASE_URL}/spin/chooseone`, body, {headers: {'x-access-token': accountToken}})
             .then(res => {
                 let ret = res.status === 200 ? res.data : undefined;
                 if (ret) {
@@ -377,10 +376,10 @@ export default function SpinNFT({ collection, setView }) {
                 numberOfPieces={width / 3}
                 tweenDuration={100}
             />
-            <Stack alignItems="center" sx={{ mb: 5 }}>
+            <Stack alignItems="center" sx={{mb: 5}}>
                 <IconCover>
                     <IconWrapper>
-                        <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`} />
+                        <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`}/>
                         {account === collection.account &&
                             <Link href={`/collection/${slug}/edit`} underline='none'>
                                 <CardOverlay>
@@ -404,13 +403,8 @@ export default function SpinNFT({ collection, setView }) {
                         </Tooltip>
                     }
                 </Stack>
-                {/* {description &&
-                    <Typography variant="d3" maxWidth='600px'>{description}</Typography>
-                } */}
                 {description &&
-                    <Typography variant="d3" maxWidth='600px'>{seenMore ? description : description?.split(' ', width > 758 ? 18 : 9).join(' ')}{!seenMore && '...'}
-                        <div onClick={() => setSeenMore(!seenMore)} className='mx-1 cursor-pointer'>See {seenMore ? 'less' : `more`}</div>
-                    </Typography>
+                    <Typography variant="d3" maxWidth='600px'>{description}</Typography>
                 }
                 <Link
                     component="button"
@@ -421,12 +415,12 @@ export default function SpinNFT({ collection, setView }) {
                         setView('');
                     }}
                 >
-                    <Typography sx={{ ml: 0 }}>View Minted Items</Typography>
+                    <Typography sx={{ml:0}}>View Minted Items</Typography>
                 </Link>
             </Stack>
 
             <Container maxWidth="lg">
-                <Grid container rowSpacing={2} alignItems="center" sx={{ mb: 10 }}>
+                <Grid container rowSpacing={2} alignItems="center" sx={{mb: 10}}>
                     <Grid container item xs={12} md={6} justifyContent="center" alignItems="center">
                         <CardWrapper
                             style={{
@@ -442,54 +436,54 @@ export default function SpinNFT({ collection, setView }) {
                                 <ColorExtractor getColors={getColors}>
                                     <img src={spinImgUrl}
                                         style={{
-                                            width: fullScreen ? '480px' : '280px',
-                                            height: fullScreen ? '400px' : '200px',
+                                            width: fullScreen?'480px':'280px',
+                                            height: fullScreen?'400px':'200px',
                                             // marginTop: 5,
                                             // borderRadius: 20,
                                             objectFit: 'cover',
-                                            display: spinning ? 'block' : 'none'
+                                            display: spinning?'block':'none'
                                         }}
                                     />
                                 </ColorExtractor>
-                                {isVideo ?
+                                {isVideo?
                                     <CardMedia
                                         component="video"
                                         image={nftImgUrl}
                                         title='title'
                                         controls
                                         style={{
-                                            width: fullScreen ? '480px' : '280px',
-                                            height: fullScreen ? '400px' : '200px',
+                                            width: fullScreen?'480px':'280px',
+                                            height: fullScreen?'400px':'200px',
                                             // marginTop: 5,
                                             // borderRadius: 20,
                                             objectFit: 'cover',
-                                            display: spinning ? 'none' : 'block'
+                                            display: spinning?'none':'block'
                                         }}
                                     />
                                     :
                                     <img src={nftImgUrl}
                                         style={{
-                                            width: fullScreen ? '480px' : '280px',
-                                            height: fullScreen ? '400px' : '200px',
+                                            width: fullScreen?'480px':'280px',
+                                            height: fullScreen?'400px':'200px',
                                             // marginTop: 5,
                                             // borderRadius: 20,
                                             objectFit: 'cover',
-                                            display: spinning ? 'none' : 'block'
+                                            display: spinning?'none':'block'
                                         }}
                                     />
                                 }
                             </SlotBox>
-
-
-                            <Stack alignItems="center" sx={{ mt: 1 }}>
-                                <Typography variant='h2a'>{spinning ? 'Please Wait!' : (nft ? nft.name : 'Spin to Mint')}</Typography>
+                            
+                            
+                            <Stack alignItems="center" sx={{mt:1}}>
+                                <Typography variant='h2a'>{spinning?'Please Wait!':(nft?nft.name:'Spin to Mint')}</Typography>
                             </Stack>
-                            <Divider sx={{ mt: 0.8, mb: 2 }} />
+                            <Divider sx={{mt:0.8, mb:2}}/>
                             <Button
                                 variant='contained'
                                 disabled={spinning}
                                 onClick={() => getOneNFT()}
-                                sx={{ pl: 3, pr: 3 }}
+                                sx={{pl:3, pr:3}}
                             >
                                 Mint
                             </Button>
@@ -497,12 +491,12 @@ export default function SpinNFT({ collection, setView }) {
                     </Grid>
 
                     <Grid container item xs={12} md={6} justifyContent="flex-start" alignItems="flex-start">
-                        <Stack spacing={1} sx={{ mb: 6 }}>
+                        <Stack spacing={1} sx={{mb:6}}>
                             <Typography variant="p5">To mint a {type} NFT from this collection, you need to purchase Mints.</Typography>
                             <Typography variant="p5">It can be used against the purchase of only <Typography variant="s5" color="#57CA22">{collection.name}</Typography> Collection.</Typography>
                             <Typography variant="p5">You currently have <Typography variant="s5" color="#33C2FF">{mints} Mints</Typography> available and <Typography variant="s5" color="#33C2FF">{xrpBalance} XRP</Typography> tokens in your wallet.</Typography>
-                            <Typography variant="p5" sx={{ pb: 3 }}>There are currently <Typography variant="s5" color="error">{pendingNfts}</Typography> / <Typography variant="s4" color="#33C2FF">{collection.items}</Typography> NFTs left in this collection.</Typography>
-
+                            <Typography variant="p5" sx={{pb: 3}}>There are currently <Typography variant="s5" color="error">{pendingNfts}</Typography> / <Typography variant="s4" color="#33C2FF">{collection.items}</Typography> NFTs left in this collection.</Typography>
+                            
                             <Stack direction="row" spacing={2} justifyContent="center">
                                 <Button
                                     variant='contained'
@@ -521,7 +515,7 @@ export default function SpinNFT({ collection, setView }) {
                                     <Stack>
                                         <Button
                                             variant='outlined'
-                                            onClick={() => { }}
+                                            onClick={() => {}}
                                         >
                                             Buy XRP
                                         </Button>

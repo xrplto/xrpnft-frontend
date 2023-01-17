@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 // import { useState } from 'react';
 // import Decimal from 'decimal.js';
 
@@ -11,8 +11,7 @@ import {
     Link,
     Stack,
     Tooltip,
-    Typography,
-    Grid
+    Typography
 } from '@mui/material';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ShareIcon from '@mui/icons-material/Share';
@@ -35,7 +34,6 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import ExploreNFT from 'src/explore';
-import { useViewPort } from 'src/hooks/useViewPort';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -135,8 +133,6 @@ export default function ViewNFT({ collection }) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const { accountProfile, openSnackbar } = useContext(AppContext);
-    const { width } = useViewPort()
-    const [seenMore, setSeenMore] = useState(false)
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -262,9 +258,7 @@ export default function ViewNFT({ collection }) {
             </Stack>
 
             {description &&
-                <Typography variant="d3" style={{ wordBreak: "break-word" }}>{seenMore ? description : description?.split(' ', width > 758 ? 15 : 9).join(' ')}{!seenMore && '...'}
-                    <div onClick={() => setSeenMore(!seenMore)} className='mx-1 cursor-pointer'>See {seenMore ? 'less' : `more`}</div>
-                </Typography>
+                <Typography variant="d3" style={{ wordBreak: "break-word" }}>{description}</Typography>
             }
 
             <Box
@@ -281,7 +275,7 @@ export default function ViewNFT({ collection }) {
                 }}
             >
 
-                <Stack direction="row" sx={{ mt: 2, mb: 3, flexWrap: 'wrap', justifyContent: 'space-between', width: ['100%', '80%', '70%', '35%'] }}>
+                <Stack direction="row" sx={{ mt: 2, mb: 3 }} spacing={5}>
                     <Stack>
                         <Typography variant='d2'>{items}</Typography>
                         <Typography variant='s4'>items</Typography>
@@ -317,42 +311,6 @@ export default function ViewNFT({ collection }) {
                         <Typography variant='s4' noWrap>floor price</Typography>
                     </Stack>
                 </Stack>
-                {/* <Grid container sx={{ mt: 2, mb: 3, maxWidth: 600 }} spacing={1} columns={{ xs: 12, md: 5 }}>
-                    <Stack>
-                        <Typography variant='d2'>{items}</Typography>
-                        <Typography variant='s4'>items</Typography>
-                    </Stack>
-                    <Stack>
-                        <Typography variant='d2'>{extra.owners}</Typography>
-                        <Typography variant='s4'>owners</Typography>
-                    </Stack>
-                    <Stack>
-                        <Stack direction="row" spacing={0.5} alignItems='center'>
-                            <Icon icon={rippleSolid} width="20" height="20" />
-                            <Typography variant="d2" noWrap>{volume1}</Typography>
-                            <Stack direction="row" sx={{ pb: 1.5 }}>
-                                <Tooltip
-                                    title={
-                                        <Stack alignItems="center">
-                                            <Typography variant="body2">Volume on XRPL</Typography>
-                                            <Typography variant="body2">{volume2}</Typography>
-                                        </Stack>
-                                    }
-                                >
-                                    <Icon icon={infoFilled} />
-                                </Tooltip>
-                            </Stack>
-                        </Stack>
-                        <Typography variant='s4' noWrap>total volume</Typography>
-                    </Stack>
-                    <Stack>
-                        <Stack direction="row" spacing={0.5} alignItems='center'>
-                            <Icon icon={rippleSolid} width="20" height="20" />
-                            <Typography variant="d2" noWrap>{fNumber(floorPrice)}</Typography>
-                        </Stack>
-                        <Typography variant='s4' noWrap>floor price</Typography>
-                    </Stack>
-                </Grid> */}
             </Box>
 
             <ExploreNFT collection={collection} />

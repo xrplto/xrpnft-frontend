@@ -10,6 +10,7 @@ import {
 import MyCollections from 'src/collection/MyCollections';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
+import XAppBar from 'src/components/XAppBar';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -24,7 +25,7 @@ export default function Overview() {
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <Header />
+            <XAppBar />
 
             <Container maxWidth="lg">
                 <MyCollections />

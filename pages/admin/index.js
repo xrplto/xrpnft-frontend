@@ -15,6 +15,7 @@ import Admin from 'src/admin';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
+import XAppBar from 'src/components/XAppBar';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -32,7 +33,7 @@ export default function Overview({data}) {
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <Header />
+            <XAppBar />
 
             <Container maxWidth="xxl">
                 {isAdmin &&

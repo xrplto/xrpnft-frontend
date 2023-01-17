@@ -48,7 +48,6 @@ import OffersList from './OffersList';
 import CollectedNFTs from './CollectedNFTs';
 import { height } from '@mui/system';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { useViewPort } from 'src/hooks/useViewPort';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -264,7 +263,6 @@ const StyledMenu = styled((props) => (
 
 export default function Account({ profile, tab }) {
     const { accountProfile, openSnackbar, acceptNfts } = useContext(AppContext);
-    const { width } = useViewPort()
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
     const accountUuid = accountProfile?.xuuid;
@@ -276,7 +274,7 @@ export default function Account({ profile, tab }) {
     const open = Boolean(anchorEl);
 
     const [tabID, setTabID] = useState(getTabID(tab));
-    const [seenMore, setSeenMore] = useState(false)
+
     const {
         name,
         logo,
@@ -336,11 +334,10 @@ export default function Account({ profile, tab }) {
     };
 
     return (
-        <Container sx={{ px: 0 }} maxWidth='xxl'>
+        <Container maxWidth='xxl'>
             <Box
                 sx={{
                     display: 'flex',
-                    flexWrap: 'wrap',
                     gap: 3,
                     alignItems: 'center',
                     my: 2
@@ -393,9 +390,7 @@ export default function Account({ profile, tab }) {
                 </Box>
 
                 {description &&
-                    <Typography variant="d3" maxWidth='600px'>{seenMore ? description : description?.split(' ', width > 758 ? 18 : 9).join(' ')}{!seenMore && '...'}
-                        <div onClick={() => setSeenMore(!seenMore)} className='mx-1 cursor-pointer'>See {seenMore ? 'less' : `more`}</div>
-                    </Typography>
+                    <Typography variant="d3" maxWidth='600px'>{description}</Typography>
                 }
             </Box>
             <Tabs

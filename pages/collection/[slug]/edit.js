@@ -20,6 +20,7 @@ import EditCollection from 'src/collection/edit';
 import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
+import XAppBar from 'src/components/XAppBar';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -70,7 +71,7 @@ export default function Overview({data}) {
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <Header />
+            <XAppBar />
 
             <Container maxWidth="sm">
                 {collection ? (
@@ -131,7 +132,7 @@ export async function getServerSideProps(ctx) {
                 "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
             }
         } */
-        
+
         const {
             name,
             featuredImage,

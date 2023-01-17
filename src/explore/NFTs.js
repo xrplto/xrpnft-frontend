@@ -35,9 +35,12 @@ export default function NFTs({ collection }) {
     const [showFilter, setShowFilter] = useState(true);
     // const [filter, setFilter] = useState(collection?.imported === 'yes' ? 0 : 4);
     const [filter, setFilter] = useState(0);
-    const [subFilter, setSubFilter] = useState('pricexrpasc');
 
-    const [filterAttrs, _setFilterAttrs] = useState({});
+    // const [subFilter, setSubFilter] = useState('pricexrpasc');
+    const [subFilter, setSubFilter] = useState(0);
+
+    // const [filterAttrs, _setFilterAttrs] = useState({});
+    const [filterAttrs, setFilterAttrs] = useState([]);
 
     const [sync, setSync] = useState(0);
 
@@ -48,13 +51,13 @@ export default function NFTs({ collection }) {
 
         const limit = 20;
 
-        const body = { page, limit, flag, cid: collection?.uuid, search, filter, subFilter };
+        const body = { page, limit, flag, cid: collection?.uuid, search, filter, subFilter, filterAttrs };
 
         axios.post(`${BASE_URL}/nfts`, body)
             .then(res => {
                 const newNfts = res.data.nfts;
                 const length = newNfts.length;
-                if (length < 10) {
+                if (length < 20) {
                     setHasMore(false)
                 } else {
                     setHasMore(true)
@@ -76,7 +79,7 @@ export default function NFTs({ collection }) {
         setHasMore(true);
         setSync(sync + 1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [flag, search, filter, subFilter, attrSync]);
+    }, [flag, search, filter, subFilter, attrSync, filterAttrs]);
 
     useEffect(() => {
         fetchNfts();
@@ -90,10 +93,10 @@ export default function NFTs({ collection }) {
         setShowFilter(!showFilter);
     }
 
-    const setFilterAttrs = (value) => {
-        _setFilterAttrs(value);
-        setAttrSync(attrSync + 1);
-    }
+    // const setFilterAttrs = (value) => {
+    //     _setFilterAttrs(value);
+    //     setAttrSync(attrSync + 1);
+    // }
 
     return (
         <>
@@ -103,9 +106,6 @@ export default function NFTs({ collection }) {
             // sx={{ margin: 1, padding: 1 }}
             >
                 <IconButton
-                    sx={{
-                        pl: [0, 1]
-                    }}
                     aria-label='filter'
                     onClick={handleShowFilter}
                 >
@@ -125,7 +125,7 @@ export default function NFTs({ collection }) {
                     onFocus={event => {
                         event.target.select();
                     }}
-                    sx={{ pl: 2, pr: [0, 1], pt: 0, pb: 0, mt: 0 }}
+                    sx={{ pl: 2, pr: 1, pt: 0, pb: 0, mt: 0 }}
                     onKeyDown={(e) => e.stopPropagation()}
                     InputProps={{
                         startAdornment: (
@@ -150,7 +150,6 @@ export default function NFTs({ collection }) {
                             setFilter={setFilter}
                             subFilter={subFilter}
                             setSubFilter={setSubFilter}
-                            filterAttrs={filterAttrs}
                             setFilterAttrs={setFilterAttrs}
                         />
                     </Grid>
@@ -163,32 +162,20 @@ export default function NFTs({ collection }) {
                             setSync(sync + 1);
                         }}
                         hasMore={hasMore}
-                    // loader={<p>loading...</p>}
+                        scrollThreshold={0.6}
                     >
 
-                        <Grid container spacing={1}
-                            sx={{ px: [0, 0.5], py: 0.5 }}
-                        // style={{
-                        //     display: 'grid',
-                        //     justifyContent: 'space-between',
-                        //     alignContent: 'flex-start',
-                        //     gridGap: '20px',
-                        //     gridTemplateColumns: 'repeat(auto-fill, 280px)',
-                        //     marginTop: '10px',
-                        //     padding: '10px'
-                        // }}
+                        <Grid
+                            container
+                            spacing={1}
                         >
                             {
 
                                 nfts.map((nft) => (
 
-                                    <Grid item xs={6}
-                                        sm={4} md={3}
-                                        lg={2.4} xl={1.5}
-                                        key={nft.uuid}
+                                    <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.uuid}
                                     >
                                         <NFTCard
-                                            // key={nft.uuid}
                                             nft={nft}
                                         />
                                     </Grid>
