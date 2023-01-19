@@ -24,6 +24,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import PanToolIcon from '@mui/icons-material/PanTool';
 import SendIcon from '@mui/icons-material/Send';
+import HistoryIcon from '@mui/icons-material/History';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -47,12 +48,13 @@ import { fNumber } from 'src/utils/formatNumber';
 import CreateOfferDialog from './CreateOfferDialog';
 import QRDialog from 'src/components/QRDialog';
 import ConfirmAcceptOfferDialog from './ConfirmAcceptOfferDialog';
-import TimePeriods from './TimePeriodsDropdown';
+// import TimePeriods from './TimePeriodsDropdown';
 import OffersList from './OffersList';
 import SelectPriceDialog from './SelectPriceDialog';
 
 import BurnNFT from './BurnNFT';
 import TransferDialog from './TransferDialog';
+import HistoryList from './HistoryList';
 
 // const NFT_FLAGS = {
 //     0x00000001: 'lsfBurnable',
@@ -643,30 +645,29 @@ export default function NFTActions({ nft }) {
                     </AccordionDetails>
                 </Accordion>
                 {/* Buy Offers end */}
+            </Stack>
 
-
-
-                {/* Price History Start */}
-                {/* <Accordion defaultExpanded >
+            <Stack>
+                {/* History Start */}
+                <Accordion defaultExpanded >
                     <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls='panel2a-content'
                         id='panel2a-header'
                     >
                         <Stack direction='row' spacing={2}>
-                            <TimelineIcon />
-                            <Typography variant='string' >Price History</Typography>
+                            <HistoryIcon />
+                            <Typography variant='string'>History</Typography>
                         </Stack>
                     </AccordionSummary>
                     <Divider />
                     <AccordionDetails>
-                        <TimePeriods />
-                        <Typography sx={{ margin: 3, textAlign: 'center' }}>
-                            No item activity yet
-                        </Typography>
+                        <HistoryList
+                            nft={nft}
+                        />
                     </AccordionDetails>
-                </Accordion> */}
-                {/* Price History end */}
+                </Accordion>
+                {/* History end */}
             </Stack>
         </Stack>
     )

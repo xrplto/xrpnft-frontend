@@ -43,13 +43,6 @@ import { NFToken } from 'src/utils/constants';
 import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 // ----------------------------------------------------------------------
-
-function truncate(str, n) {
-    if (!str) return '';
-    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
-};
-
 function statusToString(status) {
 
     for (const [key, value] of Object.entries(NFToken)) {
@@ -123,7 +116,7 @@ export default function Summary({}) {
 
     const dNfts2 = nfts2 - nfts1;
     const dNfts3 = nfts3 - nfts1;
-    
+
     useEffect(() => {
         function getSummary() {
             if (!accountAdmin || !accountToken) {
@@ -323,7 +316,7 @@ export default function Summary({}) {
                                 account,
                                 balance
                             } = row;
-                        
+
                             return (
                                 <TableRow key={account}>
                                     <TableCell align="left" sx={{pt: 1, pb: 1}}>

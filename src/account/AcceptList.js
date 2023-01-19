@@ -38,13 +38,6 @@ import QRDialog from 'src/components/QRDialog';
 import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 // ----------------------------------------------------------------------
-
-function truncate(str, n) {
-    if (!str) return '';
-    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
-};
-
 /**
  * Converts hex to its string equivalent. Useful to read the Domain field and some Memos.
  *
@@ -69,7 +62,7 @@ export default function AcceptList({account}) {
     const { accountProfile, openSnackbar, setAcceptNfts, sync, setSync } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
-    
+
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
@@ -166,7 +159,7 @@ export default function AcceptList({account}) {
             const user_token = accountProfile.user_token;
 
             const body = {
-                account: accountLogin, 
+                account: accountLogin,
                 uuid,
                 NFTokenID,
                 index: SellOfferID,
@@ -301,7 +294,7 @@ export default function AcceptList({account}) {
                                 taxon,
                                 transferFee
                             } = parseNFTokenID(NFTokenID);
-                        
+
                             const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
                             const isVideo = meta.video;
 
@@ -347,7 +340,7 @@ export default function AcceptList({account}) {
                                                     }}
                                                 />
                                             }
-                                            
+
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row" spacing={2} alignItems="center">
                                                     <Typography variant="h3" color="#33C2FF">{name}</Typography>

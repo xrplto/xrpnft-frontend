@@ -93,12 +93,6 @@ const SellTypography = withStyles({
 
 // ----------------------------------------------------------------------
 
-function truncate(str, n) {
-    if (!str) return '';
-    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
-};
-
 const STATUS_PENDING = 0;
 const STATUS_START = 1;
 const STATUS_ERROR = 2;
@@ -165,12 +159,12 @@ export default function BulkList() {
     const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
-    
+
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [count, setCount] = useState(0);
     const [bulks, setBulks] = useState([]);
-        
+
     useEffect(() => {
         function getBulkCollections() {
             if (!account || !accountToken) {
@@ -287,7 +281,7 @@ export default function BulkList() {
                                             }}
                                         />
                                     </TableCell>
-                                    
+
                                     <TableCell align="left">
                                         <Stack>
                                             <Stack direction="row" spacing={2} alignItems="center">
@@ -308,7 +302,7 @@ export default function BulkList() {
                                                     <Typography variant="s7" color="#4fa94d">{category}</Typography>
                                                 </Tooltip>
                                             </Stack>
-                                            
+
                                             {infoIPFS && infoIPFS.cid &&
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     {/* <Typography variant="d3" color="#FFA319">Please check the following CID before Bulk-Mint your items</Typography> */}
@@ -402,10 +396,10 @@ export default function BulkList() {
                                                     <StatusContainer bulk={row} flag={FLAG_MINT} />
                                                     <Typography variant="s4">Mint</Typography>
                                                 </Stack>
-                                            </Stack>                                                
+                                            </Stack>
                                         </Stack>
                                     </TableCell>
-                                    
+
                                     <TableCell align="left">
                                         {infoIPFS && infoIPFS.cid && status === 0x3F && // 0x3F = b0011 1111
                                             <Stack alignItems="center">
@@ -446,8 +440,8 @@ export default function BulkList() {
                                                         colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
                                                     />
                                                 )}
-                                                
-                                                
+
+
                                                 <Typography variant="d4" color="#33C2FF">{infoMINT.count} / {infoMINT.length}</Typography>
                                             </Stack>
                                         }

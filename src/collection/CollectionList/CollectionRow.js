@@ -179,12 +179,6 @@ const TokenImage = styled(LazyLoadImage)(({ theme }) => ({
     overflow: 'hidden'
 }));
 
-function truncate(str, n){
-    if (!str) return '';
-    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return (str.length > n) ? str.substr(0, n-1) + '... ' : str;
-};
-
 function areEqual(prevProps, nextProps) {
     /*
     return true if passing nextProps to render would return

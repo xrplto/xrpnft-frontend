@@ -36,20 +36,13 @@ import { PulseLoader, ClockLoader, ClipLoader } from "react-spinners";
 // Components
 import ListToolbar from './ListToolbar';
 // ----------------------------------------------------------------------
-
-function truncate(str, n) {
-    if (!str) return '';
-    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
-};
-
 export default function ProfileList({setCounterAccount}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountAdmin = accountProfile?.account;
     const accountToken = accountProfile?.token;
-    
+
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(5);
     const [total, setTotal] = useState(0);
@@ -59,7 +52,7 @@ export default function ProfileList({setCounterAccount}) {
     const [loading, setLoading] = useState(false);
 
     const [selectedIndex, setSelectedIndex] = useState(-1);
-        
+
     useEffect(() => {
         function getProfiles() {
             if (!accountAdmin || !accountToken) {
@@ -140,7 +133,7 @@ export default function ProfileList({setCounterAccount}) {
                         minterWallet,
                         timestamp
                     } = row;
-                
+
                     const logoImage = logo?`https://s1.xrpnft.com/profile/${logo}`:'/static/account_logo.png';
 
                     const strDateTime = formatDateTime(timestamp);

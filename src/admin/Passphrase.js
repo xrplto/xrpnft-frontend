@@ -40,13 +40,6 @@ import { NFToken } from 'src/utils/constants';
 import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 // ----------------------------------------------------------------------
-
-function truncate(str, n) {
-    if (!str) return '';
-    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
-};
-
 function statusToString(status) {
 
     for (const [key, value] of Object.entries(NFToken)) {

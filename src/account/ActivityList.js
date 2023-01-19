@@ -64,17 +64,10 @@ import { RotatingSquare, Vortex } from 'react-loader-spinner';
 import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 // ----------------------------------------------------------------------
-
-function truncate(str, n) {
-    if (!str) return '';
-    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
-};
-
 export default function ActivityList({account}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
-   
+
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
@@ -201,7 +194,7 @@ export default function ActivityList({account}) {
                                     // {name, type, slug, logo: data.logoImage}
                                     componentActivity = (
                                         <>
-                                            
+
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${data.logo}`}/>
                                                 <Stack>
@@ -223,7 +216,7 @@ export default function ActivityList({account}) {
                                     componentIcon = (<Grid4x4Icon />);
                                     componentActivity = (
                                         <>
-                                            
+
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${data.logo}`}/>
                                                 <Stack>
@@ -697,7 +690,7 @@ export default function ActivityList({account}) {
                                     componentActivity = (
                                         <>
                                             <Stack direction="row" spacing={1}>
-                                                
+
                                             </Stack>
                                         </>
                                     );
@@ -736,9 +729,9 @@ export default function ActivityList({account}) {
                                             </Link> */}
                                         </Stack>
                                     </TableCell>
-                                    
+
                                     <TableCell align="left">
-                                        
+
                                     </TableCell>
                                 </TableRow>
                             );

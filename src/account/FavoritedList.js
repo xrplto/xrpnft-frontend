@@ -29,13 +29,6 @@ import FlagsContainer from 'src/components/Flags';
 import { getImgUrl } from 'src/utils/parse';
 
 // ----------------------------------------------------------------------
-
-function truncate(str, n) {
-    if (!str) return '';
-    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return (str.length > n) ? str.substr(0, n - 1) + ' ...' : str;
-};
-
 export default function FavoritedList({ account }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
