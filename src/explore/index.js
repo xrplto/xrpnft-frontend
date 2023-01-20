@@ -8,7 +8,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import NFTs from './NFTs';
-
+import CollectionActivity from './CollectionActivity';
 
 export default function ExploreNFT({ collection }) {
 
@@ -32,7 +32,8 @@ export default function ExploreNFT({ collection }) {
                         <NFTs collection={collection} />
                     </TabPanel>
                     <TabPanel value="tab-activities">
-                        <Typography color='red'>Coming soon.</Typography>
+                        {/* <Typography color='red'>Coming soon.</Typography> */}
+                        <CollectionActivity collection={collection} />
                     </TabPanel>
                 </TabContext>
             </Box>

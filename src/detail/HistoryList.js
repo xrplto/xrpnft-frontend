@@ -1,8 +1,5 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { FadeLoader } from 'react-spinners';
-import Decimal from 'decimal.js';
-import { normalizeCurrencyCodeXummImpl } from "src/utils/normalizers";
 
 // Material
 import {
@@ -29,6 +26,7 @@ import { ProgressBar, Discuss } from 'react-loader-spinner';
 
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';
+import { normalizeCurrencyCodeXummImpl } from "src/utils/normalizers";
 
 // Context
 import { useContext } from 'react';
