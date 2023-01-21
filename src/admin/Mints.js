@@ -26,8 +26,6 @@ import {
     Typography
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ErrorIcon from '@mui/icons-material/Error';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import PaymentsIcon from '@mui/icons-material/Payments';
 
@@ -40,23 +38,18 @@ import { PulseLoader, ClipLoader } from "react-spinners";
 
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';
-import { NFToken, Mint, getMinterName } from 'src/utils/constants';
+import { Mint, getMinterName } from 'src/utils/constants';
 
 // Components
 import ListToolbar from './ListToolbar';
-import FlagsContainer from 'src/components/Flags';
 import ConfirmResolveDialog from './ConfirmResolveDialog';
 
 function statusToString(status) {
-
     for (const [key, value] of Object.entries(Mint)) {
         if (value === status)
             return key;
     }
     return 'NONE';
-    // switch (status) {
-    //     case NFToken
-    // }
 }
 
 // ----------------------------------------------------------------------
@@ -67,7 +60,7 @@ export default function Mints({account}) {
     const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
     const accountAdmin = accountProfile?.account;
     const accountToken = accountProfile?.token;
-    
+
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
@@ -219,7 +212,7 @@ export default function Mints({account}) {
                     setPage={setPage}
                 />
             }
-            
+
             <ConfirmResolveDialog open={openConfirm} setOpen={setOpenConfirm} onContinue={onContinueResolve} />
 
             <Box
@@ -271,14 +264,14 @@ export default function Mints({account}) {
                                 xumm_txid,
 
 
-                                // 
+                                //
                                 t1,
                                 t2,
                                 t3,
                                 t4,
                                 t5
                             } = row;
-                        
+
                             const strDateTime = formatDateTime(time);
 
                             const time1 = formatDateTime(t1);

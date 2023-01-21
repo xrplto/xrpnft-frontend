@@ -247,7 +247,7 @@ export default function TransferDialog({ open, setOpen, nft }) {
                         <Button
                             variant="outlined"
                             startIcon={<SendIcon />}
-                            size="small"
+                            // size="small"
                             onClick={handleTransferNFT}
                         >
                             Transfer

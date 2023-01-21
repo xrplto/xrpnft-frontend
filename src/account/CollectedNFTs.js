@@ -15,8 +15,8 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 
 // Loader
 import { ClipLoader } from "react-spinners";
-import FilterDetail from 'src/explore/FilterDetail';
 import NFTCard from 'src/explore/NFTCard';
+import FilterDetail from './FilterDetail';
 
 
 export default function CollectedNFTs({ account }) {
@@ -33,14 +33,13 @@ export default function CollectedNFTs({ account }) {
 
     const [showFilter, setShowFilter] = useState(true);
     // const [filter, setFilter] = useState(collection?.imported === 'yes' ? 0 : 4);
+    const [filter, setFilter] = useState(0);
 
     const [subFilter, setSubFilter] = useState('pricexrpasc');
 
-    const [filterAttrs, _setFilterAttrs] = useState({});
+    const [onSaleCount, setOnSaleCount] = useState(0);
 
     const [sync, setSync] = useState(0);
-
-    const [attrSync, setAttrSync] = useState(0);
 
     const fetchNfts = () => {
         setLoading(true);
@@ -49,11 +48,13 @@ export default function CollectedNFTs({ account }) {
 
         // const body = { page, limit, flag, cid: collection?.uuid, search, filter, subFilter };
 
-        axios.get(`${BASE_URL}/account/collected?account=${account}&page=${page}&limit=${limit}`)
+        const body = { account, page, limit, search, filter, subFilter };
+
+        axios.post(`${BASE_URL}/account/nfts_collected`, body)
             .then(res => {
                 const newNfts = res.data.nfts;
                 const length = newNfts.length;
-                if (length < 10) {
+                if (length < 20) {
                     setHasMore(false)
                 } else {
                     setHasMore(true)
@@ -75,7 +76,7 @@ export default function CollectedNFTs({ account }) {
         setHasMore(true);
         setSync(sync + 1);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [flag, search, attrSync]);
+    }, [flag, search, filter, subFilter]);
 
     useEffect(() => {
         fetchNfts();
@@ -87,11 +88,6 @@ export default function CollectedNFTs({ account }) {
 
     const handleShowFilter = (e) => {
         setShowFilter(!showFilter);
-    }
-
-    const setFilterAttrs = (value) => {
-        _setFilterAttrs(value);
-        setAttrSync(attrSync + 1);
     }
 
     return (
@@ -138,44 +134,51 @@ export default function CollectedNFTs({ account }) {
                     }}
                 />
             </Box>
-            <InfiniteScroll
-                dataLength={nfts.length}
-                next={() => {
-                    setPage(page + 1);
-                    setSync(sync + 1);
-                }}
-                hasMore={hasMore}
-            // loader={<p>loading...</p>}
-            >
+            <Grid container spacing={1} justifyContent='space-between' mt={1}>
+                {showFilter &&
+                    <Grid item xs={12} md={3} xl={2} pt={0.5}>
+                        <FilterDetail
+                            onSaleCount={onSaleCount}
+                            filter={filter}
+                            setFilter={setFilter}
+                            subFilter={subFilter}
+                            setSubFilter={setSubFilter}
+                        />
+                    </Grid>
+                }
+                <Grid item xs={12} md={showFilter ? 9 : 12} xl={showFilter ? 10 : 12}>
+                    <InfiniteScroll
+                        dataLength={nfts.length}
+                        next={() => {
+                            setPage(page + 1);
+                            setSync(sync + 1);
+                        }}
+                        hasMore={hasMore}
+                        scrollThreshold={0.6}
+                    >
 
-                <Grid container spacing={1} px={0.5} py={0.5}
-                // style={{
-                //     display: 'grid',
-                //     justifyContent: 'space-between',
-                //     alignContent: 'flex-start',
-                //     gridGap: '20px',
-                //     gridTemplateColumns: 'repeat(auto-fill, 280px)',
-                //     marginTop: '10px',
-                //     padding: '10px'
-                // }}
-                >
-                    {
+                        <Grid
+                            container
+                            spacing={1}
+                        >
+                            {
 
-                        nfts.map((nft) => (
+                                nfts.map((nft) => (
 
-                            <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.uuid}
-                            >
-                                <NFTCard
-                                    // key={nft.uuid}
-                                    nft={nft}
-                                />
-                            </Grid>
-                        ))
+                                    <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.uuid}
+                                    >
+                                        <NFTCard
+                                            nft={nft}
+                                        />
+                                    </Grid>
+                                ))
 
-                        // .filter(getNFTimage_info(URI)!==null)
-                    }
+                                // .filter(getNFTimage_info(URI)!==null)
+                            }
+                        </Grid>
+                    </InfiniteScroll>
                 </Grid>
-            </InfiniteScroll>
+            </Grid>
         </>
     );
 };

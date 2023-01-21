@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import ModalImage from "react-modal-image";
+// import ModalImage from "react-modal-image";
+import { Lightbox } from "react-modal-image";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
@@ -85,6 +86,14 @@ export default function CollectionActivity({collection}) {
 
     const [loading, setLoading] = useState(true);
 
+    const [open, setOpen] = useState(false);
+
+    const [lightBoxImgUrl, setLightBoxImgUrl] = useState('');
+
+    const closeLightbox = () => {
+        setOpen(false);
+    }
+
     useEffect(() => {
         function getActivities() {
             setLoading(true);
@@ -165,278 +174,56 @@ export default function CollectionActivity({collection}) {
                             const amount = normalizeAmount(row.amount);
 
                             let strActivity = '';
-                            let componentActivity = (<></>);
                             let componentIcon = (<TaskAltIcon />);
                             switch (type) {
                                 case 'BUY_MINT':
                                     strActivity = 'Buy Mint';
                                     componentIcon = (<ShoppingBagIcon />);
-                                    // {cid, cname, cslug, amount, quantity}
-                                    componentActivity = (
-                                        <>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost?.md5}.${cost?.ext}`} />
-
-                                                <Stack>
-                                                    <Stack direction='row' spacing={0.8} alignItems="center">
-                                                        <Typography variant="s7">Price: </Typography>
-                                                        <Typography variant='p4' color="#EB5757">{cost?.amount}</Typography>
-                                                        <Typography variant='s2'>{cost?.name}</Typography>
-                                                    </Stack>
-                                                    <Stack direction="row" spacing={1}>
-                                                        <Typography variant="s7">Quantity: </Typography>
-                                                        <Typography variant="s2">{quantity}</Typography>
-                                                    </Stack>
-                                                </Stack>
-                                            </Stack>
-                                        </>
-                                    );
                                     break;
+
                                 case 'MINTED':
                                     strActivity = 'Mint a NFT';
                                     componentIcon = (<PagesIcon />);
-                                    componentActivity = (
-                                        <>
-                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <CardMedia
-                                                        component={isVideo?'video':'img'}
-                                                        image={imgUrl}
-                                                        alt={'NFT'}
-                                                        // controls={isVideo}
-                                                        autoPlay={isVideo}
-                                                        loop={isVideo}
-                                                        muted
-                                                        style={{
-                                                            width:'48px'
-                                                        }}
-                                                    />
-                                                    <Typography variant="s6">{name}</Typography>
-                                                </Stack>
-                                                {/* <Stack direction="row" spacing={1} alignItems="center">
-                                                    <FlagsContainer Flags={flag}/>
-                                                </Stack> */}
-                                            </Stack>
-                                        </>
-                                    );
                                     break;
 
                                 case 'BURN':
                                     componentIcon = (<FireplaceIcon />);
                                     strActivity = 'Burnt a NFT';
-                                    // NFTokenID
-                                    componentActivity = (
-                                        <>
-                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <CardMedia
-                                                        component={isVideo?'video':'img'}
-                                                        image={imgUrl}
-                                                        alt={'NFT'}
-                                                        // controls={isVideo}
-                                                        autoPlay={isVideo}
-                                                        loop={isVideo}
-                                                        muted
-                                                        style={{
-                                                            width:'48px'
-                                                        }}
-                                                    />
-                                                    <Typography variant="s6">{name}</Typography>
-                                                </Stack>
-                                                {/* <Stack direction="row" spacing={1} alignItems="center">
-                                                    <FlagsContainer Flags={flag}/>
-                                                </Stack> */}
-                                            </Stack>
-                                        </>
-                                    );
                                     break;
 
                                 case 'CREATE_SELL_OFFER':
                                     componentIcon = (<LocalOfferIcon />);
                                     strActivity = 'Create Sell Offer';
-                                    // NFTokenID
-                                    componentActivity = (
-                                        <>
-                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <CardMedia
-                                                        component={isVideo?'video':'img'}
-                                                        image={imgUrl}
-                                                        alt={'NFT'}
-                                                        // controls={isVideo}
-                                                        autoPlay={isVideo}
-                                                        loop={isVideo}
-                                                        muted
-                                                        style={{
-                                                            width:'48px'
-                                                        }}
-                                                    />
-                                                    <Typography variant="s6">{name}</Typography>
-                                                </Stack>
-                                                {/* <Stack direction="row" spacing={1} alignItems="center">
-                                                    <FlagsContainer Flags={flag}/>
-                                                </Stack> */}
-                                            </Stack>
-                                        </>
-                                    );
                                     break;
+
                                 case 'CREATE_BUY_OFFER':
                                     componentIcon = (<LocalOfferIcon />);
                                     strActivity = 'Create Buy Offer';
-                                    // NFTokenID
-                                    componentActivity = (
-                                        <>
-                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <CardMedia
-                                                        component={isVideo?'video':'img'}
-                                                        image={imgUrl}
-                                                        alt={'NFT'}
-                                                        // controls={isVideo}
-                                                        autoPlay={isVideo}
-                                                        loop={isVideo}
-                                                        muted
-                                                        style={{
-                                                            width:'48px'
-                                                        }}
-                                                    />
-                                                    <Typography variant="s6">{name}</Typography>
-                                                </Stack>
-                                                {/* <Stack direction="row" spacing={1} alignItems="center">
-                                                    <FlagsContainer Flags={flag}/>
-                                                </Stack> */}
-                                            </Stack>
-                                        </>
-                                    );
                                     break;
 
                                 case 'CANCEL_SELL_OFFER':
                                     componentIcon = (<HighlightOffIcon />);
                                     strActivity = 'Cancel Sell Offer';
-                                    // NFTokenID
-                                    componentActivity = (
-                                        <>
-                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <CardMedia
-                                                        component={isVideo?'video':'img'}
-                                                        image={imgUrl}
-                                                        alt={'NFT'}
-                                                        // controls={isVideo}
-                                                        autoPlay={isVideo}
-                                                        loop={isVideo}
-                                                        muted
-                                                        style={{
-                                                            width:'48px'
-                                                        }}
-                                                    />
-                                                    <Typography variant="s6">{name}</Typography>
-                                                </Stack>
-                                                {/* <Stack direction="row" spacing={1} alignItems="center">
-                                                    <FlagsContainer Flags={flag}/>
-                                                </Stack> */}
-                                            </Stack>
-                                        </>
-                                    );
                                     break;
+
                                 case 'CANCEL_BUY_OFFER':
                                     componentIcon = (<HighlightOffIcon />);
                                     strActivity = 'Cancel Buy Offer';
-                                    // NFTokenID
-                                    componentActivity = (
-                                        <>
-                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <CardMedia
-                                                        component={isVideo?'video':'img'}
-                                                        image={imgUrl}
-                                                        alt={'NFT'}
-                                                        // controls={isVideo}
-                                                        autoPlay={isVideo}
-                                                        loop={isVideo}
-                                                        muted
-                                                        style={{
-                                                            width:'48px'
-                                                        }}
-                                                    />
-                                                    <Typography variant="s6">{name}</Typography>
-                                                </Stack>
-                                                {/* <Stack direction="row" spacing={1} alignItems="center">
-                                                    <FlagsContainer Flags={flag}/>
-                                                </Stack> */}
-                                            </Stack>
-                                        </>
-                                    );
                                     break;
 
                                 case 'TRANSFER':
                                     strActivity = 'Transfer';
                                     componentIcon = (<TransferWithinAStationIcon />);
-                                    componentActivity = (
-                                        <>
-                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <CardMedia
-                                                        component={isVideo?'video':'img'}
-                                                        image={imgUrl}
-                                                        alt={'NFT'}
-                                                        // controls={isVideo}
-                                                        autoPlay={isVideo}
-                                                        loop={isVideo}
-                                                        muted
-                                                        style={{
-                                                            width:'48px'
-                                                        }}
-                                                    />
-                                                    <Typography variant="s6">{name}</Typography>
-                                                </Stack>
-                                                {/* <Stack direction="row" spacing={1} alignItems="center">
-                                                    <FlagsContainer Flags={flag}/>
-                                                </Stack> */}
-                                            </Stack>
-                                        </>
-                                    );
                                     break;
 
                                 case 'SALE':
                                     strActivity = 'Sale';
                                     componentIcon = (<PaymentIcon />);
-                                    componentActivity = (
-                                        <>
-                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <CardMedia
-                                                        component={isVideo?'video':'img'}
-                                                        image={imgUrl}
-                                                        alt={'NFT'}
-                                                        // controls={isVideo}
-                                                        autoPlay={isVideo}
-                                                        loop={isVideo}
-                                                        muted
-                                                        style={{
-                                                            width:'48px'
-                                                        }}
-                                                    />
-                                                    <Typography variant="s6">{name}</Typography>
-                                                </Stack>
-                                                {/* <Stack direction="row" spacing={1} alignItems="center">
-                                                    <FlagsContainer Flags={flag}/>
-                                                </Stack> */}
-                                            </Stack>
-                                        </>
-                                    );
                                     break;
 
                                 default:
                                     strActivity = `Unhandled Activity: ${type}`;
                                     componentIcon = (<HelpOutlineIcon />);
-                                    componentActivity = (
-                                        <>
-                                            <Stack direction="row" spacing={1}>
-
-                                            </Stack>
-                                        </>
-                                    );
                                     break;
                             }
 
@@ -460,24 +247,74 @@ export default function CollectionActivity({collection}) {
                                     </TableCell>
 
                                     <TableCell align="left" sx={{pt:1, pb:1}}>
-                                        <Stack spacing={0.5}>
-                                            {componentActivity}
-                                            {/* <Link
-                                                color="inherit"
-                                                target="_blank"
-                                                href={`https://bithomp.com/explorer/${account}`}
-                                                rel="noreferrer noopener nofollow"
-                                            >
-                                                <Typography variant="s4" color="#33C2FF">{account}</Typography>
-                                            </Link> */}
-                                        </Stack>
+                                        {type === 'BUY_MINT' ?
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost?.md5}.${cost?.ext}`} />
+
+                                                <Stack>
+                                                    <Stack direction='row' spacing={0.8} alignItems="center">
+                                                        <Typography variant="s7">Price: </Typography>
+                                                        <Typography variant='s11'>{cost?.amount} {cost?.name}</Typography>
+                                                    </Stack>
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Typography variant="s7">Quantity: </Typography>
+                                                        <Typography variant="s11">{quantity}</Typography>
+                                                    </Stack>
+                                                </Stack>
+                                            </Stack>
+                                            :
+                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Link
+                                                        component="button"
+                                                        underline="none"
+                                                        onClick={() => {
+                                                            if (!isVideo) {
+                                                                setLightBoxImgUrl(imgUrl);
+                                                                setOpen(true)
+                                                            }
+                                                        }}
+                                                    >
+                                                        <CardMedia
+                                                            component={isVideo?'video':'img'}
+                                                            image={imgUrl}
+                                                            alt={'NFT'}
+                                                            // controls={isVideo}
+                                                            autoPlay={isVideo}
+                                                            loop={isVideo}
+                                                            muted
+                                                            style={{
+                                                                width:'48px'
+                                                            }}
+                                                        />
+                                                    </Link>
+                                                    <Link
+                                                        // color="inherit"
+                                                        // target="_blank"
+                                                        href={`/nft/${NFTokenID}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Typography variant="s6">{name}</Typography>
+                                                    </Link>
+                                                </Stack>
+                                                {/* <Stack direction="row" spacing={1} alignItems="center">
+                                                    <FlagsContainer Flags={flag}/>
+                                                </Stack> */}
+                                            </Stack>
+                                        }
                                     </TableCell>
 
                                     <TableCell align="left" width='15%' sx={{pt:0.5, pb:0.5}}>
-                                        {type === 'SALE' || type === 'CREATE_SELL_OFFER' || type === 'CREATE_BUY_OFFER' || type === 'CANCEL_SELL_OFFER' || type === 'CANCEL_SELL_OFFER' ?
-                                            <Typography variant='s11' noWrap>{amount.amount} {normalizeCurrencyCodeXummImpl(amount.currency)}</Typography>
+                                        {type === 'SALE' ?
+                                            <Typography variant='s11' noWrap>{cost.amount} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
                                             :
-                                            <Typography variant='s11' noWrap>- - -</Typography>
+                                            <>
+                                                {type === 'CREATE_SELL_OFFER' || type === 'CREATE_BUY_OFFER' || type === 'CANCEL_SELL_OFFER' || type === 'CANCEL_SELL_OFFER' ?
+                                                    <Typography variant='s11' noWrap>{amount.amount} {normalizeCurrencyCodeXummImpl(amount.currency)}</Typography>
+                                                    :
+                                                    <Typography variant='s11' noWrap>- - -</Typography>
+                                                }
+                                            </>
                                         }
 
                                     </TableCell>
@@ -519,6 +356,16 @@ export default function CollectionActivity({collection}) {
                     setRows={setRows}
                     page={page}
                     setPage={setPage}
+                />
+            }
+
+            {open &&
+                <Lightbox
+                    small={lightBoxImgUrl}
+                    large={lightBoxImgUrl}
+                    hideDownload
+                    hideZoom
+                    onClose={closeLightbox}
                 />
             }
         </Container>

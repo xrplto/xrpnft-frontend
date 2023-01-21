@@ -22,12 +22,6 @@ import { AppContext } from 'src/AppContext';
 import { CATEGORIES } from 'src/utils/constants';
 import { fIntNumber } from 'src/utils/formatNumber';
 
-// const FooterWrapper = styled(Container)(
-//     ({ theme }) => `
-//         margin-top: ${theme.spacing(4)};
-// `
-// );
-
 const FooterWrapper = styled(Box)(
     ({ theme }) => `
     width: 100%;

@@ -26,12 +26,7 @@ import {
     TextField
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import StoreIcon from '@mui/icons-material/Store';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-
-// Iconify
-import { Icon } from '@iconify/react';
-import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
 // Context
 import { useContext } from 'react';
@@ -57,7 +52,7 @@ const BuyDialog = styled(Dialog) (({ theme }) => ({
         padding: theme.spacing(1),
     },
 }));
-  
+
 const BuyDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
@@ -338,7 +333,7 @@ export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints
                             <Typography variant="p5" sx={{mt: 0}}>To power up the spinner, you need at least 1 or more Mints. This will enable you to purchase NFTs that is sequently selected from this collection.</Typography>
                         }
                         <Typography variant="p5" sx={{mt: 2}}>Mints purchased for this collection can not be used on the other collections.</Typography>
-                        
+
                         <Stack spacing={2} sx={{mt: 2}}>
                             {/* <Typography variant="s5" color="#33C2FF">{cost} {name} / Mint</Typography> */}
                             <Stack direction="row" spacing={2} alignItems="center">
@@ -391,7 +386,7 @@ export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints
                                     </>
                                 }
                             </Stack>
-                            
+
                         </Stack>
                         <Stack direction="row" spacing={2} sx={{mt: 2}}>
                             <Typography variant="p4">Quantity <Typography variant='s2'>*</Typography></Typography>
@@ -411,7 +406,7 @@ export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints
                                     autoComplete: 'off',
                                     style: { textAlign: 'center' },
                                 }}
-                                
+
                             />
                         </Stack>
                         <Stack direction="row" spacing={2} sx={{mt: 3}}>

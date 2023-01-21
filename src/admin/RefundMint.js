@@ -11,10 +11,8 @@ import {
     Box,
     Button,
     IconButton,
-    InputAdornment,
     Link,
     Stack,
-    TextField,
     Table,
     TableBody,
     TableRow,
@@ -25,8 +23,6 @@ import {
     Typography
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ErrorIcon from '@mui/icons-material/Error';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
@@ -58,9 +54,6 @@ function statusToString(status) {
             return key;
     }
     return 'NONE';
-    // switch (status) {
-    //     case NFToken
-    // }
 }
 
 function truncate(str, n) {
@@ -76,7 +69,7 @@ export default function RefundMint() {
     const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
     const accountAdmin = accountProfile?.account;
     const accountToken = accountProfile?.token;
-    
+
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
@@ -198,7 +191,7 @@ export default function RefundMint() {
                     setPage={setPage}
                 />
             }
-            
+
             <ConfirmResolveDialog open={openConfirm} setOpen={setOpenConfirm} onContinue={onContinueResolve} />
 
             <Box
@@ -241,7 +234,7 @@ export default function RefundMint() {
                                 status,
                                 error
                             } = row;
-                        
+
                             const strDateTime = formatDateTime(time);
                             const srcName = getMinterName(src);
 

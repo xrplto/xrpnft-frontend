@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React from "react";
 import { useState, useEffect, useRef } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
 
 // Material
 import {
@@ -21,8 +20,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import SearchToolbar from './SearchToolbar';
-import CollectionCard from './CollectionCard';
+// import SearchToolbar from './SearchToolbar';
 import CollectionRow from './CollectionRow';
 import ListHead from './ListHead';
 import ListToolbar from './ListToolbar';
@@ -56,9 +54,9 @@ export default function CollectionList({type, category}) {
                 openSnackbar('Please login', 'error');
                 return;
             }
-    
+
             const body = {filter, type, page, limit: rows, order, orderBy, choice};
-    
+
             if (type === CollectionListType.ALL) {
             } else if (type === CollectionListType.MINE) {
                 body.account = account;
@@ -66,7 +64,7 @@ export default function CollectionList({type, category}) {
                 body.category = category;
             } else if (type === CollectionListType.LANDING) {
             }
-            
+
             axios.post(`${BASE_URL}/collection/getlistbyorder`, body, {headers: {'x-access-token': accountToken}})
             .then(res => {
                 try {

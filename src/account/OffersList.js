@@ -298,14 +298,10 @@ export default function OffersList({ account, type }) {
 
             {type === 'orphaned' &&
                 <>
-                    <Typography variant="s7">When you create several Sell Offers on your NFT and if one is accepted by another account, your NFT will</Typography>
-                    <Typography variant="s7">go to another account and the remaining Sell Offers are still owned to you and they are orphaned offers.</Typography>
-                    <Typography variant="s7">Or if you accept the buy offer of your NFT from another account, your NFT will go to another account, </Typography>
-                    <Typography variant="s7">and Sell Offers will become orphaned offers. Or when you create several Buy Offers on the other NFT and</Typography>
-                    <Typography variant="s7">the NFT owner accepted one of your Buy Offers, the remaining Buy Offers will become orphaned offers too.</Typography>
+                    <Typography variant="s7">When you create several Sell Offers on your NFT and if one is accepted by another account, your NFT will go to another account and the remaining Sell Offers are still owned to you and they are orphaned offers.</Typography>
+                    <Typography variant="s7"></Typography>
+                    <Typography variant="s7">Or if you accept the buy offer of your NFT from another account, your NFT will go to another account, and Sell Offers will become orphaned offers. Or when you create several Buy Offers on the other NFT and the NFT owner accepted one of your Buy Offers, the remaining Buy Offers will become orphaned offers too.</Typography>
                     <Typography variant="s7">You must cancel them to save your account XRP reserve.</Typography>
-
-
                 </>
             }
 

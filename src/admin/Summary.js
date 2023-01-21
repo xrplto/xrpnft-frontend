@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import ModalImage from "react-modal-image";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Decimal from 'decimal.js';
 
@@ -33,44 +32,12 @@ import { AppContext } from 'src/AppContext';
 
 // Loader
 import { PulseLoader, ClockLoader } from "react-spinners";
-import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Utils
 import { fNumber, fIntNumber, fPercent } from 'src/utils/formatNumber';
 import { NFToken } from 'src/utils/constants';
 
 // Components
-import ListToolbar from './ListToolbar';
-import FlagsContainer from 'src/components/Flags';
-// ----------------------------------------------------------------------
-function statusToString(status) {
-
-    for (const [key, value] of Object.entries(NFToken)) {
-        if (value === status)
-            return key;
-    }
-    return 'NONE';
-    // switch (status) {
-    //     case NFToken
-    // }
-}
-
-/**
- * Converts hex to its string equivalent. Useful to read the Domain field and some Memos.
- *
- * @param hex - The hex to convert to a string.
- * @param encoding - The encoding to use. Defaults to 'utf8' (UTF-8). 'ascii' is also allowed.
- * @returns The converted string.
- * @category Utilities
- */
- function convertHexToString(hex, encoding = 'utf8') {
-    let ret = '';
-    try {
-        ret = Buffer.from(hex, 'hex').toString(encoding);
-    } catch (err) {
-    }
-    return ret;
-}
 
 export default function Summary({}) {
     const theme = useTheme();

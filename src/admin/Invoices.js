@@ -1,7 +1,6 @@
 import * as React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import ModalImage from "react-modal-image";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
@@ -9,7 +8,6 @@ import {
     useTheme,
     Avatar,
     Box,
-    Button,
     IconButton,
     InputAdornment,
     Link,
@@ -25,9 +23,6 @@ import {
     Typography
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import ErrorIcon from '@mui/icons-material/Error';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import PaymentsIcon from '@mui/icons-material/Payments';
 
 // Context
@@ -38,23 +33,11 @@ import { AppContext } from 'src/AppContext';
 import { PulseLoader, ClipLoader } from "react-spinners";
 
 // Utils
-import { NFToken, Mint, getMinterName } from 'src/utils/constants';
+import { Mint, getMinterName } from 'src/utils/constants';
 
 // Components
 import ListToolbar from './ListToolbar';
 import { formatDateTime } from 'src/utils/formatTime';
-
-function statusToString(status) {
-
-    for (const [key, value] of Object.entries(Mint)) {
-        if (value === status)
-            return key;
-    }
-    return 'NONE';
-    // switch (status) {
-    //     case NFToken
-    // }
-}
 
 // ----------------------------------------------------------------------
 export default function Invoices({}) {
@@ -64,15 +47,13 @@ export default function Invoices({}) {
     const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
     const accountAdmin = accountProfile?.account;
     const accountToken = accountProfile?.token;
-    
+
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
 
     const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    const [sync, setSync] = useState(0);
 
     const [choice, setChoice] = useState('all');
 
@@ -200,7 +181,7 @@ export default function Invoices({}) {
                                 type,
                                 time
                             } = row;
-                        
+
                             let strDateTime = formatDateTime(time);
                             const srcName = getMinterName(src);
                             const destName = getMinterName(dest);

@@ -66,6 +66,7 @@ function XAppBar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
     const [fullSearch, setFullSearch] = useState(false);
 
     const handleFullSearch = (e) => {

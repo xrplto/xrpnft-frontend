@@ -1,35 +1,24 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import ModalImage from "react-modal-image";
-import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
-    styled, useTheme,
+    useTheme,
     Avatar,
-    Backdrop,
     Box,
-    Button,
-    CardMedia,
-    IconButton,
     Link,
     Stack,
     Table,
     TableBody,
     TableCell,
-    TableHead,
     TableRow,
-    Tooltip,
-    Typography,
-    Divider
+    Typography
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
 import GridOnIcon from '@mui/icons-material/GridOn';
 import Grid4x4Icon from '@mui/icons-material/Grid4x4';
 import ApprovalIcon from '@mui/icons-material/Approval';
@@ -47,18 +36,13 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import AnimationIcon from '@mui/icons-material/Animation';
 import PaymentIcon from '@mui/icons-material/Payment';
 
-// Context
-import { useContext } from 'react';
-import { AppContext } from 'src/AppContext';
-
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';
 import { Activity } from 'src/utils/constants';
 import { normalizeAmount } from 'src/utils/normalizers';
 
 // Loader
-import { PulseLoader, ClockLoader } from "react-spinners";
-import { RotatingSquare, Vortex } from 'react-loader-spinner';
+import { PulseLoader } from "react-spinners";
 
 // Components
 import ListToolbar from './ListToolbar';
