@@ -49,57 +49,8 @@ import CollectedNFTs from './CollectedNFTs';
 import { height } from '@mui/system';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
-const IconCover = styled('div')(
-    ({ theme }) => `
-        width: 102px;
-        height: 102px;
-        // margin-top: -56px;
-        margin-bottom: 16px;
-        @media (min-width: ${theme.breakpoints.values.sm}px) {
-            width: 132px;
-            height: 132px;
-            // margin-top: -86px;
-        }
-        @media (min-width: ${theme.breakpoints.values.md}px) {
-            width: 192px;
-            height: 192px;
-            // margin-top: -156px;
-        }
-        border: 50% solid ${theme.colors.alpha.black[50]};
-        border-radius: 10px;
-        box-shadow: rgb(0 0 0 / 8%) 0px 5px 10px;
-        background-color: ${theme.colors.alpha.white[70]};
-        position: relative;
-        overflow: hidden;
-    `
-);
-
-const IconWrapper = styled('div')(
-    ({ theme }) => `
-        box-sizing: border-box;
-        display: inline-block;
-        position: relative;
-        width: 90px;
-        height: 90px;
-        @media (min-width: ${theme.breakpoints.values.sm}px) {
-            width: 120px;
-            height: 120px;
-        }
-        @media (min-width: ${theme.breakpoints.values.md}px) {
-            width: 180px;
-            height: 180px;
-        }
-        &:hover, &.Mui-focusVisible {
-            z-index: 1;
-            & .MuiImageBackdrop-root {
-                opacity: 0.1;
-            }
-            & .MuiIconEditButton-root {
-                opacity: 1;
-            }
-        }
-  `
-);
+// Utils
+import { getHashIcon } from 'src/utils/parse';
 
 const IconImage = styled('img')(
     ({ theme }) => `
@@ -283,7 +234,7 @@ export default function Account({ profile, tab }) {
         minterWallet
     } = profile;
 
-    const logoImage = logo ? `https://s1.xrpnft.com/profile/${logo}` : '/static/account_logo.png';
+    const logoImage = logo ? `https://s1.xrpnft.com/profile/${logo}` : getHashIcon(profile.account);
 
     const handleClickMore = (event) => {
         setAnchorEl(event.currentTarget);
@@ -344,10 +295,13 @@ export default function Account({ profile, tab }) {
                 }}
             >
                 <Avatar
+                    variant={logo?"":"square"}
                     sx={{
                         width: { md: 90, xs: 50 },
-                        height: { md: 90, xs: 50 }
-                    }}>
+                        height: { md: 90, xs: 50 },
+                        backgroundColor: '#00000000'
+                    }}
+                >
                     <IconImage src={logoImage} />
                     {account === profile.account &&
                         <Link href={`/setting`} underline='none'>

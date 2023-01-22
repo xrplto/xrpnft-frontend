@@ -26,6 +26,8 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import { getImgUrl } from 'src/utils/parse';
 import useDebounce from 'src/hooks/useDebounce';
 
+// Utils
+import { getHashIcon } from 'src/utils/parse';
 
 const RenderOption = ({
     uuid,
@@ -60,7 +62,8 @@ const RenderOption = ({
                 setHLink(`/collection/${slug}`)
                 break;
             case 'ACCOUNTS':
-                const imgurl = logo ? `https://s1.xrpnft.com/profile/${logo}` : '/static/account_logo.png';
+                const imgurl = logo ? ` https://s1.xrpnft.com/profile/${logo}` : getHashIcon(account);
+                // const imgurl = logo ? `https://s1.xrpnft.com/profile/${logo}` : '/static/account_logo.png';
                 setImgUrl(imgurl)
                 setHLink(`/account/${account}`)
                 break;
@@ -83,7 +86,13 @@ const RenderOption = ({
         <MenuItem sx={{ pt: 1, pb: 1 }}>
             <Stack direction="row" spacing={1} alignItems="center">
                 {
-                    <Avatar alt="X">
+                    <Avatar
+                        alt="X"
+                        variant={logo?"":"square"}
+                        sx={{
+                            backgroundColor: '#00000000'
+                        }}
+                    >
                         <CardMedia
                             component={isVideo ? "video" : 'img'}
                             src={imgUrl}

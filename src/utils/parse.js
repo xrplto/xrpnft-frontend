@@ -5,6 +5,8 @@ import { format, formatDistanceToNow } from 'date-fns';
 import { encodeAccountID } from 'ripple-address-codec';
 import isIPFS from 'is-ipfs';
 import Decimal from 'decimal.js';
+import hashicon from 'hashicon';
+import { createCanvas } from 'canvas';
 
 // ----------------------------------------------------------------------
 function extractUrisFromString(uris_string) {
@@ -657,3 +659,13 @@ export const fetcher = url => axios.get(url).then(res => res)
 //       user: account.user ? userFromJSON(account.user) : null,
 //     };
 //   };
+
+export function getHashIcon(account) {
+    let url = '/static/account_logo.png';
+    try {
+        const icon = hashicon(account, { createCanvas });
+        url = icon.toDataURL();
+    } catch (e) {
+    }
+    return url;
+}

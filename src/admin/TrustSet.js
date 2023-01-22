@@ -1,7 +1,6 @@
 import * as React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import ModalImage from "react-modal-image";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
@@ -37,11 +36,10 @@ import { PulseLoader } from "react-spinners";
 
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';
-import { NFToken } from 'src/utils/constants';
+import { getHashIcon } from 'src/utils/parse';
 
 // Components
 import ListToolbar from './ListToolbar';
-import FlagsContainer from 'src/components/Flags';
 
 // ----------------------------------------------------------------------
 
@@ -52,7 +50,7 @@ export default function TrustSet() {
     const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
     const accountAdmin = accountProfile?.account;
     const accountToken = accountProfile?.token;
-    
+
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
@@ -97,7 +95,7 @@ export default function TrustSet() {
                 value={choice}
                 exclusive
                 // size="small"
-                
+
                 onChange={handleChangeChoice}
             >
                 <ToggleButton value="all" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>All</ToggleButton>
@@ -125,7 +123,7 @@ export default function TrustSet() {
                     setPage={setPage}
                 />
             }
-            
+
             <Box
                 sx={{
                     display: "flex",
@@ -159,8 +157,12 @@ export default function TrustSet() {
                                 txHash,
                                 date
                             } = row;
-                        
+
                             const strDateTime = formatDateTime(date);
+
+                            const logo = null; // Temporary
+
+                            const logoImage = logo ? `https://s1.xrpnft.com/profile/${logo}` : getHashIcon(account);
 
                             return (
                                 <TableRow
@@ -174,7 +176,7 @@ export default function TrustSet() {
                                 >
                                     <TableCell align="left">
                                         <Stack direction="row" spacing={1} alignItems="center">
-                                            <Avatar alt="C" src='/static/account_logo.png' />
+                                            <Avatar alt="C" src={logoImage} variant={logo?"":"square"} />
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row" spacing={0.2} alignItems="center">
                                                     <Typography variant="s6">{account}</Typography>
@@ -262,7 +264,7 @@ export default function TrustSet() {
                                             </Stack>
                                         </Stack>
                                     </TableCell>
-                                    
+
                                     <TableCell align="left">
                                         <Stack direction='row' spacing={0.8} alignItems="center">
                                             <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} />

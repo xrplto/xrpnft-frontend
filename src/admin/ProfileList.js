@@ -1,7 +1,6 @@
 import * as React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import ModalImage from "react-modal-image";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
@@ -20,7 +19,6 @@ import {
     Tooltip,
     Typography
 } from '@mui/material';
-import { tableCellClasses } from "@mui/material/TableCell";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 // Context
@@ -29,13 +27,15 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';
+import { getHashIcon } from 'src/utils/parse';
 
 // Loader
-import { PulseLoader, ClockLoader, ClipLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 
 // Components
 import ListToolbar from './ListToolbar';
 // ----------------------------------------------------------------------
+
 export default function ProfileList({setCounterAccount}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -134,7 +134,7 @@ export default function ProfileList({setCounterAccount}) {
                         timestamp
                     } = row;
 
-                    const logoImage = logo?`https://s1.xrpnft.com/profile/${logo}`:'/static/account_logo.png';
+                    const logoImage = logo?`https://s1.xrpnft.com/profile/${logo}`:getHashIcon(account);
 
                     const strDateTime = formatDateTime(timestamp);
 
@@ -146,7 +146,10 @@ export default function ProfileList({setCounterAccount}) {
                                 sx={{pt: 2, pb: 2}}
                             >
                                 <ListItemAvatar>
-                                    <Avatar alt="C" src={logoImage}/>
+                                    <Avatar
+                                        variant={logo?"":"square"}
+                                        alt="C" src={logoImage}
+                                    />
                                 </ListItemAvatar>
                                 <ListItemText
                                     primary={

@@ -36,6 +36,7 @@ import userLock from '@iconify/icons-fa-solid/user-lock';
 
 // Utils
 import { MAINNET } from 'src/utils/constants';
+import { getHashIcon } from 'src/utils/parse';
 
 // Components
 import LoginDialog from './LoginDialog';
@@ -49,6 +50,7 @@ export default function Wallet() {
     const { accountProfile, setAccountProfile, acceptNfts, setAcceptNfts, orphanedOffers, setOrphanedOffers, setLoading, sync } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
+    const accountLogo = accountProfile?.logo;
     const accountUuid = accountProfile?.xuuid;
     const isAdmin = accountProfile?.admin;
 
@@ -59,7 +61,10 @@ export default function Wallet() {
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
 
-    const logoImageUrl = accountProfile?.logo?`https://s1.xrpnft.com/profile/${accountProfile.logo}`:null;
+    let logoImageUrl = null;
+    if (accountProfile) {
+        logoImageUrl = accountLogo?`https://s1.xrpnft.com/profile/${accountLogo}`:getHashIcon(accountLogin);
+    }
 
     useEffect(() => {
         function getOffersCount() {
@@ -226,7 +231,11 @@ export default function Wallet() {
             >
                 <Badge color="primary" badgeContent={acceptNfts + orphanedOffers}>
                     {logoImageUrl?(
-                        <Avatar alt="user" src={logoImageUrl} sx={{ width: 32, height: 32 }}/>
+                        <Avatar
+                            variant={accountLogo?"":"square"}
+                            alt="user" src={logoImageUrl}
+                            sx={{ width: 32, height: 32 }}
+                        />
                     ):(
                         <Icon icon={userLock}/>
                     )}
@@ -353,7 +362,11 @@ export default function Wallet() {
                             <Divider />
                             <Stack spacing={1} alignItems='center' sx={{pt: 1, pb: 2}}>
                                 {logoImageUrl?(
-                                    <Avatar alt="user" src={logoImageUrl} sx={{ width: 32, height: 32 }}/>
+                                    <Avatar
+                                        variant={accountLogo?"":"square"}
+                                        alt="user" src={logoImageUrl}
+                                        sx={{ width: 32, height: 32 }}
+                                    />
                                 ):(
                                     <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ mr:1, width: 32, height: 32 }}/>
                                 )}

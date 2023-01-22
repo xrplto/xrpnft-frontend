@@ -3,27 +3,21 @@ import { useState } from 'react';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
-import { useTheme } from '@mui/material/styles';
 import {
     styled,
-    Badge,
     Box,
-    Button,
-    Container,
-    Divider,
     Grid,
     IconButton,
     Link,
     Stack,
     Tab,
     Tabs,
-    TextField,
     Tooltip,
-    Typography,
-    useMediaQuery
+    Typography
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
@@ -42,6 +36,9 @@ import Mints from './Mints';
 import AutoPay from './AutoPay';
 import Invoices from './Invoices';
 import RefundMint from './RefundMint';
+
+// Utils
+import { getHashIcon } from 'src/utils/parse';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -118,7 +115,7 @@ const CardOverlay = styled('div')(
 
 function TabPanel(props) {
     const { children, value, id, ...other } = props;
- 
+
     return (
         <div
             role="tabpanel"
@@ -175,13 +172,13 @@ export default function Admin() {
         minterWallet
     } = accountProfile;
 
-    const logoImage = logo?`https://s1.xrpnft.com/profile/${logo}`:'/static/account_logo.png';
+    const logoImage = logo ? `https://s1.xrpnft.com/profile/${logo}` : getHashIcon(account);
 
     const gotoTabView = (event) => {
         const anchor = (event.target.ownerDocument || document).querySelector(
             '#back-to-top-tab-anchor',
         );
-    
+
         if (anchor) {
             anchor.scrollIntoView({
                 behavior: 'smooth',
@@ -200,7 +197,7 @@ export default function Admin() {
         setTabID(newID);
         gotoTabView(event);
     };
-    
+
     return (
         <>
             <Stack sx={{mt: 3, mb: 5}}>
@@ -299,13 +296,13 @@ export default function Admin() {
                                 <Activity account={counterAccount} />
                             </Stack>
                         </TabPanel>
-                        
+
                         <TabPanel value={tabID} id={5}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <Errors />
                             </Stack>
                         </TabPanel>
-                        
+
                         <TabPanel value={tabID} id={6}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <TrustSet />
@@ -338,7 +335,7 @@ export default function Admin() {
                     </Grid>
                 </Grid>
 
-                
+
             </Stack>
         </>
     );
