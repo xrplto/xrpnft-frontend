@@ -204,7 +204,7 @@ export const NFToken = { // 11:42 AM 11/18/2022
     PREOFFER_E1: 141, // Failed to submit the NFTokenCreateOffer transaction
     PREOFFER_E2: 142, // Exception occured to submit the NFTokenCreateOffer transaction
     PREOFFER_E3: 143, // Tried to find out SellOfferID but failed
-  }
+}
 
 export const Activity = { // 08:58 AM 12/20/2022
     LOGIN: 1,
@@ -338,4 +338,13 @@ export function getMinterName(minter) {
             return '';
             break;
     }
+}
+
+export function statusToString(status) {
+
+    for (const [key, value] of Object.entries(NFToken)) {
+        if (value === status)
+            return key;
+    }
+    return 'NONE';
 }

@@ -37,23 +37,8 @@ import { RotatingSquare, Vortex } from 'react-loader-spinner';
 import QRDialog from 'src/components/QRDialog';
 import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
+import { convertHexToString } from 'src/utils/parse';
 // ----------------------------------------------------------------------
-/**
- * Converts hex to its string equivalent. Useful to read the Domain field and some Memos.
- *
- * @param hex - The hex to convert to a string.
- * @param encoding - The encoding to use. Defaults to 'utf8' (UTF-8). 'ascii' is also allowed.
- * @returns The converted string.
- * @category Utilities
- */
- function convertHexToString(hex, encoding = 'utf8') {
-    let ret = '';
-    try {
-        ret = Buffer.from(hex, 'hex').toString(encoding);
-    } catch (err) {
-    }
-    return ret;
-}
 
 export default function AcceptList({account}) {
     const theme = useTheme();

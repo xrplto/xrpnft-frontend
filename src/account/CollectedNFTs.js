@@ -50,7 +50,7 @@ export default function CollectedNFTs({ account }) {
 
         const body = { account, page, limit, search, filter, subFilter };
 
-        axios.post(`${BASE_URL}/account/nfts_collected`, body)
+        axios.post(`${BASE_URL}/account/collected`, body)
             .then(res => {
                 const newNfts = res.data.nfts;
                 const length = newNfts.length;

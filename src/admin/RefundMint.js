@@ -38,7 +38,7 @@ import { formatDateTime } from 'src/utils/formatTime';
 import { PulseLoader } from "react-spinners";
 
 // Utils
-import { NFToken, Mint, getMinterName } from 'src/utils/constants';
+import { Mint, getMinterName } from 'src/utils/constants';
 
 // Components
 import ListToolbar from './ListToolbar';

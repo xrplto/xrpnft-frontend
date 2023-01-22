@@ -1,9 +1,7 @@
 import * as React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import ModalImage from "react-modal-image";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
-import { normalizeAmount } from 'src/utils/normalizers';
 
 // Material
 import {
@@ -34,7 +32,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Loader
-import { PulseLoader, ClipLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';

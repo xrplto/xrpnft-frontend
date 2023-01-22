@@ -3,15 +3,11 @@ import { useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // Material
-import { useTheme } from '@mui/material/styles';
 import {
     alpha, styled,
-    Badge,
     Box,
-    Button,
     Container,
     Divider,
-    Grid,
     IconButton,
     Link,
     Menu,
@@ -21,14 +17,10 @@ import {
     Tabs,
     Tooltip,
     Typography,
-    useMediaQuery,
     Avatar
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import ArchiveIcon from '@mui/icons-material/Archive';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ListIcon from '@mui/icons-material/List';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
@@ -39,7 +31,6 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import CollectedList from './CollectedList';
 import CreatedList from './CreatedList';
 import FavoritedList from './FavoritedList';
 import ActivityList from './ActivityList';
@@ -69,25 +60,6 @@ const IconImage = styled('img')(
     object-fit: cover;
     border-radius: 0px;
   `
-);
-
-const SlotBox = styled('div')(
-    ({ theme }) => `
-        // padding-top: 40px;
-        width: 280px;
-        height: 200px;
-        @media (min-width: ${theme.breakpoints.values.md}px) {
-            width: 480px;
-            height: 400px;
-        }
-        // margin-bottom: 20px;
-        // margin-top: 20px;
-        // border-style: solid;
-        justify-content: center;
-        overflow: hidden;
-        // line-height: 4;
-        border-radius: 20px;
-    `
 );
 
 const ImageBackdrop = styled('span')(({ theme }) => ({
@@ -215,8 +187,8 @@ const StyledMenu = styled((props) => (
 export default function Account({ profile, tab }) {
     const { accountProfile, openSnackbar, acceptNfts } = useContext(AppContext);
     const account = accountProfile?.account;
-    const accountToken = accountProfile?.token;
-    const accountUuid = accountProfile?.xuuid;
+    // const accountToken = accountProfile?.token;
+    // const accountUuid = accountProfile?.xuuid;
 
     const [moreMenu, setMoreMenu] = useState(getSubTabID(tab));
 
@@ -398,7 +370,6 @@ export default function Account({ profile, tab }) {
             <Box sx={{ my: 1 }}>
                 <TabPanel value={tabID} id={0}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        {/* <CollectedList account={profile.account} /> */}
                         <CollectedNFTs account={profile.account} />
                     </Stack>
                 </TabPanel>
