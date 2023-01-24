@@ -2,20 +2,20 @@ import { normalizeAmount } from 'src/utils/normalizers';
 
 // Material
 import {
-    useTheme, useMediaQuery,
     styled,
+    useTheme, useMediaQuery,
     Button,
     Dialog,
     DialogContent,
     DialogTitle,
     IconButton,
-    Link,
     Stack,
     Typography
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 // ----------------------------------------------------------------------
+
 const ConfirmDialog = styled(Dialog) (({ theme }) => ({
     backdropFilter: 'blur(1px)',
     WebkitBackdropFilter: 'blur(1px)', // Fix on Mobile

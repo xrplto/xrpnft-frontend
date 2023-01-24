@@ -12,11 +12,14 @@ import {
     Card,
     Divider,
     FormControl,
+    FormControlLabel,
     IconButton,
     InputAdornment,
     Link,
     ListItemButton,
     MenuItem,
+    Radio,
+    RadioGroup,
     Select,
     Stack,
     TextField,
@@ -168,6 +171,7 @@ export default function ImportCollection() {
     const [taxons, setTaxons] = useState([]);
 
     const [taxon, setTaxon] = useState(-1);
+    const [rarity, setRarity] = useState('score');
 
     // Logo image
     const [fileUrl1, setFileUrl1] = useState(null);
@@ -254,6 +258,7 @@ export default function ImportCollection() {
             // data.type = type;
             data.private = privateCollection;
             data.taxon = taxon;
+            data.rarity = rarity;
 
             data.passphrase = passphrase;
 
@@ -398,6 +403,11 @@ export default function ImportCollection() {
     const handleChangeIssuer = (e) => {
         setIssuer(e.target.value);
     }
+
+    const handleChangeRarity = (event) => {
+        const value = event.target.value;
+        setRarity(value);
+    };
 
     return (
         <>
@@ -710,6 +720,50 @@ export default function ImportCollection() {
                         }
                     }}
                 />
+            </Stack>
+
+            <Stack spacing={2} mb={3}>
+                <Typography variant='p4'>Rarity <Typography variant='s2'>*</Typography></Typography>
+                <Typography variant='p3'>
+                    Select your collection's rarity calculation method.&nbsp;
+                    <Link
+                        target="_blank"
+                        href={`https://raritytools.medium.com/ranking-rarity-understanding-rarity-calculation-methods-86ceaeb9b98c`}
+                        rel="noreferrer noopener nofollow"
+                    >
+                        Read More
+                    </Link>
+                </Typography>
+
+                <Stack spacing={1} pl={0}>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Standard:</Typography> Simply compare the rarest trait of each NFT(%).
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Average:</Typography> Average the rarity of traits that exist on the NFT(%).
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Statistical:</Typography> Multiply all of its trait rarities together(%).
+                    </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Score:</Typography> Sum of the Rarity Score of all of its trait values(not %, just a value).
+                    </Typography>
+                </Stack>
+
+                <FormControl sx={{ ml: 5 }}>
+                    {/* <FormLabel id="on-sale-sub-filter">On Sale sub</FormLabel> */}
+                    <RadioGroup
+                        aria-labelledby="demo-controlled-radio-buttons-group"
+                        name="controlled-radio-buttons-group"
+                        value={rarity}
+                        onChange={handleChangeRarity}
+                    >
+                        <FormControlLabel value="standard" control={<Radio />} label="Standard" />
+                        <FormControlLabel value="average" control={<Radio />} label="Average" />
+                        <FormControlLabel value="statistical" control={<Radio />} label="Statistical" />
+                        <FormControlLabel value="score" control={<Radio />} label="Score" />
+                    </RadioGroup>
+                </FormControl>
             </Stack>
 
             {/* <Stack spacing={2} mb={3}>

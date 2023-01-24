@@ -391,23 +391,6 @@ export const DarkSpacesTheme = createTheme({
         '.child-popover .MuiPaper-root .MuiList-root': {
           flexDirection: 'column'
         },
-        '#nprogress': {
-          pointerEvents: 'none'
-        },
-        '#nprogress .bar': {
-          background: colors.primary.lighter
-        },
-        '#nprogress .spinner-icon': {
-          borderTopColor: colors.primary.lighter,
-          borderLeftColor: colors.primary.lighter
-        },
-        '#nprogress .peg': {
-          boxShadow:
-            '0 0 15px ' +
-            colors.primary.lighter +
-            ', 0 0 8px' +
-            colors.primary.light
-        },
         ':root': {
           '--swiper-theme-color': colors.primary.main,
           colorScheme: 'dark'

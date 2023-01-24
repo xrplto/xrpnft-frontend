@@ -7,11 +7,10 @@ import {
 } from '@mui/material';
 
 // Components
-import AllCollections from 'src/collection/AllCollections';
-import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
-import XAppBar from 'src/components/XAppBar';
+import AllCollections from 'src/collection/AllCollections';
+import ScrollToTop from 'src/components/ScrollToTop';
 
 // overflow: scroll;
 // overflow: auto;
@@ -30,7 +29,7 @@ export default function Overview() {
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <XAppBar />
+            <Header />
 
             <Container maxWidth="lg">
                 <AllCollections />

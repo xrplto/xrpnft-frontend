@@ -102,7 +102,9 @@ export default function NFTDetails({nft}) {
         NFTokenID,
         props,
         total,
-        volume
+        volume,
+        rarity,
+        rarity_rank
     } = nft;
 
     const ParsedURI = convertHexToString(URI);
@@ -172,6 +174,12 @@ export default function NFTDetails({nft}) {
                             <FlagsContainer Flags={flag}/>
                             <Typography variant="s6">{strDateTime}</Typography>
                         </Stack>
+                        {rarity_rank > 0 &&
+                            <Stack direction="row" spacing={2} sx={{mt: 2}}>
+                                <Typography variant="caption">Rarity Rank</Typography>
+                                <Typography variant="s6"># {rarity_rank}</Typography>
+                            </Stack>
+                        }
                         <Stack direction="row" spacing={2} sx={{mt: 2}}>
                             <Typography variant="caption">Taxon</Typography>
                             <Typography variant="s6">{taxon}</Typography>

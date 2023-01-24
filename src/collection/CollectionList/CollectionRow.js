@@ -1,18 +1,6 @@
-import { useState, useEffect } from 'react';
-import React, { Suspense } from "react";
-import { LazyLoadImage, LazyLoadComponent } from 'react-lazy-load-image-component';
-import { ColorExtractor } from 'react-color-extractor';
-
-// Iconify
-import { Icon } from '@iconify/react';
-import arrowsExchange from '@iconify/icons-gg/arrows-exchange';
-import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
-
 // Material
-import { withStyles } from '@mui/styles';
 import {
     styled,
-    Avatar,
     IconButton,
     Link,
     Stack,
@@ -24,12 +12,15 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
-// Components
-import MoreMenu from './MoreMenu';
-
 // Utils
-import { formatDateTime, formatMonthYearDate } from 'src/utils/formatTime';
-import { fNumber, fIntNumber, fPercent, fVolume } from 'src/utils/formatNumber';
+import { formatMonthYearDate } from 'src/utils/formatTime';
+import { fNumber, fIntNumber, fVolume } from 'src/utils/formatNumber';
+
+// Iconify
+import { Icon } from '@iconify/react';
+import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
+
+// Components
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -168,8 +159,6 @@ export default function CollectionRow({ id, item, isMine }) {
                         </IconCover>
                     </Link>
 
-
-
                     <Link
                         underline="none"
                         href={`/collection/${slug}`}
@@ -224,7 +213,6 @@ export default function CollectionRow({ id, item, isMine }) {
             </TableCell>
 
             <TableCell align="right">
-                {/* <MoreMenu collection={item} isMine={isMine} /> */}
             </TableCell>
         </TableRow>
     );

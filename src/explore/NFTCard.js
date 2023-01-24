@@ -5,6 +5,7 @@ import { ColorExtractor } from 'react-color-extractor';
 // Material
 import {
     styled,
+    Box,
     CardMedia,
     Divider,
     Link,
@@ -25,14 +26,13 @@ import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 // import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Utils
-import { NFToken, getMinterName } from "src/utils/constants";
+import { getMinterName } from "src/utils/constants";
 import { fNumber } from 'src/utils/formatNumber';
 import { getImgUrl } from 'src/utils/parse';
 
 // Components
 // import FlagsContainer from 'src/components/Flags';
 import Label from './Label';
-import { Box } from "@mui/system";
 
 const CardWrapper = styled(Card)(
     ({ theme }) => `
@@ -52,24 +52,6 @@ const CardWrapper = styled(Card)(
         padding-bottom: 5px;
   `
 );
-// const CardWrapper = styled('div')(
-//     ({ theme }) => `
-//         box-shadow: 0px -0.5px 4px rgba(100, 100, 111, 0.9);
-//         // filter: drop-shadow(16px 16px 10px rgba(0,0,0,0.8));
-//         // filter: drop-shadow(0 0 0.2rem rgba(0,0,0,0.8));
-//         border-radius: 10px;
-//         backdrop-filter: blur(50px);
-//         // background: rgb(2, 0, 36);
-//         padding: 0px;
-//         // text-align: center;
-//         object-fit: cover;
-//         cursor: pointer;
-//         transition: width 1s ease-in-out, height .5s ease-in-out !important;
-//         -webkit-tap-highlight-color: transparent;
-//         overflow: hidden;
-//         padding-bottom: 5px;
-//   `
-// );
 
 export default function NFTCard({ nft }) {
     // const [imgUrl, setImgUrl] = useState('');
@@ -109,7 +91,9 @@ export default function NFTCard({ nft }) {
         NFTokenID,
         URI,
         status,
-        destination
+        destination,
+        rarity,
+        rarity_rank
     } = nft;
 
     const isSold = false;
@@ -137,7 +121,7 @@ export default function NFTCard({ nft }) {
                     width: '100%',
                     maxWidth: 280,
                     // height: 250,
-                    aspectRatio: '9 / 14',
+                    aspectRatio: '9 / 16',
                     // minHeight: 250,
                     // background: `radial-gradient(
                     //         circle,
@@ -170,7 +154,7 @@ export default function NFTCard({ nft }) {
                                 // animation='wave'
                                 sx={{
                                     width: '100%',
-                                    height: '75%'
+                                    height: '70%'
                                 }}
                             /> :
                             isVideo ? 'video' : 'img'}
@@ -182,7 +166,7 @@ export default function NFTCard({ nft }) {
                     // loop={isVideo}
                     sx={{
                         width: '100%',
-                        height: '75%',
+                        height: '70%',
                         maxWidth: 280,
                         // maxHeight: 250,
                         marginTop: 0,
@@ -362,6 +346,12 @@ export default function NFTCard({ nft }) {
                             //     }
                             // </Stack>
                         )}
+                        {rarity_rank > 0 &&
+                            <Stack direction="row" justifyContent='space-between' sx={{mt:0.2, mb:0.5}}>
+                                <Typography variant="s7">Rarity</Typography>
+                                <Typography variant="s11">#{rarity_rank}</Typography>
+                            </Stack>
+                        }
                     </Box>
                 </CardContent>
                 {/* <Divider sx={{mt:0.8, mb:0.3}}/>

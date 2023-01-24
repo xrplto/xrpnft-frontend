@@ -1,3 +1,4 @@
+// Material
 import {
     Accordion,
     AccordionSummary,
@@ -20,6 +21,7 @@ import { Icon } from '@iconify/react';
 import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Components
+
 export default function FilterDetail({ onSaleCount, filter, setFilter, subFilter, setSubFilter }) {
 
     const handleFlagChange = (e) => {

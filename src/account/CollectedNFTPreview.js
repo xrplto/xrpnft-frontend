@@ -1,4 +1,6 @@
+import { useCallback, useEffect, useState } from "react";
 import ModalImage from "react-modal-image";
+
 // Material
 import {
     CardMedia,
@@ -13,9 +15,11 @@ import {
 import { tableCellClasses } from "@mui/material/TableCell";
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import FlagsContainer from 'src/components/Flags';
-import { useCallback, useEffect, useState } from "react";
+
+// Utils
 import { getImgUrl, getMetadata } from "src/utils/parse";
 import { formatDateTime } from "src/utils/formatTime";
+
 // ----------------------------------------------------------------------
 
 export default function CollectedNFTPreview({ meta, URI, NFTokenID, collection, time, flag, taxon, transferFee, name }) {

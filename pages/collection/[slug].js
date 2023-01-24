@@ -5,17 +5,15 @@ import { performance } from 'perf_hooks';
 import {
     Box,
     Container,
-    Grid,
     styled,
     Toolbar
 } from '@mui/material';
 
 // Components
-import Collection from 'src/collection';
-import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
-import XAppBar from 'src/components/XAppBar';
+import Collection from 'src/collection';
+import ScrollToTop from 'src/components/ScrollToTop';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -84,7 +82,7 @@ export default function Overview({data}) {
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <XAppBar />
+            <Header />
 
             <BannerWrapper>
                 <div style={{

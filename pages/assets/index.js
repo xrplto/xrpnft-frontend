@@ -2,17 +2,15 @@
 import {
     Box,
     Container,
-    Grid,
     styled,
     Toolbar
 } from '@mui/material';
 
 // Components
-import AllNFT from 'src/collection/AllNFT';
-import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
-import XAppBar from 'src/components/XAppBar';
+import AllNFT from 'src/collection/AllNFT';
+import ScrollToTop from 'src/components/ScrollToTop';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -21,42 +19,12 @@ const OverviewWrapper = styled(Box)(
 `
 );
 
-const BannerWrapper = styled('div')(
-    ({ theme }) => `
-    position: relative;
-    max-height: 320px;
-    // overflow: hidden;
-`
-);
-
-const BannerImage = styled('img')(
-    ({ theme }) => `
-    position: absolute;
-    top:0;
-    left:0;
-    bottom:0;
-    right:0;
-    inset: 0px;
-    box-sizing: border-box;
-    padding: 0px;
-    border: none;
-    margin: auto;
-    display: block;
-    width: 0px; height: 0px;
-    min-width: 100%;
-    max-width: 100%;
-    min-height: 100%;
-    max-height: 100%;
-    object-fit: cover;
-  `
-);
-
 export default function Overview({}) {
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <XAppBar />
+            <Header />
 
             <Container maxWidth="xxl">
                 <AllNFT />

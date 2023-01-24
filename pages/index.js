@@ -1,4 +1,4 @@
-import { getRandomBG } from 'src/utils/constants';
+import dynamic from 'next/dynamic';
 
 // Material
 import {
@@ -12,11 +12,15 @@ import {
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
+// Utils
+import { getRandomBG } from 'src/utils/constants';
+
 // Components
-import Landing from 'src/landing';
-import ScrollToTop from 'src/components/ScrollToTop';
-import XAppBar from 'src/components/XAppBar';
+import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
+// import Landing from 'src/landing';
+const DynamicLanding = dynamic(() => import('src/landing'));
+import ScrollToTop from 'src/components/ScrollToTop';
 
 // overflow: scroll;
 // overflow: auto;
@@ -59,11 +63,10 @@ export default function Overview({data}) {
                 }}
             />
 
-            {/* <XAppBar /> */}
-            <XAppBar />
+            <Header />
 
             <Container maxWidth="lg">
-                <Landing />
+                <DynamicLanding />
             </Container>
 
             <ScrollToTop />

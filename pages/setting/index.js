@@ -7,11 +7,10 @@ import {
 } from '@mui/material';
 
 // Components
-import EditProfile from 'src/account/setting';
-import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
-import XAppBar from 'src/components/XAppBar';
+import EditProfile from 'src/account/setting';
+import ScrollToTop from 'src/components/ScrollToTop';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -26,7 +25,7 @@ export default function Overview({data}) {
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <XAppBar />
+            <Header />
 
             <Container maxWidth="sm">
                 <EditProfile />

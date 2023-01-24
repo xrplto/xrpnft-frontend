@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import JSONPretty from 'react-json-pretty';
 import isIPFS from 'is-ipfs';
 import Decimal from 'decimal.js';
-import {filesize} from "filesize";
 
 // Material
 import {
@@ -24,17 +23,11 @@ import {
     OutlinedInput,
     Select,
     Stack,
-    Table,
-    TableBody,
-    TableRow,
-    TableCell,
     TextField,
     ToggleButton,
     ToggleButtonGroup,
-    Tooltip,
     Typography
 } from '@mui/material';
-import { tableCellClasses } from "@mui/material/TableCell";
 import { LoadingButton } from '@mui/lab';
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
@@ -42,9 +35,6 @@ import SendIcon from '@mui/icons-material/Send';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DownloadIcon from '@mui/icons-material/Download';
-import ImageIcon from '@mui/icons-material/Image';
-import CloseIcon from '@mui/icons-material/Close';
-import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
@@ -150,8 +140,8 @@ const sampleMetaData = {
 export default function BulkMint2({slug}) {
     const theme = useTheme();
     const fileRef = useRef();
-    const BASE_URL = 'https://api.xrpnft.com/api';    
-    
+    const BASE_URL = 'https://api.xrpnft.com/api';
+
     const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
@@ -174,7 +164,7 @@ export default function BulkMint2({slug}) {
 
     const [flag, setFlag] = useState(0x08); // /*Burnable, Only XRP, Trustline*/, Transferable
     // const [passphrase, setPassPhrase] = useState('');
-    
+
     const [sMeta, setSampleMeta] = useState(sampleMetaData);
 
     const [metaCount, setMetaCount] = useState(10000);
@@ -202,7 +192,7 @@ export default function BulkMint2({slug}) {
     const [attributes, setAttributes] = useState([]);
 
     const [openAddAttr, setOpenAddAttr] = useState(false);
-    
+
     const active = accountLogin && accountToken && collection;
     let canDownload = active && nftName && isIPFS.cid(ipfsCID);
 
@@ -296,7 +286,7 @@ export default function BulkMint2({slug}) {
         if (!sMeta) return;
 
         const newMeta = {...sMeta};
-        
+
         newMeta.name = nftName + ' #' + nftNameIndex;
 
         // imgExt change
@@ -370,13 +360,13 @@ export default function BulkMint2({slug}) {
 
     const readUploadedFileAsText = (inputFile) => {
         const temporaryFileReader = new FileReader();
-      
+
         return new Promise((resolve, reject) => {
             temporaryFileReader.onerror = () => {
                 temporaryFileReader.abort();
                 reject(new DOMException("Problem parsing input file."));
             };
-        
+
             temporaryFileReader.onload = () => {
                 resolve(temporaryFileReader.result);
             };
@@ -388,7 +378,7 @@ export default function BulkMint2({slug}) {
         const value = e.target.value;
         if (value === '1') // Only burnnable flag changes
             setFlag(flag ^ value);
-        // if (value !== '8' && value !== '4') // Disable TRANSFERABLE & TRUSTLINE flag unchecking, 
+        // if (value !== '8' && value !== '4') // Disable TRANSFERABLE & TRUSTLINE flag unchecking,
         //     setFlag(flag ^ value);
     }
 
@@ -459,7 +449,7 @@ export default function BulkMint2({slug}) {
 
             if (extLink)
                 newMeta.external_link = extLink;
-                
+
             if (description)
                 newMeta.description = description;
 
@@ -567,7 +557,7 @@ export default function BulkMint2({slug}) {
             openSnackbar={openSnackbar}
             onAddAttr={handleAddAttr}
         />
-        
+
         <Grid container spacing={3}>
             <Grid item lg={6}>
                 <Stack spacing={2} mb={4}>
@@ -597,8 +587,8 @@ export default function BulkMint2({slug}) {
                             <Typography variant='p4'>{collection.name} <Typography variant='s7'> (Taxon: {collection.taxon})</Typography></Typography>
                         </Stack>
                     }
-                    
-                    
+
+
                     <Typography variant='p4'>NFT Name <Typography variant='s2'>*</Typography></Typography>
 
                     <Typography variant='p3'>
@@ -676,7 +666,7 @@ export default function BulkMint2({slug}) {
                                             <Typography variant='s2'>Value</Typography>
                                             <Typography variant='s4'>{attr.value}</Typography>
                                         </Stack>
-                                        
+
                                         <IconButton onClick={()=>handleRemoveAttr(attr.uuid)}>
                                             <HighlightOffOutlinedIcon fontSize="small" />
                                         </IconButton>
@@ -964,7 +954,7 @@ export default function BulkMint2({slug}) {
                     <Typography variant='p3' mt={2}>
                         One of your metadata used to create NFT URI. Metadata will follow the <Link href="https://github.com/XRPLF/XRPL-Standards/discussions/69" target="_blank" rel="noreferrer noopener nofollow">XLS-24D</Link> standard.
                     </Typography>
-                    
+
                     <Typography variant='s2' mt={0.5}>(Total {fIntNumber(metaCount)} metadata in length)</Typography>
 
                     <Box

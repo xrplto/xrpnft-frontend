@@ -1,3 +1,5 @@
+import dynamic from 'next/dynamic';
+
 // Material
 import {
     Box,
@@ -11,11 +13,11 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import Admin from 'src/admin';
-import ScrollToTop from 'src/components/ScrollToTop';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
-import XAppBar from 'src/components/XAppBar';
+// import Admin from 'src/admin';
+const DynamicAdmin = dynamic(() => import('src/admin'));
+import ScrollToTop from 'src/components/ScrollToTop';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -25,7 +27,7 @@ const OverviewWrapper = styled(Box)(
 );
 
 export default function Overview({data}) {
-    const { darkMode, accountProfile, openSnackbar } = useContext(AppContext);
+    const { accountProfile } = useContext(AppContext);
 
     const isAdmin = accountProfile?.admin;
 
@@ -33,11 +35,11 @@ export default function Overview({data}) {
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <XAppBar />
+            <Header />
 
             <Container maxWidth="xxl">
                 {isAdmin &&
-                    <Admin />
+                    <DynamicAdmin />
                 }
             </Container>
 
@@ -53,7 +55,7 @@ export default function Overview({data}) {
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps() {
-    const BASE_URL = 'http://65.109.54.46/api';
+    // const BASE_URL = 'http://65.109.54.46/api';
 
     let ret = {};
 

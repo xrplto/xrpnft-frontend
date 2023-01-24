@@ -34,7 +34,7 @@ const FooterWrapper = styled(Box)(
 `
 );
 
-function Footer() {
+export default function Footer() {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { darkMode } = useContext(AppContext);
 
@@ -272,7 +272,7 @@ function Footer() {
 
                     <Grid item xs={12} sx={{ mt: 3 }}>
                         <Typography textAlign="left" variant="subtitle1">
-                            &copy; 2022 XRPNFT.com. All rights reserved
+                            &copy; 2023 XRPNFT.com. All rights reserved
                             {/* <Link
                                 href="https://nftlabs.to"
                                 target="_blank"
@@ -288,5 +288,3 @@ function Footer() {
         </FooterWrapper>
     );
 }
-
-export default Footer;

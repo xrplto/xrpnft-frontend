@@ -33,13 +33,17 @@ export default function FilterDetail({ collection, filter, setFilter, subFilter,
         const value = e.target.value;
         let newFilter = filter ^ value;
         if (value === '4') {
-            // 8 4 2 1
-            // 0 1 1 1
+            // 16 8 4 2 1
+            //  0 0 1 1 1
             newFilter &= 0x07;
         } else if (value === '8') {
-            // 8 4 2 1
-            // 1 0 1 1
+            // 16 8 4 2 1
+            //  0 1 0 1 1
             newFilter &= 0x0B;
+        } else if (value === '16') {
+            // 16 8 4 2 1
+            //  1 0 0 1 1
+            newFilter &= 0x13;
         }
         setFilter(newFilter);
     }
@@ -120,6 +124,19 @@ export default function FilterDetail({ collection, filter, setFilter, subFilter,
                                 label={<Typography variant='s3'>Idle <Typography variant='s7'>({extra?.notOnSaleCount})</Typography></Typography>}
                                 value={8}
                                 control={<Checkbox checked={(filter & 8) !== 0} onChange={handleFlagChange} />}
+                            />
+
+                            <FormControlLabel
+                                label={
+                                    <Stack direction="row" spacing={0.5}>
+                                        <Typography variant='s3'>Rarity</Typography>
+                                        <Tooltip title="Sort NFTs with rarity">
+                                            <Icon icon={infoFilled} />
+                                        </Tooltip>
+                                    </Stack>
+                                }
+                                value={16}
+                                control={<Checkbox checked={(filter & 16) !== 0} onChange={handleFlagChange} />}
                             />
                         </FormGroup>
 

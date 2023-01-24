@@ -1,12 +1,9 @@
 import {
-    alpha,
     styled,
     Box,
     Dialog,
     Link,
     Typography,
-    // DialogTitle, 
-    //Divider
 } from '@mui/material';
 
 const QRDialog = styled(Dialog)(({ theme }) => ({
@@ -61,7 +58,7 @@ export default function LoginDialog(props) {
                     alt="QR"
                     src={qrUrl}
                 />
-                
+
                 <Link
                     underline="none"
                     color="inherit"

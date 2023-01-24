@@ -1,4 +1,5 @@
 import axios from 'axios'
+import dynamic from 'next/dynamic';
 import { performance } from 'perf_hooks';
 
 // Material
@@ -13,11 +14,12 @@ import {
 import { getImgUrl } from 'src/utils/parse';
 
 // Components
-import TokenDetail from 'src/detail';
-import ScrollToTop from 'src/components/ScrollToTop';
-import XAppBar from 'src/components/XAppBar';
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
+import TokenDetail from 'src/detail';
+import ScrollToTop from 'src/components/ScrollToTop';
+
+const DynamicTokenDetail = dynamic(() => import('src/detail'));
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -31,10 +33,10 @@ export default function Overview({data}) {
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
-            <XAppBar />
+            <Header />
 
             <Container maxWidth="lg">
-                <TokenDetail nft={data.nft} />
+                <DynamicTokenDetail nft={data.nft} />
             </Container>
 
             <ScrollToTop />

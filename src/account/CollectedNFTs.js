@@ -15,6 +15,8 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 
 // Loader
 import { ClipLoader } from "react-spinners";
+
+// Components
 import NFTCard from 'src/explore/NFTCard';
 import FilterDetail from './FilterDetail';
 

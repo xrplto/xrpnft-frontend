@@ -48,13 +48,11 @@
     "decimal.js": "^10.3.1",
     "next": "12.2.0",
     "next-images": "1.8.4",
-    "nprogress": "0.2.0",
     "notistack": "^2.0.5",
     "numeral": "2.0.6",
     "lodash": "^4.17.21",
     "perf_hooks": "^0.0.1",
     "is-ipfs": "^6.0.2",
-    "xrpl-txdata": "^1.2.1",
     "uuid": "^8.3.2",
     "filesize": "^10.0.5",
     "use-sound": "^4.0.1",
@@ -95,6 +93,7 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
     "next-transpile-modules": "9.0.0",
-    "prettier": "2.7.1"
+    "prettier": "2.7.1",
+    "@next/bundle-analyzer": "13.1.5"
   }
 }

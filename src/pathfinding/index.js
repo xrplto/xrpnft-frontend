@@ -2,7 +2,6 @@ import React from 'react';
 import axios from 'axios'
 import { useState, useRef } from 'react';
 import Decimal from 'decimal.js';
-import { utils } from "xrpl-txdata";
 
 // Material
 import {
@@ -25,6 +24,7 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { XRP_TOKEN } from 'src/utils/constants';
+import { normalizeCurrencyCodeXummImpl } from "src/utils/normalizers";
 
 // Loader
 import { Comment } from 'react-loader-spinner';
@@ -105,7 +105,7 @@ export default function PathFinding() {
             openSnackbar('Invalid Amount', 'error');
             return;
         }
-        
+
         // {
         //     "id": 8,
         //     "command": "ripple_path_find",
@@ -165,7 +165,7 @@ export default function PathFinding() {
                         openSnackbar(ret.error_message, 'error')
                     } else {
                         const newPaths = ret.alternatives || [];
-                        
+
                         setPaths(newPaths);
                         console.log(newPaths);
                         /*
@@ -249,7 +249,7 @@ export default function PathFinding() {
                 <Typography variant='p3'>
                     Unique address of the account that would receive funds in a transaction. (rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ)
                 </Typography>
-                
+
 
                 <TextField required placeholder='Destination' margin='dense'
                     onChange={(e) => {
@@ -269,7 +269,7 @@ export default function PathFinding() {
                 <Typography variant='p3'>
                     Unique address of the account that would send funds in a transaction. (rpePPeRpC89vpCY3CDzhzMCs78nPoNnAKm)
                 </Typography>
-                
+
 
                 <TextField required placeholder='Source' margin='dense'
                     onChange={(e) => {
@@ -290,7 +290,7 @@ export default function PathFinding() {
 
                 <Stack direction="row" alignItems="center">
                     <Typography variant='p3'>
-                        Currency that the destination account would receive in a transaction. 
+                        Currency that the destination account would receive in a transaction.
                     </Typography>
 
                     {token && token.currency !== 'XRP' &&
@@ -319,7 +319,7 @@ export default function PathFinding() {
             <Stack spacing={2} mb={3}>
                 <Typography variant='p2'>Amount <Typography variant='s2'>*</Typography></Typography>
                 <Typography variant='p3'>
-                    Amount that the destination account would receive in a transaction. 
+                    Amount that the destination account would receive in a transaction.
                 </Typography>
 
                 <Stack direction="row" spacing={2} alignItems="center">
@@ -399,7 +399,7 @@ export default function PathFinding() {
                                         {/* <Typography variant='d4'>{path.paths_computed?.[0]?.[0]?.account}</Typography> */}
                                         <Typography variant='d4'>{typeof path.source_amount === "string"
                                             ? "XRP"
-                                            : utils.currencyCodeFormat(path.source_amount.currency)}
+                                            : normalizeCurrencyCodeXummImpl(path.source_amount.currency)}
                                         </Typography>
                                     </Stack>
 

@@ -5,6 +5,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 // Material
 import {
     alpha, styled,
+    Avatar,
     Box,
     Container,
     Divider,
@@ -16,8 +17,7 @@ import {
     Tab,
     Tabs,
     Tooltip,
-    Typography,
-    Avatar
+    Typography
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -25,10 +25,14 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ListIcon from '@mui/icons-material/List';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import NearbyErrorIcon from '@mui/icons-material/NearbyError';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
+
+// Utils
+import { getHashIcon } from 'src/utils/parse';
 
 // Components
 import CreatedList from './CreatedList';
@@ -37,11 +41,6 @@ import ActivityList from './ActivityList';
 import AcceptList from './AcceptList';
 import OffersList from './OffersList';
 import CollectedNFTs from './CollectedNFTs';
-import { height } from '@mui/system';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-
-// Utils
-import { getHashIcon } from 'src/utils/parse';
 
 const IconImage = styled('img')(
     ({ theme }) => `
@@ -342,7 +341,7 @@ export default function Account({ profile, tab }) {
 
 
                 <StyledMenu
-                    id="demo-customized-menu"
+                    id="demo-customized-menu1"
                     MenuListProps={{
                         'aria-labelledby': 'demo-customized-button',
                     }}
@@ -354,6 +353,7 @@ export default function Account({ profile, tab }) {
                         <LocalOfferIcon />
                         <Typography variant='s6'>{tabMoreLabels[0]}</Typography>
                     </MenuItem>
+
                     <MenuItem onClick={(event) => handleSelectMore(event, 1)} sx={{ py: 1 }} disableRipple>
                         <ListIcon />
                         <Typography variant='s6'>{tabMoreLabels[1]}</Typography>

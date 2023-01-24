@@ -13,8 +13,6 @@ import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import CycloneIcon from '@mui/icons-material/Cyclone';
 
-export const MAINNET = "ALIVE"; // NOT_ALIVE for testnet
-
 export const SUPPORTED_FILE_TYPES = [
     'JPG',
     'PNG',

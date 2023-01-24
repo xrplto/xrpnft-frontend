@@ -170,18 +170,11 @@ export default function NFTs({ collection }) {
                             spacing={1}
                         >
                             {
-
                                 nfts.map((nft) => (
-
-                                    <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.uuid}
-                                    >
-                                        <NFTCard
-                                            nft={nft}
-                                        />
+                                    <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.uuid}>
+                                        <NFTCard nft={nft} />
                                     </Grid>
                                 ))
-
-                                // .filter(getNFTimage_info(URI)!==null)
                             }
                         </Grid>
                     </InfiniteScroll>

@@ -35,13 +35,10 @@ import { Icon } from '@iconify/react';
 import userLock from '@iconify/icons-fa-solid/user-lock';
 
 // Utils
-import { MAINNET } from 'src/utils/constants';
 import { getHashIcon } from 'src/utils/parse';
 
 // Components
 import LoginDialog from './LoginDialog';
-import XLS20Dialog from './XLS20Dialog';
-// import ChooseAccountDialog from './dialog/ChooseAccountDialog';
 
 export default function Wallet() {
     // https://github.com/mui/material-ui/issues/10000
@@ -56,7 +53,6 @@ export default function Wallet() {
 
     const [open, setOpen] = useState(false);
     const [openLogin, setOpenLogin] = useState(false);
-    const [openXLS20Dialog, setOpenXLS20Dialog] = useState(false);
     const [uuid, setUuid] = useState(null);
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
@@ -195,18 +191,8 @@ export default function Wallet() {
         setOpen(false);
     };
 
-    const handleXLS20Login = () => {
-        setOpen(false);
-        setOpenXLS20Dialog(true);
-    };
-
-    const handleXLS20LoginClose = () => {
-        setOpenXLS20Dialog(false);
-    };
-
     const handleLogin = () => {
         setOpen(false);
-        setOpenXLS20Dialog(false);
         onConnectXumm();
     };
 
@@ -403,7 +389,7 @@ export default function Wallet() {
                     ) : (
                         <MenuItem
                             key="xumm"
-                            onClick={MAINNET==="NOT_ALIVE"?handleXLS20Login:handleLogin}
+                            onClick={handleLogin}
                             sx={{ typography: 'body2', py: 2, px: 2.5 }}
                         >
                             <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
@@ -419,12 +405,6 @@ export default function Wallet() {
                 handleClose={handleLoginClose}
                 qrUrl={qrUrl}
                 nextUrl={nextUrl}
-            />
-
-            <XLS20Dialog
-                open={openXLS20Dialog}
-                handleClose={handleXLS20LoginClose}
-                handleLogin={handleLogin}
             />
         </>
     );

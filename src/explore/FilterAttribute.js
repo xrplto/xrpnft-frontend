@@ -1,11 +1,8 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import Decimal from 'decimal.js';
+import { useState } from 'react';
 import { isEqual } from 'lodash';
 
 // Material
 import {
-    styled,
     Accordion,
     AccordionSummary,
     AccordionDetails,
@@ -17,7 +14,8 @@ import {
     Typography,
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-// Components
+
+// Utils
 import { fIntNumber } from 'src/utils/formatNumber';
 
 export default function FilterAttribute({ attrs, filterAttrs, setFilterAttrs }) {
