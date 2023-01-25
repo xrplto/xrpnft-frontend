@@ -62,7 +62,7 @@ export default function AttributeFilter({ attrs, setFilterAttrs }) {
                     return (
                         <Accordion
                             key={title}
-                            defaultExpanded={idx === 0}
+                            // defaultExpanded={idx === 0}
                             disableGutters
                             sx={{
                                 borderBottom: 0,

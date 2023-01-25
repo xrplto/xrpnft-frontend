@@ -81,7 +81,7 @@ export default function Overview({data}) {
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps() {
-    const BASE_URL = 'http://65.109.54.46/api';
+    // const BASE_URL = 'http://65.109.54.46/api';
 
     let ret = {};
 
@@ -99,6 +99,6 @@ export async function getStaticProps() {
         // Next.js will attempt to re-generate the page:
         // - When a request comes in
         // - At most once every 10 seconds
-        revalidate: 10, // In seconds
+        // revalidate: 1000, // In seconds
     }
 }

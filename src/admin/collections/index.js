@@ -50,6 +50,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ViewCompactIcon from '@mui/icons-material/ViewCompact';
 import GridOnIcon from '@mui/icons-material/GridOn';
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 
 // Context
 import { useContext } from 'react';
@@ -176,7 +177,7 @@ export default function Collections({account}) {
                         setCollections(ret.collections);
                     }
                 }).catch(err => {
-                    console.log("Error on getting bulk list!!!", err);
+                    console.log("Error on getting collection list!!!", err);
                 }).then(function () {
                     // always executed
                     setLoading1(false);
@@ -203,6 +204,31 @@ export default function Collections({account}) {
                 setSync(sync + 1);
             } else {
                 openSnackbar(ret.msg, 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            openSnackbar('Error', 'error');
+        }
+        setLoading1(false);
+    };
+
+    const onResolveMetadata = async (cid) => {
+        if (!accountAdmin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        setLoading1(true);
+        try {
+            const body = { cid };
+
+            const res = await axios.post(`${BASE_URL}/admin/resolve_metadata`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
+
+            let ret = res.data;
+            if (ret.status) {
+                openSnackbar(ret.msg, 'success');
+            } else {
+                openSnackbar(ret.err, 'error');
             }
         } catch (err) {
             console.error(err);
@@ -286,6 +312,10 @@ export default function Collections({account}) {
         }
         setLoading(false);
     };
+
+    const handleResolveMetadata = (collection) => {
+        onResolveMetadata(collection.uuid);
+    }
 
     const handleSetTrustlines = (collection) => {
         onSetTrustlines(collection.uuid);
@@ -432,7 +462,8 @@ export default function Collections({account}) {
                                 items,
                                 costs,
                                 verified,
-                                category
+                                category,
+                                nometa
                             } = row;
 
                             const strDateTime = formatDateTime(created);
@@ -505,6 +536,18 @@ export default function Collections({account}) {
                                                         <DeleteForeverIcon fontSize="medium" color="error" />
                                                     </IconButton>
                                                 </Tooltip>
+                                            </Stack>
+
+                                            <Stack direction="row" spacing={0.5} alignItems="center">
+                                                    <Typography variant="s7">No Meta:</Typography>
+                                                    <Stack direction="row" spacing={0} alignItems="center">
+                                                        <Typography variant="p4">{nometa}</Typography>
+                                                        <Tooltip title='Resolve metadata again.'>
+                                                            <IconButton onClick={()=>handleResolveMetadata(row)}>
+                                                                <DocumentScannerIcon fontSize="medium" color="success" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Stack>
                                             </Stack>
 
                                             {costs && costs.length > 0 &&
