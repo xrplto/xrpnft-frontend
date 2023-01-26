@@ -2,11 +2,17 @@ import { useState } from 'react';
 
 // Material
 import {
-    Box, Tab, Typography
+    Box,
+    Tab
 } from "@mui/material";
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
+
+import {
+    TabContext,
+    TabList,
+    TabPanel
+} from "@mui/lab";
+
+// Components
 import NFTs from './NFTs';
 import CollectionActivity from './CollectionActivity';
 
@@ -28,17 +34,15 @@ export default function ExploreNFT({ collection }) {
                             <Tab label="Activities" value="tab-activities" />
                         </TabList>
                     </Box>
-                    <TabPanel value="tab-nfts">
+                    <TabPanel value="tab-nfts" sx={{pl:0, pr:0}}>
                         <NFTs collection={collection} />
                     </TabPanel>
-                    <TabPanel value="tab-activities">
+                    <TabPanel value="tab-activities" sx={{pl:0, pr:0}}>
                         {/* <Typography color='red'>Coming soon.</Typography> */}
                         <CollectionActivity collection={collection} />
                     </TabPanel>
                 </TabContext>
             </Box>
-
-
         </>
     );
 };

@@ -88,7 +88,7 @@ const ImageBackdrop = styled('span')(({ theme }) => ({
     transition: theme.transitions.create('opacity'),
 }));
 
-export default function CollectionRow({ id, item, isMine }) {
+export default function Row({ id, item, isMine }) {
     const {
         uuid,
         account,
@@ -138,7 +138,7 @@ export default function CollectionRow({ id, item, isMine }) {
         >
             <TableCell align="left" sx={{p:0}}>
                 <Stack direction="row" alignItems="center" spacing={2} sx={{pt: 2, pb: 2}}>
-                    <Typography variant="d3">{id}</Typography>
+                    <Typography variant="s3">{id}</Typography>
                     <Link href={isMine?`/collection/${slug}/edit`:`/collection/${slug}`} underline='none'>
                         <IconCover>
                             <IconWrapper>
@@ -165,10 +165,10 @@ export default function CollectionRow({ id, item, isMine }) {
                     >
                         <Stack spacing={0.4}>
                             <Stack direction="row" spacing={0.5} sx={{pt: 0}}>
-                                <Typography variant="d3" noWrap>{name}</Typography>
+                                <Typography variant="s3" noWrap>{name}</Typography>
                                 {verified === 'yes' &&
                                     <Tooltip title='Verified'>
-                                        <VerifiedIcon fontSize="small" color="info" />
+                                        <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
                                     </Tooltip>
                                 }
                             </Stack>
@@ -178,41 +178,38 @@ export default function CollectionRow({ id, item, isMine }) {
                 </Stack>
             </TableCell>
 
-            <TableCell align="right" sx={{pl:0, pr:0}}>
-                <Typography variant="d3" noWrap><Icon icon={rippleSolid} width={12} height={12} /> {fNumber(floorPrice)}</Typography>
+            <TableCell align="left" sx={{pl:0, pr:0}}>
+                <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {fNumber(floorPrice)}</Typography>
             </TableCell>
 
-            <TableCell align="right" sx={{pl:0, pr:0}}>
-                <Typography variant="d3" noWrap><Icon icon={rippleSolid} width={12} height={12} /> {fNumber(vol24h)}</Typography>
+            <TableCell align="left" sx={{pl:0, pr:0}}>
+                <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {fNumber(vol24h)}</Typography>
             </TableCell>
 
-            <TableCell align="right" sx={{pl:0, pr:0}}>
-                <Typography variant="d3" noWrap><Icon icon={rippleSolid} width={12} height={12} /> {volume1}</Typography>
+            <TableCell align="left" sx={{pl:0, pr:0}}>
+                <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {volume1}</Typography>
             </TableCell>
 
-            <TableCell align="right" sx={{pl:0, pr:0}}>
-                <Typography variant="d3" noWrap><Icon icon={rippleSolid} width={12} height={12} /> {volume2}</Typography>
+            <TableCell align="left" sx={{pl:0, pr:0}}>
+                <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {volume2}</Typography>
             </TableCell>
 
-            <TableCell align="right"
+            <TableCell align="left"
                 sx={{
                     pl:0,
                     pr:0
                 }}
             >
-                <Typography variant="d3" noWrap>{fIntNumber(owners || 0)}</Typography>
+                <Typography variant="s3" noWrap>{fIntNumber(owners || 0)}</Typography>
             </TableCell>
 
-            <TableCell align="right"
+            <TableCell align="left"
                 sx={{
                     pl:0,
                     pr:0
                 }}
             >
-                <Typography variant="d3" noWrap>{fIntNumber(items)}</Typography>
-            </TableCell>
-
-            <TableCell align="right">
+                <Typography variant="s3" noWrap>{fIntNumber(items)}</Typography>
             </TableCell>
         </TableRow>
     );

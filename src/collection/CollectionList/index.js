@@ -21,7 +21,7 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 // import SearchToolbar from './SearchToolbar';
-import CollectionRow from './CollectionRow';
+import Row from './Row';
 import ListHead from './ListHead';
 import ListToolbar from './ListToolbar';
 
@@ -37,7 +37,7 @@ export default function CollectionList({type, category}) {
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [order, setOrder] = useState('desc');
-    const [orderBy, setOrderBy] = useState('volume');
+    const [orderBy, setOrderBy] = useState('vol24h');
 
     const [total, setTotal] = useState(0);
     const [collections, setCollections] = useState([]);
@@ -160,7 +160,7 @@ export default function CollectionList({type, category}) {
                         {
                             collections.map((row, idx) => {
                                     return (
-                                        <CollectionRow
+                                        <Row
                                             key={idx}
                                             id={page * rows + idx + 1}
                                             item={row}

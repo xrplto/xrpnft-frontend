@@ -1,13 +1,12 @@
 import { normalizeCurrencyCodeXummImpl } from "src/utils/normalizers";
 import { useState } from "react";
-import { ColorExtractor } from 'react-color-extractor';
 
 // Material
 import {
-    styled,
+    styled, useTheme,
     Box,
     CardMedia,
-    Divider,
+    Chip,
     Link,
     Stack,
     Tooltip,
@@ -19,6 +18,7 @@ import {
 } from '@mui/material';
 // import FavoriteIcon from '@mui/icons-material/Favorite';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
+import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -27,7 +27,7 @@ import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
 // Utils
 import { getMinterName } from "src/utils/constants";
-import { fNumber } from 'src/utils/formatNumber';
+import { fNumber, fIntNumber } from 'src/utils/formatNumber';
 import { getImgUrl } from 'src/utils/parse';
 
 // Components
@@ -54,6 +54,7 @@ const CardWrapper = styled(Card)(
 );
 
 export default function NFTCard({ nft }) {
+    const theme = useTheme();
     // const [imgUrl, setImgUrl] = useState('');
     // const [loading, setLoading] = useState(false);
 
@@ -62,21 +63,6 @@ export default function NFTCard({ nft }) {
 
     // const like = () => setIsLike(!isLike);
 
-    // {
-    //     "_id": "630b722e2aa4d0244dcfc62b",
-    //     "name": "FAT CATS - 1",
-    //     "externalLink": "",
-    //     "description": "",
-    //     "collection": "",
-    //     "Flags": 13,
-    //     "Issuer": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
-    //     "minter": "xrpnft.com",
-    //     "image": "QmeBkwfxtCygbxCeZFRf8A1Qoh7vf1VoU4AxQCXCDwscUx",
-    //     "URI": "516D6653394D70417754756F684B674E795146636939726D6348654566727874705533473976324842674837735A",
-    //     "uuid": "4a23c44e703944909b29b53f5e94a44b",
-    //     "minted": true,
-    //     "TokenID": "000D000011BBE0160B08A0743C13E22918573B2AAC759E9E16E5DA9C00000001"
-    // },
     const {
         uuid,
         name,
@@ -121,7 +107,7 @@ export default function NFTCard({ nft }) {
                     width: '100%',
                     maxWidth: 280,
                     // height: 250,
-                    aspectRatio: '9 / 16',
+                    aspectRatio: '9 / 14',
                     // minHeight: 250,
                     // background: `radial-gradient(
                     //         circle,
@@ -154,7 +140,7 @@ export default function NFTCard({ nft }) {
                                 // animation='wave'
                                 sx={{
                                     width: '100%',
-                                    height: '70%'
+                                    height: '75%'
                                 }}
                             /> :
                             isVideo ? 'video' : 'img'}
@@ -166,7 +152,7 @@ export default function NFTCard({ nft }) {
                     // loop={isVideo}
                     sx={{
                         width: '100%',
-                        height: '70%',
+                        height: '75%',
                         maxWidth: 280,
                         // maxHeight: 250,
                         marginTop: 0,
@@ -262,37 +248,71 @@ export default function NFTCard({ nft }) {
                     <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'} px={1}>
                         <Box display='flex'>
                             <Typography
+                                variant="s8"
                                 textOverflow='ellipsis'
                                 overflow='hidden'
                                 whiteSpace='nowrap'
+                                sx={{mt:0.5, mb:0.5}}
                             >
                                 {name.slice(0, -5)}
                             </Typography>
                             <Typography
-                                style={{ width: 45 }}>
+                                variant="s8"
+                                sx={{mt:0.5, mb:0.5, width: 45}}
+                            >
                                 {name.slice(-5)}
                             </Typography>
                         </Box>
                         {destination && getMinterName(account) ? (
                             // <Typography variant='s2'>TRANSFER</Typography>
-                            <Tooltip title={`Sold & Transfer`}>
-                                <SportsScoreIcon />
-                            </Tooltip>
+                            <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:0, pl:0, pr:0}}>
+                                <Tooltip title={`Sold & Transfer`}>
+                                    <SportsScoreIcon />
+                                </Tooltip>
+
+                                {rarity_rank > 0 &&
+                                    <Chip
+                                        variant="outlined"
+                                        // size="small"
+                                        icon={<LeaderboardOutlinedIcon sx={{width: '11px'}} />}
+                                        label={<Typography variant="s12">{fIntNumber(rarity_rank)}</Typography>}
+                                        sx={{
+                                            height: '18px',
+                                            pt: 0
+                                        }}
+                                    />
+                                }
+                            </Stack>
                         ) : (
                             <Grid container alignItems='center'>
                                 <Grid item xs={12}>
-                                    {cost ? (
-                                        cost.currency === "XRP" ?
-                                            <Stack direction="row" spacing={0.5} alignItems="center">
-                                                <Icon icon={rippleSolid} width="16" height="16" />
-                                                <Typography >{fNumber(cost.amount)}</Typography>
-                                            </Stack>
-                                            :
-                                            <Typography >{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
+                                    <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:0, pl:0, pr:0}}>
+                                        {cost ? (
+                                            cost.currency === "XRP" ?
+                                                <Stack direction="row" spacing={0.5} alignItems="center">
+                                                    <Icon icon={rippleSolid} width="14" height="14" />
+                                                    <Typography >{fNumber(cost.amount)}</Typography>
+                                                </Stack>
+                                                :
+                                                <Typography >{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
 
-                                    ) : (
-                                        <Typography variant='s7'>Unlisted</Typography>
-                                    )}
+                                        ) : (
+                                            <Typography variant='s7'>Unlisted</Typography>
+                                        )}
+
+                                        {rarity_rank > 0 &&
+                                            <Chip
+                                                variant="outlined"
+                                                // size="small"
+                                                icon={<LeaderboardOutlinedIcon sx={{width: '11px'}} />}
+                                                label={<Typography variant="s12">{fIntNumber(rarity_rank)}</Typography>}
+                                                sx={{
+                                                    height: '18px',
+                                                    pt: 0
+                                                }}
+                                            />
+                                        }
+                                    </Stack>
                                 </Grid>
                                 <Grid item xs={12}>
                                     {
@@ -346,12 +366,6 @@ export default function NFTCard({ nft }) {
                             //     }
                             // </Stack>
                         )}
-                        {rarity_rank > 0 &&
-                            <Stack direction="row" justifyContent='space-between' sx={{mt:0.2, mb:0.5}}>
-                                <Typography variant="s7">Rarity</Typography>
-                                <Typography variant="s11">#{rarity_rank}</Typography>
-                            </Stack>
-                        }
                     </Box>
                 </CardContent>
                 {/* <Divider sx={{mt:0.8, mb:0.3}}/>

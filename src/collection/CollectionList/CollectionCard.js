@@ -190,7 +190,7 @@ export default function CollectionCard({ item, isMine }) {
                     <Typography variant="p1">{name}</Typography>
                     {verified === 'yes' &&
                         <Tooltip title='Verified'>
-                            <VerifiedIcon fontSize="small" color="info" />
+                            <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
                         </Tooltip>
                     }
                 </Stack>

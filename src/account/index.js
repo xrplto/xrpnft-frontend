@@ -256,7 +256,7 @@ export default function Account({ profile, tab }) {
     };
 
     return (
-        <Container maxWidth='xxl'>
+        <>
             <Box
                 sx={{
                     display: 'flex',
@@ -399,6 +399,6 @@ export default function Account({ profile, tab }) {
                     </Stack>
                 </TabPanel>
             </Box>
-        </Container >
+        </>
     );
 }

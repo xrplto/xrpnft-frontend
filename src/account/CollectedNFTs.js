@@ -98,7 +98,7 @@ export default function CollectedNFTs({ account }) {
                 id='nfts'
                 display="flex"
                 alignItems="center"
-            // sx={{ margin: 1, padding: 1 }}
+                // sx={{ pl: 0, pr:0 }}
             >
                 <IconButton
                     aria-label='filter'

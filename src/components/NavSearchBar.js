@@ -105,7 +105,7 @@ const RenderOption = ({
                     option_type === 'COLLECTIONS' && <>
                         {verified === 'yes' &&
                             <Tooltip title='Verified'>
-                                <VerifiedIcon fontSize="small" color="info" />
+                                <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
                             </Tooltip>
                         }
                         {type === "random" &&

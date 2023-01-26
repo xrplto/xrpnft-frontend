@@ -25,13 +25,10 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';
-import { fIntNumber } from 'src/utils/formatNumber';
-import { NFToken } from 'src/utils/constants';
 import { parseNFTokenID } from 'src/utils/parse';
 
 // Loader
-import { PulseLoader, ClockLoader } from "react-spinners";
-import { RotatingSquare, Vortex } from 'react-loader-spinner';
+import { PulseLoader } from "react-spinners";
 
 // Components
 import QRDialog from 'src/components/QRDialog';

@@ -497,13 +497,23 @@ export const DarkSpacesTheme = createTheme({
     },
     MuiChip: {
       styleOverrides: {
+        root: {
+          color: colors.alpha.black[50],
+        },
         colorSecondary: {
           background: colors.alpha.black[5],
-          color: colors.alpha.black[100],
+          color: colors.alpha.black[50],
 
           '&:hover': {
             background: colors.alpha.black[10]
           }
+        },
+        icon: {
+          color: colors.alpha.black[50],
+        },
+        label: {
+          paddingLeft: '8px',
+          paddingRight: '5px'
         },
         deleteIcon: {
           color: colors.alpha.black[50],
@@ -1217,6 +1227,7 @@ export const DarkSpacesTheme = createTheme({
           s9: 'span',
           s10: 'span',
           s11: 'span',
+          s12: 'span',
           caption: 'span',
           p1: 'p',
           p2: 'p',
@@ -1362,6 +1373,11 @@ export const DarkSpacesTheme = createTheme({
     s11: {
       fontWeight: 400,
       fontSize: 12,
+    },
+    s12: {
+      fontWeight: 400,
+      fontSize: 10,
+      color: colors.alpha.black[50]
     },
     h1: {
       fontWeight: 700,

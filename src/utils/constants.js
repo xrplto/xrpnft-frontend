@@ -5,6 +5,7 @@ import DnsIcon from '@mui/icons-material/Dns';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import WallpaperIcon from '@mui/icons-material/Wallpaper';
 import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import HomeRepairServiceIcon from '@mui/icons-material/HomeRepairService';
 import ViewInArIcon from '@mui/icons-material/ViewInAr';
@@ -12,6 +13,7 @@ import PaletteIcon from '@mui/icons-material/Palette';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import CycloneIcon from '@mui/icons-material/Cyclone';
+import PsychologyIcon from '@mui/icons-material/Psychology';
 
 export const SUPPORTED_FILE_TYPES = [
     'JPG',
@@ -90,8 +92,14 @@ export const CATEGORIES = [
         icon: (<PaletteIcon />)
     },
     {
-        title: 'Collectables',
-        slug: 'collectables',
+        title: 'AI Art',
+        slug: 'ai-art',
+        count: 0,
+        icon: (<PsychologyIcon />)
+    },
+    {
+        title: 'Collectibles',
+        slug: 'collectibles',
         count: 0,
         icon: (<CollectionsIcon />)
     },
@@ -100,6 +108,12 @@ export const CATEGORIES = [
         slug: 'domain-names',
         count: 0,
         icon: (<DnsIcon />)
+    },
+    {
+        title: 'Gaming',
+        slug: 'gaming',
+        count: 0,
+        icon: (<SportsEsportsIcon />)
     },
     {
         title: 'Music',

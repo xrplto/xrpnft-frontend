@@ -14,8 +14,8 @@ import {
 import { CollectionListType } from 'src/utils/constants';
 
 // Components
-import CollectionRow from './CollectionRow';
-import CollectionListHead from './CollectionListHead';
+import Row from './Row';
+import ListHead from './ListHead';
 
 export default function CollectionList() {
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -30,7 +30,7 @@ export default function CollectionList() {
                 page: 0,
                 limit: 10,
                 order: 'desc',
-                orderBy: 'volume',
+                orderBy: 'vol24h',
                 choice: 'all'
             };
 
@@ -69,11 +69,11 @@ export default function CollectionList() {
                 }}
             >
                 <Table>
-                    <CollectionListHead />
+                    <ListHead />
                     <TableBody>
                         {
                             collections.map((row, idx) =>
-                                <CollectionRow
+                                <Row
                                     // key={row.id}
                                     key={idx}
                                     id={idx + 1}

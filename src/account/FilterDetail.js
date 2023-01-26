@@ -61,7 +61,7 @@ export default function FilterDetail({ onSaleCount, filter, setFilter, subFilter
                     <AccordionDetails>
                         <FormGroup sx={{ flexDirection: 'col' }}>
                             <FormControlLabel
-                                label={<Typography variant='s3'>On Sale <Typography variant='s7'>({onSaleCount})</Typography></Typography>}
+                                label={<Typography variant='s3'>On Sale {onSaleCount > 0 && <Typography variant='s7'>({onSaleCount})</Typography>}</Typography>}
                                 value={4}
                                 control={<Checkbox checked={(filter & 4) !== 0} onChange={handleFlagChange} />}
                             />

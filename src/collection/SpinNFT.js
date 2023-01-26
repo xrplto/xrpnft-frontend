@@ -162,7 +162,7 @@ const CardOverlay = styled('div')(
     inset: 0;
 `
 );
-  
+
 export default function SpinNFT({ collection, setView }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -399,7 +399,7 @@ export default function SpinNFT({ collection, setView }) {
                     <Typography variant="h1a">{name}</Typography>
                     {verified === 'yes' &&
                         <Tooltip title='Verified'>
-                            <VerifiedIcon color="success" />
+                            <VerifiedIcon style={{color: "#4589ff"}} />
                         </Tooltip>
                     }
                 </Stack>
@@ -473,8 +473,8 @@ export default function SpinNFT({ collection, setView }) {
                                     />
                                 }
                             </SlotBox>
-                            
-                            
+
+
                             <Stack alignItems="center" sx={{mt:1}}>
                                 <Typography variant='h2a'>{spinning?'Please Wait!':(nft?nft.name:'Spin to Mint')}</Typography>
                             </Stack>
@@ -496,7 +496,7 @@ export default function SpinNFT({ collection, setView }) {
                             <Typography variant="p5">It can be used against the purchase of only <Typography variant="s5" color="#57CA22">{collection.name}</Typography> Collection.</Typography>
                             <Typography variant="p5">You currently have <Typography variant="s5" color="#33C2FF">{mints} Mints</Typography> available and <Typography variant="s5" color="#33C2FF">{xrpBalance} XRP</Typography> tokens in your wallet.</Typography>
                             <Typography variant="p5" sx={{pb: 3}}>There are currently <Typography variant="s5" color="error">{pendingNfts}</Typography> / <Typography variant="s4" color="#33C2FF">{collection.items}</Typography> NFTs left in this collection.</Typography>
-                            
+
                             <Stack direction="row" spacing={2} justifyContent="center">
                                 <Button
                                     variant='contained'
