@@ -504,19 +504,29 @@ export const PureLightTheme = createTheme({
     },
     MuiChip: {
       styleOverrides: {
+        root: {
+          color: colors.alpha.black[50],
+        },
         colorSecondary: {
           background: colors.alpha.black[5],
-          color: colors.alpha.black[100],
+          color: colors.alpha.black[50],
 
           '&:hover': {
             background: colors.alpha.black[10]
           }
         },
+        label: {
+          paddingLeft: '8px',
+          paddingRight: '5px'
+        },
+        icon: {
+          color: colors.alpha.black[30],
+        },
         deleteIcon: {
-          color: colors.error.light,
+          color: colors.alpha.black[50],
 
           '&:hover': {
-            color: colors.error.main
+            color: colors.alpha.black[70]
           }
         }
       }
@@ -1232,6 +1242,7 @@ export const PureLightTheme = createTheme({
           s9: 'span',
           s10: 'span',
           s11: 'span',
+          s12: 'span',
           caption: 'span',
           p1: 'p',
           p2: 'p',
@@ -1378,6 +1389,11 @@ export const PureLightTheme = createTheme({
     s11: {
       fontWeight: 400,
       fontSize: 12,
+    },
+    s12: {
+      fontWeight: 400,
+      fontSize: 10,
+      color: colors.alpha.black[50]
     },
     h1: {
       fontWeight: 700,

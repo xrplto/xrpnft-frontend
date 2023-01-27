@@ -67,6 +67,8 @@ export default function Summary({}) {
 
     const [xrpnftAccounts, setXrpnftAccounts] = useState([]); // XRPNFT.com accounts
 
+    const [calcProps, setCalcProps] = useState(0); // Calc Props
+
     const [nftScanner, setNftScanner] = useState({index: 0, nfts: 0});
     const [txScanner, setTxScanner] = useState({index: 0, nfts: 0});
     const [txScannerReal, setTxScannerReal] = useState({index: 0, nfts: 0});
@@ -114,6 +116,8 @@ export default function Summary({}) {
                         setNftScanner(ret.nftScanner);
                         setTxScanner(ret.txScanner);
                         setTxScannerReal(ret.txScannerReal);
+
+                        setCalcProps(ret.calcProps || 0);
                     }
                 }).catch(err => {
                     console.log("Error on getting summary!!!", err);
@@ -167,166 +171,116 @@ export default function Summary({}) {
                     <PulseLoader color='#00AB55' size={10} />
                 </Stack>
             }
-            <Stack>
-                <Table stickyHeader sx={{
-                    [`& .${tableCellClasses.root}`]: {
-                        borderBottom: "0px solid",
-                        borderColor: theme.palette.divider
-                    }
-                }}>
-                    <TableBody>
-                        <TableRow>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s4">Time: </Typography>
-                            </TableCell>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s6">{tookTime} ms</Typography>
-                            </TableCell>
-                        </TableRow>
+            <Table stickyHeader sx={{
+                [`& .${tableCellClasses.root}`]: {
+                    borderBottom: "0px solid",
+                    borderColor: theme.palette.divider
+                }
+            }}>
+                <TableBody>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">Time: </Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{tookTime} ms</Typography>
+                        </TableCell>
+                    </TableRow>
 
-                        <TableRow>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s4">Collections: </Typography>
-                            </TableCell>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s6">{fIntNumber(collections)}</Typography>
-                            </TableCell>
-                        </TableRow>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">Collections: </Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(collections)}</Typography>
+                        </TableCell>
+                    </TableRow>
 
-                        <TableRow>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s4">XRPNFT.com NFTs: </Typography>
-                            </TableCell>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s6">{fIntNumber(nfts2)} <Typography variant="s6" color="#33C2FF">({fPercent(pNfts2)}%, {fIntNumber(dNfts2)})</Typography></Typography>
-                            </TableCell>
-                        </TableRow>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">XRPNFT.com NFTs: </Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(nfts2)} <Typography variant="s6" color="#33C2FF">({fPercent(pNfts2)}%, {fIntNumber(dNfts2)})</Typography></Typography>
+                        </TableCell>
+                    </TableRow>
 
-                        <TableRow>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s4">XRPL NFTs (30 min): </Typography>
-                            </TableCell>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s6">{fIntNumber(nfts1)} / {fIntNumber(txScanner.nfts)} <Typography variant="s6" color="#33C2FF">(#{fIntNumber(txScanner.index)})</Typography></Typography>
-                            </TableCell>
-                        </TableRow>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">XRPL NFTs (30 min): </Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(nfts1)} / {fIntNumber(txScanner.nfts)} <Typography variant="s6" color="#33C2FF">(#{fIntNumber(txScanner.index)})</Typography></Typography>
+                        </TableCell>
+                    </TableRow>
 
-                        <TableRow>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s4">XRPL NFTs (Realtime): </Typography>
-                            </TableCell>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s5" color="error">{fIntNumber(nfts3)} <Typography variant="s6" color="#CB3C1D">({fPercent(pNfts3)}%, {dNfts3>0?'+':''}{fIntNumber(dNfts3)})</Typography> <Typography variant="s6" color="#33C2FF">(#{fIntNumber(txScannerReal.index)})</Typography></Typography>
-                            </TableCell>
-                        </TableRow>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">XRPL NFTs (Realtime): </Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s5" color="error">{fIntNumber(nfts3)} <Typography variant="s6" color="#CB3C1D">({fPercent(pNfts3)}%, {dNfts3>0?'+':''}{fIntNumber(dNfts3)})</Typography> <Typography variant="s6" color="#33C2FF">(#{fIntNumber(txScannerReal.index)})</Typography></Typography>
+                        </TableCell>
+                    </TableRow>
 
-                        <TableRow>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s4">Activities (2 Weeks): </Typography>
-                            </TableCell>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s6">{fIntNumber(activities)} <Typography variant="s2" color="#33C2FF">(XRPL)</Typography></Typography>
-                            </TableCell>
-                        </TableRow>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">Activities (2 Weeks): </Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(activities)} <Typography variant="s2" color="#33C2FF">(XRPL)</Typography></Typography>
+                        </TableCell>
+                    </TableRow>
 
-                        <TableRow>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s4">Registered Users: </Typography>
-                            </TableCell>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s6">{fIntNumber(profiles)}</Typography>
-                            </TableCell>
-                        </TableRow>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">Registered Users: </Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(profiles)}</Typography>
+                        </TableCell>
+                    </TableRow>
 
-                        <TableRow>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s4">Offers <Typography variant="s2" color="#33C2FF">(Orphaned)</Typography>: </Typography>
-                            </TableCell>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s6">{fIntNumber(offers)} <Typography variant="s2" color="#33C2FF">({fIntNumber(orphaned)})</Typography></Typography>
-                            </TableCell>
-                        </TableRow>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">Offers <Typography variant="s2" color="#33C2FF">(Orphaned)</Typography>: </Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(offers)} <Typography variant="s2" color="#33C2FF">({fIntNumber(orphaned)})</Typography></Typography>
+                        </TableCell>
+                    </TableRow>
 
-                        <TableRow>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Typography variant="s4">Duplicated NFTs: </Typography>
-                            </TableCell>
-                            <TableCell align="right" sx={{pt: 1, pb: 1}}>
-                                <Stack direction="row" sx={{width: "100%"}} spacing={0.2} alignItems="center" justifyContent="end">
-                                    <Typography variant="s6" pr={2}>{fIntNumber(dNFTs)}</Typography>
-                                    <Tooltip title="Check duplicated NFTs again">
-                                        <IconButton size="small" onClick={handleCheckDuplicatedAgain}>
-                                            <RefreshIcon fontSize="small" color="warning" />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title='Burn these NFTs'>
-                                        <IconButton size="small" onClick={handleBurnDuplicatedNFTs}>
-                                            <DeleteForeverIcon fontSize="small" color="error" />
-                                        </IconButton>
-                                    </Tooltip>
-                                </Stack>
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">Duplicated NFTs: </Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Stack direction="row" sx={{width: "100%"}} spacing={0.2} alignItems="center">
+                                <Typography variant="s6" pr={2}>{fIntNumber(dNFTs)}</Typography>
+                                <Tooltip title="Check duplicated NFTs again">
+                                    <IconButton size="small" onClick={handleCheckDuplicatedAgain}>
+                                        <RefreshIcon fontSize="small" color="warning" />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title='Burn these NFTs'>
+                                    <IconButton size="small" onClick={handleBurnDuplicatedNFTs}>
+                                        <DeleteForeverIcon fontSize="small" color="error" />
+                                    </IconButton>
+                                </Tooltip>
+                            </Stack>
+                        </TableCell>
+                    </TableRow>
 
-                <Table stickyHeader sx={{
-                    [`& .${tableCellClasses.root}`]: {
-                        borderBottom: "0px solid",
-                        borderColor: theme.palette.divider
-                    }
-                }}>
-                    <TableBody>
-                    {
-                        xrpnftAccounts.map((row, idx) => {
-                            const {
-                                account,
-                                balance
-                            } = row;
-
-                            return (
-                                <TableRow key={account}>
-                                    <TableCell align="left" sx={{pt: 1, pb: 1}}>
-                                        <Typography variant="s4">XRPNFT {idx+1}</Typography>
-                                    </TableCell>
-
-                                    <TableCell align="left" sx={{pt: 1, pb: 1}}>
-                                        <Stack direction="row" spacing={0.2} alignItems="center">
-                                            <Typography variant="s6">{account}</Typography>
-                                            <Link
-                                                underline="none"
-                                                color="inherit"
-                                                target="_blank"
-                                                href={`https://bithomp.com/explorer/${account}`}
-                                                rel="noreferrer noopener nofollow"
-                                            >
-                                                <Tooltip title="Check on Bithomp">
-                                                    <IconButton edge="end" aria-label="bithomp" size="small">
-                                                        <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </Link>
-                                            <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                <Tooltip title='Click to copy'>
-                                                    <IconButton size="small">
-                                                        <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </CopyToClipboard>
-                                        </Stack>
-                                    </TableCell>
-
-                                    <TableCell align="left" sx={{pt: 1, pb: 1}}>
-                                        {/* <Typography variant="p5" color="#33C2FF">{balance}</Typography> */}
-                                        <Typography variant='d4' color={balance<200?"error":"#33C2FF"} sx={{ml: 2}} noWrap><Icon icon={rippleSolid} width={12} height={12}/> {fNumber(balance)}</Typography>
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })
-                    }
-                    </TableBody>
-                </Table>
-            </Stack>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">Calc Props</Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{calcProps}</Typography>
+                        </TableCell>
+                    </TableRow>
+                </TableBody>
+            </Table>
         </>
     );
 }

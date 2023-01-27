@@ -166,141 +166,106 @@ export default function NFTList({account, filter, choice, setLoading}) {
                                 >
                                     {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
                                     <TableCell align="left">
-                                        <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-                                            {/* {isVideo?
-                                                <CardMedia
-                                                    component="video"
-                                                    image={imgUrl}
-                                                    title='title'
-                                                    controls
-                                                    style={{
-                                                        width: 96,
-                                                        height: 96,
-                                                        filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
-                                                    }}
-                                                />
-                                                :
-                                                <ModalImage
-                                                    className='nftpreview1'
-                                                    small={imgUrl}
-                                                    large={imgUrl}
-                                                    alt={name}
-                                                    hideDownload
-                                                    hideZoom
-                                                    style={{
-                                                        width: 96,
-                                                        height: 96,
-                                                        filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
-                                                    }}
-                                                />
-                                            } */}
-                                            <Stack spacing={0.5}>
-                                                <Stack direction="row" justifyContent="space-between">
-                                                    <Typography variant="h3" color="#33C2FF">{name}</Typography>
-                                                </Stack>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s4">UUID: </Typography>
-                                                    <Typography variant="s6">{uuid}</Typography>
-                                                </Stack>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s4">Account: </Typography>
-                                                    <Stack direction="row" spacing={0.2} alignItems="center">
-                                                        <Typography variant="s6">{account}</Typography>
-                                                        <Link
-                                                            underline="none"
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`https://bithomp.com/explorer/${account}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Tooltip title="Check on Bithomp">
-                                                                <IconButton edge="end" aria-label="bithomp" size="small">
-                                                                    <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        </Link>
-                                                        <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                            <Tooltip title='Click to copy'>
-                                                                <IconButton size="small">
-                                                                    <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        </CopyToClipboard>
-                                                    </Stack>
-                                                </Stack>
-
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s4">Collection: </Typography>
-                                                    <Typography variant="s6">{collection}</Typography>
-                                                </Stack>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s4">Date: </Typography>
-                                                    <Typography variant="s6">{strDateTime}</Typography>
-                                                </Stack>
-                                                <Stack direction="row" spacing={2} alignItems="center">
-                                                    <Typography variant="s4">Flags: </Typography>
-                                                    <FlagsContainer Flags={flag}/>
-                                                    {/* <Typography variant="s6">{strDateTime}</Typography> */}
-                                                </Stack>
-                                            </Stack>
-                                        </Stack>
                                         <Stack spacing={0.5}>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Destination: </Typography>
-                                                <Typography variant="s6">{destination}</Typography>
+                                            <Stack direction="row" justifyContent="space-between">
+                                                <Typography variant="s3" color="#33C2FF">{name}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">TokenID: </Typography>
+                                                <Typography variant="s7">UUID: </Typography>
+                                                <Typography variant="s7">{uuid}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s7">Account: </Typography>
+                                                <Stack direction="row" spacing={0.2} alignItems="center">
+                                                    <Typography variant="s7">{account}</Typography>
+                                                    <Link
+                                                        underline="none"
+                                                        color="inherit"
+                                                        target="_blank"
+                                                        href={`https://bithomp.com/explorer/${account}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Tooltip title="Check on Bithomp">
+                                                            <IconButton edge="end" aria-label="bithomp" size="small">
+                                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </Link>
+                                                    <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                        <Tooltip title='Click to copy'>
+                                                            <IconButton size="small">
+                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Stack>
+                                            </Stack>
+
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s7">Collection: </Typography>
+                                                <Typography variant="s7">{collection}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s7">Date: </Typography>
+                                                <Typography variant="s7">{strDateTime}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={2} alignItems="center">
+                                                <Typography variant="s7">Flags: </Typography>
+                                                <FlagsContainer Flags={flag}/>
+                                                {/* <Typography variant="s6">{strDateTime}</Typography> */}
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s7">Destination: </Typography>
+                                                <Typography variant="s7">{destination}</Typography>
+                                            </Stack>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Typography variant="s7">NFTokenID: </Typography>
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
                                                     href={`https://bithomp.com/explorer/${NFTokenID}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s6">{NFTokenID}</Typography>
+                                                    <Typography variant="s7">{NFTokenID}</Typography>
                                                 </Link>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">URI(string): </Typography>
-                                                <Typography variant="s6">{convertHexToString(URI)}</Typography>
+                                                <Typography variant="s7">URI: </Typography>
+                                                <Typography variant="s7">{convertHexToString(URI)}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">URI(hex): </Typography>
-                                                <Typography variant="s6">{URI}</Typography>
-                                            </Stack>
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">TxMint: </Typography>
+                                                <Typography variant="s7">TxMint: </Typography>
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
                                                     href={`https://bithomp.com/explorer/${mintHash}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s6">{mintHash}</Typography>
+                                                    <Typography variant="s7">{mintHash}</Typography>
                                                 </Link>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">offerHash: </Typography>
+                                                <Typography variant="s7">offerHash: </Typography>
                                                 <Link
                                                     color="inherit"
                                                     target="_blank"
                                                     href={`https://bithomp.com/explorer/${offerHash}`}
                                                     rel="noreferrer noopener nofollow"
                                                 >
-                                                    <Typography variant="s6">{offerHash}</Typography>
+                                                    <Typography variant="s7">{offerHash}</Typography>
                                                 </Link>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">SellOfferID: </Typography>
-                                                <Typography variant="s6">{SellOfferID}</Typography>
+                                                <Typography variant="s7">SellOfferID: </Typography>
+                                                <Typography variant="s7">{SellOfferID}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Status: </Typography>
-                                                <Typography variant="s6">{status} - {statusToString(status)}</Typography>
+                                                <Typography variant="s7">Status: </Typography>
+                                                <Typography variant="s7">{status} - {statusToString(status)}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Typography variant="s4">Error: </Typography>
-                                                <Typography variant="s6">{JSON.stringify(error)}</Typography>
+                                                <Typography variant="s7">Error: </Typography>
+                                                <Typography variant="s7">{JSON.stringify(error)}</Typography>
                                             </Stack>
                                         </Stack>
                                     </TableCell>

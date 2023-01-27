@@ -200,7 +200,7 @@ export default function ViewNFT({ collection }) {
                     <Typography variant="h1a">{name}</Typography>
                     {verified === 'yes' &&
                         <Tooltip title='Verified'>
-                            <VerifiedIcon color="success" />
+                            <VerifiedIcon style={{color: "#4589ff"}} />
                         </Tooltip>
                     }
                 </Stack>

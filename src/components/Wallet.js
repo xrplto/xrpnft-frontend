@@ -247,7 +247,7 @@ export default function Wallet() {
             >
                 {accountLogin ? (
                         <>
-                            {acceptNfts > 0 &&
+                            {/* {acceptNfts > 0 &&
                                 <MenuItem
                                     key="account_accept_nft_offer"
                                     sx={{ typography: 'body2', py: 2, px: 2.5, mt: 1 }}
@@ -276,14 +276,16 @@ export default function Wallet() {
                                         </Stack>
                                     </NextLink>
                                 </MenuItem>
-                            }
+                            } */}
                             <MenuItem
                                 key="account_profile"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}
                             >
                                 <NextLink href={`/account/${accountLogin}`} passHref>
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                        <AccountBoxIcon />
+                                        <Badge color="primary" badgeContent={acceptNfts+orphanedOffers}>
+                                            <AccountBoxIcon />
+                                        </Badge>
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>Profile</Typography>
                                     </Stack>
                                 </NextLink>

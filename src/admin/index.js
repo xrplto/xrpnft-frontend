@@ -22,9 +22,12 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
+// Utils
+import { getHashIcon } from 'src/utils/parse';
+
 // Components
 import ProfileList from './ProfileList';
-
+import Wallets from './Wallets';
 import Summary from './Summary';
 import Passphrase from './Passphrase';
 import Collections from './collections';
@@ -36,9 +39,6 @@ import Mints from './Mints';
 import AutoPay from './AutoPay';
 import Invoices from './Invoices';
 import RefundMint from './RefundMint';
-
-// Utils
-import { getHashIcon } from 'src/utils/parse';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -143,8 +143,8 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['summary', 'passphrase', 'collections', 'nfts', 'activity', 'errors', 'autotrustlines', 'mints', 'invoices', 'autopay', 'refund'];
-const tabLabels = ['Summary', 'Passphrase', 'Collections', 'NFTs', 'Activity', 'Errors', 'Auto TrustLine', 'Mints', 'Invoice', 'Auto Pay', 'Refund'];
+const tabValues = ['wallets', 'summary', 'passphrase', 'collections', 'nfts', 'activity', 'errors', 'autotrustlines', 'mints', 'invoices', 'autopay', 'refund'];
+const tabLabels = ['Wallets', 'Summary', 'Passphrase', 'Collections', 'NFTs', 'Activity', 'Errors', 'Auto TrustLine', 'Mints', 'Invoice', 'Auto Pay', 'Refund'];
 
 function getTabID(tab) {
     if (!tab) return 0;
@@ -259,6 +259,7 @@ export default function Admin() {
                             <Tab value={8} label={tabLabels[8]} {...a11yProps(8)} />
                             <Tab value={9} label={tabLabels[9]} {...a11yProps(9)} />
                             <Tab value={10} label={tabLabels[10]} {...a11yProps(10)} />
+                            <Tab value={11} label={tabLabels[11]} {...a11yProps(11)} />
                         </Tabs>
                     </Stack>
                 </Stack>
@@ -271,63 +272,68 @@ export default function Admin() {
                     <Grid container item xs={12} md={7}>
                         <TabPanel value={tabID} id={0}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <Summary />
+                                <Wallets />
                             </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={1}>
                             <Stack sx={{minHeight: '20vh'}}>
-                                <Passphrase account={counterAccount} />
+                                <Summary />
                             </Stack>
                         </TabPanel>
                         <TabPanel value={tabID} id={2}>
+                            <Stack sx={{minHeight: '20vh'}}>
+                                <Passphrase account={counterAccount} />
+                            </Stack>
+                        </TabPanel>
+                        <TabPanel value={tabID} id={3}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <Collections account={counterAccount} />
                             </Stack>
                         </TabPanel>
 
-                        <TabPanel value={tabID} id={3}>
+                        <TabPanel value={tabID} id={4}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <NFTs account={counterAccount} />
                             </Stack>
                         </TabPanel>
 
-                        <TabPanel value={tabID} id={4}>
+                        <TabPanel value={tabID} id={5}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <Activity account={counterAccount} />
                             </Stack>
                         </TabPanel>
 
-                        <TabPanel value={tabID} id={5}>
+                        <TabPanel value={tabID} id={6}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <Errors />
                             </Stack>
                         </TabPanel>
 
-                        <TabPanel value={tabID} id={6}>
+                        <TabPanel value={tabID} id={7}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <TrustSet />
                             </Stack>
                         </TabPanel>
 
-                        <TabPanel value={tabID} id={7}>
+                        <TabPanel value={tabID} id={8}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <Mints account={counterAccount}/>
                             </Stack>
                         </TabPanel>
 
-                        <TabPanel value={tabID} id={8}>
+                        <TabPanel value={tabID} id={9}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <Invoices />
                             </Stack>
                         </TabPanel>
 
-                        <TabPanel value={tabID} id={9}>
+                        <TabPanel value={tabID} id={10}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <AutoPay />
                             </Stack>
                         </TabPanel>
 
-                        <TabPanel value={tabID} id={10}>
+                        <TabPanel value={tabID} id={11}>
                             <Stack sx={{minHeight: '20vh'}}>
                                 <RefundMint />
                             </Stack>

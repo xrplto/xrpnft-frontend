@@ -49,7 +49,7 @@ export default function NftListToolbar({ count, rows, setRows, page, setPage}) {
         const anchor = (event.target.ownerDocument || document).querySelector(
             '#back-to-top-tab-anchor',
         );
-    
+
         if (anchor) {
             anchor.scrollIntoView({
                 behavior: 'smooth',
@@ -57,6 +57,42 @@ export default function NftListToolbar({ count, rows, setRows, page, setPage}) {
             });
         }
     };
+
+    return (
+        <Grid container rowSpacing={2} alignItems="center" sx={{mt: 0}}>
+            <Grid container item xs={12} sx={{ display: { xs: 'block', md: 'none' } }}>
+                <Stack alignItems='center'>
+                    <Pagination page={page+1} onChange={handleChangePage} count={page_count} size="small"/>
+                </Stack>
+            </Grid>
+
+            <Grid container item xs={6} md={4} lg={4}>
+                Showing {start} - {end} out of {count}
+            </Grid>
+
+            <Grid container item xs={0} md={4} lg={4} sx={{ display: { xs: 'none', md: 'block' } }}>
+                <Stack alignItems='center'>
+                    <Pagination page={page+1} onChange={handleChangePage} count={page_count}/>
+                </Stack>
+            </Grid>
+
+            <Grid container item xs={6} md={4} lg={4} justifyContent="flex-end">
+                <Stack direction='row' alignItems='center'>
+                    Show Rows
+                    <CustomSelect
+                        value={rows}
+                        onChange={handleChangeRows}
+                    >
+                        <MenuItem value={20}>20</MenuItem>
+                        <MenuItem value={10}>10</MenuItem>
+                        <MenuItem value={5}>5</MenuItem>
+                    </CustomSelect>
+                </Stack>
+            </Grid>
+        </Grid>
+    );
+
+    /*
 
     return (
         <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -75,4 +111,5 @@ export default function NftListToolbar({ count, rows, setRows, page, setPage}) {
             </Stack>
         </Stack>
     );
+    */
 }

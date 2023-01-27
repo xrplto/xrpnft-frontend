@@ -51,6 +51,8 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import ViewCompactIcon from '@mui/icons-material/ViewCompact';
 import GridOnIcon from '@mui/icons-material/GridOn';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
+import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
+import ImportExportIcon from '@mui/icons-material/ImportExport';
 
 // Context
 import { useContext } from 'react';
@@ -128,6 +130,10 @@ function StatusContainer({bulk, flag}) {
 }
 
 const CustomSelect = styled(Select)(({ theme }) => ({
+    '& .MuiOutlinedInput-input' : {
+        paddingTop: '8px',
+        paddingBottom: '8px'
+    },
     '& .MuiOutlinedInput-notchedOutline' : {
         border: 'none'
     }
@@ -174,6 +180,9 @@ export default function Collections({account}) {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
                         setCount(ret.count);
+                        for (const c of ret.collections) {
+                            c.newRarity = c.rarity;
+                        }
                         setCollections(ret.collections);
                     }
                 }).catch(err => {
@@ -360,6 +369,73 @@ export default function Collections({account}) {
         onSetVerified(collection.uuid);
     }
 
+    const handleChangeRaritySelect = (e, idx) => {
+        const value = e.target.value;
+        console.log(`${value} - ${idx}`);
+        const newCollections = [];
+        for (const c of collections) {
+            newCollections.push(c);
+        }
+        newCollections[idx].newRarity = value;
+        setCollections(newCollections);
+    };
+
+    const handleChangeRarity = async (collection) => {
+        if (!accountAdmin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const cid = collection.uuid;
+            const newRarity = collection.newRarity;
+
+            const body = { cid, newRarity };
+
+            const res = await axios.post(`${BASE_URL}/admin/change_rarity`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
+
+            let ret = res.data;
+            if (ret.status) {
+                openSnackbar(ret.msg, 'success');
+                setSync(sync + 1);
+            } else {
+                openSnackbar(ret.err, 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            openSnackbar('Error', 'error');
+        }
+        setLoading(false);
+    };
+
+    const handleImportAgain = async (collection) => {
+        if (!accountAdmin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const cid = collection.uuid;
+
+            const body = { cid };
+
+            const res = await axios.post(`${BASE_URL}/admin/import_again`, body, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
+
+            let ret = res.data;
+            if (ret.status) {
+                openSnackbar(ret.msg, 'success');
+            } else {
+                openSnackbar(ret.err, 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            openSnackbar('Error', 'error');
+        }
+        setLoading(false);
+    };
+
     return (
         <>
             <ToggleButtonGroup
@@ -373,6 +449,9 @@ export default function Collections({account}) {
                 <ToggleButton value="normal" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Normal</ToggleButton>
                 <ToggleButton value="bulk" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Bulk</ToggleButton>
                 <ToggleButton value="account" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>By Account</ToggleButton>
+                <ToggleButton value="nometa" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>No Metadata</ToggleButton>
+                <ToggleButton value="imported" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Imported</ToggleButton>
+                <ToggleButton value="itemsmismatch" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Items Mismatch</ToggleButton>
             </ToggleButtonGroup>
 
             <Stack direction="row">
@@ -441,7 +520,7 @@ export default function Collections({account}) {
                 }}>
                     <TableBody>
                     {
-                        collections && collections.map((row) => {
+                        collections && collections.map((row, idx) => {
                             const {
                                 account,
                                 uuid,
@@ -460,10 +539,14 @@ export default function Collections({account}) {
                                 minterName,
                                 type,
                                 items,
+                                txitems,
                                 costs,
                                 verified,
                                 category,
-                                nometa
+                                nometa,
+                                rarity,
+                                newRarity,
+                                imported
                             } = row;
 
                             const strDateTime = formatDateTime(created);
@@ -495,9 +578,14 @@ export default function Collections({account}) {
                                     <TableCell align="left">
                                         <Stack>
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                {type === "normal" &&
+                                                {type === "normal" && imported !== "yes" &&
                                                     <Tooltip title='Normal Collection'>
                                                         <GridOnIcon color='info'/>
+                                                    </Tooltip>
+                                                }
+                                                {imported === "yes" &&
+                                                    <Tooltip title='Imported Collection'>
+                                                        <ImportExportIcon color='info'/>
                                                     </Tooltip>
                                                 }
                                                 {type === "bulk" &&
@@ -516,16 +604,24 @@ export default function Collections({account}) {
                                                     </Tooltip>
                                                 }
                                                 <Link href={`/collection/${slug}`}>
-                                                    <Typography variant="s3" color="#33C2FF">{name} <Typography variant="s3" color="error">({items} items)</Typography></Typography>
+                                                    <Typography variant="s3" color="#33C2FF">{name} <Typography variant="s5" color={items !== txitems ? "error":"success"}>({items} / {txitems || 0} items)</Typography></Typography>
                                                 </Link>
 
                                                 <Tooltip title='Click to toggle verified'>
                                                     <IconButton onClick={()=>handleSetVerified(row)}>
-                                                        <VerifiedIcon color={verified === 'yes' ? "info":""} />
+                                                        <VerifiedIcon style={{color: verified === 'yes' ? "#4589ff":""}} />
                                                     </IconButton>
                                                 </Tooltip>
 
-                                                <Tooltip title='Calc Properties Rarity % again'>
+                                                {imported === 'yes' && items !== txitems &&
+                                                    <Tooltip title='Import collection again'>
+                                                        <IconButton onClick={()=>handleImportAgain(row)}>
+                                                            <ImportExportIcon fontSize="medium" color="success" />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                }
+
+                                                <Tooltip title='Calculate Properties % again'>
                                                     <IconButton onClick={()=>handleCalcProperties(row)}>
                                                         <AssignmentIcon fontSize="medium" color="success" />
                                                     </IconButton>
@@ -539,26 +635,71 @@ export default function Collections({account}) {
                                             </Stack>
 
                                             <Stack direction="row" spacing={0.5} alignItems="center">
+                                                <Typography variant="s7" mr={1}>Rarity by:</Typography>
+                                                <Stack direction="row" spacing={0} alignItems="center">
+                                                    <CustomSelect
+                                                        id='select_rarity'
+                                                        value={newRarity}
+                                                        onChange={(e)=>handleChangeRaritySelect(e, idx)}
+                                                    >
+                                                        <MenuItem
+                                                            key='standard'
+                                                            value='standard'
+                                                        >
+                                                            <Typography variant='s6' color="#EB5757">Standard</Typography>
+                                                        </MenuItem>
+                                                        <MenuItem
+                                                            key='average'
+                                                            value='average'
+                                                        >
+                                                            <Typography variant='s6' color="#EB5757">Average</Typography>
+                                                        </MenuItem>
+                                                        <MenuItem
+                                                            key='statistical'
+                                                            value='statistical'
+                                                        >
+                                                            <Typography variant='s6' color="#EB5757">Statistical</Typography>
+                                                        </MenuItem>
+                                                        <MenuItem
+                                                            key='score'
+                                                            value='score'
+                                                        >
+                                                            <Typography variant='s6' color="#EB5757">Score</Typography>
+                                                        </MenuItem>
+                                                    </CustomSelect>
+                                                    {rarity !== newRarity &&
+                                                        <Tooltip title='Change Rarity, it takes about 6 mins for 10k NFTs'>
+                                                            <IconButton size="small" onClick={()=>handleChangeRarity(row)}>
+                                                                <LeaderboardOutlinedIcon fontSize="small" color="success" />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    }
+                                                </Stack>
+                                            </Stack>
+
+                                            {nometa && nometa.count > 0 &&
+                                                <Stack direction="row" spacing={0.5} alignItems="center">
                                                     <Typography variant="s7">No Meta:</Typography>
-                                                    <Stack direction="row" spacing={0} alignItems="center">
-                                                        <Typography variant="p4">{nometa}</Typography>
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <Typography variant="s6">{nometa.count}</Typography>
+                                                        <Typography variant="s7">{formatDateTime(nometa.time)}</Typography>
                                                         <Tooltip title='Resolve metadata again.'>
-                                                            <IconButton onClick={()=>handleResolveMetadata(row)}>
-                                                                <DocumentScannerIcon fontSize="medium" color="success" />
+                                                            <IconButton size="small" onClick={()=>handleResolveMetadata(row)}>
+                                                                <DocumentScannerIcon fontSize="small" color="success" />
                                                             </IconButton>
                                                         </Tooltip>
                                                     </Stack>
-                                            </Stack>
+                                                </Stack>
+                                            }
 
                                             {costs && costs.length > 0 &&
                                                 <Stack direction="row" spacing={0.5} alignItems="center">
-                                                        <Typography variant="s7">Costs:</Typography>
+                                                        <Typography variant="s7" mr={2}>Costs:</Typography>
                                                         <Stack direction="row" spacing={0} alignItems="center">
                                                             {/* <Typography variant="p4">Cost</Typography> */}
                                                             <CustomSelect
                                                                 id='select_cost'
                                                                 value={costIdx}
-                                                                onChange={handleChangeCost}
                                                             >
                                                                 {costs.map((cost, idx) => (
                                                                     <MenuItem
@@ -566,120 +707,170 @@ export default function Collections({account}) {
                                                                         value={idx}
                                                                     >
                                                                         <Stack direction='row' alignItems="center">
-                                                                            <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} sx={{ width: 24, height:24, mr: 1 }} />
-                                                                            <Typography variant='d4' color="#EB5757">{cost.amount} {cost.name}</Typography>
+                                                                            <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} sx={{ width: 18, height:18, mr: 1 }} />
+                                                                            <Typography variant='s6' color="#EB5757">{cost.amount} {cost.name}</Typography>
                                                                         </Stack>
                                                                     </MenuItem>
                                                                 ))}
                                                             </CustomSelect>
                                                             <Tooltip title='Set Trustlines manually again'>
-                                                                <IconButton onClick={()=>handleSetTrustlines(row)}>
-                                                                    <AdminPanelSettingsIcon fontSize="medium" color="success" />
+                                                                <IconButton size="small" onClick={()=>handleSetTrustlines(row)}>
+                                                                    <AdminPanelSettingsIcon fontSize="small" color="success" />
                                                                 </IconButton>
                                                             </Tooltip>
                                                         </Stack>
                                                 </Stack>
                                             }
 
-                                            <Stack direction="row" spacing={0} alignItems="center">
-                                                <Link
-                                                    color="inherit"
-                                                    target="_blank"
-                                                    href={`https://bithomp.com/explorer/${account}`}
-                                                    rel="noreferrer noopener nofollow"
-                                                >
-                                                    <Typography variant="s7" color="#33C2FF"><Typography variant="s7">Creator:</Typography> {account}</Typography>
-                                                </Link>
-                                                <Link
-                                                    color="inherit"
-                                                    target="_blank"
-                                                    href={`https://bithomp.com/explorer/${account}`}
-                                                    rel="noreferrer noopener nofollow"
-                                                >
-                                                    <Tooltip title='Check on Bithomp'>
-                                                        <IconButton size="small">
-                                                            <OpenInNewIcon fontSize="small" sx={{ width: 16, height: 16 }} />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </Link>
-                                                <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                    <Tooltip title='Click to copy'>
-                                                        <IconButton size="small">
-                                                            <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }} />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </CopyToClipboard>
-                                            </Stack>
+                                            <Stack direction="row" spacing={2} alignItems="center">
+                                                <Stack>
+                                                    <Stack direction="row" spacing={0} alignItems="center">
+                                                        <Link
+                                                            color="inherit"
+                                                            target="_blank"
+                                                            href={`https://bithomp.com/explorer/${account}`}
+                                                            rel="noreferrer noopener nofollow"
+                                                        >
+                                                            <Typography variant="s7" color="#33C2FF"><Typography variant="s7">Creator:</Typography> {account}</Typography>
+                                                        </Link>
+                                                        <Link
+                                                            color="inherit"
+                                                            target="_blank"
+                                                            href={`https://bithomp.com/explorer/${account}`}
+                                                            rel="noreferrer noopener nofollow"
+                                                        >
+                                                            <Tooltip title='Check on Bithomp'>
+                                                                <IconButton size="small">
+                                                                    <OpenInNewIcon fontSize="small" sx={{ width: 16, height: 16 }} />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </Link>
+                                                        <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                            <Tooltip title='Click to copy'>
+                                                                <IconButton size="small">
+                                                                    <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }} />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </CopyToClipboard>
+                                                    </Stack>
 
-                                            {minter &&
-                                                <Stack direction="row" spacing={0} alignItems="center">
-                                                    <Link
-                                                        color="inherit"
-                                                        target="_blank"
-                                                        href={`https://bithomp.com/explorer/${minter}`}
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        <Typography variant="s7" color="#33C2FF"><Typography variant="s7">Minter:</Typography> {minter} <Typography variant="s2">({minterName})</Typography></Typography>
-                                                    </Link>
-                                                    <Link
-                                                        color="inherit"
-                                                        target="_blank"
-                                                        href={`https://bithomp.com/explorer/${minter}`}
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        <Tooltip title='Check on Bithomp'>
-                                                            <IconButton size="small">
-                                                                <OpenInNewIcon fontSize="small" sx={{ width: 16, height: 16 }} />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </Link>
-                                                    <CopyToClipboard text={minter} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                        <Tooltip title='Click to copy'>
-                                                            <IconButton size="small">
-                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }} />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </CopyToClipboard>
+                                                    {minter &&
+                                                        <Stack direction="row" spacing={0} alignItems="center">
+                                                            <Link
+                                                                color="inherit"
+                                                                target="_blank"
+                                                                href={`https://bithomp.com/explorer/${minter}`}
+                                                                rel="noreferrer noopener nofollow"
+                                                            >
+                                                                <Typography variant="s7" color="#33C2FF"><Typography variant="s7">Minter:</Typography> {minter} <Typography variant="s2">({minterName})</Typography></Typography>
+                                                            </Link>
+                                                            <Link
+                                                                color="inherit"
+                                                                target="_blank"
+                                                                href={`https://bithomp.com/explorer/${minter}`}
+                                                                rel="noreferrer noopener nofollow"
+                                                            >
+                                                                <Tooltip title='Check on Bithomp'>
+                                                                    <IconButton size="small">
+                                                                        <OpenInNewIcon fontSize="small" sx={{ width: 16, height: 16 }} />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </Link>
+                                                            <CopyToClipboard text={minter} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                                <Tooltip title='Click to copy'>
+                                                                    <IconButton size="small">
+                                                                        <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }} />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </CopyToClipboard>
+                                                        </Stack>
+                                                    }
+
+                                                    <Stack direction="row" spacing={0.3} alignItems="center">
+                                                        <Typography variant="s7">Category: </Typography>
+                                                        <Typography variant="s7" color="#33C2FF">{category}</Typography>
+                                                    </Stack>
+
+                                                    {infoIPFS && infoIPFS.cid &&
+                                                        <Stack direction="row" spacing={0} alignItems="center">
+                                                            <Typography variant="s7">IPFS CID:&nbsp;</Typography>
+                                                            <Link
+                                                                color="inherit"
+                                                                target="_blank"
+                                                                href={`https://gateway.xrpnft.com/ipfs/${infoIPFS.cid}`}
+                                                                rel="noreferrer noopener nofollow"
+                                                            >
+                                                                <Typography variant="s7" color="#33C2FF">{infoIPFS.cid}</Typography>
+                                                            </Link>
+                                                            <Link
+                                                                color="inherit"
+                                                                target="_blank"
+                                                                href={`https://gateway.xrpnft.com/ipfs/${infoIPFS.cid}`}
+                                                                rel="noreferrer noopener nofollow"
+                                                            >
+                                                                <Tooltip title='Check on IPFS'>
+                                                                    <IconButton size="small">
+                                                                        <OpenInNewIcon fontSize="small" sx={{ width: 16, height: 16 }} />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </Link>
+                                                            <CopyToClipboard text={`${infoIPFS.cid}`} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                                                <Tooltip title='Click to copy'>
+                                                                    <IconButton size="small">
+                                                                        <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }} />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            </CopyToClipboard>
+                                                        </Stack>
+                                                    }
                                                 </Stack>
-                                            }
+                                                <Stack>
+                                                    {infoIPFS && infoIPFS.cid && status === 0x3F && // 0x3F = b0011 1111
+                                                        <Stack alignItems="center">
+                                                            <Link
+                                                                color="inherit"
+                                                                // target="_blank"
+                                                                href={`/bulks/mint/${slug}`}
+                                                                // rel="noreferrer noopener nofollow"
+                                                            >
+                                                                <IconButton aria-label='bulk-mint'>
+                                                                    <CollectionsIcon sx={{width:48, height:48}} />
+                                                                </IconButton>
+                                                            </Link>
+                                                            <Typography variant="d4">Bulk Mint</Typography>
+                                                        </Stack>
+                                                    }
+                                                    {infoMINT &&
+                                                        <Stack alignItems="center">
+                                                            {infoMINT.count !== infoMINT.length?(
+                                                                <RotatingSquare
+                                                                    height="70"
+                                                                    width="70"
+                                                                    color="#4fa94d"
+                                                                    ariaLabel="rotating-square-loading"
+                                                                    strokeWidth="4"
+                                                                    wrapperStyle={{}}
+                                                                    wrapperClass=""
+                                                                    visible={true}
+                                                                />
+                                                            ):(
+                                                                <Vortex
+                                                                    visible={true}
+                                                                    height="56"
+                                                                    width="56"
+                                                                    ariaLabel="vortex-loading"
+                                                                    wrapperStyle={{}}
+                                                                    wrapperClass="vortex-wrapper"
+                                                                    colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
+                                                                />
+                                                            )}
 
-                                            <Stack direction="row" spacing={0.3} alignItems="center">
-                                                <Typography variant="s7">Category: </Typography>
-                                                <Typography variant="s7" color="#33C2FF">{category}</Typography>
-                                            </Stack>
 
-                                            {infoIPFS && infoIPFS.cid &&
-                                                <Stack direction="row" spacing={0} alignItems="center">
-                                                    <Typography variant="s7">IPFS CID:&nbsp;</Typography>
-                                                    <Link
-                                                        color="inherit"
-                                                        target="_blank"
-                                                        href={`https://gateway.xrpnft.com/ipfs/${infoIPFS.cid}`}
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        <Typography variant="s7" color="#33C2FF">{infoIPFS.cid}</Typography>
-                                                    </Link>
-                                                    <Link
-                                                        color="inherit"
-                                                        target="_blank"
-                                                        href={`https://gateway.xrpnft.com/ipfs/${infoIPFS.cid}`}
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        <Tooltip title='Check on IPFS'>
-                                                            <IconButton size="small">
-                                                                <OpenInNewIcon fontSize="small" sx={{ width: 16, height: 16 }} />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </Link>
-                                                    <CopyToClipboard text={`${infoIPFS.cid}`} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                        <Tooltip title='Click to copy'>
-                                                            <IconButton size="small">
-                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }} />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </CopyToClipboard>
+                                                            <Typography variant="s7" color="#33C2FF">{infoMINT.count} / {infoMINT.length}</Typography>
+                                                        </Stack>
+                                                    }
                                                 </Stack>
-                                            }
+                                            </Stack>
                                             {description &&
                                                 <Typography variant="s7" sx={{mb: 1}}>{description}</Typography>
                                             }
@@ -745,53 +936,6 @@ export default function Collections({account}) {
                                                 </Stack>
                                             }
                                         </Stack>
-                                    </TableCell>
-
-                                    <TableCell align="left">
-                                        {infoIPFS && infoIPFS.cid && status === 0x3F && // 0x3F = b0011 1111
-                                            <Stack alignItems="center">
-                                                <Link
-                                                    color="inherit"
-                                                    // target="_blank"
-                                                    href={`/bulks/mint/${slug}`}
-                                                    // rel="noreferrer noopener nofollow"
-                                                >
-                                                    <IconButton aria-label='bulk-mint'>
-                                                        <CollectionsIcon sx={{width:56, height:56}} />
-                                                    </IconButton>
-                                                </Link>
-                                                <Typography variant="d4">Bulk Mint</Typography>
-                                            </Stack>
-                                        }
-                                        {infoMINT &&
-                                            <Stack alignItems="center">
-                                                {infoMINT.count !== infoMINT.length?(
-                                                    <RotatingSquare
-                                                        height="100"
-                                                        width="100"
-                                                        color="#4fa94d"
-                                                        ariaLabel="rotating-square-loading"
-                                                        strokeWidth="4"
-                                                        wrapperStyle={{}}
-                                                        wrapperClass=""
-                                                        visible={true}
-                                                    />
-                                                ):(
-                                                    <Vortex
-                                                        visible={true}
-                                                        height="80"
-                                                        width="80"
-                                                        ariaLabel="vortex-loading"
-                                                        wrapperStyle={{}}
-                                                        wrapperClass="vortex-wrapper"
-                                                        colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
-                                                    />
-                                                )}
-
-
-                                                <Typography variant="d4" color="#33C2FF">{infoMINT.count} / {infoMINT.length}</Typography>
-                                            </Stack>
-                                        }
                                     </TableCell>
                                 </TableRow>
                             );

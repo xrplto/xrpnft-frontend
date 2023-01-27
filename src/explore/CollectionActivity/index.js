@@ -116,7 +116,7 @@ export default function CollectionActivity({collection}) {
     }, [page, rows]);
 
     return (
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{pl: 0, pr: 0}}>
             {loading ? (
                 <Stack alignItems="center">
                     <PulseLoader color='#00AB55' size={10} />
@@ -294,7 +294,7 @@ export default function CollectionActivity({collection}) {
                                                         href={`/nft/${NFTokenID}`}
                                                         rel="noreferrer noopener nofollow"
                                                     >
-                                                        <Typography variant="s6">{name}</Typography>
+                                                        <Typography variant="s6" noWrap>{name}</Typography>
                                                     </Link>
                                                 </Stack>
                                                 {/* <Stack direction="row" spacing={1} alignItems="center">
