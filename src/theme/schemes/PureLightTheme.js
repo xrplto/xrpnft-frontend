@@ -1227,6 +1227,7 @@ export const PureLightTheme = createTheme({
           d2: 'div',
           d3: 'div',
           d4: 'div',
+          d5: 'div',
           subtitle1: 'div',
           subtitle2: 'div',
           body1: 'div',
@@ -1243,6 +1244,7 @@ export const PureLightTheme = createTheme({
           s10: 'span',
           s11: 'span',
           s12: 'span',
+          s13: 'span',
           caption: 'span',
           p1: 'p',
           p2: 'p',
@@ -1293,6 +1295,28 @@ export const PureLightTheme = createTheme({
             lineHeight: 1.4,
             color: colors.alpha.black[100],
             [theme.breakpoints.up('md')]: {
+              fontSize: 20,
+            },
+          })
+        },
+        {
+          props: { variant: 's13' },
+          style: ({ theme }) => ({
+            fontWeight: 400,
+            fontSize: 12,
+            color: colors.alpha.black[50],
+            [theme.breakpoints.up('sm')]: {
+              fontSize: 16,
+            },
+          })
+        },
+        {
+          props: { variant: 'd5' },
+          style: ({ theme }) => ({
+            fontWeight: 600,
+            fontSize: 14,
+            color: colors.alpha.black[100],
+            [theme.breakpoints.up('sm')]: {
               fontSize: 20,
             },
           })

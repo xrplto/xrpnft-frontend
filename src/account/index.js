@@ -6,8 +6,8 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
     alpha, styled,
     Avatar,
+    Badge,
     Box,
-    Container,
     Divider,
     IconButton,
     Link,
@@ -41,6 +41,7 @@ import ActivityList from './ActivityList';
 import AcceptList from './AcceptList';
 import OffersList from './OffersList';
 import CollectedNFTs from './CollectedNFTs';
+import SeeMoreTypography from 'src/components/SeeMoreTypography';
 
 const IconImage = styled('img')(
     ({ theme }) => `
@@ -183,8 +184,17 @@ const StyledMenu = styled((props) => (
     },
 }));
 
+const StyledBadge = styled(Badge)(({ theme }) => ({
+    '& .MuiBadge-badge': {
+      right: -10,
+      top: -3,
+    //   border: `1px solid ${theme.palette.background.paper}`,
+      padding: '0 4px',
+    },
+  }));
+
 export default function Account({ profile, tab }) {
-    const { accountProfile, openSnackbar, acceptNfts } = useContext(AppContext);
+    const { accountProfile, openSnackbar, acceptNfts, orphanedOffers } = useContext(AppContext);
     const account = accountProfile?.account;
     // const accountToken = accountProfile?.token;
     // const accountUuid = accountProfile?.xuuid;
@@ -262,7 +272,9 @@ export default function Account({ profile, tab }) {
                     display: 'flex',
                     gap: 3,
                     alignItems: 'center',
-                    my: 2
+                    my: 2,
+                    mt: { md: -5, xs: -4 },
+                    // zIndex: 10000,
                 }}
             >
                 <Avatar
@@ -288,7 +300,7 @@ export default function Account({ profile, tab }) {
                         </Link>
                     }
                 </Avatar>
-                <Box>
+                <Box position={'relative'}>
                     <Typography variant='h3'>{name || profile.account?.toString().slice(0, 5)}</Typography>
                     <Box display='flex' alignItems={'center'}>
                         <Typography style={{ wordWrap: "break-word" }} variant="d3">
@@ -313,60 +325,81 @@ export default function Account({ profile, tab }) {
                         </Link>
                     </Box>
                 </Box>
-
-                {description &&
-                    <Typography variant="d3" maxWidth='600px'>{description}</Typography>
-                }
             </Box>
-            <Tabs
-                value={tabID}
-                onChange={handleChangeTab}
-                variant="scrollable"
-                scrollButtons='auto'
-                aria-label="token-tabs"
+
+            <SeeMoreTypography
+                variant="d3"
+                text={description}
+            />
+
+            <Box
+                sx={{
+                    mt: 2,
+                    display: "flex",
+                    gap: 1,
+                    py: 1,
+                    overflow: "auto",
+                    width: "100%",
+                    "& > *": {
+                        scrollSnapAlign: "center",
+                    },
+                    "::-webkit-scrollbar": { display: "none" },
+                }}
             >
-                <Tab value={0} label={tabLabels[0]} {...a11yProps(0)} />
-                <Tab value={1} label={tabLabels[1]} {...a11yProps(1)} />
-                <Tab value={2} label={tabLabels[2]} {...a11yProps(2)} />
-                <Tab value={3} label={tabLabels[3]} {...a11yProps(3)} />
-                <Tab value={4} label={tabLabels[4]} {...a11yProps(4)} />
-                <Tab
-                    value={5}
-                    label={tabLabels[5]}
-                    icon={<KeyboardArrowDownIcon />}
-                    iconPosition='end'
-                    {...a11yProps(5)}
-                    onClick={handleClickMore}
-                />
-
-
-                <StyledMenu
-                    id="demo-customized-menu1"
-                    MenuListProps={{
-                        'aria-labelledby': 'demo-customized-button',
-                    }}
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleCloseMore}
+                <Tabs
+                    value={tabID}
+                    onChange={handleChangeTab}
+                    // variant="scrollable"
+                    // scrollButtons='auto'
+                    aria-label="token-tabs"
+                    sx={{"& .MuiTabs-scroller": {overflow: "visible !important"}}}
                 >
-                    <MenuItem onClick={(event) => handleSelectMore(event, 0)} sx={{ py: 1 }} disableRipple>
-                        <LocalOfferIcon />
-                        <Typography variant='s6'>{tabMoreLabels[0]}</Typography>
-                    </MenuItem>
+                    {/* <Badge color="primary" badgeContent={acceptNfts + orphanedOffers}> */}
 
-                    <MenuItem onClick={(event) => handleSelectMore(event, 1)} sx={{ py: 1 }} disableRipple>
-                        <ListIcon />
-                        <Typography variant='s6'>{tabMoreLabels[1]}</Typography>
-                    </MenuItem>
+                    <Tab value={0} label={tabLabels[0]} {...a11yProps(0)} />
+                    <Tab value={1} label={tabLabels[1]} {...a11yProps(1)} />
+                    <Tab value={2} label={tabLabels[2]} {...a11yProps(2)} />
+                    <Tab value={3} label={tabLabels[3]} {...a11yProps(3)} />
+                    <Tab value={4} label={<StyledBadge color="primary" badgeContent={acceptNfts}>{tabLabels[4]}</StyledBadge>} {...a11yProps(4)} sx={{overflow: "visible"}}/>
+                    <Tab
+                        value={5}
+                        label={tabLabels[5]}
+                        icon={<StyledBadge color="primary" badgeContent={orphanedOffers}><KeyboardArrowDownIcon /></StyledBadge>}
+                        iconPosition='end'
+                        {...a11yProps(5)}
+                        onClick={handleClickMore}
+                        sx={{overflow: "visible"}}
+                    />
 
-                    <Divider />
 
-                    <MenuItem onClick={(event) => handleSelectMore(event, 2)} sx={{ py: 1 }} disableRipple>
-                        <NearbyErrorIcon />
-                        <Typography variant='s6'>{tabMoreLabels[2]}</Typography>
-                    </MenuItem>
-                </StyledMenu>
-            </Tabs>
+                    <StyledMenu
+                        id="demo-customized-menu1"
+                        MenuListProps={{
+                            'aria-labelledby': 'demo-customized-button',
+                        }}
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleCloseMore}
+                    >
+                        <MenuItem onClick={(event) => handleSelectMore(event, 0)} sx={{ py: 1 }} disableRipple>
+                            <LocalOfferIcon />
+                            <Typography variant='s6'>{tabMoreLabels[0]}</Typography>
+                        </MenuItem>
+
+                        <MenuItem onClick={(event) => handleSelectMore(event, 1)} sx={{ py: 1 }} disableRipple>
+                            <ListIcon />
+                            <Typography variant='s6'>{tabMoreLabels[1]}</Typography>
+                        </MenuItem>
+
+                        <Divider />
+
+                        <MenuItem onClick={(event) => handleSelectMore(event, 2)} sx={{ py: 1 }} disableRipple>
+                            <Badge color="primary" badgeContent={orphanedOffers}><NearbyErrorIcon /></Badge>
+                            <Typography variant='s6'>{tabMoreLabels[2]}</Typography>
+                        </MenuItem>
+                    </StyledMenu>
+                </Tabs>
+            </Box>
             <Box sx={{ my: 1 }}>
                 <TabPanel value={tabID} id={0}>
                     <Stack sx={{ minHeight: '20vh' }}>

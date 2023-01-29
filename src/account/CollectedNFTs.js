@@ -4,6 +4,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 // Material
 import {
+    useTheme, useMediaQuery,
     Box,
     Grid,
     IconButton,
@@ -24,6 +25,9 @@ import FilterDetail from './FilterDetail';
 export default function CollectedNFTs({ account }) {
 
     const BASE_URL = 'https://api.xrpnft.com/api'
+
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
     const [nfts, setNfts] = useState([]);
     const [page, setPage] = useState(0);
@@ -83,6 +87,11 @@ export default function CollectedNFTs({ account }) {
     useEffect(() => {
         fetchNfts();
     }, [sync]);
+
+    useEffect(() => {
+        if (fullScreen)
+            setShowFilter(false);
+    }, [fullScreen]);
 
     const handleChangeSearch = (e) => {
         setSearch(e.target.value);

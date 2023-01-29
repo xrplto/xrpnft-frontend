@@ -34,6 +34,7 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import ExploreNFT from 'src/explore';
+import SeeMoreTypography from 'src/components/SeeMoreTypography';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -129,7 +130,6 @@ const CardOverlay = styled('div')(
 );
 
 export default function ViewNFT({ collection }) {
-    const BASE_URL = 'https://api.xrpnft.com/api';
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const { accountProfile, openSnackbar } = useContext(AppContext);
@@ -257,9 +257,14 @@ export default function ViewNFT({ collection }) {
                 </Typography>
             </Stack>
 
-            {description &&
+            <SeeMoreTypography
+                variant="d3"
+                text={description}
+            />
+
+            {/* {description &&
                 <Typography variant="d3" style={{ wordBreak: "break-word" }}>{description}</Typography>
-            }
+            } */}
 
             <Box
                 sx={{
@@ -275,19 +280,19 @@ export default function ViewNFT({ collection }) {
                 }}
             >
 
-                <Stack direction="row" sx={{ mt: 2, mb: 3 }} spacing={5}>
+                <Stack direction="row" width="100%" sx={{ mt: 2, mb: 3 }} spacing={{xs: 3, sm: 5}} alignItems="flex-end" justifyContent={{xs: 'space-around', sm: 'flex-start'}}>
                     <Stack>
-                        <Typography variant='d2'>{items}</Typography>
-                        <Typography variant='s4'>items</Typography>
+                        <Typography variant='d5'>{items}</Typography>
+                        <Typography variant='s13'>items</Typography>
                     </Stack>
                     <Stack>
-                        <Typography variant='d2'>{extra.owners}</Typography>
-                        <Typography variant='s4'>owners</Typography>
+                        <Typography variant='d5'>{extra.owners}</Typography>
+                        <Typography variant='s13'>owners</Typography>
                     </Stack>
                     <Stack>
                         <Stack direction="row" spacing={0.5} alignItems='center'>
                             <Icon icon={rippleSolid} width="20" height="20" />
-                            <Typography variant="d2" noWrap>{volume1}</Typography>
+                            <Typography variant="d5" noWrap>{volume1}</Typography>
                             <Stack direction="row" sx={{ pb: 1.5 }}>
                                 <Tooltip
                                     title={
@@ -301,14 +306,14 @@ export default function ViewNFT({ collection }) {
                                 </Tooltip>
                             </Stack>
                         </Stack>
-                        <Typography variant='s4' noWrap>total volume</Typography>
+                        <Typography variant='s13' noWrap>total volume</Typography>
                     </Stack>
                     <Stack>
                         <Stack direction="row" spacing={0.5} alignItems='center'>
                             <Icon icon={rippleSolid} width="20" height="20" />
-                            <Typography variant="d2" noWrap>{fNumber(floorPrice)}</Typography>
+                            <Typography variant="d5" noWrap>{fNumber(floorPrice)}</Typography>
                         </Stack>
-                        <Typography variant='s4' noWrap>floor price</Typography>
+                        <Typography variant='s13' noWrap>floor price</Typography>
                     </Stack>
                 </Stack>
             </Box>
