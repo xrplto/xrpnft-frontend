@@ -36,7 +36,7 @@ export default function Trait({ prop, total }) {
                 {value}
             </Typography>
             {total > 0 &&
-                <Typography variant="p3" sx={{ mt: 1 }}>{rarity} %</Typography>
+                <Typography variant="p3" sx={{ mt: 1, overflowWrap: 'break-word'}}>{count} ({rarity}%)</Typography>
             }
         </Paper>
     );

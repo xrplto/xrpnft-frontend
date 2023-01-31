@@ -1,5 +1,6 @@
 // Material
 import {
+    useMediaQuery,
     Grid
 } from '@mui/material';
 
@@ -10,24 +11,29 @@ import { NFToken } from "src/utils/constants";
 import NFTDetails from './NFTDetails';
 import NFTActions from './NFTActions';
 import NFTActionsBulk from './NFTActionsBulk';
+import NFTDetailsMobile from './NFTDetailsMobile';
 
 export default function Detail({nft}) {
+    const isMobile = useMediaQuery(theme => theme.breakpoints.down('md'));
     const {
         status,
         costs
     } = nft;
     return (
-        <Grid container spacing={2} justifyContent='center'>
-            <Grid item xs={12} md={5}>
-                <NFTDetails nft={nft} />
+        isMobile && status !== NFToken.SELL_WITH_MINT_BULK ?
+            <NFTDetailsMobile nft={nft} />
+            :
+            <Grid container spacing={2} justifyContent='center'>
+                <Grid item xs={12} md={5}>
+                    <NFTDetails nft={nft} />
+                </Grid>
+                <Grid item xs={12} md={7}>
+                    {status === NFToken.SELL_WITH_MINT_BULK ?
+                        <NFTActionsBulk nft={nft} />
+                    :
+                        <NFTActions nft={nft} />
+                    }
+                </Grid>
             </Grid>
-            <Grid item xs={12} md={7}>
-                {status === NFToken.SELL_WITH_MINT_BULK ?
-                    <NFTActionsBulk nft={nft} />
-                :
-                    <NFTActions nft={nft} />
-                }
-            </Grid>
-        </Grid>
     );
 }

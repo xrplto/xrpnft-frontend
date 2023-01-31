@@ -90,6 +90,7 @@ const colors = {
       30: alpha(themeColors.black, 0.3),
       50: alpha(themeColors.black, 0.5),
       70: alpha(themeColors.black, 0.7),
+      90: alpha(themeColors.black, 0.9),
       100: themeColors.black
     }
   },
@@ -1230,6 +1231,7 @@ export const DarkSpacesTheme = createTheme({
           s11: 'span',
           s12: 'span',
           s13: 'span',
+          s14: 'span',
           caption: 'span',
           p1: 'p',
           p2: 'p',
@@ -1402,6 +1404,11 @@ export const DarkSpacesTheme = createTheme({
       fontWeight: 400,
       fontSize: 10,
       color: colors.alpha.black[50]
+    },
+    s14: {
+      fontWeight: 500,
+      fontSize: 12,
+      color: colors.alpha.black[90]
     },
     h1: {
       fontWeight: 700,

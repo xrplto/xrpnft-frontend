@@ -424,12 +424,8 @@ export default function ErrorList({ filter, choice, setLoading }) {
                                                     </Link>
                                                 </Stack>
                                                 <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s7">URI(string): </Typography>
+                                                    <Typography variant="s7">URI: </Typography>
                                                     <Typography variant="s7">{convertHexToString(URI)}</Typography>
-                                                </Stack>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s7">URI(hex): </Typography>
-                                                    <Typography variant="s7">{URI}</Typography>
                                                 </Stack>
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     <Typography variant="s7">TxMint: </Typography>

@@ -67,7 +67,7 @@ module.exports.currencyCodeUTF8ToHex = currencyCode => {
             currencyCode = currencyCode.substring(0, currencyCode.length-2);
         }
     }
-  
+
     let output;
     if(currencyCode.length > 3)
         output = Buffer.from(currencyCode.trim(), "utf-8").toString("hex");

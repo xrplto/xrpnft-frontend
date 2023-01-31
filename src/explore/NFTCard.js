@@ -65,18 +65,18 @@ export default function NFTCard({ nft }) {
 
     const {
         uuid,
-        name,
-        flag,
+        // name,
+        // flag,
         account,
-        minter,
+        // minter,
         cost,
         costb,
-        issuer,
-        date,
+        // issuer,
+        // date,
         meta,
         NFTokenID,
-        URI,
-        status,
+        // URI,
+        // status,
         destination,
         rarity,
         rarity_rank
@@ -88,6 +88,8 @@ export default function NFTCard({ nft }) {
     const isVideo = meta?.video ? true : false;
 
     const [loadingImg, setLoadingImg] = useState(true)
+
+    const name = nft.meta?.name || 'No Name';
 
     const getColors = colors => {
         setColors(c => [...c, ...colors]);
@@ -246,23 +248,32 @@ export default function NFTCard({ nft }) {
                     sx={{ padding: 0 }}
                 >
                     <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'} px={1}>
-                        <Box display='flex'>
+                        {name.length > 20 ?
+                            <Box display='flex'>
+                                <Typography
+                                    variant="s8"
+                                    textOverflow='ellipsis'
+                                    overflow='hidden'
+                                    whiteSpace='nowrap'
+                                    sx={{mt:0.5, mb:0.5}}
+                                >
+                                    {name.slice(0, -5)}&nbsp;
+                                </Typography>
+                                <Typography
+                                    variant="s8"
+                                    sx={{mt:0.5, mb:0.5, width: 45}}
+                                >
+                                    {name.slice(-5)}
+                                </Typography>
+                            </Box>
+                            :
                             <Typography
                                 variant="s8"
-                                textOverflow='ellipsis'
-                                overflow='hidden'
-                                whiteSpace='nowrap'
                                 sx={{mt:0.5, mb:0.5}}
                             >
-                                {name.slice(0, -5)}
+                                {name}
                             </Typography>
-                            <Typography
-                                variant="s8"
-                                sx={{mt:0.5, mb:0.5, width: 45}}
-                            >
-                                {name.slice(-5)}
-                            </Typography>
-                        </Box>
+                        }
                         {destination && getMinterName(account) ? (
                             // <Typography variant='s2'>TRANSFER</Typography>
                             <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:0, pl:0, pr:0}}>

@@ -668,7 +668,7 @@ export default function Collections({account}) {
                                                         </MenuItem>
                                                     </CustomSelect>
                                                     {rarity !== newRarity &&
-                                                        <Tooltip title='Change Rarity, it takes about 6 mins for 10k NFTs'>
+                                                        <Tooltip title='Change Rarity'>
                                                             <IconButton size="small" onClick={()=>handleChangeRarity(row)}>
                                                                 <LeaderboardOutlinedIcon fontSize="small" color="success" />
                                                             </IconButton>

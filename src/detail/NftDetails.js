@@ -1,7 +1,4 @@
-// import axios from 'axios';
-// import { useEffect, useState } from 'react';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
-import Decimal from 'decimal.js';
 
 // Material
 import {
@@ -32,13 +29,13 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { fVolume } from 'src/utils/formatNumber';
+import { convertHexToString, parseNFTokenID } from 'src/utils/parse';
 
 // Components
 import NFTPreview from './NFTPreview';
 import FlagsContainer from 'src/components/Flags';
 import Properties from './Properties';
 import Levels from 'src/minting/NFTLevels/Levels';
-import { convertHexToString, parseNFTokenID } from 'src/utils/parse';
 
 function getProperties(meta) {
     const properties = [];
@@ -126,7 +123,7 @@ export default function NFTDetails({nft}) {
         strDateTime = `${strDate} ${strTime}`;
     }
 
-    const collectionName = meta?.collection?.name || '[No Collection]';
+    const collectionName = collection || meta?.collection?.name || '[No Collection]';
 
     const properties = props || getProperties(meta);
 

@@ -7,6 +7,14 @@
   object-fit: cover;
 }
 
+.nftpreview2 {
+  width: 96px;
+  height: 96px;
+  filter: drop-shadow(16px 16px 10px rgba(0,0,0,0.8));
+  border-radius: 8px;
+  object-fit: cover;
+}
+
 @keyframes spinner {
   from {
     /*top: -1200px;*/

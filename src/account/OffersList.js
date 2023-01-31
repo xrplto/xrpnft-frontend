@@ -35,6 +35,7 @@ import QRDialog from 'src/components/QRDialog';
 import ConfirmAcceptOfferDialog from './ConfirmAcceptOfferDialog';
 import FlagsContainer from 'src/components/Flags';
 import ListToolbar from './ListToolbar';
+import SeeMoreTypography from 'src/components/SeeMoreTypography';
 
 export default function OffersList({ account, type }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -297,12 +298,10 @@ export default function OffersList({ account, type }) {
             </Backdrop>
 
             {type === 'orphaned' &&
-                <>
-                    <Typography variant="s7">When you create several Sell Offers on your NFT and if one is accepted by another account, your NFT will go to another account and the remaining Sell Offers are still owned to you and they are orphaned offers.</Typography>
-                    <Typography variant="s7"></Typography>
-                    <Typography variant="s7">Or if you accept the buy offer of your NFT from another account, your NFT will go to another account, and Sell Offers will become orphaned offers. Or when you create several Buy Offers on the other NFT and the NFT owner accepted one of your Buy Offers, the remaining Buy Offers will become orphaned offers too.</Typography>
-                    <Typography variant="s7">You must cancel them to save your account XRP reserve.</Typography>
-                </>
+                <SeeMoreTypography
+                    variant="s7"
+                    text={'When you create several Sell Offers on your NFT and if one is accepted by another account, your NFT will go to another account and the remaining Sell Offers are still owned to you and they are orphaned offers. Or if you accept the buy offer of your NFT from another account, your NFT will go to another account, and Sell Offers will become orphaned offers. Or when you create several Buy Offers on the other NFT and the NFT owner accepted one of your Buy Offers, the remaining Buy Offers will become orphaned offers too. You must cancel them to save your account XRP reserve.'}
+                />
             }
 
             {offers && offers.length > 0 &&
@@ -533,8 +532,8 @@ export default function OffersList({ account, type }) {
                                             <Typography variant="s7">NFTokenID: </Typography>
                                             <Link
                                                 color="inherit"
-                                                target="_blank"
-                                                href={`https://bithomp.com/explorer/${NFTokenID}`}
+                                                // target="_blank"
+                                                href={`/nft/${NFTokenID}`}
                                                 rel="noreferrer noopener nofollow"
                                             >
                                                 <Typography variant="s6">{NFTokenID}</Typography>
