@@ -1,5 +1,6 @@
 import React from 'react';
-import { useState } from 'react';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // Material
@@ -36,12 +37,13 @@ import { getHashIcon } from 'src/utils/parse';
 
 // Components
 import CreatedList from './CreatedList';
-import FavoritedList from './FavoritedList';
+// import FavoritedList from './FavoritedList';
 import ActivityList from './ActivityList';
-import AcceptList from './AcceptList';
+// import AcceptList from './AcceptList';
 import OffersList from './OffersList';
 import CollectedNFTs from './CollectedNFTs';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
+import TransferredNFTs from './TransferredNFTs';
 
 const IconImage = styled('img')(
     ({ theme }) => `
@@ -114,8 +116,11 @@ function a11yProps(index) {
     };
 }
 
-const tabValues = ['', 'created', 'favorited', 'activity', 'transfers', 'more'];
-const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Transfers', 'More'];
+// const tabValues = ['', 'created', 'favorited', 'activity', 'transfers', 'more'];
+// const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Transfers', 'More'];
+
+const tabValues = ['', 'created', 'activity', 'transfers', 'more'];
+const tabLabels = ['Collected', 'Created', 'Activity', 'Transfers', 'More'];
 
 const tabMoreValues = ['sells', 'buys', 'orphaned'];
 const tabMoreLabels = ['Sell Offers', 'Buy Offers', 'Orphaned Offers'];
@@ -194,8 +199,9 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   }));
 
 export default function Account({ profile, tab }) {
-    const { accountProfile, openSnackbar, acceptNfts, orphanedOffers } = useContext(AppContext);
-    const account = accountProfile?.account;
+    const BASE_URL = 'https://api.xrpnft.com/api';
+    const { accountProfile, openSnackbar, sync } = useContext(AppContext);
+    const accountLogin = accountProfile?.account;
     // const accountToken = accountProfile?.token;
     // const accountUuid = accountProfile?.xuuid;
 
@@ -207,7 +213,11 @@ export default function Account({ profile, tab }) {
 
     const [tabID, setTabID] = useState(getTabID(tab));
 
+    const [acceptNfts, setAcceptNfts] = useState(0);
+    const [orphanedOffers, setOrphanedOffers] = useState(0);
+
     const {
+        account,
         name,
         logo,
         banner,
@@ -215,7 +225,31 @@ export default function Account({ profile, tab }) {
         minterWallet
     } = profile;
 
-    const logoImage = logo ? `https://s1.xrpnft.com/profile/${logo}` : getHashIcon(profile.account);
+    const logoImage = logo ? `https://s1.xrpnft.com/profile/${logo}` : getHashIcon(account);
+
+    useEffect(() => {
+        function getOffersCount() {
+            const body = {
+                account
+            };
+
+            axios.post(`${BASE_URL}/account/notification`, body)
+                .then(res => {
+                    let ret = res.status === 200 ? res.data : undefined;
+                    if (ret) {
+                        setAcceptNfts(ret.acceptNfts);
+                        setOrphanedOffers(ret.orphanedOffers);
+
+                        // setOrphanedOffers(1);
+                    }
+                }).catch(err => {
+                    console.log("Error on getting header info!!!", err);
+                }).then(function () {
+                    // always executed
+                });
+        }
+        getOffersCount();
+    }, [accountLogin, sync]);
 
     const handleClickMore = (event) => {
         setAnchorEl(event.currentTarget);
@@ -229,7 +263,7 @@ export default function Account({ profile, tab }) {
         setMoreMenu(menu);
         setAnchorEl(null);
 
-        const url = `/account/${profile.account}/${tabMoreValues[menu]}`;
+        const url = `/account/${account}/${tabMoreValues[menu]}`;
         window.history.pushState({}, null, url);
 
         if (tabID !== MORE_INDEX) {
@@ -257,9 +291,9 @@ export default function Account({ profile, tab }) {
         }
         let url = '';
         if (newID > 0)
-            url = `/account/${profile.account}/${tabValues[newID]}`;
+            url = `/account/${account}/${tabValues[newID]}`;
         else
-            url = `/account/${profile.account}/`;
+            url = `/account/${account}/`;
         window.history.pushState({}, null, url);
         setTabID(newID);
         gotoTabView(event);
@@ -286,7 +320,7 @@ export default function Account({ profile, tab }) {
                     }}
                 >
                     <IconImage src={logoImage} />
-                    {account === profile.account &&
+                    {accountLogin === account &&
                         <Link href={`/setting`} underline='none'>
                             <CardOverlay>
                                 <EditIcon
@@ -301,12 +335,12 @@ export default function Account({ profile, tab }) {
                     }
                 </Avatar>
                 <Box position={'relative'}>
-                    <Typography variant='h3'>{name || profile.account?.toString().slice(0, 5)}</Typography>
+                    <Typography variant='h3'>{name || account?.toString().slice(0, 5)}</Typography>
                     <Box display='flex' alignItems={'center'}>
                         <Typography style={{ wordWrap: "break-word" }} variant="d3">
-                            {profile.account.slice(0, 4) + '...' + profile.account.slice(-4)}
+                            {account.slice(0, 4) + '...' + account.slice(-4)}
                         </Typography>
-                        <CopyToClipboard text={profile.account} onCopy={() => { openSnackbar("Copied!", "success") }}>
+                        <CopyToClipboard text={account} onCopy={() => { openSnackbar("Copied!", "success") }}>
                             <Tooltip title='Click to copy'>
                                 <IconButton>
                                     <ContentCopyIcon fontSize="small" />
@@ -316,7 +350,7 @@ export default function Account({ profile, tab }) {
                         <Link
                             color="inherit"
                             target="_blank"
-                            href={`https://bithomp.com/explorer/${profile.account}`}
+                            href={`https://bithomp.com/explorer/${account}`}
                             rel="noreferrer noopener nofollow"
                         >
                             <IconButton>
@@ -358,15 +392,15 @@ export default function Account({ profile, tab }) {
 
                     <Tab value={0} label={tabLabels[0]} {...a11yProps(0)} />
                     <Tab value={1} label={tabLabels[1]} {...a11yProps(1)} />
+                    {/* <Tab value={2} label={tabLabels[2]} {...a11yProps(2)} /> */}
                     <Tab value={2} label={tabLabels[2]} {...a11yProps(2)} />
-                    <Tab value={3} label={tabLabels[3]} {...a11yProps(3)} />
-                    <Tab value={4} label={<StyledBadge color="primary" badgeContent={acceptNfts}>{tabLabels[4]}</StyledBadge>} {...a11yProps(4)} sx={{overflow: "visible"}}/>
+                    <Tab value={3} label={<StyledBadge color="primary" badgeContent={acceptNfts}>{tabLabels[3]}</StyledBadge>} {...a11yProps(3)} sx={{overflow: "visible"}}/>
                     <Tab
-                        value={5}
-                        label={tabLabels[5]}
+                        value={4}
+                        label={tabLabels[4]}
                         icon={<StyledBadge color="primary" badgeContent={orphanedOffers}><KeyboardArrowDownIcon /></StyledBadge>}
                         iconPosition='end'
-                        {...a11yProps(5)}
+                        {...a11yProps(4)}
                         onClick={handleClickMore}
                         sx={{overflow: "visible"}}
                     />
@@ -403,32 +437,33 @@ export default function Account({ profile, tab }) {
             <Box sx={{ my: 1 }}>
                 <TabPanel value={tabID} id={0}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        <CollectedNFTs account={profile.account} />
+                        <CollectedNFTs account={account} />
                     </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={1}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        <CreatedList account={profile.account} />
+                        <CreatedList account={account} />
                     </Stack>
                 </TabPanel>
+                {/* <TabPanel value={tabID} id={2}>
+                    <Stack sx={{ minHeight: '20vh' }}>
+                        <FavoritedList account={account} />
+                    </Stack>
+                </TabPanel> */}
                 <TabPanel value={tabID} id={2}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        <FavoritedList account={profile.account} />
+                        <ActivityList account={account} />
                     </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={3}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        <ActivityList account={profile.account} />
+                        {/* <AcceptList account={account} /> */}
+                        <TransferredNFTs account={account} />
                     </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={4}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        <AcceptList account={profile.account} />
-                    </Stack>
-                </TabPanel>
-                <TabPanel value={tabID} id={5}>
-                    <Stack sx={{ minHeight: '20vh' }}>
-                        <OffersList account={profile.account} type={tabMoreValues[moreMenu]} />
+                        <OffersList account={account} type={tabMoreValues[moreMenu]} />
                     </Stack>
                 </TabPanel>
             </Box>

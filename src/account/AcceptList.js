@@ -302,22 +302,22 @@ export default function AcceptList({account}) {
                                                     title='title'
                                                     controls
                                                     style={{
-                                                        width: 128,
-                                                        height: 128,
+                                                        width: 96,
+                                                        height: 96,
                                                         filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
                                                     }}
                                                 />
                                                 :
                                                 <ModalImage
-                                                    className='nftpreview1'
+                                                    className='nftpreview2'
                                                     small={imgUrl}
                                                     large={imgUrl}
                                                     alt={name}
                                                     hideDownload
                                                     hideZoom
                                                     style={{
-                                                        width: 128,
-                                                        height: 128,
+                                                        width: '96px',
+                                                        height: '96px',
                                                         filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
                                                     }}
                                                 />
@@ -325,7 +325,14 @@ export default function AcceptList({account}) {
 
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row" spacing={2} alignItems="center">
-                                                    <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                                    <Link
+                                                        color="inherit"
+                                                        // target="_blank"
+                                                        href={`/nft/${NFTokenID}`}
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        <Typography variant="s3" color="#33C2FF">{name}</Typography>
+                                                    </Link>
                                                     {SellOfferID ? (
                                                         <Button variant="contained" color="primary" size="small" onClick={()=>handleApprove(row)}>
                                                             Approve
@@ -355,7 +362,7 @@ export default function AcceptList({account}) {
                                                     <Typography variant="s7">Transfer Fee</Typography>
                                                     <Typography variant="s6">{transferFee} %</Typography>
                                                 </Stack>
-                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                {/* <Stack direction="row" spacing={1} alignItems="center">
                                                     <Typography variant="s7">NFTokenID: </Typography>
                                                     <Link
                                                         color="inherit"
@@ -369,7 +376,7 @@ export default function AcceptList({account}) {
                                                 <Stack direction="row" spacing={1} alignItems="center">
                                                     <Typography variant="s7">URI: </Typography>
                                                     <Typography variant="s6">{convertHexToString(URI)}</Typography>
-                                                </Stack>
+                                                </Stack> */}
                                             </Stack>
                                         </Stack>
                                     </TableCell>

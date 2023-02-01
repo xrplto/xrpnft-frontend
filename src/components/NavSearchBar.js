@@ -78,56 +78,58 @@ const RenderOption = ({
     }, [uuid])
 
 
-    return <Link
-        color="inherit"
-        underline='none'
-        href={hLink}
-    >
-        <MenuItem sx={{ pt: 1, pb: 1 }}>
-            <Stack direction="row" spacing={1} alignItems="center">
-                {
-                    <Avatar
-                        alt="X"
-                        variant={logo?"":"square"}
-                        sx={{
-                            backgroundColor: '#00000000'
-                        }}
-                    >
-                        <CardMedia
-                            component={isVideo ? "video" : 'img'}
-                            src={imgUrl}
-                            alt='X'
-                        />
-                    </Avatar>
-                }
-                <Typography variant="s5">{name ?? ''}</Typography>
-                {
-                    option_type === 'COLLECTIONS' && <>
-                        {verified === 'yes' &&
-                            <Tooltip title='Verified'>
-                                <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
-                            </Tooltip>
-                        }
-                        {type === "random" &&
-                            <Tooltip title="Random Collection">
-                                <CasinoIcon color='info' fontSize="small" />
-                            </Tooltip>
-                        }
-                        {type === "sequence" &&
-                            <Tooltip title="Sequence Collection">
-                                <AnimationIcon color='info' fontSize="small" />
-                            </Tooltip>
-                        }
-                        <Typography variant="s7">{items} items</Typography>
-                    </>
-                }
-                {
-                    option_type === 'ACCOUNTS' &&
-                    <Typography variant="s7">{account}</Typography>
-                }
-            </Stack>
-        </MenuItem>
-    </Link>
+    return (
+        <Link
+            color="inherit"
+            underline='none'
+            href={hLink}
+        >
+            <MenuItem sx={{ pt: 1, pb: 1 }}>
+                <Stack direction="row" spacing={1} alignItems="center">
+                    {
+                        <Avatar
+                            alt="X"
+                            variant={logo?"":"square"}
+                            sx={{
+                                backgroundColor: '#00000000'
+                            }}
+                        >
+                            <CardMedia
+                                component={isVideo ? "video" : 'img'}
+                                src={imgUrl}
+                                alt='X'
+                            />
+                        </Avatar>
+                    }
+                    <Typography variant="s5">{name ?? ''}</Typography>
+                    {
+                        option_type === 'COLLECTIONS' && <>
+                            {verified === 'yes' &&
+                                <Tooltip title='Verified'>
+                                    <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
+                                </Tooltip>
+                            }
+                            {type === "random" &&
+                                <Tooltip title="Random Collection">
+                                    <CasinoIcon color='info' fontSize="small" />
+                                </Tooltip>
+                            }
+                            {type === "sequence" &&
+                                <Tooltip title="Sequence Collection">
+                                    <AnimationIcon color='info' fontSize="small" />
+                                </Tooltip>
+                            }
+                            <Typography variant="s7">{items} items</Typography>
+                        </>
+                    }
+                    {
+                        option_type === 'ACCOUNTS' &&
+                        <Typography variant="s7">{account}</Typography>
+                    }
+                </Stack>
+            </MenuItem>
+        </Link>
+    )
 }
 
 const getOptionLabel = (option) => {
@@ -143,7 +145,7 @@ const getOptionLabel = (option) => {
 export default function NavSearchBar({ id, placeholder, type, fullSearch, setFullSearch }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(fullSearch);
     const [options, setOptions] = useState([]);
 
     const [search, setSearch] = useState('');
@@ -203,15 +205,15 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
 
     const handleClear = (e) => {
         setSearch('');
-        setNfts([]);
-        setCollections([]);
+        // setNfts([]);
+        // setCollections([]);
     }
 
     const handleBack = (e) => {
         setFullSearch(false);
         setSearch('');
-        setNfts([]);
-        setCollections([]);
+        // setNfts([]);
+        // setCollections([]);
     }
 
     return (

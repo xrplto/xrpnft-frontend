@@ -225,7 +225,7 @@ export default function Summary({}) {
 
                     <TableRow>
                         <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
-                            <Typography variant="s7">Activities (2 Weeks): </Typography>
+                            <Typography variant="s7">Activities: </Typography>
                         </TableCell>
                         <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
                             <Typography variant="s6">{fIntNumber(activities)} <Typography variant="s2" color="#33C2FF">(XRPL)</Typography></Typography>

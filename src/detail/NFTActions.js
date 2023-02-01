@@ -559,9 +559,9 @@ export default function NFTActions({ nft }) {
                 <Typography variant='h2a'>{nftName}</Typography>
             </Stack>
 
-            {meta?.description &&
+            {/* {meta?.description &&
                 <Typography variant="s7">{meta.description}</Typography>
-            }
+            } */}
 
             {self && rarity_rank > 0 &&
                 <Stack direction="row" >

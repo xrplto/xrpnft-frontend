@@ -129,6 +129,12 @@ const CardOverlay = styled('div')(
 `
 );
 
+function truncate(str, n) {
+    if (!str) return '';
+    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
+    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
+};
+
 export default function ViewNFT({ collection }) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -251,7 +257,7 @@ export default function ViewNFT({ collection }) {
                         href={`/account/${account}`}
                         rel="noreferrer noopener nofollow"
                     >
-                        <Typography variant="s5" color="#33C2FF">{accountName || account}</Typography>
+                        <Typography variant="s5" color="#33C2FF">{accountName || account.slice(0, 4) + '...' + account.slice(-4)}</Typography>
                     </Link>
                     <Typography variant="s10">&nbsp;&nbsp;·&nbsp;Created <Typography variant="s3">{formatMonthYear(created)}</Typography></Typography>
                 </Typography>

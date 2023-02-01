@@ -1,25 +1,44 @@
 import { AppContext } from 'src/AppContext';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
+import { FacebookShareButton, TwitterShareButton } from "react-share";
+import { FacebookIcon, TwitterIcon } from "react-share";
+
+// Material
+import {
+    alpha, styled, useMediaQuery, useTheme,
+    AppBar,
+    Box,
+    Button,
+    Container,
+    Divider,
+    Grid,
+    IconButton,
+    Link,
+    Menu,
+    MenuItem,
+    Stack,
+    Toolbar,
+    Typography
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import NFTLogo from './NFTLogo';
 import SearchIcon from '@mui/icons-material/Search';
+import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
+import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
+import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
+import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 // Iconify Icons
 import { Icon } from '@iconify/react';
 import baselineBrightnessHigh from '@iconify/icons-ic/baseline-brightness-high';
 import baselineBrightness4 from '@iconify/icons-ic/baseline-brightness-4';
-import { alpha, Link, styled, useMediaQuery, useTheme } from '@mui/material';
-import Wallet from './Wallet';
-import NavSearchBar from './NavSearchBar';
+
+// Context
 import { useContext, useState } from 'react';
 
+// Components
+import NFTLogo from './NFTLogo';
+import Wallet from './Wallet';
+import NavSearchBar from './NavSearchBar';
 
 const HeaderWrapper = styled(AppBar)(({ theme }) => `
     width: 100%;
@@ -45,12 +64,16 @@ export default function Header() {
     xl: 1840
     */
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     const { toggleTheme, darkMode } = useContext(AppContext);
 
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
 
-    const hideSearchBar = useMediaQuery(theme.breakpoints.down('sm'));
+    const shareUrl = `https://xrpnft.com`;
+    const shareTitle = 'Discover, collect and sell extraordinary NFTs';
+    const shareDesc = 'XRPNFT is an NFT Marketplace on the XRP Ledger where creators and collectors trade XRPL NFTs without fees.';
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -76,80 +99,6 @@ export default function Header() {
         <HeaderWrapper position="sticky" enableColorOnDark={true} sx={{ py: 1 }}>
             <Container maxWidth="xxl">
                 <Toolbar disableGutters>
-                    <Box id='nav-menu-mobile'
-                        sx={{ flexGrow: 0, display: { sm: 'flex', md: 'none' } }}
-                    >
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
-                        >
-
-                            <MenuItem onClick={handleCloseNavMenu}>
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/explore-collections`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <Button variant="text">Explore</Button>
-                                </Link>
-                            </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/create`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <Button variant="text">Create</Button>
-                                </Link>
-                            </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    // href={`/create`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <Button variant="text">Launch Pad</Button>
-                                </Link>
-                            </MenuItem>
-                            <MenuItem onClick={handleCloseNavMenu}>
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    // href={`/create`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <Button variant="text">Ranking</Button>
-                                </Link>
-                            </MenuItem>
-                        </Menu>
-                    </Box>
-
                     <Box id='logo-container-laptop'
                         sx={{
                             mr: 2,
@@ -170,8 +119,7 @@ export default function Header() {
                         />
                     }
 
-                    {
-                        !fullSearch &&
+                    {!fullSearch &&
                         <Box id='logo-container-mobile'
                             sx={{
                                 mr: 2,
@@ -181,7 +129,7 @@ export default function Header() {
                             <NFTLogo />
                         </Box>
                     }
-                    {!fullSearch && !hideSearchBar &&
+                    {!fullSearch && !isMobile &&
                         <NavSearchBar
                             id='id_search_items_collections_accounts'
                             placeholder='Search items, collections, and accounts'
@@ -226,7 +174,7 @@ export default function Header() {
                     </Box>
 
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
-                        {!fullSearch && hideSearchBar &&
+                        {!fullSearch && isMobile &&
                             <IconButton
                                 aria-label='search'
                                 onClick={handleFullSearch}
@@ -234,15 +182,138 @@ export default function Header() {
                                 <SearchIcon />
                             </IconButton>
                         }
-                        <Wallet />
-                        <IconButton onClick={() => { toggleTheme() }} >
-                            {darkMode ? (
-                                <Icon icon={baselineBrightnessHigh} />
-                            ) : (
-                                <Icon icon={baselineBrightness4} />
-                            )}
-                        </IconButton>
+                        {!fullSearch &&
+                            <Wallet />
+                        }
+                        {!isMobile &&
+                            <IconButton onClick={() => { toggleTheme() }} >
+                                {darkMode ? (
+                                    <Icon icon={baselineBrightness4} />
+                                ) : (
+                                    <Icon icon={baselineBrightnessHigh} />
+                                )}
+                            </IconButton>
+                        }
                     </Box>
+
+                    {!fullSearch &&
+                        <Box id='nav-menu-mobile'
+                            sx={{ flexGrow: 0, display: { sm: 'flex', md: 'none' } }}
+                        >
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleOpenNavMenu}
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorElNav}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                }}
+                                open={Boolean(anchorElNav)}
+                                onClose={handleCloseNavMenu}
+                                sx={{
+                                    display: { xs: 'block', md: 'none' },
+                                }}
+                            >
+
+                                <MenuItem onClick={handleCloseNavMenu}>
+                                    <Link
+                                        underline="none"
+                                        color="inherit"
+                                        href={`/explore-collections`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                            <ExploreOutlinedIcon />
+                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Explore</Typography>
+                                        </Stack>
+                                    </Link>
+                                </MenuItem>
+                                <MenuItem onClick={handleCloseNavMenu}>
+                                    <Link
+                                        underline="none"
+                                        color="inherit"
+                                        href={`/create`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                            <AddPhotoAlternateIcon />
+                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Create</Typography>
+                                        </Stack>
+                                    </Link>
+                                </MenuItem>
+                                <MenuItem onClick={handleCloseNavMenu}>
+                                    <Link
+                                        underline="none"
+                                        color="inherit"
+                                        // href={`/create`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                            <RocketLaunchOutlinedIcon />
+                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Launch Pad</Typography>
+                                        </Stack>
+                                    </Link>
+                                </MenuItem>
+                                <MenuItem onClick={handleCloseNavMenu}>
+                                    <Link
+                                        underline="none"
+                                        color="inherit"
+                                        // href={`/create`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                            <LeaderboardOutlinedIcon />
+                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Ranking</Typography>
+                                        </Stack>
+                                    </Link>
+                                </MenuItem>
+                                <Divider />
+                                <MenuItem onClick={()=> {toggleTheme();}}>
+                                    <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                        {darkMode ? (
+                                            <Icon icon={baselineBrightness4} width={24} height={24} />
+                                        ) : (
+                                            <Icon icon={baselineBrightnessHigh} width={24} height={24} />
+                                        )}
+                                        <Typography variant='s3' style={{marginLeft: '10px'}}>{darkMode ? 'Dark Theme':'Light Theme'}</Typography>
+                                    </Stack>
+                                </MenuItem>
+
+                                <Stack alignItems="center" sx={{mt: 2}} >
+                                    <Stack direction="row" spacing={3}>
+                                        <FacebookShareButton
+                                            url={shareUrl}
+                                            quote={shareTitle}
+                                            hashtag={"#"}
+                                            description={shareDesc}
+                                        >
+                                            <FacebookIcon size={32} round />
+                                        </FacebookShareButton>
+                                        <TwitterShareButton
+                                            title={shareTitle}
+                                            url={shareUrl}
+                                            hashtag={"#"}
+                                        >
+                                            <TwitterIcon size={32} round />
+                                        </TwitterShareButton>
+                                    </Stack>
+                                </Stack>
+                            </Menu>
+                        </Box>
+                    }
                 </Toolbar>
             </Container>
         </HeaderWrapper >

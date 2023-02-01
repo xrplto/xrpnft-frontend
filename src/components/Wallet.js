@@ -64,7 +64,7 @@ export default function Wallet() {
 
     useEffect(() => {
         function getOffersCount() {
-            if (!accountLogin || !accountToken) {
+            if (!accountLogin) {
                 return;
             }
 
@@ -72,7 +72,7 @@ export default function Wallet() {
                 account: accountLogin
             };
 
-            axios.post(`${BASE_URL}/info/header`, body, {headers: {'x-access-token': accountToken}})
+            axios.post(`${BASE_URL}/account/notification`, body)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {

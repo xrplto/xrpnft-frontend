@@ -19,7 +19,7 @@ import Footer from 'src/components/Footer';
 import TokenDetail from 'src/detail';
 import ScrollToTop from 'src/components/ScrollToTop';
 
-const DynamicTokenDetail = dynamic(() => import('src/detail'));
+// const DynamicTokenDetail = dynamic(() => import('src/detail'));
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -29,6 +29,7 @@ const OverviewWrapper = styled(Box)(
 );
 
 export default function Overview({data}) {
+    console.log("AAAA");
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
@@ -36,7 +37,7 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="lg">
-                <DynamicTokenDetail nft={data.nft} />
+                <TokenDetail nft={data.nft} />
             </Container>
 
             <ScrollToTop />

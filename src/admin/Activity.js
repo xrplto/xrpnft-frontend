@@ -49,6 +49,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AnimationIcon from '@mui/icons-material/Animation';
 import PaymentIcon from '@mui/icons-material/Payment';
+import ImportExportIcon from '@mui/icons-material/ImportExport';
 
 // Context
 import { useContext } from 'react';
@@ -240,6 +241,21 @@ export default function ActivityList({account}) {
                                                         <Typography variant="s2">{data.type}</Typography>
                                                     </Stack>
                                                 </Stack>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+                                case Activity.IMPORT_COLLECTION:
+                                    strActivity = 'Import a Collection';
+                                    componentIcon = (<ImportExportIcon />);
+                                    // {name, type, slug, logo: data.logoImage}
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${data.logo}`}/>
+                                                <Link href={`/collection/${data.slug}`} underline='none'>
+                                                    <Typography variant="s8">{data.name}</Typography>
+                                                </Link>
                                             </Stack>
                                         </>
                                     );
@@ -750,6 +766,46 @@ export default function ActivityList({account}) {
                                         </>
                                     );
                                     break;
+                                case Activity.BROKER_ACCEPTED_YOUR_BUY_OFFER:
+                                    componentIcon = (<HowToRegIcon />);
+                                    strActivity = 'Broker accepted your Buy Offer';
+                                    // NFTokenID
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">NFTokenID: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s8">{data.NFTokenID}</Typography>
+                                                </Link>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
+                                case Activity.BROKER_ACCEPTED_YOUR_SELL_OFFER:
+                                    componentIcon = (<HowToRegIcon />);
+                                    strActivity = 'Broker accepted your Sell Offer';
+                                    // NFTokenID
+                                    componentActivity = (
+                                        <>
+                                            <Stack direction="row" spacing={1}>
+                                                <Typography variant="s7">NFTokenID: </Typography>
+                                                <Link
+                                                    color="inherit"
+                                                    target="_blank"
+                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
+                                                    rel="noreferrer noopener nofollow"
+                                                >
+                                                    <Typography variant="s8">{data.NFTokenID}</Typography>
+                                                </Link>
+                                            </Stack>
+                                        </>
+                                    );
+                                    break;
                                 default:
                                     strActivity = `Unknown Activity: ${activity}`;
                                     componentIcon = (<HelpOutlineIcon />);
@@ -781,11 +837,11 @@ export default function ActivityList({account}) {
                                     <TableCell align="left">
                                         <Stack spacing={0.5}>
                                             <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Typography variant="s2">{strActivity}</Typography>
+                                                <Typography variant="s8">{strActivity}</Typography>
                                                 <Typography variant="s7">{strDateTime}</Typography>
                                             </Stack>
                                             <Stack direction="row" spacing={0.2} alignItems="center">
-                                                <Typography variant="s6">{account}</Typography>
+                                                <Typography variant="s7">{account}</Typography>
                                                 <Link
                                                     underline="none"
                                                     color="inherit"

@@ -636,9 +636,9 @@ export default function NFTDetailsMobile({ nft }) {
                 <Typography variant='h2a'>{nftName}</Typography>
             </Stack>
 
-            {meta?.description &&
+            {/* {meta?.description &&
                 <SeeMoreTypography variant="s7" text={meta.description} />
-            }
+            } */}
 
             {self && rarity_rank > 0 &&
                 <Stack direction="row" >
