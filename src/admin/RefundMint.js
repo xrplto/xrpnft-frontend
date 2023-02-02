@@ -275,7 +275,6 @@ export default function RefundMint() {
                                 >
                                     <TableCell align="left">
                                         <Stack direction="row" spacing={1} alignItems="center">
-                                            {/* <Avatar alt="C" src='/static/account_logo.png' /> */}
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row" spacing={0.2} alignItems="center">
                                                     <Stack direction="row" spacing={1} alignItems="center">

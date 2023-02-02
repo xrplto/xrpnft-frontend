@@ -61,9 +61,9 @@ export default function CollectedNFTs({ account }) {
                 const newNfts = res.data.nfts;
                 const length = newNfts.length;
                 if (length < 20) {
-                    setHasMore(false)
+                    setHasMore(false);
                 } else {
-                    setHasMore(true)
+                    setHasMore(true);
                 }
                 if (length > 0) {
                     setNfts([...nfts, ...newNfts])

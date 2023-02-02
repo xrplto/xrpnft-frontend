@@ -22,13 +22,13 @@ const StickyTableCell = withStyles((theme) => ({
 //    { id: 'offers', label: 'Offers', align: 'left', order: true },
 
 const TABLE_HEAD = [
-    { no: 0, id: 'name', label: 'Collection', align: 'left', width: '10%', order: false },
-    { no: 1, id: 'floor.amount', label: 'Floor', align: 'left', width: '10%', order: true },
-    { no: 2, id: 'vol24h', label: '24h Vol', align: 'left', width: '10%', order: true },
-    { no: 3, id: 'volume', label: 'Volume', align: 'left', width: '10%', order: true },
-    { no: 4, id: 'totalVolume', label: 'Total Vol', align: 'left', width: '15%', order: true },
-    { no: 5, id: 'owners', label: 'Owners', align: 'left', width: '10%', order: true },
-    { no: 6, id: 'items', label: 'Items', align: 'left', width: '10%', order: true },
+    { no: 0, id: 'name', label: 'Collection', align: 'left', width: '40%', order: false },
+    { no: 1, id: 'floor.amount', label: 'Floor', align: 'right', width: '10%', order: true },
+    { no: 2, id: 'vol24h', label: '24h Vol', align: 'right', width: '10%', order: true },
+    { no: 3, id: 'volume', label: 'Volume', align: 'right', width: '10%', order: true },
+    { no: 4, id: 'totalVolume', label: 'Total Vol', align: 'right', width: '10%', order: true },
+    { no: 5, id: 'owners', label: 'Owners', align: 'right', width: '8%', order: true },
+    { no: 6, id: 'items', label: 'Items', align: 'right', width: '8%', order: true },
 ];
 
 export default function ListHead({

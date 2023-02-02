@@ -26,6 +26,7 @@ import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
 import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
 import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import CollectionsIcon from '@mui/icons-material/Collections';
 
 // Iconify Icons
 import { Icon } from '@iconify/react';
@@ -138,42 +139,37 @@ export default function Header() {
                             setFullSearch={setFullSearch}
                         />
                     }
-                    <Box sx={{ flexGrow: 3, display: { xs: 'none', md: 'flex' }, justifyContent: 'end' }}>
-                        <Link
-                            underline="none"
-                            color="inherit"
-                            href={`/explore-collections`}
-                            rel="noreferrer noopener nofollow"
-                        >
-                            <Button variant="text">Explore</Button>
-                        </Link>
-                        <Link
-                            underline="none"
-                            color="inherit"
-                            href={`/create`}
-                            rel="noreferrer noopener nofollow"
-                        >
-                            <Button variant="text">Create</Button>
-                        </Link>
-                        <Link
-                            underline="none"
-                            color="inherit"
-                            // href={`/create`}
-                            rel="noreferrer noopener nofollow"
-                        >
-                            <Button variant="text">LaunchPad</Button>
-                        </Link>
-                        <Link
-                            underline="none"
-                            color="inherit"
-                            // href={`/create`}
-                            rel="noreferrer noopener nofollow"
-                        >
-                            <Button variant="text">Ranking</Button>
-                        </Link>
-                    </Box>
 
-                    <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                    <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        {!isMobile &&
+                            <>
+                                <Link
+                                    underline="none"
+                                    color="inherit"
+                                    href={`/explore`}
+                                    rel="noreferrer noopener nofollow"
+                                >
+                                    <Button variant="text">Explore</Button>
+                                </Link>
+                                <Link
+                                    underline="none"
+                                    color="inherit"
+                                    href={`/collections`}
+                                    rel="noreferrer noopener nofollow"
+                                >
+                                    <Button variant="text">Collections</Button>
+                                </Link>
+                                <Link
+                                    underline="none"
+                                    color="inherit"
+                                    href={`/create`}
+                                    rel="noreferrer noopener nofollow"
+                                >
+                                    <Button variant="text">Create</Button>
+                                </Link>
+                            </>
+                        }
+
                         {!fullSearch && isMobile &&
                             <IconButton
                                 aria-label='search'
@@ -232,12 +228,25 @@ export default function Header() {
                                     <Link
                                         underline="none"
                                         color="inherit"
-                                        href={`/explore-collections`}
+                                        href={`/explore`}
                                         rel="noreferrer noopener nofollow"
                                     >
                                         <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                             <ExploreOutlinedIcon />
                                             <Typography variant='s3' style={{marginLeft: '10px'}}>Explore</Typography>
+                                        </Stack>
+                                    </Link>
+                                </MenuItem>
+                                <MenuItem onClick={handleCloseNavMenu}>
+                                    <Link
+                                        underline="none"
+                                        color="inherit"
+                                        href={`/collections`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                            <CollectionsIcon />
+                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Collections</Typography>
                                         </Stack>
                                     </Link>
                                 </MenuItem>
@@ -251,32 +260,6 @@ export default function Header() {
                                         <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                             <AddPhotoAlternateIcon />
                                             <Typography variant='s3' style={{marginLeft: '10px'}}>Create</Typography>
-                                        </Stack>
-                                    </Link>
-                                </MenuItem>
-                                <MenuItem onClick={handleCloseNavMenu}>
-                                    <Link
-                                        underline="none"
-                                        color="inherit"
-                                        // href={`/create`}
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                            <RocketLaunchOutlinedIcon />
-                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Launch Pad</Typography>
-                                        </Stack>
-                                    </Link>
-                                </MenuItem>
-                                <MenuItem onClick={handleCloseNavMenu}>
-                                    <Link
-                                        underline="none"
-                                        color="inherit"
-                                        // href={`/create`}
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                            <LeaderboardOutlinedIcon />
-                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Ranking</Typography>
                                         </Stack>
                                     </Link>
                                 </MenuItem>

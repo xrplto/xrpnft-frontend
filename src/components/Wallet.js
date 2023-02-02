@@ -307,7 +307,7 @@ export default function Wallet() {
                                 key="collection"
                                 sx={{ typography: 'body2', py: 2, px: 2.5 }}
                             >
-                                <NextLink href="/collections" passHref>
+                                <NextLink href="/my-collections" passHref>
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <GridOnIcon />
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>My Collections</Typography>

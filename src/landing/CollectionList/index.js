@@ -68,7 +68,7 @@ export default function CollectionList() {
                     "::-webkit-scrollbar": { display: "none" },
                 }}
             >
-                <Table>
+                <Table style={{minWidth: "1000px"}}>
                     <ListHead />
                     <TableBody>
                         {

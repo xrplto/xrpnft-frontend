@@ -63,7 +63,6 @@ const RenderOption = ({
                 break;
             case 'ACCOUNTS':
                 const imgurl = logo ? ` https://s1.xrpnft.com/profile/${logo}` : getHashIcon(account);
-                // const imgurl = logo ? `https://s1.xrpnft.com/profile/${logo}` : '/static/account_logo.png';
                 setImgUrl(imgurl)
                 setHLink(`/account/${account}`)
                 break;
@@ -229,7 +228,12 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
             sx={{
                 // width: '100%',
                 // zIndex: 10001,
-                width: { xs: '100%', md: 500 },
+                // width: { xs: '100%', md: 500 },
+                width: '100%',
+                '&.MuiAutocomplete-root .MuiOutlinedInput-root': {
+                    paddingTop: 0.5,
+                    paddingBottom: 0.5
+                },
                 '&.MuiTextField-root': {
                     marginTop: 1
                 }

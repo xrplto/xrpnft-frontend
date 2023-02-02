@@ -9,6 +9,10 @@ import {
     Toolbar
 } from '@mui/material';
 
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
+
 // Components
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
@@ -53,6 +57,8 @@ const BannerImage = styled('img')(
 );
 
 export default function Overview({data}) {
+    const { darkMode } = useContext(AppContext);
+    console.log(data);
     // "collection": {
     //     "_id": "6310c27cf81fe46884ef89ba",
     //     "account": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
@@ -66,17 +72,11 @@ export default function Overview({data}) {
     //     "creator": "xrpnft.com",
     //     "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
     // }
-    const {
-        name,
-        slug,
-        description,
-        logoImage,
-        featuredImage,
-        bannerImage,
-        timestamp
-    } = data.collection;
+    const collection = data.collection;
 
-    const bannerImgUrl = bannerImage?`https://s1.xrpnft.com/collection/${bannerImage}`:'/static/collection_banner.png';
+    let default_banner = darkMode?'/static/banner_black.png':'/static/banner_white.png';
+
+    const bannerImage = collection.bannerImage?`https://s1.xrpnft.com/collection/${collection.bannerImage}`:default_banner;
 
     return (
         <OverviewWrapper>
@@ -91,8 +91,8 @@ export default function Overview({data}) {
                 }}
                 >
                     <BannerImage
-                        alt={name}
-                        src={bannerImgUrl}
+                        alt='Banner Image'
+                        src={bannerImage}
                         decoding="async"
                     />
                 </div>

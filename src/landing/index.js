@@ -40,7 +40,7 @@ export default function Landing({data}) {
                         <Link
                             underline="none"
                             color="inherit"
-                            href={`/explore-collections`}
+                            href={`/collections`}
                             rel="noreferrer noopener nofollow"
                         >
                             <Button variant="contained">Explore</Button>
@@ -72,7 +72,7 @@ export default function Landing({data}) {
                     <Link
                         underline="none"
                         color="inherit"
-                        href={`/explore-collections`}
+                        href={`/collections`}
                         rel="noreferrer noopener nofollow"
                     >
                         <Button variant="contained">See all collections</Button>

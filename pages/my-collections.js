@@ -1,15 +1,14 @@
 // Material
 import {
+    styled,
     Box,
     Container,
-    styled,
     Toolbar
 } from '@mui/material';
 
 // Components
 import Header from 'src/components/Header';
-import Footer from 'src/components/Footer';
-import AllNFT from 'src/collection/AllNFT';
+import MyCollections from 'src/collection/MyCollections';
 import ScrollToTop from 'src/components/ScrollToTop';
 
 const OverviewWrapper = styled(Box)(
@@ -19,20 +18,19 @@ const OverviewWrapper = styled(Box)(
 `
 );
 
-export default function Overview({}) {
+export default function Overview() {
+
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
             <Header />
 
-            <Container maxWidth="xxl">
-                <AllNFT />
+            <Container maxWidth="lg">
+                <MyCollections />
             </Container>
 
             <ScrollToTop />
-
-            <Footer />
 
         </OverviewWrapper>
     );
@@ -48,7 +46,7 @@ export async function getStaticProps() {
 
     const ogp = {};
     ogp.canonical = 'https://xrpnft.com';
-    ogp.title = 'XRP NFT Marketplace, Buy, Sell & Collect NFTs';
+    ogp.title = 'My Collections';
     ogp.url = 'https://xrpnft.com/';
     ogp.imgUrl = 'https://xrpnft.com/static/ogp.png';
     ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';

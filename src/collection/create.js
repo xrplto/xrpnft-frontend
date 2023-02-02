@@ -876,6 +876,9 @@ export default function CreateCollection() {
                     <Typography variant='p3'>
                         <Typography variant='s2'>Score:</Typography> Sum of the Rarity Score of all of its trait values(not %, just a value).
                     </Typography>
+                    <Typography variant='p3'>
+                        <Typography variant='s2'>Self:</Typography> Rarity and Rank are included in each NFT metadata.
+                    </Typography>
                 </Stack>
 
                 <FormControl sx={{ ml: 5 }}>
@@ -890,6 +893,7 @@ export default function CreateCollection() {
                         <FormControlLabel value="average" control={<Radio />} label="Average" />
                         <FormControlLabel value="statistical" control={<Radio />} label="Statistical" />
                         <FormControlLabel value="score" control={<Radio />} label="Score" />
+                        <FormControlLabel value="self" control={<Radio />} label="Self" />
                     </RadioGroup>
                 </FormControl>
             </Stack>

@@ -969,12 +969,6 @@ export const DarkSpacesTheme = createTheme({
         tag: {
           margin: 1
         },
-        root: {
-          '.MuiAutocomplete-inputRoot.MuiOutlinedInput-root .MuiAutocomplete-endAdornment':
-          {
-            right: 14,
-          }
-        },
         clearIndicator: {
           background: alpha(colors.error.lighter, 0.2),
           color: colors.error.main,

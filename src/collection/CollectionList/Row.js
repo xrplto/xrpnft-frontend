@@ -178,23 +178,23 @@ export default function Row({ id, item, isMine }) {
                 </Stack>
             </TableCell>
 
-            <TableCell align="left" sx={{pl:0, pr:0}}>
+            <TableCell align="right" sx={{pl:0, pr:0}}>
                 <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {fNumber(floorPrice)}</Typography>
             </TableCell>
 
-            <TableCell align="left" sx={{pl:0, pr:0}}>
+            <TableCell align="right" sx={{pl:0, pr:0}}>
                 <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {fNumber(vol24h)}</Typography>
             </TableCell>
 
-            <TableCell align="left" sx={{pl:0, pr:0}}>
+            <TableCell align="right" sx={{pl:0, pr:0}}>
                 <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {volume1}</Typography>
             </TableCell>
 
-            <TableCell align="left" sx={{pl:0, pr:0}}>
+            <TableCell align="right" sx={{pl:0, pr:0}}>
                 <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {volume2}</Typography>
             </TableCell>
 
-            <TableCell align="left"
+            <TableCell align="right"
                 sx={{
                     pl:0,
                     pr:0
@@ -203,7 +203,7 @@ export default function Row({ id, item, isMine }) {
                 <Typography variant="s3" noWrap>{fIntNumber(owners || 0)}</Typography>
             </TableCell>
 
-            <TableCell align="left"
+            <TableCell align="right"
                 sx={{
                     pl:0,
                     pr:0

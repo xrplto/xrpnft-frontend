@@ -985,12 +985,6 @@ export const PureLightTheme = createTheme({
         tag: {
           margin: 1
         },
-        root: {
-          '.MuiAutocomplete-inputRoot.MuiOutlinedInput-root .MuiAutocomplete-endAdornment':
-            {
-              right: 14
-            }
-        },
         clearIndicator: {
           background: colors.error.lighter,
           color: colors.error.main,

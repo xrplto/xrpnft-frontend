@@ -666,6 +666,12 @@ export default function Collections({account}) {
                                                         >
                                                             <Typography variant='s6' color="#EB5757">Score</Typography>
                                                         </MenuItem>
+                                                        <MenuItem
+                                                            key='self'
+                                                            value='self'
+                                                        >
+                                                            <Typography variant='s6' color="#EB5757">Self</Typography>
+                                                        </MenuItem>
                                                     </CustomSelect>
                                                     {rarity !== newRarity &&
                                                         <Tooltip title='Change Rarity'>

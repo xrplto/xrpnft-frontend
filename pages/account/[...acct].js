@@ -59,17 +59,11 @@ const BannerImage = styled('img')(
 export default function Overview({data}) {
     const { darkMode } = useContext(AppContext);
 
-    const {
-        name,
-        description,
-        logo,
-        banner,
-        timestamp
-    } = data.profile;
+    const profile = data.profile;
 
-    let default_banner = darkMode?'/static/account_banner_black.png':'/static/account_banner_white.png';
+    let default_banner = darkMode?'/static/banner_black.png':'/static/banner_white.png';
 
-    const bannerImage = banner?`https://s1.xrpnft.com/profile/${banner}`:default_banner;
+    const bannerImage = profile.banner?`https://s1.xrpnft.com/profile/${profile.banner}`:default_banner;
 
     return (
         <OverviewWrapper>
@@ -92,7 +86,7 @@ export default function Overview({data}) {
             </BannerWrapper>
 
             <Container maxWidth="xxl">
-                <Account profile={data.profile} tab={data.tab} />
+                <Account profile={profile} tab={data.tab} />
             </Container>
 
             <ScrollToTop />
@@ -128,46 +122,32 @@ export async function getServerSideProps(ctx) {
     }
 
     if (data && data.profile) {
-        /*{
-            "result": "success",
-            "took": "7.45",
-            "account": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
-            "profile": {
-                "_id": "633c43f5436e94e30e6f21ae",
-                "account": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
-                "timestamp": 1664894197862
-            }
-        } */
-
-        const {
-            account,
-            name,
-            logo,
-            banner,
-            description
-        } = data.profile;
-
-        const imgUrl = banner?`https://s1.xrpnft.com/profile/${banner}`:'https://xrpnft.com/static/ogp.png';
-
-        let ogp = {};
-        ogp.canonical = `https://xrpnft.com/account/${account}`;
-        ogp.title = name || account;
-        ogp.url = `https://xrpnft.com/account/${account}`;
-        ogp.imgUrl = imgUrl;
-        ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
-
-        if (tab)
-            data.tab = tab;
-
-        return {
-            props: {data, ogp}, // will be passed to the page component as props
-        }
     } else {
-        return {
-            redirect: {
-                permanent: false,
-                destination: '/404'
-            }
-        }
+        data = {};
+        data.profile = {account: acct};
+    }
+
+    if (tab)
+        data.tab = tab;
+
+    const {
+        account,
+        name,
+        logo,
+        banner,
+        description
+    } = data.profile;
+
+    const imgUrl = banner?`https://s1.xrpnft.com/profile/${banner}`:'https://xrpnft.com/static/ogp.png';
+
+    let ogp = {};
+    ogp.canonical = `https://xrpnft.com/account/${account}`;
+    ogp.title = name || account;
+    ogp.url = `https://xrpnft.com/account/${account}`;
+    ogp.imgUrl = imgUrl;
+    ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+
+    return {
+        props: {data, ogp}, // will be passed to the page component as props
     }
 }

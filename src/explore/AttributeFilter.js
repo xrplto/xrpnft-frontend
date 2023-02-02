@@ -86,7 +86,7 @@ export default function AttributeFilter({ attrs, setFilterAttrs }) {
                                 <FormGroup sx={{ flexDirection: 'col' }}>
                                     {
                                         Object.keys(items).map((key) => {
-                                            const value = items[key];
+                                            const data = items[key];
                                             const isChecked = attrFilter.find(elem => elem.trait_type === title)?.value?.includes(key) === true;
                                             return (
                                                 <Stack key={title + key} direction="row" justifyContent="space-between" alignItems="center" width='100%' pr={1}>
@@ -97,7 +97,7 @@ export default function AttributeFilter({ attrs, setFilterAttrs }) {
                                                         // value={checkValue}
                                                         control={<Checkbox checked={isChecked ?? false} onChange={() => handleAttrChange(title, key)} />}
                                                     />
-                                                    <Typography variant='s7'>{fIntNumber(value)}</Typography>
+                                                    <Typography variant='s7'>{fIntNumber(data.count)}</Typography>
                                                 </Stack>
                                             )
                                         })

@@ -29,7 +29,6 @@ const OverviewWrapper = styled(Box)(
 );
 
 export default function Overview({data}) {
-    console.log("AAAA");
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />

@@ -150,7 +150,7 @@ export default function CollectionList({type, category}) {
                     "::-webkit-scrollbar": { display: "none" },
                 }}
             >
-                <Table>
+                <Table style={{minWidth: "1000px"}}>
                     <ListHead
                         order={order}
                         orderBy={orderBy}
