@@ -137,9 +137,9 @@ export default function HistoryList({ nft }) {
                                             <TableCell align="left" width='15%' sx={{pt:0.5, pb:0.5}}>
                                                 <Link
                                                     // color="inherit"
-                                                    target="_blank"
-                                                    href={`https://bithomp.com/explorer/${account}`}
-                                                    rel="noreferrer noopener nofollow"
+                                                    // target="_blank"
+                                                    href={`/account/${account}`}
+                                                    // rel="noreferrer noopener nofollow"
                                                 >
                                                     <Typography variant='s11' noWrap> {truncate(account, 16)}</Typography>
                                                 </Link>

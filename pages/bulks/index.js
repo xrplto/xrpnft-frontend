@@ -43,31 +43,6 @@ export default function Overview() {
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps() {
-    const BASE_URL = 'https://api.xrpnft.com/api';
-
-    // let data = null;
-    // try {
-
-    //     var t1 = performance.now();
-
-    //     // https://api.xrpnft.com/api/bulk/list
-    //     const res = await axios.get(`${BASE_URL}/bulk/list`);
-
-    //     data = res.data;
-
-    //     console.log(data);
-
-    //     var t2 = performance.now();
-    //     var dt = (t2 - t1).toFixed(2);
-
-    //     console.log(`getServerSideProps(bulks) took: ${dt}ms`);
-    // } catch (e) {
-    //     console.log(e);
-    // }
-
-    // if (data && data.bulks) {
-    // }
-
     let ret = {};
     const ogp = {};
     ogp.canonical = 'https://xrpnft.com';
@@ -83,6 +58,6 @@ export async function getStaticProps() {
         // Next.js will attempt to re-generate the page:
         // - When a request comes in
         // - At most once every 10 seconds
-        revalidate: 10, // In seconds
+        // revalidate: 10, // In seconds
     }
 }

@@ -34,7 +34,7 @@ const AddDialog = styled(Dialog) (({ theme }) => ({
         padding: theme.spacing(1),
     },
 }));
-  
+
 const AddDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
@@ -74,7 +74,7 @@ function GetNum(amount) {
     return num;
 }
 
-export default function DlgAddProperty({open, setOpen, openSnackbar, onAddProperty}) {
+export default function DlgAddAttribute({open, setOpen, openSnackbar, onAddAttribute}) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -100,13 +100,13 @@ export default function DlgAddProperty({open, setOpen, openSnackbar, onAddProper
         setValue(value);
     }
 
-    const handleAddProperty = () => {
+    const handleAddAttribute = () => {
         if (!name)
             openSnackbar('Invalid name', 'error');
         else if (!value)
             openSnackbar('Invalid value', 'error');
         else {
-            onAddProperty({name, value});
+            onAddAttribute({name, value});
             setOpen(false);
             setName('');
             setValue('');
@@ -125,13 +125,13 @@ export default function DlgAddProperty({open, setOpen, openSnackbar, onAddProper
                 // hideBackdrop={true}
             >
                 <AddDialogTitle id="customized-dialog-title" onClose={handleClose}>
-                    <Typography variant="p4">Add Property</Typography>
+                    <Typography variant="p4">Add an Attribute</Typography>
                 </AddDialogTitle>
 
                 <DialogContent>
                     <Stack sx={{pl:1, pr:1}}>
                         <Typography variant="p5" sx={{mt: 0}}></Typography>
-                        <Typography variant="p6" sx={{mt: 2}}>The properties with the same name will overwrite the values.</Typography>
+                        <Typography variant="p6" sx={{mt: 2}}>The attributes with the same name will overwrite the values.</Typography>
 
                         <Stack direction="row" spacing={2} sx={{mt: 3}}>
                             <TextField
@@ -156,7 +156,7 @@ export default function DlgAddProperty({open, setOpen, openSnackbar, onAddProper
                                 variant="outlined"
                                 startIcon={<AddCircleIcon />}
                                 size="small"
-                                onClick={handleAddProperty}
+                                onClick={handleAddAttribute}
                             >
                                 Add
                             </Button>

@@ -253,9 +253,9 @@ export default function ViewNFT({ collection }) {
                 <Typography variant="s5" style={{ wordBreak: "break-word" }}>By&nbsp;
                     <Link
                         color="inherit"
-                        target="_blank"
+                        // target="_blank"
                         href={`/account/${account}`}
-                        rel="noreferrer noopener nofollow"
+                        // rel="noreferrer noopener nofollow"
                     >
                         <Typography variant="s5" color="#33C2FF">{accountName || account.slice(0, 4) + '...' + account.slice(-4)}</Typography>
                     </Link>

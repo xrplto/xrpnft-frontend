@@ -44,7 +44,7 @@ import QRDialog from 'src/components/QRDialog';
 // import PropertySection from './NFTProperties/PropertySection';
 // import LevelsSection from './NFTLevels/LevelSection';
 // import LoadingTextField from 'src/components/LoadingTextField';
-import DlgAddProperty from './DlgAddProperty';
+import DlgAddAttribute from './DlgAddAttribute';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -95,18 +95,18 @@ export default function Minting() {
     // const properties = useSelector(state => state.status.metadata.properties);
 
     const [open, setOpen] = useState(false);
-    const [openAddProperty, setOpenAddProperty] = useState(false);
+    const [openAddAttribute, setOpenAddAttribute] = useState(false);
 
     const [nftName, setNftName] = useState('');
     const [extLink, setExtLink] = useState('');
     const [description, setDescription] = useState('');
     const [collectionName, setCollectionName] = useState('')
-    const [properties, setProperties] = useState([]);
+    const [attributes, setAttributes] = useState([]);
     const [royalty, setRoyalty] = useState('0');
     const [explicit, setExplicit] = useState(false);
     const [flag, setFlag] = useState(0x08); // Burnable, /*Only XRP*/, Trustline, Transferable
     // const [passphrase, setPassPhrase] = useState('');
-    
+
     const [fileUrl, setFileUrl] = useState(null);
     const [file, setFile] = useState(null);
     const [isVideo, setIsVideo] = useState(false);
@@ -229,15 +229,15 @@ export default function Minting() {
             data.explicit = explicit;
             data.flag = flag;
             data.isVideo = isVideo;
-            if (properties && properties.length > 0)
-                data.properties = properties;
+            if (attributes && attributes.length > 0)
+                data.attributes = attributes;
 
             const formdata = new FormData();
             formdata.append('nft', file);
             formdata.append('account', account);
             formdata.append('user_token', user_token);
             formdata.append('data', JSON.stringify(data));
-            
+
             res = await axios.post(`${BASE_URL}/mint/one`, formdata, {
                 headers: { "Content-Type": "multipart/form-data", 'x-access-token': accountToken }
             });
@@ -366,36 +366,36 @@ export default function Minting() {
         }
     }
 
-    const handleAddProperty = (property) => {
+    const handleAddAttribute = (attribute) => {
         const {
             name,
             value
-        } = property;
-        for (var p of properties) {
-            if (p.name === name) {
-                p.value = value;
+        } = attribute;
+        for (const attr of attributes) {
+            if (attr.name === name) {
+                attr.value = value;
                 return;
             }
         }
-        properties.push(property);
+        attributes.push(attribute);
     }
 
-    const handleRemoveProperty = (name) => {
-        const newProperties = [];
-        for (var p of properties) {
-            if (p.name !== name)
-                newProperties.push(p);
+    const handleRemoveAttribute = (name) => {
+        const newAttributes = [];
+        for (const attr of attributes) {
+            if (attr.name !== name)
+                newAttributes.push(attr);
         }
-        setProperties(newProperties);
+        setAttributes(newAttributes);
     }
 
     return (
         <>
-            <DlgAddProperty
-                open={openAddProperty}
-                setOpen={setOpenAddProperty}
+            <DlgAddAttribute
+                open={openAddAttribute}
+                setOpen={setOpenAddAttribute}
                 openSnackbar={openSnackbar}
-                onAddProperty={handleAddProperty}
+                onAddAttribute={handleAddAttribute}
             />
 
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
@@ -533,18 +533,18 @@ export default function Minting() {
             </Stack>
 
             <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Properties</Typography>
+                <Typography variant='p4'>Attributes</Typography>
                 <Typography variant='p3'>
-                    You can add more properties in your NFT metadata.
+                    You can add attributes in your NFT metadata.
                 </Typography>
-                {properties.map((property, idx) => (
+                {attributes.map((attribute, idx) => (
                     <Stack direction="row" spacing={2} sx={{mt: 3}} key={idx} alignItems="flex-end">
                         <TextField
                             id="outlined-size-name"
                             variant="standard"
                             disabled
                             label={idx===0?"Name":""}
-                            value={property.name}
+                            value={attribute.name}
                         />
 
                         <ArrowRightAltIcon fontSize="small" />
@@ -554,10 +554,10 @@ export default function Minting() {
                             variant="standard"
                             disabled
                             label={idx===0?"Value":""}
-                            value={property.value}
+                            value={attribute.value}
                         />
 
-                        <IconButton onClick={()=>handleRemoveProperty(property.name)}>
+                        <IconButton onClick={()=>handleRemoveAttribute(attribute.name)}>
                             <HighlightOffOutlinedIcon fontSize="small" />
                         </IconButton>
                     </Stack>
@@ -567,7 +567,7 @@ export default function Minting() {
                         variant="outlined"
                         startIcon={<AddCircleIcon />}
                         size="small"
-                        onClick={()=>setOpenAddProperty(true)}
+                        onClick={()=>setOpenAddAttribute(true)}
                     >
                         Add
                     </Button>
@@ -650,7 +650,7 @@ export default function Minting() {
                             />
                         ))
                     }
-                    
+
                 </FormGroup>
 
                 <Stack spacing={1} pl={0}>
@@ -679,7 +679,7 @@ export default function Minting() {
                     />
                     <Typography variant='p3'>Check if the content is for audiences over 18.</Typography>
                 </FormGroup>
-                
+
             </Stack>
 
             <Stack alignItems='right'>

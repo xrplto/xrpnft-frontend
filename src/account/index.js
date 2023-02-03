@@ -36,14 +36,13 @@ import { AppContext } from 'src/AppContext';
 import { getHashIcon } from 'src/utils/parse';
 
 // Components
-import CreatedList from './CreatedList';
+import CollectedNFTs from './CollectedNFTs';
+import CreatedNFTs from './CreatedNFTs';
 // import FavoritedList from './FavoritedList';
 import ActivityList from './ActivityList';
-// import AcceptList from './AcceptList';
-import OffersList from './OffersList';
-import CollectedNFTs from './CollectedNFTs';
-import SeeMoreTypography from 'src/components/SeeMoreTypography';
 import TransferredNFTs from './TransferredNFTs';
+import OffersList from './OffersList';
+import SeeMoreTypography from 'src/components/SeeMoreTypography';
 
 const IconImage = styled('img')(
     ({ theme }) => `
@@ -442,7 +441,7 @@ export default function Account({ profile, tab }) {
                 </TabPanel>
                 <TabPanel value={tabID} id={1}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        <CreatedList account={account} />
+                        <CreatedNFTs account={account} />
                     </Stack>
                 </TabPanel>
                 {/* <TabPanel value={tabID} id={2}>

@@ -323,9 +323,9 @@ export default function CollectionActivity({collection}) {
                                         <Stack direction="row" spacing={0.2} alignItems="center">
                                             <Link
                                                 // color="inherit"
-                                                target="_blank"
-                                                href={`https://bithomp.com/explorer/${account}`}
-                                                rel="noreferrer noopener nofollow"
+                                                // target="_blank"
+                                                href={`/account/${account}`}
+                                                // rel="noreferrer noopener nofollow"
                                             >
                                                 <Typography variant='s11' noWrap> {account}</Typography>
                                             </Link>

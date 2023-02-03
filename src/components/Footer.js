@@ -36,7 +36,9 @@ const FooterWrapper = styled(Box)(
 
 export default function Footer() {
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { darkMode } = useContext(AppContext);
+    const { darkMode, accountProfile } = useContext(AppContext);
+    const account = accountProfile?.account;
+    // const accountToken = accountProfile?.token;
 
     const [categories, setCategories] = useState(CATEGORIES);
 
@@ -93,11 +95,11 @@ export default function Footer() {
                                 <Stack>
                                     <Typography variant='h6'>Marketplace</Typography>
                                     <Link
-                                        href="/assets"
+                                        href="/explore"
                                         sx={{ mt: 2, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>All NFTs</Typography>
                                     </Link>
@@ -113,8 +115,8 @@ export default function Footer() {
                                                 href={`/category/${slug}`}
                                                 sx={{ mt: 1.5, display: 'inline-flex' }}
                                                 underline="none"
-                                                target="_blank"
-                                                rel="noreferrer noopener nofollow"
+                                                // target="_blank"
+                                                // rel="noreferrer noopener nofollow"
                                             >
                                                 {count > 0 ?
                                                     <Typography variant='link'>{title} ({fIntNumber(count)})</Typography>
@@ -130,11 +132,11 @@ export default function Footer() {
                                 <Stack>
                                     <Typography variant='h6'>My Account</Typography>
                                     <Link
-                                        href="/account"
+                                        href={account?`/account/${account}`:''}
                                         sx={{ mt: 2, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Profile</Typography>
                                     </Link>
@@ -142,8 +144,8 @@ export default function Footer() {
                                         href="/status/coming-soon"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Favorites</Typography>
                                     </Link>
@@ -151,26 +153,26 @@ export default function Footer() {
                                         href="/rankings/watchlist"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Watchlist</Typography>
                                     </Link>
                                     <Link
-                                        href="/collections"
+                                        href="/my-collections"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>My Collections</Typography>
                                     </Link>
                                     <Link
-                                        href="/account/settings"
+                                        href="/setting"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Settings</Typography>
                                     </Link>
@@ -183,8 +185,8 @@ export default function Footer() {
                                         href="/platform-status"
                                         sx={{ mt: 2, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Platform Status</Typography>
                                     </Link>
@@ -192,8 +194,8 @@ export default function Footer() {
                                         href="/partners"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Partners</Typography>
                                     </Link>
@@ -201,8 +203,8 @@ export default function Footer() {
                                         href="/buy-crypto"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Buy XRP</Typography>
                                     </Link>
@@ -210,8 +212,8 @@ export default function Footer() {
                                         href="/blog"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Blog</Typography>
                                     </Link>
@@ -219,8 +221,8 @@ export default function Footer() {
                                         href="/discord"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Help Center</Typography>
                                     </Link>
@@ -233,8 +235,8 @@ export default function Footer() {
                                         href="https://twitter.com/XRPNFTdotcom/"
                                         sx={{ mt: 2, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Twitter</Typography>
                                     </Link>
@@ -242,8 +244,8 @@ export default function Footer() {
                                         href="https://www.facebook.com/xrpnft/"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Facebook</Typography>
                                     </Link>
@@ -251,8 +253,8 @@ export default function Footer() {
                                         href="https://www.instagram.com/xrpnftdotcom"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Instagram</Typography>
                                     </Link>
@@ -260,8 +262,8 @@ export default function Footer() {
                                         href="https://xrpnft.com/discord"
                                         sx={{ mt: 1.5, display: 'inline-flex' }}
                                         underline="none"
-                                        target="_blank"
-                                        rel="noreferrer noopener nofollow"
+                                        // target="_blank"
+                                        // rel="noreferrer noopener nofollow"
                                     >
                                         <Typography variant='link'>Interactive Chat</Typography>
                                     </Link>
