@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { FacebookShareButton, TwitterShareButton } from "react-share";
 import { FacebookIcon, TwitterIcon } from "react-share";
 
@@ -18,6 +18,7 @@ import {
     IconButton,
     Link,
     Paper,
+    Popover,
     Stack,
     Typography,
     Tooltip,
@@ -129,6 +130,7 @@ function truncate(str, n) {
 };
 
 export default function NFTActions({ nft }) {
+    const anchorRef = useRef(null);
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
@@ -175,6 +177,8 @@ export default function NFTActions({ nft }) {
 
     const isOwner = accountLogin === account;
     const isBurnable = (flag & 0x00000001) > 0;
+
+    const [openShare, setOpenShare] = useState(false);
 
     const [openCreateOffer, setOpenCreateOffer] = useState(false);
     const [openTransfer, setOpenTransfer] = useState(false);
@@ -454,6 +458,14 @@ export default function NFTActions({ nft }) {
         }
     }
 
+    const handleOpenShare = () => {
+        setOpenShare(true);
+    }
+
+    const handleCloseShare = () => {
+        setOpenShare(false);
+    };
+
     return (
         <Stack spacing={2}>
             <Backdrop
@@ -522,32 +534,52 @@ export default function NFTActions({ nft }) {
                     </Stack>
 
                     <Stack direction="row" alignItems="center" spacing={1}>
-                        {/* <Tooltip title="Share">
+                        <Tooltip title="Share">
                             <IconButton size='medium' sx={{ padding: 1 }}
-                                onClick={() => {
-                                }}
+                                ref={anchorRef}
+                                onClick={handleOpenShare}
                             >
                                 <ShareIcon />
                             </IconButton>
-                        </Tooltip> */}
+                        </Tooltip>
 
-                        <Stack direction="row" spacing={2}>
-                            <FacebookShareButton
-                                url={shareUrl}
-                                quote={shareTitle}
-                                hashtag={"#"}
-                                description={shareDesc}
-                            >
-                                <FacebookIcon size={24} round />
-                            </FacebookShareButton>
-                            <TwitterShareButton
-                                title={shareTitle}
-                                url={shareUrl}
-                                hashtag={"#"}
-                            >
-                                <TwitterIcon size={24} round />
-                            </TwitterShareButton>
-                        </Stack>
+                        <Popover
+                            open={openShare}
+                            onClose={handleCloseShare}
+                            anchorEl={anchorRef.current}
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                            PaperProps={{
+                                sx: {
+                                    // mt: 1.5,
+                                    // ml: 0.5,
+                                    // overflow: 'inherit',
+                                    // boxShadow: (theme) => theme.customShadows.z20,
+                                    // border: (theme) => `solid 1px ${alpha('#919EAB', 0.08)}`,
+                                    // width: 'auto',
+                                }
+                            }}
+                        >
+                            <Stack direction="row" spacing={2} sx={{pt: 1.5, pl: 1, pr: 1, pb: 1}}>
+                                <FacebookShareButton
+                                    url={shareUrl}
+                                    quote={shareTitle}
+                                    hashtag={"#"}
+                                    description={shareDesc}
+                                    onClick={handleCloseShare}
+                                >
+                                    <FacebookIcon size={24} round />
+                                </FacebookShareButton>
+                                <TwitterShareButton
+                                    title={shareTitle}
+                                    url={shareUrl}
+                                    hashtag={"#"}
+                                    onClick={handleCloseShare}
+                                >
+                                    <TwitterIcon size={24} round />
+                                </TwitterShareButton>
+                            </Stack>
+                        </Popover>
                     </Stack>
                 </Stack>
             }

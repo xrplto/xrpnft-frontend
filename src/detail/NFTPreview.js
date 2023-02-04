@@ -19,7 +19,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 // Utils
 import { getImgUrl } from 'src/utils/parse';
 
-export default function NFTPreview({ meta, title, favorites }) {
+export default function NFTPreview({ meta }) {
     const imgUrl = getImgUrl(meta); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
     const isVideo = meta?.video?true:false;
 
@@ -34,20 +34,6 @@ export default function NFTPreview({ meta, title, favorites }) {
 
     return (
         <Card>
-            <CardHeader
-                sx={{ padding: '0 30px' }}
-                action={
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <IconButton aria-label='settings'>
-                            <FavoriteBorderIcon />
-                        </IconButton>
-                        <Typography variant='string'>{favorites}</Typography>
-                    </Box>
-                }
-                subheader={title}
-            />
-            <Divider />
-
             <Link
                 component="button"
                 underline="none"

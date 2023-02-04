@@ -613,7 +613,7 @@ export default function Collections({account}) {
                                                     </IconButton>
                                                 </Tooltip>
 
-                                                {imported === 'yes' && items !== txitems &&
+                                                {(imported === 'yes' || (choice === 'itemsmismatch' && type === 'normal')) && items !== txitems &&
                                                     <Tooltip title='Import collection again'>
                                                         <IconButton onClick={()=>handleImportAgain(row)}>
                                                             <ImportExportIcon fontSize="medium" color="success" />

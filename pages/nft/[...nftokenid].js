@@ -97,15 +97,17 @@ export async function getServerSideProps(ctx) {
 
         const {
             NFTokenID,
-            meta
+            meta,
+            collection
         } = nft;
 
         const name = meta?.name || "No Name";
         const description = meta?.description;
+        const cname = collection || "";
 
         let ogp = {};
         ogp.canonical = `https://xrpnft.com/nft/${NFTokenID}`;
-        ogp.title = `${name} - XRP NFT Marketplace, Buy, Sell & Collect NFTs`;
+        ogp.title = cname?`${name} - ${cname}`:`${name}`;
         ogp.url = `https://xrpnft.com/nft/${NFTokenID}`;
         ogp.imgUrl = getImgUrl(meta);
         ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;

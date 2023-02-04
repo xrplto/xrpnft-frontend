@@ -129,7 +129,7 @@ export default function NFTDetails({nft}) {
 
     return (
         <Stack spacing={2} sx={{mt: 2}}>
-            <NFTPreview meta={meta} title={name} favorites={0} />
+            <NFTPreview meta={meta} />
             <Stack>
                 <Accordion defaultExpanded>
                     <AccordionSummary

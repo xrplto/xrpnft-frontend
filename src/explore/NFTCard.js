@@ -84,7 +84,9 @@ export default function NFTCard({ nft }) {
 
     const isSold = false;
 
-    const imgUrl = getImgUrl(meta); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+    // const imgUrl = '/static/nft.png';
+    const imgUrl = getImgUrl(meta);
+
     const isVideo = meta?.video ? true : false;
 
     const [loadingImg, setLoadingImg] = useState(true)
@@ -257,7 +259,7 @@ export default function NFTCard({ nft }) {
                                     whiteSpace='nowrap'
                                     sx={{mt:0.5, mb:0.5}}
                                 >
-                                    {name.slice(0, -5)}&nbsp;
+                                    {name.slice(0, -5)}
                                 </Typography>
                                 <Typography
                                     variant="s8"

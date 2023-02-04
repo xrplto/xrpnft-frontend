@@ -56,7 +56,7 @@ function XRPNFTApp(props) {
                 <link rel="canonical" href={ogp.canonical}/>
 
                 {/* <!-- HTML Meta Tags --> */}
-                <title>{ogp.title}</title>
+                <title>{ogp.title} | XRPNFT</title>
                 <meta name="description" content={ogp.desc}/>
 
                 {/* <!-- Facebook Meta Tags --> */}

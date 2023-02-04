@@ -87,10 +87,10 @@ export async function getStaticProps() {
 
     const ogp = {};
     ogp.canonical = 'https://xrpnft.com';
-    ogp.title = 'XRP NFT Marketplace, Buy, Sell & Collect NFTs';
-    ogp.url = 'https://xrpnft.com/';
+    ogp.title = 'XRPNFT An NFT Marketplace for Purchasing, Selling, and Collecting Non-Fungible Tokens';
+    ogp.url = 'https://xrpnft.com';
     ogp.imgUrl = 'https://xrpnft.com/static/ogp.png';
-    ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
+    ogp.desc = 'XRPNFT the best NFT marketplace on the XRP Ledger. Effortlessly create, purchase, sell, and bid on Non-Fungible Tokens on the XRP Ledger without limits.';
 
     ret = {ogp};
 

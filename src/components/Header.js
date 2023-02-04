@@ -47,7 +47,7 @@ const HeaderWrapper = styled(AppBar)(({ theme }) => `
     margin-bottom: ${theme.spacing(0)};
     border: none;
     border-radius: 0px;
-    border-bottom: 1px solid ${alpha('#CBCCD2', 0.2)};
+    border-bottom: 0px solid ${alpha('#CBCCD2', 0.2)};
     // position: -webkit-sticky;
     // position: sticky;
     // top: 0;

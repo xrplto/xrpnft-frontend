@@ -1,6 +1,7 @@
 import React from 'react';
-// import { useState } from 'react';
-// import Decimal from 'decimal.js';
+import { useRef, useState } from 'react';
+import { FacebookShareButton, TwitterShareButton } from "react-share";
+import { FacebookIcon, TwitterIcon } from "react-share";
 
 // Material
 import { useTheme } from '@mui/material/styles';
@@ -9,6 +10,7 @@ import {
     Box,
     IconButton,
     Link,
+    Popover,
     Stack,
     Tooltip,
     Typography
@@ -136,11 +138,14 @@ function truncate(str, n) {
 };
 
 export default function ViewNFT({ collection }) {
+    const anchorRef = useRef(null);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
+
+    const [openShare, setOpenShare] = useState(false);
 
     // "collection": {
     //     "_id": "6310c27cf81fe46884ef89ba",
@@ -181,8 +186,57 @@ export default function ViewNFT({ collection }) {
     let volume1 = fVolume(volume || 0);
     let volume2 = fVolume(totalVolume || 0);
 
+    const shareUrl = `https://xrpnft.com/collection/${slug}`;
+    const shareTitle = name;
+    const shareDesc = description || '';
+
+    const handleOpenShare = () => {
+        setOpenShare(true);
+    }
+
+    const handleCloseShare = () => {
+        setOpenShare(false);
+    };
+
     return (
         <>
+            <Popover
+                open={openShare}
+                onClose={handleCloseShare}
+                anchorEl={anchorRef.current}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                PaperProps={{
+                    sx: {
+                        // mt: 1.5,
+                        // ml: 0.5,
+                        // overflow: 'inherit',
+                        // boxShadow: (theme) => theme.customShadows.z20,
+                        // border: (theme) => `solid 1px ${alpha('#919EAB', 0.08)}`,
+                        // width: 'auto',
+                    }
+                }}
+            >
+                <Stack direction="row" spacing={2} sx={{pt: 1.5, pl: 1, pr: 1, pb: 1}}>
+                    <FacebookShareButton
+                        url={shareUrl}
+                        quote={shareTitle}
+                        hashtag={"#"}
+                        description={shareDesc}
+                        onClick={handleCloseShare}
+                    >
+                        <FacebookIcon size={24} round />
+                    </FacebookShareButton>
+                    <TwitterShareButton
+                        title={shareTitle}
+                        url={shareUrl}
+                        hashtag={"#"}
+                        onClick={handleCloseShare}
+                    >
+                        <TwitterIcon size={24} round />
+                    </TwitterShareButton>
+                </Stack>
+            </Popover>
             <IconCover>
                 <IconWrapper>
                     <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`} />
@@ -233,8 +287,8 @@ export default function ViewNFT({ collection }) {
 
                     <Tooltip title="Share">
                         <IconButton size='medium' sx={{ padding: 1 }}
-                            onClick={() => {
-                            }}
+                            ref={anchorRef}
+                            onClick={handleOpenShare}
                         >
                             <ShareIcon />
                         </IconButton>

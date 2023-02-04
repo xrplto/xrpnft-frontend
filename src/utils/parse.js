@@ -549,13 +549,20 @@ export const getImgUrl = (meta) => {
         url = `https://gateway.xrpnft.com/ipfs/${url}`;
     } else if (isIPFS.cidPath(url)) {
         url = `https://gateway.xrpnft.com/ipfs/${url}`;
-    } else if (url.startsWith("https://")) {
+    } else if (url.startsWith("https://ipfs.filebase.io")) {
+        url = url.replace("https://ipfs.filebase.io", "https://gateway.xrpnft.com");
     } else if (url.startsWith("ipfs://")) {
         url = url.replace("ipfs://", "https://gateway.xrpnft.com/ipfs/");
     } else if (url.startsWith("cid:")) {
-        url = URI.replace("cid:", "https://gateway.xrpnft.com/ipfs/");
-    } else if (url.startsWith("https://ipfs.filebase.io")) {
-        url = URI.replace("https://ipfs.filebase.io", "https://gateway.xrpnft.com");
+        url = url.replace("cid:", "https://gateway.xrpnft.com/ipfs/");
+    } else if (url.startsWith("https://")) {
+        // https://bafybeifmpqnlnjnk3ai72adii4fhqltt3o7tk5sxytsagqqfrey63vd2ca.ipfs.w3s.link/1667174873498.png"
+        if (isIPFS.url(url)) {
+            if (url.includes(".ipfs.w3s.link")) {
+                url = url.replace("https://", "https://gateway.xrpnft.com/ipfs/");   
+                url = url.replace(".ipfs.w3s.link", "");
+            }
+        }
     }
 
     return url;
