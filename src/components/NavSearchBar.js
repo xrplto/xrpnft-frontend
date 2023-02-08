@@ -32,6 +32,7 @@ import { getHashIcon } from 'src/utils/parse';
 const RenderOption = ({
     uuid,
     meta,
+    dfile,
     option_type,
     NFTokenID,
     logoImage,
@@ -51,7 +52,7 @@ const RenderOption = ({
     const initOption = (option_type) => {
         switch (option_type) {
             case 'NFTS':
-                const imgUrl = getImgUrl(meta)
+                const imgUrl = getImgUrl(meta, 56, dfile)
                 setImgUrl(imgUrl)
                 setIsVideo(meta?.video ? true : false)
                 setHLink(`/nft/${NFTokenID}`)

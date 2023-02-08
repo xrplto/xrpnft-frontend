@@ -74,6 +74,7 @@ export default function NFTCard({ nft }) {
         // issuer,
         // date,
         meta,
+        dfile,
         NFTokenID,
         // URI,
         // status,
@@ -85,7 +86,7 @@ export default function NFTCard({ nft }) {
     const isSold = false;
 
     // const imgUrl = '/static/nft.png';
-    const imgUrl = getImgUrl(meta);
+    const imgUrl = getImgUrl(meta, 300, dfile);
 
     const isVideo = meta?.video ? true : false;
 

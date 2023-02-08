@@ -536,12 +536,21 @@ export const getMetadata = async (URI) => {
     } else return null
 }
 
-export const getImgUrl = (meta) => {
+export const getImgUrl = (meta, size, dfile) => {
     if (!meta) return '';
     const image = meta.image;
     const video = meta.video;
 
     if (!image && !video) return '';
+
+    const isVideo = video?true:false;
+
+    if (dfile) {
+        if (isVideo && dfile.video)
+            return `https://s2.xrpnft.com/d1/${dfile.video}`;
+        if (!isVideo && dfile.image)
+            return `https://s2.xrpnft.com/d1/${dfile.image}`;
+    }
 
     let url = video || image;
 
@@ -559,9 +568,16 @@ export const getImgUrl = (meta) => {
         // https://bafybeifmpqnlnjnk3ai72adii4fhqltt3o7tk5sxytsagqqfrey63vd2ca.ipfs.w3s.link/1667174873498.png"
         if (isIPFS.url(url)) {
             if (url.includes(".ipfs.w3s.link")) {
-                url = url.replace("https://", "https://gateway.xrpnft.com/ipfs/");   
+                url = url.replace("https://", "https://gateway.xrpnft.com/ipfs/");
                 url = url.replace(".ipfs.w3s.link", "");
             }
+        }
+    }
+
+    if (!isVideo && url.startsWith("https://gateway.xrpnft.com/ipfs/")) {
+        url = url.replace("https://gateway.xrpnft.com/ipfs/", "https://api.xrpnft.com/ipfs/");
+        if (size && size > 0) {
+            url += `?size=${size}`;
         }
     }
 

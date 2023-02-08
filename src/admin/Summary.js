@@ -69,6 +69,8 @@ export default function Summary({}) {
 
     const [calcProps, setCalcProps] = useState(0); // Calc Props
 
+    const [downImages, setDownImages] = useState(0); // Download Images
+
     const [nftScanner, setNftScanner] = useState({index: 0, nfts: 0});
     const [txScanner, setTxScanner] = useState({index: 0, nfts: 0});
     const [txScannerReal, setTxScannerReal] = useState({index: 0, nfts: 0});
@@ -118,6 +120,8 @@ export default function Summary({}) {
                         setTxScannerReal(ret.txScannerReal);
 
                         setCalcProps(ret.calcProps || 0);
+
+                        setDownImages(ret.downloadImages || 0);
                     }
                 }).catch(err => {
                     console.log("Error on getting summary!!!", err);
@@ -277,6 +281,15 @@ export default function Summary({}) {
                         </TableCell>
                         <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
                             <Typography variant="s6">{calcProps}</Typography>
+                        </TableCell>
+                    </TableRow>
+
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">Download Images</Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{downImages}</Typography>
                         </TableCell>
                     </TableRow>
                 </TableBody>

@@ -6,7 +6,10 @@ import { normalizeAmount } from 'src/utils/normalizers';
 // Material
 import {
     Backdrop,
+    Box,
     Button,
+    CardMedia,
+    Container,
     Divider,
     IconButton,
     Link,
@@ -24,7 +27,7 @@ import { ProgressBar, Discuss } from 'react-loader-spinner';
 
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';
-import { checkExpiration, getUnixTimeEpochFromRippleEpoch, parseNFTokenID } from 'src/utils/parse';
+import { checkExpiration, getUnixTimeEpochFromRippleEpoch, parseNFTokenID, getImgUrl } from 'src/utils/parse';
 
 // Context
 import { useContext } from 'react';
@@ -36,6 +39,12 @@ import ConfirmAcceptOfferDialog from './ConfirmAcceptOfferDialog';
 import FlagsContainer from 'src/components/Flags';
 import ListToolbar from './ListToolbar';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
+
+function truncate(str, n) {
+    if (!str) return '';
+    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
+    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
+};
 
 export default function OffersList({ account, type }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -281,7 +290,7 @@ export default function OffersList({ account, type }) {
     }
 
     return (
-        <>
+        <Container maxWidth="md" sx={{pl: 0, pr: 0}}>
             <Backdrop
                 sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={pageLoading}
@@ -340,6 +349,20 @@ export default function OffersList({ account, type }) {
                 nextUrl={nextUrl}
             />
 
+            <Box
+                sx={{
+                    display: "flex",
+                    gap: 1,
+                    py: 1,
+                    overflow: "auto",
+                    width: "100%",
+                    "& > *": {
+                        scrollSnapAlign: "center",
+                    },
+                    "::-webkit-scrollbar": { display: "none" },
+                }}
+            >
+
             <Stack>
                 {
                     offers.map((offer, idx) => {
@@ -347,6 +370,8 @@ export default function OffersList({ account, type }) {
                         const isSell = offer.flags === 1;
                         const NFTokenID = offer.NFTokenID;
                         const orphaned = offer.orphaned;
+                        const meta = offer.meta;
+                        const dfile = offer.dfile;
 
                         const {
                             flag,
@@ -355,6 +380,10 @@ export default function OffersList({ account, type }) {
                             taxon,
                             transferFee
                         } = parseNFTokenID(NFTokenID);
+
+                        const isVideo = meta?.video?true:false;
+
+                        const imgUrl = getImgUrl(meta, 48, dfile);
 
                         // offer.expiration = 1669585409; // Delete this line.
 
@@ -491,7 +520,20 @@ export default function OffersList({ account, type }) {
                                         }
                                     </Stack>
 
-                                    <Stack spacing={1}>
+                                    <CardMedia
+                                        component={isVideo?'video':'img'}
+                                        image={imgUrl}
+                                        alt={'NFT'}
+                                        // controls={isVideo}
+                                        autoPlay={isVideo}
+                                        loop={isVideo}
+                                        muted
+                                        style={{
+                                            width:'48px'
+                                        }}
+                                    />
+
+                                    <Stack spacing={0}>
                                         <Stack direction="row" spacing={2} alignItems="center">
                                             <Typography variant='s6' color='#33C2FF'>{price.amount} {price.name}</Typography>
                                             <Link
@@ -536,7 +578,7 @@ export default function OffersList({ account, type }) {
                                                 href={`/nft/${NFTokenID}`}
                                                 rel="noreferrer noopener nofollow"
                                             >
-                                                <Typography variant="s6">{NFTokenID}</Typography>
+                                                <Typography variant="s6" noWrap>{truncate(NFTokenID, 40)}</Typography>
                                             </Link>
                                         </Stack>
                                     </Stack>
@@ -548,6 +590,8 @@ export default function OffersList({ account, type }) {
                 }
             </Stack>
 
+            </Box>
+
             {total > 0 &&
                 <ListToolbar
                     count={total}
@@ -557,6 +601,6 @@ export default function OffersList({ account, type }) {
                     setPage={setPage}
                 />
             }
-        </>
+        </Container>
     );
 }

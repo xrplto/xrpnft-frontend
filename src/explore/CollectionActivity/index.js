@@ -158,6 +158,7 @@ export default function CollectionActivity({collection}) {
                                 cid,
                                 name,
                                 meta,
+                                dfile,
                                 cost,
                                 quantity,
                                 time
@@ -167,7 +168,7 @@ export default function CollectionActivity({collection}) {
 
                             const isVideo = meta?.video?true:false;
 
-                            const imgUrl = getImgUrl(meta);
+                            const imgUrl = getImgUrl(meta, 48, dfile);
 
                             const strDateTime = formatDateTime(time);
 

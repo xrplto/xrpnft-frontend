@@ -123,7 +123,9 @@ export default function TransferredNFTs({ account }) {
                     setOpenScanQR(false);
                     if (dispatched_result === 'tesSUCCESS') {
                         // handleClose();
+                        setNfts([]);
                         setPage(0);
+                        setHasMore(true);
                         setSync(sync + 1); // Load NFTs again
                         openSnackbar('Accepting NFT successful!', 'success');
                     }

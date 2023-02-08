@@ -140,12 +140,13 @@ export default function FavoritedList({ account }) {
                                     account,
                                     date,
                                     meta,
+                                    dfile,
                                     URI,
                                     NFTokenID
                                 } = row;
 
                                 // const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
-                                const imgUrl = getImgUrl(meta)
+                                const imgUrl = getImgUrl(meta, 480, dfile)
 
                                 const isVideo = meta.video;
 

@@ -208,6 +208,7 @@ export default function NFTDetailsMobile({ nft }) {
         minter,
         date,
         meta,
+        dfile,
         URI,
         status,
         // cost,
@@ -683,7 +684,7 @@ export default function NFTDetailsMobile({ nft }) {
                 </Stack>
             }
 
-            <NFTPreview meta={meta} />
+            <NFTPreview meta={meta} dfile={dfile} />
 
             {/* Make offer start */}
             <Paper
