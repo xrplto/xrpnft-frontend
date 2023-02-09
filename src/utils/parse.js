@@ -536,7 +536,7 @@ export const getMetadata = async (URI) => {
     } else return null
 }
 
-export const getImgUrl = (meta, size, dfile) => {
+export const getImgUrl = (NFTokenID, meta, dfile, size) => {
     if (!meta) return '';
     const image = meta.image;
     const video = meta.video;
@@ -576,8 +576,9 @@ export const getImgUrl = (meta, size, dfile) => {
 
     if (!isVideo && url.startsWith("https://gateway.xrpnft.com/ipfs/")) {
         url = url.replace("https://gateway.xrpnft.com/ipfs/", "https://api.xrpnft.com/ipfs/");
+        url += `?NFTokenID=${NFTokenID}`;
         if (size && size > 0) {
-            url += `?size=${size}`;
+            url += `&size=${size}`;
         }
     }
 

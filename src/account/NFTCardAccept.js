@@ -78,7 +78,8 @@ export default function NFTCardAccept({ nft, handleApprove }) {
 
     const amount = normalizeAmount(nft.amount || '0');
 
-    const imgUrl = getImgUrl(meta, 480, dfile); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+    const imgUrl = getImgUrl(NFTokenID, meta, dfile, 480); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+
     const isVideo = meta?.video ? true : false;
 
     const [loadingImg, setLoadingImg] = useState(true)

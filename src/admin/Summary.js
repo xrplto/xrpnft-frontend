@@ -160,12 +160,42 @@ export default function Summary({}) {
         setLoading(false);
     };
 
+    const onDownloadImages = async () => {
+        if (!accountAdmin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const res = await axios.get(`${BASE_URL}/admin/download_images`, {headers: {'x-access-account': accountAdmin, 'x-access-token': accountToken}});
+
+            const ret = res.data;
+            if (ret) {
+                if (ret.status) {
+                    openSnackbar('Successfully submitted', 'success');
+                    setDownImages(ret.count || downImages);
+                } else {
+                    openSnackbar(ret.err, 'error');
+                }
+            }
+        } catch (err) {
+            console.error(err);
+            openSnackbar('Error', 'error');
+        }
+        setLoading(false);
+    };
+
     const handleCheckDuplicatedAgain = (e) => {
         onResolveDuplicated(1);
     }
 
     const handleBurnDuplicatedNFTs = (e) => {
         onResolveDuplicated(2);
+    }
+
+    const handleDownloadImagesAgain = (e) => {
+        onDownloadImages(1);
     }
 
     return (
@@ -289,7 +319,14 @@ export default function Summary({}) {
                             <Typography variant="s7">Download Images</Typography>
                         </TableCell>
                         <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
-                            <Typography variant="s6">{downImages}</Typography>
+                            <Stack direction="row" sx={{width: "100%"}} spacing={0.2} alignItems="center">
+                                <Typography variant="s6" pr={2}>{fIntNumber(downImages)}</Typography>
+                                <Tooltip title="Download missing images again, click once and be patient, takes much time.">
+                                    <IconButton size="small" onClick={handleDownloadImagesAgain}>
+                                        <RefreshIcon fontSize="small" color="warning" />
+                                    </IconButton>
+                                </Tooltip>
+                            </Stack>
                         </TableCell>
                     </TableRow>
                 </TableBody>

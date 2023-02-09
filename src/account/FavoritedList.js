@@ -146,7 +146,7 @@ export default function FavoritedList({ account }) {
                                 } = row;
 
                                 // const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
-                                const imgUrl = getImgUrl(meta, 480, dfile)
+                                const imgUrl = getImgUrl(NFTokenID, meta, dfile, 480);
 
                                 const isVideo = meta.video;
 

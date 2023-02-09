@@ -130,7 +130,7 @@ export default function NFTDetails({nft}) {
 
     return (
         <Stack spacing={2} sx={{mt: 2}}>
-            <NFTPreview meta={meta} dfile={dfile} />
+            <NFTPreview NFTokenID={NFTokenID} meta={meta} dfile={dfile} />
             <Stack>
                 <Accordion defaultExpanded>
                     <AccordionSummary

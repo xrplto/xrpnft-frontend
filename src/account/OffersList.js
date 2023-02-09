@@ -383,7 +383,7 @@ export default function OffersList({ account, type }) {
 
                         const isVideo = meta?.video?true:false;
 
-                        const imgUrl = getImgUrl(meta, 48, dfile);
+                        const imgUrl = getImgUrl(NFTokenID, meta, dfile, 48);
 
                         // offer.expiration = 1669585409; // Delete this line.
 

@@ -684,7 +684,7 @@ export default function NFTDetailsMobile({ nft }) {
                 </Stack>
             }
 
-            <NFTPreview meta={meta} dfile={dfile} />
+            <NFTPreview NFTokenID={NFTokenID} meta={meta} dfile={dfile} />
 
             {/* Make offer start */}
             <Paper
