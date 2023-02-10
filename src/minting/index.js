@@ -16,6 +16,7 @@ import {
     Checkbox,
     FormControlLabel,
     FormGroup,
+    Grid,
     IconButton,
     Link,
     MenuItem,
@@ -29,8 +30,6 @@ import ImageIcon from '@mui/icons-material/Image';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
 // Context
 import { useContext } from 'react';
@@ -44,7 +43,8 @@ import QRDialog from 'src/components/QRDialog';
 // import PropertySection from './NFTProperties/PropertySection';
 // import LevelsSection from './NFTLevels/LevelSection';
 // import LoadingTextField from 'src/components/LoadingTextField';
-import DlgAddAttribute from './DlgAddAttribute';
+import DlgAddTrait from './DlgAddTrait';
+import Trait from './Trait';
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
@@ -95,13 +95,13 @@ export default function Minting() {
     // const properties = useSelector(state => state.status.metadata.properties);
 
     const [open, setOpen] = useState(false);
-    const [openAddAttribute, setOpenAddAttribute] = useState(false);
+    const [openAddTrait, setOpenAddTrait] = useState(false);
 
     const [nftName, setNftName] = useState('');
     const [extLink, setExtLink] = useState('');
     const [description, setDescription] = useState('');
     const [collectionName, setCollectionName] = useState('')
-    const [attributes, setAttributes] = useState([]);
+    const [traits, setTraits] = useState([]);
     const [royalty, setRoyalty] = useState('0');
     const [explicit, setExplicit] = useState(false);
     const [flag, setFlag] = useState(0x08); // Burnable, /*Only XRP*/, Trustline, Transferable
@@ -229,8 +229,8 @@ export default function Minting() {
             data.explicit = explicit;
             data.flag = flag;
             data.isVideo = isVideo;
-            if (attributes && attributes.length > 0)
-                data.attributes = attributes;
+            if (traits && traits.length > 0)
+                data.attributes = traits;
 
             const formdata = new FormData();
             formdata.append('nft', file);
@@ -366,36 +366,36 @@ export default function Minting() {
         }
     }
 
-    const handleAddAttribute = (attribute) => {
+    const onAddTrait = (trait) => {
         const {
-            name,
+            type,
             value
-        } = attribute;
-        for (const attr of attributes) {
-            if (attr.name === name) {
-                attr.value = value;
+        } = trait;
+        for (const t of traits) {
+            if (t.type === type) {
+                t.value = value;
                 return;
             }
         }
-        attributes.push(attribute);
+        traits.push(trait);
     }
 
-    const handleRemoveAttribute = (name) => {
-        const newAttributes = [];
-        for (const attr of attributes) {
-            if (attr.name !== name)
-                newAttributes.push(attr);
+    const handleRemoveTrait = (type) => {
+        const newTraits = [];
+        for (const t of traits) {
+            if (t.type !== type)
+                newTraits.push(t);
         }
-        setAttributes(newAttributes);
+        setTraits(newTraits);
     }
 
     return (
         <>
-            <DlgAddAttribute
-                open={openAddAttribute}
-                setOpen={setOpenAddAttribute}
+            <DlgAddTrait
+                open={openAddTrait}
+                setOpen={setOpenAddTrait}
                 openSnackbar={openSnackbar}
-                onAddAttribute={handleAddAttribute}
+                onAddTrait={onAddTrait}
             />
 
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
@@ -535,39 +535,22 @@ export default function Minting() {
             <Stack spacing={2} mb={3}>
                 <Typography variant='p4'>Attributes</Typography>
                 <Typography variant='p3'>
-                    You can add attributes in your NFT metadata.
+                    You can add traits in your NFT metadata.
                 </Typography>
-                {attributes.map((attribute, idx) => (
-                    <Stack direction="row" spacing={2} sx={{mt: 3}} key={idx} alignItems="flex-end">
-                        <TextField
-                            id="outlined-size-name"
-                            variant="standard"
-                            disabled
-                            label={idx===0?"Name":""}
-                            value={attribute.name}
-                        />
 
-                        <ArrowRightAltIcon fontSize="small" />
-
-                        <TextField
-                            id="outlined-size-value"
-                            variant="standard"
-                            disabled
-                            label={idx===0?"Value":""}
-                            value={attribute.value}
-                        />
-
-                        <IconButton onClick={()=>handleRemoveAttribute(attribute.name)}>
-                            <HighlightOffOutlinedIcon fontSize="small" />
-                        </IconButton>
-                    </Stack>
-                ))}
+                <Grid container spacing={1}>
+                    {traits.map((t, idx) => (
+                        <Grid item key={"Properties" + idx} xs={6} sm={4} md={3} >
+                            <Trait trait={t} onRemoveTrait={handleRemoveTrait} />
+                        </Grid>
+                    ))}
+                </Grid>
                 <Stack direction="row">
                     <Button
                         variant="outlined"
                         startIcon={<AddCircleIcon />}
                         size="small"
-                        onClick={()=>setOpenAddAttribute(true)}
+                        onClick={()=>setOpenAddTrait(true)}
                     >
                         Add
                     </Button>

@@ -53,6 +53,8 @@ import { fIntNumber, fNumber } from 'src/utils/formatNumber';
 // import LoadingTextField from 'src/components/LoadingTextField';
 import WarningMintDialog from './WarningMintDialog';
 import AddAttrDialog from './AddAttrDialog';
+import AddMetaCountDialog from './AddMetaCountDialog';
+import Trait from './Trait';
 
 const CustomSelect = styled(Select)(({ theme }) => ({
     '& .MuiOutlinedInput-notchedOutline' : {
@@ -191,7 +193,10 @@ export default function BulkMint2({slug}) {
 
     const [attributes, setAttributes] = useState([]);
 
+    const [metaCounts, setMetaCounts] = useState([10000, 5000, 1000, 100]);
+
     const [openAddAttr, setOpenAddAttr] = useState(false);
+    const [openAddMetaCount, setOpenAddMetaCount] = useState(false);
 
     const active = accountLogin && accountToken && collection;
     let canDownload = active && nftName && isIPFS.cid(ipfsCID);
@@ -513,14 +518,22 @@ export default function BulkMint2({slug}) {
     };
 
     const handleAddAttr = (attr) => {
+        const newAttrs = [];
+        let exist = false;
         for (var a of attributes) {
             if (a.from === attr.from && a.to === attr.to) {
-                a.type = attr.type;
-                a.value = attr.value;
-                return;
+                exist = true;
+                newAttrs.push(attr);
+            } else {
+                newAttrs.push(a);
             }
         }
-        attributes.push(attr);
+
+        if (!exist) {
+            newAttrs.push(attr);
+        }
+
+        setAttributes(newAttrs);
 
         if (sMeta) {
             const pos = nftNameIndex?Number(nftNameIndex):1;
@@ -541,10 +554,23 @@ export default function BulkMint2({slug}) {
     const getAttribute = (index) => {
         for (const a of attributes) {
             if (index >= a.from && index <= a.to) {
-                return [{trait_type: a.type, value: a.value}];
+                return a.traits;
             }
         }
         return [];
+    }
+
+    const handleAddMetaCount = (count) => {
+        if (count > 10000) return;
+
+        const newMetaCnts = [];
+        for (const c of metaCounts) {
+            if (c === count) return;
+            newMetaCnts.push(c);
+        }
+        newMetaCnts.push(count);
+        setMetaCounts(newMetaCnts);
+        setMetaCount(count);
     }
 
     return (
@@ -558,6 +584,13 @@ export default function BulkMint2({slug}) {
             onAddAttr={handleAddAttr}
         />
 
+        <AddMetaCountDialog
+            open={openAddMetaCount}
+            setOpen={setOpenAddMetaCount}
+            openSnackbar={openSnackbar}
+            onAddMetaCount={handleAddMetaCount}
+        />
+
         <Grid container spacing={3}>
             <Grid item lg={6}>
                 <Stack spacing={2} mb={4}>
@@ -569,10 +602,22 @@ export default function BulkMint2({slug}) {
                             value={metaCount}
                             onChange={handleChangeCount}
                         >
-                            <MenuItem value={10000}>{fIntNumber(10000)}</MenuItem>
-                            <MenuItem value={5000}>{fIntNumber(5000)}</MenuItem>
-                            <MenuItem value={1000}>{fIntNumber(1000)}</MenuItem>
-                            <MenuItem value={100}>{fIntNumber(100)}</MenuItem>
+                            {
+                                metaCounts.map((count) => {
+                                    return (
+                                        <MenuItem value={count}>{fIntNumber(count)}</MenuItem>
+                                    )
+                                })
+                            }
+                            <Button
+                                variant="outlined"
+                                startIcon={<AddCircleIcon />}
+                                size="small"
+                                onClick={()=>setOpenAddMetaCount(true)}
+                                sx={{mt: 1}}
+                            >
+                                Add
+                            </Button>
                         </CustomSelect>
                         <Typography variant="s2">Metadata</Typography>
                     </Stack>
@@ -649,32 +694,36 @@ export default function BulkMint2({slug}) {
                             You can add only one attribute for each meta by indexed range.
                         </Typography>
 
-                        {attributes.map((attr, idx) => (
-                            <Stack spacing={1} sx={{pl: 1, pr:1}} key={attr.uuid}>
-                                <Stack direction="row" spacing={2} sx={{mt: 0}} alignItems="center" justifyContent="space-between">
-                                    <Stack direction="row" spacing={2} alignItems="center">
-                                        <Typography variant='s2'>#</Typography>
-                                        <Typography variant='s4'>{attr.from}</Typography>
-                                        <Typography variant='s2'>-</Typography>
-                                        <Typography variant='s4'>{attr.to}</Typography>
-                                    </Stack>
-
-                                    <Stack direction='row' spacing={2} alignItems="center">
+                        {attributes.map((attr, idx) => {
+                            const from = attr.from;
+                            const to = attr.to;
+                            const traits = attr.traits;
+                            return (
+                                <Stack spacing={1} sx={{pl: 1, pr:1}} key={attr.uuid}>
+                                    <Stack direction="row" spacing={2} sx={{mt: 0}} alignItems="center" justifyContent="space-between">
                                         <Stack direction="row" spacing={2} alignItems="center">
-                                            <Typography variant='s2'>Type</Typography>
-                                            <Typography variant='s4'>{attr.type}</Typography>
-                                            <Typography variant='s2'>Value</Typography>
-                                            <Typography variant='s4'>{attr.value}</Typography>
+                                            <Typography variant='s2'>#</Typography>
+                                            <Typography variant='s6'>{from}</Typography>
+                                            <Typography variant='s2'>-</Typography>
+                                            <Typography variant='s6'>{to}</Typography>
                                         </Stack>
+
+                                        <Grid container spacing={1}>
+                                            {traits.map((t, idx) => (
+                                                <Grid item key={"Properties" + idx} xs={12} sm={6} md={4} >
+                                                    <Trait trait={t} />
+                                                </Grid>
+                                            ))}
+                                        </Grid>
 
                                         <IconButton onClick={()=>handleRemoveAttr(attr.uuid)}>
                                             <HighlightOffOutlinedIcon fontSize="small" />
                                         </IconButton>
                                     </Stack>
+                                    <Divider />
                                 </Stack>
-                                <Divider />
-                            </Stack>
-                        ))}
+                            );
+                        })}
 
                         <Stack direction="row" sx={{pl: 1, pt: 1, pb: 3}}>
                             <Button

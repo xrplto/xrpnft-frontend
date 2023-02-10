@@ -1,7 +1,6 @@
-import axios from 'axios';
-import React from "react";
-import { useState, useEffect, useRef } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
+// import axios from 'axios';
+// import React from "react";
+// import { useState, useEffect, useRef } from 'react';
 
 // Material
 import {
@@ -17,41 +16,41 @@ import { CollectionListType } from 'src/utils/constants';
 import Row from './Row';
 import ListHead from './ListHead';
 
-export default function CollectionList() {
-    const BASE_URL = 'https://api.xrpnft.com/api';
+export default function CollectionList({collections}) {
+    // const BASE_URL = 'https://api.xrpnft.com/api';
 
-    const [collections, setCollections] = useState([]);
+    // const [collections, setCollections] = useState([]);
 
-    useEffect(() => {
-        const loadCollections = () => {
-            const body = {
-                filter: '',
-                type: CollectionListType.LANDING,
-                page: 0,
-                limit: 10,
-                order: 'desc',
-                orderBy: 'vol24h',
-                choice: 'all'
-            };
+    // useEffect(() => {
+    //     const loadCollections = () => {
+    //         const body = {
+    //             filter: '',
+    //             type: CollectionListType.LANDING,
+    //             page: 0,
+    //             limit: 10,
+    //             order: 'desc',
+    //             orderBy: 'vol24h',
+    //             choice: 'all'
+    //         };
 
-            axios.post(`${BASE_URL}/collection/getlistbyorder`, body)
-                .then(res => {
-                    try {
-                        if (res.status === 200 && res.data) {
-                            const ret = res.data;
-                            setCollections(ret.collections);
-                        }
-                    } catch (error) {
-                        console.log(error);
-                    }
-                }).catch(err => {
-                    console.log("err->>", err);
-                }).then(function () {
-                    // Always executed
-                });
-        };
-        loadCollections();
-    }, []);
+    //         axios.post(`${BASE_URL}/collection/getlistbyorder`, body)
+    //             .then(res => {
+    //                 try {
+    //                     if (res.status === 200 && res.data) {
+    //                         const ret = res.data;
+    //                         setCollections(ret.collections);
+    //                     }
+    //                 } catch (error) {
+    //                     console.log(error);
+    //                 }
+    //             }).catch(err => {
+    //                 console.log("err->>", err);
+    //             }).then(function () {
+    //                 // Always executed
+    //             });
+    //     };
+    //     loadCollections();
+    // }, []);
 
     return (
         <>

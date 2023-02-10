@@ -1,6 +1,6 @@
 // Material
 import {
-    styled, useTheme,
+    styled,
     Button,
     Grid,
     Link,
@@ -10,11 +10,8 @@ import {
 
 // Components
 import CollectionPreview from './CollectionPreview';
-import SampleList from './SampleList';
+// import SampleList from './SampleList';
 import CollectionList from './CollectionList';
-
-// Utils
-import { CollectionListType } from 'src/utils/constants';
 
 const AutoStack = styled(Stack)(
     ({ theme }) => `
@@ -25,8 +22,7 @@ const AutoStack = styled(Stack)(
     `
 );
 
-export default function Landing({data}) {
-    const theme = useTheme();
+export default function Landing({collections}) {
     return (
         <Grid container spacing={3} justifyContent="center" alignItems="center" display="flex" sx={{mt:2}}>
             <Grid item xs={12} md={7} lg={7}>
@@ -59,7 +55,7 @@ export default function Landing({data}) {
             </Grid>
 
             <Grid item xs={12} md={5} lg={5} sx={{pl:0}} alignItems="center">
-                <CollectionPreview />
+                <CollectionPreview collections={collections} />
             </Grid>
 
             <Grid item xs={12} md={12} lg={12} sx={{mt:10}} alignItems="center">
@@ -67,7 +63,7 @@ export default function Landing({data}) {
                     <Typography variant='h2a'>Top Collections Today</Typography>
                 </Stack>
                 {/* <SampleList /> */}
-                <CollectionList />
+                <CollectionList collections={collections} />
                 <Stack alignItems="center" sx={{mt:1, mb:4}}>
                     <Link
                         underline="none"

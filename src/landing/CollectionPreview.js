@@ -9,6 +9,9 @@ import {
     Typography
 } from '@mui/material';
 
+// Utils
+import { getImgUrl } from 'src/utils/parse';
+
 /* offset-x | offset-y | blur-radius | spread-radius | color */
 // box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
 // box-shadow: rgba(100, 100, 111, 0.8) 0px 7px 32px 10px;
@@ -32,7 +35,7 @@ const CustomCarousel = styled(Carousel)(
   `
 );
 
-export default function ColectionPreview() {
+export default function CollectionPreview({collections}) {
     
     // src: 'https://s1.xrpnft.com/static/collection/fat-cats-xrpl.jpg'
     // const images1 = [
@@ -117,21 +120,65 @@ export default function ColectionPreview() {
             swipeable={false}
             // dynamicHeight={true}
             animationHandler={fadeAnimationHandler}
+            minHeight='100%'
+            minWidth='100%'
         >
-            {images.map((item, idx) => (
-                <Stack key={idx} sx={{pr: 1, pb: 1}}>
-                    <Link
-                        underline="none"
-                        color="inherit"
-                        target="_blank"
-                        href={item.link}
-                        rel="noreferrer noopener"
-                    >
-                        <CustomImage src={item.src} />
-                    </Link>
-                    <Typography variant='h2a'>{item.title}</Typography>
-                </Stack>
-            ))}
+            {collections.map((item, idx) => {
+                const {
+                    uuid,
+                    account,
+                    accountName,
+                    name,
+                    slug,
+                    items,
+                    type,
+                    description,
+                    logoImage,
+                    featuredImage,
+                    bannerImage,
+                    timestamp,
+                    costs,
+                    extra,
+                    minter,
+                    verified,
+                    created,
+                    volume,
+                    totalVolume,
+                    floor,
+                    owners,
+                    vol24h,
+                    nft
+                } = item;
+
+                // const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;
+                const {
+                    NFTokenID,
+                    meta,
+                    dfile,
+                    collection
+                } = nft?nft:{};
+
+                let imgUrl = getImgUrl(NFTokenID, meta, dfile, 300);
+
+                if (!imgUrl || meta?.video) {
+                    imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
+                }
+
+                return (
+                    <Stack key={idx} sx={{pr: 1, pb: 1}}>
+                        <Link
+                            underline="none"
+                            color="inherit"
+                            // target="_blank"
+                            href={`/collection/${slug}`}
+                            // rel="noreferrer noopener"
+                        >
+                            <CustomImage src={imgUrl} />
+                        </Link>
+                        <Typography variant='h2a'>{name}</Typography>
+                    </Stack>
+                );
+            })}
         </CustomCarousel>
     );
 }

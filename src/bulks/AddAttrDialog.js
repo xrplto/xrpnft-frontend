@@ -3,30 +3,26 @@ import Decimal from 'decimal.js';
 import { v4 as uuidv4 } from 'uuid';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
-    alpha, useTheme, useMediaQuery,
-    styled,
+    styled, useTheme, useMediaQuery,
     Button,
     Dialog,
     DialogContent,
     DialogTitle,
+    Divider,
     IconButton,
     Stack,
-    Typography,
-    TextField
+    TextField,
+    Tooltip,
+    Typography
 } from '@mui/material';
-
-import {
-    Close as CloseIcon,
-    AddCircle as AddCircleIcon
-} from '@mui/icons-material';
-
-// Utils
-import { XRP_TOKEN } from 'src/utils/constants';
+import CloseIcon from '@mui/icons-material/Close';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 
 // Components
-import QueryToken from 'src/components/QueryToken';
+import AddTraitDialog from './AddTraitDialog';
 
 // ----------------------------------------------------------------------
 const AddDialog = styled(Dialog) (({ theme }) => ({
@@ -64,12 +60,6 @@ const AddDialogTitle = (props) => {
     );
 };
 
-const Label = withStyles({
-    root: {
-        color: alpha('#637381', 0.99)
-    }
-})(Typography);
-
 function GetNum(amount) {
     let num = 0;
     try {
@@ -86,13 +76,9 @@ export default function AddAttrDialog({open, setOpen, openSnackbar, onAddAttr}) 
     const [from, setFrom] = useState('1');
     const [to, setTo] = useState('1000');
 
-    const [type, setType] = useState('Background');
-    const [value, setValue] = useState('Snuff');
+    const [traits, setTraits] = useState([{type: 'Background', value: 'Snuff'}]);
 
-    // useEffect(() => {
-    //     setName('');
-    //     setValue('');
-    // }, []);
+    const [openAddTrait, setOpenAddTrait] = useState(false);
 
     const handleClose = () => {
         setOpen(false);
@@ -110,30 +96,26 @@ export default function AddAttrDialog({open, setOpen, openSnackbar, onAddAttr}) 
         setTo(newValue);
     }
 
-    const handleChangeType = (e) => {
-        const value = e.target.value;
-        setType(value);
-    }
-
-    const handleChangeValue = (e) => {
-        const value = e.target.value;
-        setValue(value);
-    }
-
-    const handleAddAttr = () => {
-        const attr = {};
+    const handleApplyAttr = () => {
         const numFrom = GetNum(from);
         const numTo = GetNum(to);
         if (numFrom === 0 || numTo === 0)
             openSnackbar('Invalid range', 'error');
-        else if (!type || !value) {
-            openSnackbar('Invalid type or value', 'error');
+        else if (traits.length === 0) {
+            openSnackbar('Add at least one trait', 'error');
         } else {
-            attr.uuid = uuidv4();
-            attr.from = numFrom;
-            attr.to = numTo;
-            attr.type = type;
-            attr.value = value;
+            const newTraits = [];
+            for (const t of traits) {
+                const type = t.type;
+                const value = t.value;
+                newTraits.push({type, value});
+            }
+            const attr = {
+                uuid: uuidv4(),
+                from: numFrom,
+                to: numTo,
+                traits: newTraits,
+            }
             onAddAttr(attr);
             setOpen(false);
 
@@ -142,8 +124,43 @@ export default function AddAttrDialog({open, setOpen, openSnackbar, onAddAttr}) 
         }
     }
 
+    const onAddTrait = (type, value) => {
+        const newTraits = [];
+        let exist = false;
+        for (const t of traits) {
+            if (t.type === type) {
+                exist = true;
+                t.value = value;
+            }
+            newTraits.push(t);
+        }
+
+        if (!exist) {
+            newTraits.push({type, value});
+        }
+
+        setTraits(newTraits);
+    }
+
+    const handleRemoveTrait = (type) => {
+        const newTraits = [];
+        for (const t of traits) {
+            if (t.type === type) {
+            } else {
+                newTraits.push(t);
+            }
+        }
+        setTraits(newTraits);
+    }
+
     return (
         <>
+            <AddTraitDialog
+                open={openAddTrait}
+                setOpen={setOpenAddTrait}
+                openSnackbar={openSnackbar}
+                onAddTrait={onAddTrait}
+            />
             <AddDialog
                 fullScreen={fullScreen}
                 onClose={handleClose}
@@ -153,7 +170,7 @@ export default function AddAttrDialog({open, setOpen, openSnackbar, onAddAttr}) 
                 // hideBackdrop={true}
             >
                 <AddDialogTitle id="customized-dialog-title" onClose={handleClose}>
-                    <Typography variant="p4">Add attribute by range</Typography>
+                    <Typography variant="p4">Add traits by range</Typography>
                 </AddDialogTitle>
 
                 <DialogContent>
@@ -176,7 +193,7 @@ export default function AddAttrDialog({open, setOpen, openSnackbar, onAddAttr}) 
                                     }}
                                     inputProps={{min: 0, style: { textAlign: 'center' }}}
                                     onKeyDown={(e) => e.stopPropagation()}
-                                    sx={{width: 100}}
+                                    // sx={{width: 100}}
                                 />
                                 <Typography variant='s2'>To</Typography>
                                 <TextField
@@ -192,61 +209,48 @@ export default function AddAttrDialog({open, setOpen, openSnackbar, onAddAttr}) 
                                     }}
                                     inputProps={{min: 0, style: { textAlign: 'center' }}}
                                     onKeyDown={(e) => e.stopPropagation()}
-                                    sx={{width: 100}}
+                                    // sx={{width: 100}}
                                 />
                             </Stack>
                         </Stack>
 
                         <Stack spacing={2} sx={{mt: 3}}>
-                            <Typography variant='p2'>Attribute <Typography variant='s2'>*</Typography></Typography>
-
-                            <Stack direction="row" spacing={2} alignItems="center">
-                                <Typography variant='s2'>Type</Typography>
-                                <TextField
-                                    id='id_txt_type'
-                                    // autoFocus
-                                    variant='standard'
-                                    placeholder=''
-                                    onChange={handleChangeType}
-                                    autoComplete='new-password'
-                                    value={type}
-                                    onFocus={event => {
-                                        event.target.select();
-                                    }}
-                                    inputProps={{min: 0, style: { textAlign: 'center' }}}
-                                    onKeyDown={(e) => e.stopPropagation()}
-                                    // sx={{width: 100}}
-                                />
+                            <Stack direction="row" spacing={1} alignItems="center">
+                                <Typography variant='p2'>Traits <Typography variant='s2'>*</Typography></Typography>
+                                <Tooltip title='Add one more trait'>
+                                    <IconButton onClick={()=>setOpenAddTrait(true)}>
+                                        <AddCircleIcon fontSize="small" />
+                                    </IconButton>
+                                </Tooltip>
                             </Stack>
 
-                            <Stack direction="row" spacing={2} alignItems="center">
-                                <Typography variant='s2'>Value</Typography>
-                                <TextField
-                                    id='id_txt_value'
-                                    // autoFocus
-                                    variant='standard'
-                                    placeholder=''
-                                    onChange={handleChangeValue}
-                                    autoComplete='new-password'
-                                    value={value}
-                                    onFocus={event => {
-                                        event.target.select();
-                                    }}
-                                    inputProps={{min: 0, style: { textAlign: 'center' }}}
-                                    onKeyDown={(e) => e.stopPropagation()}
-                                    // sx={{width: 100}}
-                                />
-                            </Stack>
+                            {traits.map((trait, idx) => (
+                                <Stack spacing={1} sx={{pl: 1, pr:1}} key={idx}>
+                                    <Stack direction='row' spacing={2} alignItems="center" justifyContent="space-between">
+                                        <Stack direction="row" spacing={2} alignItems="center">
+                                            <Typography variant='s2'>Type</Typography>
+                                            <Typography variant='s6'>{trait.type}</Typography>
+                                            <Typography variant='s2'>Value</Typography>
+                                            <Typography variant='s6'>{trait.value}</Typography>
+                                        </Stack>
+
+                                        <IconButton onClick={()=>handleRemoveTrait(trait.type)}>
+                                            <HighlightOffOutlinedIcon fontSize="small" />
+                                        </IconButton>
+                                    </Stack>
+                                    <Divider />
+                                </Stack>
+                            ))}
                         </Stack>
 
-                        <Stack direction='row' spacing={2} justifyContent="center" sx={{mt:3, mb:3}}>
+                        <Stack direction='row' spacing={2} justifyContent="center" sx={{mt:6, mb:1}}>
                             <Button
                                 variant="outlined"
-                                startIcon={<AddCircleIcon />}
+                                startIcon={<CheckCircleIcon />}
                                 size="small"
-                                onClick={handleAddAttr}
+                                onClick={handleApplyAttr}
                             >
-                                Add
+                                Apply
                             </Button>
                         </Stack>
                     </Stack>
