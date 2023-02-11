@@ -73,8 +73,8 @@ export default function Header() {
     const [anchorElUser, setAnchorElUser] = useState(null);
 
     const shareUrl = `https://xrpnft.com`;
-    const shareTitle = 'Discover, collect and sell extraordinary NFTs';
-    const shareDesc = 'XRPNFT is an NFT Marketplace on the XRP Ledger where creators and collectors trade XRPL NFTs without fees.';
+    const shareTitle = 'XRPNFT An NFT Marketplace for Purchasing, Selling, and Collecting Non-Fungible Tokens';
+    const shareDesc = 'XRPNFT is a fee-free platform for trading XRPL NFTs on the XRP Ledger, connecting creators and collectors in a seamless NFT marketplace.';
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);

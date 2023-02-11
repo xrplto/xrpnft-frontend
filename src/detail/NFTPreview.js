@@ -14,7 +14,7 @@ import {
 import { getImgUrl } from 'src/utils/parse';
 
 export default function NFTPreview({ NFTokenID, meta, dfile }) {
-    const imgUrl = getImgUrl(NFTokenID, meta, dfile, 480); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+    const imgUrl = getImgUrl(NFTokenID, meta, dfile, 480);
     const isVideo = meta?.video?true:false;
 
     // const imgUrl = 'https://xrpnft.com/static/test.mp4';

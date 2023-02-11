@@ -58,7 +58,6 @@ const BannerImage = styled('img')(
 
 export default function Overview({data}) {
     const { darkMode } = useContext(AppContext);
-    console.log(data);
     // "collection": {
     //     "_id": "6310c27cf81fe46884ef89ba",
     //     "account": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",

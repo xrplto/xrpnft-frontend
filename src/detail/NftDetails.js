@@ -106,7 +106,6 @@ export default function NFTDetails({nft}) {
     } = nft;
 
     const ParsedURI = convertHexToString(URI);
-    // const hrefURI = `https://gateway.xrpnft.com/ipfs/${ParsedURI}`;
 
     const {
         flag,

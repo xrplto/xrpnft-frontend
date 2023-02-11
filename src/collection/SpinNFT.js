@@ -1,7 +1,7 @@
 import axios from 'axios';
 import useSound from 'use-sound';
 import Confetti from 'react-confetti';
-import { ColorExtractor } from 'react-color-extractor';
+// import { ColorExtractor } from 'react-color-extractor';
 import useWindowSize from 'react-use/lib/useWindowSize';
 import React, { useEffect, useState } from "react";
 
@@ -16,6 +16,7 @@ import {
     Divider,
     Grid,
     Link,
+    Paper,
     Stack,
     Tooltip,
     Typography,
@@ -28,21 +29,26 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
+// Utils
+import { getImgUrl } from 'src/utils/parse';
+
 // Components
 import BuyMintDialog from './BuyMintDialog';
 
-const CardWrapper = styled('div')(
+const CardWrapper = styled(Paper)(
     ({ theme }) => `
-        width: 300px;
-        height: 340px;
-        @media (min-width: ${theme.breakpoints.values.md}px) {
-            width: 500px;
-            height: 540px;
-        }
-        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-        border-radius: 30px;
-        backdrop-filter: blur(50px);
-        background: rgb(2, 0, 36);
+        max-width: 420px;
+        width: 100%; // 300px;
+        // max-height: 530px;
+        // height: 340px;
+        // @media (min-width: ${theme.breakpoints.values.md}px) {
+        //     width: 420px;
+        //     height: 460px;
+        // }
+        // box-shadow: rgba(100, 100, 111, 0.2) 7px 7px 7px 7px;
+        // border-radius: 30px;
+        // backdrop-filter: blur(50px);
+        // background: rgb(2, 0, 36);
         padding: 10px;
         text-align: center;
         object-fit: cover;
@@ -125,12 +131,12 @@ const IconImage = styled('img')(
 const SlotBox = styled('div') (
     ({ theme }) => `
         // padding-top: 40px;
-        width: 280px;
-        height: 200px;
-        @media (min-width: ${theme.breakpoints.values.md}px) {
-            width: 480px;
-            height: 400px;
-        }
+        // width: 280px;
+        // height: 200px;
+        // @media (min-width: ${theme.breakpoints.values.md}px) {
+        //     width: 480px;
+        //     height: 400px;
+        // }
         // margin-bottom: 20px;
         // margin-top: 20px;
         // border-style: solid;
@@ -168,15 +174,11 @@ export default function SpinNFT({ collection, setView }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { width, height } = useWindowSize();
     const [play, { stop }] = useSound('/static/sounds/mixkit-fireworks-bang-in-sky-2989.wav');
-    const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
+    // const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
 
     const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
-
-    const [nft, setNft] = useState(null);
-
-    const [colors, setColors] = useState([]);
 
     const [congrats, setCongrats] = useState(false);
 
@@ -188,47 +190,6 @@ export default function SpinNFT({ collection, setView }) {
 
     const [pendingNfts, setPendingNfts] = useState(0);
 
-    // "collection": {
-    //     "_id": "6332e893d799f7b10ec627a2",
-    //     "account": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
-    //     "name": "spinner1",
-    //     "category": "",
-    //     "slug": "spin1",
-    //     "type": "random",
-    //     "items": 6568,
-    //     "owners": 0,
-    //     "minter": "rLHcy375RJfLcQL3MayfkYaaK3H9HYdHiC",
-    //     "costs": [
-    //         {
-    //             "md5": "xrp",
-    //             "name": "XRP",
-    //             "issuer": "XRPL",
-    //             "currency": "XRP",
-    //             "ext": "png",
-    //             "exch": "1",
-    //             "cost": "1"
-    //         },
-    //         {
-    //             "md5": "0413ca7cfc258dfaf698c02fe304e607",
-    //             "name": "SOLO",
-    //             "issuer": "rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz",
-    //             "currency": "534F4C4F00000000000000000000000000000000",
-    //             "ext": "jpg",
-    //             "exch": 0.29431199670355546,
-    //             "cost": "100"
-    //         }
-    //     ]
-    //     "description": "",
-    //     "logoImage": "1664280722827_d05ae9f8628a41ed8dbfb1321cf9fb50.png",
-    //     "featuredImage": "1664280722828_a14b3d6686d64cf38b2259b864c25f8f.jpg",
-    //     "bannerImage": "1664280722829_2b95c99e4e964012bf2d410ec435ce0c.jpg",
-    //     "created": 1664280723606,
-    //     "modified": 1664280723606,
-    //     "uuid": "4e9d651567834a58931960fbee6bc3a7",
-    //     "taxon": 1,
-    //     "creator": "xrpnft.com"
-    // }
-
     const {
         uuid,
         name,
@@ -237,26 +198,31 @@ export default function SpinNFT({ collection, setView }) {
         type,
         description,
         logoImage,
-        featuredImage,
-        bannerImage,
+        // featuredImage,
+        // bannerImage,
         spinnerImage,
-        timestamp,
+        // timestamp,
         costs,
-        minter,
-        verified
+        // minter,
+        verified,
+        extra
     } = collection;
 
-    // const description = "This is the test collection that spinns the nfts very fast and you can won and purchase nfts"
-
-    const getColors = (colors, idx) => {
-        // setColors(c => [...c, ...colors]);
-        setColors(c => [...colors]);
-    }
+    const [nft, setNft] = useState(extra?.sampleNft);
 
     const [spinning, setSpinning] = useState(false);
 
-    let nftImgUrl = nft?`https://gateway.xrpnft.com/ipfs/${nft.meta.image||nft.meta.video}`:'/static/unknown.png';
-    const isVideo = nft?.meta.video;
+    const {
+        NFTokenID,
+        meta,
+        dfile
+    } = nft || {};
+
+    const imgUrl = getImgUrl(NFTokenID, meta, dfile, 480);
+
+    let nftImgUrl = imgUrl || '/static/empty.png';
+
+    const isVideo = nft?.meta?.video;
 
     const spinImgUrl = spinnerImage?`https://s1.xrpnft.com/collection/${spinnerImage}`:'/static/spin.gif';
 
@@ -281,7 +247,7 @@ export default function SpinNFT({ collection, setView }) {
             }
 
             // https://api.xrpnft.com/api/spin/count?account=rhhh
-            axios.get(`${BASE_URL}/spin/count?account=${account}&cid=${collection.uuid}`, {headers: {'x-access-token': accountToken}})
+            axios.get(`${BASE_URL}/spin/count?account=${account}&cid=${uuid}`, {headers: {'x-access-token': accountToken}})
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -328,7 +294,7 @@ export default function SpinNFT({ collection, setView }) {
         setSpinning(true);
         // setNft(null);
 
-        const body = { account, cid: collection.uuid };
+        const body = { account, cid: uuid };
 
         axios.post(`${BASE_URL}/spin/chooseone`, body, {headers: {'x-access-token': accountToken}})
             .then(res => {
@@ -419,83 +385,74 @@ export default function SpinNFT({ collection, setView }) {
                 </Link>
             </Stack>
 
-            <Container maxWidth="lg">
+            <Container maxWidth="lg" sx={{pl:0, pr: 0}}>
                 <Grid container rowSpacing={2} alignItems="center" sx={{mb: 10}}>
                     <Grid container item xs={12} md={6} justifyContent="center" alignItems="center">
-                        <CardWrapper
-                            style={{
-                                background: `radial-gradient(
-                                        circle,
-                                        rgba(255, 255, 255, 0.05) 0%,
-                                        ${colors[0]} 0%,
-                                        rgba(255, 255, 255, 0.05) 70%
-                                    )`,
-                            }}
-                        >
-                            <SlotBox key={11} id={12}>
-                                <ColorExtractor getColors={getColors}>
-                                    <img src={spinImgUrl}
-                                        style={{
-                                            width: fullScreen?'480px':'280px',
-                                            height: fullScreen?'400px':'200px',
-                                            // marginTop: 5,
-                                            // borderRadius: 20,
-                                            objectFit: 'cover',
-                                            display: spinning?'block':'none'
-                                        }}
-                                    />
-                                </ColorExtractor>
-                                {isVideo?
-                                    <CardMedia
-                                        component="video"
-                                        image={nftImgUrl}
-                                        title='title'
-                                        controls
-                                        style={{
-                                            width: fullScreen?'480px':'280px',
-                                            height: fullScreen?'400px':'200px',
-                                            // marginTop: 5,
-                                            // borderRadius: 20,
-                                            objectFit: 'cover',
-                                            display: spinning?'none':'block'
-                                        }}
-                                    />
-                                    :
-                                    <img src={nftImgUrl}
-                                        style={{
-                                            width: fullScreen?'480px':'280px',
-                                            height: fullScreen?'400px':'200px',
-                                            // marginTop: 5,
-                                            // borderRadius: 20,
-                                            objectFit: 'cover',
-                                            display: spinning?'none':'block'
-                                        }}
-                                    />
-                                }
-                            </SlotBox>
+                        <CardWrapper>
+                            <img src={spinImgUrl}
+                                style={{
+                                    width: '100%',
+                                    // height: fullScreen?'360px':'200px',
+                                    // marginTop: 5,
+                                    // borderRadius: 20,
+                                    objectFit: 'cover',
+                                    display: spinning?'block':'none'
+                                }}
+                            />
+                            {isVideo?
+                                <CardMedia
+                                    component="video"
+                                    image={nftImgUrl}
+                                    title='title'
+                                    controls
+                                    style={{
+                                        width: '100%',
+                                        // height: fullScreen?'360px':'200px',
+                                        // marginTop: 5,
+                                        // borderRadius: 20,
+                                        objectFit: 'cover',
+                                        display: spinning?'none':'block'
+                                    }}
+                                />
+                                :
+                                <img src={nftImgUrl}
+                                    style={{
+                                        width: '100%',
+                                        // height: fullScreen?'360px':'200px',
+                                        // marginTop: 5,
+                                        // borderRadius: 20,
+                                        objectFit: 'cover',
+                                        display: spinning?'none':'block'
+                                    }}
+                                />
+                            }
 
-
-                            <Stack alignItems="center" sx={{mt:1}}>
+                            {/* <Stack alignItems="center" sx={{mt:1}}>
                                 <Typography variant='h2a'>{spinning?'Please Wait!':(nft?nft.name:'Spin to Mint')}</Typography>
-                            </Stack>
+                            </Stack> */}
                             <Divider sx={{mt:0.8, mb:2}}/>
-                            <Button
-                                variant='contained'
-                                disabled={spinning}
-                                onClick={() => getOneNFT()}
-                                sx={{pl:3, pr:3}}
-                            >
-                                Mint
-                            </Button>
+                            <Stack alignItems="center">
+                                <Button
+                                    variant='contained'
+                                    disabled={spinning}
+                                    onClick={() => getOneNFT()}
+                                    sx={{mb:2}}
+                                >
+                                    Mint
+                                </Button>
+                            </Stack>
                         </CardWrapper>
                     </Grid>
 
                     <Grid container item xs={12} md={6} justifyContent="flex-start" alignItems="flex-start">
-                        <Stack spacing={1} sx={{mb:6}}>
-                            <Typography variant="p5">To mint a {type} NFT from this collection, you need to purchase Mints.</Typography>
-                            <Typography variant="p5">It can be used against the purchase of only <Typography variant="s5" color="#57CA22">{collection.name}</Typography> Collection.</Typography>
-                            <Typography variant="p5">You currently have <Typography variant="s5" color="#33C2FF">{mints} Mints</Typography> available and <Typography variant="s5" color="#33C2FF">{xrpBalance} XRP</Typography> tokens in your wallet.</Typography>
-                            <Typography variant="p5" sx={{pb: 3}}>There are currently <Typography variant="s5" color="error">{pendingNfts}</Typography> / <Typography variant="s4" color="#33C2FF">{collection.items}</Typography> NFTs left in this collection.</Typography>
+                        <Stack spacing={2} sx={{mt: 3, mb:6}}>
+                            <Typography variant="p5">Get a {type} NFT from the <Typography variant="s5" color="#57CA22">{name}</Typography></Typography>
+                            <ul>
+                            <li><Typography variant="p5" sx={{mt:0}}>Buy Mints to participate</Typography></li>
+                            <li><Typography variant="p5" sx={{mt:1}}>Your Mints: <Typography variant="s5" color="#33C2FF">{mints}</Typography></Typography></li>
+                            <li><Typography variant="p5" sx={{mt:1}}>Available XRP: <Typography variant="s5" color="#33C2FF">{xrpBalance}</Typography></Typography></li>
+                            <li><Typography variant="p5" sx={{mt:1, pb: 3}}>Remaining NFTs: <Typography variant="s5" color="error">{pendingNfts}</Typography> / <Typography variant="s4" color="#33C2FF">{items}</Typography></Typography></li>
+                            </ul>
 
                             <Stack direction="row" spacing={2} justifyContent="center">
                                 <Button

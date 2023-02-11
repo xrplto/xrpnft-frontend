@@ -29,7 +29,8 @@ export default function Landing({collections}) {
                 <AutoStack>
                     <Typography variant="h1a">Discover, collect and sell extraordinary NFTs</Typography>
                     <Stack sx={{mt:4}}>
-                        <Typography variant="s1">XRPNFT is an NFT Marketplace on the XRP Ledger where creators and collectors <Typography variant="s1" color="#2de370">trade XRPL NFTs without fees.</Typography></Typography>
+                        {/* <Typography variant="s1">XRPNFT is an NFT Marketplace on the XRP Ledger where creators and collectors <Typography variant="s1" color="#2de370">trade XRPL NFTs without fees.</Typography></Typography> */}
+                        <Typography variant="s1">XRPNFT is a fee-free platform for trading XRPL NFTs on the XRP Ledger, connecting creators and collectors in a seamless NFT marketplace.</Typography>
                     </Stack>
 
                     <Stack direction="row" spacing={2} sx={{mt: 3}}>

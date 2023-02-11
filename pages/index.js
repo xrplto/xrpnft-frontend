@@ -15,7 +15,6 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { getRandomBG, CollectionListType } from 'src/utils/constants';
 import { getImgUrl } from 'src/utils/parse';
 
 // Components

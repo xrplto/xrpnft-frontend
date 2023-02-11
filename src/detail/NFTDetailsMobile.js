@@ -229,7 +229,6 @@ export default function NFTDetailsMobile({ nft }) {
     const accountLogo = getHashIcon(account);
 
     const ParsedURI = convertHexToString(URI);
-    // const hrefURI = `https://gateway.xrpnft.com/ipfs/${ParsedURI}`;
 
     const {
         flag,

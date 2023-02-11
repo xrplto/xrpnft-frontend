@@ -17,7 +17,7 @@ export default function Collections() {
         <>
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
                 <Typography variant="h1a">Explore collections</Typography>
-                <Typography variant="h2b">The top NFT collections on XRPNFT, ranked by volume, floor price, and other statistics.</Typography>
+                <Typography variant="h2b">Discover the leading NFT collections on XRPNFT, ranked by metrics such as volume, floor price, and other key stats.</Typography>
             </Stack>
             
             <Stack sx={{mt:5, minHeight: '50vh'}}>

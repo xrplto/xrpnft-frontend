@@ -84,7 +84,7 @@ export default function Congrats({ data }) {
             NFTokenID,
             meta,
         } = nft;
-        imgUrl = `https://gateway.xrpnft.com/ipfs/${nft.meta.image||nft.meta.video}`;
+        imgUrl = `https://gateway.xrpnft.com/ipfs/${meta?.image||meta?.video}`;
         isVideo = nft.meta.video;
         url = `https://xrpnft.com/nft/${NFTokenID}`;
         title = `${name}`;
