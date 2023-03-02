@@ -17,8 +17,8 @@ export default function NFTPreview({ NFTokenID, meta, dfile }) {
     const imgUrl = getImgUrl(NFTokenID, meta, dfile, 480);
     const isVideo = meta?.video?true:false;
 
-    // const imgUrl = 'https://xrpnft.com/static/test.mp4';
-    // const isVideo = 'test.mp4';
+    // const imgUrl = '/static/test.mp4';
+    // const isVideo = true;
 
     const [open, setOpen] = useState(false);
 
@@ -40,7 +40,7 @@ export default function NFTPreview({ NFTokenID, meta, dfile }) {
                     component={isVideo?'video':'img'}
                     image={imgUrl}
                     alt={'NFT'}
-                    // controls={isVideo}
+                    controls={isVideo}
                     autoPlay={isVideo}
                     loop={isVideo}
                     muted

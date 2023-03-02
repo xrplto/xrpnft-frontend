@@ -176,7 +176,7 @@ export default function SpinNFT({ collection, setView }) {
     const [play, { stop }] = useSound('/static/sounds/mixkit-fireworks-bang-in-sky-2989.wav');
     // const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
 
-    const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
+    const { darkMode, accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -220,7 +220,12 @@ export default function SpinNFT({ collection, setView }) {
 
     const imgUrl = getImgUrl(NFTokenID, meta, dfile, 480);
 
-    let nftImgUrl = imgUrl || '/static/empty.png';
+    const img_dark = "/static/default_mint_black.svg";
+    const img_light = "/static/default_mint_white.svg";
+
+    const defaultImage = darkMode?img_light:img_dark;
+
+    let nftImgUrl = imgUrl || defaultImage; // '/static/empty.png';
 
     const isVideo = nft?.meta?.video;
 

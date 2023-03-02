@@ -1,4 +1,4 @@
-import { AppContext } from 'src/AppContext';
+import { useState } from 'react';
 import { FacebookShareButton, TwitterShareButton } from "react-share";
 import { FacebookIcon, TwitterIcon } from "react-share";
 
@@ -34,7 +34,8 @@ import baselineBrightnessHigh from '@iconify/icons-ic/baseline-brightness-high';
 import baselineBrightness4 from '@iconify/icons-ic/baseline-brightness-4';
 
 // Context
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
 
 // Components
 import NFTLogo from './NFTLogo';
@@ -79,16 +80,9 @@ export default function Header() {
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
-    };
-
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
     };
 
     const [fullSearch, setFullSearch] = useState(false);

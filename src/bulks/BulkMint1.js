@@ -273,10 +273,10 @@ export default function BulkMint1({slug}) {
 
         // imgExt change
         if (imgExt === 'png' || imgExt === 'PNG' || imgExt === 'jpg' || imgExt === 'JPG' || imgExt === 'jpeg' || imgExt === 'JPEG' || imgExt === 'gif' || imgExt === 'GIF') {
-            newMeta.image = ipfsCID + `/${nftNameIndex}.${imgExt}`;
+            newMeta.image = "ipfs://" + ipfsCID + `/${nftNameIndex}.${imgExt}`;
             if (newMeta.video) newMeta.video = '';
         } else if (imgExt === 'mp4') {
-            newMeta.video = ipfsCID + `/${nftNameIndex}.${imgExt}`;
+            newMeta.video = "ipfs://" + ipfsCID + `/${nftNameIndex}.${imgExt}`;
             if (newMeta.image) newMeta.image = '';
         }
 
@@ -469,10 +469,10 @@ export default function BulkMint1({slug}) {
             // TODO
 
             if (imgExt === 'png' || imgExt === 'PNG' || imgExt === 'jpg' || imgExt === 'JPG' || imgExt === 'jpeg' || imgExt === 'JPEG' || imgExt === 'gif' || imgExt === 'GIF') {
-                newMeta.image = ipfsCID + `/${pos}.${imgExt}`;
+                newMeta.image = "ipfs://" + ipfsCID + `/${pos}.${imgExt}`;
                 if (newMeta.video) newMeta.video = '';
             } else if (imgExt === 'mp4') {
-                newMeta.video = ipfsCID + `/${pos}.${imgExt}`;
+                newMeta.video = "ipfs://" + ipfsCID + `/${pos}.${imgExt}`;
                 if (newMeta.image) newMeta.image = '';
             }
 

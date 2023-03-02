@@ -42,8 +42,8 @@ export default function QueryToken({token, setToken}) {
 
     const loadTokens = () => {
         setLoading(true);
-        // https://api.xrpl.to/api/simple/tokens?filter=
-        axios.get(`${API_XRPL_TO_URL}/simple/tokens?filter=${filter}`)
+        // https://api.xrpl.to/api/xrpnft/tokens?filter=
+        axios.get(`${API_XRPL_TO_URL}/xrpnft/tokens?filter=${filter}`)
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {
