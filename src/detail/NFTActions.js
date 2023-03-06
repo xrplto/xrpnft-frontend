@@ -616,7 +616,7 @@ export default function NFTActions({ nft }) {
                         href={`/account/${account}`}
                         // rel="noreferrer noopener nofollow"
                     >
-                        <Typography variant='s11' noWrap> {truncate(account, 16)}</Typography>
+                        <Typography variant='s15' noWrap> {truncate(account, 16)}</Typography>
                     </Link>
                 </Stack>
                 <Tooltip title="Contact owner via XRPNFT chat">
@@ -758,7 +758,7 @@ export default function NFTActions({ nft }) {
                         >
                             <Stack direction='row' spacing={2}>
                                 <LocalOfferIcon />
-                                <Typography variant='string'>Sell Offers</Typography>
+                                <Typography variant='s16'>Sell Offers</Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails sx={{ textAlign: 'center' }}>
@@ -784,7 +784,7 @@ export default function NFTActions({ nft }) {
                     >
                         <Stack direction='row' spacing={2}>
                             <PanToolIcon />
-                            <Typography variant='string'>Offers</Typography>
+                            <Typography variant='s16'>Offers</Typography>
                         </Stack>
                     </AccordionSummary>
                     {/* <Divider /> */}
@@ -811,7 +811,7 @@ export default function NFTActions({ nft }) {
                     >
                         <Stack direction='row' spacing={2}>
                             <HistoryIcon />
-                            <Typography variant='string'>History</Typography>
+                            <Typography variant='s16'>History</Typography>
                         </Stack>
                     </AccordionSummary>
                     <Divider />

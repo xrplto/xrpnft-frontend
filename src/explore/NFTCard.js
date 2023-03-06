@@ -254,7 +254,7 @@ export default function NFTCard({ nft }) {
                         {name.length > 20 ?
                             <Box display='flex'>
                                 <Typography
-                                    variant="s8"
+                                    variant="s15"
                                     textOverflow='ellipsis'
                                     overflow='hidden'
                                     whiteSpace='nowrap'
@@ -263,7 +263,7 @@ export default function NFTCard({ nft }) {
                                     {name.slice(0, -5)}
                                 </Typography>
                                 <Typography
-                                    variant="s8"
+                                    variant="s15"
                                     sx={{mt:0.5, mb:0.5, width: 45}}
                                 >
                                     {name.slice(-5)}
@@ -271,7 +271,7 @@ export default function NFTCard({ nft }) {
                             </Box>
                             :
                             <Typography
-                                variant="s8"
+                                variant="s15"
                                 sx={{mt:0.5, mb:0.5}}
                             >
                                 {name}
@@ -305,10 +305,10 @@ export default function NFTCard({ nft }) {
                                             cost.currency === "XRP" ?
                                                 <Stack direction="row" spacing={0.5} alignItems="center">
                                                     <Icon icon={rippleSolid} width="14" height="14" />
-                                                    <Typography >{fNumber(cost.amount)}</Typography>
+                                                    <Typography variant="s15">{fNumber(cost.amount)}</Typography>
                                                 </Stack>
                                                 :
-                                                <Typography >{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
+                                                <Typography variant="s15">{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
 
                                         ) : (
                                             <Typography variant='s7'>Unlisted</Typography>
@@ -336,12 +336,12 @@ export default function NFTCard({ nft }) {
                                                     <Stack direction="row" spacing={0.5} alignItems="center">
                                                         <Typography variant='s7'>Offer</Typography>
                                                         <Icon icon={rippleSolid} color="#00AB55" width="12" height="12" />
-                                                        <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)}</Typography>
+                                                        <Typography variant='s15' color="#00AB55">{fNumber(costb.amount)}</Typography>
                                                     </Stack>
                                                     :
                                                     <Stack direction="row" spacing={0.5} alignItems="center">
                                                         <Typography variant='s7'>Offer</Typography>
-                                                        <Typography variant='s2' color="#00AB55">{fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>
+                                                        <Typography variant='s15' color="#00AB55">{fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>
                                                     </Stack>
                                                 }
                                             </> : <Typography variant='s7'>No Offer</Typography>

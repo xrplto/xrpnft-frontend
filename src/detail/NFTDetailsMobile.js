@@ -814,7 +814,7 @@ export default function NFTDetailsMobile({ nft }) {
                         href={`/account/${account}`}
                         // rel="noreferrer noopener nofollow"
                     >
-                        <Typography variant='s11' noWrap> {truncate(account, 16)}</Typography>
+                        <Typography variant='s15' noWrap> {truncate(account, 16)}</Typography>
                     </Link>
                 </Stack>
                 <Tooltip title="Contact owner via XRPNFT chat">
@@ -837,7 +837,7 @@ export default function NFTDetailsMobile({ nft }) {
                         >
                             <Stack direction='row' spacing={2}>
                                 <LocalOfferIcon />
-                                <Typography variant='string'>Sell Offers</Typography>
+                                <Typography variant='s16'>Sell Offers</Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails sx={{ textAlign: 'center' }}>
@@ -863,7 +863,7 @@ export default function NFTDetailsMobile({ nft }) {
                     >
                         <Stack direction='row' spacing={2}>
                             <PanToolIcon />
-                            <Typography variant='string'>Offers</Typography>
+                            <Typography variant='s16'>Offers</Typography>
                         </Stack>
                     </AccordionSummary>
                     {/* <Divider /> */}
@@ -890,7 +890,7 @@ export default function NFTDetailsMobile({ nft }) {
                     >
                         <Stack direction='row' spacing={2}>
                             <HistoryIcon />
-                            <Typography variant='string'>History</Typography>
+                            <Typography variant='s16'>History</Typography>
                         </Stack>
                     </AccordionSummary>
                     <Divider />
@@ -912,7 +912,7 @@ export default function NFTDetailsMobile({ nft }) {
                     >
                         <Stack spacing={2} direction='row'>
                             <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                            <Typography variant='string'>Properties</Typography>
+                            <Typography variant='s16'>Properties</Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -935,7 +935,7 @@ export default function NFTDetailsMobile({ nft }) {
                     >
                         <Stack spacing={2} direction='row'>
                             <ArticleIcon />
-                            <Typography variant='string'>Details</Typography>
+                            <Typography variant='s16'>Details</Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -1106,7 +1106,7 @@ export default function NFTDetailsMobile({ nft }) {
                     >
                         <Stack spacing={2} direction='row' borderRadius={20}>
                             <DescriptionIcon />
-                            <Typography variant='string' >Description</Typography>
+                            <Typography variant='s16' >Description</Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -1130,7 +1130,7 @@ export default function NFTDetailsMobile({ nft }) {
                         >
                             <Stack spacing={2} direction='row'>
                                 <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                                <Typography variant='string' >Level Properties</Typography>
+                                <Typography variant='s16' >Level Properties</Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>

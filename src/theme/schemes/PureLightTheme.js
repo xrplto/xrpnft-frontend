@@ -1241,6 +1241,8 @@ export const PureLightTheme = createTheme({
           s12: 'span',
           s13: 'span',
           s14: 'span',
+          s15: 'span',
+          s16: 'span',
           caption: 'span',
           p1: 'p',
           p2: 'p',
@@ -1263,7 +1265,7 @@ export const PureLightTheme = createTheme({
         {
           props: { variant: 'h1a' },
           style: ({ theme }) => ({
-            fontWeight: 600,
+            fontWeight: 700,
             fontSize: 28,
             [theme.breakpoints.up('md')]: {
               fontSize: 32,
@@ -1276,7 +1278,7 @@ export const PureLightTheme = createTheme({
         {
           props: { variant: 'h2a' },
           style: ({ theme }) => ({
-            fontWeight: 600,
+            fontWeight: 700,
             fontSize: 18,
             [theme.breakpoints.up('md')]: {
               fontSize: 24,
@@ -1287,11 +1289,11 @@ export const PureLightTheme = createTheme({
           props: { variant: 's1' },
           style: ({ theme }) => ({
             fontWeight: 400,
-            fontSize: 16,
+            fontSize: 14,
             lineHeight: 1.4,
             color: colors.alpha.black[100],
             [theme.breakpoints.up('md')]: {
-              fontSize: 20,
+              fontSize: 16,
             },
           })
         },
@@ -1365,7 +1367,7 @@ export const PureLightTheme = createTheme({
       color: '#EB5757'
     },
     s3: {
-      fontWeight: 600,
+      fontWeight: 700,
       fontSize: 16,
       color: colors.alpha.black[100]
     },
@@ -1375,7 +1377,7 @@ export const PureLightTheme = createTheme({
       color: colors.alpha.black[50]
     },
     s5: {
-      fontWeight: 500,
+      fontWeight: 700,
       fontSize: 16,
       color: colors.alpha.black[100]
     },
@@ -1416,9 +1418,18 @@ export const PureLightTheme = createTheme({
       color: colors.alpha.black[50]
     },
     s14: {
-      fontWeight: 500,
+      fontWeight: 700,
       fontSize: 12,
       color: colors.alpha.black[90]
+    },
+    s15: {
+      fontWeight: 700,
+      fontSize: 12,
+      // color: colors.alpha.black[100]
+    },
+    s16: {
+      fontWeight: 700,
+      fontSize: 14,
     },
     h1: {
       fontWeight: 700,

@@ -139,7 +139,7 @@ export default function NFTDetails({nft}) {
                     >
                         <Stack spacing={2} direction='row'>
                             <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                            <Typography variant='string'>Properties</Typography>
+                            <Typography variant='s16'>Properties</Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -162,7 +162,7 @@ export default function NFTDetails({nft}) {
                     >
                         <Stack spacing={2} direction='row'>
                             <ArticleIcon />
-                            <Typography variant='string'>Details</Typography>
+                            <Typography variant='s16'>Details</Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -333,7 +333,7 @@ export default function NFTDetails({nft}) {
                     >
                         <Stack spacing={2} direction='row' borderRadius={20}>
                             <DescriptionIcon />
-                            <Typography variant='string' >Description</Typography>
+                            <Typography variant='s16' >Description</Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -357,7 +357,7 @@ export default function NFTDetails({nft}) {
                         >
                             <Stack spacing={2} direction='row'>
                                 <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                                <Typography variant='string' >Level Properties</Typography>
+                                <Typography variant='s16' >Level Properties</Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>

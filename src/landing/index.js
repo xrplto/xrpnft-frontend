@@ -28,7 +28,7 @@ export default function Landing({collections}) {
             <Grid item xs={12} md={7} lg={7}>
                 <AutoStack>
                     <Typography variant="h1a">Discover, collect and sell extraordinary NFTs</Typography>
-                    <Stack sx={{mt:4}}>
+                    <Stack sx={{mt:2}}>
                         <Typography variant="s1">XRPNFT is a fee-free platform for trading XRPL NFTs on the XRP Ledger, connecting creators and collectors in a <Typography variant="s1" color="#2de370">seamless NFT marketplace.</Typography></Typography>
                     </Stack>
 
@@ -55,7 +55,7 @@ export default function Landing({collections}) {
             </Grid>
 
             <Grid item xs={12} md={5} lg={5} sx={{pl:0}} alignItems="center">
-                <CollectionPreview collections={collections} />
+                <CollectionPreview collections={collections.length>0?[collections[0]]:[]} />
             </Grid>
 
             <Grid item xs={12} md={12} lg={12} sx={{mt:10}} alignItems="center">
@@ -71,7 +71,7 @@ export default function Landing({collections}) {
                         href={`/collections`}
                         rel="noreferrer noopener nofollow"
                     >
-                        <Button variant="contained">See all collections</Button>
+                        <Button variant="contained" style={{fontSize: '1rem', padding: 24, paddingTop: 12, paddingBottom: 12}}>See all collections</Button>
                     </Link>
                 </Stack>
             </Grid>

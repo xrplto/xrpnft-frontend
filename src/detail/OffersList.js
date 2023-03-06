@@ -117,7 +117,7 @@ export default function OffersList({ nft, offers, handleAcceptOffer, handleCance
                                             </Stack>
                                             :
                                             <Stack direction="row" alignItems="center">
-                                                <Typography variant='string'>No Expiration</Typography>
+                                                <Typography variant='s16'>No Expiration</Typography>
                                             </Stack>
                                         } */}
                                     </Stack>

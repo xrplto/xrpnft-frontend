@@ -5,9 +5,16 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import {
     styled,
     Link,
+    Paper,
     Stack,
+    Tooltip,
     Typography
 } from '@mui/material';
+import VerifiedIcon from '@mui/icons-material/Verified';
+
+// Context
+import { useContext } from 'react';
+import { AppContext } from 'src/AppContext';
 
 // Utils
 import { getImgUrl } from 'src/utils/parse';
@@ -21,14 +28,16 @@ import { getImgUrl } from 'src/utils/parse';
 // box-shadow: 0px 5px 20px 1px;
 const CustomImage = styled('img')(
     ({ theme }) => `
-    border-radius: 1em;
+    // border-radius: 1em;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
     // padding: 1px;
   `
 );
 
 const CustomCarousel = styled(Carousel)(
     ({ theme }) => `
-    filter: drop-shadow(16px 16px 10px rgba(0,0,0,0.8));
+    filter: drop-shadow(10px 10px 10px rgba(0,0,0,0.8));
     // box-shadow: 10px 5px 5px rgba(0,0,0,0.2);
     border-radius: 1em;
     // overflow: visible;
@@ -36,22 +45,9 @@ const CustomCarousel = styled(Carousel)(
 );
 
 export default function CollectionPreview({collections}) {
+
+    const { darkMode } = useContext(AppContext);
     
-    // src: 'https://s1.xrpnft.com/static/collection/fat-cats-xrpl.jpg'
-    // const images1 = [
-    //     {title: 'XPEPE', src: 'NFT_Labs_Images5.png', link: 'https://xrpepe.com/'},
-    //     {title: 'Muscle Mutant Club', src: 'NFT_Labs_Images4.png', link: 'https://www.mutantmuscleclub.org/'},
-    //     {title: 'Bored Apes XRP Club', src: 'NFT_Labs_Images2.png', link: 'https://x-apes.com/'},
-    //     {title: 'HOGS', src: 'NFT_Labs_Images3.png', link: 'https://x-apes.com/'},
-
-    //     {title: 'FAT CATS', src: 'fat-cats-xrpl.jpg', link: 'https://fatcats.nftlabs.to/'},
-    //     {title: 'FRACTALS', src: 'fractals.jpg', link: 'https://fractal.nftlabs.to/'},
-    //     // {title: 'LEDGERPUNK', src: 'ledgerpunks-nft.jpg', link: 'https://ledgerpunks.com/'},
-    //     {title: 'RIPPLE SHARKS', src: 'Ripple-Sharks.jpg', link: 'https://nftlabs.to/projects/ripple-sharks/'},
-    //     {title: 'LLAMMAPALOOZA', src: 'llamapalooza-xrplnft.jpg', link: 'https://llamapalooza.nftlabs.to/'},
-    //     {title: 'TRIPPY APES CLUB', src: 'TRIPPY.jpg', link: 'https://trippyapes.nftlabs.to/'},
-    // ];
-
     const images = [
         {title: 'XPEPE', src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images5.png', link: 'https://xrpepe.com/'},
         {title: 'Muscle Mutant Club', src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images4.png', link: 'https://www.mutantmuscleclub.org/'},
@@ -173,9 +169,22 @@ export default function CollectionPreview({collections}) {
                             href={`/collection/${slug}`}
                             // rel="noreferrer noopener"
                         >
-                            <CustomImage src={imgUrl} />
+                            <Paper style={{
+                                background: darkMode?'#21252B55':'#F4F5FB33',
+                                border: `1px solid ${darkMode?'#32373C55':'#E0E7EC11'}`
+                            }}>
+                                <CustomImage src={imgUrl} />
+                                <Stack direction="row" spacing={1} sx={{mt:1}} justifyContent="center">
+                                    <Typography variant='h2a'>{name}</Typography>
+                                    {verified === 'yes' &&
+                                        <Tooltip title='Verified'>
+                                            <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
+                                        </Tooltip>
+                                    }
+                                </Stack>
+                            </Paper>
                         </Link>
-                        <Typography variant='h2a'>{name}</Typography>
+                        
                     </Stack>
                 );
             })}
