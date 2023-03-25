@@ -125,15 +125,15 @@ const sampleMetaData = {
     image: "ipfs://.../1.png",
     edition: 1,
     date: 1667241292758,
-    creator: "NFT Labs",
-    artist: "NFT Labs",
+    // creator: "NFT Labs",
+    // artist: "NFT Labs",
     attributes: [
         {
             "trait_type": "Background",
             "value": "Snuff"
         }
     ],
-    compiler: "NFT Labs"
+    // compiler: "NFT Labs"
 };
 
 // Calculate MD5 hash of a large file using javascript
@@ -312,6 +312,15 @@ export default function BulkMint2({slug}) {
             checkMinter();
         }
     }, [issuerChoice]);
+
+    useEffect(() => {
+        if (!sMeta) return;
+        const newMeta = {...sMeta};
+        const pos = nftNameIndex?Number(nftNameIndex):1;
+        const a = getAttribute(pos);
+        newMeta.attributes = a;
+        setSampleMeta(newMeta);
+    }, [attributes]);
 
     const onCreateNft = async () => {
         // POST https://api.xrpnft.com/api/mint
@@ -534,12 +543,6 @@ export default function BulkMint2({slug}) {
         }
 
         setAttributes(newAttrs);
-
-        if (sMeta) {
-            const pos = nftNameIndex?Number(nftNameIndex):1;
-            const a = getAttribute(pos);
-            sMeta.attributes = a;
-        }
     }
 
     const handleRemoveAttr = (uuid) => {
@@ -832,10 +835,12 @@ export default function BulkMint2({slug}) {
                             const value = e.target.value;
                             setExtLink(value)
                             if (sMeta) {
+                                const newMeta = {...sMeta};
                                 if (value)
-                                    sMeta.external_link = value;
+                                    newMeta.external_link = value;
                                 else
-                                    sMeta.external_link = undefined;
+                                    newMeta.external_link = undefined;
+                                setSampleMeta(newMeta);
                             }
                         }}
                         value={extLink}
@@ -864,7 +869,9 @@ export default function BulkMint2({slug}) {
                             const value = e.target.value;
                             setDescription(value)
                             if (sMeta) {
-                                sMeta.description = value;
+                                const newMeta = {...sMeta};
+                                newMeta.description = value;
+                                setSampleMeta(newMeta);
                             }
                         }}
                         sx={{
@@ -954,7 +961,9 @@ export default function BulkMint2({slug}) {
                                 onChange={(e) => {
                                     const value = e.target.value;
                                     if (sMeta && value) {
+                                        const newMeta = {...sMeta};
                                         sMeta[value] = undefined;
+                                        setSampleMeta(newMeta);
                                     }
                                     setDateField(value);
                                 }}

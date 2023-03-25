@@ -175,10 +175,13 @@ export default function CreateOfferDialog({open, setOpen, nft, isSellOffer}) {
         setLoading(true);
         try {
             const user_token = accountProfile?.user_token;
-            const uuid = nft.uuid;
             const issuer = token.issuer;
             const currency = token.currency;
-            const body = { account, uuid, issuer, currency, amount, isSellOffer, owner: nft.account, user_token};
+
+            const owner = nft.account;
+            const NFTokenID = nft.NFTokenID;
+
+            const body = { account, issuer, currency, amount, isSellOffer, NFTokenID, owner, user_token};
 
             const res = await axios.post(`${BASE_URL}/offers/create`, body, {headers: {'x-access-token': accountToken}});
 

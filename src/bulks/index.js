@@ -43,7 +43,7 @@ export default function Bulks() {
         var isRunning = false;
         var counter = 150;
         async function getPayload() {
-            console.log(counter + " " + isRunning, xummUuid);
+            // console.log(counter + " " + isRunning, xummUuid);
             if (isRunning) return;
             isRunning = true;
             try {

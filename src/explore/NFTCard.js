@@ -258,13 +258,13 @@ export default function NFTCard({ nft }) {
                                     textOverflow='ellipsis'
                                     overflow='hidden'
                                     whiteSpace='nowrap'
-                                    sx={{mt:0.5, mb:0.5}}
+                                    sx={{mt:0.5, mb:0.4}}
                                 >
                                     {name.slice(0, -5)}
                                 </Typography>
                                 <Typography
                                     variant="s15"
-                                    sx={{mt:0.5, mb:0.5, width: 45}}
+                                    sx={{mt:0.5, mb:0.4, width: 45}}
                                 >
                                     {name.slice(-5)}
                                 </Typography>
@@ -272,7 +272,7 @@ export default function NFTCard({ nft }) {
                             :
                             <Typography
                                 variant="s15"
-                                sx={{mt:0.5, mb:0.5}}
+                                sx={{mt:0.5, mb:0.4}}
                             >
                                 {name}
                             </Typography>
@@ -298,7 +298,7 @@ export default function NFTCard({ nft }) {
                                 }
                             </Stack>
                         ) : (
-                            <Grid container alignItems='center'>
+                            <Grid container alignItems='center' spacing={0.1}>
                                 <Grid item xs={12}>
                                     <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:0, pl:0, pr:0}}>
                                         {cost ? (

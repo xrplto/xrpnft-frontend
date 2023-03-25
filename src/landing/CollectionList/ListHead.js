@@ -23,7 +23,7 @@ const TABLE_HEAD = [
     { no: 0, id: 'name', label: 'Collection', align: 'left', width: '40%' },
     { no: 1, id: 'floor.amount', label: 'Floor', align: 'right', width: '10%' },
     { no: 2, id: 'vol24h', label: '24h Vol', align: 'right', width: '10%' },
-    { no: 3, id: 'volume', label: 'Volume', align: 'right', width: '10%' },
+    // { no: 3, id: 'volume', label: 'Volume', align: 'right', width: '10%' },
     { no: 4, id: 'totalVolume', label: 'Total Vol', align: 'right', width: '10%' },
     { no: 5, id: 'owners', label: 'Owners', align: 'right', width: '8%' },
     { no: 6, id: 'items', label: 'Items', align: 'right', width: '8%' },

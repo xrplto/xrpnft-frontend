@@ -38,13 +38,14 @@ import ListToolbar from '../ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 // ----------------------------------------------------------------------
 
-const NFTFix = { // 4:23 PM 12/11/2022
+const NFTFix = { // 9:48 PM 3/19/2023
     RESOLVE_ONE: 1,
     RESOLVE_PAGE: 2,
     RESOLVE_ALL: 3,
     RESOLVE_PREOFFER_E2: 4,
     RESOLVE_PREMINT_E3: 5,
-    RESOLVE_PREMINT: 6
+    RESOLVE_PREMINT: 6,
+    RESOLVE_PREOFFER: 7
 }
 
 export default function ErrorList({ filter, choice, setLoading }) {
@@ -156,6 +157,8 @@ export default function ErrorList({ filter, choice, setLoading }) {
             type = NFTFix.RESOLVE_PREOFFER_E2;
         else if (nft.status === NFToken.PREMINT)
             type = NFTFix.RESOLVE_PREMINT;
+        else if (nft.status === NFToken.PREOFFER)
+            type = NFTFix.RESOLVE_PREOFFER;
 
         onResolveNFT([nft], type);
     }
@@ -497,6 +500,20 @@ export default function ErrorList({ filter, choice, setLoading }) {
                                                         ) : (
                                                             <Button variant="outlined" color="primary" size="small" onClick={() => handleResolve(row)}>
                                                                 Set as NOT MINTED
+                                                            </Button>
+                                                        )
+                                                        }
+                                                    </Stack>
+                                                }
+                                                {choice === "nosellofferids" &&
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        {resolve ? (
+                                                            <Button disabled variant="outlined" color="primary" size="small">
+                                                                Resolving ...
+                                                            </Button>
+                                                        ) : (
+                                                            <Button variant="outlined" color="primary" size="small" onClick={() => handleResolve(row)}>
+                                                                Set as NOT OFFERED
                                                             </Button>
                                                         )
                                                         }

@@ -47,6 +47,7 @@ export default function NFTActionsBulk({ nft }) {
 
     const {
         uuid,
+        NFTokenID,
         name,
         cid,
         collection,
@@ -103,7 +104,7 @@ export default function NFTActionsBulk({ nft }) {
         setLoading(true);
         // setNft(null);
 
-        const body = { account: accountLogin, cid, uuid };
+        const body = { account: accountLogin, cid, NFTokenID };
 
         axios.post(`${BASE_URL}/spin/buybulknft`, body, { headers: { 'x-access-token': accountToken } })
             .then(res => {
@@ -112,7 +113,7 @@ export default function NFTActionsBulk({ nft }) {
                     const status = ret.status;
                     if (status) {
                         openSnackbar('Buy NFT successful!', 'success');
-                        window.location.href = `/congrats/buyassets/${uuid}`;
+                        window.location.href = `/congrats/buyassets/${NFTokenID}`;
                     } else {
                         openSnackbar(ret.error, 'error');
                     }

@@ -613,8 +613,8 @@ export const DarkSpacesTheme = createTheme({
         root: {
           fontWeight: 'bold',
           textTransform: 'none',
-          paddingLeft: 16,
-          paddingRight: 16,
+          paddingLeft: 24,
+          paddingRight: 24,
 
           '.MuiSvgIcon-root': {
             transition: 'all .2s'
@@ -655,23 +655,26 @@ export const DarkSpacesTheme = createTheme({
           }
         },
         sizeSmall: {
-          padding: '6px 16px',
+          padding: '10px 20px',
+          fontSize: '0.8rem',
           lineHeight: 1.5
         },
         sizeMedium: {
-          padding: '8px 20px'
+          padding: '12px 24px',
+          fontSize: '1rem',
         },
         sizeLarge: {
-          padding: '11px 24px'
+          padding: '15px 28px',
+          fontSize: '1.2rem',
         },
         textSizeSmall: {
-          padding: '7px 12px'
+          padding: '11px 16px'
         },
         textSizeMedium: {
-          padding: '9px 16px'
+          padding: '13px 20px'
         },
         textSizeLarge: {
-          padding: '12px 16px'
+          padding: '16px 20px'
         }
       }
     },

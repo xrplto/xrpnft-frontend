@@ -71,7 +71,7 @@ export default function Landing({collections}) {
                         href={`/collections`}
                         rel="noreferrer noopener nofollow"
                     >
-                        <Button variant="contained" style={{fontSize: '1rem', padding: 24, paddingTop: 12, paddingBottom: 12}}>See all collections</Button>
+                        <Button variant="contained">See all collections</Button>
                     </Link>
                 </Stack>
             </Grid>

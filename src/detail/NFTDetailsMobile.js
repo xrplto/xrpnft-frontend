@@ -773,23 +773,17 @@ export default function NFTDetailsMobile({ nft }) {
                                         >
                                             <Button
                                                 fullWidth
-                                                // sx={{ minWidth: 150 }}
                                                 disabled={!cost || burnt}
                                                 variant='contained'
-                                                // color='success'
                                                 onClick={handleBuyNow}
-                                            // startIcon={<LocalOfferIcon />}
                                             >
                                                 Buy Now
                                             </Button>
                                             <Button
                                                 fullWidth
-                                                // sx={{ minWidth: 150 }}
                                                 disabled={!accountLogin || burnt}
                                                 variant='outlined'
-                                                // color='success'
                                                 onClick={handleCreateBuyOffer}
-                                            // startIcon={<LocalOfferIcon />}
                                             >
                                                 Make Offer
                                             </Button>

@@ -352,13 +352,13 @@ export default function ViewNFT({ collection }) {
                     <Stack>
                         <Stack direction="row" spacing={0.5} alignItems='center'>
                             <Icon icon={rippleSolid} width="20" height="20" />
-                            <Typography variant="d5" noWrap>{volume1}</Typography>
+                            <Typography variant="d5" noWrap>{volume2}</Typography>
                             <Stack direction="row" sx={{ pb: 1.5 }}>
                                 <Tooltip
                                     title={
                                         <Stack alignItems="center">
-                                            <Typography variant="body2">Volume on XRPL</Typography>
-                                            <Typography variant="body2">{volume2}</Typography>
+                                            <Typography variant="body2">Volume on XRPNFT</Typography>
+                                            <Typography variant="body2">{volume1}</Typography>
                                         </Stack>
                                     }
                                 >

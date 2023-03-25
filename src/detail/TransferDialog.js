@@ -142,8 +142,14 @@ export default function TransferDialog({ open, setOpen, nft }) {
         setLoading(true);
         try {
             const user_token = accountProfile?.user_token;
+            
             const uuid = nft.uuid;
-            const body = { account, uuid, owner: nft.account, user_token, destination };
+
+            const NFTokenID = nft.NFTokenID;
+            const owner = nft.account;
+
+
+            const body = { account, NFTokenID, owner, user_token, destination };
 
             const res = await axios.post(`${BASE_URL}/offers/transfer`, body, { headers: { 'x-access-token': accountToken } });
 
@@ -225,7 +231,7 @@ export default function TransferDialog({ open, setOpen, nft }) {
                 </OfferDialogTitle>
 
                 <DialogContent>
-                    <Typography >This will create a 0 price Sell Offer intended only for the receiver,  which means that the current owner of the token is giving it away, gratis to the account identified by the Destination field.</Typography>
+                    <Typography >For this transfer to be completed, the recipient must accept it through their wallet.</Typography>
                     <Stack spacing={2} mt={1}>
                         {/* <Typography variant='p2'>Destination</Typography> */}
                         <TextField

@@ -295,9 +295,9 @@ export default function Row({ id, item }) {
                 <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {fNumber(vol24h)}</Typography>
             </TableCell>
 
-            <TableCell align="right" sx={{pl:0, pr:0}}>
+            {/* <TableCell align="right" sx={{pl:0, pr:0}}>
                 <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {volume1}</Typography>
-            </TableCell>
+            </TableCell> */}
 
             <TableCell align="right" sx={{pl:0, pr:0}}>
                 <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {volume2}</Typography>
