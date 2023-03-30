@@ -681,7 +681,7 @@ export default function CreateCollection() {
                                 <Stack spacing={1} sx={{pl: 1, pr:1}} key={cost.md5}>
                                     <Stack direction="row" spacing={2} sx={{mt: 0}} alignItems="center" justifyContent="space-between">
                                         <Stack direction='row' alignItems="center">
-                                            <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} sx={{ mr: 2 }} />
+                                            <Avatar alt="C" src={`https://s1.xrpl.to/token/${cost.md5}`} sx={{ mr: 2 }} />
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row">
                                                     <Typography variant='d4'>{cost.name}</Typography>

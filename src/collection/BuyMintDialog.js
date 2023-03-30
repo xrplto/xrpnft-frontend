@@ -138,7 +138,7 @@ export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints
     //     "cost": "1"
     // },
 
-    // const imgUrl = `https://xrpl.to/static/tokens/${md5}.${ext}`;
+    // const imgUrl = `https://s1.xrpl.to/token/${md5}`;
 
     let canApprove = false;
     const amt = GetNum(quantity);
@@ -349,7 +349,7 @@ export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints
                                             value={cost.md5}
                                         >
                                             <Stack direction='row' alignItems="center">
-                                                <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} sx={{ width: 28, height:28, mr: 1 }} />
+                                                <Avatar alt="C" src={`https://s1.xrpl.to/token/${cost.md5}`} sx={{ width: 28, height:28, mr: 1 }} />
                                                 <Typography variant='d4' color="#EB5757">{cost.amount} {cost.name}</Typography>
                                             </Stack>
                                         </MenuItem>

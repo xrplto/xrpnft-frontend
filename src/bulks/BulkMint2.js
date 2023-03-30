@@ -396,7 +396,7 @@ export default function BulkMint2({slug}) {
         //     setFlag(flag ^ value);
     }
 
-    const handleTimestampCheck = (e) => {
+    const handleTimeCheck = (e) => {
         setIncludeTime(!includeTime);
     }
 
@@ -443,7 +443,7 @@ export default function BulkMint2({slug}) {
     };
 
     const getFinalMetaData = () => {
-        const timestamp = Date.now(); // new Date().getTime();
+        const time = Date.now(); // new Date().getTime();
         let pos = nftNameIndex?Number(nftNameIndex):1;
         const newMetaData = [];
         for (let i = 0; i < metaCount; i++) {
@@ -475,7 +475,7 @@ export default function BulkMint2({slug}) {
 
             if (includeTime && dateField) {
                 newMeta['date'] = undefined;
-                newMeta[dateField] = timestamp;
+                newMeta[dateField] = time;
             }
 
             newMeta.attributes = attr;
@@ -935,14 +935,14 @@ export default function BulkMint2({slug}) {
                 <Stack spacing={1} mb={3}>
                     <Typography variant='p4'>Timestamp <Typography variant='s2'>*</Typography></Typography>
                     <Typography variant='p3'>Check the following checkbox to add the current timestamp value to your metadata.</Typography>
-                    <Typography variant='p3'>If you don't select, the field "date" will be automatically added with the current timestamp.</Typography>
+                    <Typography variant='p3'>If you don't select, the field "date" will be automatically added with the current time.</Typography>
                     <FormGroup sx={{ flexDirection: 'row' }}>
                         <FormControlLabel
-                            key='checkbox_timestamp'
+                            key='checkbox_time'
                             label='Add Timestamp'
                             value='value'
                             control={
-                                <Checkbox checked={includeTime} onChange={handleTimestampCheck} />
+                                <Checkbox checked={includeTime} onChange={handleTimeCheck} />
                             }
                         />
                     </FormGroup>
@@ -953,7 +953,7 @@ export default function BulkMint2({slug}) {
                                 size="small"
                                 variant="standard"
                                 placeholder='New Field Name'
-                                id='id_timestamp_field'
+                                id='id_time_field'
                                 autoComplete='new-password'
                                 onFocus={event => {
                                     event.target.select();
@@ -970,7 +970,7 @@ export default function BulkMint2({slug}) {
                                 value={dateField}
                             />
                             </Stack>
-                            <Typography variant='p3'>The original "date" field will be removed from your metadata and the current timestamp will be added with the new field. You can still write "date" if you want to keep the "date" field.</Typography>
+                            <Typography variant='p3'>The original "date" field will be removed from your metadata and the current time will be added with the new field. You can still write "date" if you want to keep the "date" field.</Typography>
                         </>
                     }
                 </Stack>

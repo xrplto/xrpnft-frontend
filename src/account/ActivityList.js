@@ -141,10 +141,10 @@ export default function ActivityList({account}) {
                                 account,
                                 activity,
                                 data,
-                                timestamp
+                                time
                             } = row;
 
-                            const strDateTime = formatDateTime(timestamp);
+                            const strDateTime = formatDateTime(time);
 
                             let strActivity = '';
                             let componentActivity = (<></>);
@@ -273,7 +273,7 @@ export default function ActivityList({account}) {
                                         <>
                                             <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
                                                 <Stack direction="row" spacing={1}>
-                                                    <Avatar alt="C" src={`https://xrpl.to/static/tokens/${data.cost?.md5}.${data.cost?.ext}`} />
+                                                    <Avatar alt="C" src={`https://s1.xrpl.to/token/${data.cost?.md5}`} />
                                                     <Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Collection: </Typography>
@@ -655,7 +655,7 @@ export default function ActivityList({account}) {
                                         <>
                                             <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
                                                 <Stack direction="row" spacing={1}>
-                                                    <Avatar alt="C" src={`https://xrpl.to/static/tokens/${data.cost?.md5}.${data.cost?.ext}`} />
+                                                    <Avatar alt="C" src={`https://s1.xrpl.to/token/${data.cost?.md5}`} />
                                                     <Stack>
                                                         <Stack direction="row" spacing={1}>
                                                             <Typography variant="s7">Collection: </Typography>
@@ -741,7 +741,7 @@ export default function ActivityList({account}) {
                             return (
                                 <TableRow
                                     // hover
-                                    key={timestamp}
+                                    key={time}
                                     sx={{
                                         [`& .${tableCellClasses.root}`]: {
                                             // color: (error ? '#B72136' : '#B72136')

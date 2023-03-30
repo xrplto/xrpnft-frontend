@@ -412,7 +412,7 @@ export default function BulkMint1({slug}) {
         //     setFlag(flag ^ value);
     }
 
-    const handleTimestampCheck = (e) => {
+    const handleTimesCheck = (e) => {
         setIncludeTime(!includeTime);
     }
 
@@ -459,7 +459,7 @@ export default function BulkMint1({slug}) {
     };
 
     const getFinalMetaData = () => {
-        const timestamp = Date.now(); // new Date().getTime();
+        const time = Date.now(); // new Date().getTime();
         let pos = nftNameIndex?Number(nftNameIndex):1;
         const newMetaData = [];
         for (var meta of metadata) {
@@ -491,7 +491,7 @@ export default function BulkMint1({slug}) {
             if (includeTime && newDateField) {
                 if (oldDateField)
                     newMeta[oldDateField] = undefined;
-                newMeta[newDateField] = timestamp;
+                newMeta[newDateField] = time;
             }
 
             newMetaData.push(newMeta);
@@ -926,11 +926,11 @@ export default function BulkMint1({slug}) {
                     <Typography variant='p3'>Check the following checkbox to add the current timestamp value to your metadata.</Typography>
                     <FormGroup sx={{ flexDirection: 'row' }}>
                         <FormControlLabel
-                            key='checkbox_timestamp'
+                            key='checkbox_time'
                             label='Add Timestamp'
                             value='value'
                             control={
-                                <Checkbox checked={includeTime} onChange={handleTimestampCheck} />
+                                <Checkbox checked={includeTime} onChange={handleTimeCheck} />
                             }
                         />
                     </FormGroup>
@@ -942,7 +942,7 @@ export default function BulkMint1({slug}) {
                                     size="small"
                                     variant="standard"
                                     placeholder='Old Field'
-                                    id='id_timestamp_remove_field'
+                                    id='id_time_remove_field'
                                     autoComplete='new-password'
                                     onChange={(e) => {
                                         const value = e.target.value;
@@ -958,7 +958,7 @@ export default function BulkMint1({slug}) {
                                     size="small"
                                     variant="standard"
                                     placeholder='New Field'
-                                    id='id_timestamp_add_field'
+                                    id='id_time_add_field'
                                     autoComplete='new-password'
                                     onChange={(e) => {
                                         const value = e.target.value;
@@ -972,7 +972,7 @@ export default function BulkMint1({slug}) {
                                     value={newDateField}
                                 />
                             </Stack>
-                            <Typography variant='p3'>Old field will be removed from your metadata and the current timestamp will be added with the new field. These fields can be equal if you just want to add the new timestamp value to the existing field. If your metadata does not already have timestamp field, you can ignore Old Field, but the New Field is required, essential.</Typography>
+                            <Typography variant='p3'>Old field will be removed from your metadata and the current time will be added with the new field. These fields can be equal if you just want to add the new time value to the existing field. If your metadata does not already have time field, you can ignore Old Field, but the New Field is required, essential.</Typography>
                         </Stack>
                     }
                 </Stack>

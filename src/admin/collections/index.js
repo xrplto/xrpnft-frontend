@@ -713,7 +713,7 @@ export default function Collections({account}) {
                                                                         value={idx}
                                                                     >
                                                                         <Stack direction='row' alignItems="center">
-                                                                            <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} sx={{ width: 18, height:18, mr: 1 }} />
+                                                                            <Avatar alt="C" src={`https://s1.xrpl.to/token/${cost.md5}`} sx={{ width: 18, height:18, mr: 1 }} />
                                                                             <Typography variant='s6' color="#EB5757">{cost.amount} {cost.name}</Typography>
                                                                         </Stack>
                                                                     </MenuItem>

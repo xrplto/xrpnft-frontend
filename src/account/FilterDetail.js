@@ -10,6 +10,7 @@ import {
     Radio,
     RadioGroup,
     Stack,
+    Tooltip,
     Typography,
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -22,7 +23,7 @@ import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Components
 
-export default function FilterDetail({ onSaleCount, filter, setFilter, subFilter, setSubFilter }) {
+export default function FilterDetail({ boughtWithMints, onSaleCount, filter, setFilter, subFilter, setSubFilter }) {
 
     const handleFlagChange = (e) => {
         const value = e.target.value;
@@ -60,6 +61,19 @@ export default function FilterDetail({ onSaleCount, filter, setFilter, subFilter
                     </AccordionSummary>
                     <AccordionDetails>
                         <FormGroup sx={{ flexDirection: 'col' }}>
+                            {/* <FormControlLabel
+                                label={
+                                    <Stack direction="row" spacing={0.5}>
+                                        <Typography variant='s3'>Recently Minted {boughtWithMints > 0 && <Typography variant='s7'>({boughtWithMints})</Typography>}</Typography>
+                                        <Tooltip title="Display recently Minted NFTs and being transferred to users. Or NFTs that pending to be accepted by users.">
+                                            <Icon icon={infoFilled} />
+                                        </Tooltip>
+                                    </Stack>
+                                }
+                                value={2}
+                                control={<Checkbox checked={(filter & 2) !== 0} onChange={handleFlagChange} />}
+                            /> */}
+
                             <FormControlLabel
                                 label={<Typography variant='s3'>On Sale {onSaleCount > 0 && <Typography variant='s7'>({onSaleCount})</Typography>}</Typography>}
                                 value={4}

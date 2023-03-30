@@ -155,7 +155,7 @@ export async function getServerSideProps(ctx) {
                 "logoImage": "1662042748001_12e8a38273134f0e87f1039958d5b132.png",
                 "featuredImage": "1662042748001_70910cc4c6134845bf84cf262e696d05.png",
                 "bannerImage": "1662042748002_b32b442dea454998aa29ab61c8fa0887.jpg",
-                "timestamp": 1662042748016,
+                "created": 1662042748016,
                 "creator": "xrpnft.com",
                 "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
             }

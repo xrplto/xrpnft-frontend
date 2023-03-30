@@ -1,5 +1,4 @@
 import axios from 'axios';
-import NextLink from 'next/link';
 import { useRef, useState, useEffect } from 'react';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
@@ -248,105 +247,161 @@ export default function Wallet() {
                 {accountLogin ? (
                         <>
                             {/* {acceptNfts > 0 &&
-                                <MenuItem
-                                    key="account_accept_nft_offer"
-                                    sx={{ typography: 'body2', py: 2, px: 2.5, mt: 1 }}
+                                <Link
+                                    underline="none"
+                                    color="inherit"
+                                    // target="_blank"
+                                    href={`/account/${accountLogin}/accept`}
+                                    rel="noreferrer noopener nofollow"
                                 >
-                                    <NextLink href={`/account/${accountLogin}/accept`} passHref>
+                                    <MenuItem
+                                        key="account_accept_nft_offer"
+                                        sx={{ typography: 'body2', py: 2, px: 2.5, mt: 1 }}
+                                        onClick={()=>setOpen(false)}
+                                    >
                                         <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                             <Badge color="primary" badgeContent={acceptNfts}>
                                                 <AssignmentReturnedIcon sx={{ width: 24, height: 24 }}/>
                                             </Badge>
                                             <Typography variant='s3' style={{marginLeft: '10px'}}>Accept NFTs</Typography>
                                         </Stack>
-                                    </NextLink>
-                                </MenuItem>
+                                    </MenuItem>
+                                </Link>
                             }
                             {orphanedOffers > 0 &&
-                                <MenuItem
-                                    key="account_orphaned_offers"
-                                    sx={{ typography: 'body2', py: 2, px: 2.5, mt: 1 }}
+                                <Link
+                                    underline="none"
+                                    color="inherit"
+                                    // target="_blank"
+                                    href={`/account/${accountLogin}/orphaned`}
+                                    rel="noreferrer noopener nofollow"
                                 >
-                                    <NextLink href={`/account/${accountLogin}/orphaned`} passHref>
+                                    <MenuItem
+                                        key="account_orphaned_offers"
+                                        sx={{ typography: 'body2', py: 2, px: 2.5, mt: 1 }}
+                                        onClick={()=>setOpen(false)}
+                                    >
                                         <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                             <Badge color="primary" badgeContent={orphanedOffers}>
                                                 <DeleteSweepIcon sx={{ width: 24, height: 24 }}/>
                                             </Badge>
                                             <Typography variant='s3' style={{marginLeft: '10px'}}>Orphaned Offers</Typography>
                                         </Stack>
-                                    </NextLink>
-                                </MenuItem>
+                                    </MenuItem>
+                                </Link>
                             } */}
-                            <MenuItem
-                                key="account_profile"
-                                sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                            <Link
+                                underline="none"
+                                color="inherit"
+                                // target="_blank"
+                                href={`/account/${accountLogin}`}
+                                rel="noreferrer noopener nofollow"
                             >
-                                <NextLink href={`/account/${accountLogin}`} passHref>
+                                <MenuItem
+                                    key="account_profile"
+                                    sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                                    onClick={()=>setOpen(false)}
+                                >
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <Badge color="primary" badgeContent={acceptNfts+orphanedOffers}>
                                             <AccountBoxIcon />
                                         </Badge>
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>Profile</Typography>
                                     </Stack>
-                                </NextLink>
-                            </MenuItem>
+                                </MenuItem>
+                            </Link>
                             {isAdmin > 0 &&
-                                <MenuItem
-                                    key="import_collection"
-                                    sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                                <Link
+                                    underline="none"
+                                    color="inherit"
+                                    // target="_blank"
+                                    href="/collection/import"
+                                    rel="noreferrer noopener nofollow"
                                 >
-                                    <NextLink href="/collection/import" passHref>
+                                    <MenuItem
+                                        key="import_collection"
+                                        sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                                        onClick={()=>setOpen(false)}
+                                    >
                                         <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                             <ImportExportIcon />
                                             <Typography variant='s3' style={{marginLeft: '10px'}}>Import Collection</Typography>
                                         </Stack>
-                                    </NextLink>
-                                </MenuItem>
+                                    </MenuItem>
+                                </Link>
                             }
-                            <MenuItem
-                                key="collection"
-                                sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                            <Link
+                                underline="none"
+                                color="inherit"
+                                // target="_blank"
+                                href="/my-collections"
+                                rel="noreferrer noopener nofollow"
                             >
-                                <NextLink href="/my-collections" passHref>
+                                <MenuItem
+                                    key="collection"
+                                    sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                                    onClick={()=>setOpen(false)}
+                                >
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <GridOnIcon />
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>My Collections</Typography>
                                     </Stack>
-                                </NextLink>
-                            </MenuItem>
-                            <MenuItem
-                                key="create-nft"
-                                sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                                </MenuItem>
+                            </Link>
+                            <Link
+                                underline="none"
+                                color="inherit"
+                                // target="_blank"
+                                href="/create"
+                                rel="noreferrer noopener nofollow"
                             >
-                                <NextLink href="/create" passHref>
+                                <MenuItem
+                                    key="create-nft"
+                                    sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                                    onClick={()=>setOpen(false)}
+                                >
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <AddPhotoAlternateIcon />
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>Create a NFT</Typography>
                                     </Stack>
-                                </NextLink>
-                            </MenuItem>
-                            <MenuItem
-                                key="manage-bulks"
-                                sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                                </MenuItem>
+                            </Link>
+                            <Link
+                                underline="none"
+                                color="inherit"
+                                // target="_blank"
+                                href={`/bulks`}
+                                rel="noreferrer noopener nofollow"
                             >
-                                <NextLink href={`/bulks`} passHref>
+                                <MenuItem
+                                    key="manage-bulks"
+                                    sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                                    onClick={()=>setOpen(false)}
+                                >
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <PhotoLibraryIcon />
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>Manage Bulks</Typography>
                                     </Stack>
-                                </NextLink>
-                            </MenuItem>
-                            <MenuItem
-                                key="settings"
-                                sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                                </MenuItem>
+                            </Link>
+                            <Link
+                                underline="none"
+                                color="inherit"
+                                // target="_blank"
+                                href={`/setting`}
+                                rel="noreferrer noopener nofollow"
                             >
-                                <NextLink href={`/setting`} passHref>
+                                <MenuItem
+                                    key="settings"
+                                    sx={{ typography: 'body2', py: 2, px: 2.5 }}
+                                    onClick={()=>setOpen(false)}
+                                >
                                     <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
                                         <SettingsIcon />
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>Settings</Typography>
                                     </Stack>
-                                </NextLink>
-                            </MenuItem>
+                                </MenuItem>
+                            </Link>
                             <Divider />
                             <Stack spacing={1} alignItems='center' sx={{pt: 1, pb: 2}}>
                                 {logoImageUrl?(

@@ -213,7 +213,6 @@ export default function Row({ id, item }) {
         logoImage,
         featuredImage,
         bannerImage,
-        timestamp,
         costs,
         extra,
         minter,

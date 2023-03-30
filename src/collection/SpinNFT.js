@@ -201,7 +201,7 @@ export default function SpinNFT({ collection, setView }) {
         // featuredImage,
         // bannerImage,
         spinnerImage,
-        // timestamp,
+        // created,
         costs,
         // minter,
         verified,

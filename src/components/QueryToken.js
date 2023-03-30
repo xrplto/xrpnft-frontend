@@ -158,7 +158,7 @@ export default function QueryToken({token, setToken}) {
                             sx={{pt:1, pb:1}}
                         >
                             <Stack direction='row' alignItems="center">
-                                <Avatar alt="C" src={`https://xrpl.to/static/tokens/${token.md5}.${token.ext}`} sx={{ mr: 2 }} />
+                                <Avatar alt="C" src={`https://s1.xrpl.to/token/${token.md5}`} sx={{ mr: 2 }} />
                                 <Stack spacing={0.5}>
                                     <Stack direction="row">
                                         <Typography variant='d4'>{token.name}</Typography>

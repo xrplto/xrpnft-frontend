@@ -132,7 +132,6 @@ export default function CollectionPreview({collections}) {
                     logoImage,
                     featuredImage,
                     bannerImage,
-                    timestamp,
                     costs,
                     extra,
                     minter,

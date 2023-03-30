@@ -223,7 +223,6 @@ export default function EditProfile() {
         if (ext === 'jpg' || ext === 'png' || ext === 'gif') {
             const size = pickedFile.size;
             if (size < 10240000) {
-                // setImgExt(ext);
                 if (idx === 1)
                     setFile1(pickedFile);
                 else if (idx === 2)

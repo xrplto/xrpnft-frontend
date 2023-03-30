@@ -99,7 +99,6 @@ export default function Congrats({ data }) {
             logoImage,
             featuredImage,
             bannerImage,
-            timestamp
         } = collection;
 
         imgUrl = `https://s1.xrpnft.com/collection/${collection.logoImage}`;

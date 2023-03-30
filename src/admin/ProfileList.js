@@ -131,12 +131,12 @@ export default function ProfileList({setCounterAccount}) {
                         banner,
                         description,
                         minterWallet,
-                        timestamp
+                        time
                     } = row;
 
                     const logoImage = logo?`https://s1.xrpnft.com/profile/${logo}`:getHashIcon(account);
 
-                    const strDateTime = formatDateTime(timestamp);
+                    const strDateTime = formatDateTime(time);
 
                     return (
                         <Stack key={account}>

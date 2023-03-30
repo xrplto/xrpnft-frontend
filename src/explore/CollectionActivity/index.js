@@ -250,7 +250,7 @@ export default function CollectionActivity({collection}) {
                                     <TableCell align="left" sx={{pt:1, pb:1}}>
                                         {type === 'BUY_MINT' ?
                                             <Stack direction="row" spacing={1} alignItems="center">
-                                                <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost?.md5}.${cost?.ext}`} />
+                                                <Avatar alt="C" src={`https://s1.xrpl.to/token/${cost?.md5}`} />
 
                                                 <Stack>
                                                     <Stack direction='row' spacing={0.8} alignItems="center">

@@ -159,7 +159,7 @@ export default function EditCollection({collection}) {
         "logoImage": "1662085104641_9217e932c909438096b784ecc1697961.png",
         "featuredImage": "1662085104642_07be4b7c8cb04957a9e3a789215be41a.jpg",
         "bannerImage": "1662085104643_b749a733b9a64b1380b99d3870146a06.jpg",
-        "timestamp": 1662085104650,
+        "created": 1662085104650,
         "creator": "xrpnft.com",
         "uuid": "2985930b78484042973a06cf39238f1c"
     }*/
@@ -755,7 +755,7 @@ export default function EditCollection({collection}) {
                                 <Stack spacing={1} sx={{pl: 1, pr:1}} key={cost.md5}>
                                     <Stack direction="row" spacing={2} sx={{mt: 0}} alignItems="center" justifyContent="space-between">
                                         <Stack direction='row' alignItems="center">
-                                            <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} sx={{ mr: 2 }} />
+                                            <Avatar alt="C" src={`https://s1.xrpl.to/token/${cost.md5}`} sx={{ mr: 2 }} />
                                             <Stack spacing={0.5}>
                                                 <Stack direction="row">
                                                     <Typography variant='d4'>{cost.name}</Typography>

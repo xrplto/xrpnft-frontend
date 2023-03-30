@@ -430,7 +430,7 @@ export default function Mints({account}) {
                                         <Stack spacing={1}>
                                             <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between" mr={3}>
                                                 <Stack direction='row' spacing={0.8} alignItems="center">
-                                                    <Avatar alt="C" src={`https://xrpl.to/static/tokens/${cost.md5}.${cost.ext}`} />
+                                                    <Avatar alt="C" src={`https://s1.xrpl.to/token/${cost.md5}`} />
                                                     <Typography variant='p4' color="#EB5757">{cost.amount}</Typography>
                                                     <Typography variant='s2'>{cost.name}</Typography>
                                                 </Stack>
