@@ -376,6 +376,11 @@ export default function Mints({account}) {
                                                     <Typography variant="s6">{cname}</Typography>
                                                 </Stack>
 
+                                                <Stack direction="row" spacing={1} alignItems="center">
+                                                    <Typography variant="s7">Autopay To: </Typography>
+                                                    <Typography variant="s8">{dest}</Typography>
+                                                </Stack>
+
                                                 <Typography variant='s7'>{xuuid}</Typography>
                                                 <Typography variant="s7">{strDateTime}</Typography>
 

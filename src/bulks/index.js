@@ -23,6 +23,7 @@ import { PulseLoader, ClockLoader } from "react-spinners";
 // Components
 import QRDialog from 'src/components/QRDialog';
 import BulkList from './BulkList';
+import MintList from './MintList';
 
 export default function Bulks() {
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -185,6 +186,7 @@ export default function Bulks() {
 
             <Stack sx={{mt:2, minHeight: '50vh'}}>
                 <BulkList />
+                <MintList />
             </Stack>
         </>
     );
