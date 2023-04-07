@@ -106,9 +106,7 @@ export default function Row({ id, item }) {
     const { accountProfile, openSnackbar, setAcceptNfts } = useContext(AppContext);
 
     const {
-        xuuid,
         uuid,
-        InvoiceID,
         profile,
         account,
         cid,
@@ -122,23 +120,6 @@ export default function Row({ id, item }) {
         dest,
         status,
         time,
-
-        // XUMM
-        meta,
-        resolved,
-        resolved_at,
-        dispatched_result,
-        xumm_signer,
-        xumm_account,
-        xumm_txid,
-
-
-        //
-        t1,
-        t2,
-        t3,
-        t4,
-        t5
     } = item;
 
     const {

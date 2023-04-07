@@ -412,7 +412,7 @@ export default function BulkMint1({slug}) {
         //     setFlag(flag ^ value);
     }
 
-    const handleTimesCheck = (e) => {
+    const handleTimeCheck = (e) => {
         setIncludeTime(!includeTime);
     }
 

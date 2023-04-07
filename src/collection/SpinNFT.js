@@ -1,5 +1,7 @@
 import axios from 'axios';
 import useSound from 'use-sound';
+import Decimal from 'decimal.js';
+import PropTypes from 'prop-types';
 import Confetti from 'react-confetti';
 // import { ColorExtractor } from 'react-color-extractor';
 import useWindowSize from 'react-use/lib/useWindowSize';
@@ -15,6 +17,8 @@ import {
     Container,
     Divider,
     Grid,
+    CircularProgress,
+    LinearProgress,
     Link,
     Paper,
     Stack,
@@ -24,6 +28,9 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VerifiedIcon from '@mui/icons-material/Verified';
+import { circularProgressClasses } from '@mui/material/CircularProgress';
+import { linearProgressClasses } from '@mui/material/LinearProgress';
+
 
 // Context
 import { useContext } from 'react';
@@ -169,6 +176,127 @@ const CardOverlay = styled('div')(
 `
 );
 
+function CircularProgressWithLabel(props) {
+    return (
+        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+            <CircularProgress variant="determinate" {...props} />
+            <Box
+                sx={{
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    position: 'absolute',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <Typography variant="caption" component="div" color="text.secondary">
+                    {`${Math.round(props.value)}%`}
+                </Typography>
+            </Box>
+        </Box>
+    );
+}
+  
+CircularProgressWithLabel.propTypes = {
+    /**
+     * The value of the progress indicator for the determinate variant.
+     * Value between 0 and 100.
+     * @default 0
+     */
+    value: PropTypes.number.isRequired,
+};
+
+const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+    height: 10,
+    borderRadius: 5,
+    [`&.${linearProgressClasses.colorPrimary}`]: {
+        backgroundColor: theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+    },
+    [`& .${linearProgressClasses.bar}`]: {
+        borderRadius: 5,
+        backgroundColor: theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8',
+    },
+}));
+
+function LinearProgressWithLabel(props) {
+    const progressColor = props.progressColor;
+    
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: '100%', mr: 1 }}>
+            {/* <LinearProgress variant="determinate" {...props} /> */}
+            <BorderLinearProgress variant="determinate" {...props}
+                sx={{
+                    [`& .${linearProgressClasses.bar}`]: {
+                        borderRadius: 5,
+                        backgroundColor: progressColor,
+                    }
+                }}
+            />
+        </Box>
+        <Box sx={{ minWidth: 35 }}>
+            <Typography variant="body2" color="text.secondary">{props.value}%</Typography>
+        </Box>
+      </Box>
+    );
+  }
+  
+  LinearProgressWithLabel.propTypes = {
+    /**
+     * The value of the progress indicator for the determinate and buffer variants.
+     * Value between 0 and 100.
+     */
+    value: PropTypes.number.isRequired,
+  };
+
+function FacebookCircularProgress(props) {
+    return (
+        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+            <CircularProgress
+                variant="determinate"
+                sx={{
+                    color: (theme) =>
+                    theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+                }}
+                size={40}
+                thickness={4}
+                {...props}
+                value={100}
+            />
+            <CircularProgress
+                variant="determinate"
+                disableShrink
+                sx={{
+                    position: 'absolute',
+                    left: 0,
+                }}
+                size={40}
+                thickness={4}
+                {...props}
+            />
+            <Box
+                sx={{
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    position: 'absolute',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <Typography variant="caption" component="div" color="text.secondary">
+                    {`${Math.round(props.value)}%`}
+                </Typography>
+            </Box>
+        </Box>
+    );
+}
+
 export default function SpinNFT({ collection, setView }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -231,6 +359,15 @@ export default function SpinNFT({ collection, setView }) {
 
     const spinImgUrl = spinnerImage?`https://s1.xrpnft.com/collection/${spinnerImage}`:'/static/spin.gif';
 
+    const pendingProgress = items > 0 ? new Decimal(pendingNfts).mul(100).div(items).toDP(1, Decimal.ROUND_DOWN).toNumber() : 0;
+
+    let progressColor = '#FF1943';
+    if (pendingProgress > 50) {
+        progressColor = '#33C2FF';
+    } else if (pendingProgress > 25) {
+        progressColor = '#FFA319';
+    }
+
     // useEffect(() => {
     //     window.addEventListener("resize", () => {
     //         // setWindowSize({ width: window.innerWidth, height: window.innerHeight });
@@ -246,9 +383,9 @@ export default function SpinNFT({ collection, setView }) {
         function getMints() {
             if (!account || !accountToken) {
                 openSnackbar('Please login', 'error');
-                setMints(0);
-                setXrpBalance(0);
-                return;
+                // setMints(0);
+                // setXrpBalance(0);
+                // return;
             }
 
             // https://api.xrpnft.com/api/spin/count?account=rhhh
@@ -453,11 +590,25 @@ export default function SpinNFT({ collection, setView }) {
                         <Stack spacing={2} sx={{mt: 3, mb:6}}>
                             <Typography variant="p5">Get a {type} NFT from the <Typography variant="s5" color="#57CA22">{name}</Typography></Typography>
                             <ul>
-                            <li><Typography variant="p5" sx={{mt:0}}>Buy Mints to participate</Typography></li>
-                            <li><Typography variant="p5" sx={{mt:1}}>Your Mints: <Typography variant="s5" color="#33C2FF">{mints}</Typography></Typography></li>
-                            <li><Typography variant="p5" sx={{mt:1}}>Available XRP: <Typography variant="s5" color="#33C2FF">{xrpBalance}</Typography></Typography></li>
-                            <li><Typography variant="p5" sx={{mt:1, pb: 3}}>Remaining NFTs: <Typography variant="s5" color="error">{pendingNfts}</Typography> / <Typography variant="s4" color="#33C2FF">{items}</Typography></Typography></li>
+                                <li><Typography variant="p5" sx={{mt:0}}>Buy Mints to participate</Typography></li>
+                                <li><Typography variant="p5" sx={{mt:1}}>Your Mints: <Typography variant="s5" color="#33C2FF">{mints}</Typography></Typography></li>
+                                <li><Typography variant="p5" sx={{mt:1}}>Available XRP: <Typography variant="s5" color="#33C2FF">{xrpBalance}</Typography></Typography></li>
+                                <li>
+                                    <Typography variant="p5" sx={{mt:1}}>Remaining NFTs: <Typography variant="s5" color={progressColor}>{pendingNfts}</Typography> / <Typography variant="s4" color="#33C2FF">{items}</Typography></Typography>
+                                </li>
+                                <Box sx={{ width: '100%', mt: 1, mb: 3 }}>
+                                    <LinearProgressWithLabel variant="determinate" value={pendingProgress} progressColor={progressColor} />
+                                </Box>
+
+                                {/* <CircularProgressWithLabel value={pendingProgress} color="success" /> */}
+                                {/* <FacebookCircularProgress value={pendingProgress} color="success"/> */}
                             </ul>
+
+                            {/* <Stack alignItems="center" sx={{pb: 3}}>
+                                <FacebookCircularProgress value={pendingProgress} color="success"/>
+                            </Stack> */}
+                            
+                            
 
                             <Stack direction="row" spacing={2} justifyContent="center">
                                 <Button

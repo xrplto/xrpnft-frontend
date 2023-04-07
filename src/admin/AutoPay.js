@@ -1,5 +1,6 @@
 import * as React from 'react';
 import axios from 'axios';
+import Decimal from 'decimal.js';
 import { useState, useEffect } from 'react';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
@@ -40,7 +41,6 @@ import { PulseLoader } from "react-spinners";
 // Components
 import ListToolbar from './ListToolbar';
 import ConfirmResolveDialog from './ConfirmResolveDialog';
-import Decimal from 'decimal.js';
 
 // ----------------------------------------------------------------------
 
