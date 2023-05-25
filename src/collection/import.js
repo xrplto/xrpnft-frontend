@@ -197,7 +197,7 @@ export default function ImportCollection() {
     valid1 &&
     valid2 &&
     validPassword &&
-    taxon > -1;
+    taxons.length > 0;
 
   const getTaxons = (issuer) => {
     if (!accountAdmin || !accountToken) {
