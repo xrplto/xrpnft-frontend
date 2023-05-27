@@ -56,7 +56,7 @@ export default function NFTs({ collection }) {
 
         const limit = 20;
 
-        const body = { page, limit, flag, cid: collection?.uuid, search, filter, subFilter, filterAttrs };
+        const body = { page, limit, flag, cid: collection?.uuid, search, filter, subFilter, filterAttrs, issuer: collection?.account, taxon: collection?.taxon };
 
         axios.post(`${BASE_URL}/nfts`, body)
             .then(res => {
