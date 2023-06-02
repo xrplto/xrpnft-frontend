@@ -110,15 +110,14 @@ export default function NFTs({ collection }) {
 
     const handleRemove = (NFTokenID) => {
         axios.delete(`${BASE_URL}/nfts/${NFTokenID}`, {
-            params: {
+            data: {
                 issuer: collection?.account,
                 taxon: collection?.taxon,
                 cid: collection?.uuid
             }
         })
             .then(res => {
-                console.log(res);
-                fetchNfts();
+                location.reload();
             }).catch(err => {
                 console.log("Error on getting nfts!", err);
             }).then(function () {
