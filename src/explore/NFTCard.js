@@ -1,5 +1,5 @@
 import { normalizeCurrencyCodeXummImpl } from "src/utils/normalizers";
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 // Material
 import {
@@ -34,6 +34,7 @@ import { getImgUrl } from 'src/utils/parse';
 // Components
 // import FlagsContainer from 'src/components/Flags';
 import Label from './Label';
+import { AppContext } from "src/AppContext";
 
 const CardWrapper = styled(Card)(
     ({ theme }) => `
@@ -56,11 +57,16 @@ const CardWrapper = styled(Card)(
 
 export default function NFTCard({ nft, handleRemove }) {
     const theme = useTheme();
+
+    const { accountProfile } = useContext(AppContext);
+    const isAdmin = accountProfile?.admin;
+
     // const [imgUrl, setImgUrl] = useState('');
     // const [loading, setLoading] = useState(false);
 
     // const [isLike, setIsLike] = useState(false);
     const [colors, setColors] = useState([]);
+    
 
     // const like = () => setIsLike(!isLike);
 
@@ -106,6 +112,8 @@ export default function NFTCard({ nft, handleRemove }) {
     const handleRemoveNft = (e) => {
         e.preventDefault();
 
+        if (!isAdmin) return;
+
         if (!confirm("Are you sure you want to remove")) {
             return;
         }
@@ -132,15 +140,17 @@ export default function NFTCard({ nft, handleRemove }) {
                     //     )`,
                 }}
             >
-                <CloseIcon
-                    sx={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        zIndex: 1500
-                    }}
-                    onClick={(e) => handleRemoveNft(e)}
-                />
+                {isAdmin &&
+                    <CloseIcon
+                        sx={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            zIndex: 1500
+                        }}
+                        onClick={(e) => handleRemoveNft(e)}
+                    />
+                }
                 {isSold && (
                     <Label
                         variant="filled"
