@@ -19,6 +19,7 @@ import {
 // import FavoriteIcon from '@mui/icons-material/Favorite';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -53,7 +54,7 @@ const CardWrapper = styled(Card)(
   `
 );
 
-export default function NFTCard({ nft }) {
+export default function NFTCard({ nft, handleRemove }) {
     const theme = useTheme();
     // const [imgUrl, setImgUrl] = useState('');
     // const [loading, setLoading] = useState(false);
@@ -102,9 +103,18 @@ export default function NFTCard({ nft }) {
         setLoadingImg(false)
     }
 
+    const handleRemoveNft = (e) => {
+        e.preventDefault();
+
+        if (!confirm("Are you sure you want to remove")) {
+            return;
+        }
+
+        handleRemove(NFTokenID);
+    }
 
     return (
-        <Link href={`/nft/${NFTokenID}`} underline='none'>
+        <Link href={`/nft/${NFTokenID}`} underline='none' sx={{ position: 'relative' }}>
             <CardWrapper
                 sx={{
                     marginLeft: 'auto',
@@ -122,6 +132,15 @@ export default function NFTCard({ nft }) {
                     //     )`,
                 }}
             >
+                <CloseIcon
+                    sx={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        zIndex: 1500
+                    }}
+                    onClick={(e) => handleRemoveNft(e)}
+                />
                 {isSold && (
                     <Label
                         variant="filled"

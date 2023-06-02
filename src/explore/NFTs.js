@@ -108,6 +108,25 @@ export default function NFTs({ collection }) {
     //     setAttrSync(attrSync + 1);
     // }
 
+    const handleRemove = (NFTokenID) => {
+        axios.delete(`${BASE_URL}/nfts/${NFTokenID}`, {
+            params: {
+                issuer: collection?.account,
+                taxon: collection?.taxon,
+                cid: collection?.uuid
+            }
+        })
+            .then(res => {
+                console.log(res);
+                fetchNfts();
+            }).catch(err => {
+                console.log("Error on getting nfts!", err);
+            }).then(function () {
+                // always executed
+                setLoading(false);
+            });
+    }
+
     return (
         <>
             <Box
@@ -182,7 +201,7 @@ export default function NFTs({ collection }) {
                             {
                                 nfts.map((nft) => (
                                     <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.uuid}>
-                                        <NFTCard nft={nft} />
+                                        <NFTCard nft={nft} handleRemove={handleRemove} />
                                     </Grid>
                                 ))
                             }
