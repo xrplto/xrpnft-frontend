@@ -31,6 +31,8 @@ export default function ExploreNFT({ collection }) {
     };
 
     const handleRemoveAll = () => {
+        if (deletingNfts.length ===  0) return;
+
         const nftNames = deletingNfts?.map(nft => `"${nft.meta?.name}"` || `"No Name"`)?.join(', ');
         const idsToDelete = deletingNfts?.map(nft => nft._id);
         
@@ -66,6 +68,7 @@ export default function ExploreNFT({ collection }) {
                             color='error'
                             sx={{ mb: 1, py: 0.5 }}
                             onClick={handleRemoveAll}
+                            disabled={deletingNfts.length === 0}
                         >
                             Delete All
                         </Button>
