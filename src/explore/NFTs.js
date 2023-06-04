@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 // Material
@@ -20,6 +20,7 @@ import { ClipLoader } from "react-spinners";
 // Components
 import NFTCard from './NFTCard';
 import FilterDetail from './FilterDetail';
+import { AppContext } from 'src/AppContext';
 
 export default function NFTs({ collection }) {
 
@@ -27,6 +28,7 @@ export default function NFTs({ collection }) {
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+    const { setDeletingNfts } = useContext(AppContext);
 
     const [nfts, setNfts] = useState([]);
     const [page, setPage] = useState(0);
@@ -69,6 +71,7 @@ export default function NFTs({ collection }) {
                 }
                 if (length > 0) {
                     setNfts([...nfts, ...newNfts])
+                    setDeletingNfts([...nfts, ...newNfts]);
                 }
             }).catch(err => {
                 console.log("Error on getting nfts!", err);
@@ -85,6 +88,7 @@ export default function NFTs({ collection }) {
 
     useEffect(() => {
         setNfts([]);
+        setDeletingNfts([]);
         setPage(0);
         setHasMore(true);
         setSync(sync + 1);
@@ -109,17 +113,18 @@ export default function NFTs({ collection }) {
     // }
 
     const handleRemove = (NFTokenID) => {
-        axios.delete(`${BASE_URL}/nfts/${NFTokenID}`, {
+        axios.delete(`${BASE_URL}/nfts`, {
             data: {
                 issuer: collection?.account,
                 taxon: collection?.taxon,
-                cid: collection?.uuid
+                cid: collection?.uuid,
+                idsToDelete: NFTokenID
             }
         })
             .then(res => {
                 location.reload();
             }).catch(err => {
-                console.log("Error on getting nfts!", err);
+                console.log("Error on removing nfts!", err);
             }).then(function () {
                 // always executed
                 setLoading(false);

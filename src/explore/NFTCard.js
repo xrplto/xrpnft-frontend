@@ -114,7 +114,7 @@ export default function NFTCard({ nft, handleRemove }) {
 
         if (!isAdmin) return;
 
-        if (!confirm("Are you sure you want to remove")) {
+        if (!confirm(`Are you sure you want to remove "${name}"?`)) {
             return;
         }
 

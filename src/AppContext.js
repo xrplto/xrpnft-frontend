@@ -16,6 +16,7 @@ export function ContextProvider({ children, data, openSnackbar }) {
     const [darkMode, setDarkMode] = useState(true);
     const [accountProfile, _setAccountProfile] = useState(null);
     const [acceptNfts, setAcceptNfts] = useState(0);
+    const [deletingNfts, setDeletingNfts] = useState([]);
     const [orphanedOffers, setOrphanedOffers] = useState(0);
     const [sync, setSync] = useState(0);
 
@@ -50,7 +51,7 @@ export function ContextProvider({ children, data, openSnackbar }) {
 
     return (
         <AppContext.Provider
-            value={{ toggleTheme, darkMode, accountProfile, setAccountProfile, setLoading, openSnackbar, acceptNfts, setAcceptNfts, orphanedOffers, setOrphanedOffers, sync, setSync }}
+            value={{ toggleTheme, darkMode, accountProfile, setAccountProfile, setLoading, openSnackbar, acceptNfts, setAcceptNfts, orphanedOffers, setOrphanedOffers, sync, setSync, deletingNfts, setDeletingNfts }}
         >
             <Backdrop
                 sx={{ color: "#000", zIndex: (theme) => theme.zIndex.drawer + 1 }}
