@@ -31,7 +31,6 @@ export default function ExploreNFT({ collection }) {
     };
 
     const handleRemoveAll = () => {
-        console.log(deletingNfts)
         const nftNames = deletingNfts?.map(nft => `"${nft.meta?.name}"` || `"No Name"`)?.join(', ');
         const idsToDelete = deletingNfts?.map(nft => nft._id);
         
