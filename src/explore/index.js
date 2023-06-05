@@ -22,7 +22,9 @@ import { AppContext } from 'src/AppContext';
 export default function ExploreNFT({ collection }) {
     const BASE_URL = 'https://api.xrpnft.com/api'
 
-    const { deletingNfts } = useContext(AppContext);
+    const { deletingNfts, accountProfile } = useContext(AppContext);
+    
+    const isAdmin = accountProfile?.admin;
 
     const [value, setValue] = useState('tab-nfts');
 
@@ -31,7 +33,7 @@ export default function ExploreNFT({ collection }) {
     };
 
     const handleRemoveAll = () => {
-        if (deletingNfts.length ===  0) return;
+        if (deletingNfts.length ===  0 || !isAdmin) return;
 
         const nftNames = deletingNfts?.map(nft => `"${nft.meta?.name}"` || `"No Name"`)?.join(', ');
         const idsToDelete = deletingNfts?.map(nft => nft._id);
@@ -62,16 +64,18 @@ export default function ExploreNFT({ collection }) {
                             <Tab label="NFTs" value="tab-nfts" />
                             <Tab label="Activities" value="tab-activities" />
                         </TabList>
-
-                        <Button
-                            variant='outlined'
-                            color='error'
-                            sx={{ mb: 1, py: 0.5 }}
-                            onClick={handleRemoveAll}
-                            disabled={deletingNfts.length === 0}
-                        >
-                            Delete All
-                        </Button>
+                        
+                        {isAdmin &&
+                            <Button
+                                variant='outlined'
+                                color='error'
+                                sx={{ mb: 1, py: 0.5 }}
+                                onClick={handleRemoveAll}
+                                disabled={deletingNfts.length === 0}
+                            >
+                                Delete All
+                            </Button>
+                        }
                     </Box>
                     <TabPanel value="tab-nfts" sx={{pl:0, pr:0}}>
                         <NFTs collection={collection} />
