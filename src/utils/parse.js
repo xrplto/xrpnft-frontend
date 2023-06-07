@@ -541,7 +541,7 @@ export const getImgUrl = (NFTokenID, meta, dfile, size) => {
     const image = meta.image;
     const video = meta.video;
 
-    if (!image && !video) return '';
+    if (!image && !video && !meta?.video_url && !meta?.image_url && !meta?.metadata?.video && !meta?.metadata?.image) return '';
 
     const isVideo = video?true:false;
 
@@ -552,7 +552,7 @@ export const getImgUrl = (NFTokenID, meta, dfile, size) => {
             return `https://s2.xrpnft.com/d1/${dfile.image}`;
     }
 
-    let url = video || image;
+    let url = video || image || meta?.video_url || meta?.image_url || meta?.metadata?.video || meta?.metadata?.image;
 
     if (isIPFS.multihash(url)) {
         url = `https://gateway.xrpnft.com/ipfs/${url}`;
@@ -560,6 +560,8 @@ export const getImgUrl = (NFTokenID, meta, dfile, size) => {
         url = `https://gateway.xrpnft.com/ipfs/${url}`;
     } else if (url.startsWith("https://ipfs.filebase.io")) {
         url = url.replace("https://ipfs.filebase.io", "https://gateway.xrpnft.com");
+    } else if (url.startsWith("ipfs://ipfs")) {
+        url = url.replace("ipfs://ipfs/", "https://gateway.xrpnft.com/ipfs/");
     } else if (url.startsWith("ipfs://")) {
         url = url.replace("ipfs://", "https://gateway.xrpnft.com/ipfs/");
     } else if (url.startsWith("cid:")) {
