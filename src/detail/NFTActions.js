@@ -234,6 +234,48 @@ export default function NFTActions({ nft }) {
         var timer = null;
         var isRunning = false;
         var counter = 150;
+        var dispatchTimer = null;
+
+        async function getDispatchResult() {
+          try {
+            const ret = await axios.get(`${BASE_URL}/offers/acceptcancel/${xummUuid}`);
+            const res = ret.data.data.response;
+            // const account = res.account;
+            const dispatched_result = res.dispatched_result;
+    
+            return dispatched_result;
+          } catch (err) {}
+        }
+
+        const startInterval = () => {
+          let times = 0;
+    
+          dispatchTimer = setInterval(async () => {
+            const dispatched_result = await getDispatchResult();
+    
+            if (dispatched_result && dispatched_result === 'tesSUCCESS') {
+              setSync(sync + 1);
+              openSnackbar('Successful!', 'success');
+              stopInterval();
+              return;
+            }
+    
+            times++;
+    
+            if (times >= 10) {
+              openSnackbar('Rejected!', 'error');
+              stopInterval();
+              return;
+            }
+          }, 1000);
+        };
+    
+        // Stop the interval
+        const stopInterval = () => {
+          clearInterval(dispatchTimer);
+          handleScanQRClose();
+        };
+
         async function getPayload() {
             console.log(counter + " " + isRunning, xummUuid);
             if (isRunning) return;
@@ -241,15 +283,9 @@ export default function NFTActions({ nft }) {
             try {
                 const ret = await axios.get(`${BASE_URL}/offers/acceptcancel/${xummUuid}`);
                 const resolved_at = ret.data?.resolved_at;
-                const dispatched_result = ret.data?.dispatched_result;
+                // const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
-                    setOpenScanQR(false);
-                    if (dispatched_result === 'tesSUCCESS') {
-                        setSync(sync + 1);
-                        openSnackbar('Successful!', 'success');
-                    }
-                    else
-                        openSnackbar('Rejected!', 'error');
+                    startInterval();
                     return;
                 }
             } catch (err) {
