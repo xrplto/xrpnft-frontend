@@ -27,9 +27,9 @@ export default function Landing({collections}) {
         <Grid container spacing={3} justifyContent="center" alignItems="center" display="flex" sx={{mt:2}}>
             <Grid item xs={12} md={7} lg={7}>
                 <AutoStack>
-                    <Typography variant="h1a">Discover, collect and sell extraordinary NFTs</Typography>
+                    <Typography variant="h1a">XRP NFT Marketplace</Typography>
                     <Stack sx={{mt:2}}>
-                        <Typography variant="s1">XRPNFT is a fee-free platform for trading XRPL NFTs on the XRP Ledger, connecting creators and collectors in a <Typography variant="s1" color="#2de370">seamless NFT marketplace.</Typography></Typography>
+                        <Typography variant="s1">Trade XRP NFTs <Typography variant="s1" color="#2de370">now.</Typography></Typography>
                     </Stack>
 
                     <Stack direction="row" spacing={2} sx={{mt: 3}}>
@@ -59,9 +59,12 @@ export default function Landing({collections}) {
             </Grid>
 
             <Grid item xs={12} md={12} lg={12} sx={{mt:10}} alignItems="center">
+
+                {/*
                 <Stack alignItems="center" sx={{mt:1, mb:4}}>
                     <Typography variant='h2a'>Top Collections Today</Typography>
                 </Stack>
+                */}
                 {/* <SampleList /> */}
                 <CollectionList collections={collections} />
                 <Stack alignItems="center" sx={{mt:1, mb:4}}>
@@ -71,7 +74,13 @@ export default function Landing({collections}) {
                         href={`/collections`}
                         rel="noreferrer noopener nofollow"
                     >
-                        <Button variant="contained">See all collections</Button>
+                        <Button 
+    variant="contained" 
+    sx={{ width: '1150px' }} // Adjust the width as needed
+>
+    More
+</Button>
+
                     </Link>
                 </Stack>
             </Grid>
