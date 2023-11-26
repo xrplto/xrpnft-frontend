@@ -23,12 +23,13 @@ const StickyTableCell = withStyles((theme) => ({
 // Table header data
 const TABLE_HEAD = [
     { no: 0, id: 'name', label: 'Collection', align: 'left', width: '40%' },
-    { no: 1, id: 'floor.amount', label: 'Floor', align: 'right', width: '10%' },
-    { no: 2, id: 'vol24h', label: '24h Vol', align: 'right', width: '10%' },
-    // { no: 3, id: 'volume', label: 'Volume', align: 'right', width: '10%' },
-    { no: 4, id: 'totalVolume', label: 'Total Vol', align: 'right', width: '10%' },
-    { no: 5, id: 'owners', label: 'Owners', align: 'right', width: '8%' },
-    { no: 6, id: 'nfts', label: 'NFTs', align: 'right', width: '8%' },
+ //   { no: 1, id: 'floor.amount', label: 'Floor', align: 'right', width: '10%' }, // FLOOR Platform
+    { no: 2, id: 'vol24h', label: '24h Volume', align: 'right', width: '10%' },  // 24h VOLUME Platform
+
+ //   { no: 3, id: 'volume', label: 'Volume', align: 'right', width: '10%' },   // TOTAL VOLUME Platform
+  //  { no: 4, id: 'totalVolume', label: 'Total Vol', align: 'right', width: '10%' },  // TOTAL VOLUME XRPL
+ //   { no: 5, id: 'owners', label: 'Owners', align: 'right', width: '8%' },
+  //  { no: 6, id: 'nfts', label: 'NFTs', align: 'right', width: '8%' },
 ];
 
 // ListHead component
@@ -36,7 +37,7 @@ export default function ListHead() {
     return (
         <TableHead>
             <TableRow
-              //  style={{ background: '#00000000' }} // Match this with your theme
+              style={{ background: '#00000000' }} // Match this with your theme
             >
                 {TABLE_HEAD.map((headCell) => (
                     <StickyTableCell
