@@ -11,7 +11,7 @@ export default function SeeMoreTypography({variant, text}) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.up('sm'));
 
-    const limit = fullScreen?100:30;
+    const limit = fullScreen?96:75;
 
     const [showContent, setShowContent] = useState(false);
 
