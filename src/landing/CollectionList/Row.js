@@ -285,18 +285,18 @@ export default function Row({ id, item }) {
                     </Link>
                 </Stack>
             </TableCell>
-{/*
+
             <TableCell align="right" sx={{pl:0, pr:0}}>
                 <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {fNumber(floorPrice)}</Typography>
             </TableCell>
-                            */}
+
             <TableCell align="right" sx={{pl:0, pr:0}}>
                 <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {fNumber(vol24h)}</Typography>
             </TableCell>
-{/*
-            <TableCell align="right" sx={{pl:0, pr:0}}>
+
+            {/* <TableCell align="right" sx={{pl:0, pr:0}}>
                 <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {volume1}</Typography>
-            </TableCell> 
+            </TableCell> */}
 
             <TableCell align="right" sx={{pl:0, pr:0}}>
                 <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {volume2}</Typography>
@@ -308,7 +308,7 @@ export default function Row({ id, item }) {
 
             <TableCell align="right" sx={{pl:0,pr:0}}>
                 <Typography variant="s3" noWrap>{fIntNumber(items)}</Typography>
-            </TableCell> */}
+            </TableCell>
         </TableRow>
     );
 };
