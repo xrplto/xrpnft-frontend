@@ -101,12 +101,12 @@ export default function Footer() {
                                         // target="_blank"
                                         // rel="noreferrer noopener nofollow"
                                     >
-                                        <Typography variant='link'>All NFTs</Typography>
+                                        <Typography variant='link'>All XRPL NFTs</Typography>
                                     </Link>
                                     {categories.map((cat, idx) => {
                                         const title = cat.title;
                                         const slug = cat.slug;
-                                        const count = cat.count;
+                                       // const count = cat.count;
                                         if (!title || title === 'NONE') return;
 
                                         return (
@@ -118,11 +118,12 @@ export default function Footer() {
                                                 // target="_blank"
                                                 // rel="noreferrer noopener nofollow"
                                             >
-                                                {count > 0 ?
+                                           {/**      {count > 0 ?
                                                     <Typography variant='link'>{title} ({fIntNumber(count)})</Typography>
                                                     :
+                                                    */}
                                                     <Typography variant='link'>{title}</Typography>
-                                                }
+                                         
                                             </Link>
                                         )
                                     })}
