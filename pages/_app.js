@@ -9,59 +9,73 @@ import "./zMain.css";
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
 
-// Head component for managing document head
-function CustomHead({ ogp }) {
-    const faviconSizes = ["16x16", "32x32", "96x96"];
-    const ogType = ogp.isVideo ? "video" : "image";
-    return (
-        <Head>
-            {/* Common meta tags */}
-            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-            <meta name="google-site-verification" content="dDLV5BZHngydfQXYGuUX34wnShMPqM-f5dHS2BRVdsQ" />
-
-            {/* Favicon links */}
-            {faviconSizes.map(size => (
-                <link key={size} rel="icon" type="image/png" sizes={size} href={`/favicon-${size}.png`} />
-            ))}
-            <link rel="apple-touch-icon" sizes="192x192" href="/icons/apple-icon.png" />
-            <link rel="manifest" href="/site.webmanifest" />
-
-            <meta name="msapplication-TileColor" content="#121619" />
-            <meta name="theme-color" content="#ffffff"/>
-
-            <link rel="canonical" href={ogp.canonical}/>
-
-            {/* SEO Meta Tags */}
-            <title>{ogp.title} | XRPNFT</title>
-            <meta name="description" content={ogp.desc}/>
-
-            {/* Open Graph / Facebook Meta Tags */}
-            <meta property="og:url" content={ogp.url}/>
-            <meta property="og:type" content="website"/>
-            <meta property="og:title" content={`${ogp.title} | XRPNFT`}/>
-            <meta property="og:description" content={ogp.desc}/>
-            <meta property={`og:${ogType}`} content={ogp.imgUrl}/>
-
-            {/* Twitter Meta Tags */}
-            <meta name="twitter:card" content="summary_large_image"/>
-            <meta property="twitter:domain" content="xrpnft.com"/>
-            <meta property="twitter:url" content={ogp.url}/>
-            <meta name="twitter:title" content={`${ogp.title} | XRPNFT`}/>
-            <meta name="twitter:description" content={ogp.desc}/>
-            <meta name={`twitter:${ogType}`} content={ogp.imgUrl}/>
-            <meta name={`twitter:${ogType}:src`} content={ogp.imgUrl}/>
-        </Head>
-    );
-}
-
-function XRPNFTApp({ Component, pageProps }) {
+function XRPNFTApp(props) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
+
+    const { Component, pageProps } = props;
+
     const ogp = pageProps.ogp || {};
     const data = pageProps.data;
 
+    if (ogp.isVideo) {
+        ogp.type = "video";
+    } else {
+        ogp.type = "image";
+    }
+
     return (
         <>
-            <CustomHead ogp={ogp} />
+            <Head>
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+                />
+                <meta name="google-site-verification" content="dDLV5BZHngydfQXYGuUX34wnShMPqM-f5dHS2BRVdsQ" />
+
+                {/*
+                    <meta name="apple-mobile-web-app-title" content="Snippit"/>
+                    <meta name="application-name" content="<APP NAME>"/>
+                    <meta name="msapplication-TileColor" content="#ffc40d"/>
+                    <meta name="theme-color" content="#ffffff"/>
+                */}
+
+                <link rel="apple-touch-icon" sizes="192x192" href="/icons/apple-icon.png" />
+                <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+                <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+                <link rel="icon" type="image/png" sizes="32x32" href="/favicon-96x96.png" />
+
+                <link rel="manifest" href="/site.webmanifest" />
+                {/* <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#121619" /> */}
+                <meta name="msapplication-TileColor" content="#121619" />
+                <meta name="theme-color" content="#ffffff"/>
+
+                {/* <meta name="robots" content="nofollow"/> */}
+
+                {/* <link rel="preload" as="image" href="/static/collection/NFT_Labs_Images4.png"/> */}
+
+                <link rel="canonical" href={ogp.canonical}/>
+
+                {/* <!-- HTML Meta Tags --> */}
+                <title>{ogp.title} | XRPNFT</title>
+                <meta name="description" content={ogp.desc}/>
+
+                {/* <!-- Facebook Meta Tags --> */}
+                <meta property="og:url" content={ogp.url}/>
+                <meta property="og:type" content="website"/>
+                <meta property="og:title" content={`${ogp.title} | XRPNFT`}/>
+                <meta property="og:description" content={ogp.desc}/>
+                <meta property={`og:${ogp.type}`} content={ogp.imgUrl}/>
+                {/* <!-- Twitter Meta Tags --> */}
+                <meta name="twitter:card" content="summary_large_image"/>
+                <meta property="twitter:domain" content="xrpnft.com"/>
+                <meta property="twitter:url" content={ogp.url}/>
+                <meta name="twitter:title" content={`${ogp.title} | XRPNFT`}/>
+                <meta name="twitter:description" content={ogp.desc}/>
+                {/* <!-- <meta name="twitter:image" content="/static/ogp.png"/> --> */}
+                <meta name={`twitter:${ogp.type}`} content={ogp.imgUrl}/>
+                <meta name={`twitter:${ogp.type}:src`} content={ogp.imgUrl}/>
+                {/* <!-- Meta Tags Generated via https://www.opengraph.xyz --> */}
+            </Head>
             <ContextProvider data={data} openSnackbar={openSnackbar}>
                 <ThemeProvider>
                     <SnackbarProvider maxSnack={3}>

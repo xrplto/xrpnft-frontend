@@ -14,8 +14,9 @@ import {
 import { getImgUrl } from 'src/utils/parse';
 
 export default function NFTPreview({ NFTokenID, meta, dfile }) {
-    const imgUrl = getImgUrl(NFTokenID, meta, dfile, 480);
-    const ipfsImgUrl = getImgUrl(NFTokenID, meta);
+	const noImg = '/static/nft_no_image.webp'
+    const imgUrl = getImgUrl(NFTokenID, meta, dfile, 480) || noImg;
+    const ipfsImgUrl = getImgUrl(NFTokenID, meta) || noImg;
     const isVideo = meta?.video?true:false;
 
     // const imgUrl = '/static/test.mp4';

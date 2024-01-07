@@ -452,6 +452,7 @@ export default function Collections({account}) {
                 <ToggleButton value="nometa" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>No Metadata</ToggleButton>
                 <ToggleButton value="imported" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Imported</ToggleButton>
                 <ToggleButton value="itemsmismatch" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Items Mismatch</ToggleButton>
+                <ToggleButton value="guessed" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Guessed</ToggleButton>
             </ToggleButtonGroup>
 
             <Stack direction="row">

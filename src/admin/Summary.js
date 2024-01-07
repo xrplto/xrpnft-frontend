@@ -14,6 +14,7 @@ import {
     TableBody,
     TableCell,
     TableRow,
+    TableHead,
     Tooltip,
     Typography
 } from '@mui/material';
@@ -74,6 +75,11 @@ export default function Summary({}) {
     const [nftScanner, setNftScanner] = useState({index: 0, nfts: 0});
     const [txScanner, setTxScanner] = useState({index: 0, nfts: 0});
     const [txScannerReal, setTxScannerReal] = useState({index: 0, nfts: 0});
+    
+    const [nftsWithoutDfile, setNftsWithoutDfile] = useState(0);
+    const [nftsWithoutMeta, setNftsWithoutMeta] = useState(0);
+    const [nftsWithoutMetaNoUri, setNftsWithoutMetaNoUri] = useState(0);
+    const [topIssuers, setTopIssuers] = useState([]);
 
     const [loading, setLoading] = useState(true);
 
@@ -122,6 +128,11 @@ export default function Summary({}) {
                         setCalcProps(ret.calcProps || 0);
 
                         setDownImages(ret.downloadImages || 0);
+                        
+                        setNftsWithoutDfile(ret.nftsWithoutDfile);
+                        setNftsWithoutMeta(ret.nftsWithoutMeta);
+                        setNftsWithoutMetaNoUri(ret.nftsWithoutMetaNoUri);
+                        setTopIssuers(ret.topIssuers);
                     }
                 }).catch(err => {
                     console.log("Error on getting summary!!!", err);
@@ -256,6 +267,33 @@ export default function Summary({}) {
                             <Typography variant="s5" color="error">{fIntNumber(nfts3)} <Typography variant="s6" color="#CB3C1D">({fPercent(pNfts3)}%, {dNfts3>0?'+':''}{fIntNumber(dNfts3)})</Typography> <Typography variant="s6" color="#33C2FF">(#{fIntNumber(txScannerReal.index)})</Typography></Typography>
                         </TableCell>
                     </TableRow>
+                    
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">NFTs without Metadata: </Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(nftsWithoutMeta)} </Typography>
+                        </TableCell>
+                    </TableRow>
+                    
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">NFTs without Metadata and URI: </Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(nftsWithoutMetaNoUri)} </Typography>
+                        </TableCell>
+                    </TableRow>
+                    
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">NFTs without Downloaded files: </Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(nftsWithoutDfile)} </Typography>
+                        </TableCell>
+                    </TableRow>
 
                     <TableRow>
                         <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
@@ -331,6 +369,56 @@ export default function Summary({}) {
                     </TableRow>
                 </TableBody>
             </Table>
+            
+		  <Table>
+			<TableHead>
+			  <TableRow>
+				<TableCell colSpan={3} align="center">
+				  Top {topIssuers.length} Issuers
+				</TableCell>
+			  </TableRow>
+			</TableHead>
+			<TableBody>
+			  {topIssuers.map((issuer, index) => (
+				<TableRow key={index}>
+				  <TableCell>{index+1}</TableCell>
+				  <TableCell>
+				    <Link
+						underline="none"
+						color="inherit"
+						target="_blank"
+						href={`/account/${issuer._id.issuer}`}
+						rel="noreferrer noopener nofollow"
+					>
+				      <Typography variant="s7">{issuer._id.issuer}</Typography>
+				    </Link>
+					<Link
+						underline="none"
+						color="inherit"
+						target="_blank"
+						href={`https://bithomp.com/explorer/${issuer._id.issuer}`}
+						rel="noreferrer noopener nofollow"
+					>
+						<Tooltip title="Check on Bithomp">
+							<IconButton edge="end" aria-label="bithomp" size="small">
+								<Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+							</IconButton>
+						</Tooltip>
+					</Link>
+					<CopyToClipboard text={issuer._id.issuer} onCopy={()=>openSnackbar('Copied!', 'success')}>
+						<Tooltip title='Click to copy'>
+							<IconButton size="small">
+								<ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+							</IconButton>
+						</Tooltip>
+					</CopyToClipboard>
+				  </TableCell>
+				  <TableCell>{fIntNumber(issuer.count)}</TableCell>
+				</TableRow>
+			  ))}
+			</TableBody>
+		  </Table>
+
         </>
     );
 }

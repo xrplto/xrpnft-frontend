@@ -99,7 +99,7 @@ export default function NFTCard({ nft, handleRemove }) {
 
     const [loadingImg, setLoadingImg] = useState(true)
 
-    const name = nft.meta?.name || 'No Name';
+    const name = nft.meta?.name || meta?.Name || 'No Name';
 
     const getColors = colors => {
         setColors(c => [...c, ...colors]);

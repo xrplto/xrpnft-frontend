@@ -653,9 +653,9 @@ export default function EditCollection({collection}) {
                     value={name}
                     setValid={setValid1}
                     onChange={(e) => {
-                        // setName(e.target.value);
+                         setName(e.target.value);
                     }}
-                    disabled
+                    // disabled
                 />
             </Stack>
 

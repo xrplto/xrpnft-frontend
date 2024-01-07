@@ -541,7 +541,7 @@ export const getImgUrl = (NFTokenID, meta, dfile, size) => {
     const image = meta.image;
     const video = meta.video;
 
-    if (!image && !video && !meta?.video_url && !meta?.image_url && !meta?.metadata?.video && !meta?.metadata?.image) return '';
+    if (!dfile && !image && !video && !meta?.video_url && !meta?.image_url && !meta?.metadata?.video && !meta?.metadata?.image) return '';// webxtor: added !dfile as there might be many other cases, for example, meta.animation and no oothers: 000813883EBCBE82C32E1CA28616DBDD2E40873D446B0EC53C71728400000019
 
     const isVideo = video?true:false;
 
@@ -550,9 +550,13 @@ export const getImgUrl = (NFTokenID, meta, dfile, size) => {
             return `https://s2.xrpnft.com/d1/${dfile.video}`;
         if (!isVideo && dfile.image)
             return `https://s2.xrpnft.com/d1/${dfile.image}`;
+        if (!isVideo && dfile.thumbnail) // TODO: maybe re-parse to always have image
+            return `https://s2.xrpnft.com/d1/${dfile.thumbnail}`;
     }
 
     let url = video || image || meta?.video_url || meta?.image_url || meta?.metadata?.video || meta?.metadata?.image;
+    
+    if (!url) return '';
 
     if (isIPFS.multihash(url)) {
         url = `https://gateway.xrpnft.com/ipfs/${url}`;

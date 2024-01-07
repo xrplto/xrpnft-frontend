@@ -98,7 +98,7 @@ export default function Overview({data}) {
             </BannerWrapper>
 
             <Container maxWidth="xxl">
-            <Collection data={data}/>
+                <Collection data={data}/>
             </Container>
 
             <ScrollToTop />

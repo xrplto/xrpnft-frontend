@@ -37,6 +37,7 @@ import { AppContext } from 'src/AppContext';
 // Components
 import ExploreNFT from 'src/explore';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
+import Watch from 'src/components/Watch';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -140,19 +141,10 @@ function truncate(str, n) {
 export default function ViewNFT({ collection }) {
     const anchorRef = useRef(null);
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
-
-
-    const truncateName = (name) => {
-      if (name.length > 8) {
-        return name.substring(0, 9) + '...';
-      }
-      return name;
-    };
 
     const [openShare, setOpenShare] = useState(false);
 
@@ -265,11 +257,9 @@ export default function ViewNFT({ collection }) {
             </IconCover>
             <Stack direction={fullScreen ? "column" : "row"} spacing={2} justifyContent="space-between" sx={{ mt: 1, mb: 1 }}>
                 <Stack direction="row" spacing={1}>
-                <Typography variant="h1a">
-      {isMobile ? truncateName(collection.name) : collection.name}
-    </Typography>
+                    <Typography variant="h1a">{name}</Typography>
                     {verified === 'yes' &&
-                        <Tooltip title='Verified Collection'>
+                        <Tooltip title='Verified'>
                             <VerifiedIcon style={{color: "#4589ff"}} />
                         </Tooltip>
                     }
@@ -285,16 +275,17 @@ export default function ViewNFT({ collection }) {
                             </Tooltip>
                         </Link>
                     }
-                  {/*}
+
                     <Tooltip title="Add to watchlist">
-                        <IconButton size='medium' sx={{ padding: 1 }}
+                        {/*<IconButton size='medium' sx={{ padding: 1 }}
                             onClick={() => {
                             }}
                         >
                             <StarBorderIcon />
-                        </IconButton>
+                        </IconButton>*/}
+                        <Watch collection={collection} />
                     </Tooltip>
-                  */}
+
                     <Tooltip title="Share">
                         <IconButton size='medium' sx={{ padding: 1 }}
                             ref={anchorRef}
@@ -303,30 +294,28 @@ export default function ViewNFT({ collection }) {
                             <ShareIcon />
                         </IconButton>
                     </Tooltip>
-{/*}
+
                     <IconButton size='medium' sx={{ padding: 1 }}
                         onClick={() => {
                         }}
                     >
                         <MoreHorizIcon />
                     </IconButton>
-*/}
                 </Stack>
             </Stack>
 
             <Stack direction="row" sx={{ mt: 2, mb: 3 }} spacing={1}>
-              {/*  <Typography variant="s5" style={{ wordBreak: "break-word" }}>By&nbsp;
+                <Typography variant="s5" style={{ wordBreak: "break-word" }}>By&nbsp;
                     <Link
                         color="inherit"
                         // target="_blank"
                         href={`/account/${account}`}
                         // rel="noreferrer noopener nofollow"
                     >
-                      
-                        <Typography variant="s5" color="#33C2FF">{accountName || account.slice(0, 4) + '...' + account.slice(-4)}</Typography> 
+                        <Typography variant="s5" color="#33C2FF">{accountName || account.slice(0, 4) + '...' + account.slice(-4)}</Typography>
                     </Link>
-                  <Typography variant="s10">&nbsp;&nbsp;·&nbsp;Created <Typography variant="s3">{formatMonthYear(created)}</Typography></Typography> 
-                </Typography> */}
+                    <Typography variant="s10">&nbsp;&nbsp;·&nbsp;Created <Typography variant="s3">{formatMonthYear(created)}</Typography></Typography>
+                </Typography>
             </Stack>
 
             <SeeMoreTypography
@@ -355,11 +344,11 @@ export default function ViewNFT({ collection }) {
                 <Stack direction="row" width="100%" sx={{ mt: 2, mb: 3 }} spacing={{xs: 3, sm: 5}} alignItems="flex-end" justifyContent={{xs: 'space-around', sm: 'flex-start'}}>
                     <Stack>
                         <Typography variant='d5'>{items}</Typography>
-                        <Typography variant='s13'>Items</Typography>
+                        <Typography variant='s13'>items</Typography>
                     </Stack>
                     <Stack>
                         <Typography variant='d5'>{extra.owners}</Typography>
-                        <Typography variant='s13'>Owners</Typography>
+                        <Typography variant='s13'>owners</Typography>
                     </Stack>
                     <Stack>
                         <Stack direction="row" spacing={0.5} alignItems='center'>
@@ -378,14 +367,14 @@ export default function ViewNFT({ collection }) {
                                 </Tooltip>
                             </Stack>
                         </Stack>
-                        <Typography variant='s13' noWrap>Total Vol</Typography>
+                        <Typography variant='s13' noWrap>total volume</Typography>
                     </Stack>
                     <Stack>
                         <Stack direction="row" spacing={0.5} alignItems='center'>
                             <Icon icon={rippleSolid} width="20" height="20" />
                             <Typography variant="d5" noWrap>{fNumber(floorPrice)}</Typography>
                         </Stack>
-                        <Typography variant='s13' noWrap>Floor</Typography>
+                        <Typography variant='s13' noWrap>floor price</Typography>
                     </Stack>
                 </Stack>
             </Box>

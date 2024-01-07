@@ -27,9 +27,9 @@ export default function Landing({collections}) {
         <Grid container spacing={3} justifyContent="center" alignItems="center" display="flex" sx={{mt:2}}>
             <Grid item xs={12} md={7} lg={7}>
                 <AutoStack>
-                <Typography variant="h1a">XRP NFT Marketplace</Typography>
+                    <Typography variant="h1a">Discover, collect and sell extraordinary NFTs</Typography>
                     <Stack sx={{mt:2}}>
-                        <Typography variant="s1">Trade and Collect XRPL NFTs with <Typography variant="s1" color="#2de370">Zero Fees.</Typography></Typography>
+                        <Typography variant="s1">XRPNFT is a fee-free platform for trading XRPL NFTs on the XRP Ledger, connecting creators and collectors in a <Typography variant="s1" color="#2de370">seamless NFT marketplace.</Typography></Typography>
                     </Stack>
 
                     <Stack direction="row" spacing={2} sx={{mt: 3}}>

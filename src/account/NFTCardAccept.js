@@ -84,7 +84,7 @@ export default function NFTCardAccept({ nft, handleApprove }) {
 
     const [loadingImg, setLoadingImg] = useState(true)
 
-    const name = nft.meta?.name || 'No Name';
+    const name = nft.meta?.name || meta?.Name || 'No Name';
 
     const onImageLoaded = () => {
         setLoadingImg(false)

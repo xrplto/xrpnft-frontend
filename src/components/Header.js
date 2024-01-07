@@ -107,7 +107,7 @@ export default function Header() {
                     {fullSearch &&
                         <NavSearchBar
                             id='id_search_items_collections_accounts'
-                            placeholder='Search NFTs, Collections, and Accounts'
+                            placeholder='Search items, collections, and accounts'
                             type='SEARCH_ITEM_COLLECTION_ACCOUNT'
                             fullSearch={fullSearch}
                             setFullSearch={setFullSearch}
@@ -127,7 +127,7 @@ export default function Header() {
                     {!fullSearch && !isMobile &&
                         <NavSearchBar
                             id='id_search_items_collections_accounts'
-                            placeholder='Search NFTs, Collections, and Accounts'
+                            placeholder='Search items, collections, and accounts'
                             type='SEARCH_ITEM_COLLECTION_ACCOUNT'
                             fullSearch={fullSearch}
                             setFullSearch={setFullSearch}

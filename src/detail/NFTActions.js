@@ -165,7 +165,7 @@ export default function NFTActions({ nft }) {
 
     const collectionName = collection || meta?.collection?.name || '[No Collection]';
 
-    const nftName = meta?.name || '[No Name]';
+    const nftName = meta?.name || meta?.Name || '[No Name]';
 
     const floorPrice = cfloor?.amount || 0;
 
