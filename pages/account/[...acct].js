@@ -63,8 +63,8 @@ export default function Overview({data}) {
 
     let default_banner = darkMode?'/static/banner_black.png':'/static/banner_white.png';
 
-    const bannerImage = profile.banner?`https://s1.xrpnft.com/profile/${profile.banner}`:default_banner;
-
+    //const bannerImage = profile.banner?`https://s1.xrpnft.com/profile/${profile.banner}`:default_banner;
+    let bannerImage = darkMode?'/static/banner_black.png':'/static/banner_white.png';   // Change the custom banner above till we can reset banners for all users back to default.
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
@@ -145,7 +145,7 @@ export async function getServerSideProps(ctx) {
     ogp.title = name || account;
     ogp.url = `https://xrpnft.com/account/${account}`;
     ogp.imgUrl = imgUrl;
-    ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+    ogp.desc = description ? description : `XRP Ledger Wallet: ${account}`;
 
     return {
         props: {data, ogp}, // will be passed to the page component as props

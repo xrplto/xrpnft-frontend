@@ -399,7 +399,7 @@ export default function Minting() {
             />
 
             <Stack spacing={1} sx={{mt: 4, mb:3}}>
-                <Typography variant="h1a" >Create New Item</Typography>
+                <Typography variant="h1a" >Create New NFT</Typography>
                 <Typography variant='p3'><Typography variant='s2'>*</Typography> Required fields</Typography>
                 <Typography variant='p4'>Image, Video, Audio, or 3D Model <Typography variant='s2'>*</Typography></Typography>
                 <Typography variant='p3'>File types supported: {SUPPORTED_FILE_TYPES.join(', ')}. (Max size: 10MB) MP4 (Max size: 50MB)</Typography>

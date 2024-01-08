@@ -181,7 +181,7 @@ export default function NFTCardAccept({ nft, handleApprove }) {
                     </Stack>
                     <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:0, pl:0, pr:0}}>
                         {amount.amount === 0 ?
-                            <Typography variant="s8">FREE</Typography>
+                            <Typography variant="s8">Claim NFT</Typography>
                             :
                             <>
                                 {amount.currency === "XRP" ?

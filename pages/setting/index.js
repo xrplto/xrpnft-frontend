@@ -50,7 +50,7 @@ export async function getStaticProps() {
     ogp.title = 'Setting';
     ogp.url = 'https://xrpnft.com/setting';
     ogp.imgUrl = 'https://xrpnft.com/static/ogp.png';
-    ogp.desc = 'A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.';
+    ogp.desc = "XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.";
 
     ret = {ogp};
 

@@ -75,8 +75,8 @@ export default function Overview({data}) {
 
     let default_banner = darkMode?'/static/banner_black.png':'/static/banner_white.png';
 
-    const bannerImage = collection.bannerImage?`https://s1.xrpnft.com/collection/${collection.bannerImage}`:default_banner;
-
+ // const bannerImage = collection.bannerImage?`https://s1.xrpnft.com/collection/${collection.bannerImage}`:default_banner;
+    const bannerImage = darkMode?'/static/banner_black.png':'/static/banner_white.png';  //added default banner. Disable custom banner images above for now.
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
@@ -166,8 +166,8 @@ export async function getServerSideProps(ctx) {
         ogp.canonical = `https://xrpnft.com/collection/${slug}`;
         ogp.title = `${name}`;
         ogp.url = `https://xrpnft.com/collection/${slug}`;
-        ogp.imgUrl = `https://s1.xrpnft.com/collection/${bannerImage}`;
-        ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+        ogp.imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
+        ogp.desc = description?description:`XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
 
         return {
             props: {data, ogp}, // will be passed to the page component as props

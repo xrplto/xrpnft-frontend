@@ -355,6 +355,7 @@ export default function Wallet() {
                                 href="/create"
                                 rel="noreferrer noopener nofollow"
                             >
+                                {/*
                                 <MenuItem
                                     key="create-nft"
                                     sx={{ typography: 'body2', py: 2, px: 2.5 }}
@@ -364,7 +365,7 @@ export default function Wallet() {
                                         <AddPhotoAlternateIcon />
                                         <Typography variant='s3' style={{marginLeft: '10px'}}>Create a NFT</Typography>
                                     </Stack>
-                                </MenuItem>
+                        </MenuItem>  */}
                             </Link>
                             <Link
                                 underline="none"

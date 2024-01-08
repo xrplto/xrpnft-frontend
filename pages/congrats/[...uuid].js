@@ -131,7 +131,7 @@ export async function getServerSideProps(ctx) {
         ogp.title = `${name} - XRP NFT Marketplace, Buy, Sell & Collect NFTs`;
         ogp.url = `https://xrpnft.com/nft/${NFTokenID}`;
         ogp.imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
-        ogp.desc = meta.description?meta.description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+        ogp.desc = meta.description?meta.description:`XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
         ogp.isVideo = meta.video?true:false;
 
         data.isBuyAssets = isBuyAssets;
@@ -176,7 +176,7 @@ export async function getServerSideProps(ctx) {
         ogp.title = `${name} - Collection`;
         ogp.url = `https://xrpnft.com/collection/${slug}`;
         ogp.imgUrl = `https://s1.xrpnft.com/collection/${bannerImage}`;
-        ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+        ogp.desc = description?description:`XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
 
         data.isEditCollection = isEditCollection;
         data.isImportCollection = isImportCollection;

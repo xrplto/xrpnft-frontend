@@ -811,6 +811,8 @@ export default function NFTDetailsMobile({ nft }) {
                         <Typography variant='s15' noWrap> {truncate(account, 16)}</Typography>
                     </Link>
                 </Stack>
+
+                {/*
                 <Tooltip title="Contact owner via XRPNFT chat">
                     <IconButton size='small' sx={{ padding: 1 }}
                         onClick={() => {
@@ -818,7 +820,7 @@ export default function NFTDetailsMobile({ nft }) {
                     >
                         <MessageOutlinedIcon fontSize="small" />
                     </IconButton>
-                </Tooltip>
+                    </Tooltip> */}
             </Stack>
 
             {isOwner &&

@@ -147,7 +147,7 @@ export async function getServerSideProps(ctx) {
         ogp.title = `${name} - Collection`;
         ogp.url = `https://xrpnft.com/collection/${slug}`;
         ogp.imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
-        ogp.desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+        ogp.desc = description?description:`XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
 
         return {
             props: {data, ogp}, // will be passed to the page component as props

@@ -88,7 +88,7 @@ export default function Congrats({ data }) {
         isVideo = nft.meta.video;
         url = `https://xrpnft.com/nft/${NFTokenID}`;
         title = `${name}`;
-        desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+        desc = description?description:`XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
     } else {
         const {
             name,
@@ -104,7 +104,7 @@ export default function Congrats({ data }) {
         imgUrl = `https://s1.xrpnft.com/collection/${collection.logoImage}`;
         url = `https://xrpnft.com/collection/${slug}`;
         title = `${name}`;
-        desc = description?description:`A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.`;
+        desc = description?description:`XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
     }
 
     const getColors = (colors, idx) => {

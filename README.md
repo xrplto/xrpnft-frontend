@@ -1,6 +1,6 @@
 ## XRP NFT Marketplace, Buy, Sell & Collect NFTs | [XRPNFT.com](https://xrpnft.com) (Front-End, Next.js)
 
-A next generation NFT marketplace on the XRP ledger. Create, buy, sell, and auctions NFTs on the XRP blockchain without any barriers.
+XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.
 
 ### Landing page
 

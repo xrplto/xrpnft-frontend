@@ -655,14 +655,14 @@ export default function NFTActions({ nft }) {
                         <Typography variant='s15' noWrap> {truncate(account, 16)}</Typography>
                     </Link>
                 </Stack>
-                <Tooltip title="Contact owner via XRPNFT chat">
+             {/*   <Tooltip title="Contact owner via XRPNFT chat"> 
                     <IconButton size='small' sx={{ padding: 1 }}
                         onClick={() => {
                         }}
                     >
                         <MessageOutlinedIcon fontSize="small" />
                     </IconButton>
-                </Tooltip>
+                </Tooltip> */}
             </Stack>
 
             {/* Make offer start */}
