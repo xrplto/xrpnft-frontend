@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import axios from 'axios'
+import { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 // Material
@@ -21,9 +21,10 @@ import { ClipLoader } from "react-spinners";
 import NFTCard from 'src/explore/NFTCard';
 import FilterDetail from './FilterDetail';
 
+
 export default function CollectedNFTs({ account }) {
 
-    const BASE_URL = 'https://api.xrpnft.com/api';
+    const BASE_URL = 'https://api.xrpnft.com/api'
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -31,68 +32,74 @@ export default function CollectedNFTs({ account }) {
     const [nfts, setNfts] = useState([]);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
-    const [loading, setLoading] = useState(false);
+    const [flag, setFlag] = useState(0);
+
     const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(false);
+
     const [showFilter, setShowFilter] = useState(true);
+    // const [filter, setFilter] = useState(collection?.imported === 'yes' ? 0 : 4);
     const [filter, setFilter] = useState(0);
+
     const [subFilter, setSubFilter] = useState('pricexrpasc');
+
     const [onSaleCount, setOnSaleCount] = useState(0);
 
-    const fetchNfts = useCallback(async () => {
+    const [sync, setSync] = useState(0);
+
+    const fetchNfts = () => {
         setLoading(true);
 
         const limit = 20;
+
+        // const body = { page, limit, flag, cid: collection?.uuid, search, filter, subFilter };
+
         const body = { account, page, limit, search, filter, subFilter };
 
-        try {
-            const res = await axios.post(`${BASE_URL}/account/collected`, body);
-            const newNfts = res.data.nfts;
-            setHasMore(newNfts.length === limit);
-            setNfts(prevNfts => [...prevNfts, ...newNfts]);
-        } catch (err) {
-            console.error("Error on getting nfts!", err);
-        } finally {
-            setLoading(false);
-        }
-    }, [account, page, search, filter, subFilter]);
+        axios.post(`${BASE_URL}/account/collected`, body)
+            .then(res => {
+                const newNfts = res.data.nfts;
+                const length = newNfts.length;
+                if (length < 20) {
+                    setHasMore(false);
+                } else {
+                    setHasMore(true);
+                }
+                if (length > 0) {
+                    setNfts([...nfts, ...newNfts])
+                }
+            }).catch(err => {
+                console.log("Error on getting nfts!", err);
+            }).then(function () {
+                // always executed
+                setLoading(false);
+            });
+    };
 
     useEffect(() => {
         setNfts([]);
         setPage(0);
         setHasMore(true);
-        fetchNfts();
-    }, [fetchNfts]);
+        setSync(sync + 1);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [flag, search, filter, subFilter]);
 
     useEffect(() => {
-        setShowFilter(!fullScreen);
+        fetchNfts();
+    }, [sync]);
+
+    useEffect(() => {
+        if (fullScreen)
+            setShowFilter(false);
     }, [fullScreen]);
 
     const handleChangeSearch = (e) => {
         setSearch(e.target.value);
-    };
+    }
 
-    const handleShowFilter = () => {
-        setShowFilter(prevShowFilter => !prevShowFilter);
-    };
-
-    // Memoized InfiniteScroll component to avoid re-renders
-    const infiniteScroll = useMemo(() => (
-        <InfiniteScroll
-            dataLength={nfts.length}
-            next={() => setPage(prevPage => prevPage + 1)}
-            hasMore={hasMore}
-            scrollThreshold={0.6}
-        >
-            <Grid container spacing={1}>
-                {nfts.map((nft) => (
-                    <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.uuid}>
-                        <NFTCard nft={nft} />
-                    </Grid>
-                ))}
-            </Grid>
-        </InfiniteScroll>
-    ), [nfts, hasMore]);
-
+    const handleShowFilter = (e) => {
+        setShowFilter(!showFilter);
+    }
 
     return (
         <>

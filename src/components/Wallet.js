@@ -318,6 +318,8 @@ export default function Wallet() {
                                     href="/collection/import"
                                     rel="noreferrer noopener nofollow"
                                 >
+
+                                
                                     <MenuItem
                                         key="import_collection"
                                         sx={{ typography: 'body2', py: 2, px: 2.5 }}
@@ -327,7 +329,7 @@ export default function Wallet() {
                                             <ImportExportIcon />
                                             <Typography variant='s3' style={{marginLeft: '10px'}}>Import Collection</Typography>
                                         </Stack>
-                                    </MenuItem>
+                            </MenuItem>  
                                 </Link>
                             }
                             <Link
