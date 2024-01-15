@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import ModalImage from "react-modal-image";
+import ModalImage from 'react-modal-image';
 
 // Material
 import {
@@ -15,13 +15,13 @@ import {
     TableRow,
     Typography
 } from '@mui/material';
-import { tableCellClasses } from "@mui/material/TableCell";
+import { tableCellClasses } from '@mui/material/TableCell';
 
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';
 
 // Loader
-import { PulseLoader } from "react-spinners";
+import { PulseLoader } from 'react-spinners';
 
 // Components
 import ListToolbar from './ListToolbar';
@@ -47,16 +47,21 @@ export default function FavoritedList({ account }) {
     useEffect(() => {
         function getNfts() {
             setLoading(true);
-            axios.get(`${BASE_URL}/account/favorited?account=${account}&page=${page}&limit=${rows}`)
-                .then(res => {
+            axios
+                .get(
+                    `${BASE_URL}/account/favorited?account=${account}&page=${page}&limit=${rows}`
+                )
+                .then((res) => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
                         setTotal(ret.total);
                         setNfts(ret.nfts);
                     }
-                }).catch(err => {
-                    console.log("Error on getting minted nfts list!!!", err);
-                }).then(function () {
+                })
+                .catch((err) => {
+                    console.log('Error on getting minted nfts list!!!', err);
+                })
+                .then(function () {
                     // always executed
                     setLoading(false);
                 });
@@ -66,13 +71,18 @@ export default function FavoritedList({ account }) {
 
     return (
         <Stack spacing={3} alignItems="center">
-            <Typography variant="s3" sx={{ mb: 2 }}>Coming Soon</Typography>
+            <Typography variant="s3" sx={{ mb: 2 }}>
+                Coming Soon
+            </Typography>
             <img
                 alt="Coming Soon"
                 height={200}
                 src="/static/status/coming-soon.svg"
             />
-            <Typography variant="s7" sx={{ mb: 4 }}>We're working on implementing this feature, Please contact us if you need this feature urgently!</Typography>
+            <Typography variant="s7" sx={{ mb: 4 }}>
+                We're working on implementing this feature, Please contact us if
+                you need this feature urgently!
+            </Typography>
         </Stack>
     );
 
@@ -80,34 +90,38 @@ export default function FavoritedList({ account }) {
         <>
             {loading ? (
                 <Stack alignItems="center">
-                    <PulseLoader color='#00AB55' size={10} />
+                    <PulseLoader color="#00AB55" size={10} />
                 </Stack>
             ) : (
-                nfts && nfts.length === 0 &&
-                <Stack alignItems="center" sx={{ mt: 5 }}>
-                    <Typography variant="s7">No Items</Typography>
-                </Stack>
-            )
-            }
+                nfts &&
+                nfts.length === 0 && (
+                    <Stack alignItems="center" sx={{ mt: 5 }}>
+                        <Typography variant="s7">No Items</Typography>
+                    </Stack>
+                )
+            )}
             <Box
                 sx={{
-                    display: "flex",
+                    display: 'flex',
                     gap: 1,
                     py: 1,
-                    overflow: "auto",
-                    width: "100%",
-                    "& > *": {
-                        scrollSnapAlign: "center",
+                    overflow: 'auto',
+                    width: '100%',
+                    '& > *': {
+                        scrollSnapAlign: 'center'
                     },
-                    "::-webkit-scrollbar": { display: "none" },
+                    '::-webkit-scrollbar': { display: 'none' }
                 }}
             >
-                <Table stickyHeader sx={{
-                    [`& .${tableCellClasses.root}`]: {
-                        borderBottom: "1px solid",
-                        borderColor: theme.palette.divider
-                    }
-                }}>
+                <Table
+                    stickyHeader
+                    sx={{
+                        [`& .${tableCellClasses.root}`]: {
+                            borderBottom: '1px solid',
+                            borderColor: theme.palette.divider
+                        }
+                    }}
+                >
                     <TableBody>
                         {
                             // {
@@ -131,111 +145,156 @@ export default function FavoritedList({ account }) {
                             //     }
                             // }
                             // exchs.slice(page * rows, page * rows + rows)
-                            nfts && nfts.map((row) => {
-                                const {
-                                    uuid,
-                                    name,
-                                    collection,
-                                    flag,
-                                    account,
-                                    date,
-                                    meta,
-                                    dfile,
-                                    URI,
-                                    NFTokenID
-                                } = row;
+                            nfts &&
+                                nfts.map((row) => {
+                                    const {
+                                        uuid,
+                                        name,
+                                        collection,
+                                        flag,
+                                        account,
+                                        date,
+                                        meta,
+                                        dfile,
+                                        URI,
+                                        NFTokenID
+                                    } = row;
 
-                                // const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
-                                const imgUrl = getImgUrl(NFTokenID, meta, dfile, 480);
+                                    // const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+                                    const imgUrl = getImgUrl(
+                                        NFTokenID,
+                                        meta,
+                                        dfile,
+                                        480
+                                    );
 
-                                const isVideo = meta.video;
+                                    const isVideo = meta.video;
 
-                                const strDateTime = formatDateTime(date);
+                                    const strDateTime = formatDateTime(date);
 
-                                return (
-                                    <TableRow
-                                        // hover
-                                        key={uuid}
-                                        sx={{
-                                            [`& .${tableCellClasses.root}`]: {
-                                                // color: (error ? '#B72136' : '#B72136')
-                                            }
-                                        }}
-                                    >
-                                        {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
-                                        <TableCell align="left">
-                                            {isVideo ?
-                                                <CardMedia
-                                                    component="video"
-                                                    image={imgUrl}
-                                                    title='title'
-                                                    controls
-                                                    style={{
-                                                        width: 96,
-                                                        height: 96,
-                                                        filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
-                                                    }}
-                                                />
-                                                :
-                                                <ModalImage
-                                                    className='nftpreview1'
-                                                    small={imgUrl}
-                                                    large={imgUrl}
-                                                    alt={name}
-                                                    hideDownload
-                                                    hideZoom
-                                                    style={{
-                                                        width: 96,
-                                                        height: 96,
-                                                        filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
-                                                    }}
-                                                />
-                                            }
-                                        </TableCell>
+                                    return (
+                                        <TableRow
+                                            // hover
+                                            key={uuid}
+                                            sx={{
+                                                [`& .${tableCellClasses.root}`]:
+                                                    {
+                                                        // color: (error ? '#B72136' : '#B72136')
+                                                    }
+                                            }}
+                                        >
+                                            {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
+                                            <TableCell align="left">
+                                                {isVideo ? (
+                                                    <CardMedia
+                                                        component="video"
+                                                        image={imgUrl}
+                                                        title="title"
+                                                        controls
+                                                        style={{
+                                                            width: 96,
+                                                            height: 96,
+                                                            filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <ModalImage
+                                                        className="nftpreview1"
+                                                        small={imgUrl}
+                                                        large={imgUrl}
+                                                        alt={name}
+                                                        hideDownload
+                                                        hideZoom
+                                                        style={{
+                                                            width: 96,
+                                                            height: 96,
+                                                            filter: `drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`
+                                                        }}
+                                                    />
+                                                )}
+                                            </TableCell>
 
-                                        <TableCell align="left">
-                                            <Stack spacing={0.5}>
-                                                <Stack direction="row" justifyContent="space-between">
-                                                    <Typography variant="h3" color="#33C2FF">{name}</Typography>
-                                                </Stack>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s4">Collection: </Typography>
-                                                    <Typography variant="s6">{collection}</Typography>
-                                                </Stack>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s4">Created On: </Typography>
-                                                    <Typography variant="s6">{strDateTime}</Typography>
-                                                </Stack>
-                                                <Stack direction="row" spacing={2} alignItems="center">
-                                                    <Typography variant="s4">Flags: </Typography>
-                                                    <FlagsContainer Flags={flag} />
-                                                    {/* <Typography variant="s6">{strDateTime}</Typography> */}
-                                                </Stack>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Typography variant="s4">TokenID: </Typography>
-                                                    <Link
-                                                        color="inherit"
-                                                        target="_blank"
-                                                        href={`https://bithomp.com/explorer/${NFTokenID}`}
-                                                        rel="noreferrer noopener nofollow"
+                                            <TableCell align="left">
+                                                <Stack spacing={0.5}>
+                                                    <Stack
+                                                        direction="row"
+                                                        justifyContent="space-between"
                                                     >
-                                                        <Typography variant="s6">{NFTokenID}</Typography>
-                                                    </Link>
+                                                        <Typography
+                                                            variant="h3"
+                                                            color="#33C2FF"
+                                                        >
+                                                            {name}
+                                                        </Typography>
+                                                    </Stack>
+                                                    <Stack
+                                                        direction="row"
+                                                        spacing={1}
+                                                        alignItems="center"
+                                                    >
+                                                        <Typography variant="s4">
+                                                            Collection:{' '}
+                                                        </Typography>
+                                                        <Typography variant="s6">
+                                                            {collection}
+                                                        </Typography>
+                                                    </Stack>
+                                                    <Stack
+                                                        direction="row"
+                                                        spacing={1}
+                                                        alignItems="center"
+                                                    >
+                                                        <Typography variant="s4">
+                                                            Created On:{' '}
+                                                        </Typography>
+                                                        <Typography variant="s6">
+                                                            {strDateTime}
+                                                        </Typography>
+                                                    </Stack>
+                                                    <Stack
+                                                        direction="row"
+                                                        spacing={2}
+                                                        alignItems="center"
+                                                    >
+                                                        <Typography variant="s4">
+                                                            Flags:{' '}
+                                                        </Typography>
+                                                        <FlagsContainer
+                                                            Flags={flag}
+                                                        />
+                                                        {/* <Typography variant="s6">{strDateTime}</Typography> */}
+                                                    </Stack>
+                                                    <Stack
+                                                        direction="row"
+                                                        spacing={1}
+                                                        alignItems="center"
+                                                    >
+                                                        <Typography variant="s4">
+                                                            TokenID:{' '}
+                                                        </Typography>
+                                                        <Link
+                                                            color="inherit"
+                                                            target="_blank"
+                                                            href={`https://bithomp.com/explorer/${NFTokenID}`}
+                                                            rel="noreferrer noopener nofollow"
+                                                        >
+                                                            <Typography variant="s6">
+                                                                {NFTokenID}
+                                                            </Typography>
+                                                        </Link>
+                                                    </Stack>
                                                 </Stack>
-                                            </Stack>
-                                        </TableCell>
+                                            </TableCell>
 
-                                        <TableCell align="left">
-
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })
+                                            <TableCell align="left"></TableCell>
+                                        </TableRow>
+                                    );
+                                })
                         }
                     </TableBody>
                 </Table>
             </Box>
-            {total > 0 &&
+            {total > 0 && (
                 <ListToolbar
                     count={total}
                     rows={rows}
@@ -243,7 +302,7 @@ export default function FavoritedList({ account }) {
                     page={page}
                     setPage={setPage}
                 />
-            }
+            )}
         </>
     );
 }

@@ -5,7 +5,8 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // Material
 import {
-    alpha, styled,
+    alpha,
+    styled,
     Avatar,
     Badge,
     Box,
@@ -22,10 +23,6 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import ListIcon from '@mui/icons-material/List';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import NearbyErrorIcon from '@mui/icons-material/NearbyError';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 // Context
@@ -36,13 +33,12 @@ import { AppContext } from 'src/AppContext';
 import { getHashIcon } from 'src/utils/parse';
 
 // Components
-import CollectedNFTs from './CollectedNFTs';
-import CreatedNFTs from './CreatedNFTs';
+import NFTs from './NFTs';
+import Offers from './Offers';
+import History from './History';
 // import FavoritedList from './FavoritedList';
-import ActivityList from './ActivityList';
-import TransferredNFTs from './TransferredNFTs';
-import OffersList from './OffersList';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
+import StyledBadge from './StyledBadge';
 
 const IconImage = styled('img')(
     ({ theme }) => `
@@ -71,7 +67,7 @@ const ImageBackdrop = styled('span')(({ theme }) => ({
     bottom: 0,
     backgroundColor: theme.palette.common.black,
     opacity: 0,
-    transition: theme.transitions.create('opacity'),
+    transition: theme.transitions.create('opacity')
 }));
 
 const CardOverlay = styled('div')(
@@ -97,10 +93,14 @@ function TabPanel(props) {
             {...other}
         >
             {value === id && (
-                <Box sx={{
-                    // p: { xs: 0, md: 3 },
-                    // pt: { xs: 3 },
-                }}>
+                <Box
+                    sx={
+                        {
+                            // p: { xs: 0, md: 3 },
+                            // pt: { xs: 3 },
+                        }
+                    }
+                >
                     {children}
                 </Box>
             )}
@@ -111,39 +111,23 @@ function TabPanel(props) {
 function a11yProps(index) {
     return {
         id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`
     };
 }
 
 // const tabValues = ['', 'created', 'favorited', 'activity', 'transfers', 'more'];
 // const tabLabels = ['Collected', 'Created', 'Favorited', 'Activity', 'Transfers', 'More'];
 
-const tabValues = ['', 'created', 'activity', 'transfers', 'more'];
-const tabLabels = ['Collected', 'Created', 'Activity', 'Transfers', 'More'];
-
-const tabMoreValues = ['sells', 'buys', 'orphaned'];
-const tabMoreLabels = ['Sell Offers', 'Buy Offers', 'Orphaned Offers'];
+const tabValues = ['nfts', 'offers', 'history'];
+const tabLabels = ['NFTs', 'Offers', 'History'];
 
 const MORE_INDEX = tabValues.indexOf('more');
 
 function getTabID(tab) {
     if (!tab) return 0;
 
-    if (tabMoreValues.includes(tab))
-        return MORE_INDEX;
-
     const idx = tabValues.indexOf(tab);
-    if (idx < 0)
-        return 0;
-    return idx;
-}
-
-function getSubTabID(tab) {
-    if (!tab) return 0;
-
-    const idx = tabMoreValues.indexOf(tab);
-    if (idx < 0)
-        return 0;
+    if (idx < 0) return 0;
     return idx;
 }
 
@@ -152,11 +136,11 @@ const StyledMenu = styled((props) => (
         elevation={0}
         anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'right',
+            horizontal: 'right'
         }}
         transformOrigin={{
             vertical: 'top',
-            horizontal: 'right',
+            horizontal: 'right'
         }}
         {...props}
     />
@@ -166,36 +150,29 @@ const StyledMenu = styled((props) => (
         marginTop: theme.spacing(1),
         minWidth: 180,
         color:
-            theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+            theme.palette.mode === 'light'
+                ? 'rgb(55, 65, 81)'
+                : theme.palette.grey[300],
         boxShadow:
             'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
         '& .MuiMenu-list': {
-            padding: '4px 0',
+            padding: '4px 0'
         },
         '& .MuiMenuItem-root': {
             '& .MuiSvgIcon-root': {
                 fontSize: 18,
                 color: theme.palette.text.secondary,
-                marginRight: theme.spacing(1.5),
+                marginRight: theme.spacing(1.5)
             },
             '&:active': {
                 backgroundColor: alpha(
                     theme.palette.primary.main,
-                    theme.palette.action.selectedOpacity,
-                ),
-            },
-        },
-    },
+                    theme.palette.action.selectedOpacity
+                )
+            }
+        }
+    }
 }));
-
-const StyledBadge = styled(Badge)(({ theme }) => ({
-    '& .MuiBadge-badge': {
-      right: -10,
-      top: -3,
-    //   border: `1px solid ${theme.palette.background.paper}`,
-      padding: '0 4px',
-    },
-  }));
 
 export default function Account({ profile, tab }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -204,27 +181,16 @@ export default function Account({ profile, tab }) {
     // const accountToken = accountProfile?.token;
     // const accountUuid = accountProfile?.xuuid;
 
-    const [moreMenu, setMoreMenu] = useState(getSubTabID(tab));
-
-    const [anchorEl, setAnchorEl] = useState(null);
-
-    const open = Boolean(anchorEl);
-
     const [tabID, setTabID] = useState(getTabID(tab));
 
     const [acceptNfts, setAcceptNfts] = useState(0);
     const [orphanedOffers, setOrphanedOffers] = useState(0);
 
-    const {
-        account,
-        name,
-        logo,
-        banner,
-        description,
-        minterWallet
-    } = profile;
+    const { account, name, logo, banner, description, minterWallet } = profile;
 
-    const logoImage = logo ? `https://s1.xrpnft.com/profile/${logo}` : getHashIcon(account);
+    const logoImage = logo
+        ? `https://s1.xrpnft.com/profile/${logo}`
+        : getHashIcon(account);
 
     useEffect(() => {
         function getOffersCount() {
@@ -232,8 +198,9 @@ export default function Account({ profile, tab }) {
                 account
             };
 
-            axios.post(`${BASE_URL}/account/notification`, body)
-                .then(res => {
+            axios
+                .post(`${BASE_URL}/account/notification`, body)
+                .then((res) => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
                         setAcceptNfts(ret.acceptNfts);
@@ -241,45 +208,26 @@ export default function Account({ profile, tab }) {
 
                         // setOrphanedOffers(1);
                     }
-                }).catch(err => {
-                    console.log("Error on getting header info!!!", err);
-                }).then(function () {
+                })
+                .catch((err) => {
+                    console.log('Error on getting header info!!!', err);
+                })
+                .then(function () {
                     // always executed
                 });
         }
         getOffersCount();
     }, [accountLogin, sync]);
 
-    const handleClickMore = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleCloseMore = () => {
-        setAnchorEl(null);
-    };
-
-    const handleSelectMore = (event, menu) => {
-        setMoreMenu(menu);
-        setAnchorEl(null);
-
-        const url = `/account/${account}/${tabMoreValues[menu]}`;
-        window.history.pushState({}, null, url);
-
-        if (tabID !== MORE_INDEX) {
-            setTabID(MORE_INDEX);
-            gotoTabView(event);
-        }
-    };
-
     const gotoTabView = (event) => {
         const anchor = (event.target.ownerDocument || document).querySelector(
-            '#back-to-top-tab-anchor',
+            '#back-to-top-tab-anchor'
         );
 
         if (anchor) {
             anchor.scrollIntoView({
                 behavior: 'smooth',
-                block: 'start',
+                block: 'start'
             });
         }
     };
@@ -288,11 +236,10 @@ export default function Account({ profile, tab }) {
         if (newID === MORE_INDEX) {
             return;
         }
-        let url = '';
-        if (newID > 0)
-            url = `/account/${account}/${tabValues[newID]}`;
-        else
-            url = `/account/${account}/`;
+        const url =
+            newID > 0
+                ? `/account/${account}/${tabValues[newID]}`
+                : `/account/${account}`;
         window.history.pushState({}, null, url);
         setTabID(newID);
         gotoTabView(event);
@@ -306,12 +253,12 @@ export default function Account({ profile, tab }) {
                     gap: 3,
                     alignItems: 'center',
                     my: 2,
-                    mt: { md: -5, xs: -4 },
+                    mt: { md: -5, xs: -4 }
                     // zIndex: 10000,
                 }}
             >
                 <Avatar
-                    variant={logo?"":"square"}
+                    variant={logo ? '' : 'square'}
                     sx={{
                         width: { md: 90, xs: 50 },
                         height: { md: 90, xs: 50 },
@@ -319,8 +266,8 @@ export default function Account({ profile, tab }) {
                     }}
                 >
                     <IconImage src={logoImage} />
-                    {accountLogin === account &&
-                        <Link href={`/setting`} underline='none'>
+                    {accountLogin === account && (
+                        <Link href={`/setting`} underline="none">
                             <CardOverlay>
                                 <EditIcon
                                     className="MuiIconEditButton-root"
@@ -331,16 +278,26 @@ export default function Account({ profile, tab }) {
                             </CardOverlay>
                             <ImageBackdrop className="MuiImageBackdrop-root" />
                         </Link>
-                    }
+                    )}
                 </Avatar>
                 <Box position={'relative'}>
-                    <Typography variant='h3'>{name || account?.toString().slice(0, 5)}</Typography>
-                    <Box display='flex' alignItems={'center'}>
-                        <Typography style={{ wordWrap: "break-word" }} variant="d3">
+                    <Typography variant="h3">
+                        {name || account?.toString().slice(0, 5)}
+                    </Typography>
+                    <Box display="flex" alignItems={'center'}>
+                        <Typography
+                            style={{ wordWrap: 'break-word' }}
+                            variant="d3"
+                        >
                             {account.slice(0, 4) + '...' + account.slice(-4)}
                         </Typography>
-                        <CopyToClipboard text={account} onCopy={() => { openSnackbar("Copied!", "success") }}>
-                            <Tooltip title='Click to copy'>
+                        <CopyToClipboard
+                            text={account}
+                            onCopy={() => {
+                                openSnackbar('Copied!', 'success');
+                            }}
+                        >
+                            <Tooltip title="Click to copy">
                                 <IconButton>
                                     <ContentCopyIcon fontSize="small" />
                                 </IconButton>
@@ -360,23 +317,20 @@ export default function Account({ profile, tab }) {
                 </Box>
             </Box>
 
-            <SeeMoreTypography
-                variant="d3"
-                text={description}
-            />
+            <SeeMoreTypography variant="d3" text={description} />
 
             <Box
                 sx={{
                     mt: 2,
-                    display: "flex",
+                    display: 'flex',
                     gap: 1,
                     py: 1,
-                    overflow: "auto",
-                    width: "100%",
-                    "& > *": {
-                        scrollSnapAlign: "center",
+                    overflow: 'auto',
+                    width: '100%',
+                    '& > *': {
+                        scrollSnapAlign: 'center'
                     },
-                    "::-webkit-scrollbar": { display: "none" },
+                    '::-webkit-scrollbar': { display: 'none' }
                 }}
             >
                 <Tabs
@@ -385,86 +339,56 @@ export default function Account({ profile, tab }) {
                     // variant="scrollable"
                     // scrollButtons='auto'
                     aria-label="token-tabs"
-                    sx={{"& .MuiTabs-scroller": {overflow: "visible !important"}}}
+                    sx={{
+                        '& .MuiTabs-scroller': {
+                            overflow: 'visible !important'
+                        }
+                    }}
                 >
-                    {/* <Badge color="primary" badgeContent={acceptNfts + orphanedOffers}> */}
-
                     <Tab value={0} label={tabLabels[0]} {...a11yProps(0)} />
-                    <Tab value={1} label={tabLabels[1]} {...a11yProps(1)} />
-                    {/* <Tab value={2} label={tabLabels[2]} {...a11yProps(2)} /> */}
-                    <Tab value={2} label={tabLabels[2]} {...a11yProps(2)} />
-                    <Tab value={3} label={<StyledBadge color="primary" badgeContent={acceptNfts}>{tabLabels[3]}</StyledBadge>} {...a11yProps(3)} sx={{overflow: "visible"}}/>
                     <Tab
-                        value={4}
-                        label={tabLabels[4]}
-                        icon={<StyledBadge color="primary" badgeContent={orphanedOffers}><KeyboardArrowDownIcon /></StyledBadge>}
-                        iconPosition='end'
-                        {...a11yProps(4)}
-                        onClick={handleClickMore}
-                        sx={{overflow: "visible"}}
+                        value={1}
+                        label={
+                            <StyledBadge
+                                color="primary"
+                                badgeContent={acceptNfts + orphanedOffers}
+                            >
+                                {tabLabels[1]}
+                            </StyledBadge>
+                        }
+                        {...a11yProps(1)}
                     />
-
-
-                    <StyledMenu
-                        id="demo-customized-menu1"
-                        MenuListProps={{
-                            'aria-labelledby': 'demo-customized-button',
-                        }}
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleCloseMore}
-                    >
-                        <MenuItem onClick={(event) => handleSelectMore(event, 0)} sx={{ py: 1 }} disableRipple>
-                            <LocalOfferIcon />
-                            <Typography variant='s6'>{tabMoreLabels[0]}</Typography>
-                        </MenuItem>
-
-                        <MenuItem onClick={(event) => handleSelectMore(event, 1)} sx={{ py: 1 }} disableRipple>
-                            <ListIcon />
-                            <Typography variant='s6'>{tabMoreLabels[1]}</Typography>
-                        </MenuItem>
-
-                        <Divider />
-
-                        <MenuItem onClick={(event) => handleSelectMore(event, 2)} sx={{ py: 1 }} disableRipple>
-                            <Badge color="primary" badgeContent={orphanedOffers}><NearbyErrorIcon /></Badge>
-                            <Typography variant='s6'>{tabMoreLabels[2]}</Typography>
-                        </MenuItem>
-                    </StyledMenu>
+                    <Tab value={2} label={tabLabels[2]} {...a11yProps(2)} />
                 </Tabs>
             </Box>
             <Box sx={{ my: 1 }}>
                 <TabPanel value={tabID} id={0}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        <CollectedNFTs account={account} />
+                        <NFTs account={account} />
                     </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={1}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        <CreatedNFTs account={account} />
+                        <Offers
+                            account={account}
+                            acceptNfts={acceptNfts}
+                            orphanedOffers={orphanedOffers}
+                        />
                     </Stack>
                 </TabPanel>
-                {/* <TabPanel value={tabID} id={2}>
-                    <Stack sx={{ minHeight: '20vh' }}>
-                        <FavoritedList account={account} />
-                    </Stack>
-                </TabPanel> */}
                 <TabPanel value={tabID} id={2}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        <ActivityList account={account} />
+                        <History account={account} />
                     </Stack>
                 </TabPanel>
-                <TabPanel value={tabID} id={3}>
+                {/* <TabPanel value={tabID} id={4}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        {/* <AcceptList account={account} /> */}
-                        <TransferredNFTs account={account} />
+                        <OffersList
+                            account={account}
+                            type={tabMoreValues[moreMenu]}
+                        />
                     </Stack>
-                </TabPanel>
-                <TabPanel value={tabID} id={4}>
-                    <Stack sx={{ minHeight: '20vh' }}>
-                        <OffersList account={account} type={tabMoreValues[moreMenu]} />
-                    </Stack>
-                </TabPanel>
+                </TabPanel> */}
             </Box>
         </>
     );

@@ -8,6 +8,8 @@ import {
     TableRow,
     Tooltip,
     Typography,
+    useTheme,
+    useMediaQuery
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -45,6 +47,11 @@ const IconCover = styled('div')(
                 opacity: 1;
             }
         }
+
+        ${theme.breakpoints.down('sm')} {
+            width: 52px;
+            height: 52px;
+        }
     `
 );
 
@@ -55,6 +62,11 @@ const IconWrapper = styled('div')(
         position: relative;
         width: 70px;
         height: 70px;
+
+        ${theme.breakpoints.down('sm')} {
+            width: 50px;
+            height: 50px;
+        }
   `
 );
 
@@ -85,7 +97,7 @@ const ImageBackdrop = styled('span')(({ theme }) => ({
     bottom: 0,
     backgroundColor: theme.palette.common.black,
     opacity: 0,
-    transition: theme.transitions.create('opacity'),
+    transition: theme.transitions.create('opacity')
 }));
 
 export default function Row({ id, item, isMine }) {
@@ -122,94 +134,167 @@ export default function Row({ id, item, isMine }) {
     // const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;
     const logoImageUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
 
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     const handleRowClick = () => {
         // history.push(`/collection/${slug}`);
         // onclick="document.location = 'links.html';"
         document.location = `/collection/${slug}`;
-    }
+    };
 
     return (
         <TableRow
             hover
             key={uuid}
             onClick={handleRowClick}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
         >
-            <TableCell align="left" sx={{p:0}}>
-                <Stack direction="row" alignItems="center" spacing={2} sx={{pt: 2, pb: 2}}>
+            <TableCell align="left" sx={{ p: 0, border: 'none' }}>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    sx={{ pt: 1, pb: 1 }}
+                >
                     <Typography variant="s3">{id}</Typography>
-                    <Link href={isMine?`/collection/${slug}/edit`:`/collection/${slug}`} underline='none'>
+                    <Link
+                        href={
+                            isMine
+                                ? `/collection/${slug}/edit`
+                                : `/collection/${slug}`
+                        }
+                        underline="none"
+                    >
                         <IconCover>
                             <IconWrapper>
-                                <IconImage src={logoImageUrl}/>
+                                <IconImage src={logoImageUrl} />
                             </IconWrapper>
 
-                            {isMine ?
+                            {isMine ? (
                                 <IconButton
                                     className="MuiIconEditButton-root"
-                                    aria-label='edit'
-                                    sx={{ position: 'absolute', left: '0vw', top: '0vh', opacity: 0, zIndex: 1, width: '70px', height: '70px' }}
+                                    aria-label="edit"
+                                    sx={{
+                                        position: 'absolute',
+                                        left: '0vw',
+                                        top: '0vh',
+                                        opacity: 0,
+                                        zIndex: 1,
+                                        width: { xs: '50px', sm: '70px' },
+                                        height: { xs: '50px', sm: '70px' }
+                                    }}
                                 >
                                     <EditIcon />
                                 </IconButton>
-                                :
+                            ) : (
                                 <ImageBackdrop className="MuiImageBackdrop-root" />
-                            }
+                            )}
                         </IconCover>
                     </Link>
 
-                    <Link
-                        underline="none"
-                        href={`/collection/${slug}`}
-                    >
+                    <Link underline="none" href={`/collection/${slug}`}>
                         <Stack spacing={0.4}>
-                            <Stack direction="row" spacing={0.5} sx={{pt: 0}}>
-                                <Typography variant="s3" noWrap>{name}</Typography>
-                                {verified === 'yes' &&
-                                    <Tooltip title='Verified'>
-                                        <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
+                            <Stack direction="row" spacing={0.5} sx={{ pt: 0 }}>
+                                <Typography
+                                    variant={isMobile ? 's8' : 's3'}
+                                    noWrap
+                                    sx={{
+                                        width: isMobile ? '80px' : undefined,
+                                        textOverflow: isMobile
+                                            ? 'ellipsis'
+                                            : 'none'
+                                    }}
+                                >
+                                    {name}
+                                </Typography>
+                                {verified === 'yes' && (
+                                    <Tooltip title="Verified">
+                                        <VerifiedIcon
+                                            fontSize="small"
+                                            style={{ color: '#4589ff' }}
+                                        />
                                     </Tooltip>
-                                }
+                                )}
                             </Stack>
-                            <Typography variant="s7" noWrap>{strDateTime}</Typography>
+                            <Typography
+                                variant={isMobile ? 's12' : 's7'}
+                                noWrap
+                            >
+                                {strDateTime}
+                            </Typography>
                         </Stack>
                     </Link>
                 </Stack>
             </TableCell>
 
-            <TableCell align="right" sx={{pl:0, pr:0}}>
-                <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {fNumber(floorPrice)}</Typography>
+            <TableCell align="right" sx={{ pl: 0, pr: 0, border: 'none' }}>
+                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                    <Icon
+                        icon={rippleSolid}
+                        width={isMobile ? 12 : 16}
+                        height={isMobile ? 12 : 16}
+                    />{' '}
+                    {fNumber(floorPrice)}
+                </Typography>
             </TableCell>
 
-            <TableCell align="right" sx={{pl:0, pr:0}}>
-                <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {fNumber(vol24h)}</Typography>
+            <TableCell align="right" sx={{ pl: 0, pr: 0, border: 'none' }}>
+                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                    <Icon
+                        icon={rippleSolid}
+                        width={isMobile ? 12 : 16}
+                        height={isMobile ? 12 : 16}
+                    />{' '}
+                    {fNumber(vol24h)}
+                </Typography>
             </TableCell>
 
             {/* <TableCell align="right" sx={{pl:0, pr:0}}>
                 <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {volume1}</Typography>
             </TableCell> */}
 
-            <TableCell align="right" sx={{pl:0, pr:0}}>
-                <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {volume2}</Typography>
-            </TableCell>
-
-            <TableCell align="right"
+            <TableCell
+                align="right"
                 sx={{
-                    pl:0,
-                    pr:0
+                    pl: 0,
+                    pr: 0,
+                    border: 'none',
+                    display: { xs: 'none', sm: 'table-cell' }
                 }}
             >
-                <Typography variant="s3" noWrap>{fIntNumber(owners || 0)}</Typography>
+                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                    <Icon icon={rippleSolid} width={16} height={16} /> {volume2}
+                </Typography>
             </TableCell>
 
-            <TableCell align="right"
+            <TableCell
+                align="right"
                 sx={{
-                    pl:0,
-                    pr:0
+                    pl: 0,
+                    pr: 0,
+                    border: 'none',
+                    display: { xs: 'none', sm: 'table-cell' }
                 }}
             >
-                <Typography variant="s3" noWrap>{fIntNumber(items)}</Typography>
+                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                    {fIntNumber(owners || 0)}
+                </Typography>
+            </TableCell>
+
+            <TableCell
+                align="right"
+                sx={{
+                    pl: 0,
+                    pr: 0,
+                    border: 'none',
+                    display: { xs: 'none', sm: 'table-cell' }
+                }}
+            >
+                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                    {fIntNumber(items)}
+                </Typography>
             </TableCell>
         </TableRow>
     );
-};
+}

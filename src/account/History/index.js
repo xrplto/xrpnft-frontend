@@ -47,8 +47,8 @@ import { normalizeAmount } from 'src/utils/normalizers';
 import { PulseLoader } from 'react-spinners';
 
 // Components
-import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
+import ListToolbar from '../ListToolbar';
 // ----------------------------------------------------------------------
 export default function ActivityList({ account }) {
     const theme = useTheme();

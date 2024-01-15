@@ -1,13 +1,8 @@
-import axios from 'axios'
+import axios from 'axios';
 import { performance } from 'perf_hooks';
 
 // Material
-import {
-    Box,
-    Container,
-    styled,
-    Toolbar
-} from '@mui/material';
+import { Box, Container, styled, Toolbar } from '@mui/material';
 
 // Context
 import { useContext } from 'react';
@@ -56,15 +51,19 @@ const BannerImage = styled('img')(
   `
 );
 
-export default function Overview({data}) {
+export default function Overview({ data }) {
     const { darkMode } = useContext(AppContext);
 
     const profile = data.profile;
 
-    let default_banner = darkMode?'/static/banner_black.png':'/static/banner_white.png';
+    let default_banner = darkMode
+        ? '/static/banner_black.png'
+        : '/static/banner_white.png';
 
     //const bannerImage = profile.banner?`https://s1.xrpnft.com/profile/${profile.banner}`:default_banner;
-    let bannerImage = darkMode?'/static/banner_black.png':'/static/banner_white.png';   // Change the custom banner above till we can reset nba
+    let bannerImage = darkMode
+        ? '/static/banner_black.png'
+        : '/static/banner_white.png'; // Change the custom banner above till we can reset nba
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
@@ -72,16 +71,13 @@ export default function Overview({data}) {
             <Header />
 
             <BannerWrapper>
-                <div style={{
-                    height: 0,
-                    paddingBottom: '10%',
-                }}
+                <div
+                    style={{
+                        height: 0,
+                        paddingBottom: '10%'
+                    }}
                 >
-                    <BannerImage
-                        alt=''
-                        src={bannerImage}
-                        decoding="async"
-                    />
+                    <BannerImage alt="" src={bannerImage} decoding="async" />
                 </div>
             </BannerWrapper>
 
@@ -92,7 +88,6 @@ export default function Overview({data}) {
             <ScrollToTop />
 
             <Footer />
-
         </OverviewWrapper>
     );
 }
@@ -124,21 +119,16 @@ export async function getServerSideProps(ctx) {
     if (data && data.profile) {
     } else {
         data = {};
-        data.profile = {account: acct};
+        data.profile = { account: acct };
     }
 
-    if (tab)
-        data.tab = tab;
+    if (tab) data.tab = tab;
 
-    const {
-        account,
-        name,
-        logo,
-        banner,
-        description
-    } = data.profile;
+    const { account, name, logo, banner, description } = data.profile;
 
-    const imgUrl = banner?`https://s1.xrpnft.com/profile/${banner}`:'https://xrpnft.com/static/ogp.png';
+    const imgUrl = banner
+        ? `https://s1.xrpnft.com/profile/${banner}`
+        : 'https://xrpnft.com/static/ogp.png';
 
     let ogp = {};
     ogp.canonical = `https://xrpnft.com/account/${account}`;
@@ -148,6 +138,6 @@ export async function getServerSideProps(ctx) {
     ogp.desc = description ? description : `XRP Ledger Wallet ${account}`;
 
     return {
-        props: {data, ogp}, // will be passed to the page component as props
-    }
+        props: { data, ogp } // will be passed to the page component as props
+    };
 }

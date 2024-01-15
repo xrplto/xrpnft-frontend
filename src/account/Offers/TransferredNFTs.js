@@ -1,32 +1,34 @@
-import axios from 'axios'
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 // Material
 import {
-    useTheme, useMediaQuery,
+    useTheme,
+    useMediaQuery,
     Backdrop,
     Box,
     Grid,
     Stack,
     Typography
-} from "@mui/material";
+} from '@mui/material';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Loader
-import { ClipLoader, PulseLoader } from "react-spinners";
+import { ClipLoader, PulseLoader } from 'react-spinners';
 
 // Components
-import NFTCardAccept from './NFTCardAccept';
+import NFTCardAccept from '../NFTCardAccept';
 import QRDialog from 'src/components/QRDialog';
 
 export default function TransferredNFTs({ account }) {
-    const BASE_URL = 'https://api.xrpnft.com/api'
+    const BASE_URL = 'https://api.xrpnft.com/api';
 
-    const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
+    const { accountProfile, openSnackbar, sync, setSync } =
+        useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
@@ -75,21 +77,24 @@ export default function TransferredNFTs({ account }) {
 
         const body = { account, page, limit };
 
-        axios.post(`${BASE_URL}/account/transferred`, body)
-            .then(res => {
+        axios
+            .post(`${BASE_URL}/account/transferred`, body)
+            .then((res) => {
                 const newNfts = res.data.nfts;
                 const length = newNfts.length;
                 if (length < 20) {
-                    setHasMore(false)
+                    setHasMore(false);
                 } else {
-                    setHasMore(true)
+                    setHasMore(true);
                 }
                 if (length > 0) {
-                    setNfts([...nfts, ...newNfts])
+                    setNfts([...nfts, ...newNfts]);
                 }
-            }).catch(err => {
-                console.log("Error on getting nfts!", err);
-            }).then(function () {
+            })
+            .catch((err) => {
+                console.log('Error on getting nfts!', err);
+            })
+            .then(function () {
                 // always executed
                 setLoading(false);
             });
@@ -112,11 +117,13 @@ export default function TransferredNFTs({ account }) {
         var isRunning = false;
         var counter = 150;
         async function getPayload() {
-            console.log(counter + " " + isRunning, xummUuid);
+            console.log(counter + ' ' + isRunning, xummUuid);
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/offers/acceptcancel/${xummUuid}`);
+                const ret = await axios.get(
+                    `${BASE_URL}/offers/acceptcancel/${xummUuid}`
+                );
                 const resolved_at = ret.data?.resolved_at;
                 const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
@@ -128,13 +135,10 @@ export default function TransferredNFTs({ account }) {
                         setHasMore(true);
                         setSync(sync + 1); // Load NFTs again
                         openSnackbar('Accepting NFT successful!', 'success');
-                    }
-                    else
-                        openSnackbar('Accepting NFT failed!', 'error');
+                    } else openSnackbar('Accepting NFT failed!', 'error');
                     return;
                 }
-            } catch (err) {
-            }
+            } catch (err) {}
             isRunning = false;
             counter--;
             if (counter <= 0) {
@@ -147,7 +151,7 @@ export default function TransferredNFTs({ account }) {
         }
         return () => {
             if (timer) {
-                clearInterval(timer)
+                clearInterval(timer);
             }
         };
     }, [openScanQR, xummUuid, sync]);
@@ -163,11 +167,7 @@ export default function TransferredNFTs({ account }) {
         }
         setLoading2(true);
         try {
-            const {
-                uuid,
-                NFTokenID,
-                index
-            } = nft;
+            const { uuid, NFTokenID, index } = nft;
 
             const user_token = accountProfile.user_token;
 
@@ -176,12 +176,16 @@ export default function TransferredNFTs({ account }) {
                 uuid,
                 NFTokenID,
                 index,
-                accept: "yes",
-                sell: "yes",
+                accept: 'yes',
+                sell: 'yes',
                 user_token
             };
 
-            const res = await axios.post(`${BASE_URL}/offers/acceptcancel`, body, {headers: {'x-access-token': accountToken}});
+            const res = await axios.post(
+                `${BASE_URL}/offers/acceptcancel`,
+                body,
+                { headers: { 'x-access-token': accountToken } }
+            );
 
             if (res.status === 200) {
                 const newUuid = res.data.data.uuid;
@@ -202,11 +206,13 @@ export default function TransferredNFTs({ account }) {
     const onDisconnectXumm = async () => {
         setLoading2(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/offers/acceptcancel/${xummUuid}`);
+            const res = await axios.delete(
+                `${BASE_URL}/offers/acceptcancel/${xummUuid}`
+            );
             // if (res.status === 200) {
             //     setXummUuid(null);
             // }
-        } catch(err) {
+        } catch (err) {
             console.error(err);
         }
         setXummUuid(null);
@@ -221,21 +227,22 @@ export default function TransferredNFTs({ account }) {
 
     const handleApprove = (nft) => {
         onAcceptNFT(nft);
-    }
+    };
 
     return (
         <>
             {loading ? (
                 <Stack alignItems="center">
-                    <PulseLoader color='#00AB55' size={10} />
+                    <PulseLoader color="#00AB55" size={10} />
                 </Stack>
-            ):(
-                nfts && nfts.length === 0 &&
-                    <Stack alignItems="center" sx={{mt: 5}}>
+            ) : (
+                nfts &&
+                nfts.length === 0 && (
+                    <Stack alignItems="center" sx={{ mt: 5 }}>
                         <Typography variant="s7">No Items</Typography>
                     </Stack>
-            )
-            }
+                )
+            )}
 
             <QRDialog
                 open={openScanQR}
@@ -244,13 +251,10 @@ export default function TransferredNFTs({ account }) {
                 qrUrl={qrUrl}
                 nextUrl={nextUrl}
             />
-            <Backdrop
-                sx={{ color: "#000", zIndex: 1303 }}
-                open={loading2}
-            >
-                <PulseLoader color={"#FF4842"} size={10} />
+            <Backdrop sx={{ color: '#000', zIndex: 1303 }} open={loading2}>
+                <PulseLoader color={'#FF4842'} size={10} />
             </Backdrop>
-            <Grid container spacing={1} justifyContent='space-between' mt={1}>
+            <Grid container spacing={1} justifyContent="space-between" mt={1}>
                 <Grid item xs={12}>
                     <InfiniteScroll
                         dataLength={nfts.length}
@@ -261,24 +265,27 @@ export default function TransferredNFTs({ account }) {
                         hasMore={hasMore}
                         scrollThreshold={0.6}
                     >
-
-                        <Grid
-                            container
-                            spacing={1}
-                        >
-                            {
-                                nfts.map((nft) => (
-
-                                    <Grid item xs={6} sm={3} md={2.4} lg={2} xl={1.2} key={nft.uuid}
-                                    >
-                                        <NFTCardAccept nft={nft} handleApprove={handleApprove} />
-                                    </Grid>
-                                ))
-                            }
+                        <Grid container spacing={1}>
+                            {nfts.map((nft) => (
+                                <Grid
+                                    item
+                                    xs={6}
+                                    sm={3}
+                                    md={2.4}
+                                    lg={2}
+                                    xl={1.2}
+                                    key={nft.uuid}
+                                >
+                                    <NFTCardAccept
+                                        nft={nft}
+                                        handleApprove={handleApprove}
+                                    />
+                                </Grid>
+                            ))}
                         </Grid>
                     </InfiniteScroll>
                 </Grid>
             </Grid>
         </>
     );
-};
+}

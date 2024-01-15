@@ -1,30 +1,29 @@
-import axios from 'axios'
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 // Material
 import {
-    useTheme, useMediaQuery,
+    useTheme,
+    useMediaQuery,
     Box,
     Grid,
     IconButton,
     InputAdornment,
-    TextField,
-} from "@mui/material";
+    TextField
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 
 // Loader
-import { ClipLoader } from "react-spinners";
+import { ClipLoader } from 'react-spinners';
 
 // Components
 import NFTCard from 'src/explore/NFTCard';
-import FilterDetail from './FilterDetail';
+import FilterDetail from '../FilterDetail';
 
-
-export default function CreatedNFTs({ account }) {
-
-    const BASE_URL = 'https://api.xrpnft.com/api'
+export default function CollectedNFTs({ account }) {
+    const BASE_URL = 'https://api.xrpnft.com/api';
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -56,8 +55,9 @@ export default function CreatedNFTs({ account }) {
 
         const body = { account, page, limit, search, filter, subFilter };
 
-        axios.post(`${BASE_URL}/account/created`, body)
-            .then(res => {
+        axios
+            .post(`${BASE_URL}/account/collected`, body)
+            .then((res) => {
                 const newNfts = res.data.nfts;
                 const length = newNfts.length;
                 if (length < 20) {
@@ -66,11 +66,13 @@ export default function CreatedNFTs({ account }) {
                     setHasMore(true);
                 }
                 if (length > 0) {
-                    setNfts([...nfts, ...newNfts])
+                    setNfts([...nfts, ...newNfts]);
                 }
-            }).catch(err => {
-                console.log("Error on getting nfts!", err);
-            }).then(function () {
+            })
+            .catch((err) => {
+                console.log('Error on getting nfts!', err);
+            })
+            .then(function () {
                 // always executed
                 setLoading(false);
             });
@@ -89,44 +91,40 @@ export default function CreatedNFTs({ account }) {
     }, [sync]);
 
     useEffect(() => {
-        if (fullScreen)
-            setShowFilter(false);
+        if (fullScreen) setShowFilter(false);
     }, [fullScreen]);
 
     const handleChangeSearch = (e) => {
         setSearch(e.target.value);
-    }
+    };
 
     const handleShowFilter = (e) => {
         setShowFilter(!showFilter);
-    }
+    };
 
     return (
         <>
             <Box
-                id='nfts'
+                id="nfts"
                 display="flex"
                 alignItems="center"
                 // sx={{ pl: 0, pr:0 }}
             >
-                <IconButton
-                    aria-label='filter'
-                    onClick={handleShowFilter}
-                >
+                <IconButton aria-label="filter" onClick={handleShowFilter}>
                     <FilterListIcon fontSize="large" />
                 </IconButton>
                 <TextField
-                    id='textFilter'
+                    id="textFilter"
                     // autoFocus
                     fullWidth
-                    variant='outlined'
-                    placeholder='Search by name or attribute'
-                    margin='dense'
+                    variant="outlined"
+                    placeholder="Search by name or attribute"
+                    margin="dense"
                     onChange={handleChangeSearch}
-                    autoComplete='new-password'
+                    autoComplete="new-password"
                     inputProps={{ autoComplete: 'off' }}
                     value={search}
-                    onFocus={event => {
+                    onFocus={(event) => {
                         event.target.select();
                     }}
                     sx={{ pl: 2, pr: 1, pt: 0, pb: 0, mt: 0 }}
@@ -139,14 +137,16 @@ export default function CreatedNFTs({ account }) {
                         ),
                         endAdornment: (
                             <InputAdornment position="start">
-                                {loading && <ClipLoader color='#ff0000' size={15} />}
+                                {loading && (
+                                    <ClipLoader color="#ff0000" size={15} />
+                                )}
                             </InputAdornment>
-                        ),
+                        )
                     }}
                 />
             </Box>
-            <Grid container spacing={1} justifyContent='space-between' mt={1}>
-                {showFilter &&
+            <Grid container spacing={1} justifyContent="space-between" mt={1}>
+                {showFilter && (
                     <Grid item xs={12} md={3} xl={2} pt={0.5}>
                         <FilterDetail
                             onSaleCount={onSaleCount}
@@ -156,8 +156,13 @@ export default function CreatedNFTs({ account }) {
                             setSubFilter={setSubFilter}
                         />
                     </Grid>
-                }
-                <Grid item xs={12} md={showFilter ? 9 : 12} xl={showFilter ? 10 : 12}>
+                )}
+                <Grid
+                    item
+                    xs={12}
+                    md={showFilter ? 9 : 12}
+                    xl={showFilter ? 10 : 12}
+                >
                     <InfiniteScroll
                         dataLength={nfts.length}
                         next={() => {
@@ -167,20 +172,19 @@ export default function CreatedNFTs({ account }) {
                         hasMore={hasMore}
                         scrollThreshold={0.6}
                     >
-
-                        <Grid
-                            container
-                            spacing={1}
-                        >
+                        <Grid container spacing={1}>
                             {
-
                                 nfts.map((nft) => (
-
-                                    <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.uuid}
+                                    <Grid
+                                        item
+                                        xs={6}
+                                        sm={4}
+                                        md={3}
+                                        lg={2.4}
+                                        xl={1.5}
+                                        key={nft.uuid}
                                     >
-                                        <NFTCard
-                                            nft={nft}
-                                        />
+                                        <NFTCard nft={nft} />
                                     </Grid>
                                 ))
 
@@ -192,4 +196,4 @@ export default function CreatedNFTs({ account }) {
             </Grid>
         </>
     );
-};
+}

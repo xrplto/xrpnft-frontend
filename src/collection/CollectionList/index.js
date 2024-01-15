@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React from "react";
+import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 
 // Material
@@ -9,7 +9,9 @@ import {
     TableBody,
     TableCell,
     ToggleButton,
-    ToggleButtonGroup
+    ToggleButtonGroup,
+    useMediaQuery,
+    useTheme
 } from '@mui/material';
 
 // Utils
@@ -25,8 +27,7 @@ import Row from './Row';
 import ListHead from './ListHead';
 import ListToolbar from './ListToolbar';
 
-
-export default function CollectionList({type, category}) {
+export default function CollectionList({ type, category }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { accountProfile, openSnackbar } = useContext(AppContext);
@@ -48,14 +49,25 @@ export default function CollectionList({type, category}) {
 
     const isMine = type === CollectionListType.MINE;
 
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     useEffect(() => {
-        const loadCollections=() => {
+        const loadCollections = () => {
             if (isMine && (!account || !accountToken)) {
                 openSnackbar('Please login', 'error');
                 return;
             }
 
-            const body = {filter, type, page, limit: rows, order, orderBy, choice};
+            const body = {
+                filter,
+                type,
+                page,
+                limit: rows,
+                order,
+                orderBy,
+                choice
+            };
 
             if (type === CollectionListType.ALL) {
             } else if (type === CollectionListType.MINE) {
@@ -65,22 +77,27 @@ export default function CollectionList({type, category}) {
             } else if (type === CollectionListType.LANDING) {
             }
 
-            axios.post(`${BASE_URL}/collection/getlistbyorder`, body, {headers: {'x-access-token': accountToken}})
-            .then(res => {
-                try {
-                    if (res.status === 200 && res.data) {
-                        const ret = res.data;
-                        setTotal(ret.count);
-                        setCollections(ret.collections);
+            axios
+                .post(`${BASE_URL}/collection/getlistbyorder`, body, {
+                    headers: { 'x-access-token': accountToken }
+                })
+                .then((res) => {
+                    try {
+                        if (res.status === 200 && res.data) {
+                            const ret = res.data;
+                            setTotal(ret.count);
+                            setCollections(ret.collections);
+                        }
+                    } catch (error) {
+                        console.log(error);
                     }
-                } catch (error) {
-                    console.log(error);
-                }
-            }).catch(err => {
-                console.log("err->>", err);
-            }).then(function () {
-                // Always executed
-            });
+                })
+                .catch((err) => {
+                    console.log('err->>', err);
+                })
+                .then(function () {
+                    // Always executed
+                });
         };
         loadCollections();
     }, [sync, order, orderBy, page, rows, account]);
@@ -91,7 +108,7 @@ export default function CollectionList({type, category}) {
         const handleValue = () => {
             setPage(0);
             setSync(sync + 1);
-        }
+        };
 
         timer = setTimeout(handleValue, 500);
         return () => {
@@ -125,50 +142,60 @@ export default function CollectionList({type, category}) {
                 setRows={setRows}
             /> */}
 
-            {type !== CollectionListType.LANDING &&
+            {type !== CollectionListType.LANDING && (
                 <ToggleButtonGroup
                     color="primary"
                     value={choice}
                     exclusive
                     onChange={handleChangeChoice}
                 >
-                    <ToggleButton value="all" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>All</ToggleButton>
-                    <ToggleButton value="verified" sx={{pl:2, pr:2, pt: 0.3, pb: 0.3}} style={{textTransform: 'none'}}>Verified</ToggleButton>
+                    <ToggleButton
+                        value="all"
+                        sx={{ pl: 2, pr: 2, pt: 0.3, pb: 0.3 }}
+                        style={{ textTransform: 'none' }}
+                    >
+                        All
+                    </ToggleButton>
+                    <ToggleButton
+                        value="verified"
+                        sx={{ pl: 2, pr: 2, pt: 0.3, pb: 0.3 }}
+                        style={{ textTransform: 'none' }}
+                    >
+                        Verified
+                    </ToggleButton>
                 </ToggleButtonGroup>
-            }
+            )}
 
             <Box
                 sx={{
-                    display: "flex",
+                    display: 'flex',
                     gap: 1,
                     py: 1,
-                    overflow: "auto",
-                    width: "100%",
-                    "& > *": {
-                        scrollSnapAlign: "center",
+                    overflow: 'auto',
+                    width: '100%',
+                    '& > *': {
+                        scrollSnapAlign: 'center'
                     },
-                    "::-webkit-scrollbar": { display: "none" },
+                    '::-webkit-scrollbar': { display: 'none' }
                 }}
             >
-                <Table style={{minWidth: "1000px"}}>
+                <Table style={{ minWidth: isMobile ? undefined : '1000px' }}>
                     <ListHead
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
                     />
                     <TableBody>
-                        {
-                            collections.map((row, idx) => {
-                                    return (
-                                        <Row
-                                            key={idx}
-                                            id={page * rows + idx + 1}
-                                            item={row}
-                                            isMine={isMine}
-                                        />
-                                    );
-                                })
-                        }
+                        {collections.map((row, idx) => {
+                            return (
+                                <Row
+                                    key={idx}
+                                    id={page * rows + idx + 1}
+                                    item={row}
+                                    isMine={isMine}
+                                />
+                            );
+                        })}
                     </TableBody>
                 </Table>
             </Box>
@@ -180,5 +207,5 @@ export default function CollectionList({type, category}) {
                 total={total}
             />
         </>
-    )
-};
+    );
+}
