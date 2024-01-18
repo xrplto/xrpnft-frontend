@@ -279,7 +279,12 @@ export default function Row({ id, item }) {
                     spacing={2}
                     sx={{ pt: 1, pb: 1 }}
                 >
-                    <Typography variant="s3">{id}</Typography>
+                    <Typography
+                        variant={isMobile ? 's8' : 's3'}
+                        sx={{ width: isMobile ? '12px' : '16px' }}
+                    >
+                        {id}
+                    </Typography>
                     <Link href={`/collection/${slug}`} underline="none">
                         <IconCover>
                             <IconWrapper>
