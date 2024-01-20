@@ -66,14 +66,14 @@ export default function NFTCard({ onCreate }) {
     const [expanded, setExpanded] = useState(false);
 
     const handleExpand = async () => {
-        if (collections.length === 0) {
+        if (expanded === false && collections.length === 0) {
             openSnackbar(
                 'You must first create a collection for NFTs.',
                 'error'
             );
             return;
         }
-        setExpanded(true);
+        setExpanded(!expanded);
     };
 
     const loadCollections = () => {
