@@ -15,7 +15,7 @@ export default function CreateContainer({ children }) {
         >
             <Container maxWidth="md">
                 <Stack
-                    spacing={{ xs: 4, sm: 8 }}
+                    spacing={2}
                     direction={{ xs: 'column', sm: 'row' }}
                     sx={{
                         px: 1,

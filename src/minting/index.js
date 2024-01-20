@@ -82,7 +82,7 @@ const CustomSelect = styled(Select)(({ theme }) => ({
     }
 }));
 
-export default function Minting({ collection = null, showHeader = true }) {
+export default function Minting({ showHeader = true, defaultValues }) {
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -101,7 +101,7 @@ export default function Minting({ collection = null, showHeader = true }) {
     const [extLink, setExtLink] = useState('');
     const [description, setDescription] = useState('');
     const [collectionName, setCollectionName] = useState(
-        collection?.name || ''
+        defaultValues?.collectionName
     );
     const [traits, setTraits] = useState([]);
     const [royalty, setRoyalty] = useState('0');
@@ -518,7 +518,7 @@ export default function Minting({ collection = null, showHeader = true }) {
                 />
             </Stack>
 
-            {!collection && (
+            {!defaultValues?.collectionName && (
                 <Stack spacing={2} mb={3}>
                     <Typography variant="p4">
                         Collection <Typography variant="s2">*</Typography>

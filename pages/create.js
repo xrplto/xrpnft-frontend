@@ -34,16 +34,9 @@ const BackButton = ({ onClick }) => (
 
 export default function Create() {
     const [state, setState] = useState('');
-    const [collection, setCollection] = useState(null);
+    const [collectionName, setCollectionName] = useState(null);
 
     const handleBack = () => {
-        setState('');
-    };
-
-    const handleCreateCollection = async (slug) => {
-        const BASE_URL = 'http://65.109.54.46/api';
-        const res = await axios.get(`${BASE_URL}/collection/getextra/${slug}`);
-        setCollection(res.data.collection);
         setState('');
     };
 
@@ -58,12 +51,13 @@ export default function Create() {
                 {state === '' && (
                     <>
                         <CollectionCard
-                            collection={collection}
                             onCreate={() => setState('collection')}
                         />
                         <NFTCard
-                            collection={collection}
-                            onCreate={() => setState('nft')}
+                            onCreate={(collectionName) => {
+                                setCollectionName(collectionName);
+                                setState('nft');
+                            }}
                         />
                     </>
                 )}
@@ -72,14 +66,17 @@ export default function Create() {
                         <BackButton onClick={handleBack} />
                         <CreateCollection
                             showHeader={false}
-                            onCreate={handleCreateCollection}
+                            onCreate={() => handleBack()}
                         />
                     </Box>
                 )}
                 {state === 'nft' && (
                     <Box>
                         <BackButton onClick={handleBack} />
-                        <Minting collection={collection} showHeader={false} />
+                        <Minting
+                            showHeader={false}
+                            defaultValues={{ collectionName }}
+                        />
                     </Box>
                 )}
             </CreateContainer>
