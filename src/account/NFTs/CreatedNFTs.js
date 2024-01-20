@@ -82,7 +82,7 @@ export default function CreatedNFTs({ account }) {
         setNfts([]);
         setPage(0);
         setHasMore(true);
-        setSync(sync + 1);
+        //setSync(sync + 1); // webxtor: disable duplicate loading on start
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [flag, search, filter, subFilter]);
 
