@@ -1,24 +1,21 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useRef, useState } from 'react';
-import { FacebookShareButton, TwitterShareButton } from 'react-share';
-import { FacebookIcon, TwitterIcon } from 'react-share';
-import axios from 'axios';
-import useSound from 'use-sound';
+import { FacebookShareButton, TwitterShareButton } from "react-share";
+import { FacebookIcon, TwitterIcon } from "react-share";
 
 // Material
 import { useTheme } from '@mui/material/styles';
 import {
-    styled,
-    useMediaQuery,
+    styled, useMediaQuery,
     Box,
     IconButton,
     Link,
     Popover,
     Stack,
     Tooltip,
-    Typography,
-    Button
+    Typography
 } from '@mui/material';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
@@ -31,7 +28,7 @@ import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Utils
 import { formatMonthYear } from 'src/utils/formatTime';
-import { fNumber, fVolume } from 'src/utils/formatNumber';
+import { fNumber, fIntNumber, fPercent, fVolume } from 'src/utils/formatNumber';
 
 // Context
 import { useContext } from 'react';
@@ -121,7 +118,7 @@ const ImageBackdrop = styled('span')(({ theme }) => ({
     bottom: 0,
     backgroundColor: theme.palette.common.black,
     opacity: 0,
-    transition: theme.transitions.create('opacity')
+    transition: theme.transitions.create('opacity'),
 }));
 
 const CardOverlay = styled('div')(
@@ -138,32 +135,18 @@ const CardOverlay = styled('div')(
 function truncate(str, n) {
     if (!str) return '';
     //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return str.length > n ? str.substr(0, n - 1) + ' ...' : str;
-}
+    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
+};
 
 export default function ViewNFT({ collection }) {
-    const BASE_URL = 'https://api.xrpnft.com/api';
     const anchorRef = useRef(null);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-    const [play, { stop }] = useSound(
-        '/static/sounds/mixkit-fireworks-bang-in-sky-2989.wav'
-    );
-    const { accountProfile, openSnackbar, sync, setSync } =
-        useContext(AppContext);
+    const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
-    const [spinning, setSpinning] = useState(false);
 
     const [openShare, setOpenShare] = useState(false);
-
-    const [congrats, setCongrats] = useState(false);
-
-    const [mints, setMints] = useState(0);
-
-    const [xrpBalance, setXrpBalance] = useState(0);
-
-    const [pendingNfts, setPendingNfts] = useState(0);
 
     // "collection": {
     //     "_id": "6310c27cf81fe46884ef89ba",
@@ -179,7 +162,6 @@ export default function ViewNFT({ collection }) {
     //     "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
     // }
     const {
-        uuid,
         account,
         accountName,
         name,
@@ -210,105 +192,11 @@ export default function ViewNFT({ collection }) {
 
     const handleOpenShare = () => {
         setOpenShare(true);
-    };
+    }
 
     const handleCloseShare = () => {
         setOpenShare(false);
     };
-
-    const getOneNFT = () => {
-        if (spinning) return;
-
-        if (!accountLogin || !accountToken) {
-            openSnackbar('Please login', 'error');
-            return;
-        }
-
-        if (mints < 1) {
-            openSnackbar('You do not have enough Mints', 'error');
-            return;
-        }
-
-        if (pendingNfts < 1) {
-            openSnackbar('There are no NFTs left', 'error');
-            return;
-        }
-
-        setSpinning(true);
-        // setNft(null);
-
-        const body = { account: accountLogin, cid: uuid };
-
-        axios
-            .post(`${BASE_URL}/spin/chooseone`, body, {
-                headers: { 'x-access-token': accountToken }
-            })
-            .then((res) => {
-                let ret = res.status === 200 ? res.data : undefined;
-                if (ret) {
-                    const newNft = ret.nft;
-                    if (newNft) {
-                        setNft(newNft);
-                        setSync(sync + 1);
-                        setCongrats(true);
-                        play();
-                    } else {
-                        openSnackbar(ret.error, 'error');
-                    }
-                }
-            })
-            .catch((err) => {
-                console.log('Error on choosing NFT!!!', err);
-            })
-            .then(function () {
-                // always executed
-                setSpinning(false);
-            });
-    };
-
-    useEffect(() => {
-        function getMints() {
-            if (!accountLogin || !accountToken) {
-                openSnackbar('Please login', 'error');
-                // setMints(0);
-                // setXrpBalance(0);
-                // return;
-            }
-
-            // https://api.xrpnft.com/api/spin/count?account=rhhh
-            axios
-                .get(
-                    `${BASE_URL}/spin/count?account=${accountLogin}&cid=${uuid}`,
-                    {
-                        headers: { 'x-access-token': accountToken }
-                    }
-                )
-                .then((res) => {
-                    let ret = res.status === 200 ? res.data : undefined;
-                    if (ret) {
-                        // console.log(`Mints: ${ret.mints}`);
-                        setMints(ret.mints);
-                        setXrpBalance(ret.xrpBalance);
-                        setPendingNfts(ret.pendingNfts);
-                    }
-                })
-                .catch((err) => {
-                    console.log('Error on getting mint count!!!', err);
-                })
-                .then(function () {
-                    // always executed
-                });
-        }
-        getMints();
-    }, [accountLogin, accountToken, sync]);
-
-    useEffect(() => {
-        if (congrats) {
-            setTimeout(() => {
-                setCongrats(false);
-            }, 3000);
-        }
-    }, [congrats]);
 
     return (
         <>
@@ -329,15 +217,11 @@ export default function ViewNFT({ collection }) {
                     }
                 }}
             >
-                <Stack
-                    direction="row"
-                    spacing={2}
-                    sx={{ pt: 1.5, pl: 1, pr: 1, pb: 1 }}
-                >
+                <Stack direction="row" spacing={2} sx={{pt: 1.5, pl: 1, pr: 1, pb: 1}}>
                     <FacebookShareButton
                         url={shareUrl}
                         quote={shareTitle}
-                        hashtag={'#'}
+                        hashtag={"#"}
                         description={shareDesc}
                         onClick={handleCloseShare}
                     >
@@ -346,7 +230,7 @@ export default function ViewNFT({ collection }) {
                     <TwitterShareButton
                         title={shareTitle}
                         url={shareUrl}
-                        hashtag={'#'}
+                        hashtag={"#"}
                         onClick={handleCloseShare}
                     >
                         <TwitterIcon size={24} round />
@@ -355,14 +239,9 @@ export default function ViewNFT({ collection }) {
             </Popover>
             <IconCover>
                 <IconWrapper>
-                    <IconImage
-                        src={`https://s1.xrpnft.com/collection/${logoImage}`}
-                    />
-                    {accountLogin === collection.account && (
-                        <Link
-                            href={`/collection/${slug}/edit`}
-                            underline="none"
-                        >
+                    <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`} />
+                    {accountLogin === collection.account &&
+                        <Link href={`/collection/${slug}/edit`} underline='none'>
                             <CardOverlay>
                                 <EditIcon
                                     className="MuiIconEditButton-root"
@@ -373,37 +252,29 @@ export default function ViewNFT({ collection }) {
                             </CardOverlay>
                             <ImageBackdrop className="MuiImageBackdrop-root" />
                         </Link>
-                    )}
+                    }
                 </IconWrapper>
             </IconCover>
-            <Stack
-                direction={fullScreen ? 'column' : 'row'}
-                spacing={2}
-                justifyContent="space-between"
-                sx={{ mt: 1, mb: 1 }}
-            >
+            <Stack direction={fullScreen ? "column" : "row"} spacing={2} justifyContent="space-between" sx={{ mt: 1, mb: 1 }}>
                 <Stack direction="row" spacing={1}>
                     <Typography variant="h1a">{name}</Typography>
-                    {verified === 'yes' && (
-                        <Tooltip title="Verified">
-                            <VerifiedIcon style={{ color: '#4589ff' }} />
+                    {verified === 'yes' &&
+                        <Tooltip title='Verified'>
+                            <VerifiedIcon style={{color: "#4589ff"}} />
                         </Tooltip>
-                    )}
+                    }
                 </Stack>
 
                 <Stack direction="row" alignItems="center" spacing={1}>
-                    {accountLogin === collection.account && (
-                        <Link
-                            href={`/collection/${slug}/edit`}
-                            underline="none"
-                        >
+                    {accountLogin === collection.account &&
+                        <Link href={`/collection/${slug}/edit`} underline='none'>
                             <Tooltip title="Edit your collection">
-                                <IconButton size="medium" sx={{ padding: 1 }}>
+                                <IconButton size='medium' sx={{ padding: 1 }}>
                                     <EditIcon />
                                 </IconButton>
                             </Tooltip>
                         </Link>
-                    )}
+                    }
 
                     <Tooltip title="Add to watchlist">
                         {/*<IconButton size='medium' sx={{ padding: 1 }}
@@ -416,9 +287,7 @@ export default function ViewNFT({ collection }) {
                     </Tooltip>
 
                     <Tooltip title="Share">
-                        <IconButton
-                            size="medium"
-                            sx={{ padding: 1 }}
+                        <IconButton size='medium' sx={{ padding: 1 }}
                             ref={anchorRef}
                             onClick={handleOpenShare}
                         >
@@ -426,10 +295,9 @@ export default function ViewNFT({ collection }) {
                         </IconButton>
                     </Tooltip>
 
-                    <IconButton
-                        size="medium"
-                        sx={{ padding: 1 }}
-                        onClick={() => {}}
+                    <IconButton size='medium' sx={{ padding: 1 }}
+                        onClick={() => {
+                        }}
                     >
                         <MoreHorizIcon />
                     </IconButton>
@@ -437,29 +305,23 @@ export default function ViewNFT({ collection }) {
             </Stack>
 
             <Stack direction="row" sx={{ mt: 2, mb: 3 }} spacing={1}>
-                <Typography variant="s5" style={{ wordBreak: 'break-word' }}>
-                    By&nbsp;
+                <Typography variant="s5" style={{ wordBreak: "break-word" }}>By&nbsp;
                     <Link
                         color="inherit"
                         // target="_blank"
                         href={`/account/${account}`}
                         // rel="noreferrer noopener nofollow"
                     >
-                        <Typography variant="s5" color="#33C2FF">
-                            {accountName ||
-                                account.slice(0, 4) + '...' + account.slice(-4)}
-                        </Typography>
+                        <Typography variant="s5" color="#33C2FF">{accountName || account.slice(0, 4) + '...' + account.slice(-4)}</Typography>
                     </Link>
-                    <Typography variant="s10">
-                        &nbsp;&nbsp;·&nbsp;Created{' '}
-                        <Typography variant="s3">
-                            {formatMonthYear(created)}
-                        </Typography>
-                    </Typography>
+                    <Typography variant="s10">&nbsp;&nbsp;·&nbsp;Created <Typography variant="s3">{formatMonthYear(created)}</Typography></Typography>
                 </Typography>
             </Stack>
 
-            <SeeMoreTypography variant="d3" text={description} />
+            <SeeMoreTypography
+                variant="d3"
+                text={description}
+            />
 
             {/* {description &&
                 <Typography variant="d3" style={{ wordBreak: "break-word" }}>{description}</Typography>
@@ -467,54 +329,37 @@ export default function ViewNFT({ collection }) {
 
             <Box
                 sx={{
-                    display: 'flex',
-                    flexDirection: { xs: 'column', sm: 'row' },
+                    display: "flex",
                     gap: 1,
                     py: 1,
-                    overflow: 'auto',
-                    width: '100%',
-                    '& > *': {
-                        scrollSnapAlign: 'center'
+                    overflow: "auto",
+                    width: "100%",
+                    "& > *": {
+                        scrollSnapAlign: "center",
                     },
-                    '::-webkit-scrollbar': { display: 'none' }
+                    "::-webkit-scrollbar": { display: "none" },
                 }}
             >
-                <Stack
-                    direction="row"
-                    width="100%"
-                    sx={{ mt: 2, mb: { xs: 0, sm: 3 } }}
-                    spacing={{ xs: 3, sm: 5 }}
-                    alignItems="flex-end"
-                    justifyContent={{ xs: 'space-around', sm: 'flex-start' }}
-                >
+
+                <Stack direction="row" width="100%" sx={{ mt: 2, mb: 3 }} spacing={{xs: 3, sm: 5}} alignItems="flex-end" justifyContent={{xs: 'space-around', sm: 'flex-start'}}>
                     <Stack>
-                        <Typography variant="d5">{items}</Typography>
-                        <Typography variant="s13">items</Typography>
+                        <Typography variant='d5'>{items}</Typography>
+                        <Typography variant='s13'>items</Typography>
                     </Stack>
                     <Stack>
-                        <Typography variant="d5">{extra.owners}</Typography>
-                        <Typography variant="s13">owners</Typography>
+                        <Typography variant='d5'>{extra.owners}</Typography>
+                        <Typography variant='s13'>owners</Typography>
                     </Stack>
                     <Stack>
-                        <Stack
-                            direction="row"
-                            spacing={0.5}
-                            alignItems="center"
-                        >
+                        <Stack direction="row" spacing={0.5} alignItems='center'>
                             <Icon icon={rippleSolid} width="20" height="20" />
-                            <Typography variant="d5" noWrap>
-                                {volume2}
-                            </Typography>
+                            <Typography variant="d5" noWrap>{volume2}</Typography>
                             <Stack direction="row" sx={{ pb: 1.5 }}>
                                 <Tooltip
                                     title={
                                         <Stack alignItems="center">
-                                            <Typography variant="body2">
-                                                Volume on XRPNFT
-                                            </Typography>
-                                            <Typography variant="body2">
-                                                {volume1}
-                                            </Typography>
+                                            <Typography variant="body2">Volume on XRPNFT</Typography>
+                                            <Typography variant="body2">{volume1}</Typography>
                                         </Stack>
                                     }
                                 >
@@ -522,36 +367,16 @@ export default function ViewNFT({ collection }) {
                                 </Tooltip>
                             </Stack>
                         </Stack>
-                        <Typography variant="s13" noWrap>
-                            total volume
-                        </Typography>
+                        <Typography variant='s13' noWrap>total volume</Typography>
                     </Stack>
                     <Stack>
-                        <Stack
-                            direction="row"
-                            spacing={0.5}
-                            alignItems="center"
-                        >
+                        <Stack direction="row" spacing={0.5} alignItems='center'>
                             <Icon icon={rippleSolid} width="20" height="20" />
-                            <Typography variant="d5" noWrap>
-                                {fNumber(floorPrice)}
-                            </Typography>
+                            <Typography variant="d5" noWrap>{fNumber(floorPrice)}</Typography>
                         </Stack>
-                        <Typography variant="s13" noWrap>
-                            floor price
-                        </Typography>
+                        <Typography variant='s13' noWrap>floor price</Typography>
                     </Stack>
                 </Stack>
-
-                <Box sx={{ my: { xs: 2, sm: 3 } }}>
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        onClick={() => getOneNFT()}
-                    >
-                        Mint
-                    </Button>
-                </Box>
             </Box>
 
             <ExploreNFT collection={collection} />
