@@ -16,7 +16,7 @@ export default function CreateHeader({ state }) {
     const title = useMemo(() => {
         switch (state) {
             case '':
-                return 'Create NFTs on the XRP Ledger.';
+                return 'Mint NFTs on the XRP Ledger.';
             case 'collection':
                 return 'Create a collection';
             case 'nft':
@@ -29,7 +29,7 @@ export default function CreateHeader({ state }) {
     const subTitle = useMemo(() => {
         switch (state) {
             case '':
-                return 'Start by selecting or creating a new collection.';
+                return 'Begin by choosing an existing collection or creating a new one.';
             case 'collection':
                 return 'Enter collection info below.';
             case 'nft':

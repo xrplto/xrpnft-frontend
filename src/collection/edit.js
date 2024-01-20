@@ -718,13 +718,13 @@ export default function EditCollection({collection}) {
                         <Typography variant='s2'>Normal:</Typography> You can mint NFTs one by one for this collection.
                     </Typography>
                     <Typography variant='p3'>
-                        <Typography variant='s2'>Bulk:</Typography> You can upload bulk NFTs and sell NFTs with Mints.
+                        <Typography variant='s2'>Normal Bulk:</Typography> You can upload bulk NFTs and sell NFTs nomally with Mints.
                     </Typography>
                     <Typography variant='p3'>
-                        <Typography variant='s2'>Random:</Typography> You can upload bulk NFTs and sell NFTs randomly with Mints.
+                        <Typography variant='s2'>Random Bulk:</Typography> You can upload bulk NFTs and sell NFTs randomly with Mints.
                     </Typography>
                     <Typography variant='p3'>
-                        <Typography variant='s2'>Sequence:</Typography> You can upload bulk NFTs and sell NFTs sequently with Mints.
+                        <Typography variant='s2'>Sequence Bulk:</Typography> You can upload bulk NFTs and sell NFTs sequently with Mints.
                     </Typography>
                 </Stack>
 

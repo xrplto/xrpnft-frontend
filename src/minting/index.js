@@ -673,7 +673,7 @@ export default function Minting({ showHeader = true, defaultValues }) {
                     syntax is supported.
                 </Typography>
                 <TextField
-                    placeholder="Provide a detailed description of your item"
+                    placeholder="Provide a detailed description of your NFT"
                     margin="dense"
                     multiline
                     maxRows={4}

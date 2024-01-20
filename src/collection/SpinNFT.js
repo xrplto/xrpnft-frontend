@@ -625,6 +625,8 @@ export default function SpinNFT({ collection, setView }) {
                             </Stack> */}
                             <Divider sx={{ mt: 0.8, mb: 2 }} />
                             <Stack alignItems="center">
+
+                            {/*
                                 <Button
                                     variant="contained"
                                     disabled={spinning}
@@ -633,6 +635,9 @@ export default function SpinNFT({ collection, setView }) {
                                 >
                                     Mint
                                 </Button>
+
+                                */}
+
                             </Stack>
                         </CardWrapper>
                     </Grid>

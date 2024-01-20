@@ -29,7 +29,7 @@ export default function Landing({collections}) {
                 <AutoStack>
                     <Typography variant="h1a">XRP NFT Marketplace</Typography>
                     <Stack sx={{mt:2}}>
-                        <Typography variant="s1">Trade XRP NFTs <Typography variant="s1" color="#2de370">without barriers.</Typography></Typography>
+                        <Typography variant="s1">Trade XRP NFTs <Typography variant="s1" color="#2de370">Without Barriers.</Typography></Typography>
                     </Stack>
 
                     <Stack direction="row" spacing={2} sx={{mt: 3}}>

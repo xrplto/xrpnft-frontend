@@ -854,13 +854,13 @@ export default function BulkMint2({slug}) {
                 <Stack spacing={2} mb={3}>
                     <Typography variant='p4'>Description <Typography variant='s2'>*</Typography></Typography>
                     <Typography variant='p3'>
-                        {'The description will be included in each item\'s description field.'}
+                        {'The description will be included in each NFT\'s description field.'}
                     </Typography>
                     <Typography variant='s2'>The same description will be applied to all NFTs. Check description field on the right JSON if you have made changes.</Typography>
                     <TextField
                         id='id_text_description'
                         autoComplete='new-password'
-                        placeholder='Provide a detailed description of your item'
+                        placeholder='Provide a detailed description of your NFT'
                         margin='dense'
                         multiline
                         maxRows={4}
