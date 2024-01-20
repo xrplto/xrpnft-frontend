@@ -3,22 +3,18 @@ import { Box, Container, styled, Toolbar } from '@mui/material';
 
 // Components
 import Header from 'src/components/Header';
-import Footer from 'src/components/Footer';
-import CreateCollection from 'src/collection/create';
+import Minting from 'src/minting';
 import ScrollToTop from 'src/components/ScrollToTop';
+import Footer from 'src/components/Footer';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
-        // overflow: hidden;
-        flex: 1;
+      // overflow: hidden;
+      flex: 1;
 `
 );
 
 export default function Overview({ data }) {
-    const handleCreate = (slug) => {
-        window.location.href = `/congrats/collection/${data.slug}`;
-    };
-
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
@@ -26,7 +22,7 @@ export default function Overview({ data }) {
             <Header />
 
             <Container maxWidth="sm">
-                <CreateCollection onCreate={handleCreate} />
+                <Minting />
             </Container>
 
             <ScrollToTop />
@@ -43,9 +39,9 @@ export async function getStaticProps() {
     let ret = {};
 
     const ogp = {};
-    ogp.canonical = 'https://xrpnft.com';
-    ogp.title = 'XRP NFT Marketplace, Buy, Sell & Collect NFTs';
-    ogp.url = 'https://xrpnft.com/';
+    ogp.canonical = 'https://xrpnft.com/nft/create';
+    ogp.title = 'Create';
+    ogp.url = 'https://xrpnft.com/nft/create';
     ogp.imgUrl = 'https://xrpnft.com/static/ogp.png';
     ogp.desc =
         "XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.";

@@ -1,8 +1,8 @@
 import React from 'react';
-import axios from 'axios'
+import axios from 'axios';
 import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
 import Decimal from 'decimal.js';
 
 // Material
@@ -77,12 +77,12 @@ const CardOverlay = styled('div')(
 );
 
 const CustomSelect = styled(Select)(({ theme }) => ({
-    '& .MuiOutlinedInput-notchedOutline' : {
+    '& .MuiOutlinedInput-notchedOutline': {
         // border: 'none'
     }
 }));
 
-export default function Minting() {
+export default function Minting({ collection = null, showHeader = true }) {
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -100,7 +100,9 @@ export default function Minting() {
     const [nftName, setNftName] = useState('');
     const [extLink, setExtLink] = useState('');
     const [description, setDescription] = useState('');
-    const [collectionName, setCollectionName] = useState('')
+    const [collectionName, setCollectionName] = useState(
+        collection?.name || ''
+    );
     const [traits, setTraits] = useState([]);
     const [royalty, setRoyalty] = useState('0');
     const [explicit, setExplicit] = useState(false);
@@ -125,29 +127,35 @@ export default function Minting() {
     const validAccount = account && accountToken && user_token;
     const canCreate = validAccount && file && nftName && collectionName; //  && passphrase && validPassword;
 
-    const loadCollections=() => {
+    const loadCollections = () => {
         if (!account || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
 
         // https://api.xrpnft.com/api/collection/query?filter=
-        axios.get(`${BASE_URL}/collection/query?account=${account}&filter=${filter}`, {headers: {'x-access-token': accountToken}})
-        .then(res => {
-            try {
-                if (res.status === 200 && res.data) {
-                    const ret = res.data;
-                    if (ret.collections.length > 0)
-                        setCollections(ret.collections);
+        axios
+            .get(
+                `${BASE_URL}/collection/query?account=${account}&filter=${filter}`,
+                { headers: { 'x-access-token': accountToken } }
+            )
+            .then((res) => {
+                try {
+                    if (res.status === 200 && res.data) {
+                        const ret = res.data;
+                        if (ret.collections.length > 0)
+                            setCollections(ret.collections);
+                    }
+                } catch (error) {
+                    console.log(error);
                 }
-            } catch (error) {
-                console.log(error);
-            }
-        }).catch(err => {
-            console.log("err->>", err);
-        }).then(function () {
-            // Always executed
-        });
+            })
+            .catch((err) => {
+                console.log('err->>', err);
+            })
+            .then(function () {
+                // Always executed
+            });
     };
 
     useEffect(() => {
@@ -159,11 +167,13 @@ export default function Minting() {
         var isRunning = false;
         var counter = 150;
         async function getPayload() {
-            console.log(counter + " " + isRunning, uuid);
+            console.log(counter + ' ' + isRunning, uuid);
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/mint/payload/${uuid}/${uuidNft}`);
+                const ret = await axios.get(
+                    `${BASE_URL}/mint/payload/${uuid}/${uuidNft}`
+                );
                 const resolved_at = ret.data?.resolved_at;
                 const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
@@ -172,8 +182,7 @@ export default function Minting() {
                         // handleClose();
                         openSnackbar('NFTokenMint successful!', 'success');
                         window.location.href = `/congrats/assets/${uuidNft}`;
-                    }
-                    else {
+                    } else {
                         openSnackbar('NFTokenMint failed!', 'error');
                     }
 
@@ -194,7 +203,7 @@ export default function Minting() {
         }
         return () => {
             if (timer) {
-                clearInterval(timer)
+                clearInterval(timer);
             }
         };
     }, [openScanQR, uuid, uuidNft]);
@@ -211,8 +220,11 @@ export default function Minting() {
             return;
         }
 
-        if (num > 0 && ((flag & 0x08) === 0)) {
-            openSnackbar('You should select Transferable flag to set Royalty', 'error');
+        if (num > 0 && (flag & 0x08) === 0) {
+            openSnackbar(
+                'You should select Transferable flag to set Royalty',
+                'error'
+            );
             return;
         }
 
@@ -229,8 +241,7 @@ export default function Minting() {
             data.explicit = explicit;
             data.flag = flag;
             data.isVideo = isVideo;
-            if (traits && traits.length > 0)
-                data.attributes = traits;
+            if (traits && traits.length > 0) data.attributes = traits;
 
             const formdata = new FormData();
             formdata.append('nft', file);
@@ -239,7 +250,10 @@ export default function Minting() {
             formdata.append('data', JSON.stringify(data));
 
             res = await axios.post(`${BASE_URL}/mint/one`, formdata, {
-                headers: { "Content-Type": "multipart/form-data", 'x-access-token': accountToken }
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'x-access-token': accountToken
+                }
             });
 
             if (res.status === 200) {
@@ -261,7 +275,7 @@ export default function Minting() {
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
                     const err = ret.err;
-                    openSnackbar(err, 'error')
+                    openSnackbar(err, 'error');
                 }
             }
         } catch (err) {
@@ -273,13 +287,14 @@ export default function Minting() {
     const onDisconnectXumm = async (uuid, uuidNft) => {
         setLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/mint/cancel/${uuid}/${uuidNft}`);
+            const res = await axios.delete(
+                `${BASE_URL}/mint/cancel/${uuid}/${uuidNft}`
+            );
             if (res.status === 200) {
                 setUuid(null);
                 setUuidNft(null);
             }
-        } catch(err) {
-        }
+        } catch (err) {}
         setLoading(false);
     };
 
@@ -289,8 +304,7 @@ export default function Minting() {
             const fileName = pickedFile.name;
             var re = /(?:\.([^.]+))?$/;
             var ext = re.exec(fileName)[1];
-            if (ext)
-                ext = ext.toLowerCase();
+            if (ext) ext = ext.toLowerCase();
             if (ext === 'jpg' || ext === 'png' || ext === 'gif') {
                 const size = pickedFile.size;
                 if (size < 10240000) {
@@ -298,12 +312,15 @@ export default function Minting() {
                     setIsVideo(false);
                     // This is used as src of image
                     const reader = new FileReader();
-                    reader.readAsDataURL(pickedFile)
+                    reader.readAsDataURL(pickedFile);
                     reader.onloadend = function (e) {
                         setFileUrl(reader.result); // data:image/jpeg;base64
-                    }
+                    };
                 } else {
-                    openSnackbar('You can only upload images size less than 10MB', 'error');
+                    openSnackbar(
+                        'You can only upload images size less than 10MB',
+                        'error'
+                    );
                     fileRef.current.value = null;
                 }
             } else if (ext === 'mp4') {
@@ -313,37 +330,39 @@ export default function Minting() {
                     setIsVideo(true);
                     // This is used as src of image
                     const reader = new FileReader();
-                    reader.readAsDataURL(pickedFile)
+                    reader.readAsDataURL(pickedFile);
                     reader.onloadend = function (e) {
                         setFileUrl(reader.result); // data:image/jpeg;base64
-                    }
+                    };
                 } else {
-                    openSnackbar('You can only upload video size less than 50MB', 'error');
+                    openSnackbar(
+                        'You can only upload video size less than 50MB',
+                        'error'
+                    );
                     fileRef.current.value = null;
                 }
             }
         }
-    }
+    };
 
     const handleResetFile = (e) => {
         e.stopPropagation();
         setFile(null);
         setFileUrl(null);
         fileRef.current.value = null;
-    }
+    };
 
     const handleFlagChange = (e) => {
         const value = e.target.value;
-        if (value === '1')
-            setFlag(flag ^ value);
+        if (value === '1') setFlag(flag ^ value);
         // if (value !== '8' && value !== '4') // Disable TRANSFERABLE, Trustline flag
         //     setFlag(flag ^ value);
-    }
+    };
 
     const handleCollectionQuery = (e) => {
         setCollectionName('');
         setFilter(e.target.value);
-    }
+    };
 
     const handleScanQRClose = () => {
         setOpenScanQR(false);
@@ -360,17 +379,13 @@ export default function Minting() {
     const handleChangeRoyalty = (e) => {
         const value = e.target.value;
         try {
-            const val = value?value.replace(/[^0-9.]/g, ""):'';
+            const val = value ? value.replace(/[^0-9.]/g, '') : '';
             setRoyalty(val);
-        } catch (e) {
-        }
-    }
+        } catch (e) {}
+    };
 
     const onAddTrait = (trait) => {
-        const {
-            type,
-            value
-        } = trait;
+        const { type, value } = trait;
         for (const t of traits) {
             if (t.type === type) {
                 t.value = value;
@@ -378,16 +393,15 @@ export default function Minting() {
             }
         }
         traits.push(trait);
-    }
+    };
 
     const handleRemoveTrait = (type) => {
         const newTraits = [];
         for (const t of traits) {
-            if (t.type !== type)
-                newTraits.push(t);
+            if (t.type !== type) newTraits.push(t);
         }
         setTraits(newTraits);
-    }
+    };
 
     return (
         <>
@@ -398,21 +412,31 @@ export default function Minting() {
                 onAddTrait={onAddTrait}
             />
 
-            <Stack spacing={1} sx={{mt: 4, mb:3}}>
-                <Typography variant="h1a" >Create New NFT</Typography>
-                <Typography variant='p3'><Typography variant='s2'>*</Typography> Required fields</Typography>
-                <Typography variant='p4'>Image, Video, Audio, or 3D Model <Typography variant='s2'>*</Typography></Typography>
-                <Typography variant='p3'>File types supported: {SUPPORTED_FILE_TYPES.join(', ')}. (Max size: 10MB) MP4 (Max size: 50MB)</Typography>
+            <Stack spacing={1} sx={{ mt: 4, mb: 3 }}>
+                {showHeader && (
+                    <Typography variant="h1a">Create New NFT</Typography>
+                )}
+                <Typography variant="p3">
+                    <Typography variant="s2">*</Typography> Required fields
+                </Typography>
+                <Typography variant="p4">
+                    Image, Video, Audio, or 3D Model{' '}
+                    <Typography variant="s2">*</Typography>
+                </Typography>
+                <Typography variant="p3">
+                    File types supported: {SUPPORTED_FILE_TYPES.join(', ')}.
+                    (Max size: 10MB) MP4 (Max size: 50MB)
+                </Typography>
                 <CardWrapper>
                     <input
                         ref={fileRef}
                         style={{ display: 'none' }}
                         // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
                         // accept='image/*'
-                        accept='.png, .jpg, .gif, .mp4'
-                        id='contained-button-file'
+                        accept=".png, .jpg, .gif, .mp4"
+                        id="contained-button-file"
                         // multiple
-                        type='file'
+                        type="file"
                         onChange={handleFileSelect}
                     />
                     <Card
@@ -426,36 +450,64 @@ export default function Minting() {
                             position: 'relative'
                         }}
                     >
-                        <CardOverlay
-                            onClick={() => fileRef.current.click()}
-                        >
+                        <CardOverlay onClick={() => fileRef.current.click()}>
                             <IconButton
-                                aria-label='close' onClick={(e) => handleResetFile(e)}
-                                sx={fileUrl ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
+                                aria-label="close"
+                                onClick={(e) => handleResetFile(e)}
+                                sx={
+                                    fileUrl
+                                        ? {
+                                              position: 'absolute',
+                                              right: '1vw',
+                                              top: '1vh'
+                                          }
+                                        : { display: 'none' }
+                                }
                             >
-                                <CloseIcon color='white' />
+                                <CloseIcon color="white" />
                             </IconButton>
                         </CardOverlay>
                         {/* <img src={fileUrl} alt='' style={fileUrl ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} /> */}
 
                         <CardMedia
-                            component={isVideo?'video':'img'}
+                            component={isVideo ? 'video' : 'img'}
                             image={fileUrl}
                             alt={'NFT'}
                             controls={isVideo}
-                            style={fileUrl ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }}
+                            style={
+                                fileUrl
+                                    ? {
+                                          objectFit: 'cover',
+                                          width: '100%',
+                                          height: '100%',
+                                          overflow: 'hidden'
+                                      }
+                                    : { display: 'none' }
+                            }
                         />
 
-                        <ImageIcon fontSize='large' sx={fileUrl ? { display: 'none' } : {width: 100, height: 100}} />
+                        <ImageIcon
+                            fontSize="large"
+                            sx={
+                                fileUrl
+                                    ? { display: 'none' }
+                                    : { width: 100, height: 100 }
+                            }
+                        />
                     </Card>
                 </CardWrapper>
             </Stack>
             <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Name<Typography variant='s2'>*</Typography></Typography>
+                <Typography variant="p4">
+                    Name<Typography variant="s2">*</Typography>
+                </Typography>
 
-                <TextField required placeholder='Item name' margin='dense'
+                <TextField
+                    required
+                    placeholder="Item name"
+                    margin="dense"
                     onChange={(e) => {
-                        setNftName(e.target.value)
+                        setNftName(e.target.value);
                     }}
                     value={nftName}
                     sx={{
@@ -466,60 +518,80 @@ export default function Minting() {
                 />
             </Stack>
 
-            <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Collection <Typography variant='s2'>*</Typography></Typography>
-                <Typography variant='p3'>
-                    This is the collection where your item will appear.
-                </Typography>
+            {!collection && (
+                <Stack spacing={2} mb={3}>
+                    <Typography variant="p4">
+                        Collection <Typography variant="s2">*</Typography>
+                    </Typography>
+                    <Typography variant="p3">
+                        This is the collection where your item will appear.
+                    </Typography>
 
-                <CustomSelect
-                    id='select_collection'
-                    value={collectionName}
-                    onChange={handleChangeCollection}
-                    MenuProps={{ disableScrollLock: true }}
-                    // renderValue={(idx) => (
-                    //     <>
-                    //     {(collections.length > 0 && idx > -1 && collections.length > idx) &&
-                    //         <Stack direction='row' alignItems="center">
-                    //             <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${collections[idx].logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
-                    //             <Typography variant='d4'>{collections[idx].name}</Typography>
-                    //         </Stack>
-                    //     }
-                    //     </>
-                    // )}
-                >
-                    <TextField
-                        id='textFilter'
-                        // autoFocus
-                        fullWidth
-                        variant='standard'
-                        placeholder='Filter'
-                        onChange={handleCollectionQuery}
-                        autoComplete='new-password'
-                        value={filter}
-                        defaultValue={filter}
-                        onFocus={event => {
-                            event.target.select();
-                        }}
-                        sx={{
-                            pl:2,pr:2,pb:2,pt:2.5
-                        }}
-                        onKeyDown={(e) => e.stopPropagation()}
-                    />
-                    {collections.map((col, idx) => (
-                        <MenuItem
-                            key={col.uuid}
-                            value={col.name}
-                            sx={{pt:2, pb:2}}
-                        >
-                            <Stack direction='row' spacing={1} alignItems="center">
-                                <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${col.logoImage}`} sx={{ width: 32, height: 32 }} />
-                                <Typography variant='d4'>{col.name} <Typography variant='s7'> (Taxon: {col.taxon})</Typography></Typography>
-                            </Stack>
-                        </MenuItem>
-                    ))}
-                </CustomSelect>
-                {/* <TextField required placeholder='Select collection' margin='dense'
+                    <CustomSelect
+                        id="select_collection"
+                        value={collectionName}
+                        onChange={handleChangeCollection}
+                        MenuProps={{ disableScrollLock: true }}
+                        // renderValue={(idx) => (
+                        //     <>
+                        //     {(collections.length > 0 && idx > -1 && collections.length > idx) &&
+                        //         <Stack direction='row' alignItems="center">
+                        //             <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${collections[idx].logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
+                        //             <Typography variant='d4'>{collections[idx].name}</Typography>
+                        //         </Stack>
+                        //     }
+                        //     </>
+                        // )}
+                    >
+                        <TextField
+                            id="textFilter"
+                            // autoFocus
+                            fullWidth
+                            variant="standard"
+                            placeholder="Filter"
+                            onChange={handleCollectionQuery}
+                            autoComplete="new-password"
+                            value={filter}
+                            defaultValue={filter}
+                            onFocus={(event) => {
+                                event.target.select();
+                            }}
+                            sx={{
+                                pl: 2,
+                                pr: 2,
+                                pb: 2,
+                                pt: 2.5
+                            }}
+                            onKeyDown={(e) => e.stopPropagation()}
+                        />
+                        {collections.map((col, idx) => (
+                            <MenuItem
+                                key={col.uuid}
+                                value={col.name}
+                                sx={{ pt: 2, pb: 2 }}
+                            >
+                                <Stack
+                                    direction="row"
+                                    spacing={1}
+                                    alignItems="center"
+                                >
+                                    <Avatar
+                                        alt="C"
+                                        src={`https://s1.xrpnft.com/collection/${col.logoImage}`}
+                                        sx={{ width: 32, height: 32 }}
+                                    />
+                                    <Typography variant="d4">
+                                        {col.name}{' '}
+                                        <Typography variant="s7">
+                                            {' '}
+                                            (Taxon: {col.taxon})
+                                        </Typography>
+                                    </Typography>
+                                </Stack>
+                            </MenuItem>
+                        ))}
+                    </CustomSelect>
+                    {/* <TextField required placeholder='Select collection' margin='dense'
                     onChange={handleCollectionFieldChange}
                     value={collectionName}
                     sx={{
@@ -528,20 +600,30 @@ export default function Minting() {
                         }
                     }}
                 /> */}
-                {/* <PropertySection />
+                    {/* <PropertySection />
                 <LevelsSection /> */}
-            </Stack>
+                </Stack>
+            )}
 
             <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Attributes</Typography>
-                <Typography variant='p3'>
+                <Typography variant="p4">Attributes</Typography>
+                <Typography variant="p3">
                     You can add traits in your NFT metadata.
                 </Typography>
 
                 <Grid container spacing={1}>
                     {traits.map((t, idx) => (
-                        <Grid item key={"Properties" + idx} xs={6} sm={4} md={3} >
-                            <Trait trait={t} onRemoveTrait={handleRemoveTrait} />
+                        <Grid
+                            item
+                            key={'Properties' + idx}
+                            xs={6}
+                            sm={4}
+                            md={3}
+                        >
+                            <Trait
+                                trait={t}
+                                onRemoveTrait={handleRemoveTrait}
+                            />
                         </Grid>
                     ))}
                 </Grid>
@@ -550,7 +632,7 @@ export default function Minting() {
                         variant="outlined"
                         startIcon={<AddCircleIcon />}
                         size="small"
-                        onClick={()=>setOpenAddTrait(true)}
+                        onClick={() => setOpenAddTrait(true)}
                     >
                         Add
                     </Button>
@@ -558,15 +640,18 @@ export default function Minting() {
             </Stack>
 
             <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>External link</Typography>
-                <Typography variant='p3'>
-                    {'This site will include a link to this URL on this item\'s detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details.'}
+                <Typography variant="p4">External link</Typography>
+                <Typography variant="p3">
+                    {
+                        "This site will include a link to this URL on this item's detail page, so that users can click to learn more about it. You are welcome to link to your own webpage with more details."
+                    }
                 </Typography>
                 <TextField
-                    required placeholder='External link'
-                    margin='dense'
+                    required
+                    placeholder="External link"
+                    margin="dense"
                     onChange={(e) => {
-                        setExtLink(e.target.value)
+                        setExtLink(e.target.value);
                     }}
                     value={extLink}
                     sx={{
@@ -578,18 +663,23 @@ export default function Minting() {
             </Stack>
 
             <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Description</Typography>
-                <Typography variant='p3'>
-                    The description will be included on the item's detail page underneath its image. <Link href="https://www.markdownguide.org/cheat-sheet/">Markdown</Link> syntax is supported.
+                <Typography variant="p4">Description</Typography>
+                <Typography variant="p3">
+                    The description will be included on the item's detail page
+                    underneath its image.{' '}
+                    <Link href="https://www.markdownguide.org/cheat-sheet/">
+                        Markdown
+                    </Link>{' '}
+                    syntax is supported.
                 </Typography>
                 <TextField
-                    placeholder='Provide a detailed description of your item'
-                    margin='dense'
+                    placeholder="Provide a detailed description of your item"
+                    margin="dense"
                     multiline
                     maxRows={4}
                     value={description}
                     onChange={(e) => {
-                        setDescription(e.target.value)
+                        setDescription(e.target.value);
                     }}
                     sx={{
                         '&.MuiTextField-root': {
@@ -605,9 +695,17 @@ export default function Minting() {
             </Stack>
 
             <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Royalty <Typography variant='s2'>*</Typography><Typography variant='s7'> (Transfer fee)</Typography></Typography>
-                <Typography variant='p3'>Between 0.00% and 50.00% in increments of 0.001.</Typography>
-                <TextField required placeholder='' margin='dense'
+                <Typography variant="p4">
+                    Royalty <Typography variant="s2">*</Typography>
+                    <Typography variant="s7"> (Transfer fee)</Typography>
+                </Typography>
+                <Typography variant="p3">
+                    Between 0.00% and 50.00% in increments of 0.001.
+                </Typography>
+                <TextField
+                    required
+                    placeholder=""
+                    margin="dense"
                     onChange={handleChangeRoyalty}
                     value={royalty}
                     sx={{
@@ -619,58 +717,71 @@ export default function Minting() {
             </Stack>
 
             <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Flags</Typography>
+                <Typography variant="p4">Flags</Typography>
                 <FormGroup sx={{ flexDirection: 'row' }}>
-                    {
-                        TOKEN_FLAGS.map((f) => (
-                            <FormControlLabel
-                                key={f.value}
-                                label={f.label}
-                                value={f.value}
-                                control={
-                                    <Checkbox checked={(flag & f.value) !== 0} onChange={handleFlagChange} />
-                                }
-                            />
-                        ))
-                    }
-
+                    {TOKEN_FLAGS.map((f) => (
+                        <FormControlLabel
+                            key={f.value}
+                            label={f.label}
+                            value={f.value}
+                            control={
+                                <Checkbox
+                                    checked={(flag & f.value) !== 0}
+                                    onChange={handleFlagChange}
+                                />
+                            }
+                        />
+                    ))}
                 </FormGroup>
 
                 <Stack spacing={1} pl={0}>
-                    <Typography variant='p3'>
-                        <Typography variant='s2'>Burnable:</Typography> If set, indicates that the issuer (or an entity authorized by the issuer) can destroy the object. The object's owner can always do so.
+                    <Typography variant="p3">
+                        <Typography variant="s2">Burnable:</Typography> If set,
+                        indicates that the issuer (or an entity authorized by
+                        the issuer) can destroy the object. The object's owner
+                        can always do so.
                     </Typography>
-                    <Typography variant='p3'>
-                        <Typography variant='s2'>OnlyXRP:</Typography> If set, nft can only be offered or sold for XRP.
+                    <Typography variant="p3">
+                        <Typography variant="s2">OnlyXRP:</Typography> If set,
+                        nft can only be offered or sold for XRP.
                     </Typography>
-                    <Typography variant='p3'>
-                        <Typography variant='s2'>TrustLine:</Typography> If set, indicates that the issuer wants a trustline to be automatically created. You can't set now.
+                    <Typography variant="p3">
+                        <Typography variant="s2">TrustLine:</Typography> If set,
+                        indicates that the issuer wants a trustline to be
+                        automatically created. You can't set now.
                     </Typography>
-                    <Typography variant='p3'>
-                        <Typography variant='s2'>Transferable:</Typography> If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer. You can't uncheck it.
+                    <Typography variant="p3">
+                        <Typography variant="s2">Transferable:</Typography> If
+                        set, indicates that this NFT can be transferred. This
+                        flag has no effect if the token is being transferred
+                        from the issuer or to the issuer. You can't uncheck it.
                     </Typography>
                 </Stack>
 
                 <FormGroup sx={{ flexDirection: 'row', alignItems: 'center' }}>
                     <FormControlLabel
-                        key='check_explicit'
-                        label='Explicit content'
-                        value='explicit'
+                        key="check_explicit"
+                        label="Explicit content"
+                        value="explicit"
                         control={
-                            <Checkbox checked={explicit} onChange={()=>setExplicit(!explicit)} />
+                            <Checkbox
+                                checked={explicit}
+                                onChange={() => setExplicit(!explicit)}
+                            />
                         }
                     />
-                    <Typography variant='p3'>Check if the content is for audiences over 18.</Typography>
+                    <Typography variant="p3">
+                        Check if the content is for audiences over 18.
+                    </Typography>
                 </FormGroup>
-
             </Stack>
 
-            <Stack alignItems='right'>
+            <Stack alignItems="right">
                 <LoadingButton
                     disabled={!canCreate}
-                    variant='contained'
+                    variant="contained"
                     loading={loading}
-                    loadingPosition='start'
+                    loadingPosition="start"
                     startIcon={<SendIcon />}
                     onClick={onCreateNft}
                     sx={{ mt: 5, mb: 6 }}

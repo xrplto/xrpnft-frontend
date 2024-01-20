@@ -23,14 +23,10 @@ import {
     Paper,
     Stack,
     Tooltip,
-    Typography,
-    Card
+    Typography
 } from '@mui/material';
-import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
-import UploadIcon from '@mui/icons-material/Upload';
 import EditIcon from '@mui/icons-material/Edit';
 import VerifiedIcon from '@mui/icons-material/Verified';
-import { circularProgressClasses } from '@mui/material/CircularProgress';
 import { linearProgressClasses } from '@mui/material/LinearProgress';
 
 // Context
@@ -315,8 +311,6 @@ function FacebookCircularProgress(props) {
 }
 
 export default function SpinNFT({ collection, setView }) {
-    const router = useRouter();
-    const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { width, height } = useWindowSize();
     const [play, { stop }] = useSound(
@@ -752,36 +746,6 @@ export default function SpinNFT({ collection, setView }) {
                         </Stack>
                     </Grid>
                 </Grid>
-            </Container>
-
-            <Container maxWidth="lg">
-                <Stack
-                    spacing={{ xs: 2, sm: 8 }}
-                    direction={{ xs: 'column', sm: 'row' }}
-                    sx={{
-                        justifyContent: 'center'
-                    }}
-                >
-                    <Card
-                        sx={{ flex: 1, p: 4, cursor: 'pointer' }}
-                        onClick={() => router.push('/collection/create')}
-                    >
-                        <Stack sx={{ alignItems: 'center' }}>
-                            <LibraryAddIcon sx={{ fontSize: 72, mb: 1 }} />
-                            Create a new collection
-                        </Stack>
-                    </Card>
-
-                    <Card
-                        sx={{ flex: 1, p: 4, cursor: 'pointer' }}
-                        onClick={() => router.push('/create')}
-                    >
-                        <Stack sx={{ alignItems: 'center' }}>
-                            <UploadIcon sx={{ fontSize: 72, mb: 1 }} />
-                            Create a single NFT
-                        </Stack>
-                    </Card>
-                </Stack>
             </Container>
 
             {/* <Stack sx={{mt:5, minHeight: '20vh'}}>
