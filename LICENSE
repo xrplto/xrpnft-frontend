@@ -1,21 +1,25 @@
-MIT License
+xrpnft-frontend End User License Agreement
 
-Copyright (c) 2022 BloomUI
+Copyright (c) 2024 NFT Labs LLC
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. Grant of License
+This Agreement grants the licensee the non-exclusive, non-transferable right to use the software titled xrpnft-frontend (the "Software") provided by NFT Labs LLC (the "Licensor") solely for personal or internal business purposes. This license does not allow for sale, redistribution, or modification of the Software.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+2. Restrictions
+a. The licensee shall not copy, modify, distribute, sell, or lease any part of the Software, nor may they reverse engineer or attempt to extract the source code of the Software, except as laws prohibit these restrictions or as provided by written consent of the Licensor.
+b. The Software may not be used in any manner that infringes the intellectual property rights or other rights of third parties.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+3. Intellectual Property
+The Software, including without limitation all copyrights, trademarks, patents, trade secrets, and other intellectual property rights are, and shall remain, the sole and exclusive property of the Licensor.
+
+4. No Warranty
+The Software is provided "as is," without warranty of any kind, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement.
+
+5. Limitation of Liability
+In no event shall the Licensor be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses, resulting from (a) your access to or use of or inability to access or use the software; (b) any conduct or content of any third party on the software; or (c) unauthorized access, use, or alteration of your transmissions or content.
+
+6. Termination
+This license is effective until terminated by either party. The Licensor may terminate this Agreement at any time for any reason, including if the Licensee fails to comply with any term(s) herein. Upon termination, the Licensee must cease all use of the Software and destroy all copies.
+
+7. Governing Law
+This Agreement shall be governed by the laws of United States, Florida.
