@@ -375,7 +375,7 @@ export default function Summary({}) {
                 <Table>
                     <TableHead>
                     <TableCell colSpan={2} align="center">
-                    Total downloaded files: {fileExtensions.total_files}
+                    Total downloaded files: {fIntNumber(fileExtensions.total_files)}
                     </TableCell>
                     <TableRow>
                         <TableCell>Extension</TableCell>
@@ -386,7 +386,7 @@ export default function Summary({}) {
                     {Object.keys(fileExtensions.file_extensions).map(extension => (
                         <TableRow key={extension}>
                         <TableCell>{extension}</TableCell>
-                        <TableCell>{fileExtensions.file_extensions[extension]}</TableCell>
+                        <TableCell>{fIntNumber(fileExtensions.file_extensions[extension])}</TableCell>
                         </TableRow>
                     ))}
                     </TableBody>
