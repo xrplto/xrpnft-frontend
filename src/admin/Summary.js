@@ -80,6 +80,7 @@ export default function Summary({}) {
     const [nftsWithoutMeta, setNftsWithoutMeta] = useState(0);
     const [nftsWithoutMetaNoUri, setNftsWithoutMetaNoUri] = useState(0);
     const [topIssuers, setTopIssuers] = useState([]);
+    const [fileExtensions, setfileExtensions] = useState(null);
 
     const [loading, setLoading] = useState(true);
 
@@ -133,6 +134,7 @@ export default function Summary({}) {
                         setNftsWithoutMeta(ret.nftsWithoutMeta);
                         setNftsWithoutMetaNoUri(ret.nftsWithoutMetaNoUri);
                         setTopIssuers(ret.topIssuers);
+                        setfileExtensions(ret.fileExtensions);
                     }
                 }).catch(err => {
                     console.log("Error on getting summary!!!", err);
@@ -369,7 +371,29 @@ export default function Summary({}) {
                     </TableRow>
                 </TableBody>
             </Table>
-            
+            {fileExtensions ? (
+                <Table>
+                    <TableHead>
+                    <TableCell colSpan={2} align="center">
+                    Total downloaded files: {fileExtensions.total_files}
+                    </TableCell>
+                    <TableRow>
+                        <TableCell>Extension</TableCell>
+                        <TableCell>Count</TableCell>
+                    </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {Object.keys(fileExtensions.file_extensions).map(extension => (
+                        <TableRow key={extension}>
+                        <TableCell>{extension}</TableCell>
+                        <TableCell>{fileExtensions.file_extensions[extension]}</TableCell>
+                        </TableRow>
+                    ))}
+                    </TableBody>
+                </Table>
+            ) : (
+                <Typography>Loading...</Typography>
+            )}  
 		  <Table>
 			<TableHead>
 			  <TableRow>
