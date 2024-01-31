@@ -44,7 +44,7 @@ export default function NFTs({ collection }) {
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
-    const [filter, setFilter] = useState(4);
+    const [filter, setFilter] = useState(0);
     const [subFilter, setSubFilter] = useState(0);
     const [filterAttrs, setFilterAttrs] = useState([]);
     const [sync, setSync] = useState(0);
