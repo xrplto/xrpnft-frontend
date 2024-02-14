@@ -146,16 +146,10 @@ export default function CollectionPreview({collections}) {
                 } = item;
 
                 // const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;
-                const {
-                    NFTokenID,
-                    meta,
-                    dfile,
-                    collection
-                } = nft?nft:{};
 
-                let imgUrl = getImgUrl(NFTokenID, meta, dfile, 300);
+                let imgUrl = getImgUrl(nft?nft:{}, 300);
 
-                if (!imgUrl || meta?.video) {
+                if (!imgUrl || nft?.meta?.video) {
                     imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
                 }
 

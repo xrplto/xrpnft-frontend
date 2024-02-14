@@ -162,9 +162,9 @@ export default function FavoritedList({ account }) {
 
                                     // const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
                                     const imgUrl = getImgUrl(
-                                        NFTokenID,
+                                        {NFTokenID,
                                         meta,
-                                        dfile,
+                                        dfile},
                                         480
                                     );
 

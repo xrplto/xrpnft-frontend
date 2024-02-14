@@ -536,7 +536,12 @@ export const getMetadata = async (URI) => {
     } else return null
 }
 
-export const getImgUrl = (NFTokenID, meta, dfile, size) => {
+export const getImgUrl = (nft, size) => { // (NFTokenID, meta, dfile, size) // absense of size meanas full size
+    const { NFTokenID, meta, dfile, ufile, thumbnail } = nft;
+    if (size && thumbnail && Object.values(thumbnail)) {
+        thumbnail = Object.values(thumbnail)[0];
+        return `https://s2.xrpnft.com/d1/${thumbnail}`
+    }
     if (!meta) return '';
     const image = meta.image;
     const video = meta.video;
@@ -545,13 +550,13 @@ export const getImgUrl = (NFTokenID, meta, dfile, size) => {
 
     const isVideo = video?true:false;
 
-    if (dfile) {
+    if (dfile && (size || thumbnail)) { // TODO: re-parse to always have full size local image
         if (isVideo && dfile.video)
             return `https://s2.xrpnft.com/d1/${dfile.video}`;
         if (!isVideo && dfile.image)
             return `https://s2.xrpnft.com/d1/${dfile.image}`;
-        if (!isVideo && dfile.thumbnail) // TODO: maybe re-parse to always have image
-            return `https://s2.xrpnft.com/d1/${dfile.thumbnail}`;
+        if (!isVideo && dfile.animation) // TODO: maybe re-parse to always have image
+            return `https://s2.xrpnft.com/d1/${dfile.animation}`;
     }
 
     let url = video || image || meta?.video_url || meta?.image_url || meta?.metadata?.video || meta?.metadata?.image;

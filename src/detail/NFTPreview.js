@@ -13,11 +13,11 @@ import {
 // Utils
 import { getImgUrl } from 'src/utils/parse';
 
-export default function NFTPreview({ NFTokenID, meta, dfile }) {
+export default function NFTPreview({ nft }) {
 	const noImg = '/static/nft_no_image.webp'
-    const imgUrl = getImgUrl(NFTokenID, meta, dfile, 480) || noImg;
-    const ipfsImgUrl = getImgUrl(NFTokenID, meta) || noImg;
-    const isVideo = meta?.video?true:false;
+    const imgUrl = getImgUrl(nft, 480) || noImg;
+    const ipfsImgUrl = getImgUrl(nft) || noImg; //getImgUrl(NFTokenID, meta) // TODO: check if all ok as required dfile, size missing
+    const isVideo = nft.meta?.video?true:false;
 
     // const imgUrl = '/static/test.mp4';
     // const isVideo = true;

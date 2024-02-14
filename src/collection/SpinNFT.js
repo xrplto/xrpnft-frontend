@@ -355,9 +355,7 @@ export default function SpinNFT({ collection, setView }) {
 
     const [spinning, setSpinning] = useState(false);
 
-    const { NFTokenID, meta, dfile } = nft || {};
-
-    const imgUrl = getImgUrl(NFTokenID, meta, dfile, 480);
+    const imgUrl = getImgUrl(nft, 480);
 
     const img_dark = '/static/default_mint_black.svg';
     const img_light = '/static/default_mint_white.svg';

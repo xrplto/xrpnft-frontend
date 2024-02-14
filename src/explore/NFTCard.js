@@ -93,7 +93,7 @@ export default function NFTCard({ nft, handleRemove }) {
     const isSold = false;
 
     // const imgUrl = '/static/nft.png';
-    const imgUrl = getImgUrl(NFTokenID, meta, dfile, 300);
+    const imgUrl = getImgUrl(nft, 300);
 
     const isVideo = meta?.video ? true : false;
 

@@ -168,7 +168,7 @@ export default function CollectionActivity({collection}) {
 
                             const isVideo = meta?.video?true:false;
 
-                            const imgUrl = getImgUrl(NFTokenID, meta, dfile, 48);
+                            const imgUrl = getImgUrl({NFTokenID, meta, dfile}, 48);
 
                             const strDateTime = formatDateTime(time);
 
