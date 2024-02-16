@@ -33,6 +33,8 @@ const RenderOption = ({
     uuid,
     meta,
     dfile,
+    ufile,
+    thumbnail,
     option_type,
     NFTokenID,
     logoImage,
@@ -52,7 +54,7 @@ const RenderOption = ({
     const initOption = (option_type) => {
         switch (option_type) {
             case 'NFTS':
-                const imgUrl = getImgUrl({NFTokenID, meta, dfile}, 56);
+                const imgUrl = getImgUrl({NFTokenID, meta, dfile, ufile, thumbnail}, 56);
                 setImgUrl(imgUrl)
                 setIsVideo(meta?.video ? true : false)
                 setHLink(`/nft/${NFTokenID}`)
