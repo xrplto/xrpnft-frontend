@@ -82,6 +82,10 @@ export default function Summary({}) {
     const [topIssuers, setTopIssuers] = useState([]);
     const [fileExtensions, setfileExtensions] = useState(null);
 
+    const [nftsWithDfile, setNftsWithDfile] = useState(0);
+    const [nftsIsIPFS, setNftsIsIPFS] = useState(0);
+    const [nftsIsIPFSExistsLocally, setNftsIsIPFSExistsLocally] = useState(0);
+
     const [loading, setLoading] = useState(true);
 
     let pNfts2 = 0;
@@ -135,6 +139,10 @@ export default function Summary({}) {
                         setNftsWithoutMetaNoUri(ret.nftsWithoutMetaNoUri);
                         setTopIssuers(ret.topIssuers);
                         setfileExtensions(ret.fileExtensions);
+
+                        setNftsWithDfile(ret.nftsWithDfile);
+                        setNftsIsIPFS(ret.nftsIsIPFS);
+                        setNftsIsIPFSExistsLocally(ret.nftsIsIPFSExistsLocally);
                     }
                 }).catch(err => {
                     console.log("Error on getting summary!!!", err);
@@ -367,6 +375,47 @@ export default function Summary({}) {
                                     </IconButton>
                                 </Tooltip>
                             </Stack>
+                        </TableCell>
+                    </TableRow>
+
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">NFTs downloaded (without FIFA)</Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(nftsWithDfile)}</Typography>
+                        </TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">NFTs IPFS</Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(nftsIsIPFS)}</Typography>
+                        </TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">NFTs Centralised</Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(nftsWithDfile - nftsIsIPFS)}</Typography>
+                        </TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">NFTs with IPFS cached by gateway locally</Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(nftsIsIPFSExistsLocally)}</Typography>
+                        </TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align="right" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s7">NFTs with IPFS not (yet) cached</Typography>
+                        </TableCell>
+                        <TableCell align="left" sx={{pt: 0.7, pb: 1}}>
+                            <Typography variant="s6">{fIntNumber(nftsIsIPFS - nftsIsIPFSExistsLocally)}</Typography>
                         </TableCell>
                     </TableRow>
                 </TableBody>
