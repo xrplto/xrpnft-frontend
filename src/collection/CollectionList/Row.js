@@ -159,7 +159,7 @@ export default function Row({ id, item, isMine }) {
                 >
                     <Typography
                         variant={isMobile ? 's8' : 's3'}
-                        sx={{ width: isMobile ? '12px' : '16px' }}
+                        sx={{ /*width: isMobile ? '12px' : '16px'*/ }}
                     >
                         {id}
                     </Typography>

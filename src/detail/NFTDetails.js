@@ -102,7 +102,11 @@ export default function NFTDetails({nft}) {
         total,
         volume,
         rarity,
-        rarity_rank
+        rarity_rank,
+        ufile,
+        isIPFS,
+        ufileIPFSPath,
+        IPFSPinnedFiles
     } = nft;
 
     const ParsedURI = convertHexToString(URI);
@@ -293,33 +297,57 @@ export default function NFTDetails({nft}) {
                                 </Typography>
                             </Link>
                         </Stack>
-
-                        <Stack spacing={1} mt={1}>
-                            <Typography variant='caption'>URI</Typography>
-                            <Typography sx={{ml:1}} style={{ wordWrap: "break-word" }}>{ParsedURI}</Typography>
-                        </Stack>
                         <Divider sx={{mt:2, mb:2}}/>
 
-                        {
-                            meta?.external_link && (
-                                <>
-                                    <Stack spacing={1}>
-                                        <Typography variant='caption'>Link</Typography>
-                                        <Link
-                                            href={`${meta.external_link}`}
-                                            sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
-                                            underline='hover'
-                                            target="_blank"
-                                            variant='info'
-                                            rel="noreferrer noopener nofollow"
-                                        >
-                                            <Typography sx={{ml:1}}>{meta.external_link}</Typography>
-                                        </Link>
-                                    </Stack>
-                                    <Divider sx={{mt:2, mb:2}}/>
-                                </>
-                            )
-                        }
+                        <Stack spacing={1} mt={1}>
+                        <Typography variant='caption'>
+                            {`Parsed media files${isIPFS ? ' (IPFS):' : ':'}`}
+                        </Typography>
+                        {Object.entries(ufile).map(([key, value]) => {
+                            // Determine the href for the "Cached" link
+                            let cachedHref;
+                            if (isIPFS && IPFSPinnedFiles && IPFSPinnedFiles[key]) {
+                                cachedHref = `https://gateway.xrpnft.com/ipfs/${ufileIPFSPath[key]}`;
+                            } else if (!isIPFS && dfile && dfile[key]) {
+                                cachedHref = `https://s2.xrpnft.com/d1/${dfile[key]}`;
+                            }
+
+                            return (
+                            <Stack key={key} spacing={1} alignItems="flex-start">
+                                <Typography variant='caption'>{`${key}:`}</Typography>
+                                <Typography variant='body2' sx={{ display: 'inline-flex', overflowWrap: 'anywhere' }}>
+                                {/^https?:\/\//.test(value) ? (
+                                    <Link
+                                    href={value}
+                                    sx={{ display: 'inline-flex', overflowWrap: 'anywhere' }}
+                                    underline='hover'
+                                    target="_blank"
+                                    variant='body2'
+                                    rel="noreferrer noopener nofollow"
+                                    >
+                                    {value}
+                                    </Link>
+                                ) : (
+                                    value
+                                )}
+                                {cachedHref && (
+                                    <Link
+                                    href={cachedHref}
+                                    sx={{ display: 'inline-flex', whiteSpace: 'nowrap', ml: 1 }}
+                                    underline='hover'
+                                    target="_blank"
+                                    variant='body2'
+                                    rel="noreferrer noopener nofollow"
+                                    >
+                                    Cached
+                                    </Link>
+                                )}
+                                </Typography>
+                            </Stack>
+                            );
+                        })}
+                        </Stack>
+                        <Divider sx={{mt:2, mb:2}}/>
 
                     </AccordionDetails>
                 </Accordion>

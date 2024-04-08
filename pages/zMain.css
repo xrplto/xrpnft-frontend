@@ -30,3 +30,50 @@
   }
 }
 
+
+/* Tabs fron  https://github.com/Bithomp/frontend-react/blob/main/styles/components/tabs.scss */
+body {
+  --accent-link: rgb(6, 161, 68);
+}
+.tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+  margin-bottom: 20px;
+  .tabs-list {
+    padding: 1px;
+    position: relative;
+    border: 1px solid var(--accent-link);
+    input {
+      width: auto;
+      height: 100%;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      outline: none;
+      cursor: pointer;
+      padding: 4px 8px;
+      color: var(--accent-link);
+      font-size: 14px;
+      margin: 0;
+      &:checked {
+        background-color: var(--accent-link);
+        color: #fff;
+      }
+      &:before {
+        content: attr(label);
+        display: inline-block;
+        text-align: center;
+        width: 100%;
+      }
+    }
+  }
+}
+
+.tabs-inline {
+  text-align: center;
+  .tabs {
+    display: inline-block;
+  }
+}

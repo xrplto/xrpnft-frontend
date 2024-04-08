@@ -95,7 +95,7 @@ export default function NFTCard({ nft, handleRemove }) {
     // const imgUrl = '/static/nft.png';
     const imgUrl = getImgUrl(nft, 300);
 
-    const isVideo = meta?.video ? true : false;
+    const isVideo = /*meta?.video ? true : */false; // disabling for  now video as showing animated thumbnails
 
     const [loadingImg, setLoadingImg] = useState(true)
 

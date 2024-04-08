@@ -536,27 +536,51 @@ export const getMetadata = async (URI) => {
     } else return null
 }
 
+export const nftUrl = (nft, type = 'image') => {
+    if (!nft) return ''
+    if (type == 'thumbnail') {
+        if (nft.thumbnail) {
+            const thumbnail = Object.values(nft.thumbnail)[0];
+            return `https://s2.xrpnft.com/d1/${thumbnail}`
+        } else
+            return false;
+    }
+    if (type == 'thumbnail-static') {
+        if (nft.thumbnail) {
+            const thumbnail = Object.values(nft.thumbnail)[1];
+            return thumbnail ? `https://s2.xrpnft.com/d1/${thumbnail}` : false
+        } else
+            return false;
+    }
+    if (!nft.isIPFS && nft.dfile && nft.dfile[type]) {
+        return `https://s2.xrpnft.com/d1/${nft.dfile[type]}`
+    } else if (nft.isIPFS && nft.ufileIPFSPath && nft.ufileIPFSPath[type]) {
+        return `https://gateway.xrpnft.com/ipfs/${nft.ufileIPFSPath[type]}`
+    }
+}
+
 export const getImgUrl = (nft, size) => { // (NFTokenID, meta, dfile, size) // absense of size meanas full size
-    const { NFTokenID, meta, dfile, ufile, thumbnail } = nft;
+    const { NFTokenID, meta, dfile, ufile, thumbnail/*, isIPFS, PFSPinnedFiles, ufileIPFSPath*/ } = nft;
+    //console.log('getImgUrl:', NFTokenID, meta, dfile, size, thumbnail, nft);
     if (size && thumbnail && Object.values(thumbnail)) {
         thumbnail = Object.values(thumbnail)[0];
         return `https://s2.xrpnft.com/d1/${thumbnail}`
     }
     if (!meta) return '';
-    const image = meta.image;
-    const video = meta.video;
+    const image = dfile.image; // meta.
+    const video = dfile.video; // meta.
 
     if (!dfile && !image && !video && !meta?.video_url && !meta?.image_url && !meta?.metadata?.video && !meta?.metadata?.image) return '';// webxtor: added !dfile as there might be many other cases, for example, meta.animation and no oothers: 000813883EBCBE82C32E1CA28616DBDD2E40873D446B0EC53C71728400000019
 
-    const isVideo = video?true:false;
+    //const isVideo = video?true:false;
 
     if (dfile && (size || thumbnail)) { // TODO: re-parse to always have full size local image
-        if (isVideo && dfile.video)
+        if (/*isVideo &&*/ dfile.video)
             return `https://s2.xrpnft.com/d1/${dfile.video}`;
-        if (!isVideo && dfile.image)
-            return `https://s2.xrpnft.com/d1/${dfile.image}`;
-        if (!isVideo && dfile.animation) // TODO: maybe re-parse to always have image
+        if (/*!isVideo &&*/ dfile.animation) // TODO: maybe re-parse to always have image
             return `https://s2.xrpnft.com/d1/${dfile.animation}`;
+        if (/*!isVideo &&*/ dfile.image)
+            return `https://s2.xrpnft.com/d1/${dfile.image}`;
     }
 
     let url = video || image || meta?.video_url || meta?.image_url || meta?.metadata?.video || meta?.metadata?.image;

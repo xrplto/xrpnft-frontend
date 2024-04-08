@@ -86,7 +86,7 @@ export default function NFTs({ collection }) {
         setDeletingNfts([]);
         setPage(0);
         setHasMore(true);
-        setSync((prevSync) => prevSync + 1);
+        ///setSync((prevSync) => prevSync + 1); // webxtor: disable duplicate loading on start
     }, [flag, search, filter, subFilter, attrSync, filterAttrs]);
 
     useEffect(() => {
