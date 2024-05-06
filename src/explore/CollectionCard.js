@@ -55,7 +55,9 @@ const CardWrapper = styled(Card)(
   `
 );
 
-export default function NFTCard({ nft, handleRemove }) {
+export default function CollectionCard({ collectionData, type, account, handleRemove }) {
+    const collection = collectionData.collection;
+    //console.log(`CollectionCard: ${JSON.stringify(collection)}`);
     const theme = useTheme();
 
     const { accountProfile } = useContext(AppContext);
@@ -74,7 +76,7 @@ export default function NFTCard({ nft, handleRemove }) {
         uuid,
         // name,
         // flag,
-        account,
+        //account,
         // minter,
         cost,
         costb,
@@ -88,18 +90,18 @@ export default function NFTCard({ nft, handleRemove }) {
         destination,
         rarity,
         rarity_rank
-    } = nft;
+    } = collection;
 
     const isSold = false;
 
     // const imgUrl = '/static/nft.png';
-    const imgUrl = getNftCoverUrl(nft, 'small');//getImgUrl(nft, 300);
+    const imgUrl = `https://s1.xrpnft.com/collection/${collection.logoImage}`//getNftCoverUrl(nft, 'small');//getImgUrl(nft, 300);
 
     const isVideo = /*meta?.video ? true : */false; // disabling for  now video as showing animated thumbnails
 
     const [loadingImg, setLoadingImg] = useState(true)
 
-    const name = nft.meta?.name || meta?.Name || 'No Name';
+    const name = collection.name || 'No Name';
 
     const getColors = colors => {
         setColors(c => [...c, ...colors]);
@@ -121,8 +123,10 @@ export default function NFTCard({ nft, handleRemove }) {
         handleRemove(NFTokenID);
     }
 
+    const collectionType = type.charAt(0).toUpperCase() + type.slice(1)
+
     return (
-        <Link href={`/nft/${NFTokenID}`} underline='none' sx={{ position: 'relative' }}>
+        <Link href={`/account/${account}/collection${collectionType}/${collectionData.collection.id/*slug*/}`} underline='none' sx={{ position: 'relative' }}>
             <CardWrapper
                 sx={{
                     marginLeft: 'auto',
@@ -130,7 +134,7 @@ export default function NFTCard({ nft, handleRemove }) {
                     width: '100%',
                     maxWidth: 280,
                     // height: 250,
-                    aspectRatio: '9 / 15',// 9 / 14
+                    aspectRatio: '9 / 15',//9 / 14
                     // minHeight: 250,
                     // background: `radial-gradient(
                     //         circle,
@@ -330,18 +334,7 @@ export default function NFTCard({ nft, handleRemove }) {
                             <Grid container alignItems='center' spacing={0.1}>
                                 <Grid item xs={12}>
                                     <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:0, pl:0, pr:0}}>
-                                        {cost ? (
-                                            cost.currency === "XRP" ?
-                                                <Stack direction="row" spacing={0.5} alignItems="center">
-                                                    <Icon icon={rippleSolid} width="14" height="14" />
-                                                    <Typography variant="s15">{fNumber(cost.amount)}</Typography>
-                                                </Stack>
-                                                :
-                                                <Typography variant="s15">{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
-
-                                        ) : (
-                                            <Typography variant='s7'>Unlisted</Typography>
-                                        )}
+                                        <Typography variant='s7'>{collectionData.nftCount} item(s)</Typography>
 
                                         {rarity_rank > 0 &&
                                             <Chip
@@ -358,23 +351,7 @@ export default function NFTCard({ nft, handleRemove }) {
                                     </Stack>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {
-                                        costb ?
-                                            <>
-                                                {costb.currency === "XRP" ?
-                                                    <Stack direction="row" spacing={0.5} alignItems="center">
-                                                        <Typography variant='s7'>Offer</Typography>
-                                                        <Icon icon={rippleSolid} color="#00AB55" width="12" height="12" />
-                                                        <Typography variant='s15' color="#00AB55">{fNumber(costb.amount)}</Typography>
-                                                    </Stack>
-                                                    :
-                                                    <Stack direction="row" spacing={0.5} alignItems="center">
-                                                        <Typography variant='s7'>Offer</Typography>
-                                                        <Typography variant='s15' color="#00AB55">{fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}</Typography>
-                                                    </Stack>
-                                                }
-                                            </> : <Typography variant='s7'>No Offer</Typography>
-                                    }
+                                       <Typography variant='s7'>{collectionData.nftsForSale} listed</Typography>
                                 </Grid>
                             </Grid>
                             // <Stack alignItems="left">

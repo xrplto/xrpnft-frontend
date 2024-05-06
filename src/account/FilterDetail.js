@@ -23,7 +23,7 @@ import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Components
 
-export default function FilterDetail({ boughtWithMints, onSaleCount, filter, setFilter, subFilter, setSubFilter }) {
+export default function FilterDetail({ boughtWithMints, onSaleCount, filter, setFilter, subFilter, setSubFilter, setPage }) {
 
     const handleFlagChange = (e) => {
         const value = e.target.value;
@@ -38,11 +38,13 @@ export default function FilterDetail({ boughtWithMints, onSaleCount, filter, set
             newFilter &= 0x0B;
         }
         setFilter(newFilter);
+        setPage(0);
     }
 
     const handleOnSaleFlagChange = (event) => {
         const value = event.target.value;
         setSubFilter(value);
+        setPage(0);
     };
 
     return (

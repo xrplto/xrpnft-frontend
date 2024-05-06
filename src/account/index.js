@@ -174,7 +174,7 @@ const StyledMenu = styled((props) => (
     }
 }));
 
-export default function Account({ profile, tab }) {
+export default function Account({ profile, limit, tab, collection, type }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile, openSnackbar, sync } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
@@ -364,7 +364,7 @@ export default function Account({ profile, tab }) {
             <Box sx={{ my: 1 }}>
                 <TabPanel value={tabID} id={0}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        <NFTs account={account} />
+                        <NFTs account={account} limit={limit} collection={collection} type={type} />
                     </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={1}>

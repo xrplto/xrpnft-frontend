@@ -4,10 +4,9 @@ import { useState } from 'react';
 import { Box, Button, Paper, Stack } from '@mui/material';
 
 // Components
-import CollectedNFTs from './CollectedNFTs';
-import CreatedNFTs from './CreatedNFTs';
+import CollectedCreatedNFTs from './CollectedCreatedNFTs';
 
-export default function NFTs({ account }) {
+export default function NFTs({ account, limit, collection, type }) {
     const [openCollected, setOpenCollected] = useState(false);
     const [openCreated, setOpenCreated] = useState(false);
 
@@ -25,8 +24,8 @@ export default function NFTs({ account }) {
                 <Button fullWidth onClick={handleClickCollected}>
                     Collected NFTs
                 </Button>
-                <Box m={2} sx={{ display: openCollected ? 'block' : 'none' }}>
-                    <CollectedNFTs account={account} />
+                <Box m={2} sx={{ display: openCollected || type === 'collected'  ? 'block' : 'none' }}>
+                    <CollectedCreatedNFTs type="collected" account={account} limit={limit} collection={collection} />
                 </Box>
             </Paper>
 
@@ -34,8 +33,8 @@ export default function NFTs({ account }) {
                 <Button fullWidth onClick={handleClickCreated}>
                     Created NFTs
                 </Button>
-                <Box m={2} sx={{ display: openCreated ? 'block' : 'none' }}>
-                    <CreatedNFTs account={account} />
+                <Box m={2} sx={{ display: openCreated || type === 'created' ? 'block' : 'none' }}>
+                    <CollectedCreatedNFTs type="created" account={account} limit={limit} collection={collection} />
                 </Box>
             </Paper>
         </Stack>

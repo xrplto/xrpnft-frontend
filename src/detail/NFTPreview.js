@@ -1,12 +1,17 @@
 import * as React from 'react';
 // import ModalImage from "react-modal-image";
 import { Lightbox } from "react-modal-image";
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { AppContext } from 'src/AppContext';
+
+import { useKeenSlider } from "keen-slider/react"
+import "keen-slider/keen-slider.min.css"
+
 //import { useTranslation } from 'next-i18next'
 function t (key) {
   let val = '';
   switch (key) {
-    case 'general.loading':
+    case 'general.loading':'image'
       val = 'Loading...';
       break;
     case 'general.load-failed':
@@ -58,13 +63,52 @@ import {
 import { getImgUrl, nftUrl, nftName } from 'src/utils/parse';
 
 export default function NFTPreview({ nft }) {
-	const noImg = '/static/nft_no_image.webp'
-    const imgUrl = getImgUrl(nft, 480) || noImg;
-    const ipfsImgUrl = getImgUrl(nft) || noImg; //getImgUrl(NFTokenID, meta) // TODO: check if all ok as required dfile, size missing
-    const isVideo = nft.meta?.video?true:false;
+    const { darkMode } = useContext(AppContext);
+	  const noImg = '/static/nft_no_image.webp'
+    //const imgUrl = getImgUrl(nft/*, 480*/) || noImg;
+    //const ipfsImgUrl = getImgUrl(nft) || noImg; //getImgUrl(NFTokenID, meta) // TODO: check if all ok as required dfile, size missing
+    //const isVideo = nft.meta?.video?true:false;
 
-    const thumbnailUrl = nftUrl(nft, 'thumbnail');
-    const thumbnailSaticUrl = nftUrl(nft, 'thumbnail-static');
+    // slider
+    const [loadedSlider, setLoadedSlider] = useState(false)
+    const [currentSlide, setCurrentSlide] = useState(0)
+    const [selectedImageUrl, setSelectedImageUrl] = useState("");
+    const [sliderRef, instanceRef] = useKeenSlider({
+      initial: 0,
+      loop: true,
+      slideChanged(slider) {
+        setCurrentSlide(slider.track.details.rel)
+      },
+      created() {
+        setLoadedSlider(true)
+      },
+    })
+    function Arrow(props) {
+      const disabled = props.disabled ? " arrow--disabled" : ""
+      return (
+        <svg
+          onClick={props.onClick}
+          className={`arrow ${
+            props.left ? "arrow--left" : "arrow--right"
+          } ${disabled}`}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+        >
+          {props.left && (
+            <path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z" />
+          )}
+          {!props.left && (
+            <path d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z" />
+          )}
+        </svg>
+      )
+    }
+
+    const handleOpenImage = (imageUrl) => {
+      setSelectedImageUrl(imageUrl);
+      setOpenImage(true);
+    };
+
     // const imgUrl = '/static/test.mp4';
     // const isVideo = true;
 
@@ -74,9 +118,9 @@ export default function NFTPreview({ nft }) {
     const closeLightboxImage = () => {
         setOpenImage(false);
     }
-    const closeLightboxAnimation = () => {
+    /*const closeLightboxAnimation = () => {
         setOpenAnimation(false);
-    }
+    }*/
 
     const nftName = nft.meta?.name || "No Name";
 
@@ -99,9 +143,9 @@ export default function NFTPreview({ nft }) {
     }
     }
  
-    let imageUrl = nftUrl(nft, 'image');
-    const animationUrl = nftUrl(nft, 'animation');
-    const videoUrl = nftUrl(nft, 'video');
+    let imageUrl = nftUrl(nft, 'image');console.log('imageUrl before', imageUrl)
+    const animationUrl = nftUrl(nft, 'animation');console.log('animationUrl before', animationUrl)
+    const videoUrl = nftUrl(nft, 'video');console.log('videoUrl before', videoUrl)
     const audioUrl = nftUrl(nft, 'audio');
     const modelUrl = nftUrl(nft, 'model');
     const viewerUrl = nftUrl(nft, 'viewer');
@@ -111,11 +155,11 @@ export default function NFTPreview({ nft }) {
     let modelState = null;
   
     const clUrl = {
-      image: nftUrl(nft, 'image'),
-      animation: nftUrl(nft, 'animation'),
-      video: nftUrl(nft, 'video'),
-      audio: nftUrl(nft, 'audio'),
-      model: nftUrl(nft, 'model')
+      image: imageUrl?.[currentSlide]?.cachedUrl,
+      animation: animationUrl?.[currentSlide]?.cachedUrl,
+      video: videoUrl?.[currentSlide]?.cachedUrl,
+      audio: audioUrl?.[currentSlide]?.cachedUrl,
+      model: modelUrl?.[currentSlide]?.cachedUrl,
     }
     const contentTabList = [];
     if (videoUrl) {
@@ -135,6 +179,10 @@ export default function NFTPreview({ nft }) {
       contentTabList.push({ value: 'image', label: (t("tabs.image")) });
       imageUrl = noImg;
     }
+
+    const imgOrAnimUrl = contentTab === 'image' ? imageUrl : contentTab === 'animation' ? animationUrl : '';
+
+    console.log('imageUrl after', imageUrl, 'imgOrAnimUrl', imgOrAnimUrl)
   
     let imageStyle = { width: "100%", height: "auto" };
     if (imageUrl) {
@@ -158,54 +206,78 @@ export default function NFTPreview({ nft }) {
       }
     }
 
-  //add attributes for the 3D model viewer 
-  let modelAttr = []
-  if (nft.metadata && (nft.metadata['3D_attributes'] || nft.metadata['3d_attributes'])) {
-    modelAttr = nft.metadata['3D_attributes'] || nft.metadata['3d_attributes']
-    const supportedAttr = [
-      'environment-image',
-      'exposure',
-      'shadow-intensity',
-      'shadow-softness',
-      'camera-orbit',
-      'camera-target',
-      'skybox-image',
-      'auto-rotate-delay',
-      'rotation-per-second',
-      'field-of-view',
-      'max-camera-orbit',
-      'min-camera-orbit',
-      'max-field-of-view',
-      'min-field-of-view',
-      'disable-zoom',
-      'orbit-sensitivity',
-      'animation-name',
-      'animation-crossfade-duration',
-      'variant-name',
-      'orientation',
-      'scale'
-    ]
-    if (Array.isArray(modelAttr)) {
-      for (let i = 0; i < modelAttr.length; i++) {
-        if (supportedAttr.includes(modelAttr[i].attribute)) {
-          modelAttr[i].value = stripText(modelAttr[i].value)
-        } else {
-          delete modelAttr[i]
+    //add attributes for the 3D model viewer 
+    let modelAttr = []
+    if (nft.metadata && (nft.metadata['3D_attributes'] || nft.metadata['3d_attributes'])) {
+      modelAttr = nft.metadata['3D_attributes'] || nft.metadata['3d_attributes']
+      const supportedAttr = [
+        'environment-image',
+        'exposure',
+        'shadow-intensity',
+        'shadow-softness',
+        'camera-orbit',
+        'camera-target',
+        'skybox-image',
+        'auto-rotate-delay',
+        'rotation-per-second',
+        'field-of-view',
+        'max-camera-orbit',
+        'min-camera-orbit',
+        'max-field-of-view',
+        'min-field-of-view',
+        'disable-zoom',
+        'orbit-sensitivity',
+        'animation-name',
+        'animation-crossfade-duration',
+        'variant-name',
+        'orientation',
+        'scale'
+      ]
+      if (Array.isArray(modelAttr)) {
+        for (let i = 0; i < modelAttr.length; i++) {
+          if (supportedAttr.includes(modelAttr[i].attribute)) {
+            modelAttr[i].value = stripText(modelAttr[i].value)
+          } else {
+            delete modelAttr[i]
+          }
         }
+      } else if (typeof modelAttr === 'object') {
+        let metaModelAttr = modelAttr
+        modelAttr = []
+        Object.keys(metaModelAttr).forEach(e => {
+          if (supportedAttr.includes(e)) {
+            modelAttr.push({
+              "attribute": e,
+              "value": stripText(metaModelAttr[e])
+            })
+          }
+        })
       }
-    } else if (typeof modelAttr === 'object') {
-      let metaModelAttr = modelAttr
-      modelAttr = []
-      Object.keys(metaModelAttr).forEach(e => {
-        if (supportedAttr.includes(e)) {
-          modelAttr.push({
-            "attribute": e,
-            "value": stripText(metaModelAttr[e])
-          })
-        }
-      })
     }
-  }
+
+    const renderImageLink = (file) => (
+      <Link
+        component="button"
+        underline="none"
+        onClick={() => handleOpenImage(file.cachedUrl)}
+        
+      >
+        {loadingImage(nft)}
+        <img
+          style={{ ...imageStyle, display: (loaded ? "inline-block" : "none"), verticalAlign: 'bottom' /* removes bottom line */ }}
+          onLoad={() => { setLoaded(true); setErrored(false) }}
+          onError={({ currentTarget }) => {
+            if (currentTarget.src === imageUrl && imageUrl !== clUrl.image) {
+              currentTarget.src = clUrl.image;
+            } else {
+              setErrored(true);
+            }
+          }}
+          src={(typeof file === 'string' ? file : file.thumbnail ? 'https://s2.xrpnft.com/d1/' + (file.thumbnail?.big || file.thumbnail?.small) : file.cachedUrl)}
+          alt={file.nftName}
+        />
+      </Link>
+    )
 
     return <>
     <Card>
@@ -227,82 +299,81 @@ export default function NFTPreview({ nft }) {
         </span>
       </div>
     }
-    {imageUrl && contentTab === 'image' &&
+
+    {((imageUrl && contentTab === 'image') || (animationUrl && contentTab === 'animation')) && (
       <>
-      <Link
-                component="button"
-                underline="none"
-                onClick={() => {setOpenImage(true)} }
-      >
-        {loadingImage(nft)}
-        <img
-          style={{ ...imageStyle, display: (loaded ? "inline-block" : "none") }}
-          src={thumbnailSaticUrl || thumbnailUrl || imageUrl}
-          onLoad={() => { setLoaded(true); setErrored(false) }}
-          onError={({ currentTarget }) => {
-            if (currentTarget.src === imageUrl && imageUrl !== clUrl.image) {
-              currentTarget.src = clUrl.image;
-            } else {
-              setErrored(true);
-            }
-          }}
-          alt={nftName}
-        />
-      </Link>
-      {openImage &&
-        <Lightbox
-            small={imageUrl}
-            large={imageUrl}
+        {(typeof imgOrAnimUrl === 'object' && imgOrAnimUrl.length > 1) ? (
+          <div className="navigation-wrapper">
+            <div ref={sliderRef} className="keen-slider">
+              {imgOrAnimUrl.map((file, index) => (
+                <div key={index} className={`keen-slider__slide number-slide${index + 1}`}>
+                  {renderImageLink(file)}
+                </div>
+              ))}
+            </div>
+            {loadedSlider && instanceRef.current && (
+              <>
+                <Arrow
+                  left
+                  onClick={(e) =>
+                    e.stopPropagation() || instanceRef.current?.prev()
+                  }
+                  disabled={currentSlide === 0}
+                />
+
+                <Arrow
+                  onClick={(e) =>
+                    e.stopPropagation() || instanceRef.current?.next()
+                  }
+                  disabled={
+                    currentSlide === instanceRef.current.track.details.slides.length - 1
+                  }
+                />
+              </>
+            )}
+
+            {loadedSlider && instanceRef.current && (
+              <div className="dots">
+                {[
+                  ...Array(instanceRef.current.track.details.slides.length).keys(),
+                ].map((idx) => {
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        instanceRef.current?.moveToIdx(idx)
+                      }}
+                      className={"dot" + (currentSlide === idx ? " active" : "")}
+                    ></button>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        ) : renderImageLink(typeof imgOrAnimUrl === 'string' ? imgOrAnimUrl : imgOrAnimUrl[0])}
+        {openImage && (
+          <Lightbox
+            small={selectedImageUrl}
+            large={selectedImageUrl}
             hideDownload
             hideZoom
-            onClose={closeLightboxImage}
-        />
-      }
+            onClose={() => setOpenImage(false)}
+            imageBackgroundColor={ darkMode ? "rgb(33, 37, 43)" : "rgb(244, 245, 251)"}
+          />
+        )}
       </>
-    }
-    {animationUrl && contentTab === 'animation' &&
-      <>
-      <Link
-              component="button"
-              underline="none"
-              onClick={() => {setOpenAnimation(true)} }
-      >
-        {loadingImage(nft)}
-        <img
-          style={{ ...imageStyle, display: (loaded ? "inline-block" : "none") }}
-          src={thumbnailUrl || animationUrl}
-          onLoad={() => { setLoaded(true); setErrored(false) }}
-          onError={({ currentTarget }) => {
-            if (currentTarget.src === animationUrl && animationUrl !== clUrl.animation) {
-              currentTarget.src = clUrl.animation;
-            } else {
-              setErrored(true);
-            }
-          }}
-          alt={nftName}
-        />
-      </Link>
-      {openAnimation &&
-        <Lightbox
-          small={animationUrl}
-          large={animationUrl}
-          hideDownload
-          hideZoom
-          onClose={closeLightboxAnimation}
-        />
-      }
-      </>
-    }
+    )}
+
     {videoUrl && defaultTab === 'video' &&
       <video
-        poster={thumbnailUrl}
+        poster={videoUrl[currentSlide].thumbnail ? 'https://s2.xrpnft.com/d1/' + (videoUrl[currentSlide].thumbnail?.big || videoUrl[currentSlide].thumbnail?.static ) : ''}
         playsInline
         muted
         loop
         controls
-        style={{ width: "100%", height: "auto" }}
+        style={{ width: "100%", height: "auto", verticalAlign: 'bottom' }}
       >{/*autoPlay*/}
-        <source src={videoUrl} type="video/mp4" />
+        <source src={videoUrl[currentSlide].cachedUrl} type="video/mp4" />
       </video>
     }
     {modelUrl && defaultTab === 'model' &&
@@ -321,7 +392,7 @@ export default function NFTPreview({ nft }) {
             </Head>
             <model-viewer
               className="model-viewer"
-              src={modelUrl}
+              src={modelUrl[currentSlide].cachedUrl}
               camera-controls
               auto-rotate
               ar
@@ -342,25 +413,25 @@ export default function NFTPreview({ nft }) {
     {contentTabList.length < 2 && defaultUrl &&
       <span style={{ padding: "4px 0px" }}>
         <Link href={defaultUrl} target="_blank" rel="noreferrer">
-          <Typography style={{ marginLeft: "18px" }} variant='body1' noWrap>{t("tabs." + defaultTab)} Link</Typography>
+          <Typography style={{ /*marginLeft: "18px",*/ padding: "18px" }} variant='body1' noWrap>{t("tabs." + defaultTab)} Link</Typography>
         </Link>
       </span>
     }
 
     {defaultTab !== 'model' /*&& defaultTab !== 'video'*/ && audioUrl &&
       <>
-        <audio src={audioUrl} controls style={{ display: 'block', margin: "20px auto", marginBottom: "0px" }}></audio>
+        <audio src={audioUrl[currentSlide].cachedUrl} controls style={{ display: 'block', margin: "20px auto", marginBottom: "0px" }}></audio>
         <span style={{ padding: "4px 0px" }}>
           <Link href={clUrl.audio} target="_blank" rel="noreferrer">
-            <Typography style={{ marginLeft: "18px" }} variant='body1' noWrap>{t("tabs.audio")} Link</Typography>
+            <Typography style={{ /*marginLeft: "18px",*/ padding: "18px" }} variant='body1' noWrap>{t("tabs.audio")} Link</Typography>
           </Link>
         </span>
       </>
     }
     {viewerUrl &&
       <span style={{ padding: "4px 0px", float: "right" }}>
-        <Link href={viewerUrl} target="_blank" rel="noreferrer">
-          <Typography style={{ marginLeft: "18px" }} variant='s11' noWrap>{t("general.viewer")}</Typography>
+        <Link href={viewerUrl[currentSlide].cachedUrl} target="_blank" rel="noreferrer">
+          <Typography style={{ /*marginLeft: "18px",*/ padding: "18px" }} variant='s11' noWrap>{t("general.viewer")}</Typography>
         </Link>
       </span>
     }
@@ -373,7 +444,7 @@ export default function NFTPreview({ nft }) {
         }
       </>
       */}
-    <div style={{ height: "15px" }}></div>
+     {/*<div style={{ height: "15px" }}></div>*/}
     </Card>
   </>
 

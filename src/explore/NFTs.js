@@ -52,7 +52,7 @@ export default function NFTs({ collection }) {
 
     const fetchNfts = useCallback(() => {
         setLoading(true);
-        const limit = 20;
+        const limit = 32; // 20 per page
         const body = {
             page,
             limit,
@@ -91,7 +91,7 @@ export default function NFTs({ collection }) {
 
     useEffect(() => {
         fetchNfts();
-    }, [sync, fetchNfts]);
+    }, [sync/*, fetchNfts*/, flag, search, filter, subFilter, attrSync, filterAttrs]);
 
     const handleChangeSearch = (e) => {
         setSearch(e.target.value);
@@ -172,6 +172,7 @@ export default function NFTs({ collection }) {
                             subFilter={subFilter}
                             setSubFilter={setSubFilter}
                             setFilterAttrs={setFilterAttrs}
+                            setPage={setPage}
                         />
                     </Grid>
                 )}

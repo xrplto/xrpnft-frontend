@@ -82,7 +82,7 @@ export default function Overview({ data }) {
             </BannerWrapper>
 
             <Container maxWidth="xxl">
-                <Account profile={profile} tab={data.tab} />
+                <Account profile={profile} tab={data.tab} limit={data.limit} collection={data.collection} type={data.type} />
             </Container>
 
             <ScrollToTop />
@@ -123,6 +123,12 @@ export async function getServerSideProps(ctx) {
     }
 
     if (tab) data.tab = tab;
+    
+    if (tab?.includes('collection')) {
+        data.collection = params[2];
+        data.type = tab.replace('collection', '').toLowerCase();
+    }
+    data.limit = process.env.ITEMS_PER_PAGE;
 
     const { account, name, logo, banner, description } = data.profile;
 

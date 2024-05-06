@@ -536,30 +536,54 @@ export const getMetadata = async (URI) => {
     } else return null
 }
 
+export const getNftCoverUrl = (nft, size = 'big') => {
+    if (!nft) return '';
+    
+    const fileTypes = ['video', 'animation', 'image']; // order is important
+    const files = nft.files?.filter(file => fileTypes.includes(file.type)/* && file.thumbnail?.[size]*/);
+    
+    if (files?.length) {
+        for (const type of fileTypes) {
+            const file = files.find(f => f.type === type);
+            if (file) {
+                // return big thumbnail if requied size fail
+                const thumbnail = file.thumbnail?.[size] || file.thumbnail?.big || file.convertedFile || ((!file.isIPFS && file.dfile) ? file.dfile : '');
+                if (thumbnail) {
+                    return `https://s2.xrpnft.com/d1/${thumbnail}`
+                } else if (file.isIPFS && file.IPFSPath){
+                    return `https://gateway.xrpnft.com/ipfs/${file.IPFSPath}`
+                }
+            }
+        }
+    }
+
+
+    
+    return '';
+}
+
 export const nftUrl = (nft, type = 'image') => {
-    if (!nft) return ''
-    if (type == 'thumbnail') {
-        if (nft.thumbnail) {
-            const thumbnail = Object.values(nft.thumbnail)[0];
-            return `https://s2.xrpnft.com/d1/${thumbnail}`
-        } else
-            return false;
-    }
-    if (type == 'thumbnail-static') {
-        if (nft.thumbnail) {
-            const thumbnail = Object.values(nft.thumbnail)[1];
-            return thumbnail ? `https://s2.xrpnft.com/d1/${thumbnail}` : false
-        } else
-            return false;
-    }
-    if (!nft.isIPFS && nft.dfile && nft.dfile[type]) {
-        return `https://s2.xrpnft.com/d1/${nft.dfile[type]}`
-    } else if (nft.isIPFS && nft.ufileIPFSPath && nft.ufileIPFSPath[type]) {
-        return `https://gateway.xrpnft.com/ipfs/${nft.ufileIPFSPath[type]}`
+    if (!nft) return '';
+    const files = nft.files?.filter(file => file.type === type);
+    if (files?.length) {
+        for (const file of files) {
+            // Now serving convertedFile whever possible
+            if (!file.isIPFS && file.dfile) {
+                const fileName = file.convertedFile ?? file.dfile;
+                file.cachedUrl = `https://s2.xrpnft.com/d1/${fileName}`;
+            } else if (file.isIPFS && file.IPFSPath) {
+                file.cachedUrl = file.convertedFile ? `https://s2.xrpnft.com/d1/${file.convertedFile}` : `https://gateway.xrpnft.com/ipfs/${file.IPFSPath}`;
+            }
+        }
+        return files;
     }
 }
 
+
 export const getImgUrl = (nft, size) => { // (NFTokenID, meta, dfile, size) // absense of size meanas full size
+    const nftUrlFile = nftUrl(nft, 'image');
+    if (nftUrlFile) return nftUrlFile;
+
     const { NFTokenID, meta, dfile, ufile, thumbnail/*, isIPFS, PFSPinnedFiles, ufileIPFSPath*/ } = nft;
     //console.log('getImgUrl:', NFTokenID, meta, dfile, size, thumbnail, nft);
     if (size && thumbnail && Object.values(thumbnail)) {

@@ -398,17 +398,14 @@ export default function OffersList({ account, type }) {
                     {offers.map((offer, idx) => {
                         const price = normalizeAmount(offer.amount);
                         const isSell = offer.flags === 1;
-                        const NFTokenID = offer.NFTokenID;
-                        const orphaned = offer.orphaned;
-                        const meta = offer.meta;
-                        const dfile = offer.dfile;
+                        const {NFTokenID, orphaned, meta, dfile, thumbnail} = offer;
 
                         const { flag, royalty, issuer, taxon, transferFee } =
                             parseNFTokenID(NFTokenID);
 
                         const isVideo = meta?.video ? true : false;
 
-                        const imgUrl = getImgUrl({NFTokenID, meta, dfile}, 48);
+                        const imgUrl = getImgUrl({NFTokenID, meta, dfile, thumbnail}, 48);
 
                         // offer.expiration = 1669585409; // Delete this line.
 

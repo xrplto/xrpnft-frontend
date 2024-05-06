@@ -103,10 +103,7 @@ export default function NFTDetails({nft}) {
         volume,
         rarity,
         rarity_rank,
-        ufile,
-        isIPFS,
-        ufileIPFSPath,
-        IPFSPinnedFiles
+        files
     } = nft;
 
     const ParsedURI = convertHexToString(URI);
@@ -301,34 +298,34 @@ export default function NFTDetails({nft}) {
 
                         <Stack spacing={1} mt={1}>
                         <Typography variant='caption'>
-                            {`Parsed media files${isIPFS ? ' (IPFS):' : ':'}`}
+                            {`Parsed media files${files?.filter(file => file.isIPFS).length ? ' (IPFS):' : ':'}`}
                         </Typography>
-                        {Object.entries(ufile).map(([key, value]) => {
+                        {files?.map((file, index) => {
                             // Determine the href for the "Cached" link
                             let cachedHref;
-                            if (isIPFS && IPFSPinnedFiles && IPFSPinnedFiles[key]) {
-                                cachedHref = `https://gateway.xrpnft.com/ipfs/${ufileIPFSPath[key]}`;
-                            } else if (!isIPFS && dfile && dfile[key]) {
-                                cachedHref = `https://s2.xrpnft.com/d1/${dfile[key]}`;
+                            if (file.isIPFS && file.IPFSPinned) {
+                                cachedHref = `https://gateway.xrpnft.com/ipfs/${file.IPFSPath}`;
+                            } else if (!file.isIPFS && file.dfile ) {
+                                cachedHref = `https://s2.xrpnft.com/d1/${file.dfile}`;
                             }
 
                             return (
-                            <Stack key={key} spacing={1} alignItems="flex-start">
-                                <Typography variant='caption'>{`${key}:`}</Typography>
+                            <Stack key={file.type} spacing={1} alignItems="flex-start">
+                                <Typography variant='caption'>{`${file.type}:`}</Typography>
                                 <Typography variant='body2' sx={{ display: 'inline-flex', overflowWrap: 'anywhere' }}>
-                                {/^https?:\/\//.test(value) ? (
+                                {/^https?:\/\//.test(file.parsedUrl) ? (
                                     <Link
-                                    href={value}
+                                    href={file.parsedUrl}
                                     sx={{ display: 'inline-flex', overflowWrap: 'anywhere' }}
                                     underline='hover'
                                     target="_blank"
                                     variant='body2'
                                     rel="noreferrer noopener nofollow"
                                     >
-                                    {value}
+                                    {file.parsedUrl}
                                     </Link>
                                 ) : (
-                                    value
+                                    file.parsedUrl
                                 )}
                                 {cachedHref && (
                                     <Link

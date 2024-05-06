@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 
 // Utils
-import { getImgUrl } from 'src/utils/parse';
+import { getImgUrl, nftUrl } from 'src/utils/parse';
 
 // Components
 import Header from 'src/components/Header';
@@ -110,7 +110,7 @@ export async function getServerSideProps(ctx) {
         ogp.canonical = `https://xrpnft.com/nft/${NFTokenID}`;
         ogp.title = cname?`${name} - ${cname}`:`${name}`;
         ogp.url = `https://xrpnft.com/nft/${NFTokenID}`;
-        ogp.imgUrl = getImgUrl(NFTokenID, meta, dfile, 48);
+        ogp.imgUrl = nftUrl(nft)?.[0]?.cachedUrl; // (NFTokenID, meta, dfile, 48)
         ogp.desc = description?description:`XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
         ogp.isVideo = meta?.video?true:false;
 

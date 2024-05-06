@@ -29,7 +29,8 @@ export default function FilterDetail({
     setFilter,
     subFilter,
     setSubFilter,
-    setFilterAttrs
+    setFilterAttrs,
+    setPage // reset the page when applying a filter
 }) {
     const type = collection?.type;
     const extra = collection?.extra;
@@ -52,11 +53,13 @@ export default function FilterDetail({
             newFilter &= 0x13;
         }
         setFilter(newFilter);
+        setPage(0);
     };
 
     const handleOnSaleFlagChange = (event) => {
         const value = event.target.value;
         setSubFilter(value);
+        setPage(0)
     };
 
     return (
