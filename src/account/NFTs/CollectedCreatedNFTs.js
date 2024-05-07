@@ -81,10 +81,13 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection 
             });
     };
 
-    useEffect(() => {
+    const resetNfts = () => {
         setNfts([]);
         setPage(0);
         setHasMore(true);
+    }
+    useEffect(() => { // seems like useless, so created resetNfts() to be used in like handleChangeSearch()
+        resetNfts(); // doesn't seem to reset anything but keeping
         //setSync(sync + 1); // webxtor: disable duplicate loading on start
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [flag, search, filter, subFilter]);
@@ -98,6 +101,7 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection 
     }, [fullScreen]);
 
     const handleChangeSearch = (e) => {
+        resetNfts();
         setSearch(e.target.value);
     };
 
