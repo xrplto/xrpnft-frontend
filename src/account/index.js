@@ -340,8 +340,11 @@ export default function Account({ profile, limit, tab, collection, type }) {
                     // scrollButtons='auto'
                     aria-label="token-tabs"
                     sx={{
-                        '& .MuiTabs-scroller': {
+                        '& .MuiTabs-scroller, .MuiTab-root': {
                             overflow: 'visible !important'
+                        },
+                        '& .MuiBadge-overlapRectangular': {
+                          borderRadius: '50%'
                         }
                     }}
                 >
