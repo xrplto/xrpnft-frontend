@@ -103,7 +103,7 @@ export default function HistoryList({ nft }) {
                             }
                         }}>
                             <TableBody>
-                                {hists && hists.map((row) => (
+                                {hists && hists.slice().reverse().map((row) => (
                                     <TableRow key={row.uuid}>
                                         <TableCell align="left" width='15%' sx={{pt:0.5, pb:0.5}}>
                                             <Typography variant='body2' noWrap>{row.type}</Typography>
