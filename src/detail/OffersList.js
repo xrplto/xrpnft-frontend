@@ -88,8 +88,8 @@ export default function OffersList({ nft, offers, handleAcceptOffer, handleCance
                                             <Typography variant='s6' color='#33C2FF' noWrap>{priceAmount} {price.name}&nbsp;&nbsp;</Typography>
                                             <Link
                                                 // color="inherit"
-                                                target="_blank"
-                                                href={`https://bithomp.com/explorer/${offer.owner}`}
+                                              //  target="_blank"
+                                                href={`https://xrpnft.com/account/${offer.owner}`}
                                                 rel="noreferrer noopener nofollow"
                                             >
                                                 <Typography variant='s6' style={{ wordBreak: "break-all" }}> {offer.owner}</Typography>
