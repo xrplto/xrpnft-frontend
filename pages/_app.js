@@ -17,11 +17,7 @@ function XRPNFTApp(props) {
     const ogp = pageProps.ogp || {};
     const data = pageProps.data;
 
-    if (ogp.isVideo) {
-        ogp.type = "video";
-    } else {
-        ogp.type = "image";
-    }
+    //ogp.type = ogp.isVideo ? "video" : "image"; // image should always be
 
     return (
         <>
@@ -64,7 +60,8 @@ function XRPNFTApp(props) {
                 <meta property="og:type" content="website"/>
                 <meta property="og:title" content={`${ogp.title} | XRPNFT`}/>
                 <meta property="og:description" content={ogp.desc}/>
-                <meta property={`og:${ogp.type}`} content={ogp.imgUrl}/>
+                <meta property="og:image" content={ogp.imgUrl}/>
+                <meta property="og:video" content={ogp.videoUrl || ""}/>
                 {/* <!-- Twitter Meta Tags --> */}
                 <meta name="twitter:card" content="summary_large_image"/>
                 <meta property="twitter:domain" content="xrpnft.com"/>

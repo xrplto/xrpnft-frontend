@@ -60,7 +60,7 @@ import {
 } from '@mui/material';
 
 // Utils
-import { getImgUrl, nftUrl, nftName } from 'src/utils/parse';
+import { getImgUrl, nftUrl/*, nftName*/ } from 'src/utils/parse';
 
 export default function NFTPreview({ nft }) {
     const { darkMode } = useContext(AppContext);
@@ -122,7 +122,7 @@ export default function NFTPreview({ nft }) {
         setOpenAnimation(false);
     }*/
 
-    const nftName = nft.meta?.name || "No Name";
+    //const nftName = nft.meta?.name || nft.meta?.Name || "No Name";
 
     //const [contentTab, setContentTab] = useState("image")
     const [loaded, setLoaded] = useState(false)
@@ -143,9 +143,9 @@ export default function NFTPreview({ nft }) {
     }
     }
  
-    let imageUrl = nftUrl(nft, 'image');console.log('imageUrl before', imageUrl)
-    const animationUrl = nftUrl(nft, 'animation');console.log('animationUrl before', animationUrl)
-    const videoUrl = nftUrl(nft, 'video');console.log('videoUrl before', videoUrl)
+    let imageUrl = nftUrl(nft, 'image');//console.log('imageUrl before', imageUrl)
+    const animationUrl = nftUrl(nft, 'animation');//console.log('animationUrl before', animationUrl)
+    const videoUrl = nftUrl(nft, 'video');//console.log('videoUrl before', videoUrl)
     const audioUrl = nftUrl(nft, 'audio');
     const modelUrl = nftUrl(nft, 'model');
     const viewerUrl = nftUrl(nft, 'viewer');
@@ -182,7 +182,7 @@ export default function NFTPreview({ nft }) {
 
     const imgOrAnimUrl = contentTab === 'image' ? imageUrl : contentTab === 'animation' ? animationUrl : '';
 
-    console.log('imageUrl after', imageUrl, 'imgOrAnimUrl', imgOrAnimUrl)
+    //console.log('imageUrl after', imageUrl, 'imgOrAnimUrl', imgOrAnimUrl)
   
     let imageStyle = { width: "100%", height: "auto" };
     if (imageUrl) {
@@ -274,7 +274,7 @@ export default function NFTPreview({ nft }) {
             }
           }}
           src={(typeof file === 'string' ? file : file.thumbnail ? 'https://s2.xrpnft.com/d1/' + (file.thumbnail?.big || file.thumbnail?.small) : file.cachedUrl)}
-          alt={file.nftName}
+          alt=""
         />
       </Link>
     )
