@@ -60,7 +60,7 @@ import {
 } from '@mui/material';
 
 // Utils
-import { getImgUrl, nftUrl, nftName } from 'src/utils/parse';
+import { getImgUrl, nftUrl/*, nftName*/ } from 'src/utils/parse';
 
 export default function NFTPreview({ nft }) {
     const { darkMode } = useContext(AppContext);
@@ -122,7 +122,7 @@ export default function NFTPreview({ nft }) {
         setOpenAnimation(false);
     }*/
 
-    const nftName = nft.meta?.name || nft.meta?.Name || "No Name";
+    //const nftName = nft.meta?.name || nft.meta?.Name || "No Name";
 
     //const [contentTab, setContentTab] = useState("image")
     const [loaded, setLoaded] = useState(false)
@@ -274,7 +274,7 @@ export default function NFTPreview({ nft }) {
             }
           }}
           src={(typeof file === 'string' ? file : file.thumbnail ? 'https://s2.xrpnft.com/d1/' + (file.thumbnail?.big || file.thumbnail?.small) : file.cachedUrl)}
-          alt={file.nftName}
+          alt=""
         />
       </Link>
     )

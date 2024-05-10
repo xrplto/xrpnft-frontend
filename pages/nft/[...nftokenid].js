@@ -102,7 +102,7 @@ export async function getServerSideProps(ctx) {
             collection
         } = nft;
 
-        const name = meta?.name || "No Name";
+        const name = meta?.name || nft.meta?.Name  || "No Name";
         const description = meta?.description;
         const cname = collection || "";
 
@@ -110,7 +110,8 @@ export async function getServerSideProps(ctx) {
         ogp.canonical = `https://xrpnft.com/nft/${NFTokenID}`;
         ogp.title = cname?`${name} - ${cname}`:`${name}`;
         ogp.url = `https://xrpnft.com/nft/${NFTokenID}`;
-        ogp.imgUrl = getNftCoverUrl(nft); // (NFTokenID, meta, dfile, 48)
+        ogp.imgUrl = getNftCoverUrl(nft, '', 'image'); // (NFTokenID, meta, dfile, 48)
+        ogp.videoUrl = getNftCoverUrl(nft, '', 'video');
         ogp.desc = description?description:`XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
         ogp.isVideo = meta?.video?true:false;
 
