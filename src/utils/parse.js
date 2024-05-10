@@ -584,7 +584,7 @@ export const getImgUrl = (nft, size) => { // (NFTokenID, meta, dfile, size) // a
     const nftUrlFile = nftUrl(nft, 'image');
     if (nftUrlFile) return nftUrlFile;
 
-    const { NFTokenID, meta, dfile, ufile, thumbnail/*, isIPFS, PFSPinnedFiles, ufileIPFSPath*/ } = nft;
+    let { NFTokenID, meta, dfile, ufile, thumbnail /*, isIPFS, PFSPinnedFiles, ufileIPFSPath*/ } = nft;
     //console.log('getImgUrl:', NFTokenID, meta, dfile, size, thumbnail, nft);
     if (size && thumbnail && Object.values(thumbnail)) {
         thumbnail = Object.values(thumbnail)[0];

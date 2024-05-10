@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Lightbox } from "react-modal-image";
 import { useState, useContext } from 'react';
 import { AppContext } from 'src/AppContext';
-
+import Head from 'next/head';
 import { useKeenSlider } from "keen-slider/react"
 import "keen-slider/keen-slider.min.css"
 

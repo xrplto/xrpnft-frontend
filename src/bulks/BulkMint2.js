@@ -606,9 +606,9 @@ export default function BulkMint2({slug}) {
                             onChange={handleChangeCount}
                         >
                             {
-                                metaCounts.map((count) => {
+                                metaCounts.map((count, index) => {
                                     return (
-                                        <MenuItem value={count}>{fIntNumber(count)}</MenuItem>
+                                        <MenuItem key={index} value={count}>{fIntNumber(count)}</MenuItem>
                                     )
                                 })
                             }
