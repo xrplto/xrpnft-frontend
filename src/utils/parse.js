@@ -536,10 +536,10 @@ export const getMetadata = async (URI) => {
     } else return null
 }
 
-export const getNftCoverUrl = (nft, size = 'big') => {
+export const getNftCoverUrl = (nft, size = 'big', type = '') => {
     if (!nft) return '';
     
-    const fileTypes = ['video', 'animation', 'image']; // order is important
+    const fileTypes = type ? [type] : ['video', 'animation', 'image']; // order is important
     const files = nft.files?.filter(file => fileTypes.includes(file.type)/* && file.thumbnail?.[size]*/);
     
     if (files?.length) {
