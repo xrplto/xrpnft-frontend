@@ -78,7 +78,7 @@ export default function NFTCardAccept({ nft, handleApprove }) {
 
     const amount = normalizeAmount(nft.amount || '0');
 
-    const imgUrl = getImgUrl(nft, 480); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+    const imgUrl = `https://gateway.xrpnft.com/ipfs/${getImgUrl(nft, 480)[0]["IPFSPath"]}`; // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
 
     const isVideo = meta?.video ? true : false;
 
@@ -109,9 +109,9 @@ export default function NFTCardAccept({ nft, handleApprove }) {
                 }}
             >
                 <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'} px={1}>
-                    <Link href={`/nft/${NFTokenID}`} underline='none'>
-                        <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:0, pl:0, pr:0}}>
-                            <Stack direction="row" alignItems='center' justifyContent='flex-start' sx={{mt:0, pl:0, pr:0}}>
+                    <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:0, pl:0, pr:0}}>
+                        <Stack direction="row" alignItems='center' justifyContent='flex-start' sx={{mt:0, pl:0, pr:0}}>
+                            <Link href={`/nft/${NFTokenID}`} underline='none'>
                                 <CardMedia
                                     component={
                                         loadingImg ? () =>
@@ -153,6 +153,8 @@ export default function NFTCardAccept({ nft, handleApprove }) {
                                         onCanPlay={onImageLoaded}
                                     />
                                 }
+                            </Link>
+                            <Link href={`/nft/${NFTokenID}`} underline='none'>
                                 <Stack direction="column" sx={{mt:0, pl:2, pr:0}}>
                                     {amount.amount === 0 ?
                                         <Typography variant="s8">Claim NFT</Typography>
@@ -200,21 +202,16 @@ export default function NFTCardAccept({ nft, handleApprove }) {
                                         }
                                     </Stack>
                                 </Stack>
-                            </Stack>
-                            <Typography variant="s8">{NFTokenID}</Typography>
-                            <Typography variant="s8">Waiting to accept</Typography>
-                            <Tooltip title="Accept NFT">
-                                <IconButton
-                                    aria-label='close'
-                                    onClick={() => handleApprove(nft)}
-                                    // disabled
-                                >
-                                    <Button variant="outlined" size="small">Accept</Button>
-                                </IconButton>
-                            </Tooltip>
+                            </Link>
                         </Stack>
-                    </Link>
-                    
+                        <Link href={`/nft/${NFTokenID}`} underline='none'>
+                            <Typography variant="s8">{NFTokenID}</Typography>
+                        </Link>
+                        <Typography variant="s8">Waiting to accept</Typography>
+                        <Tooltip title="Accept NFT">
+                            <Button variant="outlined" size="small" onClick={() => handleApprove(nft)}>Accept</Button>
+                        </Tooltip>
+                    </Stack>
                 </Box>
             </Box>
             {/* <Divider sx={{mt:0.8, mb:0.3}}/>

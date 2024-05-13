@@ -251,7 +251,10 @@ export default function PathFinding() {
                 </Typography>
 
 
-                <TextField required placeholder='Destination' margin='dense'
+                <TextField 
+                    required 
+                    placeholder='Destination' 
+                    margin='dense'
                     onChange={(e) => {
                         setDestAccount(e.target.value)
                     }}
@@ -271,7 +274,10 @@ export default function PathFinding() {
                 </Typography>
 
 
-                <TextField required placeholder='Source' margin='dense'
+                <TextField 
+                    required 
+                    placeholder='Source' 
+                    margin='dense'
                     onChange={(e) => {
                         setSourceAccount(e.target.value)
                     }}

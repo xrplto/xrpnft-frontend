@@ -684,7 +684,10 @@ export default function BulkMint1({slug}) {
                         </Typography>
                         <Typography variant='s2'>Don't include indexed numbers like #1 in Item name text field and you can change start index number.</Typography>
                         <Stack direction="row" spacing={0} alignItems="center">
-                            <TextField required placeholder='Item name' margin='dense'
+                            <TextField 
+                                required 
+                                placeholder='Item name' 
+                                margin='dense'
                                 id='id_nft_name'
                                 autoComplete='new-password'
                                 fullWidth
@@ -700,7 +703,10 @@ export default function BulkMint1({slug}) {
                                 }}
                             />
                             <Typography variant="s3" sx={{ml: 5, mr: 0.5}}>#</Typography>
-                            <TextField required placeholder='index' margin='dense'
+                            <TextField 
+                                required 
+                                placeholder='index' 
+                                margin='dense'
                                 id='id_nft_name_index'
                                 autoComplete='new-password'
                                 onChange={handleChangeNameIndex}
@@ -723,7 +729,10 @@ export default function BulkMint1({slug}) {
 
                     <Typography variant='p4'>Royalty <Typography variant='s2'>*</Typography><Typography variant='s7'> (Transfer fee)</Typography></Typography>
                     <Typography variant='p3'>Between 0.00% and 50.00% in increments of 0.001.</Typography>
-                    <TextField required placeholder='' margin='dense'
+                    <TextField 
+                        required 
+                        placeholder='' 
+                        margin='dense'
                         onChange={handleChangeRoyalty}
                         value={royalty}
                         sx={{

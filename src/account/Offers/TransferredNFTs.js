@@ -265,10 +265,11 @@ export default function TransferredNFTs({ account }) {
                         hasMore={hasMore}
                         scrollThreshold={0.6}
                     >
-                        {nfts.map((nft) => (
+                        {nfts.map((nft, index) => (
                             <NFTCardAccept
                                 nft={nft}
                                 handleApprove={handleApprove}
+                                key={index}
                             />
                         // <Grid container spacing={1}>
                                 // <Grid
