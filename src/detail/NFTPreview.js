@@ -373,7 +373,7 @@ export default function NFTPreview({ nft }) {
         controls
         style={{ width: "100%", height: "auto", verticalAlign: 'bottom' }}
       >{/*autoPlay*/}
-        <source src={videoUrl[currentSlide].cachedUrl} type="video/mp4" />
+        <source src={videoUrl[currentSlide]?.cachedUrl} type="video/mp4" />
       </video>
     }
     {modelUrl && defaultTab === 'model' &&
@@ -392,7 +392,7 @@ export default function NFTPreview({ nft }) {
             </Head>
             <model-viewer
               className="model-viewer"
-              src={modelUrl[currentSlide].cachedUrl}
+              src={modelUrl[currentSlide]?.cachedUrl}
               camera-controls
               auto-rotate
               ar
@@ -420,7 +420,7 @@ export default function NFTPreview({ nft }) {
 
     {defaultTab !== 'model' /*&& defaultTab !== 'video'*/ && audioUrl &&
       <>
-        <audio src={audioUrl[currentSlide].cachedUrl} controls style={{ display: 'block', margin: "20px auto", marginBottom: "0px" }}></audio>
+        <audio src={audioUrl[currentSlide]?.cachedUrl} controls style={{ display: 'block', margin: "20px auto", marginBottom: "0px" }}></audio>
         <span style={{ padding: "4px 0px" }}>
           <Link href={clUrl.audio} target="_blank" rel="noreferrer">
             <Typography style={{ /*marginLeft: "18px",*/ padding: "18px" }} variant='body1' noWrap>{t("tabs.audio")} Link</Typography>
@@ -430,7 +430,7 @@ export default function NFTPreview({ nft }) {
     }
     {viewerUrl &&
       <span style={{ padding: "4px 0px", float: "right" }}>
-        <Link href={viewerUrl[currentSlide].cachedUrl} target="_blank" rel="noreferrer">
+        <Link href={viewerUrl[currentSlide]?.cachedUrl} target="_blank" rel="noreferrer">
           <Typography style={{ /*marginLeft: "18px",*/ padding: "18px" }} variant='s11' noWrap>{t("general.viewer")}</Typography>
         </Link>
       </span>

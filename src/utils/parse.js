@@ -573,6 +573,8 @@ export const nftUrl = (nft, type = 'image') => {
                 file.cachedUrl = `https://s2.xrpnft.com/d1/${fileName}`;
             } else if (file.isIPFS && file.IPFSPath) {
                 file.cachedUrl = file.convertedFile ? `https://s2.xrpnft.com/d1/${file.convertedFile}` : `https://gateway.xrpnft.com/ipfs/${file.IPFSPath}`;
+            } else {
+                file.cachedUrl = null;
             }
         }
         return files;
