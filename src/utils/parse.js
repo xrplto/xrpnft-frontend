@@ -557,12 +557,15 @@ export const getNftCoverUrl = (nft, size = 'big', type = '') => {
         }
     }
 
-
+    // type is usually requested at page for og:*, so if no type requested showing no image
+    if (!type) {
+        return '/static/nft_no_image.webp';
+    }
     
     return '';
 }
 
-export const nftUrl = (nft, type = 'image') => {
+export const getNftFilesUrls = (nft, type = 'image') => {
     if (!nft) return '';
     const files = nft.files?.filter(file => file.type === type);
     if (files?.length) {
@@ -583,7 +586,7 @@ export const nftUrl = (nft, type = 'image') => {
 
 
 export const getImgUrl = (nft, size) => { // (NFTokenID, meta, dfile, size) // absense of size meanas full size
-    const nftUrlFile = nftUrl(nft, 'image');
+    const nftUrlFile = getNftFilesUrls(nft, 'image');
     if (nftUrlFile) return nftUrlFile;
 
     let { NFTokenID, meta, dfile, ufile, thumbnail /*, isIPFS, PFSPinnedFiles, ufileIPFSPath*/ } = nft;

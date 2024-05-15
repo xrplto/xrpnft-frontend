@@ -60,7 +60,7 @@ import {
 } from '@mui/material';
 
 // Utils
-import { getImgUrl, nftUrl/*, nftName*/ } from 'src/utils/parse';
+import { getImgUrl, getNftFilesUrls/*, nftName*/ } from 'src/utils/parse';
 
 export default function NFTPreview({ nft }) {
     const { darkMode } = useContext(AppContext);
@@ -143,12 +143,12 @@ export default function NFTPreview({ nft }) {
     }
     }
  
-    let imageUrl = nftUrl(nft, 'image');//console.log('imageUrl before', imageUrl)
-    const animationUrl = nftUrl(nft, 'animation');//console.log('animationUrl before', animationUrl)
-    const videoUrl = nftUrl(nft, 'video');//console.log('videoUrl before', videoUrl)
-    const audioUrl = nftUrl(nft, 'audio');
-    const modelUrl = nftUrl(nft, 'model');
-    const viewerUrl = nftUrl(nft, 'viewer');
+    let imageUrl = getNftFilesUrls(nft, 'image');//console.log('imageUrl before', imageUrl)
+    const animationUrl = getNftFilesUrls(nft, 'animation');//console.log('animationUrl before', animationUrl)
+    const videoUrl = getNftFilesUrls(nft, 'video');//console.log('videoUrl before', videoUrl)
+    const audioUrl = getNftFilesUrls(nft, 'audio');
+    const modelUrl = getNftFilesUrls(nft, 'model');
+    const viewerUrl = getNftFilesUrls(nft, 'viewer');
 
     const [contentTab, setContentTab] = useState(videoUrl ? 'video' : (animationUrl ? 'animation' : "image"))
   
