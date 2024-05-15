@@ -115,7 +115,7 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection 
 
     const nftItems = () => (
         <Grid container spacing={1}>
-          {nfts.map((nft) => (
+          {nfts.map((nft, index) => (
             <Grid
               item
               xs={6}
@@ -123,7 +123,7 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection 
               md={3}
               lg={2.4}
               xl={1.5}
-              key={nft.uuid}
+              key={index}
             >
               {collection ? (
                 <NFTCard nft={nft} />

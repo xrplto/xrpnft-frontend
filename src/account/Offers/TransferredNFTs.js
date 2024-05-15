@@ -255,7 +255,7 @@ export default function TransferredNFTs({ account }) {
                 <PulseLoader color={'#FF4842'} size={10} />
             </Backdrop>
             <Grid container spacing={1} justifyContent="space-between" mt={1}>
-                <Grid item xs={12}>
+                <Grid item xs={100}>
                     <InfiniteScroll
                         dataLength={nfts.length}
                         next={() => {
@@ -265,24 +265,25 @@ export default function TransferredNFTs({ account }) {
                         hasMore={hasMore}
                         scrollThreshold={0.6}
                     >
-                        <Grid container spacing={1}>
-                            {nfts.map((nft) => (
-                                <Grid
-                                    item
-                                    xs={6}
-                                    sm={3}
-                                    md={2.4}
-                                    lg={2}
-                                    xl={1.2}
-                                    key={nft.uuid}
-                                >
-                                    <NFTCardAccept
-                                        nft={nft}
-                                        handleApprove={handleApprove}
-                                    />
-                                </Grid>
-                            ))}
-                        </Grid>
+                        {nfts.map((nft, index) => (
+                            <NFTCardAccept
+                                nft={nft}
+                                handleApprove={handleApprove}
+                                key={index}
+                            />
+                        // <Grid container spacing={1}>
+                                // <Grid
+                                //     item
+                                //     xs={6}
+                                //     sm={3}
+                                //     md={2.4}
+                                //     lg={2}
+                                //     xl={1.2}
+                                //     key={nft.uuid}
+                                // >
+                                // </Grid>
+                                // </Grid>
+                                ))}
                     </InfiniteScroll>
                 </Grid>
             </Grid>

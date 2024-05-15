@@ -184,8 +184,7 @@ export default function BuyXRP({fiats, coins}) {
     useEffect(() => {
         const loop = () => {
             if (counter > 0) {
-                counter--;
-                setCounter(counter)
+                setCounter(prevCounter => prevCounter - 1);
                 if (counter === 0) {
                     setSync(sync + 1);
                 }
@@ -238,7 +237,7 @@ export default function BuyXRP({fiats, coins}) {
 
             const res = await axios.post(`${BASE_URL}/banxa/orders`, body);
 
-            const retry = true;
+            let retry = true;
             if (res.status === 200) {
                 const newOrder = res.data.order;
                 if (newOrder && newOrder.checkout_url) {
