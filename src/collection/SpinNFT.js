@@ -34,7 +34,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { getImgUrl } from 'src/utils/parse';
+import { getNftCoverUrl } from 'src/utils/parse';
 
 // Components
 import BuyMintDialog from './BuyMintDialog';
@@ -355,7 +355,7 @@ export default function SpinNFT({ collection, setView }) {
 
     const [spinning, setSpinning] = useState(false);
 
-    const imgUrl = getImgUrl(nft, 480);
+    const imgUrl = getNftCoverUrl(nft);// , 480
 
     const img_dark = '/static/default_mint_black.svg';
     const img_light = '/static/default_mint_white.svg';
