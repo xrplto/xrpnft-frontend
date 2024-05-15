@@ -59,7 +59,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { getImgUrl } from 'src/utils/parse';
+import { getNftCoverUrl } from 'src/utils/parse';
 import { formatDateTime } from 'src/utils/formatTime';
 import { Activity } from 'src/utils/constants';
 import { normalizeAmount, normalizeCurrencyCodeXummImpl } from 'src/utils/normalizers';
@@ -159,6 +159,7 @@ export default function CollectionActivity({collection}) {
                                 name,
                                 meta,
                                 dfile,
+                                files,
                                 cost,
                                 quantity,
                                 time
@@ -168,7 +169,7 @@ export default function CollectionActivity({collection}) {
 
                             const isVideo = meta?.video?true:false;
 
-                            const imgUrl = getImgUrl({NFTokenID, meta, dfile}, 48);
+                            const imgUrl = getNftCoverUrl({files}, 'small');
 
                             const strDateTime = formatDateTime(time);
 
