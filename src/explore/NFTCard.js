@@ -186,9 +186,14 @@ export default function NFTCard({ nft, handleRemove }) {
                     // loop={isVideo}
                     sx={{
                         width: '100%',
-                        height: '75%',
-                        maxWidth: 280,
+                        height: '76.1%',// 75
+                        //maxWidth: 280,
                         // maxHeight: 250,
+                        /*width: 'auto',
+                        maxHeight: 240,
+                        position: 'relative',
+                        left: '50%',
+                        transform: 'translateX(-50%)',*/
                         marginTop: 0,
                         // borderTopLeftRadius: 20,
                         // borderTopRightRadius: 20,

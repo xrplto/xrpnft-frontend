@@ -24,10 +24,10 @@ export default function Detail({nft}) {
             <NFTDetailsMobile nft={nft} />
             :
             <Grid container spacing={2} justifyContent='center'>
-                <Grid item xs={12} md={5}>
+                <Grid item xs={12} md={5.16}>{/* trying to fit 480px image, was 5/7 */}
                     <NFTDetails nft={nft} />
                 </Grid>
-                <Grid item xs={12} md={7}>
+                <Grid item xs={12} md={6.84}>
                     {status === NFToken.SELL_WITH_MINT_BULK ?
                         <NFTActionsBulk nft={nft} />
                     :
