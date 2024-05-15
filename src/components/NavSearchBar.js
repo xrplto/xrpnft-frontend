@@ -54,7 +54,7 @@ const RenderOption = ({
             case 'NFTS':
                 const imgUrl = getNftCoverUrl({files}, 'small');
                 setImgUrl(imgUrl)
-                setIsVideo(meta?.video ? true : false)
+                //setIsVideo(meta?.video ? true : false)
                 setHLink(`/nft/${NFTokenID}`)
                 break;
             case 'COLLECTIONS':

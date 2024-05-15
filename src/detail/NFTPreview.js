@@ -60,7 +60,7 @@ import {
 } from '@mui/material';
 
 // Utils
-import { getImgUrl, getNftFilesUrls/*, nftName*/ } from 'src/utils/parse';
+import { getNftFilesUrls/*, nftName*/ } from 'src/utils/parse';
 
 export default function NFTPreview({ nft }) {
     const { darkMode } = useContext(AppContext);
