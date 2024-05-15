@@ -79,7 +79,7 @@ export default function NFTs({ collection }) {
             .finally(() => {
                 setLoading(false);
             });
-    }, [page, flag, search, filter, subFilter, filterAttrs, collection?.uuid]);
+    }/*, [page, flag, search, filter, subFilter, filterAttrs, collection?.uuid]*/);
 
     useEffect(() => {
         setNfts([]);

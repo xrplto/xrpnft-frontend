@@ -23,7 +23,7 @@ import AnimationIcon from '@mui/icons-material/Animation';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Loader
-import { getImgUrl } from 'src/utils/parse';
+import { getNftCoverUrl } from 'src/utils/parse';
 import useDebounce from 'src/hooks/useDebounce';
 
 // Utils
@@ -32,9 +32,7 @@ import { getHashIcon } from 'src/utils/parse';
 const RenderOption = ({
     uuid,
     meta,
-    dfile,
-    ufile,
-    thumbnail,
+    files,
     option_type,
     NFTokenID,
     logoImage,
@@ -54,9 +52,9 @@ const RenderOption = ({
     const initOption = (option_type) => {
         switch (option_type) {
             case 'NFTS':
-                const imgUrl = getImgUrl({NFTokenID, meta, dfile, ufile, thumbnail}, 56);
+                const imgUrl = getNftCoverUrl({files}, 'small');
                 setImgUrl(imgUrl)
-                setIsVideo(meta?.video ? true : false)
+                //setIsVideo(meta?.video ? true : false)
                 setHLink(`/nft/${NFTokenID}`)
                 break;
             case 'COLLECTIONS':

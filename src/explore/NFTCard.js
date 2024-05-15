@@ -29,7 +29,7 @@ import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 // Utils
 import { getMinterName } from "src/utils/constants";
 import { fNumber, fIntNumber } from 'src/utils/formatNumber';
-import { getImgUrl, getNftCoverUrl } from 'src/utils/parse';
+import { getNftCoverUrl } from 'src/utils/parse';
 
 // Components
 // import FlagsContainer from 'src/components/Flags';
@@ -93,7 +93,7 @@ export default function NFTCard({ nft, handleRemove }) {
     const isSold = false;
 
     // const imgUrl = '/static/nft.png';
-    const imgUrl = getNftCoverUrl(nft, 'small');//getImgUrl(nft, 300);
+    const imgUrl = getNftCoverUrl(nft, 'small');// , 300);
 
     const isVideo = /*meta?.video ? true : */false; // disabling for  now video as showing animated thumbnails
 
@@ -186,9 +186,14 @@ export default function NFTCard({ nft, handleRemove }) {
                     // loop={isVideo}
                     sx={{
                         width: '100%',
-                        height: '75%',
-                        maxWidth: 280,
+                        height: '76.1%',// 75
+                        //maxWidth: 280,
                         // maxHeight: 250,
+                        /*width: 'auto',
+                        maxHeight: 240,
+                        position: 'relative',
+                        left: '50%',
+                        transform: 'translateX(-50%)',*/
                         marginTop: 0,
                         // borderTopLeftRadius: 20,
                         // borderTopRightRadius: 20,

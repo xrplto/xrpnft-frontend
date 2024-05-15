@@ -35,7 +35,7 @@ import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
 // Utils
 import { fNumber, fIntNumber } from 'src/utils/formatNumber';
-import { getImgUrl } from 'src/utils/parse';
+import { getNftCoverUrl } from 'src/utils/parse';
 import { normalizeAmount } from 'src/utils/normalizers';
 
 // Components
@@ -74,12 +74,13 @@ export default function NFTCardAccept({ nft, handleApprove }) {
         destination,
         meta,
         dfile,
+        files,
         NFTokenID,
     } = nft;
 
     const amount = normalizeAmount(nft.amount || '0');
 
-    const imgUrl = `https://gateway.xrpnft.com/ipfs/${getImgUrl(nft, 480)[0]["IPFSPath"]}`; // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+    const imgUrl = getNftCoverUrl(nft); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
 
     const isVideo = meta?.video ? true : false;
 

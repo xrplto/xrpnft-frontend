@@ -26,7 +26,7 @@ import { PulseLoader } from 'react-spinners';
 // Components
 import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
-import { getImgUrl } from 'src/utils/parse';
+import { getNftCoverUrl } from 'src/utils/parse';
 
 // ----------------------------------------------------------------------
 export default function FavoritedList({ account }) {
@@ -156,17 +156,13 @@ export default function FavoritedList({ account }) {
                                         date,
                                         meta,
                                         dfile,
+                                        files,
                                         URI,
                                         NFTokenID
                                     } = row;
 
                                     // const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
-                                    const imgUrl = getImgUrl(
-                                        {NFTokenID,
-                                        meta,
-                                        dfile},
-                                        480
-                                    );
+                                    const imgUrl = getNftCoverUrl({files});
 
                                     const isVideo = meta.video;
 

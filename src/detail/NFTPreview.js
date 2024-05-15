@@ -60,7 +60,7 @@ import {
 } from '@mui/material';
 
 // Utils
-import { getImgUrl, nftUrl/*, nftName*/ } from 'src/utils/parse';
+import { getNftFilesUrls/*, nftName*/ } from 'src/utils/parse';
 
 export default function NFTPreview({ nft }) {
     const { darkMode } = useContext(AppContext);
@@ -143,12 +143,12 @@ export default function NFTPreview({ nft }) {
     }
     }
  
-    let imageUrl = nftUrl(nft, 'image');//console.log('imageUrl before', imageUrl)
-    const animationUrl = nftUrl(nft, 'animation');//console.log('animationUrl before', animationUrl)
-    const videoUrl = nftUrl(nft, 'video');//console.log('videoUrl before', videoUrl)
-    const audioUrl = nftUrl(nft, 'audio');
-    const modelUrl = nftUrl(nft, 'model');
-    const viewerUrl = nftUrl(nft, 'viewer');
+    let imageUrl = getNftFilesUrls(nft, 'image');//console.log('imageUrl before', imageUrl)
+    const animationUrl = getNftFilesUrls(nft, 'animation');//console.log('animationUrl before', animationUrl)
+    const videoUrl = getNftFilesUrls(nft, 'video');//console.log('videoUrl before', videoUrl)
+    const audioUrl = getNftFilesUrls(nft, 'audio');
+    const modelUrl = getNftFilesUrls(nft, 'model');
+    const viewerUrl = getNftFilesUrls(nft, 'viewer');
 
     const [contentTab, setContentTab] = useState(videoUrl ? 'video' : (animationUrl ? 'animation' : "image"))
   
@@ -373,7 +373,7 @@ export default function NFTPreview({ nft }) {
         controls
         style={{ width: "100%", height: "auto", verticalAlign: 'bottom' }}
       >{/*autoPlay*/}
-        <source src={videoUrl[currentSlide].cachedUrl} type="video/mp4" />
+        <source src={videoUrl[currentSlide]?.cachedUrl} type="video/mp4" />
       </video>
     }
     {modelUrl && defaultTab === 'model' &&
@@ -392,7 +392,7 @@ export default function NFTPreview({ nft }) {
             </Head>
             <model-viewer
               className="model-viewer"
-              src={modelUrl[currentSlide].cachedUrl}
+              src={modelUrl[currentSlide]?.cachedUrl}
               camera-controls
               auto-rotate
               ar
@@ -420,7 +420,7 @@ export default function NFTPreview({ nft }) {
 
     {defaultTab !== 'model' /*&& defaultTab !== 'video'*/ && audioUrl &&
       <>
-        <audio src={audioUrl[currentSlide].cachedUrl} controls style={{ display: 'block', margin: "20px auto", marginBottom: "0px" }}></audio>
+        <audio src={audioUrl[currentSlide]?.cachedUrl} controls style={{ display: 'block', margin: "20px auto", marginBottom: "0px" }}></audio>
         <span style={{ padding: "4px 0px" }}>
           <Link href={clUrl.audio} target="_blank" rel="noreferrer">
             <Typography style={{ /*marginLeft: "18px",*/ padding: "18px" }} variant='body1' noWrap>{t("tabs.audio")} Link</Typography>
@@ -430,7 +430,7 @@ export default function NFTPreview({ nft }) {
     }
     {viewerUrl &&
       <span style={{ padding: "4px 0px", float: "right" }}>
-        <Link href={viewerUrl[currentSlide].cachedUrl} target="_blank" rel="noreferrer">
+        <Link href={viewerUrl[currentSlide]?.cachedUrl} target="_blank" rel="noreferrer">
           <Typography style={{ /*marginLeft: "18px",*/ padding: "18px" }} variant='s11' noWrap>{t("general.viewer")}</Typography>
         </Link>
       </span>

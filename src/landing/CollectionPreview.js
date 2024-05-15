@@ -17,7 +17,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { getImgUrl } from 'src/utils/parse';
+import { getNftCoverUrl } from 'src/utils/parse';
 
 /* offset-x | offset-y | blur-radius | spread-radius | color */
 // box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
@@ -147,7 +147,7 @@ export default function CollectionPreview({collections}) {
 
                 // const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;
 
-                let imgUrl = getImgUrl(nft?nft:{}, 300);
+                let imgUrl = getNftCoverUrl(nft?nft:{});//, 300
 
                 if (!imgUrl || nft?.meta?.video) {
                     imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
