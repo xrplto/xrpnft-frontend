@@ -29,7 +29,7 @@ import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 // Utils
 import { getMinterName } from "src/utils/constants";
 import { fNumber, fIntNumber } from 'src/utils/formatNumber';
-import { getImgUrl, getNftCoverUrl } from 'src/utils/parse';
+import { getNftCoverUrl } from 'src/utils/parse';
 
 // Components
 // import FlagsContainer from 'src/components/Flags';
@@ -93,7 +93,7 @@ export default function NFTCard({ nft, handleRemove }) {
     const isSold = false;
 
     // const imgUrl = '/static/nft.png';
-    const imgUrl = getNftCoverUrl(nft, 'small');//getImgUrl(nft, 300);
+    const imgUrl = getNftCoverUrl(nft, 'small');// , 300);
 
     const isVideo = /*meta?.video ? true : */false; // disabling for  now video as showing animated thumbnails
 
