@@ -13,6 +13,7 @@ export default function Offers({ account, acceptNfts, orphanedOffers }) {
     const [openSell, setOpenSell] = useState(false);
     const [openBuy, setOpenBuy] = useState(false);
     const [openOrphaned, setOpenOrphaned] = useState(false);
+    const [openReceived, setOpenReceived] = useState(false);
 
     const handleClickCollected = () => {
         setOpenCollected((state) => !state);
@@ -28,6 +29,10 @@ export default function Offers({ account, acceptNfts, orphanedOffers }) {
 
     const handleClickOrphaned = () => {
         setOpenOrphaned((state) => !state);
+    };
+
+    const handleClickReceived = () => {
+        setOpenReceived((state) => !state);
     };
 
     return (
@@ -69,6 +74,15 @@ export default function Offers({ account, acceptNfts, orphanedOffers }) {
                 </Button>
                 <Box m={2} sx={{ display: openOrphaned ? 'block' : 'none' }}>
                     <OffersList account={account} type="orphaned" />
+                </Box>
+            </Paper>
+
+            <Paper sx={{ border: 'none' }}>
+                <Button fullWidth onClick={handleClickReceived}>
+                    Offer Received
+                </Button>
+                <Box m={2} sx={{ display: openReceived ? 'block' : 'none' }}>
+                    <OffersList account={account} type="received" />
                 </Box>
             </Paper>
         </Stack>
