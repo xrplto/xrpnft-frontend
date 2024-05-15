@@ -32,7 +32,7 @@ import {
     checkExpiration,
     getUnixTimeEpochFromRippleEpoch,
     parseNFTokenID,
-    getImgUrl
+    getNftCoverUrl
 } from 'src/utils/parse';
 
 // Context
@@ -403,14 +403,14 @@ export default function OffersList({ account, type }) {
                     {offers.map((offer, idx) => {
                         const price = normalizeAmount(offer.amount);
                         const isSell = offer.flags === 1;
-                        const {NFTokenID, orphaned, meta, dfile, thumbnail} = offer;
+                        const {NFTokenID, orphaned, meta, files} = offer;
 
                         const { flag, royalty, issuer, taxon, transferFee } =
                             parseNFTokenID(NFTokenID);
 
-                        const isVideo = meta?.video ? true : false;
+                        const isVideo = /*meta?.video ? true : */false;
 
-                        const imgUrl = getImgUrl({NFTokenID, meta, dfile, thumbnail}, 48);
+                        const imgUrl = getNftCoverUrl({files}, 'small'); // , 48
                         // const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta['image'].split("ipfs://")[1]}`;
 
                         // offer.expiration = 1669585409; // Delete this line.
