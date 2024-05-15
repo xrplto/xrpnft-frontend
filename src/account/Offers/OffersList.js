@@ -16,7 +16,9 @@ import {
     Link,
     Stack,
     Tooltip,
-    Typography
+    Typography,
+    useMediaQuery,
+    useTheme
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -78,6 +80,9 @@ export default function OffersList({ account, type }) {
     const [acceptOffer, setAcceptOffer] = useState(null);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [loadingImg, setLoadingImg] = useState(true);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    
     const onImageLoaded = () => {
         setLoadingImg(false);
     }
@@ -92,6 +97,7 @@ export default function OffersList({ account, type }) {
                 .then((res) => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
+                        console.log(type, ret);
                         setTotal(ret.total);
                         setOffers(ret.offers);
 
@@ -434,9 +440,9 @@ export default function OffersList({ account, type }) {
                                 }}
                                 key={offer.index}
                             >
-                                <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'} px={1}>
+                                <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'} px={isMobile ? 0 : 1 }>
                                     <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:0, pl:0, pr:0}}>
-                                        <Stack direction="row" sx={{mt:0, pl:2, pr:0}}>
+                                        <Stack direction="row" sx={{mt:0, pl:isMobile? 0: 2, pr:0}}>
                                             <CardMedia
                                                 component={
                                                     loadingImg ? () =>

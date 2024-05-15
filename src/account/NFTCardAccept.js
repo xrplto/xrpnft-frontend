@@ -16,7 +16,8 @@ import {
     Skeleton,
     Card,
     Grid,
-    CardContent
+    CardContent,
+    useMediaQuery,
 } from '@mui/material';
 // import FavoriteIcon from '@mui/icons-material/Favorite';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
@@ -61,7 +62,7 @@ const CardWrapper = styled(Card)(
 
 export default function NFTCardAccept({ nft, handleApprove }) {
     const theme = useTheme();
-
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     // const accountToken = accountProfile?.token;
@@ -88,6 +89,15 @@ export default function NFTCardAccept({ nft, handleApprove }) {
 
     const onImageLoaded = () => {
         setLoadingImg(false)
+    }
+
+    const truncateString = (str, maxLength) => {
+        if (str.length <= maxLength) {
+            return str;
+        } else {
+            var truncated = str.substr(0, Math.floor(maxLength / 2)) + "..." + str.substr(-Math.floor(maxLength / 2));
+            return truncated;
+        }
     }
 
     return (
@@ -119,8 +129,8 @@ export default function NFTCardAccept({ nft, handleApprove }) {
                                                 variant='rectangular'
                                                 // animation='wave'
                                                 sx={{
-                                                    width: 80,
-                                                    height: 50
+                                                    width: isMobile ? 60 : 80,
+                                                    height: 60,
                                                 }}
                                             /> :
                                             isVideo ? 'video' : 'img'}
@@ -131,11 +141,12 @@ export default function NFTCardAccept({ nft, handleApprove }) {
                                     // autoPlay={isVideo}
                                     // loop={isVideo}
                                     sx={{
-                                        width: 80,
-                                        height: 50,
+                                        width: isMobile ? 60 : 80,
+                                        height: 60,
                                         maxWidth: 280,
                                         maxHeight: 250,
                                         marginTop: 0,
+                                        borderRadius: 0.5,
                                         // borderTopLeftRadius: 20,
                                         // borderTopRightRadius: 20,
                                         // borderBottomLeftRadius: 0,
@@ -155,7 +166,7 @@ export default function NFTCardAccept({ nft, handleApprove }) {
                                 }
                             </Link>
                             <Link href={`/nft/${NFTokenID}`} underline='none'>
-                                <Stack direction="column" sx={{mt:0, pl:2, pr:0}}>
+                                <Stack direction="column" sx={{mt:isMobile?2:0, pl:isMobile?1:2, pr:0}}>
                                     {amount.amount === 0 ?
                                         <Typography variant="s8">Claim NFT</Typography>
                                         :
@@ -195,7 +206,7 @@ export default function NFTCardAccept({ nft, handleApprove }) {
                                             :
                                             <Typography
                                                 variant="s8"
-                                                sx={{mt:0.5, mb:0.5}}
+                                                sx={{mt:0, mb:0.5}}
                                             >
                                                 {name}
                                             </Typography>
@@ -205,9 +216,9 @@ export default function NFTCardAccept({ nft, handleApprove }) {
                             </Link>
                         </Stack>
                         <Link href={`/nft/${NFTokenID}`} underline='none'>
-                            <Typography variant="s8">{NFTokenID}</Typography>
+                            {!isMobile && <Typography variant="s8">{NFTokenID}</Typography>}
                         </Link>
-                        <Typography variant="s8">Waiting to accept</Typography>
+                        <Typography variant="s8" style={{ textAlign: 'center' }}>Waiting to accept</Typography>
                         <Tooltip title="Accept NFT">
                             <Button variant="outlined" size="small" onClick={() => handleApprove(nft)}>Accept</Button>
                         </Tooltip>
