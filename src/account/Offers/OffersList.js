@@ -526,7 +526,7 @@ export default function OffersList({ account, type }) {
                                                 <>
                                                     {accountLogin === offer.owner ? (
                                                         <Tooltip title="Cancel Offer">
-                                                            <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                            <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
                                                         </Tooltip>
                                                     ) : (
                                                         <>
@@ -550,7 +550,7 @@ export default function OffersList({ account, type }) {
                                                     <>
                                                         {accountLogin === offer.owner && (
                                                             <Tooltip title="Cancel Offer">
-                                                                <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                                <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
                                                             </Tooltip>
                                                         )}
                                                     </>
@@ -565,7 +565,7 @@ export default function OffersList({ account, type }) {
                                                             </Tooltip>
                                                         ) : (
                                                             <Tooltip title="Cancel Offer">
-                                                                <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                                <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
                                                             </Tooltip>
                                                         )}
                                                     </>
@@ -679,7 +679,7 @@ export default function OffersList({ account, type }) {
                                                     <>
                                                         {accountLogin === offer.owner ? (
                                                             <Tooltip title="Cancel Offer">
-                                                                <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                                <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
                                                             </Tooltip>
                                                         ) : (
                                                             <>
@@ -703,7 +703,7 @@ export default function OffersList({ account, type }) {
                                                         <>
                                                             {accountLogin === offer.owner && (
                                                                 <Tooltip title="Cancel Offer">
-                                                                    <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                                    <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
                                                                 </Tooltip>
                                                             )}
                                                         </>
@@ -719,7 +719,7 @@ export default function OffersList({ account, type }) {
                                                                 </Tooltip>
                                                             ) : (
                                                                 <Tooltip title="Cancel Offer">
-                                                                    <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                                    <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
                                                                 </Tooltip>
                                                             )}
                                                         </>
@@ -730,7 +730,7 @@ export default function OffersList({ account, type }) {
                                                         <>
                                                             {accountLogin === offer.owner && (
                                                                 <Tooltip title="Cancel Offer">
-                                                                    <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                                    <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
                                                                 </Tooltip>
                                                             )}
                                                         </>
