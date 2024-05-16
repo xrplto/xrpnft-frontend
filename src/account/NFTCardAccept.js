@@ -221,9 +221,12 @@ export default function NFTCardAccept({ nft, handleApprove }) {
                                 {!isMobile && <Typography variant="s8">{NFTokenID}</Typography>}
                             </Link>
                             <Typography variant="s8" style={{ textAlign: 'center' }}>Waiting to accept</Typography>
-                            <Tooltip title="Accept NFT">
+                            {accountLogin === account ? 
+                            (<Tooltip title="Accept NFT">
                                 <Button variant="outlined" size="small" onClick={() => handleApprove(nft)}>Accept</Button>
-                            </Tooltip>
+                            </Tooltip>):(
+                                <Typography variant="s8" style={{ textAlign: 'center' }}></Typography>
+                            )}
                         </Stack>
                     )}
                     {isMobile && (
@@ -330,9 +333,9 @@ export default function NFTCardAccept({ nft, handleApprove }) {
                             </Stack>
                             <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mb:1, pl:0, pr:0}}>
                                 <Typography variant="s8" alignItems='center' justifyContent='space-evenly' sx={{mt:1}}>Waiting to accept</Typography>
-                                <Tooltip title="Accept NFT">
+                                {accountLogin === account && <Tooltip title="Accept NFT">
                                     <Button variant="outlined" size="small" onClick={() => handleApprove(nft)}>Accept</Button>
-                                </Tooltip>
+                                </Tooltip>}
                             </Stack>
                         </Box>
                     )}

@@ -349,10 +349,10 @@ export default function OffersList({ account, type }) {
                 />
             )}
 
-            {offers && offers.length > 0 && (
+            {offers && offers.length > 0 && accountLogin === account && (
                 <Stack direction="row" justifyContent="right">
                     <Button
-                        disabled={accountLogin !== account || loading}
+                        disabled={loading}
                         variant="outlined"
                         color="error"
                         onClick={handleCancelAll}
@@ -524,33 +524,21 @@ export default function OffersList({ account, type }) {
                                                 {/* Sell Offer List - Not Owner */}
                                                 {isSell && !isOwner && (
                                                 <>
-                                                    {accountLogin ===
-                                                    offer.owner ? (
+                                                    {accountLogin === offer.owner ? (
                                                         <Tooltip title="Cancel Offer">
                                                             <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
                                                         </Tooltip>
                                                     ) : (
                                                         <>
-                                                            {orphaned !== 'yes' ? (
+                                                            {orphaned !== 'yes' && (
                                                                 <>
                                                                     {offer.destination &&
-                                                                    accountLogin !==
-                                                                        offer.destination ? (
-                                                                        <>
-                                                                            <Tooltip title="This is not transferred to you, you can not accept.">
-                                                                                <Button variant="outlined" size="small">Accept</Button>
-                                                                            </Tooltip>
-                                                                        </>
-                                                                    ) : (
+                                                                    accountLogin === offer.destination && (
                                                                         <Tooltip title="Accept Offer">
                                                                             <Button variant="outlined" size="small" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
                                                                         </Tooltip>
                                                                     )}
                                                                 </>
-                                                            ) : (
-                                                                <Tooltip title="This is not offered from the NFT owner.">
-                                                                    <Button variant="outlined" size="small">Accept</Button>
-                                                                </Tooltip>
                                                             )}
                                                         </>
                                                     )}
@@ -560,14 +548,9 @@ export default function OffersList({ account, type }) {
                                                 {/* Sell Offer List - Owner */}
                                                 {isSell && isOwner && (
                                                     <>
-                                                        {accountLogin ===
-                                                        offer.owner ? (
+                                                        {accountLogin === offer.owner && (
                                                             <Tooltip title="Cancel Offer">
                                                                 <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
-                                                            </Tooltip>
-                                                        ) : (
-                                                            <Tooltip title="Only the owner of this offer can cancel.">
-                                                                <Button variant="outlined" color="error" size="small">Cancel</Button>
                                                             </Tooltip>
                                                         )}
                                                     </>
@@ -576,8 +559,7 @@ export default function OffersList({ account, type }) {
                                                 {/* Buy Offer List - Owner */}
                                                 {!isSell && isOwner && (
                                                     <>
-                                                        {accountLogin !==
-                                                        offer.owner ? (
+                                                        {accountLogin !== offer.owner ? (
                                                             <Tooltip title="Accept Offer">
                                                                 <Button variant="outlined" size="small" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
                                                             </Tooltip>
@@ -592,14 +574,9 @@ export default function OffersList({ account, type }) {
                                                 {/* Buy Offer List - Not Owner */}
                                                 {!isSell && !isOwner && (
                                                     <>
-                                                        {accountLogin ===
-                                                        offer.owner ? (
+                                                        {accountLogin === offer.owner && (
                                                             <Tooltip title="Cancel Offer">
-                                                                <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
-                                                            </Tooltip>
-                                                        ) : (
-                                                            <Tooltip title="Only the owner of this offer can cancel.">
-                                                                <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error">Cancel</Button>
+                                                                <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
                                                             </Tooltip>
                                                         )}
                                                     </>
@@ -684,7 +661,7 @@ export default function OffersList({ account, type }) {
                                                     </Stack>
                                                 </Stack>
                                             </Stack>
-                                            <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mb:1, pl:0, pr:0}}>
+                                            <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:1, mb:1, pl:0, pr:0}}>
                                                 <Typography
                                                     variant="s6"
                                                 >
@@ -701,33 +678,21 @@ export default function OffersList({ account, type }) {
                                                     {/* Sell Offer List - Not Owner */}
                                                     {isSell && !isOwner && (
                                                     <>
-                                                        {accountLogin ===
-                                                        offer.owner ? (
+                                                        {accountLogin === offer.owner ? (
                                                             <Tooltip title="Cancel Offer">
                                                                 <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
                                                             </Tooltip>
                                                         ) : (
                                                             <>
-                                                                {orphaned !== 'yes' ? (
+                                                                {orphaned !== 'yes' && (
                                                                     <>
                                                                         {offer.destination &&
-                                                                        accountLogin !==
-                                                                            offer.destination ? (
-                                                                            <>
-                                                                                <Tooltip title="This is not transferred to you, you can not accept.">
-                                                                                    <Button variant="outlined" size="small">Accept</Button>
-                                                                                </Tooltip>
-                                                                            </>
-                                                                        ) : (
+                                                                        accountLogin === offer.destination && (
                                                                             <Tooltip title="Accept Offer">
                                                                                 <Button variant="outlined" size="small" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
                                                                             </Tooltip>
                                                                         )}
                                                                     </>
-                                                                ) : (
-                                                                    <Tooltip title="This is not offered from the NFT owner.">
-                                                                        <Button variant="outlined" size="small">Accept</Button>
-                                                                    </Tooltip>
                                                                 )}
                                                             </>
                                                         )}
@@ -737,14 +702,9 @@ export default function OffersList({ account, type }) {
                                                     {/* Sell Offer List - Owner */}
                                                     {isSell && isOwner && (
                                                         <>
-                                                            {accountLogin ===
-                                                            offer.owner ? (
+                                                            {accountLogin === offer.owner && (
                                                                 <Tooltip title="Cancel Offer">
                                                                     <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
-                                                                </Tooltip>
-                                                            ) : (
-                                                                <Tooltip title="Only the owner of this offer can cancel.">
-                                                                    <Button variant="outlined" color="error" size="small">Cancel</Button>
                                                                 </Tooltip>
                                                             )}
                                                         </>
@@ -769,14 +729,9 @@ export default function OffersList({ account, type }) {
                                                     {/* Buy Offer List - Not Owner */}
                                                     {!isSell && !isOwner && (
                                                         <>
-                                                            {accountLogin ===
-                                                            offer.owner ? (
+                                                            {accountLogin === offer.owner && (
                                                                 <Tooltip title="Cancel Offer">
                                                                     <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
-                                                                </Tooltip>
-                                                            ) : (
-                                                                <Tooltip title="Only the owner of this offer can cancel.">
-                                                                    <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error">Cancel</Button>
                                                                 </Tooltip>
                                                             )}
                                                         </>
