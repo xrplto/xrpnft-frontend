@@ -18,6 +18,7 @@ import {
     Tooltip,
     Typography,
     useMediaQuery,
+    CardWrapper,
     useTheme
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -436,171 +437,354 @@ export default function OffersList({ account, type }) {
                             <Box
                                 sx={{ 
                                     padding: 0,
-                                    marginBottom: 2 ,
+                                    marginBottom: 1 ,
                                 }}
                                 key={offer.index}
                             >
-                                <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'} px={isMobile ? 0 : 1 }>
-                                    <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:0, pl:0, pr:0}}>
-                                        <Stack direction="row" sx={{mt:0, pl:isMobile? 0: 2, pr:0}}>
-                                            <CardMedia
-                                                component={
-                                                    loadingImg ? () =>
-                                                        <Skeleton
-                                                            variant='rectangular'
-                                                            // animation='wave'
-                                                            sx={{
-                                                                width: 48,
-                                                                height: 48
-                                                            }}
-                                                        /> :
-                                                        isVideo ? 'video' : 'img'}
-                                                image={imgUrl}
-                                                onLoad={onImageLoaded}
-                                                alt={'NFT'}
-                                                // controls={isVideo}
-                                                autoPlay={isVideo}
-                                                loop={isVideo}
-                                                muted
-                                                style={{
-                                                    width: '48px'
-                                                }}
-                                            />
-                                            { loadingImg && <img src={imgUrl}
-                                                style={{ display: 'none' }}
-                                                onLoad={onImageLoaded} />
-                                            }
-                                            {
-                                                isVideo &&
-                                                <video src={imgUrl}
-                                                    style={{ display: 'none' }}
-                                                    onCanPlay={onImageLoaded}
+                                <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'} px={1}>
+                                    {!isMobile && (
+                                        <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:0, pl:0, pr:0}}>
+                                            <Stack direction="row" sx={{mt:0, pl:isMobile? 0: 2, pr:0}}>
+                                                <CardMedia
+                                                    component={
+                                                        loadingImg ? () =>
+                                                            <Skeleton
+                                                                variant='rectangular'
+                                                                // animation='wave'
+                                                                sx={{
+                                                                    width: 64,
+                                                                    height: 48,
+                                                                    borderRadius: 1
+                                                                }}
+                                                            /> :
+                                                            isVideo ? 'video' : 'img'}
+                                                    image={imgUrl}
+                                                    onLoad={onImageLoaded}
+                                                    alt={'NFT'}
+                                                    // controls={isVideo}
+                                                    autoPlay={isVideo}
+                                                    loop={isVideo}
+                                                    muted
+                                                    style={{
+                                                        width: 64,
+                                                        height: 48,
+                                                        borderRadius: 1
+                                                    }}
                                                 />
-                                            }
-                                            <Stack
-                                                direction="column"
-                                                spacing={0}
-                                                alignItems="left"
-                                                sx={{
-                                                    ml: 2
-                                                }}
-                                            >
+                                                { loadingImg && <img src={imgUrl}
+                                                    style={{ display: 'none' }}
+                                                    onLoad={onImageLoaded} />
+                                                }
+                                                {
+                                                    isVideo &&
+                                                    <video src={imgUrl}
+                                                        style={{ display: 'none' }}
+                                                        onCanPlay={onImageLoaded}
+                                                    />
+                                                }
                                                 <Stack
-                                                    direction="row"
-                                                    spacing={2}
-                                                    alignItems="center"
+                                                    direction="column"
+                                                    spacing={0}
+                                                    alignItems="left"
+                                                    sx={{
+                                                        ml: 2
+                                                    }}
                                                 >
-                                                    Name
-                                                </Stack>
-                                                <Stack
-                                                    direction="row"
-                                                    spacing={2}
-                                                    alignItems="center"
-                                                >
-                                                    <Typography variant="s7">
-                                                        Flags:{' '}
-                                                    </Typography>
+                                                    <Stack
+                                                        direction="row"
+                                                        spacing={2}
+                                                        alignItems="center"
+                                                    >
+                                                        Name
+                                                    </Stack>
+                                                    <Stack
+                                                        direction="row"
+                                                        spacing={2}
+                                                        alignItems="center"
+                                                    >
+                                                        <Typography variant="s7">
+                                                            Flags:{' '}
+                                                        </Typography>
+                                                    </Stack>
                                                 </Stack>
                                             </Stack>
-                                        </Stack>
-                                        <Typography
-                                            variant="s6"
-                                        >
-                                            {price.amount} {price.name}
-                                        </Typography>
-                                        <Typography
-                                            variant="s6"
-                                        >
-                                            {isSell && ('Sell offer')}
-                                            {!isSell && type == 'buys' && ('Buy offer')}
-                                            {!isSell && type == 'orphaned' && ('Orphaned offer')}
-                                        </Typography>
-                                        <Stack>
-                                            {/* Sell Offer List - Not Owner */}
-                                            {isSell && !isOwner && (
-                                            <>
-                                                {accountLogin ===
-                                                offer.owner ? (
-                                                    <Tooltip title="Cancel Offer">
-                                                        <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
-                                                    </Tooltip>
-                                                ) : (
-                                                    <>
-                                                        {orphaned !== 'yes' ? (
-                                                            <>
-                                                                {offer.destination &&
-                                                                accountLogin !==
-                                                                    offer.destination ? (
-                                                                    <>
-                                                                        <Tooltip title="This is not transferred to you, you can not accept.">
-                                                                            <Button variant="outlined" size="small">Accept</Button>
+                                            <Typography
+                                                variant="s6"
+                                            >
+                                                {price.amount} {price.name}
+                                            </Typography>
+                                            <Typography
+                                                variant="s6"
+                                            >
+                                                {isSell && ('Sell offer')}
+                                                {!isSell && type == 'buys' && ('Buy offer')}
+                                                {!isSell && type == 'orphaned' && ('Orphaned offer')}
+                                            </Typography>
+                                            <Stack>
+                                                {/* Sell Offer List - Not Owner */}
+                                                {isSell && !isOwner && (
+                                                <>
+                                                    {accountLogin ===
+                                                    offer.owner ? (
+                                                        <Tooltip title="Cancel Offer">
+                                                            <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                        </Tooltip>
+                                                    ) : (
+                                                        <>
+                                                            {orphaned !== 'yes' ? (
+                                                                <>
+                                                                    {offer.destination &&
+                                                                    accountLogin !==
+                                                                        offer.destination ? (
+                                                                        <>
+                                                                            <Tooltip title="This is not transferred to you, you can not accept.">
+                                                                                <Button variant="outlined" size="small">Accept</Button>
+                                                                            </Tooltip>
+                                                                        </>
+                                                                    ) : (
+                                                                        <Tooltip title="Accept Offer">
+                                                                            <Button variant="outlined" size="small" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
                                                                         </Tooltip>
-                                                                    </>
-                                                                ) : (
-                                                                    <Tooltip title="Accept Offer">
-                                                                        <Button variant="outlined" size="small" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
-                                                                    </Tooltip>
-                                                                )}
-                                                            </>
+                                                                    )}
+                                                                </>
+                                                            ) : (
+                                                                <Tooltip title="This is not offered from the NFT owner.">
+                                                                    <Button variant="outlined" size="small">Accept</Button>
+                                                                </Tooltip>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </>
+                                                )}
+
+                                                {/* Sell Offer List - Owner */}
+                                                {isSell && isOwner && (
+                                                    <>
+                                                        {accountLogin ===
+                                                        offer.owner ? (
+                                                            <Tooltip title="Cancel Offer">
+                                                                <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                            </Tooltip>
                                                         ) : (
-                                                            <Tooltip title="This is not offered from the NFT owner.">
-                                                                <Button variant="outlined" size="small">Accept</Button>
+                                                            <Tooltip title="Only the owner of this offer can cancel.">
+                                                                <Button variant="outlined" color="error" size="small">Cancel</Button>
                                                             </Tooltip>
                                                         )}
                                                     </>
                                                 )}
-                                            </>
-                                            )}
 
-                                            {/* Sell Offer List - Owner */}
-                                            {isSell && isOwner && (
-                                                <>
-                                                    {accountLogin ===
-                                                    offer.owner ? (
-                                                        <Tooltip title="Cancel Offer">
-                                                            <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
-                                                        </Tooltip>
-                                                    ) : (
-                                                        <Tooltip title="Only the owner of this offer can cancel.">
-                                                            <Button variant="outlined" color="error" size="small">Cancel</Button>
-                                                        </Tooltip>
-                                                    )}
-                                                </>
-                                            )}
+                                                {/* Buy Offer List - Owner */}
+                                                {!isSell && isOwner && (
+                                                    <>
+                                                        {accountLogin !==
+                                                        offer.owner ? (
+                                                            <Tooltip title="Accept Offer">
+                                                                <Button variant="outlined" size="small" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
+                                                            </Tooltip>
+                                                        ) : (
+                                                            <Tooltip title="Cancel Offer">
+                                                                <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                            </Tooltip>
+                                                        )}
+                                                    </>
+                                                )}
 
-                                            {/* Buy Offer List - Owner */}
-                                            {!isSell && isOwner && (
-                                                <>
-                                                    {accountLogin !==
-                                                    offer.owner ? (
-                                                        <Tooltip title="Accept Offer">
-                                                            <Button variant="outlined" size="small" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
-                                                        </Tooltip>
-                                                    ) : (
-                                                        <Tooltip title="Cancel Offer">
-                                                            <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
-                                                        </Tooltip>
-                                                    )}
-                                                </>
-                                            )}
-
-                                            {/* Buy Offer List - Not Owner */}
-                                            {!isSell && !isOwner && (
-                                                <>
-                                                    {accountLogin ===
-                                                    offer.owner ? (
-                                                        <Tooltip title="Cancel Offer">
-                                                            <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
-                                                        </Tooltip>
-                                                    ) : (
-                                                        <Tooltip title="Only the owner of this offer can cancel.">
-                                                            <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error">Cancel</Button>
-                                                        </Tooltip>
-                                                    )}
-                                                </>
-                                            )}
+                                                {/* Buy Offer List - Not Owner */}
+                                                {!isSell && !isOwner && (
+                                                    <>
+                                                        {accountLogin ===
+                                                        offer.owner ? (
+                                                            <Tooltip title="Cancel Offer">
+                                                                <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                            </Tooltip>
+                                                        ) : (
+                                                            <Tooltip title="Only the owner of this offer can cancel.">
+                                                                <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error">Cancel</Button>
+                                                            </Tooltip>
+                                                        )}
+                                                    </>
+                                                )}
+                                            </Stack>
                                         </Stack>
-                                    </Stack>
+                                    )}
+                                    {isMobile && (
+                                        <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'}
+                                        sx={{
+                                            borderWidth: 1,
+                                            borderRadius: 1,
+                                            borderColor : "#32373C",
+                                            backgroundColor: "#21252B",
+                                            borderStyle: "solid",
+                                            paddingLeft: 2,
+                                            paddingRight: 2
+                                        }}>
+                                            <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:1, pl:0, pr:0}}>
+                                                <Stack direction="row" sx={{mt:0, pl: 0, pr:0}}>
+                                                    <CardMedia
+                                                        component={
+                                                            loadingImg ? () =>
+                                                                <Skeleton
+                                                                    variant='rectangular'
+                                                                    // animation='wave'
+                                                                    sx={{
+                                                                        width: 64,
+                                                                        height: 48,
+                                                                        borderRadius: 2
+                                                                    }}
+                                                                /> :
+                                                                isVideo ? 'video' : 'img'}
+                                                        image={imgUrl}
+                                                        onLoad={onImageLoaded}
+                                                        alt={'NFT'}
+                                                        // controls={isVideo}
+                                                        autoPlay={isVideo}
+                                                        loop={isVideo}
+                                                        muted
+                                                        style={{
+                                                            width: 64,
+                                                            height: 48,
+                                                            borderRadius: 2
+                                                        }}
+                                                    />
+                                                    { loadingImg && <img src={imgUrl}
+                                                        style={{ display: 'none' }}
+                                                        onLoad={onImageLoaded} />
+                                                    }
+                                                    {
+                                                        isVideo &&
+                                                        <video src={imgUrl}
+                                                            style={{ display: 'none' }}
+                                                            onCanPlay={onImageLoaded}
+                                                        />
+                                                    }
+                                                    <Stack
+                                                        direction="column"
+                                                        spacing={0}
+                                                        alignItems="left"
+                                                        sx={{
+                                                            ml: 2
+                                                        }}
+                                                    >
+                                                        <Stack
+                                                            direction="row"
+                                                            spacing={2}
+                                                            alignItems="center"
+                                                        >
+                                                            Name
+                                                        </Stack>
+                                                        <Stack
+                                                            direction="row"
+                                                            spacing={2}
+                                                            alignItems="center"
+                                                        >
+                                                            <Typography variant="s7">
+                                                                Flags:{' '}
+                                                            </Typography>
+                                                        </Stack>
+                                                    </Stack>
+                                                </Stack>
+                                            </Stack>
+                                            <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mb:1, pl:0, pr:0}}>
+                                                <Typography
+                                                    variant="s6"
+                                                >
+                                                    {price.amount} {price.name}
+                                                </Typography>
+                                                <Typography
+                                                    variant="s6"
+                                                >
+                                                    {isSell && ('Sell offer')}
+                                                    {!isSell && type == 'buys' && ('Buy offer')}
+                                                    {!isSell && type == 'orphaned' && ('Orphaned offer')}
+                                                </Typography>
+                                                <Stack>
+                                                    {/* Sell Offer List - Not Owner */}
+                                                    {isSell && !isOwner && (
+                                                    <>
+                                                        {accountLogin ===
+                                                        offer.owner ? (
+                                                            <Tooltip title="Cancel Offer">
+                                                                <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                            </Tooltip>
+                                                        ) : (
+                                                            <>
+                                                                {orphaned !== 'yes' ? (
+                                                                    <>
+                                                                        {offer.destination &&
+                                                                        accountLogin !==
+                                                                            offer.destination ? (
+                                                                            <>
+                                                                                <Tooltip title="This is not transferred to you, you can not accept.">
+                                                                                    <Button variant="outlined" size="small">Accept</Button>
+                                                                                </Tooltip>
+                                                                            </>
+                                                                        ) : (
+                                                                            <Tooltip title="Accept Offer">
+                                                                                <Button variant="outlined" size="small" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
+                                                                            </Tooltip>
+                                                                        )}
+                                                                    </>
+                                                                ) : (
+                                                                    <Tooltip title="This is not offered from the NFT owner.">
+                                                                        <Button variant="outlined" size="small">Accept</Button>
+                                                                    </Tooltip>
+                                                                )}
+                                                            </>
+                                                        )}
+                                                    </>
+                                                    )}
+
+                                                    {/* Sell Offer List - Owner */}
+                                                    {isSell && isOwner && (
+                                                        <>
+                                                            {accountLogin ===
+                                                            offer.owner ? (
+                                                                <Tooltip title="Cancel Offer">
+                                                                    <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                                </Tooltip>
+                                                            ) : (
+                                                                <Tooltip title="Only the owner of this offer can cancel.">
+                                                                    <Button variant="outlined" color="error" size="small">Cancel</Button>
+                                                                </Tooltip>
+                                                            )}
+                                                        </>
+                                                    )}
+
+                                                    {/* Buy Offer List - Owner */}
+                                                    {!isSell && isOwner && (
+                                                        <>
+                                                            {accountLogin !==
+                                                            offer.owner ? (
+                                                                <Tooltip title="Accept Offer">
+                                                                    <Button variant="outlined" size="small" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
+                                                                </Tooltip>
+                                                            ) : (
+                                                                <Tooltip title="Cancel Offer">
+                                                                    <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                                </Tooltip>
+                                                            )}
+                                                        </>
+                                                    )}
+
+                                                    {/* Buy Offer List - Not Owner */}
+                                                    {!isSell && !isOwner && (
+                                                        <>
+                                                            {accountLogin ===
+                                                            offer.owner ? (
+                                                                <Tooltip title="Cancel Offer">
+                                                                    <Button variant="outlined" size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                                </Tooltip>
+                                                            ) : (
+                                                                <Tooltip title="Only the owner of this offer can cancel.">
+                                                                    <Button variant={type === "buys" ? (orphaned !== "yes" ? "outlined" : "contained") : "outlined"} size="small" color="error">Cancel</Button>
+                                                                </Tooltip>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                </Stack>
+                                            </Stack>
+                                        </Box>
+                                    )}
                                 </Box>
                             </Box>
                         );
