@@ -589,8 +589,7 @@ export default function OffersList({ account, type }) {
                                         sx={{
                                             borderWidth: 1,
                                             borderRadius: 1,
-                                            borderColor : "#32373C",
-                                            backgroundColor: "#21252B",
+                                            borderColor : "#b4b5be",
                                             borderStyle: "solid",
                                             paddingLeft: 2,
                                             paddingRight: 2
