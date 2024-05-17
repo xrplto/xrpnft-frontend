@@ -246,7 +246,36 @@ export default function NFTActions({ nft }) {
             return dispatched_result;
           } catch (err) {}
         }
+
+        const startInterval = () => {
+          let times = 0;
     
+          dispatchTimer = setInterval(async () => {
+            const dispatched_result = await getDispatchResult();
+    
+            if (dispatched_result && dispatched_result === 'tesSUCCESS') {
+              setSync(sync + 1);
+              openSnackbar('Successful!', 'success');
+              stopInterval();
+              return;
+            }
+    
+            times++;
+    
+            if (times >= 15) {
+              openSnackbar('Rejected!', 'error');
+              stopInterval();
+              return;
+            }
+          }, 1200);
+        };
+    
+        // Stop the interval
+        const stopInterval = () => {
+          clearInterval(dispatchTimer);
+          handleScanQRClose();
+        };
+
         async function getPayload() {
             console.log(counter + " " + isRunning, xummUuid);
             if (isRunning) return;
@@ -256,18 +285,8 @@ export default function NFTActions({ nft }) {
                 const resolved_at = ret.data?.resolved_at;
                 // const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
-                    const dispatched_result = await getDispatchResult();
-    
-                    if (dispatched_result) {
-                        if (dispatched_result === 'tesSUCCESS') {
-                            setSync(sync + 1);
-                            openSnackbar('Successful!', 'success');
-                        } else {
-                            openSnackbar('Rejected!', 'error');
-                        }
-                        handleScanQRClose();
-                        return;
-                    }
+                    startInterval();
+                    return;
                 }
             } catch (err) {
             }
