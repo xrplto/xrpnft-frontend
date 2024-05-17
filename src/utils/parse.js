@@ -550,7 +550,7 @@ export const getNftCoverUrl = (nft, size = 'big', type = '') => {
                 const thumbnail = file.thumbnail?.[size] || file.thumbnail?.big || file.convertedFile || ((!file.isIPFS && file.dfile) ? file.dfile : '');
                 if (thumbnail) {
                     return `https://s2.xrpnft.com/d1/${thumbnail}`
-                } else if (file.isIPFS && file.IPFSPath){
+                } else if (file.dfile && file.isIPFS && file.IPFSPath){
                     return `https://gateway.xrpnft.com/ipfs/${file.IPFSPath}`
                 }
             }
