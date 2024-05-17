@@ -166,8 +166,47 @@ export default function Minting({ showHeader = true, defaultValues }) {
         var timer = null;
         var isRunning = false;
         var counter = 150;
+        var dispatchTimer = null;
+
+        async function getDispatchResult() {
+            try {
+              const ret = await axios.get(`${BASE_URL}/mint/payload/${uuid}/${uuidNft}`);
+              const res = ret.data.data.response;
+              // const account = res.account;
+              const dispatched_result = res.dispatched_result;
+      
+              return dispatched_result;
+            } catch (err) {}
+        }
+
+        const startInterval = () => {
+            let times = 0;
+      
+            dispatchTimer = setInterval(async () => {
+                const dispatched_result = await getDispatchResult();
+                if (dispatched_result && dispatched_result === 'tesSUCCESS') {
+                    openSnackbar('Successful!', 'success');
+                    stopInterval();
+                    return;
+                }
+        
+              times++;
+      
+              if (times >= 15) {
+                openSnackbar('Rejected!', 'error');
+                stopInterval();
+                return;
+              }
+            }, 1200);
+          };
+    
+        // Stop the interval
+        const stopInterval = () => {
+            clearInterval(dispatchTimer);
+            handleScanQRClose();
+        };
+        
         async function getPayload() {
-            console.log(counter + ' ' + isRunning, uuid);
             if (isRunning) return;
             isRunning = true;
             try {
@@ -177,15 +216,7 @@ export default function Minting({ showHeader = true, defaultValues }) {
                 const resolved_at = ret.data?.resolved_at;
                 const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
-                    setOpenScanQR(false);
-                    if (dispatched_result === 'tesSUCCESS') {
-                        // handleClose();
-                        openSnackbar('NFTokenMint successful!', 'success');
-                        window.location.href = `/congrats/assets/${uuidNft}`;
-                    } else {
-                        openSnackbar('NFTokenMint failed!', 'error');
-                    }
-
+                    startInterval();
                     return;
                 }
             } catch (err) {
