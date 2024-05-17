@@ -61,7 +61,6 @@ const CardWrapper = styled(Card)(
 );
 
 export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
-    console.log(profileAccount);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);

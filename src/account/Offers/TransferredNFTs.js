@@ -189,6 +189,7 @@ export default function TransferredNFTs({ account }) {
 
             if (res.status === 200) {
                 const newUuid = res.data.data.uuid;
+                console.log(newUuid);
                 const qrlink = res.data.data.qrUrl;
                 const nextlink = res.data.data.next;
 
@@ -269,6 +270,7 @@ export default function TransferredNFTs({ account }) {
                             <NFTCardAccept
                                 nft={nft}
                                 handleApprove={handleApprove}
+                                profileAccount={account}
                                 key={index}
                             />
                         // <Grid container spacing={1}>
