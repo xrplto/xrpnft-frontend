@@ -409,10 +409,12 @@ export default function OffersList({ account, type }) {
                     {offers.map((offer, idx) => {
                         const price = normalizeAmount(offer.amount);
                         const isSell = offer.flags === 1;
-                        const {NFTokenID, orphaned, meta, files} = offer;
+                        const {NFTokenID, orphaned, meta, files, collection, slug, cslug } = offer;
 
                         const { flag, royalty, issuer, taxon, transferFee } =
                             parseNFTokenID(NFTokenID);
+
+                        const name = offer.meta?.name || offer?.Name || 'No Name';
 
                         const isVideo = /*meta?.video ? true : */false;
 
@@ -422,6 +424,8 @@ export default function OffersList({ account, type }) {
                         // offer.expiration = 1669585409; // Delete this line.
 
                         const expired = checkExpiration(offer.expiration);
+                        const expire = offer.expiration ? (offer.expiration > 946684800 ? offer.expiration: offer.expiration + 946684800) * 1000 : '';
+                        const expire_string = expire ? new Date(expire).toLocaleString() : '';
 
                         // let expired = false;
                         // if (offer.expiration) {
@@ -443,7 +447,9 @@ export default function OffersList({ account, type }) {
                                 <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'} px={1}>
                                     {!isMobile && (
                                         <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:0, pl:0, pr:0}}>
+                                            <Link href={`/nft/${NFTokenID}`} underline='none'>
                                             <Stack direction="row" sx={{mt:0, pl:isMobile? 0: 2, pr:0}}>
+                                            
                                                 <CardMedia
                                                     component={
                                                         loadingImg ? () =>
@@ -494,7 +500,7 @@ export default function OffersList({ account, type }) {
                                                         spacing={2}
                                                         alignItems="center"
                                                     >
-                                                        Name
+                                                        <Link href={`/collection/${cslug}`} underline='none'><Typography variant="s8">{collection || ''}</Typography></Link>
                                                     </Stack>
                                                     <Stack
                                                         direction="row"
@@ -502,15 +508,43 @@ export default function OffersList({ account, type }) {
                                                         alignItems="center"
                                                     >
                                                         <Typography variant="s7">
-                                                            Flags:{' '}
+                                                            {name.length > 20 ?
+                                                                <Box display='flex'>
+                                                                    <Typography
+                                                                        variant="s8"
+                                                                        textOverflow='ellipsis'
+                                                                        overflow='hidden'
+                                                                        whiteSpace='nowrap'
+                                                                        sx={{mt:0.5, mb:0.5}}
+                                                                    >
+                                                                        {name.slice(0, -5)}&nbsp;
+                                                                    </Typography>
+                                                                    <Typography
+                                                                        variant="s8"
+                                                                        sx={{mt:0.5, mb:0.5, width: 45}}
+                                                                    >
+                                                                        {name.slice(-5)}
+                                                                    </Typography>
+                                                                </Box>
+                                                                :
+                                                                <Typography
+                                                                    variant="s8"
+                                                                    sx={{mt:0, mb:0.5}}
+                                                                >
+                                                                    {name}
+                                                                </Typography>
+                                                            }
                                                         </Typography>
                                                     </Stack>
                                                 </Stack>
+                                            
                                             </Stack>
+                                            </Link>
                                             <Typography
                                                 variant="s6"
                                             >
                                                 {price.amount} {price.name}
+                                                {expire_string && `(Expires: ${expire_string})`}
                                             </Typography>
                                             <Typography
                                                 variant="s6"
@@ -611,6 +645,7 @@ export default function OffersList({ account, type }) {
                                             paddingRight: 2
                                         }}>
                                             <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:1, pl:0, pr:0}}>
+                                                <Link href={`/nft/${NFTokenID}`} underline='none'>
                                                 <Stack direction="row" sx={{mt:0, pl: 0, pr:0}}>
                                                     <CardMedia
                                                         component={
@@ -662,7 +697,7 @@ export default function OffersList({ account, type }) {
                                                             spacing={2}
                                                             alignItems="center"
                                                         >
-                                                            Name
+                                                            <Link href={`/collection/${cslug}`} underline='none'><Typography variant="s8">{collection || ''}</Typography></Link>
                                                         </Stack>
                                                         <Stack
                                                             direction="row"
@@ -670,11 +705,37 @@ export default function OffersList({ account, type }) {
                                                             alignItems="center"
                                                         >
                                                             <Typography variant="s7">
-                                                                Flags:{' '}
+                                                                {name.length > 20 ?
+                                                                    <Box display='flex'>
+                                                                        <Typography
+                                                                            variant="s8"
+                                                                            textOverflow='ellipsis'
+                                                                            overflow='hidden'
+                                                                            whiteSpace='nowrap'
+                                                                            sx={{mt:0.5, mb:0.5}}
+                                                                        >
+                                                                            {name.slice(0, -5)}&nbsp;
+                                                                        </Typography>
+                                                                        <Typography
+                                                                            variant="s8"
+                                                                            sx={{mt:0.5, mb:0.5, width: 45}}
+                                                                        >
+                                                                            {name.slice(-5)}
+                                                                        </Typography>
+                                                                    </Box>
+                                                                    :
+                                                                    <Typography
+                                                                        variant="s8"
+                                                                        sx={{mt:0, mb:0.5}}
+                                                                    >
+                                                                        {name}
+                                                                    </Typography>
+                                                                }
                                                             </Typography>
                                                         </Stack>
                                                     </Stack>
                                                 </Stack>
+                                                </Link>
                                             </Stack>
                                             <Stack direction="row" alignItems='center' justifyContent='space-around' sx={{mt:1, mb:1, pl:0, pr:0}}>
                                                 <Typography

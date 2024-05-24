@@ -76,11 +76,15 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
         dfile,
         files,
         NFTokenID,
+        collection,
+        cslug
     } = nft;
+
+    const sender = account == profileAccount ? destination : account;
 
     const amount = normalizeAmount(nft.amount || '0');
 
-    const imgUrl = getNftCoverUrl(nft); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
+    const imgUrl = getNftCoverUrl(nft, 'small'); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
 
     const isVideo = meta?.video ? true : false;
 
@@ -170,7 +174,7 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                                 <Link href={`/nft/${NFTokenID}`} underline='none'>
                                     <Stack direction="column" sx={{mt:isMobile?2:0, pl:isMobile?1:2, pr:0}}>
                                         {amount.amount === 0 ?
-                                            <Typography variant="s8">Claim NFT</Typography>
+                                            <Link href={`/collection/${cslug}`} underline='none'><Typography variant="s8">{collection || ''}</Typography></Link>
                                             :
                                             <>
                                             {amount.currency === "XRP" ?
@@ -217,8 +221,8 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                                     </Stack>
                                 </Link>
                             </Stack>
-                            <Link href={`/nft/${NFTokenID}`} underline='none'>
-                                {!isMobile && <Typography variant="s8">{NFTokenID}</Typography>}
+                            <Link href={`/account/${sender}`} underline='none'>
+                                {!isMobile && <Typography variant="s8">{sender}</Typography>}
                             </Link>
                             <Typography variant="s8" style={{ textAlign: 'center' }}>Waiting to accept</Typography>
                             {accountLogin === profileAccount ? 
@@ -280,7 +284,7 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                                     <Link href={`/nft/${NFTokenID}`} underline='none'>
                                         <Stack direction="column" sx={{mt:0, pl:2, pr:0}}>
                                             {amount.amount === 0 ?
-                                                <Typography variant="s8">Claim NFT</Typography>
+                                                <Link href={`/collection/${cslug}`} underline='none'><Typography variant="s8">{collection || ''}</Typography></Link>
                                                 :
                                                 <>
                                                 {amount.currency === "XRP" ?
@@ -327,8 +331,8 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                                         </Stack>
                                     </Link>
                                 </Stack>
-                                <Link href={`/nft/${NFTokenID}`} underline='none'>
-                                    {!isMobile && <Typography variant="s8">{NFTokenID}</Typography>}
+                                <Link href={`/account/${sender}`} underline='none'>
+                                    {!isMobile && <Typography variant="s8">{sender}</Typography>}
                                 </Link>
                             </Stack>
                             <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mb:1, pl:0, pr:0}}>
