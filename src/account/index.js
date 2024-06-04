@@ -185,6 +185,9 @@ export default function Account({ profile, limit, tab, collection, type }) {
 
     const [acceptNfts, setAcceptNfts] = useState(0);
     const [orphanedOffers, setOrphanedOffers] = useState(0);
+    const [buyOffers, setBuyOffers] = useState(0);
+    const [sellOffers, setSellOffers] = useState(0);
+    const [receivedOffers, setReceivedOffers] = useState(0);
 
     const { account, name, logo, banner, description, minterWallet } = profile;
 
@@ -192,7 +195,8 @@ export default function Account({ profile, limit, tab, collection, type }) {
         ? `https://s1.xrpnft.com/profile/${logo}`
         : getHashIcon(account);
 
-    useEffect(() => {
+
+    /*useEffect(() => {
         function getOffersCount() {
             const body = {
                 account
@@ -217,7 +221,7 @@ export default function Account({ profile, limit, tab, collection, type }) {
                 });
         }
         getOffersCount();
-    }, [accountLogin, sync]);
+    }, [accountLogin, sync]);*/
 
     const gotoTabView = (event) => {
         const anchor = (event.target.ownerDocument || document).querySelector(
@@ -354,7 +358,7 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         label={
                             <StyledBadge
                                 color="primary"
-                                badgeContent={acceptNfts + orphanedOffers}
+                                badgeContent={acceptNfts + orphanedOffers + buyOffers + sellOffers + receivedOffers}
                             >
                                 {tabLabels[1]}
                             </StyledBadge>
@@ -375,7 +379,15 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         <Offers
                             account={account}
                             acceptNfts={acceptNfts}
+                            setAcceptNfts={setAcceptNfts}
                             orphanedOffers={orphanedOffers}
+                            setOrphanedOffers={setOrphanedOffers}
+                            buyOffers={buyOffers}
+                            setBuyOffers={setBuyOffers}
+                            sellOffers={sellOffers}
+                            setSellOffers={setSellOffers}
+                            receivedOffers={receivedOffers}
+                            setReceivedOffers={setReceivedOffers}
                         />
                     </Stack>
                 </TabPanel>

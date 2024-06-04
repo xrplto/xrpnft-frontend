@@ -55,7 +55,7 @@ function truncate(str, n) {
     return str.length > n ? str.substr(0, n - 1) + ' ...' : str;
 }
 
-export default function OffersList({ account, type }) {
+export default function OffersList({ account, type, setTotalOffers }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile, openSnackbar, sync, setSync } =
         useContext(AppContext);
@@ -84,6 +84,8 @@ export default function OffersList({ account, type }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     
+    const [hideOffers, setHideOffers] = useState(0);
+    
     const onImageLoaded = () => {
         setLoadingImg(false);
     }
@@ -99,6 +101,9 @@ export default function OffersList({ account, type }) {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
                         setTotal(ret.total);
+                        if (typeof setTotalOffers === 'function') {
+                            setTotalOffers(ret.total);
+                        }
                         setOffers(ret.offers);
 
                         // const newOffers = [{
@@ -130,7 +135,7 @@ export default function OffersList({ account, type }) {
                 });
         }
         getOffers();
-    }, [account, type, page, rows, sync]);
+    }, [account, type, page, rows, hideOffers/*, sync*/]);
 
     useEffect(() => {
         var timer = null;
@@ -319,6 +324,41 @@ export default function OffersList({ account, type }) {
 
     const handleCancelAll = async (e) => {
         doCancelAll();
+    };
+
+
+    const handleHideOffer = async (offer) => {
+        if (!accountLogin || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+        if (!isOwner) {
+            openSnackbar('You are not the owner of this NFT', 'error');
+            return;
+        }
+
+        setPageLoading(true);
+        try {
+            const user_token = accountProfile.user_token;
+
+            const body = {
+                account: accountLogin,
+                index: offer.index,
+                user_token
+            };
+
+            const res = await axios.post(`${BASE_URL}/offers/hide`, body, {
+                headers: { 'x-access-token': accountToken }
+            });
+
+            if (res.status === 200) {
+                console.log(`Hide offer ${offer.index}`);
+                setHideOffers(hideOffers + 1);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+        setPageLoading(false);
     };
 
     return (
@@ -544,13 +584,19 @@ export default function OffersList({ account, type }) {
                                                 variant="s6"
                                             >
                                                 {price.amount} {price.name}
-                                                {expire_string && `(Expires: ${expire_string})`}
+                                                {expire_string && (
+                                                    <>
+                                                        <Typography variant="s7" >
+                                                            &nbsp;(Expires: {expire_string})
+                                                        </Typography>
+                                                    </>
+                                                )}
                                             </Typography>
                                             <Typography
                                                 variant="s6"
                                             >
                                                 {isSell && ('Sell offer')}
-                                                {!isSell && type == 'buys' && ('Buy offer')}
+                                                {!isSell && (type == 'buys' || type == 'received') && ('Buy offer')}
                                                 {!isSell && type == 'orphaned' && ('Orphaned offer')}
                                             </Typography>
                                             <Stack>
@@ -617,17 +663,23 @@ export default function OffersList({ account, type }) {
                                                             </>
                                                         )}
                                                     </>
-                                                    ) : (
+                                                    ) : accountLogin != null &&  (
                                                         <Box display={'flex'}>
-                                                            <Tooltip title="Accept Offer">
-                                                                <Button variant="contained" sx={{ml:1}} size="small" color="success" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
-                                                            </Tooltip>
-                                                            <Tooltip title="Hide Offer">
-                                                                <Button variant="contained" sx={{ml:1}} size="small" onClick={() => {}}>Hide</Button>
-                                                            </Tooltip>
-                                                            <Tooltip title="Cancel Offer">
-                                                                <Button variant="contained" sx={{ml:1}} size="small" color="error" onClick={() => handleCancelOffer()}>Cancel</Button>
-                                                            </Tooltip>
+                                                            {isOwner && (
+                                                                <>
+                                                                    <Tooltip title="Accept Offer">
+                                                                        <Button variant="contained" sx={{ml:1}} size="small" color="success" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
+                                                                    </Tooltip>
+                                                                    <Tooltip title="Hide Offer">
+                                                                        <Button variant="contained" sx={{ml:1}} size="small" onClick={() => handleHideOffer(offer)}>Hide</Button>
+                                                                    </Tooltip>
+                                                                </>
+                                                            )}
+                                                            {accountLogin === offer.owner && (
+                                                                <Tooltip title="Cancel Offer">
+                                                                    <Button variant="contained" sx={{ml:1}} size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                                </Tooltip>
+                                                            )}
                                                         </Box>
                                                     )
                                                 }
@@ -747,7 +799,7 @@ export default function OffersList({ account, type }) {
                                                     variant="s6"
                                                 >
                                                     {isSell && ('Sell offer')}
-                                                    {!isSell && type == 'buys' && ('Buy offer')}
+                                                    {!isSell && (type == 'buys' || type == 'received') && ('Buy offer')}
                                                     {!isSell && type == 'orphaned' && ('Orphaned offer')}
                                                 </Typography>
                                                 <Stack>
@@ -821,15 +873,21 @@ export default function OffersList({ account, type }) {
                                             {type === "received" && accountLogin != null && (
                                                 <Stack direction="row" alignItems='center' justifyContent='space-around' sx={{mt:1, mb:1}}>
                                                     <Box display={'flex'}>
-                                                        <Tooltip title="Accept Offer">
-                                                            <Button variant="contained" sx={{ml:1}} size="small" color="success" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
-                                                        </Tooltip>
-                                                        <Tooltip title="Hide Offer">
-                                                            <Button variant="contained" sx={{ml:1}} size="small" onClick={() => {}}>Hide</Button>
-                                                        </Tooltip>
-                                                        <Tooltip title="Cancel Offer">
-                                                            <Button variant="contained" sx={{ml:1}} size="small" color="error" onClick={() => handleCancelOffer()}>Cancel</Button>
-                                                        </Tooltip>
+                                                        {isOwner && (
+                                                            <>
+                                                                <Tooltip title="Accept Offer">
+                                                                    <Button variant="contained" sx={{ml:1}} size="small" color="success" onClick={() => handleAcceptOffer(offer)}>Accept</Button>
+                                                                </Tooltip>
+                                                                <Tooltip title="Hide Offer">
+                                                                    <Button variant="contained" sx={{ml:1}} size="small" onClick={() => handleHideOffer(offer)}>Hide</Button>
+                                                                </Tooltip>
+                                                            </>
+                                                        )}
+                                                        {accountLogin === offer.owner && (
+                                                            <Tooltip title="Cancel Offer">
+                                                                <Button variant="contained" sx={{ml:1}} size="small" color="error" onClick={() => handleCancelOffer(offer)}>Cancel</Button>
+                                                            </Tooltip>
+                                                        )}
                                                     </Box>
                                                 </Stack>
                                             )}

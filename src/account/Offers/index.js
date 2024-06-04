@@ -8,7 +8,7 @@ import TransferredNFTs from './TransferredNFTs';
 import OffersList from './OffersList';
 import StyledBadge from '../StyledBadge';
 
-export default function Offers({ account, acceptNfts, orphanedOffers }) {
+export default function Offers({ account, acceptNfts, setAcceptNfts, orphanedOffers, setOrphanedOffers, buyOffers, setBuyOffers, sellOffers, setSellOffers, receivedOffers, setReceivedOffers }) {
     const [openCollected, setOpenCollected] = useState(false);
     const [openSell, setOpenSell] = useState(false);
     const [openBuy, setOpenBuy] = useState(false);
@@ -44,25 +44,29 @@ export default function Offers({ account, acceptNfts, orphanedOffers }) {
                     </StyledBadge>
                 </Button>
                 <Box m={2} sx={{ display: openCollected ? 'block' : 'none' }}>
-                    <TransferredNFTs account={account} />
+                    <TransferredNFTs account={account} setTotalOffers={setAcceptNfts} />
                 </Box>
             </Paper>
 
             <Paper sx={{ border: 'none' }}>
                 <Button fullWidth onClick={handleClickSell}>
-                    Sell Offers
+                    <StyledBadge color="primary" badgeContent={sellOffers}>
+                        Sell Offers
+                    </StyledBadge>
                 </Button>
                 <Box m={2} sx={{ display: openSell ? 'block' : 'none' }}>
-                    <OffersList account={account} type="sells" />
+                    <OffersList account={account} type="sells" setTotalOffers={setSellOffers} />
                 </Box>
             </Paper>
 
             <Paper sx={{ border: 'none' }}>
                 <Button fullWidth onClick={handleClickBuy}>
-                    Buy Offers
+                    <StyledBadge color="primary" badgeContent={buyOffers}>
+                        Buy Offers
+                    </StyledBadge>
                 </Button>
                 <Box m={2} sx={{ display: openBuy ? 'block' : 'none' }}>
-                    <OffersList account={account} type="buys" />
+                    <OffersList account={account} type="buys" setTotalOffers={setBuyOffers} />
                 </Box>
             </Paper>
 
@@ -73,16 +77,18 @@ export default function Offers({ account, acceptNfts, orphanedOffers }) {
                     </StyledBadge>
                 </Button>
                 <Box m={2} sx={{ display: openOrphaned ? 'block' : 'none' }}>
-                    <OffersList account={account} type="orphaned" />
+                    <OffersList account={account} type="orphaned" setTotalOffers={setOrphanedOffers} />
                 </Box>
             </Paper>
 
             <Paper sx={{ border: 'none' }}>
                 <Button fullWidth onClick={handleClickReceived}>
-                    Offer Received
+                    <StyledBadge color="primary" badgeContent={receivedOffers}>
+                        Offers Received
+                    </StyledBadge>
                 </Button>
                 <Box m={2} sx={{ display: openReceived ? 'block' : 'none' }}>
-                    <OffersList account={account} type="received" />
+                    <OffersList account={account} type="received" setTotalOffers={setReceivedOffers} />
                 </Box>
             </Paper>
         </Stack>
