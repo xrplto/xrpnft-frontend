@@ -80,7 +80,7 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
         cslug
     } = nft;
 
-    const sender = account == profileAccount ? destination : account;
+    const sender = owner == profileAccount && destination ? destination : owner; //const sender = account == profileAccount ? destination : account;
 
     const amount = normalizeAmount(nft.amount || '0');
 

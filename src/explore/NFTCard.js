@@ -87,7 +87,8 @@ export default function NFTCard({ nft, handleRemove }) {
         // status,
         destination,
         rarity,
-        rarity_rank
+        rarity_rank,
+        updateEvent,
     } = nft;
 
     const isSold = false;
@@ -188,7 +189,7 @@ export default function NFTCard({ nft, handleRemove }) {
                         width: '100%',
                         height: '76.1%',// 75
                         //maxWidth: 280,
-                        // maxHeight: 250,
+                        maxHeight: 240, // 250
                         /*width: 'auto',
                         maxHeight: 240,
                         position: 'relative',
@@ -414,6 +415,7 @@ export default function NFTCard({ nft, handleRemove }) {
                             //     }
                             // </Stack>
                         )}
+                        <Typography variant='s7'>Event: {updateEvent}</Typography>
                     </Box>
                 </CardContent>
                 {/* <Divider sx={{mt:0.8, mb:0.3}}/>

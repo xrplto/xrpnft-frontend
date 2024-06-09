@@ -24,7 +24,7 @@ import { ClipLoader, PulseLoader } from 'react-spinners';
 import NFTCardAccept from '../NFTCardAccept';
 import QRDialog from 'src/components/QRDialog';
 
-export default function TransferredNFTs({ account }) {
+export default function TransferredNFTs({ account, setTotalOffers }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { accountProfile, openSnackbar, sync, setSync } =
@@ -82,6 +82,7 @@ export default function TransferredNFTs({ account }) {
             .then((res) => {
                 const newNfts = res.data.nfts;
                 const length = newNfts.length;
+                const total = res.data.total;
                 if (length < 20) {
                     setHasMore(false);
                 } else {
@@ -89,6 +90,7 @@ export default function TransferredNFTs({ account }) {
                 }
                 if (length > 0) {
                     setNfts([...nfts, ...newNfts]);
+                    setTotalOffers(total);
                 }
             })
             .catch((err) => {
@@ -128,14 +130,14 @@ export default function TransferredNFTs({ account }) {
                 const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
                     setOpenScanQR(false);
-                    if (dispatched_result === 'tesSUCCESS') {
+                    //if (dispatched_result === 'tesSUCCESS') {  // webxtor: TODO: check if really right solution, for ex. in accept offer also no  dispatched_result
                         // handleClose();
                         setNfts([]);
                         setPage(0);
                         setHasMore(true);
                         setSync(sync + 1); // Load NFTs again
                         openSnackbar('Accepting NFT successful!', 'success');
-                    } else openSnackbar('Accepting NFT failed!', 'error');
+                    //} else openSnackbar('Accepting NFT failed!', 'error');
                     return;
                 }
             } catch (err) {}
