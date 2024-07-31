@@ -540,7 +540,10 @@ export const getNftCoverUrl = (nft, size = 'big', type = '') => {
     if (!nft) return '';
     
     const fileTypes = type ? [type] : ['video', 'animation', 'image']; // order is important
-    const files = nft.files?.filter(file => fileTypes.includes(file.type)/* && file.thumbnail?.[size]*/);
+    let files = nft.files?.filter(file => fileTypes.includes(file.type)/* && file.thumbnail?.[size]*/);
+    if (!files?.length) {
+        files = nft.files?.filter(file => fileTypes.includes(file.parsedType)); // if were unable to detect type (like with download/disk space issues), try with parsedType // 000800009DFF301D909E72368E61B385BDE81008B1875053863961D104DD4236
+    }
     
     if (files?.length) {
         for (const type of fileTypes) {
@@ -567,7 +570,10 @@ export const getNftCoverUrl = (nft, size = 'big', type = '') => {
 
 export const getNftFilesUrls = (nft, type = 'image') => {
     if (!nft) return '';
-    const files = nft.files?.filter(file => file.type === type);
+    let files = nft.files?.filter(file => file.type === type);
+    if (!files?.length) {
+        files = nft.files?.filter(file => file.parsedType === type); // if were unable to detect type (like with download/disk space issues), try with parsedType // 000800009DFF301D909E72368E61B385BDE81008B1875053863961D104DD4236
+    }
     if (files?.length) {
         for (const file of files) {
             // Now serving convertedFile whever possible
