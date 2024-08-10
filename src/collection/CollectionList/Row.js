@@ -122,7 +122,7 @@ export default function Row({ id, item, isMine }) {
         totalVolume,
         floor,
         owners,
-        vol24h
+        totalVol24h
     } = item;
 
     const floorPrice = floor?.amount || 0;
@@ -251,7 +251,7 @@ export default function Row({ id, item, isMine }) {
                         width={isMobile ? 12 : 16}
                         height={isMobile ? 12 : 16}
                     />{' '}
-                    {fNumber(vol24h)}
+                    {fNumber(totalVol24h)}
                 </Typography>
             </TableCell>
 

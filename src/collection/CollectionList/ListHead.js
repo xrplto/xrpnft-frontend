@@ -44,7 +44,7 @@ const TABLE_HEAD = (isMobile) => {
             },
             {
                 no: 2,
-                id: 'vol24h',
+                id: 'totalVol24h',
                 label: '24h Vol',
                 align: 'right',
                 width: '30%',
@@ -71,7 +71,7 @@ const TABLE_HEAD = (isMobile) => {
         },
         {
             no: 2,
-            id: 'vol24h',
+            id: 'totalVol24h',
             label: '24h Vol',
             align: 'right',
             width: '10%',

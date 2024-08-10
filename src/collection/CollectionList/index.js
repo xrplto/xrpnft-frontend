@@ -38,7 +38,7 @@ export default function CollectionList({ type, category }) {
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [order, setOrder] = useState('desc');
-    const [orderBy, setOrderBy] = useState('vol24h');
+    const [orderBy, setOrderBy] = useState('totalVol24h');//vol24h
 
     const [total, setTotal] = useState(0);
     const [collections, setCollections] = useState([]);

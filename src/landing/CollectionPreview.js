@@ -141,7 +141,7 @@ export default function CollectionPreview({collections}) {
                     totalVolume,
                     floor,
                     owners,
-                    vol24h,
+                    totalVol24h,
                     nft
                 } = item;
 
