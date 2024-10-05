@@ -144,7 +144,7 @@ function getCostFromOffers(nftOwner, offers, isSellOffer) {
 
         let validOffer = true;
 
-        if (destination) validOffer = false;
+        //if (destination) validOffer = false; // disable destination (broker) filter
 
         if (isSellOffer && nftOwner !== owner) validOffer = false;
 
@@ -454,7 +454,7 @@ export default function NFTDetailsMobile({ nft }) {
                     if (accountLogin === offer.owner) {
                         newOffers.push(offer);
                     } else {
-                        if (nft.account === offer.owner && (!offer.destination || accountLogin === offer.destination)) {
+                        if (nft.account === offer.owner/* && (!offer.destination || accountLogin === offer.destination)*/) { // disable destination (broker) filter
                             newOffers.push(offer);
                         }
                     }
@@ -467,7 +467,7 @@ export default function NFTDetailsMobile({ nft }) {
                     // I am not the Owner of NFT
                 }
 
-                if (!offer.destination || accountLogin === offer.destination)
+                //if (!offer.destination || accountLogin === offer.destination)
                     // if ((!offer.destination || accountLogin === offer.destination) && offer.)
                     newOffers.push(offer);
             }
