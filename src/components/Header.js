@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { FacebookShareButton, TwitterShareButton } from "react-share";
-import { FacebookIcon, TwitterIcon } from "react-share";
+import { FacebookShareButton, TwitterShareButton } from 'react-share';
+import { FacebookIcon, TwitterIcon } from 'react-share';
 
 // Material
 import {
-    alpha, styled, useMediaQuery, useTheme,
+    alpha,
+    styled,
+    useMediaQuery,
+    useTheme,
     AppBar,
     Box,
     Button,
@@ -42,9 +45,10 @@ import NFTLogo from './NFTLogo';
 import Wallet from './Wallet';
 import NavSearchBar from './NavSearchBar';
 
-const HeaderWrapper = styled(AppBar)(({ theme }) => `
+const HeaderWrapper = styled(AppBar)(
+    ({ theme }) => `
     width: 100%;
-    background-color: ${theme.colors.nav.background};
+    background-color: transparent;
     margin-bottom: ${theme.spacing(0)};
     border: none;
     border-radius: 0px;
@@ -74,8 +78,10 @@ export default function Header() {
     const [anchorElUser, setAnchorElUser] = useState(null);
 
     const shareUrl = `https://xrpnft.com`;
-    const shareTitle = 'XRPNFT An NFT Marketplace for Purchasing, Selling, and Collecting Non-Fungible Tokens';
-    const shareDesc = 'XRPNFT is a fee-free platform for trading XRPL NFTs on the XRP Ledger, connecting creators and collectors in a seamless NFT marketplace.';
+    const shareTitle =
+        'XRPNFT An NFT Marketplace for Purchasing, Selling, and Collecting Non-Fungible Tokens';
+    const shareDesc =
+        'XRPNFT is a fee-free platform for trading XRPL NFTs on the XRP Ledger, connecting creators and collectors in a seamless NFT marketplace.';
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -89,53 +95,65 @@ export default function Header() {
 
     const handleFullSearch = (e) => {
         setFullSearch(true);
-    }
+    };
     return (
-        <HeaderWrapper position="sticky" enableColorOnDark={true} sx={{ py: 1 }}>
+        <HeaderWrapper
+            position="sticky"
+            enableColorOnDark={true}
+            sx={{ py: 1 }}
+        >
             <Container maxWidth="xxl">
                 <Toolbar disableGutters>
-                    <Box id='logo-container-laptop'
+                    <Box
+                        id="logo-container-laptop"
                         sx={{
                             mr: 2,
-                            display: { xs: 'none', sm: 'flex' },
+                            display: { xs: 'none', sm: 'flex' }
                         }}
                     >
                         <NFTLogo />
                     </Box>
 
-
-                    {fullSearch &&
+                    {fullSearch && (
                         <NavSearchBar
-                            id='id_search_items_collections_accounts'
-                            placeholder='Search NFTs, collections, and accounts'
-                            type='SEARCH_ITEM_COLLECTION_ACCOUNT'
+                            id="id_search_items_collections_accounts"
+                            placeholder="Search NFTs, collections, and accounts"
+                            type="SEARCH_ITEM_COLLECTION_ACCOUNT"
                             fullSearch={fullSearch}
                             setFullSearch={setFullSearch}
                         />
-                    }
+                    )}
 
-                    {!fullSearch &&
-                        <Box id='logo-container-mobile'
+                    {!fullSearch && (
+                        <Box
+                            id="logo-container-mobile"
                             sx={{
                                 mr: 2,
-                                display: { xs: 'flex', sm: 'none' },
+                                display: { xs: 'flex', sm: 'none' }
                             }}
                         >
                             <NFTLogo />
                         </Box>
-                    }
-                    {!fullSearch && !isMobile &&
+                    )}
+                    {!fullSearch && !isMobile && (
                         <NavSearchBar
-                            id='id_search_items_collections_accounts'
-                            placeholder='Search NFTs, collections, and accounts'
-                            type='SEARCH_ITEM_COLLECTION_ACCOUNT'
+                            id="id_search_items_collections_accounts"
+                            placeholder="Search NFTs, collections, and accounts"
+                            type="SEARCH_ITEM_COLLECTION_ACCOUNT"
                             fullSearch={fullSearch}
                             setFullSearch={setFullSearch}
                         />
-                    }
+                    )}
 
-                    <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                        {!isMobile &&
+                    <Box
+                        sx={{
+                            flexGrow: 1,
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            alignItems: 'center'
+                        }}
+                    >
+                        {!isMobile && (
                             <>
                                 <Link
                                     underline="none"
@@ -162,33 +180,39 @@ export default function Header() {
                                     <Button variant="text">Create</Button>
                                 </Link>
                             </>
-                        }
+                        )}
 
-                        {!fullSearch && isMobile &&
+                        {!fullSearch && isMobile && (
                             <IconButton
-                                aria-label='search'
+                                aria-label="search"
                                 onClick={handleFullSearch}
                             >
                                 <SearchIcon />
                             </IconButton>
-                        }
-                        {!fullSearch &&
-                            <Wallet />
-                        }
-                        {!isMobile &&
-                            <IconButton onClick={() => { toggleTheme() }} >
+                        )}
+                        {!fullSearch && <Wallet />}
+                        {!isMobile && (
+                            <IconButton
+                                onClick={() => {
+                                    toggleTheme();
+                                }}
+                            >
                                 {darkMode ? (
                                     <Icon icon={baselineBrightness4} />
                                 ) : (
                                     <Icon icon={baselineBrightnessHigh} />
                                 )}
                             </IconButton>
-                        }
+                        )}
                     </Box>
 
-                    {!fullSearch &&
-                        <Box id='nav-menu-mobile'
-                            sx={{ flexGrow: 0, display: { sm: 'flex', md: 'none' } }}
+                    {!fullSearch && (
+                        <Box
+                            id="nav-menu-mobile"
+                            sx={{
+                                flexGrow: 0,
+                                display: { sm: 'flex', md: 'none' }
+                            }}
                         >
                             <IconButton
                                 size="large"
@@ -204,20 +228,19 @@ export default function Header() {
                                 anchorEl={anchorElNav}
                                 anchorOrigin={{
                                     vertical: 'bottom',
-                                    horizontal: 'left',
+                                    horizontal: 'left'
                                 }}
                                 keepMounted
                                 transformOrigin={{
                                     vertical: 'top',
-                                    horizontal: 'left',
+                                    horizontal: 'left'
                                 }}
                                 open={Boolean(anchorElNav)}
                                 onClose={handleCloseNavMenu}
                                 sx={{
-                                    display: { xs: 'block', md: 'none' },
+                                    display: { xs: 'block', md: 'none' }
                                 }}
                             >
-
                                 <MenuItem onClick={handleCloseNavMenu}>
                                     <Link
                                         underline="none"
@@ -225,9 +248,19 @@ export default function Header() {
                                         href={`/explore`}
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                        <Stack
+                                            direction="row"
+                                            spacing={1}
+                                            sx={{ mr: 2 }}
+                                            alignItems="center"
+                                        >
                                             <ExploreOutlinedIcon />
-                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Explore</Typography>
+                                            <Typography
+                                                variant="s3"
+                                                style={{ marginLeft: '10px' }}
+                                            >
+                                                Explore
+                                            </Typography>
                                         </Stack>
                                     </Link>
                                 </MenuItem>
@@ -238,9 +271,19 @@ export default function Header() {
                                         href={`/collections`}
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                        <Stack
+                                            direction="row"
+                                            spacing={1}
+                                            sx={{ mr: 2 }}
+                                            alignItems="center"
+                                        >
                                             <CollectionsIcon />
-                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Collections</Typography>
+                                            <Typography
+                                                variant="s3"
+                                                style={{ marginLeft: '10px' }}
+                                            >
+                                                Collections
+                                            </Typography>
                                         </Stack>
                                     </Link>
                                 </MenuItem>
@@ -251,30 +294,64 @@ export default function Header() {
                                         href={`/create`}
                                         rel="noreferrer noopener nofollow"
                                     >
-                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                        <Stack
+                                            direction="row"
+                                            spacing={1}
+                                            sx={{ mr: 2 }}
+                                            alignItems="center"
+                                        >
                                             <AddPhotoAlternateIcon />
-                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Create</Typography>
+                                            <Typography
+                                                variant="s3"
+                                                style={{ marginLeft: '10px' }}
+                                            >
+                                                Create
+                                            </Typography>
                                         </Stack>
                                     </Link>
                                 </MenuItem>
                                 <Divider />
-                                <MenuItem onClick={()=> {toggleTheme();}}>
-                                    <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
+                                <MenuItem
+                                    onClick={() => {
+                                        toggleTheme();
+                                    }}
+                                >
+                                    <Stack
+                                        direction="row"
+                                        spacing={1}
+                                        sx={{ mr: 2 }}
+                                        alignItems="center"
+                                    >
                                         {darkMode ? (
-                                            <Icon icon={baselineBrightness4} width={24} height={24} />
+                                            <Icon
+                                                icon={baselineBrightness4}
+                                                width={24}
+                                                height={24}
+                                            />
                                         ) : (
-                                            <Icon icon={baselineBrightnessHigh} width={24} height={24} />
+                                            <Icon
+                                                icon={baselineBrightnessHigh}
+                                                width={24}
+                                                height={24}
+                                            />
                                         )}
-                                        <Typography variant='s3' style={{marginLeft: '10px'}}>{darkMode ? 'Dark Theme':'Light Theme'}</Typography>
+                                        <Typography
+                                            variant="s3"
+                                            style={{ marginLeft: '10px' }}
+                                        >
+                                            {darkMode
+                                                ? 'Dark Theme'
+                                                : 'Light Theme'}
+                                        </Typography>
                                     </Stack>
                                 </MenuItem>
 
-                                <Stack alignItems="center" sx={{mt: 2}} >
+                                <Stack alignItems="center" sx={{ mt: 2 }}>
                                     <Stack direction="row" spacing={3}>
                                         <FacebookShareButton
                                             url={shareUrl}
                                             quote={shareTitle}
-                                            hashtag={"#"}
+                                            hashtag={'#'}
                                             description={shareDesc}
                                         >
                                             <FacebookIcon size={32} round />
@@ -282,7 +359,7 @@ export default function Header() {
                                         <TwitterShareButton
                                             title={shareTitle}
                                             url={shareUrl}
-                                            hashtag={"#"}
+                                            hashtag={'#'}
                                         >
                                             <TwitterIcon size={32} round />
                                         </TwitterShareButton>
@@ -290,9 +367,9 @@ export default function Header() {
                                 </Stack>
                             </Menu>
                         </Box>
-                    }
+                    )}
                 </Toolbar>
             </Container>
-        </HeaderWrapper >
+        </HeaderWrapper>
     );
 }
