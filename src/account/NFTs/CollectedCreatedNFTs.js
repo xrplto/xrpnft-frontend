@@ -25,7 +25,7 @@ import NFTCard from 'src/explore/NFTCard';
 import CollectionCard from 'src/explore/CollectionCard';
 import FilterDetail from '../FilterDetail';
 
-export default function CollectedCreatedNFTs({ type, account, limit, collection }) {
+export default function CollectedCreatedNFTs({ type, account, limit, collection, setHasCreatedNFTs, setCreatedNFTsLoaded }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const theme = useTheme();
@@ -100,6 +100,18 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection 
         if (fullScreen) setShowFilter(false);
     }, [fullScreen]);
 
+    useEffect(() => {
+        if (type === 'created') {
+            console.log('Created NFTs count:', nfts.length);
+            if (setHasCreatedNFTs) {
+                setHasCreatedNFTs(nfts.length > 0);
+            }
+            if (setCreatedNFTsLoaded) {
+                setCreatedNFTsLoaded(true);
+            }
+        }
+    }, [nfts, type, setHasCreatedNFTs, setCreatedNFTsLoaded]);
+
     const handleChangeSearch = (e) => {
         resetNfts();
         setSearch(e.target.value);
@@ -137,89 +149,93 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection 
 
     return (
         <>
-            <Box
-                id="nfts"
-                display="flex"
-                alignItems="center"
-                // sx={{ pl: 0, pr:0 }}
-            >
-                <IconButton aria-label="filter" onClick={handleShowFilter}>
-                    <FilterListIcon fontSize="large" />
-                </IconButton>
-                <TextField
-                    id="textFilter"
-                    // autoFocus
-                    fullWidth
-                    variant="outlined"
-                    placeholder="Search by name or attribute"
-                    margin="dense"
-                    onChange={handleChangeSearch}
-                    autoComplete="new-password"
-                    inputProps={{ autoComplete: 'off' }}
-                    value={search}
-                    onFocus={(event) => {
-                        event.target.select();
-                    }}
-                    sx={{ pl: 2, pr: 1, pt: 0, pb: 0, mt: 0 }}
-                    onKeyDown={(e) => e.stopPropagation()}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start" sx={{ mr: 0.7 }}>
-                                <SearchIcon />
-                            </InputAdornment>
-                        ),
-                        endAdornment: (
-                            <InputAdornment position="start">
-                                {loading && (
-                                    <ClipLoader color="#ff0000" size={15} />
-                                )}
-                            </InputAdornment>
-                        )
-                    }}
-                />
-            </Box>
-            {collection && (
-                <Box display="flex" justifyContent="center">
-                    <IconButton onClick={handleBack}>
-                        <ArrowBackIcon fontSize="large" />
-                        <Typography variant="s3" fontSize="medium">Go back</Typography>
-                    </IconButton>
-                </Box>
-            )}
-            <Grid container spacing={1} justifyContent="space-between" mt={1}>
-                {showFilter && (
-                    <Grid item xs={12} md={3} xl={2} pt={0.5}>
-                        <FilterDetail
-                            onSaleCount={onSaleCount}
-                            filter={filter}
-                            setFilter={setFilter}
-                            subFilter={subFilter}
-                            setSubFilter={setSubFilter}
-                            setPage={setPage}
-                        />
-                    </Grid>
-                )}
-                <Grid
-                    item
-                    xs={12}
-                    md={showFilter ? 9 : 12}
-                    xl={showFilter ? 10 : 12}
-                >
-                    {collection && collection !== '' ? (
-                    <InfiniteScroll
-                        dataLength={nfts.length}
-                        next={() => {
-                        setPage(page + 1);
-                        setSync(sync + 1);
-                        }}
-                        hasMore={hasMore}
-                        scrollThreshold={0.6}
+            {(type !== 'created' || nfts.length > 0) && (
+                <>
+                    <Box
+                        id="nfts"
+                        display="flex"
+                        alignItems="center"
+                        // sx={{ pl: 0, pr:0 }}
                     >
-                        {nftItems()}
-                    </InfiniteScroll>
-                    ) : nftItems()}
-                </Grid>
-            </Grid>
+                        <IconButton aria-label="filter" onClick={handleShowFilter}>
+                            <FilterListIcon fontSize="large" />
+                        </IconButton>
+                        <TextField
+                            id="textFilter"
+                            // autoFocus
+                            fullWidth
+                            variant="outlined"
+                            placeholder="Search by name or attribute"
+                            margin="dense"
+                            onChange={handleChangeSearch}
+                            autoComplete="new-password"
+                            inputProps={{ autoComplete: 'off' }}
+                            value={search}
+                            onFocus={(event) => {
+                                event.target.select();
+                            }}
+                            sx={{ pl: 2, pr: 1, pt: 0, pb: 0, mt: 0 }}
+                            onKeyDown={(e) => e.stopPropagation()}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start" sx={{ mr: 0.7 }}>
+                                        <SearchIcon />
+                                    </InputAdornment>
+                                ),
+                                endAdornment: (
+                                    <InputAdornment position="start">
+                                        {loading && (
+                                            <ClipLoader color="#ff0000" size={15} />
+                                        )}
+                                    </InputAdornment>
+                                )
+                            }}
+                        />
+                    </Box>
+                    {collection && (
+                        <Box display="flex" justifyContent="center">
+                            <IconButton onClick={handleBack}>
+                                <ArrowBackIcon fontSize="large" />
+                                <Typography variant="s3" fontSize="medium">Go back</Typography>
+                            </IconButton>
+                        </Box>
+                    )}
+                    <Grid container spacing={1} justifyContent="space-between" mt={1}>
+                        {showFilter && (
+                            <Grid item xs={12} md={3} xl={2} pt={0.5}>
+                                <FilterDetail
+                                    onSaleCount={onSaleCount}
+                                    filter={filter}
+                                    setFilter={setFilter}
+                                    subFilter={subFilter}
+                                    setSubFilter={setSubFilter}
+                                    setPage={setPage}
+                                />
+                            </Grid>
+                        )}
+                        <Grid
+                            item
+                            xs={12}
+                            md={showFilter ? 9 : 12}
+                            xl={showFilter ? 10 : 12}
+                        >
+                            {collection && collection !== '' ? (
+                            <InfiniteScroll
+                                dataLength={nfts.length}
+                                next={() => {
+                                setPage(page + 1);
+                                setSync(sync + 1);
+                                }}
+                                hasMore={hasMore}
+                                scrollThreshold={0.6}
+                            >
+                                {nftItems()}
+                            </InfiniteScroll>
+                            ) : nftItems()}
+                        </Grid>
+                    </Grid>
+                </>
+            )}
         </>
     );
 }
