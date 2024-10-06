@@ -38,7 +38,7 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import ExploreNFT from 'src/explore';
-import CollectionActivity from 'src/explore/CollectionActivity';
+// import CollectionActivity from 'src/explore/CollectionActivity';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
 import Watch from 'src/components/Watch';
 
@@ -96,6 +96,11 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
         0
     )} 100%)`
 }));
+
+// Add this new styled component for the tabs
+// const StyledTabs = styled(Tabs)(({ theme }) => ({
+//     marginBottom: theme.spacing(3),
+// }));
 
 export default function ViewNFT({ collection }) {
     const anchorRef = useRef(null);
@@ -317,7 +322,6 @@ export default function ViewNFT({ collection }) {
 
             <Box sx={{ mx: { xs: 2, md: 4 } }}>
                 <ExploreNFT collection={collection} />
-                <CollectionActivity collection={collection} />
             </Box>
 
             <Popover
