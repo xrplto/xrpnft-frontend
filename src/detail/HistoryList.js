@@ -77,51 +77,47 @@ export default function HistoryList({ nft }) {
 
     return (
         <>
-            {loading ?
+            {loading ? (
                 <Stack alignItems="center" mt={1}>
                     <PulseLoader color='#00AB55' size={10} />
                 </Stack>
-            :
+            ) : (
                 <Stack mt={1}>
                     <Box
                         sx={{
-                            display: "flex",
-                            gap: 1,
-                            py: 1,
-                            overflow: "auto",
                             width: "100%",
-                            "& > *": {
-                                scrollSnapAlign: "center",
-                            },
+                            overflowX: "hidden",
                             "::-webkit-scrollbar": { display: "none" },
                         }}
                     >
-                        <Table stickyHeader sx={{
+                        <Table size="small" sx={{
                             [`& .${tableCellClasses.root}`]: {
                                 borderBottom: "0px solid",
-                                borderColor: theme.palette.divider
-                            }
+                                borderColor: theme.palette.divider,
+                                padding: '4px 8px',
+                            },
+                            minWidth: "100%",
                         }}>
                             <TableBody>
                                 {hists && hists.slice().reverse().map((row) => (
                                     <TableRow key={row.uuid}>
-                                        <TableCell align="left" width='15%' sx={{pt:0.5, pb:0.5}}>
-                                            <Typography variant='body2' noWrap>{row.type}</Typography>
+                                        <TableCell align="left" width='15%'>
+                                            <Typography variant='caption' noWrap>{row.type}</Typography>
                                         </TableCell>
-                                        <TableCell align="left" width='15%' sx={{pt:0.5, pb:0.5}}>
+                                        <TableCell align="left" width='30%'>
                                             <Link href={`/account/${row.account}`}>
-                                                <Typography variant='body2' noWrap>{truncate(row.account, 16)}</Typography>
+                                                <Typography variant='caption' noWrap>{truncate(row.account, 12)}</Typography>
                                             </Link>
                                         </TableCell>
-                                        <TableCell align="left" width='15%' sx={{pt:0.5, pb:0.5}}>
+                                        <TableCell align="left" width='25%'>
                                             {row.type === 'SALE' ?
-                                                <Typography variant='body2' noWrap>{formatAmount(row.cost.amount)} {normalizeCurrencyCodeXummImpl(row.cost.currency)}</Typography>
+                                                <Typography variant='caption' noWrap>{formatAmount(row.cost.amount)} {normalizeCurrencyCodeXummImpl(row.cost.currency)}</Typography>
                                                 :
-                                                <Typography variant='body2' noWrap>- - -</Typography>
+                                                <Typography variant='caption' noWrap>- - -</Typography>
                                             }
                                         </TableCell>
-                                        <TableCell align="left" sx={{pt:0.5, pb:0.5}}>
-                                            <Typography variant='body2' noWrap>{formatDateTime(row.time)}</Typography>
+                                        <TableCell align="left" width='30%'>
+                                            <Typography variant='caption' noWrap>{formatDateTime(row.time)}</Typography>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -129,7 +125,7 @@ export default function HistoryList({ nft }) {
                         </Table>
                     </Box>
                 </Stack>
-            }
+            )}
         </>
     );
 }

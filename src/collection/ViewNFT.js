@@ -47,6 +47,7 @@ const IconCover = styled('div')(({ theme }) => ({
     height: 220,
     position: 'relative',
     overflow: 'hidden',
+    borderRadius: theme.shape.borderRadius * 2, // Add rounded corners
     boxShadow: `0 8px 32px 0 ${alpha('#0095D9', 0.2)}`,
     [theme.breakpoints.down('sm')]: {
         width: 150,
@@ -58,6 +59,7 @@ const IconImage = styled('img')({
     width: '100%',
     height: '100%',
     objectFit: 'cover',
+    borderRadius: 'inherit' // Inherit border radius from parent
 });
 
 const StatItem = styled(Box)(({ theme }) => ({
@@ -104,7 +106,7 @@ const BackgroundImage = styled('div')(({ theme }) => ({
     backgroundRepeat: 'no-repeat',
     filter: 'blur(20px)',
     opacity: 0.3,
-    zIndex: -1,
+    zIndex: -1
 }));
 
 // Add this new styled component for the background image
@@ -118,7 +120,7 @@ const BackgroundBlur = styled('div')(({ theme }) => ({
     backgroundPosition: 'center',
     filter: 'blur(20px)',
     opacity: 0.3,
-    zIndex: -1,
+    zIndex: -1
 }));
 
 export default function ViewNFT({ collection }) {
@@ -165,12 +167,13 @@ export default function ViewNFT({ collection }) {
                     overflow: 'hidden',
                     mb: 6,
                     mx: { xs: 2, md: 4 },
-                    mt: { xs: 10, md: 12 },
+                    mt: { xs: 10, md: 12 }
+                    // Keep this square (no borderRadius)
                 }}
             >
                 <BackgroundImage
                     sx={{
-                        backgroundImage: `url(https://s1.xrpnft.com/collection/${logoImage})`,
+                        backgroundImage: `url(https://s1.xrpnft.com/collection/${logoImage})`
                     }}
                 />
                 <Box
@@ -180,9 +183,10 @@ export default function ViewNFT({ collection }) {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        bgcolor: (theme) => alpha(theme.palette.background.default, 0.8),
+                        bgcolor: (theme) =>
+                            alpha(theme.palette.background.default, 0.8),
                         backdropFilter: 'blur(15px)',
-                        zIndex: 0,
+                        zIndex: 0
                     }}
                 />
                 <GlassBox
@@ -191,7 +195,7 @@ export default function ViewNFT({ collection }) {
                         flexDirection: { xs: 'column', md: 'row' },
                         alignItems: { xs: 'center', md: 'flex-start' },
                         position: 'relative',
-                        zIndex: 1,
+                        zIndex: 1
                     }}
                 >
                     <IconCover
@@ -210,7 +214,7 @@ export default function ViewNFT({ collection }) {
                     >
                         <BackgroundBlur
                             sx={{
-                                backgroundImage: `url(https://s1.xrpnft.com/collection/${logoImage})`,
+                                backgroundImage: `url(https://s1.xrpnft.com/collection/${logoImage})`
                             }}
                         />
                         <IconImage

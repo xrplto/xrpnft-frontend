@@ -344,6 +344,23 @@ export default function NFTDetails({nft}) {
                             );
                         })}
                         </Stack>
+
+                        {/* Add image link here */}
+                        <Stack spacing={1} mt={2}>
+                            <Typography variant='caption'>Converted-image:</Typography>
+                            {files?.find(file => file.type === 'image')?.cachedUrl && (
+                                <Link
+                                    href={files.find(file => file.type === 'image').cachedUrl}
+                                    underline='hover'
+                                    target="_blank"
+                                    variant='body2'
+                                    rel="noreferrer noopener nofollow"
+                                >
+                                    {files.find(file => file.type === 'image').cachedUrl}
+                                </Link>
+                            )}
+                        </Stack>
+
                         <Divider sx={{mt:2, mb:2}}/>
 
                     </AccordionDetails>

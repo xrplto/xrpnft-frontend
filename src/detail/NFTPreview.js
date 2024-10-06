@@ -1,5 +1,4 @@
 import * as React from 'react';
-// import ModalImage from "react-modal-image";
 import { Lightbox } from "react-modal-image";
 import { useState, useContext } from 'react';
 import { AppContext } from 'src/AppContext';
@@ -7,7 +6,6 @@ import Head from 'next/head';
 import { useKeenSlider } from "keen-slider/react"
 import "keen-slider/keen-slider.min.css"
 
-//import { useTranslation } from 'next-i18next'
 function t (key) {
   let val = '';
   switch (key) {
@@ -47,7 +45,6 @@ function t (key) {
   }
   return val;
 }
-//import { stripText } from "../utils" // for model
 
 import Tabs from './Tabs'
 
@@ -60,14 +57,11 @@ import {
 } from '@mui/material';
 
 // Utils
-import { getNftFilesUrls/*, nftName*/ } from 'src/utils/parse';
+import { getNftFilesUrls } from 'src/utils/parse';
 
 export default function NFTPreview({ nft }) {
     const { darkMode } = useContext(AppContext);
 	  const noImg = '/static/nft_no_image.webp'
-    //const imgUrl = getImgUrl(nft/*, 480*/) || noImg;
-    //const ipfsImgUrl = getImgUrl(nft) || noImg; //getImgUrl(NFTokenID, meta) // TODO: check if all ok as required dfile, size missing
-    //const isVideo = nft.meta?.video?true:false;
 
     // slider
     const [loadedSlider, setLoadedSlider] = useState(false)
@@ -109,22 +103,13 @@ export default function NFTPreview({ nft }) {
       setOpenImage(true);
     };
 
-    // const imgUrl = '/static/test.mp4';
-    // const isVideo = true;
-
-    const [openImage, setOpenImage] = useState(false);
-    const [openAnimation, setOpenAnimation] = useState(false);
+    const [openImage, setOpenImage] = useState(false)
+    const [openAnimation, setOpenAnimation] = useState(false)
 
     const closeLightboxImage = () => {
         setOpenImage(false);
     }
-    /*const closeLightboxAnimation = () => {
-        setOpenAnimation(false);
-    }*/
 
-    //const nftName = nft.meta?.name || nft.meta?.Name || "No Name";
-
-    //const [contentTab, setContentTab] = useState("image")
     const [loaded, setLoaded] = useState(false)
     const [errored, setErrored] = useState(false)
 
@@ -143,9 +128,9 @@ export default function NFTPreview({ nft }) {
     }
     }
  
-    let imageUrl = getNftFilesUrls(nft, 'image');//console.log('imageUrl before', imageUrl)
-    const animationUrl = getNftFilesUrls(nft, 'animation');//console.log('animationUrl before', animationUrl)
-    const videoUrl = getNftFilesUrls(nft, 'video');//console.log('videoUrl before', videoUrl)
+    let imageUrl = getNftFilesUrls(nft, 'image');
+    const animationUrl = getNftFilesUrls(nft, 'animation');
+    const videoUrl = getNftFilesUrls(nft, 'video');
     const audioUrl = getNftFilesUrls(nft, 'audio');
     const modelUrl = getNftFilesUrls(nft, 'model');
     const viewerUrl = getNftFilesUrls(nft, 'viewer');
@@ -181,8 +166,6 @@ export default function NFTPreview({ nft }) {
     }
 
     const imgOrAnimUrl = contentTab === 'image' ? imageUrl : contentTab === 'animation' ? animationUrl : '';
-
-    //console.log('imageUrl after', imageUrl, 'imgOrAnimUrl', imgOrAnimUrl)
   
     let imageStyle = { width: "100%", height: "auto" };
     if (imageUrl) {
@@ -292,11 +275,6 @@ export default function NFTPreview({ nft }) {
             style={{ margin: 0 }}
           />
         </span>
-        <span style={{ float: "right", padding: "4px 0px" }}>
-          <Link href={clUrl[contentTab]} target="_blank" rel="noreferrer">
-            <Typography variant='body1' noWrap>{t("tabs." + contentTab)} Link</Typography>
-          </Link>
-        </span>
       </div>
     }
 
@@ -372,7 +350,7 @@ export default function NFTPreview({ nft }) {
         loop
         controls
         style={{ width: "100%", height: "auto", verticalAlign: 'bottom' }}
-      >{/*autoPlay*/}
+      >
         <source src={videoUrl[currentSlide]?.cachedUrl} type="video/mp4" />
       </video>
     }
@@ -410,42 +388,19 @@ export default function NFTPreview({ nft }) {
         }
       </>
     }
-    {contentTabList.length < 2 && defaultUrl &&
-      <span style={{ padding: "4px 0px" }}>
-        <Link href={defaultUrl} target="_blank" rel="noreferrer">
-          <Typography style={{ /*marginLeft: "18px",*/ padding: "18px" }} variant='body1' noWrap>{t("tabs." + defaultTab)} Link</Typography>
-        </Link>
-      </span>
-    }
 
-    {defaultTab !== 'model' /*&& defaultTab !== 'video'*/ && audioUrl &&
+    {defaultTab !== 'model' && audioUrl &&
       <>
         <audio src={audioUrl[currentSlide]?.cachedUrl} controls style={{ display: 'block', margin: "20px auto", marginBottom: "0px" }}></audio>
-        <span style={{ padding: "4px 0px" }}>
-          <Link href={clUrl.audio} target="_blank" rel="noreferrer">
-            <Typography style={{ /*marginLeft: "18px",*/ padding: "18px" }} variant='body1' noWrap>{t("tabs.audio")} Link</Typography>
-          </Link>
-        </span>
       </>
     }
     {viewerUrl &&
       <span style={{ padding: "4px 0px", float: "right" }}>
         <Link href={viewerUrl[currentSlide]?.cachedUrl} target="_blank" rel="noreferrer">
-          <Typography style={{ /*marginLeft: "18px",*/ padding: "18px" }} variant='s11' noWrap>{t("general.viewer")}</Typography>
+          <Typography style={{ padding: "18px" }} variant='s11' noWrap>{t("general.viewer")}</Typography>
         </Link>
       </span>
     }
-    {/*(!nft.uri && !(nft.metadata)) ?
-      <div className="center bold" style={errorStyle}>{t("general.no-uri")}</div>
-      :
-      <>
-        {!(imageUrl || videoUrl || audioUrl || modelUrl) &&
-          <div className="center bold" style={errorStyle}>{t("general.no-media")}</div>
-        }
-      </>
-      */}
-     {/*<div style={{ height: "15px" }}></div>*/}
-    </Card>
+     </Card>
   </>
-
 }
