@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { useRef, useState, useEffect } from 'react';
-import { FacebookShareButton, TwitterShareButton } from "react-share";
-import { FacebookIcon, TwitterIcon } from "react-share";
+import { FacebookShareButton, TwitterShareButton } from 'react-share';
+import { FacebookIcon, TwitterIcon } from 'react-share';
 
 // Material
 import {
-    useTheme, useMediaQuery,
+    useTheme,
+    useMediaQuery,
     Accordion,
     AccordionDetails,
     AccordionSummary,
@@ -21,7 +22,7 @@ import {
     Popover,
     Stack,
     Typography,
-    Tooltip,
+    Tooltip
 } from '@mui/material';
 import ListIcon from '@mui/icons-material/List';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
@@ -43,7 +44,7 @@ import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Loader
-import { PuffLoader, PulseLoader } from "react-spinners";
+import { PuffLoader, PulseLoader } from 'react-spinners';
 import { ProgressBar, Discuss } from 'react-loader-spinner';
 
 // Context
@@ -51,7 +52,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { NFToken, getMinterName } from "src/utils/constants";
+import { NFToken, getMinterName } from 'src/utils/constants';
 import { normalizeAmount } from 'src/utils/normalizers';
 import { fNumber, fIntNumber } from 'src/utils/formatNumber';
 import { getHashIcon } from 'src/utils/parse';
@@ -68,6 +69,20 @@ import BurnNFT from './BurnNFT';
 import TransferDialog from './TransferDialog';
 import HistoryList from './HistoryList';
 
+// Add these imports
+import { alpha, styled } from '@mui/material/styles';
+import Glass from '@mui/material/Paper';
+
+// Create a styled component for the glass effect
+const GlassPanel = styled(Glass)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.7),
+    backdropFilter: 'blur(10px)',
+    borderRadius: theme.shape.borderRadius * 2,
+    padding: theme.spacing(3),
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.common.black, 0.1)}`,
+    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`
+}));
+
 // const NFT_FLAGS = {
 //     0x00000001: 'lsfBurnable',
 //     0x00000002: 'lsfOnlyXRP',
@@ -79,13 +94,7 @@ function getCostFromOffers(nftOwner, offers, isSellOffer) {
     let xrpCost = null;
     let noXrpCost = null;
     for (const offer of offers) {
-        const {
-            amount,
-            destination,
-            flags,
-            nft_offer_index,
-            owner
-        } = offer;
+        const { amount, destination, flags, nft_offer_index, owner } = offer;
 
         let validOffer = true;
 
@@ -99,14 +108,12 @@ function getCostFromOffers(nftOwner, offers, isSellOffer) {
 
         cost.offer = offer;
 
-        if (cost.currency === "XRP") {
+        if (cost.currency === 'XRP') {
             if (xrpCost) {
                 if (isSellOffer) {
-                    if (cost.amount < xrpCost.amount)
-                        xrpCost = cost;
+                    if (cost.amount < xrpCost.amount) xrpCost = cost;
                 } else {
-                    if (cost.amount > xrpCost.amount)
-                        xrpCost = cost;
+                    if (cost.amount > xrpCost.amount) xrpCost = cost;
                 }
             } else {
                 xrpCost = cost;
@@ -126,8 +133,8 @@ function getCostFromOffers(nftOwner, offers, isSellOffer) {
 function truncate(str, n) {
     if (!str) return '';
     //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
-};
+    return str.length > n ? str.substr(0, n - 1) + ' ...' : str;
+}
 
 export default function NFTActions({ nft }) {
     const anchorRef = useRef(null);
@@ -163,7 +170,8 @@ export default function NFTActions({ nft }) {
         self
     } = nft;
 
-    const collectionName = collection || meta?.collection?.name || '[No Collection]';
+    const collectionName =
+        collection || meta?.collection?.name || '[No Collection]';
 
     const nftName = meta?.name || meta?.Name || '[No Name]';
 
@@ -200,7 +208,7 @@ export default function NFTActions({ nft }) {
     const [xummUuid, setXummUuid] = useState(null);
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
-    const [qrType, setQrType] = useState("NFTokenAcceptOffer");
+    const [qrType, setQrType] = useState('NFTokenAcceptOffer');
 
     const [cost, setCost] = useState(null);
 
@@ -209,8 +217,9 @@ export default function NFTActions({ nft }) {
     useEffect(() => {
         function getOffers() {
             setLoading(true);
-            axios.get(`${BASE_URL}/offers/${NFTokenID}`)
-                .then(res => {
+            axios
+                .get(`${BASE_URL}/offers/${NFTokenID}`)
+                .then((res) => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
                         const offers = ret.sellOffers;
@@ -220,9 +229,11 @@ export default function NFTActions({ nft }) {
                         setSellOffers(getValidOffers(ret.sellOffers, true));
                         setBuyOffers(getValidOffers(ret.buyOffers, false));
                     }
-                }).catch(err => {
-                    console.log("Error on getting nft offers list!!!", err);
-                }).then(function () {
+                })
+                .catch((err) => {
+                    console.log('Error on getting nft offers list!!!', err);
+                })
+                .then(function () {
                     // always executed
                     setLoading(false);
                 });
@@ -237,59 +248,62 @@ export default function NFTActions({ nft }) {
         var dispatchTimer = null;
 
         async function getDispatchResult() {
-          try {
-            const ret = await axios.get(`${BASE_URL}/offers/acceptcancel/${xummUuid}`);
-            const res = ret.data.data.response;
-            // const account = res.account;
-            const dispatched_result = res.dispatched_result;
-    
-            return dispatched_result;
-          } catch (err) {}
+            try {
+                const ret = await axios.get(
+                    `${BASE_URL}/offers/acceptcancel/${xummUuid}`
+                );
+                const res = ret.data.data.response;
+                // const account = res.account;
+                const dispatched_result = res.dispatched_result;
+
+                return dispatched_result;
+            } catch (err) {}
         }
 
         const startInterval = () => {
-          let times = 0;
-    
-          dispatchTimer = setInterval(async () => {
-            const dispatched_result = await getDispatchResult();
-    
-            if (dispatched_result && dispatched_result === 'tesSUCCESS') {
-              setSync(sync + 1);
-              openSnackbar('Successful!', 'success');
-              stopInterval();
-              return;
-            }
-    
-            times++;
-    
-            if (times >= 15) {
-              openSnackbar('Rejected!', 'error');
-              stopInterval();
-              return;
-            }
-          }, 1200);
+            let times = 0;
+
+            dispatchTimer = setInterval(async () => {
+                const dispatched_result = await getDispatchResult();
+
+                if (dispatched_result && dispatched_result === 'tesSUCCESS') {
+                    setSync(sync + 1);
+                    openSnackbar('Successful!', 'success');
+                    stopInterval();
+                    return;
+                }
+
+                times++;
+
+                if (times >= 15) {
+                    openSnackbar('Rejected!', 'error');
+                    stopInterval();
+                    return;
+                }
+            }, 1200);
         };
-    
+
         // Stop the interval
         const stopInterval = () => {
-          clearInterval(dispatchTimer);
-          handleScanQRClose();
+            clearInterval(dispatchTimer);
+            handleScanQRClose();
         };
 
         async function getPayload() {
-            console.log(counter + " " + isRunning, xummUuid);
+            console.log(counter + ' ' + isRunning, xummUuid);
             if (isRunning) return;
             isRunning = true;
             try {
-                const ret = await axios.get(`${BASE_URL}/offers/acceptcancel/${xummUuid}`);
+                const ret = await axios.get(
+                    `${BASE_URL}/offers/acceptcancel/${xummUuid}`
+                );
                 const resolved_at = ret.data?.resolved_at;
                 // const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
                     startInterval();
                     return;
                 }
-            } catch (err) {
-            }
+            } catch (err) {}
             isRunning = false;
             counter--;
             if (counter <= 0) {
@@ -302,7 +316,7 @@ export default function NFTActions({ nft }) {
         }
         return () => {
             if (timer) {
-                clearInterval(timer)
+                clearInterval(timer);
             }
         };
     }, [openScanQR, xummUuid, sync]);
@@ -321,7 +335,10 @@ export default function NFTActions({ nft }) {
         if (isAcceptOrCancel) {
             // Accept mode
             if (accountLogin === owner) {
-                openSnackbar('You are the owner of this offer, you can not accept it.', 'error');
+                openSnackbar(
+                    'You are the owner of this offer, you can not accept it.',
+                    'error'
+                );
                 return;
             }
         } else {
@@ -334,10 +351,7 @@ export default function NFTActions({ nft }) {
 
         setPageLoading(true);
         try {
-            const {
-                uuid,
-                NFTokenID
-            } = nft;
+            const { uuid, NFTokenID } = nft;
 
             const user_token = accountProfile.user_token;
 
@@ -347,23 +361,27 @@ export default function NFTActions({ nft }) {
                 NFTokenID,
                 index,
                 destination,
-                accept: isAcceptOrCancel ? "yes" : "no",
-                sell: isSell ? "yes" : "no",
+                accept: isAcceptOrCancel ? 'yes' : 'no',
+                sell: isSell ? 'yes' : 'no',
                 user_token
             };
 
-            const res = await axios.post(`${BASE_URL}/offers/acceptcancel`, body, { headers: { 'x-access-token': accountToken } });
+            const res = await axios.post(
+                `${BASE_URL}/offers/acceptcancel`,
+                body,
+                { headers: { 'x-access-token': accountToken } }
+            );
 
             if (res.status === 200) {
                 const newUuid = res.data.data.uuid;
                 const qrlink = res.data.data.qrUrl;
                 const nextlink = res.data.data.next;
 
-                let newQrType = isAcceptOrCancel ? "NFTokenAcceptOffer" : "NFTokenCancelOffer";
-                if (isSell)
-                    newQrType += " [Sell Offer]";
-                else
-                    newQrType += " [Buy Offer]";
+                let newQrType = isAcceptOrCancel
+                    ? 'NFTokenAcceptOffer'
+                    : 'NFTokenCancelOffer';
+                if (isSell) newQrType += ' [Sell Offer]';
+                else newQrType += ' [Buy Offer]';
 
                 setQrType(newQrType);
                 setXummUuid(newUuid);
@@ -380,7 +398,9 @@ export default function NFTActions({ nft }) {
     const onDisconnectXumm = async () => {
         setPageLoading(true);
         try {
-            const res = await axios.delete(`${BASE_URL}/offers/acceptcancel/${xummUuid}`);
+            const res = await axios.delete(
+                `${BASE_URL}/offers/acceptcancel/${xummUuid}`
+            );
             // if (res.status === 200) {
             //     setXummUuid(null);
             // }
@@ -398,9 +418,8 @@ export default function NFTActions({ nft }) {
     };
 
     const getValidOffers = (offers, isSell) => {
-        const newOffers = []
+        const newOffers = [];
         for (const offer of offers) {
-
             if (isSell) {
                 // Sell Offers
                 if (isOwner) {
@@ -413,7 +432,11 @@ export default function NFTActions({ nft }) {
                     if (accountLogin === offer.owner) {
                         newOffers.push(offer);
                     } else {
-                        if (nft.account === offer.owner/* && (!offer.destination || accountLogin === offer.destination)*/) { // disable destination (broker) and owner (?) filter
+                        if (
+                            nft.account ===
+                            offer.owner /* && (!offer.destination || accountLogin === offer.destination)*/
+                        ) {
+                            // disable destination (broker) and owner (?) filter
                             newOffers.push(offer);
                         }
                     }
@@ -429,31 +452,31 @@ export default function NFTActions({ nft }) {
                 }
 
                 //if (!offer.destination || accountLogin === offer.destination) // disable destination (broker) filter
-                    // if ((!offer.destination || accountLogin === offer.destination) && offer.)
-                    newOffers.push(offer);
+                // if ((!offer.destination || accountLogin === offer.destination) && offer.)
+                newOffers.push(offer);
             }
         }
 
         return newOffers;
-    }
+    };
 
     const handleCreateSellOffer = () => {
         setIsSellOffer(true);
         setOpenCreateOffer(true);
-    }
+    };
 
     const handleTransfer = () => {
         setOpenTransfer(true);
-    }
+    };
 
     const handleCreateBuyOffer = () => {
         setIsSellOffer(false);
         setOpenCreateOffer(true);
-    }
+    };
 
     const onHandleBurn = () => {
         setBurnt(true);
-    }
+    };
 
     const handleCancelOffer = async (offer) => {
         // Sell Offer
@@ -477,16 +500,16 @@ export default function NFTActions({ nft }) {
         */
 
         doProcessOffer(offer, false);
-    }
+    };
 
     const handleAcceptOffer = async (offer) => {
         setAcceptOffer(offer);
         setOpenConfirm(true);
-    }
+    };
 
     const onContinueAccept = async () => {
         doProcessOffer(acceptOffer, true);
-    }
+    };
 
     const handleBuyNow = async () => {
         if (sellOffers.length > 1) {
@@ -494,368 +517,291 @@ export default function NFTActions({ nft }) {
         } else {
             handleAcceptOffer(cost.offer);
         }
-    }
+    };
 
     const handleOpenShare = () => {
         setOpenShare(true);
-    }
+    };
 
     const handleCloseShare = () => {
         setOpenShare(false);
     };
 
     return (
-        <Stack spacing={2}>
-            <Backdrop
-                sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={pageLoading}
-            >
-                <ProgressBar
-                    height="80"
-                    width="80"
-                    ariaLabel="progress-bar-loading"
-                    wrapperStyle={{}}
-                    wrapperClass="progress-bar-wrapper"
-                    borderColor='#F4442E'
-                    barColor='#51E5FF'
-                />
-            </Backdrop>
-
-            <ConfirmAcceptOfferDialog open={openConfirm} setOpen={setOpenConfirm} offer={acceptOffer} onContinue={onContinueAccept} />
-
-            <QRDialog
-                open={openScanQR}
-                type={qrType}
-                onClose={handleScanQRClose}
-                qrUrl={qrUrl}
-                nextUrl={nextUrl}
-            />
-
-            <CreateOfferDialog
-                open={openCreateOffer}
-                setOpen={setOpenCreateOffer}
-                nft={nft}
-                isSellOffer={isSellOffer}
-            />
-            <TransferDialog
-                open={openTransfer}
-                setOpen={setOpenTransfer}
-                nft={nft}
-            />
-
-            <SelectPriceDialog
-                open={openSelectPrice}
-                setOpen={setOpenSelectPrice}
-                offers={sellOffers}
-                handleAccept={handleAcceptOffer}
-            />
-
-            {self &&
-                <Stack direction="row" spacing={2} justifyContent="space-between" sx={{ mt: 1, mb: 1 }}>
-                    <Stack>
-                        <Stack direction="row" spacing={1}>
-                            <Link href={`/collection/${cslug}`} underline='none'>
-                                <Typography variant="s5" sx={{pl:0}}>{collectionName}</Typography>
-                            </Link>
-                            {cverified === 'yes' &&
-                                <Tooltip title='Verified'>
-                                    <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
-                                </Tooltip>
-                            }
-                        </Stack>
-
-                        <Stack direction="row" spacing={0.5} alignItems='center'>
-                            <Typography variant="s7" noWrap>Global Floor</Typography>
-                            <Icon icon={rippleSolid} width="16" height="16" />
-                            <Typography variant="s7" noWrap>{fNumber(floorPrice)}</Typography>
-                        </Stack>
-                    </Stack>
-
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                        <Tooltip title="Share">
-                            <IconButton size='medium' sx={{ padding: 1 }}
-                                ref={anchorRef}
-                                onClick={handleOpenShare}
+        <GlassPanel elevation={0}>
+            <Stack spacing={3}>
+                {self && (
+                    <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                    >
+                        <Stack>
+                            <Stack
+                                direction="row"
+                                spacing={1}
+                                alignItems="center"
                             >
-                                <ShareIcon />
-                            </IconButton>
-                        </Tooltip>
-
-                        <Popover
-                            open={openShare}
-                            onClose={handleCloseShare}
-                            anchorEl={anchorRef.current}
-                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                            PaperProps={{
-                                sx: {
-                                    // mt: 1.5,
-                                    // ml: 0.5,
-                                    // overflow: 'inherit',
-                                    // boxShadow: (theme) => theme.customShadows.z20,
-                                    // border: (theme) => `solid 1px ${alpha('#919EAB', 0.08)}`,
-                                    // width: 'auto',
+                                <Link
+                                    href={`/collection/${cslug}`}
+                                    underline="none"
+                                >
+                                    <Typography
+                                        variant="h6"
+                                        sx={{ fontWeight: 'bold' }}
+                                    >
+                                        {collectionName}
+                                    </Typography>
+                                </Link>
+                                {cverified === 'yes' && (
+                                    <Tooltip title="Verified">
+                                        <VerifiedIcon
+                                            fontSize="small"
+                                            sx={{
+                                                color: (theme) =>
+                                                    theme.palette.primary.main
+                                            }}
+                                        />
+                                    </Tooltip>
+                                )}
+                            </Stack>
+                            <Stack
+                                direction="row"
+                                spacing={1}
+                                alignItems="center"
+                            >
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                >
+                                    Global Floor
+                                </Typography>
+                                <Icon
+                                    icon={rippleSolid}
+                                    width="16"
+                                    height="16"
+                                />
+                                <Typography variant="body2" fontWeight="bold">
+                                    {fNumber(floorPrice)}
+                                </Typography>
+                            </Stack>
+                        </Stack>
+                        <IconButton
+                            size="large"
+                            sx={{
+                                backgroundColor: (theme) =>
+                                    alpha(theme.palette.primary.main, 0.1),
+                                '&:hover': {
+                                    backgroundColor: (theme) =>
+                                        alpha(theme.palette.primary.main, 0.2)
                                 }
                             }}
+                            onClick={handleOpenShare}
                         >
-                            <Stack direction="row" spacing={2} sx={{pt: 1.5, pl: 1, pr: 1, pb: 1}}>
-                                <FacebookShareButton
-                                    url={shareUrl}
-                                    quote={shareTitle}
-                                    hashtag={"#"}
-                                    description={shareDesc}
-                                    onClick={handleCloseShare}
-                                >
-                                    <FacebookIcon size={24} round />
-                                </FacebookShareButton>
-                                <TwitterShareButton
-                                    title={shareTitle}
-                                    url={shareUrl}
-                                    hashtag={"#"}
-                                    onClick={handleCloseShare}
-                                >
-                                    <TwitterIcon size={24} round />
-                                </TwitterShareButton>
-                            </Stack>
-                        </Popover>
+                            <ShareIcon />
+                        </IconButton>
                     </Stack>
-                </Stack>
-            }
+                )}
 
-            <Stack spacing={2} sx={{ mt: 2 }}>
-                {/* <Link underline='none' color={'text.primary'}>
-                    Name
-                </Link> */}
-                <Typography variant='h2a'>{nftName}</Typography>
-            </Stack>
+                <Typography variant="h4" fontWeight="bold">
+                    {nftName}
+                </Typography>
 
-            {/* {meta?.description &&
-                <Typography variant="s7">{meta.description}</Typography>
-            } */}
-
-            {self && rarity_rank > 0 &&
-                <Stack direction="row" >
-                    <Tooltip title={`Rarity Rank #${fIntNumber(rarity_rank)} / ${fIntNumber(citems)}`}>
-                        <Stack direction="row" spacing={1} alignItems="center" >
-                            <LeaderboardOutlinedIcon sx={{width: '14px'}} width="auto" style={{color: '#B2B2B2'}}/>
-                            <Typography variant="s7"><Typography variant="s14">{fIntNumber(rarity_rank)}</Typography> / {fIntNumber(citems)}</Typography>
+                {self && rarity_rank > 0 && (
+                    <Tooltip
+                        title={`Rarity Rank #${fIntNumber(
+                            rarity_rank
+                        )} / ${fIntNumber(citems)}`}
+                    >
+                        <Stack direction="row" spacing={1} alignItems="center">
+                            <LeaderboardOutlinedIcon
+                                sx={{ color: 'text.secondary' }}
+                            />
+                            <Typography variant="body2" color="text.secondary">
+                                Rank: <strong>{fIntNumber(rarity_rank)}</strong>{' '}
+                                / {fIntNumber(citems)}
+                            </Typography>
                         </Stack>
                     </Tooltip>
-                </Stack>
-            }
+                )}
 
-            <Stack direction="row" spacing={1} alignItems="center">
-                <Avatar alt="C" src={accountLogo} variant="square" style={{width: '32px', height: '32px'}} />
-                <Stack spacing={0}>
-                    <Typography variant="s7">Owner</Typography>
-                    <Link
-                        // color="inherit"
-                        // target="_blank"
-                        href={`/account/${account}`}
-                        // rel="noreferrer noopener nofollow"
-                    >
-                        <Typography variant='s15' noWrap> {truncate(account, 16)}</Typography>
-                    </Link>
+                <Stack direction="row" spacing={2} alignItems="center">
+                    <Avatar
+                        alt="C"
+                        src={accountLogo}
+                        sx={{ width: 48, height: 48 }}
+                    />
+                    <Stack>
+                        <Typography variant="body2" color="text.secondary">
+                            Owner
+                        </Typography>
+                        <Link href={`/account/${account}`} underline="hover">
+                            <Typography variant="subtitle1" fontWeight="medium">
+                                {truncate(account, 16)}
+                            </Typography>
+                        </Link>
+                    </Stack>
                 </Stack>
-             {/*   <Tooltip title="Contact owner via XRPNFT chat"> 
-                    <IconButton size='small' sx={{ padding: 1 }}
-                        onClick={() => {
-                        }}
-                    >
-                        <MessageOutlinedIcon fontSize="small" />
-                    </IconButton>
-                </Tooltip> */}
-            </Stack>
 
-            {/* Make offer start */}
-            <Paper
-                sx={{
-                    padding: 2,
-                }}
-            >
-                {burnt ?
-                    <Typography variant="s5">This NFT is burnt.</Typography>
-                    :
-                    <>
-                        {destination && getMinterName(account) ? (
-                            <>
-                                {destination === accountLogin ?
-                                    <Typography variant="s5">This NFT is being transferred to you. Click <CheckCircleOutlineIcon color='success' /> to accept it.</Typography>
-                                    :
-                                    <Typography variant="s5">This NFT is being transferred to &nbsp;
-                                        <Link
-                                            color="inherit"
-                                            target="_blank"
-                                            href={`https://bithomp.com/explorer/${destination}`}
-                                            rel="noreferrer noopener nofollow"
+                <Divider />
+
+                {/* Action buttons */}
+                <Stack spacing={2}>
+                    {burnt ? (
+                        <Typography variant="h6" color="error">
+                            This NFT is burnt.
+                        </Typography>
+                    ) : isOwner ? (
+                        <Stack direction="row" spacing={2}>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                startIcon={<LocalOfferIcon />}
+                                onClick={handleCreateSellOffer}
+                                disabled={!accountLogin || burnt}
+                            >
+                                Sell
+                            </Button>
+                            <Button
+                                fullWidth
+                                variant="outlined"
+                                startIcon={<SendIcon />}
+                                onClick={handleTransfer}
+                                disabled={!accountLogin || burnt}
+                            >
+                                Transfer
+                            </Button>
+                            <BurnNFT nft={nft} onHandleBurn={onHandleBurn} />
+                        </Stack>
+                    ) : (
+                        <Stack spacing={2}>
+                            <Stack
+                                direction="row"
+                                justifyContent="space-between"
+                                alignItems="baseline"
+                            >
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                >
+                                    Current Price
+                                </Typography>
+                                {loading ? (
+                                    <PulseLoader color="#00AB55" size={10} />
+                                ) : cost ? (
+                                    <Stack
+                                        direction="row"
+                                        spacing={1}
+                                        alignItems="center"
+                                    >
+                                        <Icon
+                                            icon={rippleSolid}
+                                            width="24"
+                                            height="24"
+                                        />
+                                        <Typography
+                                            variant="h5"
+                                            fontWeight="bold"
                                         >
-                                            <Typography variant="s3" color="#33C2FF">{destination}</Typography>
-                                        </Link>.
+                                            {fNumber(cost.amount)}{' '}
+                                            {cost.currency}
+                                        </Typography>
+                                    </Stack>
+                                ) : (
+                                    <Typography variant="body1">
+                                        - - -
                                     </Typography>
-                                }
-                            </>
-                        ) : (
-                            isOwner ? (
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-around',
-                                    gap: 1
-                                }}>
-                                    <Button
-                                        fullWidth
-                                        // sx={{ minWidth: 150 }}
-                                        variant='outlined'
-                                        startIcon={<LocalOfferIcon />}
-                                        onClick={handleCreateSellOffer}
-                                        color='success'
-                                        disabled={!accountLogin || burnt}
-                                    >
-                                        Sell
-                                    </Button>
-                                    <Button
-                                        fullWidth
-                                        // sx={{ minWidth: 150 }}
-                                        variant='outlined'
-                                        startIcon={<SendIcon />}
-                                        onClick={handleTransfer}
-                                        color='info'
-                                        disabled={!accountLogin || burnt}
-                                    >
-                                        Transfer
-                                    </Button>
-                                    <BurnNFT nft={nft} onHandleBurn={onHandleBurn} />
-                                </Box>
-                            ) : (
-                                <Grid container>
-                                    <Grid item xs={12} sm={7}>
-                                        <Typography variant="s7">Current Price</Typography>
-                                        <Stack sx={{ mt: 0, mb: 2 }}>
-                                            {loading ? (
-                                                <PulseLoader color='#00AB55' size={10} />
-                                            ) : (
-                                                cost ? (
-                                                    cost.currency === "XRP" ?
-                                                        <Stack direction="row" spacing={0.5} alignItems="center">
-                                                            <Typography variant='s9' pt={0.8}><Icon icon={rippleSolid} width="24" height="24" /></Typography>
-                                                            <Typography variant='s9'>{fNumber(cost.amount)}</Typography>
-                                                        </Stack>
-                                                        :
-                                                        <Typography variant='s3'>{fNumber(cost.amount)} {cost.name}</Typography>
+                                )}
+                            </Stack>
+                            <Button
+                                fullWidth
+                                disabled={!cost || burnt}
+                                variant="contained"
+                                size="large"
+                                onClick={handleBuyNow}
+                            >
+                                Buy Now
+                            </Button>
+                            <Button
+                                fullWidth
+                                disabled={!accountLogin || burnt}
+                                variant="outlined"
+                                size="large"
+                                onClick={handleCreateBuyOffer}
+                            >
+                                Make Offer
+                            </Button>
+                        </Stack>
+                    )}
+                </Stack>
 
-                                                ) : (
-                                                    <Typography variant='s8'>- - -</Typography>
-                                                )
-                                            )}
-                                        </Stack>
-                                    </Grid>
-                                    <Grid item xs={12} sm={5}>
-                                        <Stack
-                                            direction={{ xs: 'row', sm: 'column' }}
-                                            spacing={{ xs: 1, sm: 2 }}
-                                        >
-                                            <Button
-                                                fullWidth
-                                                disabled={!cost || burnt}
-                                                variant='contained'
-                                                onClick={handleBuyNow}
-                                            >
-                                                Buy Now
-                                            </Button>
-                                            <Button
-                                                fullWidth
-                                                disabled={!accountLogin || burnt}
-                                                variant='outlined'
-                                                onClick={handleCreateBuyOffer}
-                                            >
-                                                Make Offer
-                                            </Button>
-                                        </Stack>
-                                    </Grid>
-                                </Grid>
-                            )
-                        )}
-                    </>
-                }
+                {/* Offers and History sections */}
+                <Stack spacing={2}>
+                    {isOwner && (
+                        <Accordion defaultExpanded elevation={0}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                <Stack
+                                    direction="row"
+                                    spacing={2}
+                                    alignItems="center"
+                                >
+                                    <LocalOfferIcon color="primary" />
+                                    <Typography variant="h6">
+                                        Sell Offers
+                                    </Typography>
+                                </Stack>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <OffersList
+                                    nft={nft}
+                                    offers={sellOffers}
+                                    handleAcceptOffer={handleAcceptOffer}
+                                    handleCancelOffer={handleCancelOffer}
+                                    isSell={true}
+                                />
+                            </AccordionDetails>
+                        </Accordion>
+                    )}
 
-            </Paper>
-            {/* /* Make offer end */}
-
-            {isOwner &&
-                <Stack>
-                    <Accordion defaultExpanded>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls='panel3a-content'
-                            id='panel3a-header'
-                        >
-                            <Stack direction='row' spacing={2}>
-                                <LocalOfferIcon />
-                                <Typography variant='s16'>Sell Offers</Typography>
+                    <Accordion defaultExpanded elevation={0}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Stack
+                                direction="row"
+                                spacing={2}
+                                alignItems="center"
+                            >
+                                <PanToolIcon color="primary" />
+                                <Typography variant="h6">Offers</Typography>
                             </Stack>
                         </AccordionSummary>
-                        <AccordionDetails sx={{ textAlign: 'center' }}>
+                        <AccordionDetails>
                             <OffersList
                                 nft={nft}
-                                offers={sellOffers}
+                                offers={buyOffers}
                                 handleAcceptOffer={handleAcceptOffer}
                                 handleCancelOffer={handleCancelOffer}
-                                isSell={true}
+                                isSell={false}
                             />
                         </AccordionDetails>
                     </Accordion>
+
+                    <Accordion defaultExpanded elevation={0}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Stack
+                                direction="row"
+                                spacing={2}
+                                alignItems="center"
+                            >
+                                <HistoryIcon color="primary" />
+                                <Typography variant="h6">History</Typography>
+                            </Stack>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <HistoryList nft={nft} />
+                        </AccordionDetails>
+                    </Accordion>
                 </Stack>
-            }
-
-            <Stack>
-                {/* Buy Offers start */}
-                <Accordion defaultExpanded>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls='panel3a-content'
-                        id='panel3a-header'
-                    >
-                        <Stack direction='row' spacing={2}>
-                            <PanToolIcon />
-                            <Typography variant='s16'>Offers</Typography>
-                        </Stack>
-                    </AccordionSummary>
-                    {/* <Divider /> */}
-                    <AccordionDetails>
-                        <OffersList
-                            nft={nft}
-                            offers={buyOffers}
-                            handleAcceptOffer={handleAcceptOffer}
-                            handleCancelOffer={handleCancelOffer}
-                            isSell={false}
-                        />
-                    </AccordionDetails>
-                </Accordion>
-                {/* Buy Offers end */}
             </Stack>
-
-            <Stack>
-                {/* History Start */}
-                <Accordion defaultExpanded >
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls='panel2a-content'
-                        id='panel2a-header'
-                    >
-                        <Stack direction='row' spacing={2}>
-                            <HistoryIcon />
-                            <Typography variant='s16'>History</Typography>
-                        </Stack>
-                    </AccordionSummary>
-                    <Divider />
-                    <AccordionDetails>
-                        <HistoryList
-                            nft={nft}
-                        />
-                    </AccordionDetails>
-                </Accordion>
-                {/* History end */}
-            </Stack>
-        </Stack>
-    )
+        </GlassPanel>
+    );
 }
-
