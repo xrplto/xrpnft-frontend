@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 // Material
 import { visuallyHidden } from '@mui/utils';
-import { withStyles } from '@mui/styles';
+import { styled } from '@mui/material/styles';
 import {
     Box,
     TableRow,
@@ -9,17 +9,22 @@ import {
     TableHead,
     TableSortLabel,
     useTheme,
-    useMediaQuery
+    useMediaQuery,
+    Typography
 } from '@mui/material';
 // ----------------------------------------------------------------------
 
-const StickyTableCell = withStyles((theme) => ({
-    head: {
-        position: 'sticky',
-        zIndex: 1000,
-        top: 0
-    }
-}))(TableCell);
+const StickyTableCell = styled(TableCell)(({ theme }) => ({
+    position: 'sticky',
+    zIndex: 1000,
+    top: 0,
+    backgroundColor: theme.palette.mode === 'light'
+        ? 'rgba(255, 255, 255, 0.5)'  // More transparent white for light mode
+        : 'rgba(0, 0, 0, 0.3)',       // More transparent black for dark mode
+    backdropFilter: 'blur(10px)',     // Increased blur effect for better readability
+    borderBottom: `2px solid ${theme.palette.primary.main}`,
+    transition: theme.transitions.create(['background-color', 'box-shadow'])
+}));
 
 const TABLE_HEAD = (isMobile) => {
     if (isMobile) {
@@ -57,7 +62,13 @@ const TABLE_HEAD = (isMobile) => {
             align: 'right',
             width: '10%'
         },
-        { no: 2, id: 'totalVol24h', label: '24h Volume', align: 'right', width: '10%' },
+        {
+            no: 2,
+            id: 'totalVol24h',
+            label: '24h Volume',
+            align: 'right',
+            width: '10%'
+        },
         // { no: 3, id: 'volume', label: 'Volume', align: 'right', width: '10%' },
         {
             no: 4,
@@ -67,7 +78,13 @@ const TABLE_HEAD = (isMobile) => {
             width: '10%'
         },
         { no: 5, id: 'owners', label: 'Owners', align: 'right', width: '8%' },
-        { no: 6, id: 'items', label: 'Total Items', align: 'right', width: '8%' }
+        {
+            no: 6,
+            id: 'items',
+            label: 'Total Items',
+            align: 'right',
+            width: '8%'
+        }
     ];
 };
 
@@ -77,7 +94,7 @@ export default function ListHead({}) {
 
     return (
         <TableHead>
-            <TableRow style={{ background: '#00000000' }}>
+            <TableRow>
                 {TABLE_HEAD(isMobile).map((headCell) => (
                     <StickyTableCell
                         key={headCell.id}
@@ -85,15 +102,25 @@ export default function ListHead({}) {
                         sortDirection={false}
                         width={headCell.width}
                         sx={{
-                            padding: 0,
-                            py: 1,
+                            padding: theme.spacing(2),
                             ...(headCell.no > 0 && {
-                                pl: 0,
-                                pr: 0
+                                pl: 1,
+                                pr: 1
                             })
                         }}
                     >
-                        {headCell.label}
+                        <Typography
+                            variant="subtitle1"
+                            fontWeight="600"
+                            noWrap
+                            sx={{
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.5px',
+                                color: theme.palette.text.primary
+                            }}
+                        >
+                            {headCell.label}
+                        </Typography>
                     </StickyTableCell>
                 ))}
             </TableRow>

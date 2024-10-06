@@ -50,24 +50,25 @@ const HeroButton = styled(Button)(
 export default function Landing({collections}) {
     return (
         <Container maxWidth="lg">
-            <Grid container spacing={6} justifyContent="center" alignItems="center" sx={{mt: 8, mb: 12}}>
+            <Grid container spacing={4} justifyContent="center" alignItems="center" sx={{mt: { xs: 4, md: 8 }, mb: { xs: 6, md: 12 }}}>
                 <Grid item xs={12} md={6}>
-                    <AutoStack spacing={4}>
-                        <GradientTypography variant="h1" fontWeight="bold">
+                    <AutoStack spacing={3}>
+                        <GradientTypography variant="h2" fontWeight="bold" sx={{ fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' } }}>
                             XRP NFT Marketplace
                         </GradientTypography>
-                        <Typography variant="h4" color="text.secondary">
+                        <Typography variant="h5" color="text.secondary" sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem', md: '1.75rem' } }}>
                             Trade XRP NFTs <Box component="span" color="primary.main" fontWeight="bold">Without Barriers.</Box>
                         </Typography>
 
-                        <Stack direction="row" spacing={3} sx={{mt: 4}}>
+                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{mt: 3, width: '100%'}}>
                             <Link
                                 underline="none"
                                 color="inherit"
                                 href={`/collections`}
                                 rel="noreferrer noopener nofollow"
+                                sx={{ width: { xs: '100%', sm: 'auto' } }}
                             >
-                                <HeroButton variant="contained" color="primary">
+                                <HeroButton variant="contained" color="primary" fullWidth>
                                     Explore Collections
                                 </HeroButton>
                             </Link>
@@ -77,8 +78,9 @@ export default function Landing({collections}) {
                                 color="inherit"
                                 href={`/create`}
                                 rel="noreferrer noopener nofollow"
+                                sx={{ width: { xs: '100%', sm: 'auto' } }}
                             >
-                                <HeroButton variant="outlined" color="primary">
+                                <HeroButton variant="outlined" color="primary" fullWidth>
                                     Create NFT
                                 </HeroButton>
                             </Link>
@@ -92,10 +94,10 @@ export default function Landing({collections}) {
                         '&::before': {
                             content: '""',
                             position: 'absolute',
-                            top: -20,
-                            left: -20,
-                            right: 20,
-                            bottom: 20,
+                            top: -10,
+                            left: -10,
+                            right: 10,
+                            bottom: 10,
                             background: 'linear-gradient(45deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 100%)',
                             borderRadius: '16px',
                             zIndex: -1,
@@ -106,10 +108,7 @@ export default function Landing({collections}) {
                 </Grid>
             </Grid>
 
-            <Box sx={{mt: 16, mb: 8}}>
-                <Typography variant='h2' textAlign="center" fontWeight="bold" mb={6}>
-                    Top Collections
-                </Typography>
+            <Box sx={{mt: { xs: 8, md: 16 }, mb: { xs: 4, md: 8 }}}>
                 <CollectionList collections={collections} />
             </Box>
         </Container>
