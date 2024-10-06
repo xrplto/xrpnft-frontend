@@ -3,7 +3,9 @@ import { useContext, useState } from "react";
 
 // Material
 import {
-    styled, useTheme,
+    styled,
+    useTheme,
+    alpha,
     Box,
     CardMedia,
     Chip,
@@ -36,21 +38,34 @@ import { getNftCoverUrl } from 'src/utils/parse';
 import Label from './Label';
 import { AppContext } from "src/AppContext";
 
-const CardWrapper = styled(Card)(
-    ({ theme }) => `
-        border-radius: 12px;
-        backdrop-filter: blur(50px);
-        padding: 0;
-        cursor: pointer;
-        transition: transform 0.3s ease-in-out;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        
-        &:hover {
-            transform: translateY(-4px);
-        }
-  `
-);
+// Remove this line as it's a duplicate import
+// import { useTheme, alpha } from '@mui/material/styles';
+
+const CardWrapper = styled(Card)(({ theme }) => ({
+    borderRadius: theme.shape.borderRadius * 2,
+    backdropFilter: 'blur(20px)',
+    background: alpha(theme.palette.background.paper, 0.15),
+    padding: 0,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease-in-out',
+    overflow: 'hidden',
+    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    boxShadow: `0 8px 32px 0 ${alpha('#0095D9', 0.2)}`,
+    
+    '&:hover': {
+        transform: 'translateY(-4px)',
+        boxShadow: `0 12px 48px 0 ${alpha('#0095D9', 0.3)}`,
+        background: alpha(theme.palette.background.paper, 0.2),
+        outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`, // Add outline on hover
+        outlineOffset: '2px', // Add some space between the card and the outline
+    }
+}));
+
+const GlassContent = styled(CardContent)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.1),
+    backdropFilter: 'blur(10px)',
+    borderTop: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+}));
 
 export default function NFTCard({ nft, handleRemove }) {
     const theme = useTheme();
@@ -188,7 +203,7 @@ export default function NFTCard({ nft, handleRemove }) {
                         onCanPlay={onImageLoaded}
                     />
                 }
-                <CardContent sx={{ padding: '12px', display: 'flex', flexDirection: 'column', flexShrink: 0, height: '100px' }}>
+                <GlassContent sx={{ padding: '12px', display: 'flex', flexDirection: 'column', flexShrink: 0, height: '100px' }}>
                     <Typography
                         variant="subtitle2"
                         sx={{
@@ -216,7 +231,7 @@ export default function NFTCard({ nft, handleRemove }) {
                             {renderEvent()}
                         </Stack>
                     </Stack>
-                </CardContent>
+                </GlassContent>
             </CardWrapper>
         </Link>
     );

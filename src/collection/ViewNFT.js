@@ -14,7 +14,9 @@ import {
     Stack,
     Tooltip,
     Typography,
-    Divider
+    Divider,
+    Tabs,
+    Tab
 } from '@mui/material';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ShareIcon from '@mui/icons-material/Share';
@@ -36,18 +38,20 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import ExploreNFT from 'src/explore';
+import CollectionActivity from 'src/explore/CollectionActivity';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
 import Watch from 'src/components/Watch';
 
 const IconCover = styled('div')(({ theme }) => ({
     width: 192,
     height: 192,
-    border: `6px solid ${theme.palette.background.paper}`,
     borderRadius: theme.shape.borderRadius * 2,
-    boxShadow: theme.shadows[3],
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: alpha(theme.palette.background.paper, 0.15),
+    backdropFilter: 'blur(20px)',
     position: 'relative',
     overflow: 'hidden',
+    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    boxShadow: `0 8px 32px 0 ${alpha('#0095D9', 0.2)}`,
     [theme.breakpoints.down('sm')]: {
         width: 132,
         height: 132
@@ -70,11 +74,16 @@ const StatItem = styled(Box)(({ theme }) => ({
 }));
 
 const GlassBox = styled(Box)(({ theme }) => ({
-    background: alpha(theme.palette.background.paper, 0.8),
-    backdropFilter: 'blur(10px)',
+    background: alpha(theme.palette.background.paper, 0.15),
+    backdropFilter: 'blur(20px)',
     borderRadius: theme.shape.borderRadius * 2,
     padding: theme.spacing(3),
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.common.black, 0.18)}`
+    boxShadow: `0 8px 32px 0 ${alpha('#0095D9', 0.2)}`,
+    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    '&:hover': {
+        background: alpha(theme.palette.background.paper, 0.2),
+        boxShadow: `0 8px 32px 0 ${alpha('#0095D9', 0.3)}`
+    }
 }));
 
 const StyledDivider = styled(Divider)(({ theme }) => ({
@@ -133,7 +142,7 @@ export default function ViewNFT({ collection }) {
                     alignItems: { xs: 'center', md: 'flex-start' },
                     mb: 6,
                     mx: { xs: 2, md: 4 },
-                    mt: { xs: 10, md: 12 } // Decreased top margin to raise the content
+                    mt: { xs: 10, md: 12 }
                 }}
             >
                 <IconCover
@@ -144,10 +153,7 @@ export default function ViewNFT({ collection }) {
                         height: { xs: 150, md: 220 },
                         border: 'none',
                         boxShadow: (theme) =>
-                            `0 10px 30px ${alpha(
-                                theme.palette.common.black,
-                                0.2
-                            )}`
+                            `0 10px 30px ${alpha(theme.palette.info.light, 0.3)}`
                     }}
                 >
                     <IconImage
@@ -308,13 +314,12 @@ export default function ViewNFT({ collection }) {
                     </Box>
                 </Box>
             </GlassBox>
-            <StyledDivider />{' '}
-            {/* Replace the original Divider with StyledDivider */}
-            <GlassBox sx={{ mx: { xs: 2, md: 4 } }}>
-                {' '}
-                {/* Wrap ExploreNFT in GlassBox */}
+
+            <Box sx={{ mx: { xs: 2, md: 4 } }}>
                 <ExploreNFT collection={collection} />
-            </GlassBox>
+                <CollectionActivity collection={collection} />
+            </Box>
+
             <Popover
                 open={openShare}
                 onClose={handleCloseShare}
