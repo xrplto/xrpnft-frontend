@@ -43,18 +43,14 @@ import SeeMoreTypography from 'src/components/SeeMoreTypography';
 import Watch from 'src/components/Watch';
 
 const IconCover = styled('div')(({ theme }) => ({
-    width: 192,
-    height: 192,
-    borderRadius: theme.shape.borderRadius * 2,
-    backgroundColor: alpha(theme.palette.background.paper, 0.15),
-    backdropFilter: 'blur(20px)',
+    width: 220,
+    height: 220,
     position: 'relative',
     overflow: 'hidden',
-    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
     boxShadow: `0 8px 32px 0 ${alpha('#0095D9', 0.2)}`,
     [theme.breakpoints.down('sm')]: {
-        width: 132,
-        height: 132
+        width: 150,
+        height: 150
     }
 }));
 
@@ -62,7 +58,6 @@ const IconImage = styled('img')({
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    borderRadius: 'inherit' // Inherit border radius from parent
 });
 
 const StatItem = styled(Box)(({ theme }) => ({
@@ -74,14 +69,14 @@ const StatItem = styled(Box)(({ theme }) => ({
 }));
 
 const GlassBox = styled(Box)(({ theme }) => ({
-    background: alpha(theme.palette.background.paper, 0.15),
-    backdropFilter: 'blur(20px)',
+    background: alpha(theme.palette.background.paper, 0.1),
+    backdropFilter: 'blur(10px)',
     borderRadius: theme.shape.borderRadius * 2,
     padding: theme.spacing(3),
     boxShadow: `0 8px 32px 0 ${alpha('#0095D9', 0.2)}`,
     border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
     '&:hover': {
-        background: alpha(theme.palette.background.paper, 0.2),
+        background: alpha(theme.palette.background.paper, 0.15),
         boxShadow: `0 8px 32px 0 ${alpha('#0095D9', 0.3)}`
     }
 }));
@@ -97,10 +92,34 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
     )} 100%)`
 }));
 
-// Add this new styled component for the tabs
-// const StyledTabs = styled(Tabs)(({ theme }) => ({
-//     marginBottom: theme.spacing(3),
-// }));
+// Add this new styled component for the background image
+const BackgroundImage = styled('div')(({ theme }) => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    filter: 'blur(20px)',
+    opacity: 0.3,
+    zIndex: -1,
+}));
+
+// Add this new styled component for the background image
+const BackgroundBlur = styled('div')(({ theme }) => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    filter: 'blur(20px)',
+    opacity: 0.3,
+    zIndex: -1,
+}));
 
 export default function ViewNFT({ collection }) {
     const anchorRef = useRef(null);
@@ -140,185 +159,235 @@ export default function ViewNFT({ collection }) {
 
     return (
         <>
-            <GlassBox
+            <Box
                 sx={{
-                    display: 'flex',
-                    flexDirection: { xs: 'column', md: 'row' },
-                    alignItems: { xs: 'center', md: 'flex-start' },
+                    position: 'relative',
+                    overflow: 'hidden',
                     mb: 6,
                     mx: { xs: 2, md: 4 },
-                    mt: { xs: 10, md: 12 }
+                    mt: { xs: 10, md: 12 },
                 }}
             >
-                <IconCover
+                <BackgroundImage
                     sx={{
-                        mr: { md: 4 },
-                        mb: { xs: 4, md: 0 },
-                        width: { xs: 150, md: 220 },
-                        height: { xs: 150, md: 220 },
-                        border: 'none',
-                        boxShadow: (theme) =>
-                            `0 10px 30px ${alpha(theme.palette.info.light, 0.3)}`
+                        backgroundImage: `url(https://s1.xrpnft.com/collection/${logoImage})`,
+                    }}
+                />
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        bgcolor: (theme) => alpha(theme.palette.background.default, 0.8),
+                        backdropFilter: 'blur(15px)',
+                        zIndex: 0,
+                    }}
+                />
+                <GlassBox
+                    sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', md: 'row' },
+                        alignItems: { xs: 'center', md: 'flex-start' },
+                        position: 'relative',
+                        zIndex: 1,
                     }}
                 >
-                    <IconImage
-                        src={`https://s1.xrpnft.com/collection/${logoImage}`}
-                        alt={name}
-                    />
-                </IconCover>
-
-                <Box sx={{ flex: 1 }}>
-                    <Stack
-                        direction={fullScreen ? 'column' : 'row'}
-                        spacing={2}
-                        justifyContent="space-between"
-                        alignItems={fullScreen ? 'center' : 'flex-start'}
-                        sx={{ mb: 3 }}
+                    <IconCover
+                        sx={{
+                            mr: { md: 4 },
+                            mb: { xs: 4, md: 0 },
+                            width: { xs: 150, md: 220 },
+                            height: { xs: 150, md: 220 },
+                            border: 'none',
+                            boxShadow: (theme) =>
+                                `0 10px 30px ${alpha(
+                                    theme.palette.info.light,
+                                    0.3
+                                )}`
+                        }}
                     >
-                        <Stack direction="row" spacing={1} alignItems="center">
-                            <Typography variant="h3" fontWeight="bold">
-                                {name}
-                            </Typography>
-                            {verified === 'yes' && (
-                                <Tooltip title="Verified">
-                                    <VerifiedIcon color="primary" />
-                                </Tooltip>
-                            )}
-                        </Stack>
+                        <BackgroundBlur
+                            sx={{
+                                backgroundImage: `url(https://s1.xrpnft.com/collection/${logoImage})`,
+                            }}
+                        />
+                        <IconImage
+                            src={`https://s1.xrpnft.com/collection/${logoImage}`}
+                            alt={name}
+                        />
+                    </IconCover>
 
-                        <Stack direction="row" alignItems="center" spacing={1}>
-                            {accountLogin === collection.account && (
-                                <Tooltip title="Edit your collection">
+                    <Box sx={{ flex: 1 }}>
+                        <Stack
+                            direction={fullScreen ? 'column' : 'row'}
+                            spacing={2}
+                            justifyContent="space-between"
+                            alignItems={fullScreen ? 'center' : 'flex-start'}
+                            sx={{ mb: 3 }}
+                        >
+                            <Stack
+                                direction="row"
+                                spacing={1}
+                                alignItems="center"
+                            >
+                                <Typography variant="h3" fontWeight="bold">
+                                    {name}
+                                </Typography>
+                                {verified === 'yes' && (
+                                    <Tooltip title="Verified">
+                                        <VerifiedIcon color="primary" />
+                                    </Tooltip>
+                                )}
+                            </Stack>
+
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                spacing={1}
+                            >
+                                {accountLogin === collection.account && (
+                                    <Tooltip title="Edit your collection">
+                                        <IconButton
+                                            component={Link}
+                                            href={`/collection/${slug}/edit`}
+                                            color="primary"
+                                        >
+                                            <EditIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
+                                <Watch collection={collection} />
+                                <Tooltip title="Share">
                                     <IconButton
-                                        component={Link}
-                                        href={`/collection/${slug}/edit`}
+                                        ref={anchorRef}
+                                        onClick={handleOpenShare}
                                         color="primary"
                                     >
-                                        <EditIcon />
+                                        <ShareIcon />
                                     </IconButton>
                                 </Tooltip>
-                            )}
-                            <Watch collection={collection} />
-                            <Tooltip title="Share">
-                                <IconButton
-                                    ref={anchorRef}
-                                    onClick={handleOpenShare}
-                                    color="primary"
-                                >
-                                    <ShareIcon />
+                                <IconButton color="primary">
+                                    <MoreHorizIcon />
                                 </IconButton>
-                            </Tooltip>
-                            <IconButton color="primary">
-                                <MoreHorizIcon />
-                            </IconButton>
+                            </Stack>
                         </Stack>
-                    </Stack>
 
-                    <Typography variant="body1" sx={{ mb: 2 }}>
-                        By{' '}
-                        <Link href={`/account/${account}`} color="primary">
-                            {accountName ||
-                                account.slice(0, 4) + '...' + account.slice(-4)}
-                        </Link>
-                        &nbsp;·&nbsp;Created {formatMonthYear(created)}
-                    </Typography>
+                        <Typography variant="body1" sx={{ mb: 2 }}>
+                            By{' '}
+                            <Link href={`/account/${account}`} color="primary">
+                                {accountName ||
+                                    account.slice(0, 4) +
+                                        '...' +
+                                        account.slice(-4)}
+                            </Link>
+                            &nbsp;·&nbsp;Created {formatMonthYear(created)}
+                        </Typography>
 
-                    <SeeMoreTypography
-                        variant="body1"
-                        text={description}
-                        maxLines={3}
-                        sx={{ mb: 4 }}
-                    />
+                        <SeeMoreTypography
+                            variant="body1"
+                            text={description}
+                            maxLines={3}
+                            sx={{ mb: 4 }}
+                        />
 
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 3 }}>
-                        <StatItem>
-                            <Typography variant="h6" fontWeight="bold">
-                                {items}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                items
-                            </Typography>
-                        </StatItem>
-                        <StatItem>
-                            <Typography variant="h6" fontWeight="bold">
-                                {extra.owners}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                owners
-                            </Typography>
-                        </StatItem>
-                        <StatItem>
-                            <Stack
-                                direction="row"
-                                spacing={0.5}
-                                alignItems="center"
-                            >
-                                <Icon
-                                    icon={rippleSolid}
-                                    width="20"
-                                    height="20"
-                                />
-                                <Typography
-                                    variant="h6"
-                                    fontWeight="bold"
-                                    noWrap
-                                >
-                                    {volume2}
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 3 }}>
+                            <StatItem>
+                                <Typography variant="h6" fontWeight="bold">
+                                    {items}
                                 </Typography>
-                                <Tooltip
-                                    title={
-                                        <Typography variant="body2">
-                                            Volume on XRPNFT: {volume1}
-                                        </Typography>
-                                    }
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                >
+                                    items
+                                </Typography>
+                            </StatItem>
+                            <StatItem>
+                                <Typography variant="h6" fontWeight="bold">
+                                    {extra.owners}
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                >
+                                    owners
+                                </Typography>
+                            </StatItem>
+                            <StatItem>
+                                <Stack
+                                    direction="row"
+                                    spacing={0.5}
+                                    alignItems="center"
                                 >
                                     <Icon
-                                        icon={infoFilled}
-                                        style={{
-                                            cursor: 'pointer',
-                                            fontSize: '16px'
-                                        }}
+                                        icon={rippleSolid}
+                                        width="20"
+                                        height="20"
                                     />
-                                </Tooltip>
-                            </Stack>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                noWrap
-                            >
-                                total volume
-                            </Typography>
-                        </StatItem>
-                        <StatItem>
-                            <Stack
-                                direction="row"
-                                spacing={0.5}
-                                alignItems="center"
-                            >
-                                <Icon
-                                    icon={rippleSolid}
-                                    width="20"
-                                    height="20"
-                                />
+                                    <Typography
+                                        variant="h6"
+                                        fontWeight="bold"
+                                        noWrap
+                                    >
+                                        {volume2}
+                                    </Typography>
+                                    <Tooltip
+                                        title={
+                                            <Typography variant="body2">
+                                                Volume on XRPNFT: {volume1}
+                                            </Typography>
+                                        }
+                                    >
+                                        <Icon
+                                            icon={infoFilled}
+                                            style={{
+                                                cursor: 'pointer',
+                                                fontSize: '16px'
+                                            }}
+                                        />
+                                    </Tooltip>
+                                </Stack>
                                 <Typography
-                                    variant="h6"
-                                    fontWeight="bold"
+                                    variant="body2"
+                                    color="text.secondary"
                                     noWrap
                                 >
-                                    {fNumber(floorPrice)}
+                                    total volume
                                 </Typography>
-                            </Stack>
-                            <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                noWrap
-                            >
-                                floor price
-                            </Typography>
-                        </StatItem>
+                            </StatItem>
+                            <StatItem>
+                                <Stack
+                                    direction="row"
+                                    spacing={0.5}
+                                    alignItems="center"
+                                >
+                                    <Icon
+                                        icon={rippleSolid}
+                                        width="20"
+                                        height="20"
+                                    />
+                                    <Typography
+                                        variant="h6"
+                                        fontWeight="bold"
+                                        noWrap
+                                    >
+                                        {fNumber(floorPrice)}
+                                    </Typography>
+                                </Stack>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    noWrap
+                                >
+                                    floor price
+                                </Typography>
+                            </StatItem>
+                        </Box>
                     </Box>
-                </Box>
-            </GlassBox>
+                </GlassBox>
+            </Box>
 
             <Box sx={{ mx: { xs: 2, md: 4 } }}>
                 <ExploreNFT collection={collection} />
