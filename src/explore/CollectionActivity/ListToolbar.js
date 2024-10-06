@@ -7,7 +7,9 @@ import {
     Select,
     Stack,
     Toolbar,
-    Typography
+    Typography,
+    useMediaQuery,
+    useTheme
 } from '@mui/material';
 
 // ----------------------------------------------------------------------
@@ -19,18 +21,24 @@ const RootStyle = styled(Toolbar)(({ theme }) => ({
     padding: theme.spacing(0, 1, 0, 3)
 }));
 
-
 // ----------------------------------------------------------------------
 const CustomSelect = styled(Select)(({ theme }) => ({
-    '& .MuiOutlinedInput-notchedOutline' : {
+    '& .MuiOutlinedInput-notchedOutline': {
         border: 'none'
+    },
+    '& .MuiSelect-select': {
+        paddingRight: theme.spacing(1),
+        paddingLeft: theme.spacing(1)
     }
 }));
 
-export default function NftListToolbar({ count, rows, setRows, page, setPage}) {
+export default function NftListToolbar({ count, rows, setRows, page, setPage }) {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
     const num = count / rows;
     let page_count = Math.floor(num)
-    if (num % 1 != 0) page_count++;
+    if (num % 1 !== 0) page_count++;
 
     const start = page * rows + 1;
     let end = start + rows - 1;
@@ -59,29 +67,33 @@ export default function NftListToolbar({ count, rows, setRows, page, setPage}) {
     };
 
     return (
-        <Grid container rowSpacing={2} alignItems="center" sx={{mt: 0}}>
-            <Grid container item xs={12} sx={{ display: { xs: 'block', md: 'none' } }}>
+        <Grid container spacing={2} alignItems="center" sx={{ mt: 2, px: 2 }}>
+            <Grid item xs={12} md={4} order={{ xs: 3, md: 1 }}>
+                <Typography variant="body2" color="text.secondary">
+                    Showing {start} - {end} out of {count}
+                </Typography>
+            </Grid>
+
+            <Grid item xs={12} md={4} order={{ xs: 1, md: 2 }}>
                 <Stack alignItems='center'>
-                    <Pagination page={page+1} onChange={handleChangePage} count={page_count} size="small"/>
+                    <Pagination 
+                        page={page + 1} 
+                        onChange={handleChangePage} 
+                        count={page_count}
+                        size={isMobile ? "small" : "medium"}
+                    />
                 </Stack>
             </Grid>
 
-            <Grid container item xs={6} md={4} lg={4}>
-                Showing {start} - {end} out of {count}
-            </Grid>
-
-            <Grid container item xs={0} md={4} lg={4} sx={{ display: { xs: 'none', md: 'block' } }}>
-                <Stack alignItems='center'>
-                    <Pagination page={page+1} onChange={handleChangePage} count={page_count}/>
-                </Stack>
-            </Grid>
-
-            <Grid container item xs={6} md={4} lg={4} justifyContent="flex-end">
-                <Stack direction='row' alignItems='center'>
-                    Show Rows
+            <Grid item xs={12} md={4} order={{ xs: 2, md: 3 }}>
+                <Stack direction='row' alignItems='center' justifyContent="flex-end">
+                    <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
+                        Show Rows:
+                    </Typography>
                     <CustomSelect
                         value={rows}
                         onChange={handleChangeRows}
+                        size="small"
                     >
                         <MenuItem value={20}>20</MenuItem>
                         <MenuItem value={10}>10</MenuItem>
@@ -91,25 +103,4 @@ export default function NftListToolbar({ count, rows, setRows, page, setPage}) {
             </Grid>
         </Grid>
     );
-
-    /*
-
-    return (
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Typography>{start} - {end} out of {count}</Typography>
-            <Pagination page={page+1} onChange={handleChangePage} count={page_count}/>
-            <Stack direction='row' alignItems='center'>
-                Rows
-                <CustomSelect
-                    value={rows}
-                    onChange={handleChangeRows}
-                >
-                    <MenuItem value={20}>20</MenuItem>
-                    <MenuItem value={10}>10</MenuItem>
-                    <MenuItem value={5}>5</MenuItem>
-                </CustomSelect>
-            </Stack>
-        </Stack>
-    );
-    */
 }
