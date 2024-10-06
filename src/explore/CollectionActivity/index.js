@@ -26,7 +26,8 @@ import {
     ToggleButtonGroup,
     Tooltip,
     Typography,
-    Divider
+    Divider,
+    Chip
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
@@ -73,6 +74,11 @@ import ListToolbar from './ListToolbar';
 import FlagsContainer from 'src/components/Flags';
 
 // ----------------------------------------------------------------------
+
+// Add this import at the top of the file
+import { alpha } from '@mui/material/styles';
+import { formatDistanceToNow } from 'date-fns';
+
 export default function CollectionActivity({collection}) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -115,8 +121,17 @@ export default function CollectionActivity({collection}) {
         getActivities();
     }, [page, rows]);
 
+    const getChipStyle = (color) => ({
+        backgroundColor: alpha(theme.palette[color].main, 0.1),
+        color: theme.palette[color].dark,
+        fontWeight: 'bold',
+        '& .MuiChip-label': {
+            padding: '0 8px',
+        },
+    });
+
     return (
-        <Container maxWidth="lg" sx={{pl: 0, pr: 0}}>
+        <Container maxWidth={false} sx={{ pl: 0, pr: 0, width: '100vw' }}>
             {loading ? (
                 <Stack alignItems="center">
                     <PulseLoader color='#00AB55' size={10} />
@@ -145,8 +160,18 @@ export default function CollectionActivity({collection}) {
                     [`& .${tableCellClasses.root}`]: {
                         borderBottom: "0px solid",
                         borderColor: theme.palette.divider
-                    }
+                    },
+                    width: '100%',
                 }}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell width="15%">Activity</TableCell>
+                            <TableCell width="30%">Details</TableCell>
+                            <TableCell width="15%">Price</TableCell>
+                            <TableCell width="25%">Account</TableCell>
+                            <TableCell width="15%">Time</TableCell>
+                        </TableRow>
+                    </TableHead>
                     <TableBody>
                     {
                         hists && hists.map((row, idx) => {
@@ -171,61 +196,52 @@ export default function CollectionActivity({collection}) {
 
                             const imgUrl = getNftCoverUrl({files}, 'small');
 
-                            const strDateTime = formatDateTime(time);
+                            const strDateTime = formatDistanceToNow(new Date(time), { addSuffix: true });
 
                             const amount = normalizeAmount(row.amount);
 
                             let strActivity = '';
-                            let componentIcon = (<TaskAltIcon />);
+                            let chipColor = 'default';
                             switch (type) {
                                 case 'BUY_MINT':
                                     strActivity = 'Buy Mint';
-                                    componentIcon = (<ShoppingBagIcon />);
+                                    chipColor = 'primary';
                                     break;
-
                                 case 'MINTED':
-                                    strActivity = 'Mint a NFT';
-                                    componentIcon = (<PagesIcon />);
+                                    strActivity = 'Mint';
+                                    chipColor = 'success';
                                     break;
-
                                 case 'BURN':
-                                    componentIcon = (<FireplaceIcon />);
-                                    strActivity = 'Burnt a NFT';
+                                    strActivity = 'Burn';
+                                    chipColor = 'error';
                                     break;
-
                                 case 'CREATE_SELL_OFFER':
-                                    componentIcon = (<LocalOfferIcon />);
-                                    strActivity = 'Create Sell Offer';
+                                    strActivity = 'Sell Offer';
+                                    chipColor = 'info';
                                     break;
-
                                 case 'CREATE_BUY_OFFER':
-                                    componentIcon = (<LocalOfferIcon />);
-                                    strActivity = 'Create Buy Offer';
+                                    strActivity = 'Buy Offer';
+                                    chipColor = 'warning';
                                     break;
-
                                 case 'CANCEL_SELL_OFFER':
-                                    componentIcon = (<HighlightOffIcon />);
-                                    strActivity = 'Cancel Sell Offer';
+                                    strActivity = 'Cancel Sell';
+                                    chipColor = 'secondary';
                                     break;
-
                                 case 'CANCEL_BUY_OFFER':
-                                    componentIcon = (<HighlightOffIcon />);
-                                    strActivity = 'Cancel Buy Offer';
+                                    strActivity = 'Cancel Buy';
+                                    chipColor = 'secondary';
                                     break;
-
                                 case 'TRANSFER':
                                     strActivity = 'Transfer';
-                                    componentIcon = (<TransferWithinAStationIcon />);
+                                    chipColor = 'default';
                                     break;
-
                                 case 'SALE':
                                     strActivity = 'Sale';
-                                    componentIcon = (<PaymentIcon />);
+                                    chipColor = 'success';
                                     break;
-
                                 default:
-                                    strActivity = `Unhandled Activity: ${type}`;
-                                    componentIcon = (<HelpOutlineIcon />);
+                                    strActivity = `Unknown: ${type}`;
+                                    chipColor = 'default';
                                     break;
                             }
 
@@ -239,13 +255,12 @@ export default function CollectionActivity({collection}) {
                                         }
                                     }}
                                 >
-                                    {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
-                                    <TableCell align="left" width='5%' sx={{pt:1, pb:1}}>
-                                        {componentIcon}
-                                    </TableCell>
-
                                     <TableCell align="left" sx={{pt:1, pb:1}}>
-                                        <Typography variant='s11' noWrap>{strActivity}</Typography>
+                                        <Chip 
+                                            label={strActivity} 
+                                            size="small" 
+                                            sx={getChipStyle(chipColor)}
+                                        />
                                     </TableCell>
 
                                     <TableCell align="left" sx={{pt:1, pb:1}}>
@@ -311,7 +326,7 @@ export default function CollectionActivity({collection}) {
                                             <Typography variant='s11' noWrap>{cost.amount} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
                                             :
                                             <>
-                                                {type === 'CREATE_SELL_OFFER' || type === 'CREATE_BUY_OFFER' || type === 'CANCEL_SELL_OFFER' || type === 'CANCEL_SELL_OFFER' ?
+                                                {type === 'CREATE_SELL_OFFER' || type === 'CREATE_BUY_OFFER' || type === 'CANCEL_SELL_OFFER' || type === 'CANCEL_BUY_OFFER' ?
                                                     <Typography variant='s11' noWrap>{amount.amount} {normalizeCurrencyCodeXummImpl(amount.currency)}</Typography>
                                                     :
                                                     <Typography variant='s11' noWrap>- - -</Typography>
