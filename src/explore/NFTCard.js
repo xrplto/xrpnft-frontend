@@ -128,6 +128,8 @@ export default function NFTCard({ nft, handleRemove }) {
                     width: '100%',
                     maxWidth: 280,
                     aspectRatio: '9 / 14',
+                    display: 'flex',
+                    flexDirection: 'column',
                 }}
             >
                 {isAdmin &&
@@ -163,8 +165,7 @@ export default function NFTCard({ nft, handleRemove }) {
                     alt={'NFT' + uuid}
                     sx={{
                         width: '100%',
-                        height: '70%',
-                        maxHeight: 220,
+                        flexGrow: 1,
                         objectFit: 'cover'
                     }}
                 />
@@ -173,8 +174,7 @@ export default function NFTCard({ nft, handleRemove }) {
                         variant='rectangular'
                         sx={{
                             width: '100%',
-                            height: '70%',
-                            maxHeight: 220,
+                            flexGrow: 1,
                         }}
                     />
                 )}
@@ -188,77 +188,68 @@ export default function NFTCard({ nft, handleRemove }) {
                         onCanPlay={onImageLoaded}
                     />
                 }
-                <CardContent sx={{ padding: '12px 16px' }}>
-                    <Box display={'flex'} flexDirection='column' justifyContent={'space-between'} height="100%">
-                        <Typography
-                            variant="subtitle1"
-                            sx={{
-                                fontWeight: 600,
-                                mb: 1,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: 'vertical',
-                            }}
-                        >
-                            {name}
-                        </Typography>
-                        
-                        {destination && getMinterName(account) ? (
-                            <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt: 1}}>
-                                <Tooltip title={`Sold & Transfer`}>
-                                    <SportsScoreIcon color="primary" />
-                                </Tooltip>
-                                {renderRarityRank()}
-                            </Stack>
-                        ) : (
-                            <Box>
-                                <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mb: 1}}>
-                                    {renderPrice()}
-                                    {renderRarityRank()}
-                                </Stack>
-                                {renderOffer()}
-                            </Box>
-                        )}
-                        
-                        <Typography variant='caption' color="text.secondary" sx={{mt: 1}}>
-                            Event: {updateEvent}
-                        </Typography>
-                    </Box>
+                <CardContent sx={{ padding: '12px', display: 'flex', flexDirection: 'column', flexShrink: 0, height: '100px' }}>
+                    <Typography
+                        variant="subtitle2"
+                        sx={{
+                            fontWeight: 600,
+                            mb: 0.5,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            lineHeight: 1.2,
+                            fontSize: '0.8rem',
+                        }}
+                    >
+                        {name}
+                    </Typography>
+                    
+                    <Stack spacing={0.5} mt="auto">
+                        <Stack direction="row" alignItems='center' justifyContent='space-between'>
+                            {renderPrice()}
+                            {renderRarityRank()}
+                        </Stack>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                            {renderOffer()}
+                            {renderEvent()}
+                        </Stack>
+                    </Stack>
                 </CardContent>
             </CardWrapper>
         </Link>
     );
     
     function renderPrice() {
-        if (!cost) return <Typography variant='body2' color="text.secondary">Unlisted</Typography>;
+        if (!cost) return <Typography variant='body2' color="text.secondary" fontSize="0.75rem">Unlisted</Typography>;
         
         return cost.currency === "XRP" ? (
             <Stack direction="row" spacing={0.5} alignItems="center">
-                <Icon icon={rippleSolid} width="16" height="16" />
-                <Typography variant="h6">{fNumber(cost.amount)}</Typography>
+                <Icon icon={rippleSolid} width="14" height="14" />
+                <Typography variant="body2" fontWeight="600" fontSize="0.75rem">{fNumber(cost.amount)}</Typography>
             </Stack>
         ) : (
-            <Typography variant="h6">{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
+            <Typography variant="body2" fontWeight="600" fontSize="0.75rem">{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
         );
     }
     
     function renderOffer() {
-        if (!costb) return <Typography variant='body2' color="text.secondary">No Offer</Typography>;
+        if (!costb) return <Box sx={{ visibility: 'hidden', fontSize: '0.65rem' }}>No offer</Box>;
         
-        return costb.currency === "XRP" ? (
+        return (
             <Stack direction="row" spacing={0.5} alignItems="center">
-                <Typography variant='body2' color="text.secondary">Offer:</Typography>
-                <Icon icon={rippleSolid} color="#00AB55" width="14" height="14" />
-                <Typography variant='subtitle2' color="#00AB55">{fNumber(costb.amount)}</Typography>
-            </Stack>
-        ) : (
-            <Stack direction="row" spacing={0.5} alignItems="center">
-                <Typography variant='body2' color="text.secondary">Offer:</Typography>
-                <Typography variant='subtitle2' color="#00AB55">
-                    {fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}
-                </Typography>
+                <Typography variant='caption' color="text.secondary" fontSize="0.65rem">Offer:</Typography>
+                {costb.currency === "XRP" ? (
+                    <>
+                        <Icon icon={rippleSolid} color="#00AB55" width="10" height="10" />
+                        <Typography variant='caption' color="#00AB55" fontWeight="600" fontSize="0.65rem">{fNumber(costb.amount)}</Typography>
+                    </>
+                ) : (
+                    <Typography variant='caption' color="#00AB55" fontWeight="600" fontSize="0.65rem">
+                        {fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}
+                    </Typography>
+                )}
             </Stack>
         );
     }
@@ -270,17 +261,25 @@ export default function NFTCard({ nft, handleRemove }) {
             <Chip
                 variant="outlined"
                 size="small"
-                icon={<LeaderboardOutlinedIcon sx={{width: '14px'}} />}
+                icon={<LeaderboardOutlinedIcon sx={{width: '10px'}} />}
                 label={fIntNumber(rarity_rank)}
                 sx={{
-                    height: '24px',
+                    height: '18px',
                     '& .MuiChip-label': {
-                        px: 1,
-                        fontSize: '0.75rem',
+                        px: 0.5,
+                        fontSize: '0.6rem',
                         fontWeight: 600,
                     }
                 }}
             />
+        );
+    }
+
+    function renderEvent() {
+        return (
+            <Typography variant='caption' color="text.secondary" sx={{fontSize: '0.6rem', textAlign: 'right'}}>
+                Updated: {updateEvent}
+            </Typography>
         );
     }
 };
