@@ -460,6 +460,8 @@ export default function NFTDetailsMobile({ nft }) {
                     }
                 }
             } else {
+                if (nft.account === offer.owner) continue; // orphaned
+                
                 // Buy Offers
                 if (isOwner) {
                     // I am the Owner of NFT
@@ -467,7 +469,7 @@ export default function NFTDetailsMobile({ nft }) {
                     // I am not the Owner of NFT
                 }
 
-                //if (!offer.destination || accountLogin === offer.destination)
+                //if (!offer.destination || accountLogin === offer.destination) // disable destination (broker) filter
                     // if ((!offer.destination || accountLogin === offer.destination) && offer.)
                     newOffers.push(offer);
             }

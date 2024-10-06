@@ -419,6 +419,8 @@ export default function NFTActions({ nft }) {
                     }
                 }
             } else {
+                if (nft.account === offer.owner) continue; // orphaned
+
                 // Buy Offers
                 if (isOwner) {
                     // I am the Owner of NFT
