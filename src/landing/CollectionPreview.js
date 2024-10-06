@@ -1,15 +1,8 @@
 import { Carousel } from 'react-responsive-carousel';
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 
 // Material
-import {
-    styled,
-    Link,
-    Paper,
-    Stack,
-    Tooltip,
-    Typography
-} from '@mui/material';
+import { styled, Link, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Context
@@ -26,46 +19,116 @@ import { getNftCoverUrl } from 'src/utils/parse';
 // box-shadow: inset 0.2em 0.2em 0.2em 0 rgba(255,255,255,0.5), inset -0.2em -0.2em 0.2em 0 rgba(0,0,0,0.5);
 // box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
 // box-shadow: 0px 5px 20px 1px;
+
 const CustomImage = styled('img')(
     ({ theme }) => `
-    // border-radius: 1em;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
-    // padding: 1px;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
   `
 );
 
 const CustomCarousel = styled(Carousel)(
     ({ theme }) => `
-    filter: drop-shadow(10px 10px 10px rgba(0,0,0,0.8));
-    // box-shadow: 10px 5px 5px rgba(0,0,0,0.2);
-    border-radius: 1em;
-    // overflow: visible;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+    border-radius: 6px;
+    overflow: hidden;
   `
 );
 
-export default function CollectionPreview({collections}) {
+const CollectionCard = styled(Paper)(
+    ({ theme }) => `
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,0.7) 100%);
+        pointer-events: none;
+    }
+  `
+);
+
+const CollectionInfo = styled(Stack)(
+    ({ theme }) => `
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    z-index: 1;
+  `
+);
+
+export default function CollectionPreview({ collections }) {
     const { darkMode } = useContext(AppContext);
-    
-    const images = [
-        {title: 'XPEPE', src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images5.png', link: 'https://xrpepe.com/'},
-        {title: 'Muscle Mutant Club', src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images4.png', link: 'https://www.mutantmuscleclub.org/'},
-        {title: 'Bored Apes XRP Club', src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images2.png', link: 'https://x-apes.com/'},
-        {title: 'HOGS', src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images3.png', link: 'https://x-apes.com/'},
 
-        {title: 'FAT CATS', src: 'https://s1.xrpnft.com/static/collection/fat-cats-xrpl.jpg', link: 'https://fatcats.nftlabs.to/'},
-        {title: 'FRACTALS', src: 'https://s1.xrpnft.com/static/collection/fractals.jpg', link: 'https://fractal.nftlabs.to/'},
+    const images = [
+        {
+            title: 'XPEPE',
+            src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images5.png',
+            link: 'https://xrpepe.com/'
+        },
+        {
+            title: 'Muscle Mutant Club',
+            src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images4.png',
+            link: 'https://www.mutantmuscleclub.org/'
+        },
+        {
+            title: 'Bored Apes XRP Club',
+            src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images2.png',
+            link: 'https://x-apes.com/'
+        },
+        {
+            title: 'HOGS',
+            src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images3.png',
+            link: 'https://x-apes.com/'
+        },
+
+        {
+            title: 'FAT CATS',
+            src: 'https://s1.xrpnft.com/static/collection/fat-cats-xrpl.jpg',
+            link: 'https://fatcats.nftlabs.to/'
+        },
+        {
+            title: 'FRACTALS',
+            src: 'https://s1.xrpnft.com/static/collection/fractals.jpg',
+            link: 'https://fractal.nftlabs.to/'
+        },
         // {title: 'LEDGERPUNK', src: 'https://s1.xrpnft.com/static/collection/ledgerpunks-nft.jpg', link: 'https://ledgerpunks.com/'},
-        {title: 'RIPPLE SHARKS', src: 'https://s1.xrpnft.com/static/collection/Ripple-Sharks.jpg', link: 'https://nftlabs.to/projects/ripple-sharks/'},
-        {title: 'LLAMMAPALOOZA', src: 'https://s1.xrpnft.com/static/collection/llamapalooza-xrplnft.jpg', link: 'https://llamapalooza.nftlabs.to/'},
-        {title: 'TRIPPY APES CLUB', src: 'https://s1.xrpnft.com/static/collection/TRIPPY.jpg', link: 'https://trippyapes.nftlabs.to/'},
+        {
+            title: 'RIPPLE SHARKS',
+            src: 'https://s1.xrpnft.com/static/collection/Ripple-Sharks.jpg',
+            link: 'https://nftlabs.to/projects/ripple-sharks/'
+        },
+        {
+            title: 'LLAMMAPALOOZA',
+            src: 'https://s1.xrpnft.com/static/collection/llamapalooza-xrplnft.jpg',
+            link: 'https://llamapalooza.nftlabs.to/'
+        },
+        {
+            title: 'TRIPPY APES CLUB',
+            src: 'https://s1.xrpnft.com/static/collection/TRIPPY.jpg',
+            link: 'https://trippyapes.nftlabs.to/'
+        }
     ];
 
     const fadeAnimationHandler = (props, state) => {
         const transitionTime = props.transitionTime + 'ms';
         const transitionTimingFunction = 'ease-in-out';
-    
+
         let slideStyle = {
             position: 'absolute',
             display: 'block',
@@ -80,9 +143,9 @@ export default function CollectionPreview({collections}) {
             msTransitionTimingFunction: transitionTimingFunction,
             MozTransitionTimingFunction: transitionTimingFunction,
             WebkitTransitionTimingFunction: transitionTimingFunction,
-            OTransitionTimingFunction: transitionTimingFunction,
+            OTransitionTimingFunction: transitionTimingFunction
         };
-    
+
         if (!state.swiping) {
             slideStyle = {
                 ...slideStyle,
@@ -90,14 +153,19 @@ export default function CollectionPreview({collections}) {
                 MozTransitionDuration: transitionTime,
                 OTransitionDuration: transitionTime,
                 transitionDuration: transitionTime,
-                msTransitionDuration: transitionTime,
+                msTransitionDuration: transitionTime
             };
         }
-    
+
         return {
             slideStyle,
-            selectedStyle: { ...slideStyle, opacity: 1, zIndex: 2, position: 'relative' },
-            prevStyle: { ...slideStyle },
+            selectedStyle: {
+                ...slideStyle,
+                opacity: 1,
+                zIndex: 2,
+                position: 'relative'
+            },
+            prevStyle: { ...slideStyle }
         };
     };
 
@@ -116,8 +184,8 @@ export default function CollectionPreview({collections}) {
             swipeable={false}
             // dynamicHeight={true}
             animationHandler={fadeAnimationHandler}
-            minHeight='100%'
-            minWidth='100%'
+            minHeight="100%"
+            minWidth="100%"
         >
             {collections.map((item, idx) => {
                 const {
@@ -147,14 +215,14 @@ export default function CollectionPreview({collections}) {
 
                 // const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;
 
-                let imgUrl = getNftCoverUrl(nft?nft:{});//, 300
+                let imgUrl = getNftCoverUrl(nft ? nft : {}); //, 300
 
                 if (!imgUrl || nft?.meta?.video) {
                     imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
                 }
 
                 return (
-                    <Stack key={idx} sx={{pr: 1, pb: 1}}>
+                    <Stack key={idx} sx={{ pr: 1, pb: 1 }}>
                         <Link
                             underline="none"
                             color="inherit"
@@ -162,22 +230,41 @@ export default function CollectionPreview({collections}) {
                             href={`/collection/${slug}`}
                             // rel="noreferrer noopener"
                         >
-                            <Paper style={{
-                                background: darkMode?'#21252B55':'#F4F5FB33',
-                                border: `1px solid ${darkMode?'#32373C55':'#E0E7EC11'}`
-                            }}>
-                                <CustomImage src={imgUrl} />
-                                <Stack direction="row" spacing={1} sx={{mt:1}} justifyContent="center">
-                                    <Typography variant='h2a'>{name}</Typography>
-                                    {verified === 'yes' &&
-                                        <Tooltip title='Verified'>
-                                            <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
+                            <CollectionCard
+                                elevation={0}
+                                style={{
+                                    background: darkMode
+                                        ? '#21252B'
+                                        : '#FFFFFF'
+                                }}
+                            >
+                                <CustomImage src={imgUrl} alt={name} />
+                                <CollectionInfo
+                                    direction="row"
+                                    spacing={1}
+                                    alignItems="center"
+                                >
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{
+                                            color: '#FFFFFF',
+                                            fontWeight: 600,
+                                            textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+                                        }}
+                                    >
+                                        {name}
+                                    </Typography>
+                                    {verified === 'yes' && (
+                                        <Tooltip title="Verified">
+                                            <VerifiedIcon
+                                                fontSize="small"
+                                                style={{ color: '#4589ff' }}
+                                            />
                                         </Tooltip>
-                                    }
-                                </Stack>
-                            </Paper>
+                                    )}
+                                </CollectionInfo>
+                            </CollectionCard>
                         </Link>
-                        
                     </Stack>
                 );
             })}

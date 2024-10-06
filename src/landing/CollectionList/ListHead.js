@@ -34,14 +34,14 @@ const TABLE_HEAD = (isMobile) => {
             {
                 no: 1,
                 id: 'floor.amount',
-                label: 'Floor',
+                label: 'Floor Price',
                 align: 'right',
                 width: '30%'
             },
             {
                 no: 2,
                 id: 'totalVol24h',
-                label: '24h Vol',
+                label: '24h Volume',
                 align: 'right',
                 width: '30%'
             }
@@ -53,21 +53,21 @@ const TABLE_HEAD = (isMobile) => {
         {
             no: 1,
             id: 'floor.amount',
-            label: 'Floor',
+            label: 'Floor Price',
             align: 'right',
             width: '10%'
         },
-        { no: 2, id: 'totalVol24h', label: '24h Vol', align: 'right', width: '10%' },
+        { no: 2, id: 'totalVol24h', label: '24h Volume', align: 'right', width: '10%' },
         // { no: 3, id: 'volume', label: 'Volume', align: 'right', width: '10%' },
         {
             no: 4,
             id: 'totalVolume',
-            label: 'Total Vol',
+            label: 'Total Volume',
             align: 'right',
             width: '10%'
         },
         { no: 5, id: 'owners', label: 'Owners', align: 'right', width: '8%' },
-        { no: 6, id: 'items', label: 'Items', align: 'right', width: '8%' }
+        { no: 6, id: 'items', label: 'Total Items', align: 'right', width: '8%' }
     ];
 };
 

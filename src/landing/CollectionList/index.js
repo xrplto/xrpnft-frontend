@@ -1,38 +1,46 @@
-// Material
-import { Box, Table, TableBody, useMediaQuery, useTheme } from '@mui/material';
-
-// Components
+import React, { useState } from 'react';
+import { Table, TableBody, TableContainer, Button, Box } from '@mui/material';
 import Row from './Row';
 import ListHead from './ListHead';
 
 export default function CollectionList({ collections }) {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [visibleRows, setVisibleRows] = useState(5);
+    const [allVisible, setAllVisible] = useState(false);
+
+    const handleViewMore = () => {
+        if (visibleRows + 5 >= collections.length) {
+            setVisibleRows(collections.length);
+            setAllVisible(true);
+        } else {
+            setVisibleRows(prevVisibleRows => prevVisibleRows + 5);
+        }
+    };
+
+    const handleViewAll = () => {
+        window.location.href = '/collections';
+    };
 
     return (
-        <>
-            <Box
-                sx={{
-                    display: 'flex',
-                    gap: 1,
-                    py: 1,
-                    overflow: 'auto',
-                    width: '100%',
-                    '& > *': {
-                        scrollSnapAlign: 'center'
-                    },
-                    '::-webkit-scrollbar': { display: 'none' }
-                }}
-            >
-                <Table style={{ minWidth: isMobile ? undefined : '1000px' }}>
-                    <ListHead />
-                    <TableBody>
-                        {collections.map((row, idx) => (
-                            <Row key={idx} id={idx + 1} item={row} />
-                        ))}
-                    </TableBody>
-                </Table>
+        <TableContainer>
+            <Table>
+                <ListHead />
+                <TableBody>
+                    {collections.slice(0, visibleRows).map((collection, index) => (
+                        <Row key={collection.uuid} id={index + 1} item={collection} />
+                    ))}
+                </TableBody>
+            </Table>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                {allVisible ? (
+                    <Button onClick={handleViewAll} variant="outlined">
+                        View All Collections
+                    </Button>
+                ) : visibleRows < collections.length ? (
+                    <Button onClick={handleViewMore} variant="outlined">
+                        View More
+                    </Button>
+                ) : null}
             </Box>
-        </>
+        </TableContainer>
     );
 }

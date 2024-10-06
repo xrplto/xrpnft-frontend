@@ -266,12 +266,7 @@ export default function Row({ id, item }) {
     };
 
     return (
-        <TableRow
-            hover
-            // key={uuid}
-            onClick={handleRowClick}
-            style={{ cursor: 'pointer' }}
-        >
+        <TableRow hover onClick={handleRowClick} style={{ cursor: 'pointer' }}>
             <TableCell align="left" sx={{ p: 0, border: 'none' }}>
                 <Stack
                     direction="row"
@@ -288,7 +283,10 @@ export default function Row({ id, item }) {
                     <Link href={`/collection/${slug}`} underline="none">
                         <IconCover>
                             <IconWrapper>
-                                <IconImage src={logoImageUrl} />
+                                <IconImage
+                                    src={logoImageUrl}
+                                    alt={`${name} logo`}
+                                />
                             </IconWrapper>
                         </IconCover>
                     </Link>
@@ -309,7 +307,7 @@ export default function Row({ id, item }) {
                                     {name}
                                 </Typography>
                                 {verified === 'yes' && (
-                                    <Tooltip title="Verified">
+                                    <Tooltip title="Verified Collection">
                                         <VerifiedIcon
                                             fontSize="small"
                                             style={{ color: '#4589ff' }}
@@ -321,7 +319,7 @@ export default function Row({ id, item }) {
                                 variant={isMobile ? 's12' : 's7'}
                                 noWrap
                             >
-                                {strDateTime}
+                                Created: {strDateTime}
                             </Typography>
                         </Stack>
                     </Link>
@@ -329,48 +327,29 @@ export default function Row({ id, item }) {
             </TableCell>
 
             <TableCell align="right" sx={{ pl: 0, pr: 0, border: 'none' }}>
-                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
-                    <Icon
-                        icon={rippleSolid}
-                        width={isMobile ? 12 : 16}
-                        height={isMobile ? 12 : 16}
-                    />{' '}
-                    {fNumber(floorPrice)}
-                </Typography>
+                <Tooltip title="Floor Price">
+                    <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                        <Icon
+                            icon={rippleSolid}
+                            width={isMobile ? 12 : 16}
+                            height={isMobile ? 12 : 16}
+                        />{' '}
+                        {fNumber(floorPrice)}
+                    </Typography>
+                </Tooltip>
             </TableCell>
 
             <TableCell align="right" sx={{ pl: 0, pr: 0, border: 'none' }}>
-                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
-                    <Icon
-                        icon={rippleSolid}
-                        width={isMobile ? 12 : 16}
-                        height={isMobile ? 12 : 16}
-                    />{' '}
-                    {fNumber(totalVol24h)}
-                </Typography>
-            </TableCell>
-
-            {/* <TableCell align="right" sx={{pl:0, pr:0}}>
-                <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {volume1}</Typography>
-            </TableCell> */}
-
-            <TableCell
-                align="right"
-                sx={{
-                    pl: 0,
-                    pr: 0,
-                    border: 'none',
-                    display: { xs: 'none', sm: 'table-cell' }
-                }}
-            >
-                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
-                    <Icon
-                        icon={rippleSolid}
-                        width={isMobile ? 12 : 16}
-                        height={isMobile ? 12 : 16}
-                    />{' '}
-                    {volume2}
-                </Typography>
+                <Tooltip title="24h Volume">
+                    <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                        <Icon
+                            icon={rippleSolid}
+                            width={isMobile ? 12 : 16}
+                            height={isMobile ? 12 : 16}
+                        />{' '}
+                        {fNumber(totalVol24h)}
+                    </Typography>
+                </Tooltip>
             </TableCell>
 
             <TableCell
@@ -382,9 +361,16 @@ export default function Row({ id, item }) {
                     display: { xs: 'none', sm: 'table-cell' }
                 }}
             >
-                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
-                    {fIntNumber(owners || 0)}
-                </Typography>
+                <Tooltip title="Total Volume">
+                    <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                        <Icon
+                            icon={rippleSolid}
+                            width={isMobile ? 12 : 16}
+                            height={isMobile ? 12 : 16}
+                        />{' '}
+                        {volume2}
+                    </Typography>
+                </Tooltip>
             </TableCell>
 
             <TableCell
@@ -396,9 +382,27 @@ export default function Row({ id, item }) {
                     display: { xs: 'none', sm: 'table-cell' }
                 }}
             >
-                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
-                    {fIntNumber(items)}
-                </Typography>
+                <Tooltip title="Number of Owners">
+                    <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                        {fIntNumber(owners || 0)}
+                    </Typography>
+                </Tooltip>
+            </TableCell>
+
+            <TableCell
+                align="right"
+                sx={{
+                    pl: 0,
+                    pr: 0,
+                    border: 'none',
+                    display: { xs: 'none', sm: 'table-cell' }
+                }}
+            >
+                <Tooltip title="Total Items">
+                    <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                        {fIntNumber(items)}
+                    </Typography>
+                </Tooltip>
             </TableCell>
         </TableRow>
     );
