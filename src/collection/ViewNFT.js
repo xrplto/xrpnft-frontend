@@ -1,19 +1,12 @@
-import React from 'react';
-import { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import { FacebookShareButton, TwitterShareButton } from "react-share";
 import { FacebookIcon, TwitterIcon } from "react-share";
 
 // Material
-import { useTheme } from '@mui/material/styles';
+import { useTheme, alpha } from '@mui/material/styles';
 import {
     styled, useMediaQuery,
-    Box,
-    IconButton,
-    Link,
-    Popover,
-    Stack,
-    Tooltip,
-    Typography
+    Box, IconButton, Link, Popover, Stack, Tooltip, Typography, Divider
 } from '@mui/material';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import ShareIcon from '@mui/icons-material/Share';
@@ -28,10 +21,9 @@ import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Utils
 import { formatMonthYear } from 'src/utils/formatTime';
-import { fNumber, fIntNumber, fPercent, fVolume } from 'src/utils/formatNumber';
+import { fNumber, fVolume } from 'src/utils/formatNumber';
 
 // Context
-import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
@@ -39,147 +31,59 @@ import ExploreNFT from 'src/explore';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
 import Watch from 'src/components/Watch';
 
-const IconCover = styled('div')(
-    ({ theme }) => `
-        width: 102px;
-        height: 102px;
-        margin-top: -56px;
-        margin-bottom: 16px;
-        @media (min-width: ${theme.breakpoints.values.sm}px) {
-            width: 132px;
-            height: 132px;
-            margin-top: -86px;
-        }
-        @media (min-width: ${theme.breakpoints.values.md}px) {
-            width: 192px;
-            height: 192px;
-            margin-top: -156px;
-        }
-        border: 6px solid ${theme.colors.alpha.black[50]};
-        border-radius: 10px;
-        box-shadow: rgb(0 0 0 / 8%) 0px 5px 10px;
-        background-color: ${theme.colors.alpha.white[70]};
-        position: relative;
-        overflow: hidden;
-    `
-);
-
-const IconWrapper = styled('div')(
-    ({ theme }) => `
-        box-sizing: border-box;
-        display: inline-block;
-        position: relative;
-        width: 90px;
-        height: 90px;
-        @media (min-width: ${theme.breakpoints.values.sm}px) {
-            width: 120px;
-            height: 120px;
-        }
-        @media (min-width: ${theme.breakpoints.values.md}px) {
-            width: 180px;
-            height: 180px;
-        }
-        &:hover, &.Mui-focusVisible {
-            z-index: 1;
-            & .MuiImageBackdrop-root {
-                opacity: 0.1;
-            }
-            & .MuiIconEditButton-root {
-                opacity: 1;
-            }
-        }
-  `
-);
-
-const IconImage = styled('img')(
-    ({ theme }) => `
-    position: absolute;
-    inset: 0px;
-    box-sizing: border-box;
-    padding: 0px;
-    border: none;
-    margin: auto;
-    display: block;
-    width: 0px; height: 0px;
-    min-width: 100%;
-    max-width: 100%;
-    min-height: 100%;
-    max-height: 100%;
-    object-fit: cover;
-    border-radius: 0px;
-  `
-);
-
-const ImageBackdrop = styled('span')(({ theme }) => ({
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: theme.palette.common.black,
-    opacity: 0,
-    transition: theme.transitions.create('opacity'),
+const IconCover = styled('div')(({ theme }) => ({
+    width: 192,
+    height: 192,
+    marginTop: -96,
+    marginBottom: 24,
+    border: `6px solid ${theme.palette.background.paper}`,
+    borderRadius: theme.shape.borderRadius * 2, // Rounded corners
+    boxShadow: theme.shadows[3],
+    backgroundColor: theme.palette.background.paper,
+    position: 'relative',
+    overflow: 'hidden',
+    [theme.breakpoints.down('sm')]: {
+        width: 132,
+        height: 132,
+        marginTop: -66,
+    },
 }));
 
-const CardOverlay = styled('div')(
-    ({ theme }) => `
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    inset: 0;
-`
-);
+const IconImage = styled('img')({
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    borderRadius: 'inherit', // Inherit border radius from parent
+});
 
-function truncate(str, n) {
-    if (!str) return '';
-    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
-};
+const StatsContainer = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: theme.spacing(3),
+    padding: theme.spacing(3),
+    borderRadius: theme.shape.borderRadius * 2,
+    backgroundColor: alpha(theme.palette.primary.main, 0.05),
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4),
+}));
+
+const StatItem = styled(Box)(({ theme }) => ({
+    textAlign: 'center',
+}));
 
 export default function ViewNFT({ collection }) {
     const anchorRef = useRef(null);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-    const { accountProfile, openSnackbar } = useContext(AppContext);
+    const { accountProfile } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
-    const accountToken = accountProfile?.token;
 
     const [openShare, setOpenShare] = useState(false);
 
-    // "collection": {
-    //     "_id": "6310c27cf81fe46884ef89ba",
-    //     "account": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
-    //     "name": "collection1",
-    //     "slug": "collection-1",
-    //     "description": "",
-    //     "logoImage": "1662042748001_12e8a38273134f0e87f1039958d5b132.png",
-    //     "featuredImage": "1662042748001_70910cc4c6134845bf84cf262e696d05.png",
-    //     "bannerImage": "1662042748002_b32b442dea454998aa29ab61c8fa0887.jpg",
-    //     "created": 1662042748016,
-    //     "creator": "xrpnft.com",
-    //     "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
-    // }
     const {
-        account,
-        accountName,
-        name,
-        slug,
-        items,
-        type,
-        description,
-        logoImage,
-        featuredImage,
-        bannerImage,
-        costs,
-        extra,
-        minter,
-        verified,
-        created,
-        volume,
-        totalVolume,
-        floor
+        account, accountName, name, slug, items, description, logoImage,
+        extra, verified, created, volume, totalVolume, floor
     } = collection;
 
     const floorPrice = floor?.amount || 0;
@@ -190,202 +94,123 @@ export default function ViewNFT({ collection }) {
     const shareTitle = name;
     const shareDesc = description || '';
 
-    const handleOpenShare = () => {
-        setOpenShare(true);
-    }
-
-    const handleCloseShare = () => {
-        setOpenShare(false);
-    };
+    const handleOpenShare = () => setOpenShare(true);
+    const handleCloseShare = () => setOpenShare(false);
 
     return (
         <>
+            <Box sx={{ position: 'relative', mb: 4 }}>
+                <Box
+                    component="img"
+                    src={`https://s1.xrpnft.com/collection/${collection.bannerImage}`}
+                    alt="Collection Banner"
+                    sx={{
+                        width: '100%',
+                        height: 300,
+                        objectFit: 'cover',
+                        borderRadius: theme => theme.shape.borderRadius * 2,
+                        boxShadow: theme => theme.shadows[3],
+                    }}
+                />
+                <IconCover>
+                    <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`} alt={name} />
+                </IconCover>
+            </Box>
+
+            <Stack direction={fullScreen ? "column" : "row"} spacing={2} justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+                <Stack direction="row" spacing={1} alignItems="center">
+                    <Typography variant="h3" fontWeight="bold">{name}</Typography>
+                    {verified === 'yes' && (
+                        <Tooltip title='Verified'>
+                            <VerifiedIcon color="primary" />
+                        </Tooltip>
+                    )}
+                </Stack>
+
+                <Stack direction="row" alignItems="center" spacing={1}>
+                    {accountLogin === collection.account && (
+                        <Tooltip title="Edit your collection">
+                            <IconButton component={Link} href={`/collection/${slug}/edit`} color="primary">
+                                <EditIcon />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                    <Watch collection={collection} />
+                    <Tooltip title="Share">
+                        <IconButton ref={anchorRef} onClick={handleOpenShare} color="primary">
+                            <ShareIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <IconButton color="primary">
+                        <MoreHorizIcon />
+                    </IconButton>
+                </Stack>
+            </Stack>
+
+            <Typography variant="body1" sx={{ mb: 2 }}>
+                By <Link href={`/account/${account}`} color="primary">{accountName || account.slice(0, 4) + '...' + account.slice(-4)}</Link>
+                &nbsp;·&nbsp;Created {formatMonthYear(created)}
+            </Typography>
+
+            <SeeMoreTypography
+                variant="body1"
+                text={description}
+                maxLines={3}
+                sx={{ mb: 4 }}
+            />
+
+            <Divider sx={{ mb: 4 }} />
+
+            <StatsContainer>
+                <StatItem>
+                    <Typography variant='h4' fontWeight="bold">{items}</Typography>
+                    <Typography variant='body2' color="text.secondary">items</Typography>
+                </StatItem>
+                <StatItem>
+                    <Typography variant='h4' fontWeight="bold">{extra.owners}</Typography>
+                    <Typography variant='body2' color="text.secondary">owners</Typography>
+                </StatItem>
+                <StatItem>
+                    <Stack direction="row" spacing={0.5} alignItems='center' justifyContent="center">
+                        <Icon icon={rippleSolid} width="24" height="24" />
+                        <Typography variant="h4" fontWeight="bold" noWrap>{volume2}</Typography>
+                        <Tooltip
+                            title={
+                                <Typography variant="body2">Volume on XRPNFT: {volume1}</Typography>
+                            }
+                        >
+                            <Icon icon={infoFilled} style={{ cursor: 'pointer' }} />
+                        </Tooltip>
+                    </Stack>
+                    <Typography variant='body2' color="text.secondary" noWrap>total volume</Typography>
+                </StatItem>
+                <StatItem>
+                    <Stack direction="row" spacing={0.5} alignItems='center' justifyContent="center">
+                        <Icon icon={rippleSolid} width="24" height="24" />
+                        <Typography variant="h4" fontWeight="bold" noWrap>{fNumber(floorPrice)}</Typography>
+                    </Stack>
+                    <Typography variant='body2' color="text.secondary" noWrap>floor price</Typography>
+                </StatItem>
+            </StatsContainer>
+
+            <ExploreNFT collection={collection} />
+
             <Popover
                 open={openShare}
                 onClose={handleCloseShare}
                 anchorEl={anchorRef.current}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                PaperProps={{
-                    sx: {
-                        // mt: 1.5,
-                        // ml: 0.5,
-                        // overflow: 'inherit',
-                        // boxShadow: (theme) => theme.customShadows.z20,
-                        // border: (theme) => `solid 1px ${alpha('#919EAB', 0.08)}`,
-                        // width: 'auto',
-                    }
-                }}
             >
-                <Stack direction="row" spacing={2} sx={{pt: 1.5, pl: 1, pr: 1, pb: 1}}>
-                    <FacebookShareButton
-                        url={shareUrl}
-                        quote={shareTitle}
-                        hashtag={"#"}
-                        description={shareDesc}
-                        onClick={handleCloseShare}
-                    >
-                        <FacebookIcon size={24} round />
+                <Stack direction="row" spacing={2} sx={{ p: 2 }}>
+                    <FacebookShareButton url={shareUrl} quote={shareTitle} hashtag="#" description={shareDesc} onClick={handleCloseShare}>
+                        <FacebookIcon size={32} round />
                     </FacebookShareButton>
-                    <TwitterShareButton
-                        title={shareTitle}
-                        url={shareUrl}
-                        hashtag={"#"}
-                        onClick={handleCloseShare}
-                    >
-                        <TwitterIcon size={24} round />
+                    <TwitterShareButton title={shareTitle} url={shareUrl} hashtag="#" onClick={handleCloseShare}>
+                        <TwitterIcon size={32} round />
                     </TwitterShareButton>
                 </Stack>
             </Popover>
-            <IconCover>
-                <IconWrapper>
-                    <IconImage src={`https://s1.xrpnft.com/collection/${logoImage}`} />
-                    {accountLogin === collection.account &&
-                        <Link href={`/collection/${slug}/edit`} underline='none'>
-                            <CardOverlay>
-                                <EditIcon
-                                    className="MuiIconEditButton-root"
-                                    // color='primary'
-                                    fontSize="large"
-                                    sx={{ opacity: 0, zIndex: 1 }}
-                                />
-                            </CardOverlay>
-                            <ImageBackdrop className="MuiImageBackdrop-root" />
-                        </Link>
-                    }
-                </IconWrapper>
-            </IconCover>
-            <Stack direction={fullScreen ? "column" : "row"} spacing={2} justifyContent="space-between" sx={{ mt: 1, mb: 1 }}>
-                <Stack direction="row" spacing={1}>
-                    <Typography variant="h1a">{name}</Typography>
-                    {verified === 'yes' &&
-                        <Tooltip title='Verified'>
-                            <VerifiedIcon style={{color: "#4589ff"}} />
-                        </Tooltip>
-                    }
-                </Stack>
-
-                <Stack direction="row" alignItems="center" spacing={1}>
-                    {accountLogin === collection.account &&
-                        <Link href={`/collection/${slug}/edit`} underline='none'>
-                            <Tooltip title="Edit your collection">
-                                <IconButton size='medium' sx={{ padding: 1 }}>
-                                    <EditIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </Link>
-                    }
-
-                    <Tooltip title="Add to watchlist">
-                        {/*<IconButton size='medium' sx={{ padding: 1 }}
-                            onClick={() => {
-                            }}
-                        >
-                            <StarBorderIcon />
-                        </IconButton>*/}
-                        <Watch collection={collection} />
-                    </Tooltip>
-
-                    <Tooltip title="Share">
-                        <IconButton size='medium' sx={{ padding: 1 }}
-                            ref={anchorRef}
-                            onClick={handleOpenShare}
-                        >
-                            <ShareIcon />
-                        </IconButton>
-                    </Tooltip>
-
-                    <IconButton size='medium' sx={{ padding: 1 }}
-                        onClick={() => {
-                        }}
-                    >
-                        <MoreHorizIcon />
-                    </IconButton>
-                </Stack>
-            </Stack>
-
-            <Stack direction="row" sx={{ mt: 2, mb: 3 }} spacing={1}>
-                <Typography variant="s5" style={{ wordBreak: "break-word" }}>By&nbsp;
-                    <Link
-                        color="inherit"
-                        // target="_blank"
-                        href={`/account/${account}`}
-                        // rel="noreferrer noopener nofollow"
-                    >
-                        <Typography variant="s5" color="#33C2FF">{accountName || account.slice(0, 4) + '...' + account.slice(-4)}</Typography>
-                    </Link>
-                    <Typography variant="s10">&nbsp;&nbsp;·&nbsp;Created <Typography variant="s3">{formatMonthYear(created)}</Typography></Typography>
-                </Typography>
-            </Stack>
-
-            <SeeMoreTypography
-                variant="d3"
-                text={description}
-            />
-
-            {/* {description &&
-                <Typography variant="d3" style={{ wordBreak: "break-word" }}>{description}</Typography>
-            } */}
-
-            <Box
-                sx={{
-                    display: "flex",
-                    gap: 1,
-                    py: 1,
-                    overflow: "auto",
-                    width: "100%",
-                    "& > *": {
-                        scrollSnapAlign: "center",
-                    },
-                    "::-webkit-scrollbar": { display: "none" },
-                }}
-            >
-
-                <Stack direction="row" width="100%" sx={{ mt: 2, mb: 3 }} spacing={{xs: 3, sm: 5}} alignItems="flex-end" justifyContent={{xs: 'space-around', sm: 'flex-start'}}>
-                    <Stack>
-                        <Typography variant='d5'>{items}</Typography>
-                        <Typography variant='s13'>items</Typography>
-                    </Stack>
-                    <Stack>
-                        <Typography variant='d5'>{extra.owners}</Typography>
-                        <Typography variant='s13'>owners</Typography>
-                    </Stack>
-                    <Stack>
-                        <Stack direction="row" spacing={0.5} alignItems='center'>
-                            <Icon icon={rippleSolid} width="20" height="20" />
-                            <Typography variant="d5" noWrap>{volume2}</Typography>
-                            <Stack direction="row" sx={{ pb: 1.5 }}>
-                                <Tooltip
-                                    title={
-                                        <Stack alignItems="center">
-                                            <Typography variant="body2">Volume on XRPNFT</Typography>
-                                            <Typography variant="body2">{volume1}</Typography>
-                                        </Stack>
-                                    }
-                                >
-                                    <Icon icon={infoFilled} />
-                                </Tooltip>
-                            </Stack>
-                        </Stack>
-                        <Typography variant='s13' noWrap>total volume</Typography>
-                    </Stack>
-                    <Stack>
-                        <Stack direction="row" spacing={0.5} alignItems='center'>
-                            <Icon icon={rippleSolid} width="20" height="20" />
-                            <Typography variant="d5" noWrap>{fNumber(floorPrice)}</Typography>
-                        </Stack>
-                        <Typography variant='s13' noWrap>floor price</Typography>
-                    </Stack>
-                </Stack>
-            </Box>
-
-            <ExploreNFT collection={collection} />
-
-            {/* <Button component={Link} href="/collection/create" variant="contained" color="primary">
-                Create a collection
-            </Button> */}
-            {/* <Stack sx={{mt:5, minHeight: '50vh'}}>
-            </Stack> */}
         </>
     );
 }

@@ -5,7 +5,10 @@ import { useContext, useState } from 'react';
 import {
     Box,
     Button,
-    Tab
+    Tab,
+    Typography,
+    useTheme,
+    useMediaQuery
 } from "@mui/material";
 
 import {
@@ -20,9 +23,11 @@ import CollectionActivity from './CollectionActivity';
 import { AppContext } from 'src/AppContext';
 
 export default function ExploreNFT({ collection }) {
-    const BASE_URL = 'https://api.xrpnft.com/api'
+    const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { deletingNfts, accountProfile } = useContext(AppContext);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     
     const isAdmin = accountProfile?.admin;
 
@@ -33,59 +38,83 @@ export default function ExploreNFT({ collection }) {
     };
 
     const handleRemoveAll = () => {
-        if (deletingNfts.length ===  0 || !isAdmin) return;
+        if (deletingNfts.length === 0 || !isAdmin) return;
 
-        const nftNames = deletingNfts?.map(nft => `"${nft.meta?.name}"` || `"${nft.meta?.Name}"` || `"No Name"`)?.join(', ');
-        const idsToDelete = deletingNfts?.map(nft => nft._id);
-        
-        if (!confirm(`You're about to delete the following NFTs ${nftNames}?`)) return;
-        
-        axios.delete(`${BASE_URL}/nfts`, {
-            data: {
-                issuer: collection?.account,
-                taxon: collection?.taxon,
-                cid: collection?.uuid,
-                idsToDelete
-            }
-        })
-            .then(res => {
+        const nftNames = deletingNfts
+            ?.map(
+                (nft) =>
+                    `"${nft.meta?.name}"` ||
+                    `"${nft.meta?.Name}"` ||
+                    `"No Name"`
+            )
+            ?.join(', ');
+        const idsToDelete = deletingNfts?.map((nft) => nft._id);
+
+        if (!confirm(`You're about to delete the following NFTs ${nftNames}?`))
+            return;
+
+        axios
+            .delete(`${BASE_URL}/nfts`, {
+                data: {
+                    issuer: collection?.account,
+                    taxon: collection?.taxon,
+                    cid: collection?.uuid,
+                    idsToDelete
+                }
+            })
+            .then((res) => {
                 location.reload();
-            }).catch(err => {
-                console.log("Error on removing nfts!", err);
+            })
+            .catch((err) => {
+                console.log('Error on removing nfts!', err);
             });
-    }
+    };
 
     return (
-        <>
-            <Box sx={{ width: '100%', typography: 'body1' }}>
-                <TabContext value={value}>
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'space-between' }}>
-                        <TabList onChange={handleChange} aria-label="lab API tabs example">
-                            <Tab label="NFTs" value="tab-nfts" />
-                            <Tab label="Activities" value="tab-activities" />
-                        </TabList>
-                        
-                        {isAdmin &&
-                            <Button
-                                variant='outlined'
-                                color='error'
-                                sx={{ mb: 1, py: 0.5 }}
-                                onClick={handleRemoveAll}
-                                disabled={deletingNfts.length === 0}
-                            >
-                                Delete All
-                            </Button>
-                        }
-                    </Box>
-                    <TabPanel value="tab-nfts" sx={{pl:0, pr:0}}>
-                        <NFTs collection={collection} />
-                    </TabPanel>
-                    <TabPanel value="tab-activities" sx={{pl:0, pr:0}}>
-                        {/* <Typography color='red'>Coming soon.</Typography> */}
-                        <CollectionActivity collection={collection} />
-                    </TabPanel>
-                </TabContext>
-            </Box>
-        </>
+        <Box sx={{ width: '100%', typography: 'body1' }}>
+            <TabContext value={value}>
+                <Box sx={{ 
+                    borderBottom: 1, 
+                    borderColor: 'divider', 
+                    display: 'flex', 
+                    flexDirection: isMobile ? 'column' : 'row',
+                    justifyContent: 'space-between',
+                    alignItems: isMobile ? 'stretch' : 'center',
+                    mb: 2
+                }}>
+                    <TabList 
+                        onChange={handleChange} 
+                        aria-label="explore tabs"
+                        variant={isMobile ? "fullWidth" : "standard"}
+                    >
+                        <Tab label="NFTs" value="tab-nfts" />
+                        <Tab label="Activities" value="tab-activities" />
+                    </TabList>
+                    
+                    {isAdmin && (
+                        <Button
+                            variant='contained'
+                            color='error'
+                            sx={{ 
+                                mt: isMobile ? 2 : 0,
+                                py: 1,
+                                px: 2,
+                                minWidth: 120
+                            }}
+                            onClick={handleRemoveAll}
+                            disabled={deletingNfts.length === 0}
+                        >
+                            Delete All
+                        </Button>
+                    )}
+                </Box>
+                <TabPanel value="tab-nfts" sx={{p: 0}}>
+                    <NFTs collection={collection} />
+                </TabPanel>
+                <TabPanel value="tab-activities" sx={{p: 0}}>
+                    <CollectionActivity collection={collection} />
+                </TabPanel>
+            </TabContext>
+        </Box>
     );
-};
+}
