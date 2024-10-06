@@ -26,76 +26,12 @@ const OverviewWrapper = styled(Box)(
 `
 );
 
-const BannerWrapper = styled('div')(
-    ({ theme }) => `
-    position: relative;
-    max-height: 320px;
-    overflow: hidden;
-`
-);
-
-const BannerImage = styled('img')(
-    ({ theme }) => `
-    position: absolute;
-    top:0;
-    left:0;
-    bottom:0;
-    right:0;
-    inset: 0px;
-    box-sizing: border-box;
-    padding: 0px;
-    border: none;
-    margin: auto;
-    display: block;
-    width: 0px; height: 0px;
-    min-width: 100%;
-    max-width: 100%;
-    min-height: 100%;
-    max-height: 100%;
-    object-fit: cover;
-  `
-);
-
 export default function Overview({data}) {
-    const { darkMode } = useContext(AppContext);
-    // "collection": {
-    //     "_id": "6310c27cf81fe46884ef89ba",
-    //     "account": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
-    //     "name": "collection1",
-    //     "slug": "collection-1",
-    //     "description": "",
-    //     "logoImage": "1662042748001_12e8a38273134f0e87f1039958d5b132.png",
-    //     "featuredImage": "1662042748001_70910cc4c6134845bf84cf262e696d05.png",
-    //     "bannerImage": "1662042748002_b32b442dea454998aa29ab61c8fa0887.jpg",
-    //     "created": 1662042748016,
-    //     "creator": "xrpnft.com",
-    //     "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
-    // }
-    const collection = data.collection;
-
-    let default_banner = darkMode?'/static/banner_black.png':'/static/banner_white.png';
-
- // const bannerImage = collection.bannerImage?`https://s1.xrpnft.com/collection/${collection.bannerImage}`:default_banner;
-    const bannerImage = darkMode?'/static/banner_black.png':'/static/banner_white.png';  //added default banner. Disable custom banner images above for now.
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
 
             <Header />
-
-            <BannerWrapper>
-                <div style={{
-                    height: 0,
-                    paddingBottom: '25%',
-                }}
-                >
-                    <BannerImage
-                        alt='Banner Image'
-                        src={bannerImage}
-                        decoding="async"
-                    />
-                </div>
-            </BannerWrapper>
 
             <Container maxWidth="xxl">
                 <Collection data={data}/>
