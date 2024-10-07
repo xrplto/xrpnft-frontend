@@ -30,6 +30,7 @@ import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
 import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import CollectionsIcon from '@mui/icons-material/Collections';
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 
 // Iconify Icons
 import { Icon } from '@iconify/react';
@@ -41,7 +42,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import NFTLogo from './NFTLogo';
+import NFTLogo from './Logo';
 import Wallet from './Wallet';
 import NavSearchBar from './NavSearchBar';
 
@@ -50,14 +51,14 @@ const HeaderWrapper = styled(AppBar)(({ theme }) => ({
     background: alpha(theme.palette.background.paper, 0.7),
     backdropFilter: 'blur(10px)',
     borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
     color: theme.palette.text.primary,
     '&:hover': {
-        backgroundColor: alpha(theme.palette.primary.main, 0.1),
-    },
+        backgroundColor: alpha(theme.palette.primary.main, 0.1)
+    }
 }));
 
 export default function Header() {
@@ -176,22 +177,51 @@ export default function Header() {
                                 aria-label="search"
                                 onClick={handleFullSearch}
                                 sx={{
-                                    color: 'primary.main',
+                                    color: 'primary.main'
                                 }}
                             >
                                 <SearchIcon />
                             </IconButton>
                         )}
-                        {!fullSearch && <Wallet />}
+                        {!fullSearch && (
+                            <Wallet>
+                                {({ openWalletConnect }) => (
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={openWalletConnect}
+                                        startIcon={<AccountBalanceWalletOutlinedIcon />}
+                                        sx={{
+                                            mr: 2,
+                                            textTransform: 'none',
+                                            '&:hover': {
+                                                backgroundColor: alpha(
+                                                    theme.palette.primary.main,
+                                                    0.8
+                                                )
+                                            }
+                                        }}
+                                    >
+                                        Connect
+                                    </Button>
+                                )}
+                            </Wallet>
+                        )}
                         {!isMobile && (
                             <IconButton
                                 onClick={toggleTheme}
                                 sx={{
-                                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                    bgcolor: alpha(
+                                        theme.palette.primary.main,
+                                        0.1
+                                    ),
                                     color: 'primary.main',
                                     '&:hover': {
-                                        bgcolor: alpha(theme.palette.primary.main, 0.2),
-                                    },
+                                        bgcolor: alpha(
+                                            theme.palette.primary.main,
+                                            0.2
+                                        )
+                                    }
                                 }}
                             >
                                 {darkMode ? (
@@ -218,11 +248,17 @@ export default function Header() {
                                 aria-haspopup="true"
                                 onClick={handleOpenNavMenu}
                                 sx={{
-                                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                    bgcolor: alpha(
+                                        theme.palette.primary.main,
+                                        0.1
+                                    ),
                                     color: 'primary.main',
                                     '&:hover': {
-                                        bgcolor: alpha(theme.palette.primary.main, 0.2),
-                                    },
+                                        bgcolor: alpha(
+                                            theme.palette.primary.main,
+                                            0.2
+                                        )
+                                    }
                                 }}
                             >
                                 <MenuIcon />
@@ -244,10 +280,16 @@ export default function Header() {
                                 sx={{
                                     display: { xs: 'block', md: 'none' },
                                     '& .MuiPaper-root': {
-                                        background: alpha(theme.palette.background.paper, 0.9),
+                                        background: alpha(
+                                            theme.palette.background.paper,
+                                            0.9
+                                        ),
                                         backdropFilter: 'blur(10px)',
-                                        boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
-                                    },
+                                        boxShadow: `0 8px 32px 0 ${alpha(
+                                            theme.palette.primary.main,
+                                            0.1
+                                        )}`
+                                    }
                                 }}
                             >
                                 {/* Menu items remain the same */}

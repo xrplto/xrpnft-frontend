@@ -12,9 +12,11 @@ import {
     IconButton,
     Link,
     MenuItem,
-    Popover,
+    Modal,
+    Box,
     Stack,
-    Typography
+    Typography,
+    Tooltip
 } from '@mui/material';
 import GridOnIcon from '@mui/icons-material/GridOn';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
@@ -24,6 +26,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import ImportExportIcon from '@mui/icons-material/ImportExport';
+import { styled, useTheme } from '@mui/material/styles';
 
 // Context
 import { useContext } from 'react';
@@ -39,7 +42,35 @@ import { getHashIcon } from 'src/utils/parse';
 // Components
 import LoginDialog from './LoginDialog';
 
+// New styled components
+const StyledModal = styled(Modal)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const StyledBox = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[10],
+  padding: theme.spacing(4),
+  width: 380,
+  maxWidth: '90vw',
+  maxHeight: '90vh',
+  overflowY: 'auto',
+}));
+
+const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
+  borderRadius: theme.shape.borderRadius,
+  margin: theme.spacing(1, 0),
+  padding: theme.spacing(1.5, 2),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.primary.main, 0.08),
+  },
+}));
+
 export default function Wallet() {
+    const theme = useTheme();
     // https://github.com/mui/material-ui/issues/10000
     const BASE_URL = 'https://api.xrpnft.com/api';
     const anchorRef = useRef(null);
@@ -207,258 +238,138 @@ export default function Wallet() {
 
     return (
         <>
-            {/* <ChooseAccountDialog /> */}
+            {accountLogin ? (
+                <Tooltip title="Account">
+                    <IconButton
+                        ref={anchorRef}
+                        onClick={handleOpen}
+                        sx={{
+                            padding: 0.5,
+                            border: `2px solid ${theme.palette.primary.main}`,
+                            '&:hover': {
+                                backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                            },
+                        }}
+                    >
+                        <Badge color="primary" badgeContent={acceptNfts + orphanedOffers}>
+                            <Avatar
+                                variant={accountLogo ? "circular" : "rounded"}
+                                alt="user"
+                                src={logoImageUrl || getHashIcon(accountLogin)}
+                                sx={{ width: 32, height: 32 }}
+                            />
+                        </Badge>
+                    </IconButton>
+                </Tooltip>
+            ) : (
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleOpen}
+                    startIcon={<Icon icon="mdi:wallet" />}
+                    sx={{
+                        py: 0.5,  // Reduce vertical padding
+                        px: 2,    // Adjust horizontal padding as needed
+                    }}
+                >
+                    Connect
+                </Button>
+            )}
 
-            <IconButton
-                ref={anchorRef}
-                onClick={handleOpen}
-                // onMouseOver={handleOpen}
-            >
-                <Badge color="primary" badgeContent={acceptNfts + orphanedOffers}>
-                    {logoImageUrl?(
-                        <Avatar
-                            variant={accountLogo?"":"square"}
-                            alt="user" src={logoImageUrl}
-                            sx={{ width: 32, height: 32 }}
-                        />
-                    ):(
-                        <Icon icon={userLock}/>
-                    )}
-                </Badge>
-            </IconButton>
-
-            <Popover
+            <StyledModal
                 open={open}
                 onClose={handleClose}
-                anchorEl={anchorRef.current}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                PaperProps={{
-                    sx: {
-                        mt: 1.5,
-                        ml: 0.5,
-                        overflow: 'inherit',
-                        // boxShadow: (theme) => theme.customShadows.z20,
-                        border: (theme) => `solid 1px ${alpha('#919EAB', 0.08)}`,
-                        width: 220,
-                    }
-                }}
+                aria-labelledby="wallet-modal-title"
+                aria-describedby="wallet-modal-description"
             >
-                {accountLogin ? (
+                <StyledBox>
+                    {accountLogin ? (
                         <>
-                            {/* {acceptNfts > 0 &&
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    // target="_blank"
-                                    href={`/account/${accountLogin}/accept`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <MenuItem
-                                        key="account_accept_nft_offer"
-                                        sx={{ typography: 'body2', py: 2, px: 2.5, mt: 1 }}
-                                        onClick={()=>setOpen(false)}
+                            <Typography variant="h5" component="h2" gutterBottom color="primary" sx={{ mb: 3 }}>
+                                Account Dashboard
+                            </Typography>
+                            <StyledMenuItem
+                                key="account_profile"
+                                onClick={() => { setOpen(false); window.location.href = `/account/${accountLogin}`; }}
+                            >
+                                <Stack direction='row' spacing={2} alignItems='center'>
+                                    <Badge 
+                                        color="primary" 
+                                        badgeContent={acceptNfts + orphanedOffers}
+                                        sx={{
+                                            '& .MuiBadge-badge': {
+                                                backgroundColor: theme.palette.secondary.main,
+                                                color: theme.palette.secondary.contrastText,
+                                            },
+                                        }}
                                     >
-                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                            <Badge color="primary" badgeContent={acceptNfts}>
-                                                <AssignmentReturnedIcon sx={{ width: 24, height: 24 }}/>
-                                            </Badge>
-                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Accept NFTs</Typography>
-                                        </Stack>
-                                    </MenuItem>
-                                </Link>
-                            }
-                            {orphanedOffers > 0 &&
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    // target="_blank"
-                                    href={`/account/${accountLogin}/orphaned`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <MenuItem
-                                        key="account_orphaned_offers"
-                                        sx={{ typography: 'body2', py: 2, px: 2.5, mt: 1 }}
-                                        onClick={()=>setOpen(false)}
+                                        <AccountBoxIcon color="primary" fontSize="large" />
+                                    </Badge>
+                                    <Typography variant='body1'>Profile</Typography>
+                                </Stack>
+                            </StyledMenuItem>
+                            {/* Add other menu items here with similar styling */}
+                            <Divider sx={{ my: 3 }} />
+                            <Stack spacing={2} alignItems='center' sx={{ pt: 2, pb: 2 }}>
+                                <Avatar
+                                    alt="user"
+                                    src={logoImageUrl || getHashIcon(accountLogin)}
+                                    sx={{ width: 64, height: 64, mb: 2 }}
+                                />
+                                <Typography variant="subtitle1" color="text.secondary">
+                                    {accountLogin}
+                                </Typography>
+                                <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleLogout}
+                                        startIcon={<Icon icon="mdi:logout" />}
+                                        sx={{
+                                            backgroundColor: theme.palette.error.main,
+                                            color: theme.palette.error.contrastText,
+                                            '&:hover': {
+                                                backgroundColor: theme.palette.error.dark,
+                                            },
+                                        }}
                                     >
-                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                            <Badge color="primary" badgeContent={orphanedOffers}>
-                                                <DeleteSweepIcon sx={{ width: 24, height: 24 }}/>
-                                            </Badge>
-                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Orphaned Offers</Typography>
-                                        </Stack>
-                                    </MenuItem>
-                                </Link>
-                            } */}
-                            <Link
-                                underline="none"
-                                color="inherit"
-                                // target="_blank"
-                                href={`/account/${accountLogin}`}
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <MenuItem
-                                    key="account_profile"
-                                    sx={{ typography: 'body2', py: 2, px: 2.5 }}
-                                    onClick={()=>setOpen(false)}
-                                >
-                                    <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                        <Badge color="primary" badgeContent={acceptNfts+orphanedOffers}>
-                                            <AccountBoxIcon />
-                                        </Badge>
-                                        <Typography variant='s3' style={{marginLeft: '10px'}}>Profile</Typography>
-                                    </Stack>
-                                </MenuItem>
-                            </Link>
-                            {isAdmin > 0 &&
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    // target="_blank"
-                                    href="/collection/import"
-                                    rel="noreferrer noopener nofollow"
-                                >
-
-                                
-                                    <MenuItem
-                                        key="import_collection"
-                                        sx={{ typography: 'body2', py: 2, px: 2.5 }}
-                                        onClick={()=>setOpen(false)}
-                                    >
-                                        <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                            <ImportExportIcon />
-                                            <Typography variant='s3' style={{marginLeft: '10px'}}>Import Collection</Typography>
-                                        </Stack>
-                            </MenuItem>  
-                                </Link>
-                            }
-                            <Link
-                                underline="none"
-                                color="inherit"
-                                // target="_blank"
-                                href="/my-collections"
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <MenuItem
-                                    key="collection"
-                                    sx={{ typography: 'body2', py: 2, px: 2.5 }}
-                                    onClick={()=>setOpen(false)}
-                                >
-                                    <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                        <GridOnIcon />
-                                        <Typography variant='s3' style={{marginLeft: '10px'}}>My Collections</Typography>
-                                    </Stack>
-                                </MenuItem>
-                            </Link>
-                            <Link
-                                underline="none"
-                                color="inherit"
-                                // target="_blank"
-                                href="/create"
-                                rel="noreferrer noopener nofollow"
-                            >
-                                {/*
-                                <MenuItem
-                                    key="create-nft"
-                                    sx={{ typography: 'body2', py: 2, px: 2.5 }}
-                                    onClick={()=>setOpen(false)}
-                                >
-                                    <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                        <AddPhotoAlternateIcon />
-                                        <Typography variant='s3' style={{marginLeft: '10px'}}>Create a NFT</Typography>
-                                    </Stack>
-                        </MenuItem>  */}
-                            </Link>
-                            <Link
-                                underline="none"
-                                color="inherit"
-                                // target="_blank"
-                                href={`/bulks`}
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <MenuItem
-                                    key="manage-bulks"
-                                    sx={{ typography: 'body2', py: 2, px: 2.5 }}
-                                    onClick={()=>setOpen(false)}
-                                >
-                                    <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                        <PhotoLibraryIcon />
-                                        <Typography variant='s3' style={{marginLeft: '10px'}}>Manage Bulks</Typography>
-                                    </Stack>
-                                </MenuItem>
-                            </Link>
-                            <Link
-                                underline="none"
-                                color="inherit"
-                                // target="_blank"
-                                href={`/setting`}
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <MenuItem
-                                    key="settings"
-                                    sx={{ typography: 'body2', py: 2, px: 2.5 }}
-                                    onClick={()=>setOpen(false)}
-                                >
-                                    <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                        <SettingsIcon />
-                                        <Typography variant='s3' style={{marginLeft: '10px'}}>Settings</Typography>
-                                    </Stack>
-                                </MenuItem>
-                            </Link>
-                            <Divider />
-                            <Stack spacing={1} alignItems='center' sx={{pt: 1, pb: 2}}>
-                                {logoImageUrl?(
-                                    <Avatar
-                                        variant={accountLogo?"":"square"}
-                                        alt="user" src={logoImageUrl}
-                                        sx={{ width: 32, height: 32 }}
-                                    />
-                                ):(
-                                    <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ mr:1, width: 32, height: 32 }}/>
-                                )}
-                                <Link
-                                    color="inherit"
-                                    target="_blank"
-                                    href={`https://bithomp.com/explorer/${accountLogin}`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <Typography align="center" style={{ wordWrap: "break-word" }} variant="body2" sx={{ width: 180, color: 'text.secondary' }} >
-                                        {accountLogin}
-                                    </Typography>
-                                </Link>
-
-                                {/* <CopyToClipboard text={accountLogin} onCopy={()=>{}}>
-                                    <Tooltip title='Click to copy your address'>
-                                        <IconButton>
-                                            <ContentCopyIcon fontSize="small" />
-                                        </IconButton>
-                                    </Tooltip>
-                                </CopyToClipboard> */}
-                                <Stack direction="row" spacing={1}>
-                                    <Button variant="contained" onClick={handleLogout} size="small">
                                         Logout
                                     </Button>
-                                    <CopyToClipboard text={accountLogin} onCopy={()=>{}}>
-                                        <Button variant="outlined" size="small">
-                                            Copy
+                                    <CopyToClipboard text={accountLogin} onCopy={() => {}}>
+                                        <Button
+                                            variant="outlined"
+                                            startIcon={<Icon icon="mdi:content-copy" />}
+                                            sx={{
+                                                borderColor: theme.palette.primary.main,
+                                                color: theme.palette.primary.main,
+                                                '&:hover': {
+                                                    backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                                                },
+                                            }}
+                                        >
+                                            Copy Address
                                         </Button>
                                     </CopyToClipboard>
                                 </Stack>
                             </Stack>
                         </>
                     ) : (
-                        <MenuItem
-                            key="xumm"
-                            onClick={handleLogin}
-                            sx={{ typography: 'body2', py: 2, px: 2.5 }}
-                        >
-                            <Stack direction='row' spacing={1} sx={{mr: 2}} alignItems='center'>
-                                <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ mr:1, width: 24, height: 24 }}/>
-                                <Typography variant='s3' style={{marginLeft: '10px'}}>XUMM Login</Typography>
-                            </Stack>
-                        </MenuItem>
-                )}
-            </Popover>
+                        <>
+                            <Typography variant="h5" component="h2" gutterBottom color="primary" sx={{ mb: 3 }}>
+                                Connect Wallet
+                            </Typography>
+                            <StyledMenuItem
+                                key="xumm"
+                                onClick={handleLogin}
+                            >
+                                <Stack direction='row' spacing={2} alignItems='center'>
+                                    <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ width: 40, height: 40 }} />
+                                    <Typography variant='body1'>Connect with Xaman</Typography>
+                                </Stack>
+                            </StyledMenuItem>
+                        </>
+                    )}
+                </StyledBox>
+            </StyledModal>
 
             <LoginDialog
                 open={openLogin}

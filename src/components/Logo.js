@@ -1,50 +1,48 @@
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-
-// Material
-import {
-    useTheme, useMediaQuery,
-    Box,
-    Link
-} from '@mui/material';
-
-// Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
+import { Typography, Link, useTheme, Box } from '@mui/material';
 
 function Logo() {
-    /*
-        xs: 0,
-        mobile: 450,
-        sm: 600,
-        md: 960,
-        lg: 1280,
-        xl: 1840
-    */
     const theme = useTheme();
     const { darkMode } = useContext(AppContext);
-    // const isMobile = useMediaQuery(theme.breakpoints.down('mobile'));
-
-    const img_dark = "/logo/xrpnft-logo-black.svg";
-    const img_light = "/logo/xrpnft-logo-white.svg";
-    // const img_mobile_dark = "/logo/logo-mobile-dark.svg";
-    // const img_mobile_light = "/logo/logo-mobile-light.svg";
-
-    let img = darkMode?img_light:img_dark;
-    // if (isMobile)
-    //     img = darkMode?img_mobile_light:img_mobile_dark;
 
     return (
         <Link
             href="/"
-            sx={{ pl: 0, pr: 0, py: 3, display: 'inline-flex' }}
-            underline="none"
+            sx={{ 
+                pl: 0, 
+                pr: 0, 
+                py: 0.5, 
+                display: 'inline-flex',
+                textDecoration: 'none',
+                alignItems: 'center'
+            }}
             rel="noreferrer noopener nofollow"
         >
-            <Box component="img" src={img} sx={{ height: 48 }} />
-            {/* <LazyLoadImage
-                src={img}
-                height={64}
-            /> */}
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography 
+                    variant="h3" 
+                    component="span"
+                    sx={{ 
+                        fontWeight: 1000,
+                        color: darkMode ? 'white' : 'black',
+                        letterSpacing: '0.05em',
+                    }}
+                >
+                    XRP
+                </Typography>
+                <Typography 
+                    variant="h3" 
+                    component="span"
+                    sx={{ 
+                        fontWeight: 1000,
+                        color: theme.palette.primary.main,
+                        letterSpacing: '0.05em',
+                    }}
+                >
+                    NFT
+                </Typography>
+            </Box>
         </Link>
     );
 }
