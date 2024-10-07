@@ -49,8 +49,8 @@ const HeaderWrapper = styled(AppBar)(({ theme }) => ({
     width: '100%',
     background: alpha(theme.palette.background.paper, 0.7),
     backdropFilter: 'blur(10px)',
-    borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.common.black, 0.1)}`,
+    borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -175,6 +175,9 @@ export default function Header() {
                             <IconButton
                                 aria-label="search"
                                 onClick={handleFullSearch}
+                                sx={{
+                                    color: 'primary.main',
+                                }}
                             >
                                 <SearchIcon />
                             </IconButton>
@@ -185,6 +188,7 @@ export default function Header() {
                                 onClick={toggleTheme}
                                 sx={{
                                     bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                    color: 'primary.main',
                                     '&:hover': {
                                         bgcolor: alpha(theme.palette.primary.main, 0.2),
                                     },
@@ -215,6 +219,7 @@ export default function Header() {
                                 onClick={handleOpenNavMenu}
                                 sx={{
                                     bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                    color: 'primary.main',
                                     '&:hover': {
                                         bgcolor: alpha(theme.palette.primary.main, 0.2),
                                     },
@@ -241,7 +246,7 @@ export default function Header() {
                                     '& .MuiPaper-root': {
                                         background: alpha(theme.palette.background.paper, 0.9),
                                         backdropFilter: 'blur(10px)',
-                                        boxShadow: `0 8px 32px 0 ${alpha(theme.palette.common.black, 0.1)}`,
+                                        boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
                                     },
                                 }}
                             >

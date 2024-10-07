@@ -12,6 +12,7 @@ import {
     Stack,
     Tooltip,
     Typography,
+    useTheme
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import FactCheckIcon from '@mui/icons-material/FactCheck';
@@ -24,17 +25,14 @@ import infoFilled from '@iconify/icons-ep/info-filled';
 // Components
 
 export default function FilterDetail({ boughtWithMints, onSaleCount, filter, setFilter, subFilter, setSubFilter, setPage }) {
+    const theme = useTheme();
 
     const handleFlagChange = (e) => {
         const value = e.target.value;
         let newFilter = filter ^ value;
         if (value === '4') {
-            // 8 4 2 1
-            // 0 1 1 1
             newFilter &= 0x07;
         } else if (value === '8') {
-            // 8 4 2 1
-            // 1 0 1 1
             newFilter &= 0x0B;
         }
         setFilter(newFilter);
@@ -52,57 +50,67 @@ export default function FilterDetail({ boughtWithMints, onSaleCount, filter, set
             <Stack sx={{ pr: 0 }}>
                 <Accordion defaultExpanded>
                     <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
+                        expandIcon={<ExpandMoreIcon color="primary" />}
                         aria-controls="panel2bh-content"
                         id="panel2bh-header"
                     >
-                        <Stack spacing={2} direction='row'>
-                            <FactCheckIcon />
-                            <Typography variant='s3'>Status</Typography>
+                        <Stack spacing={2} direction='row' alignItems="center">
+                            <FactCheckIcon color="primary" />
+                            <Typography variant='s3' color="primary.main">Status</Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
                         <FormGroup sx={{ flexDirection: 'col' }}>
-                            {/* <FormControlLabel
-                                label={
-                                    <Stack direction="row" spacing={0.5}>
-                                        <Typography variant='s3'>Recently Minted {boughtWithMints > 0 && <Typography variant='s7'>({boughtWithMints})</Typography>}</Typography>
-                                        <Tooltip title="Display recently Minted NFTs and being transferred to users. Or NFTs that pending to be accepted by users.">
-                                            <Icon icon={infoFilled} />
-                                        </Tooltip>
-                                    </Stack>
-                                }
-                                value={2}
-                                control={<Checkbox checked={(filter & 2) !== 0} onChange={handleFlagChange} />}
-                            /> */}
-
                             <FormControlLabel
-                                label={<Typography variant='s3'>On Sale {onSaleCount > 0 && <Typography variant='s7'>({onSaleCount})</Typography>}</Typography>}
+                                label={
+                                    <Typography variant='s3'>
+                                        On Sale{' '}
+                                        {onSaleCount > 0 && (
+                                            <Typography variant='s7' color="text.secondary">
+                                                ({onSaleCount})
+                                            </Typography>
+                                        )}
+                                    </Typography>
+                                }
                                 value={4}
-                                control={<Checkbox checked={(filter & 4) !== 0} onChange={handleFlagChange} />}
+                                control={
+                                    <Checkbox 
+                                        checked={(filter & 4) !== 0} 
+                                        onChange={handleFlagChange}
+                                        color="primary"
+                                    />
+                                }
                             />
 
                             {(filter & 0x04) !== 0 &&
                                 <FormControl sx={{ ml: 5 }}>
-                                    {/* <FormLabel id="on-sale-sub-filter">On Sale sub</FormLabel> */}
                                     <RadioGroup
                                         aria-labelledby="demo-controlled-radio-buttons-group"
                                         name="controlled-radio-buttons-group"
                                         value={subFilter}
                                         onChange={handleOnSaleFlagChange}
                                     >
-                                        <FormControlLabel value="pricenoxrp" control={<Radio />} label="Price (noXRP)" />
-                                        <FormControlLabel value="pricexrpasc" control={<Radio />} label="Price (XRP, Asc)" />
-                                        <FormControlLabel value="pricexrpdesc" control={<Radio />} label="Price (XRP, Desc)" />
+                                        <FormControlLabel 
+                                            value="pricenoxrp" 
+                                            control={<Radio color="primary" />} 
+                                            label="Price (noXRP)" 
+                                        />
+                                        <FormControlLabel 
+                                            value="pricexrpasc" 
+                                            control={<Radio color="primary" />} 
+                                            label="Price (XRP, Asc)" 
+                                        />
+                                        <FormControlLabel 
+                                            value="pricexrpdesc" 
+                                            control={<Radio color="primary" />} 
+                                            label="Price (XRP, Desc)" 
+                                        />
                                     </RadioGroup>
                                 </FormControl>
                             }
                         </FormGroup>
-
-
                     </AccordionDetails>
                 </Accordion>
-
             </Stack>
         </>
     );

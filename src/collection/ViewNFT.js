@@ -38,7 +38,6 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import ExploreNFT from 'src/explore';
-// import CollectionActivity from 'src/explore/CollectionActivity';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
 import Watch from 'src/components/Watch';
 
@@ -47,8 +46,8 @@ const IconCover = styled('div')(({ theme }) => ({
     height: 220,
     position: 'relative',
     overflow: 'hidden',
-    borderRadius: theme.shape.borderRadius * 2, // Add rounded corners
-    boxShadow: `0 8px 32px 0 ${alpha('#0095D9', 0.2)}`,
+    borderRadius: theme.shape.borderRadius * 2,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
     [theme.breakpoints.down('sm')]: {
         width: 150,
         height: 150
@@ -59,8 +58,9 @@ const IconImage = styled('img')({
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    borderRadius: 'inherit' // Inherit border radius from parent
+    borderRadius: 'inherit'
 });
+
 
 const StatItem = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -75,11 +75,11 @@ const GlassBox = styled(Box)(({ theme }) => ({
     backdropFilter: 'blur(10px)',
     borderRadius: theme.shape.borderRadius * 2,
     padding: theme.spacing(3),
-    boxShadow: `0 8px 32px 0 ${alpha('#0095D9', 0.2)}`,
-    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
     '&:hover': {
         background: alpha(theme.palette.background.paper, 0.15),
-        boxShadow: `0 8px 32px 0 ${alpha('#0095D9', 0.3)}`
+        boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.3)}`
     }
 }));
 
@@ -94,7 +94,6 @@ const StyledDivider = styled(Divider)(({ theme }) => ({
     )} 100%)`
 }));
 
-// Add this new styled component for the background image
 const BackgroundImage = styled('div')(({ theme }) => ({
     position: 'absolute',
     top: 0,
@@ -109,7 +108,6 @@ const BackgroundImage = styled('div')(({ theme }) => ({
     zIndex: -1
 }));
 
-// Add this new styled component for the background image
 const BackgroundBlur = styled('div')(({ theme }) => ({
     position: 'absolute',
     top: 0,
@@ -168,7 +166,6 @@ export default function ViewNFT({ collection }) {
                     mb: 6,
                     mx: { xs: 2, md: 4 },
                     mt: { xs: 10, md: 12 }
-                    // Keep this square (no borderRadius)
                 }}
             >
                 <BackgroundImage
@@ -207,7 +204,7 @@ export default function ViewNFT({ collection }) {
                             border: 'none',
                             boxShadow: (theme) =>
                                 `0 10px 30px ${alpha(
-                                    theme.palette.info.light,
+                                    theme.palette.primary.main,
                                     0.3
                                 )}`
                         }}
@@ -236,7 +233,7 @@ export default function ViewNFT({ collection }) {
                                 spacing={1}
                                 alignItems="center"
                             >
-                                <Typography variant="h3" fontWeight="bold">
+                                <Typography variant="h3" fontWeight="bold" color="primary.main">
                                     {name}
                                 </Typography>
                                 {verified === 'yes' && (
@@ -298,7 +295,7 @@ export default function ViewNFT({ collection }) {
 
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 3 }}>
                             <StatItem>
-                                <Typography variant="h6" fontWeight="bold">
+                                <Typography variant="h6" fontWeight="bold" color="primary.main">
                                     {items}
                                 </Typography>
                                 <Typography
@@ -309,7 +306,7 @@ export default function ViewNFT({ collection }) {
                                 </Typography>
                             </StatItem>
                             <StatItem>
-                                <Typography variant="h6" fontWeight="bold">
+                                <Typography variant="h6" fontWeight="bold" color="primary.main">
                                     {extra.owners}
                                 </Typography>
                                 <Typography
@@ -329,11 +326,13 @@ export default function ViewNFT({ collection }) {
                                         icon={rippleSolid}
                                         width="20"
                                         height="20"
+                                        color={theme.palette.primary.main}
                                     />
                                     <Typography
                                         variant="h6"
                                         fontWeight="bold"
                                         noWrap
+                                        color="primary.main"
                                     >
                                         {volume2}
                                     </Typography>
@@ -348,7 +347,8 @@ export default function ViewNFT({ collection }) {
                                             icon={infoFilled}
                                             style={{
                                                 cursor: 'pointer',
-                                                fontSize: '16px'
+                                                fontSize: '16px',
+                                                color: theme.palette.primary.main
                                             }}
                                         />
                                     </Tooltip>
@@ -371,11 +371,13 @@ export default function ViewNFT({ collection }) {
                                         icon={rippleSolid}
                                         width="20"
                                         height="20"
+                                        color={theme.palette.primary.main}
                                     />
                                     <Typography
                                         variant="h6"
                                         fontWeight="bold"
                                         noWrap
+                                        color="primary.main"
                                     >
                                         {fNumber(floorPrice)}
                                     </Typography>

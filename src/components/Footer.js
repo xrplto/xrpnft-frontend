@@ -3,7 +3,7 @@ import { AppContext } from 'src/AppContext';
 
 // Material
 import { Box, Link, Stack, Typography, IconButton } from '@mui/material';
-import { alpha, styled } from '@mui/material/styles';
+import { alpha, styled, useTheme } from '@mui/material/styles';
 import Glass from '@mui/material/Paper';
 
 // Icons
@@ -12,28 +12,34 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
-// Remove the GlassPanel styled component as we won't need it anymore
+const FooterWrapper = styled(Box)(({ theme }) => ({
+    width: '100%',
+    background: alpha(theme.palette.background.paper, 0.7),
+    backdropFilter: 'blur(10px)',
+    borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+    boxShadow: `0 -8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
+    padding: theme.spacing(3),
+    marginTop: 'auto' // This will push the footer to the bottom
+}));
 
-const FooterWrapper = styled(Box)(
-    ({ theme }) => `
-    width: 100%;
-    background-color: ${theme.palette.background.paper};
-    padding: ${theme.spacing(3)};
-    margin-top: auto; // This will push the footer to the bottom
-`
-);
+const SocialIcon = styled(IconButton)(({ theme }) => ({
+    color: theme.palette.text.secondary,
+    '&:hover': {
+        color: theme.palette.primary.main,
+        backgroundColor: alpha(theme.palette.primary.main, 0.1),
+    },
+}));
 
-const SocialIcon = styled(IconButton)(
-    ({ theme }) => `
-    color: ${theme.palette.text.secondary};
-    &:hover {
-        color: ${theme.palette.primary.main};
-    }
-`
-);
+const StyledLink = styled(Link)(({ theme }) => ({
+    color: theme.palette.text.primary,
+    '&:hover': {
+        color: theme.palette.primary.main,
+    },
+}));
 
 export default function Footer() {
     const { darkMode } = useContext(AppContext);
+    const theme = useTheme();
 
     const img = darkMode
         ? '/logo/xrpnft-logo-white.svg'
@@ -57,19 +63,15 @@ export default function Footer() {
                     />
                 </Link>
                 <Stack direction="row" spacing={2}>
-                    <Link href="/explore" underline="hover" color="inherit">
+                    <StyledLink href="/explore" underline="hover">
                         <Typography variant="body2">Explore</Typography>
-                    </Link>
-                    <Link
-                        href="/collections"
-                        underline="hover"
-                        color="inherit"
-                    >
+                    </StyledLink>
+                    <StyledLink href="/collections" underline="hover">
                         <Typography variant="body2">Collections</Typography>
-                    </Link>
-                    <Link href="/create" underline="hover" color="inherit">
+                    </StyledLink>
+                    <StyledLink href="/create" underline="hover">
                         <Typography variant="body2">Create</Typography>
-                    </Link>
+                    </StyledLink>
                 </Stack>
                 <Stack direction="row" spacing={1}>
                     <SocialIcon

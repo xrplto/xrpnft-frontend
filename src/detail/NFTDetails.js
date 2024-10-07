@@ -11,7 +11,8 @@ import {
     Link,
     Stack,
     Tooltip,
-    Typography
+    Typography,
+    useTheme  // Add this import
 } from '@mui/material';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -47,8 +48,8 @@ const GlassPanel = styled(Glass)(({ theme }) => ({
     backdropFilter: 'blur(10px)',
     borderRadius: theme.shape.borderRadius * 2,
     padding: theme.spacing(3),
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.common.black, 0.1)}`,
-    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`
 }));
 
 function getProperties(meta) {
@@ -98,6 +99,7 @@ function getProperties(meta) {
 
 export default function NFTDetails({ nft }) {
     const { accountProfile, openSnackbar } = useContext(AppContext);
+    const theme = useTheme();  // Add this line to get the theme
 
     const {
         uuid,
@@ -144,7 +146,7 @@ export default function NFTDetails({ nft }) {
                 <Stack>
                     <Accordion defaultExpanded={!hasProperties}>
                         <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
+                            expandIcon={<ExpandMoreIcon color="primary" />}
                             aria-controls="panel2bh-content"
                             id="panel2bh-header"
                         >
@@ -153,8 +155,8 @@ export default function NFTDetails({ nft }) {
                                 direction="row"
                                 borderRadius={20}
                             >
-                                <DescriptionIcon />
-                                <Typography variant="s16">
+                                <DescriptionIcon color="primary" />
+                                <Typography variant="s16" color="primary.main">
                                     Description
                                 </Typography>
                             </Stack>
@@ -174,15 +176,16 @@ export default function NFTDetails({ nft }) {
                     <Accordion defaultExpanded={hasProperties}>
                         <AccordionSummary
                             id="panel3bh-header"
-                            expandIcon={<ExpandMoreIcon />}
+                            expandIcon={<ExpandMoreIcon color="primary" />}
                             aria-controls="panel3bh-content"
                         >
                             <Stack spacing={2} direction="row">
                                 <Icon
                                     icon="majesticons:checkbox-list-detail-line"
                                     fontSize={25}
+                                    style={{ color: theme.palette.primary.main }}
                                 />
-                                <Typography variant="s16">
+                                <Typography variant="s16" color="primary.main">
                                     Properties
                                 </Typography>
                             </Stack>
@@ -204,13 +207,15 @@ export default function NFTDetails({ nft }) {
                 <Stack>
                     <Accordion>
                         <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
+                            expandIcon={<ExpandMoreIcon color="primary" />}
                             aria-controls="panel1bh-content"
                             id="panel1bh-header"
                         >
                             <Stack spacing={2} direction="row">
-                                <ArticleIcon />
-                                <Typography variant="s16">Details</Typography>
+                                <ArticleIcon color="primary" />
+                                <Typography variant="s16" color="primary.main">
+                                    Details
+                                </Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>

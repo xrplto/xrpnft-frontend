@@ -1,9 +1,11 @@
 // Material
 import {
     styled,
+    useTheme,
     Box,
     Container,
-    Toolbar
+    Toolbar,
+    alpha
 } from '@mui/material';
 
 // Components
@@ -13,12 +15,23 @@ import ScrollToTop from 'src/components/ScrollToTop';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
-        // overflow: hidden;
         flex: 1;
+        background-color: ${alpha(theme.palette.background.default, 0.9)};
+`
+);
+
+const StyledContainer = styled(Container)(
+    ({ theme }) => `
+        background-color: ${alpha(theme.palette.background.paper, 0.1)};
+        border-radius: ${theme.shape.borderRadius * 2}px;
+        padding: ${theme.spacing(3)};
+        box-shadow: 0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)};
+        border: 1px solid ${alpha(theme.palette.primary.main, 0.1)};
 `
 );
 
 export default function Overview() {
+    const theme = useTheme();
 
     return (
         <OverviewWrapper>
@@ -26,9 +39,9 @@ export default function Overview() {
 
             <Header />
 
-            <Container maxWidth="lg">
+            <StyledContainer maxWidth="lg">
                 <MyCollections />
-            </Container>
+            </StyledContainer>
 
             <ScrollToTop />
 

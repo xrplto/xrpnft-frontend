@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 // Material
 import { visuallyHidden } from '@mui/utils';
-import { styled } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 import {
     Box,
     TableRow,
@@ -19,11 +19,16 @@ const StickyTableCell = styled(TableCell)(({ theme }) => ({
     zIndex: 1000,
     top: 0,
     backgroundColor: theme.palette.mode === 'light'
-        ? 'rgba(255, 255, 255, 0.5)'  // More transparent white for light mode
-        : 'rgba(0, 0, 0, 0.3)',       // More transparent black for dark mode
-    backdropFilter: 'blur(10px)',     // Increased blur effect for better readability
+        ? alpha(theme.palette.background.paper, 0.8)
+        : alpha(theme.palette.background.paper, 0.6),
+    backdropFilter: 'blur(10px)',
     borderBottom: `2px solid ${theme.palette.primary.main}`,
-    transition: theme.transitions.create(['background-color', 'box-shadow'])
+    transition: theme.transitions.create(['background-color', 'box-shadow']),
+    '&:hover': {
+        backgroundColor: theme.palette.mode === 'light'
+            ? alpha(theme.palette.primary.main, 0.1)
+            : alpha(theme.palette.primary.main, 0.2),
+    }
 }));
 
 const TABLE_HEAD = (isMobile) => {
@@ -69,7 +74,6 @@ const TABLE_HEAD = (isMobile) => {
             align: 'right',
             width: '10%'
         },
-        // { no: 3, id: 'volume', label: 'Volume', align: 'right', width: '10%' },
         {
             no: 4,
             id: 'totalVolume',
@@ -116,7 +120,11 @@ export default function ListHead({}) {
                             sx={{
                                 textTransform: 'uppercase',
                                 letterSpacing: '0.5px',
-                                color: theme.palette.text.primary
+                                color: theme.palette.primary.main,
+                                transition: 'color 0.2s',
+                                '&:hover': {
+                                    color: theme.palette.primary.dark,
+                                }
                             }}
                         >
                             {headCell.label}

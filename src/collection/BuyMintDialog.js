@@ -42,7 +42,7 @@ import { PulseLoader } from "react-spinners";
 import { fNumber } from 'src/utils/formatNumber';
 
 // ----------------------------------------------------------------------
-const BuyDialog = styled(Dialog) (({ theme }) => ({
+const BuyDialog = styled(Dialog)(({ theme }) => ({
     backdropFilter: 'blur(1px)',
     WebkitBackdropFilter: 'blur(1px)', // Fix on Mobile
     '& .MuiDialogContent-root': {
@@ -55,6 +55,7 @@ const BuyDialog = styled(Dialog) (({ theme }) => ({
 
 const BuyDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
+    const theme = useTheme();
 
     return (
         <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
@@ -67,7 +68,7 @@ const BuyDialogTitle = (props) => {
                         position: 'absolute',
                         right: 8,
                         top: 8,
-                        color: (theme) => theme.palette.grey[500],
+                        color: theme.palette.grey[500],
                     }}
                 >
                     <CloseIcon />
@@ -84,8 +85,14 @@ const Label = withStyles({
 })(Typography);
 
 const CustomSelect = styled(Select)(({ theme }) => ({
-    '& .MuiOutlinedInput-notchedOutline' : {
+    '& .MuiOutlinedInput-notchedOutline': {
         border: 'none'
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: alpha(theme.palette.primary.main, 0.5),
+    },
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: theme.palette.primary.main,
     }
 }));
 
@@ -307,129 +314,137 @@ export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints
                 sx={{ color: "#000", zIndex: 1303 }}
                 open={loading}
             >
-                <PulseLoader color={"#FF4842"} size={10} />
+                <PulseLoader color={theme.palette.primary.main} size={10} />
             </Backdrop>
 
             <BuyDialog
                 fullScreen={fullScreen}
                 onClose={handleClose}
                 open={open}
-                // sx={{zIndex: 1302}}
                 hideBackdrop={true}
                 disableScrollLock
                 disablePortal
                 keepMounted
             >
                 <BuyDialogTitle id="customized-dialog-title" onClose={handleClose}>
-                    <Typography variant="p4">Buy Mint</Typography>
+                    <Typography variant="p4" color="primary.main">Buy Mint</Typography>
                 </BuyDialogTitle>
 
-              <DialogContent>
-    <Stack sx={{ pl: 1, pr: 1 }}>
-        <Typography variant="body2" sx={{ mt: 0 }}>
-            To power up the spinner, you need at least 1 or more Mints. This will enable you to purchase NFTs {type === "random" ? "randomly" : "sequentially"} selected from this collection.
-        </Typography>
-        <Typography variant="body2" sx={{ mt: 2 }}>
-            Mints purchased for this collection cannot be used on other collections.
-        </Typography>
+                <DialogContent>
+                    <Stack sx={{ pl: 1, pr: 1 }}>
+                        <Typography variant="body2" sx={{ mt: 0 }}>
+                            To power up the spinner, you need at least 1 or more Mints. This will enable you to purchase NFTs {type === "random" ? "randomly" : "sequentially"} selected from this collection.
+                        </Typography>
+                        <Typography variant="body2" sx={{ mt: 2 }}>
+                            Mints purchased for this collection cannot be used on other collections.
+                        </Typography>
 
-        <Stack spacing={2} sx={{ mt: 2 }}>
-            <Stack direction="row" spacing={2} alignItems="center">
-                <Typography variant="subtitle1">Cost</Typography>
-                <CustomSelect
-                    id='select_cost'
-                    value={cost.md5}
-                    onChange={handleChangeCost}
-                >
-                    {costs.map((cost, idx) => (
-                        <MenuItem
-                            key={cost.md5}
-                            value={cost.md5}
-                        >
-                            <Stack direction='row' alignItems="center">
-                                <Avatar alt={cost.name} src={`https://s1.xrpl.to/token/${cost.md5}`} sx={{ width: 28, height: 28, mr: 1 }} />
-                                <Typography variant='body1' color="#EB5757">{cost.amount} {cost.name}</Typography>
+                        <Stack spacing={2} sx={{ mt: 2 }}>
+                            <Stack direction="row" spacing={2} alignItems="center">
+                                <Typography variant="subtitle1">Cost</Typography>
+                                <CustomSelect
+                                    id='select_cost'
+                                    value={cost.md5}
+                                    onChange={handleChangeCost}
+                                >
+                                    {costs.map((cost, idx) => (
+                                        <MenuItem
+                                            key={cost.md5}
+                                            value={cost.md5}
+                                        >
+                                            <Stack direction='row' alignItems="center">
+                                                <Avatar alt={cost.name} src={`https://s1.xrpl.to/token/${cost.md5}`} sx={{ width: 28, height: 28, mr: 1 }} />
+                                                <Typography variant='body1' color="#EB5757">{cost.amount} {cost.name}</Typography>
+                                            </Stack>
+                                        </MenuItem>
+                                    ))}
+                                </CustomSelect>
+                                {cost.currency !== 'XRP' && (
+                                    <>
+                                        <Link
+                                            underline="none"
+                                            color="inherit"
+                                            target="_blank"
+                                            href={`https://bithomp.com/explorer/${cost.issuer}`}
+                                            rel="noreferrer noopener nofollow"
+                                        >
+                                            <Tooltip title='Check on Bithomp'>
+                                                <IconButton edge="end" aria-label="bithomp">
+                                                    <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 24, height: 24 }} />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Link>
+                                        {/* 
+                                        <Link
+                                            underline="none"
+                                            color="inherit"
+                                            target="_blank"
+                                            href={`https://xrpl.to/trade/${cost.md5}`}
+                                            rel="noreferrer noopener nofollow"
+                                        >
+                                            <Tooltip title='Trade on XRPL.to'>
+                                                <IconButton edge="end" aria-label="trade">
+                                                    <ShoppingCartIcon fontSize="medium" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Link>
+                                        */}
+                                    </>
+                                )}
                             </Stack>
-                        </MenuItem>
-                    ))}
-                </CustomSelect>
-                {cost.currency !== 'XRP' && (
-                    <>
-                        <Link
-                            underline="none"
-                            color="inherit"
-                            target="_blank"
-                            href={`https://bithomp.com/explorer/${cost.issuer}`}
-                            rel="noreferrer noopener nofollow"
-                        >
-                            <Tooltip title='Check on Bithomp'>
-                                <IconButton edge="end" aria-label="bithomp">
-                                    <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 24, height: 24 }} />
-                                </IconButton>
-                            </Tooltip>
-                        </Link>
-                        {/* 
-                        <Link
-                            underline="none"
-                            color="inherit"
-                            target="_blank"
-                            href={`https://xrpl.to/trade/${cost.md5}`}
-                            rel="noreferrer noopener nofollow"
-                        >
-                            <Tooltip title='Trade on XRPL.to'>
-                                <IconButton edge="end" aria-label="trade">
-                                    <ShoppingCartIcon fontSize="medium" />
-                                </IconButton>
-                            </Tooltip>
-                        </Link>
-                        */}
-                    </>
-                )}
-            </Stack>
-        </Stack>
+                        </Stack>
 
-        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-            <Typography variant="subtitle1">Quantity <Typography variant='caption'>*</Typography></Typography>
-            <TextField
-                id="input-with-sx2"
-                variant="standard"
-                value={quantity}
-                autoComplete='new-password'
-                onFocus={event => event.target.select()}
-                onChange={handleChangeQuantity}
-                onKeyDown={(e) => e.stopPropagation()}
-                margin='dense'
-                inputProps={{
-                    autoComplete: 'off',
-                    style: { textAlign: 'center' },
-                }}
-            />
-        </Stack>
+                        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+                            <Typography variant="subtitle1">Quantity <Typography variant='caption'>*</Typography></Typography>
+                            <TextField
+                                id="input-with-sx2"
+                                variant="standard"
+                                value={quantity}
+                                autoComplete='new-password'
+                                onFocus={event => event.target.select()}
+                                onChange={handleChangeQuantity}
+                                onKeyDown={(e) => e.stopPropagation()}
+                                margin='dense'
+                                inputProps={{
+                                    autoComplete: 'off',
+                                    style: { textAlign: 'center' },
+                                }}
+                            />
+                        </Stack>
 
-        <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
-            <Typography variant="subtitle2">Total {cost.name} Required</Typography>
-            <Typography variant="subtitle2" color="#33C2FF">{fNumber(cost.amount * quantity)} {cost.name}</Typography>
-        </Stack>
+                        <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
+                            <Typography variant="subtitle2">Total {cost.name} Required</Typography>
+                            <Typography variant="subtitle2" color="primary.main">{fNumber(cost.amount * quantity)} {cost.name}</Typography>
+                        </Stack>
 
-        <FormControlLabel sx={{ mt: 3 }} control={<Checkbox checked={disclaimer} onChange={handleChangeDisclaimer} />}
-            label={
-                <Typography variant="caption">I understand that I will be purchasing <Typography variant="caption" color="#33C2FF">{quantity} Mints</Typography> with total <Typography variant="caption" color="#33C2FF">{fNumber(cost.amount * quantity)} {cost.name}</Typography>.  Each Mint will mint the NFT on XRPL and transfer it to my wallet address which is <Typography variant="caption" color="#33C2FF">{account}</Typography></Typography>
-            }
-        />
+                        <FormControlLabel 
+                            sx={{ mt: 3 }} 
+                            control={
+                                <Checkbox 
+                                    checked={disclaimer} 
+                                    onChange={handleChangeDisclaimer}
+                                    color="primary"
+                                />
+                            }
+                            label={
+                                <Typography variant="caption">
+                                    I understand that I will be purchasing <Typography variant="caption" color="primary.main">{quantity} Mints</Typography> with total <Typography variant="caption" color="primary.main">{fNumber(cost.amount * quantity)} {cost.name}</Typography>.  Each Mint will mint the NFT on XRPL and transfer it to my wallet address which is <Typography variant="caption" color="primary.main">{account}</Typography>
+                                </Typography>
+                            }
+                        />
 
-        <Stack direction='row' spacing={2} justifyContent="center" sx={{ mt: 3, mb: 4 }}>
-            <Button
-                variant="outlined"
-                onClick={handleApprove}
-                color='primary'
-                disabled={!canApprove}
-            >
-                Approve in My Wallet
-            </Button>
-        </Stack>
-    </Stack>
-</DialogContent>
-  
+                        <Stack direction='row' spacing={2} justifyContent="center" sx={{ mt: 3, mb: 4 }}>
+                            <Button
+                                variant="contained"
+                                onClick={handleApprove}
+                                color='primary'
+                                disabled={!canApprove}
+                            >
+                                Approve in My Wallet
+                            </Button>
+                        </Stack>
+                    </Stack>
+                </DialogContent>
             </BuyDialog>
 
             <QRDialog

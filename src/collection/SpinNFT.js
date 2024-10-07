@@ -4,11 +4,10 @@ import useSound from 'use-sound';
 import Decimal from 'decimal.js';
 import PropTypes from 'prop-types';
 import Confetti from 'react-confetti';
-// import { ColorExtractor } from 'react-color-extractor';
 import useWindowSize from 'react-use/lib/useWindowSize';
 
 // Material
-import { useTheme } from '@mui/material/styles';
+import { useTheme, alpha } from '@mui/material/styles';
 import {
     styled,
     Box,
@@ -40,52 +39,43 @@ import { getNftCoverUrl } from 'src/utils/parse';
 import BuyMintDialog from './BuyMintDialog';
 import { useRouter } from 'next/router';
 
-const CardWrapper = styled(Paper)(
-    ({ theme }) => `
-        max-width: 420px;
-        width: 100%; // 300px;
-        // max-height: 530px;
-        // height: 340px;
-        // @media (min-width: ${theme.breakpoints.values.md}px) {
-        //     width: 420px;
-        //     height: 460px;
-        // }
-        // box-shadow: rgba(100, 100, 111, 0.2) 7px 7px 7px 7px;
-        // border-radius: 30px;
-        // backdrop-filter: blur(50px);
-        // background: rgb(2, 0, 36);
-        padding: 10px;
-        text-align: center;
-        object-fit: cover;
-        transition: width 1s ease-in-out, height .5s ease-in-out !important;
-        -webkit-tap-highlight-color: transparent;
-  `
-);
+const CardWrapper = styled(Paper)(({ theme }) => ({
+    maxWidth: 420,
+    width: '100%',
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    objectFit: 'cover',
+    transition: 'width 1s ease-in-out, height .5s ease-in-out !important',
+    WebkitTapHighlightColor: 'transparent',
+    background: alpha(theme.palette.background.paper, 0.8),
+    backdropFilter: 'blur(8px)',
+    borderRadius: theme.shape.borderRadius * 2,
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
+}));
 
-const IconCover = styled('div')(
-    ({ theme }) => `
-        width: 102px;
-        height: 102px;
-        margin-top: -56px;
-        margin-bottom: 16px;
-        @media (min-width: ${theme.breakpoints.values.sm}px) {
-            width: 132px;
-            height: 132px;
-            margin-top: -86px;
-        }
-        @media (min-width: ${theme.breakpoints.values.md}px) {
-            width: 192px;
-            height: 192px;
-            margin-top: -156px;
-        }
-        border: 6px solid ${theme.colors.alpha.black[50]};
-        border-radius: 10px;
-        box-shadow: rgb(0 0 0 / 8%) 0px 5px 10px;
-        background-color: ${theme.colors.alpha.white[70]};
-        position: relative;
-        overflow: hidden;
-    `
-);
+const IconCover = styled('div')(({ theme }) => ({
+    width: 102,
+    height: 102,
+    marginTop: -56,
+    marginBottom: 16,
+    border: `6px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+    borderRadius: 10,
+    boxShadow: `0 5px 10px ${alpha(theme.palette.common.black, 0.08)}`,
+    backgroundColor: alpha(theme.palette.background.paper, 0.7),
+    position: 'relative',
+    overflow: 'hidden',
+    [theme.breakpoints.up('sm')]: {
+        width: 132,
+        height: 132,
+        marginTop: -86,
+    },
+    [theme.breakpoints.up('md')]: {
+        width: 192,
+        height: 192,
+        marginTop: -156,
+    },
+}));
 
 const IconWrapper = styled('div')(
     ({ theme }) => `
@@ -215,13 +205,12 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
     height: 10,
     borderRadius: 5,
     [`&.${linearProgressClasses.colorPrimary}`]: {
-        backgroundColor:
-            theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800]
+        backgroundColor: alpha(theme.palette.primary.main, 0.1),
     },
     [`& .${linearProgressClasses.bar}`]: {
         borderRadius: 5,
-        backgroundColor: theme.palette.mode === 'light' ? '#1a90ff' : '#308fe8'
-    }
+        backgroundColor: theme.palette.primary.main,
+    },
 }));
 
 function LinearProgressWithLabel(props) {
@@ -311,6 +300,7 @@ function FacebookCircularProgress(props) {
 }
 
 export default function SpinNFT({ collection, setView }) {
+    const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { width, height } = useWindowSize();
     const [play, { stop }] = useSound(
@@ -503,7 +493,6 @@ export default function SpinNFT({ collection, setView }) {
             <Confetti
                 width={width}
                 height={height}
-                // confettiSource={{x:0, y: 300}}
                 initialVelocityX={4}
                 initialVelocityY={100}
                 run={true}
@@ -526,9 +515,8 @@ export default function SpinNFT({ collection, setView }) {
                                 <CardOverlay>
                                     <EditIcon
                                         className="MuiIconEditButton-root"
-                                        // color='primary'
                                         fontSize="large"
-                                        sx={{ opacity: 0, zIndex: 1 }}
+                                        sx={{ opacity: 0, zIndex: 1, color: theme.palette.primary.main }}
                                     />
                                 </CardOverlay>
                                 <ImageBackdrop className="MuiImageBackdrop-root" />
@@ -537,15 +525,15 @@ export default function SpinNFT({ collection, setView }) {
                     </IconWrapper>
                 </IconCover>
                 <Stack direction="row" spacing={1}>
-                    <Typography variant="h1a">{name}</Typography>
+                    <Typography variant="h1a" color="primary.main">{name}</Typography>
                     {verified === 'yes' && (
                         <Tooltip title="Verified">
-                            <VerifiedIcon style={{ color: '#4589ff' }} />
+                            <VerifiedIcon sx={{ color: theme.palette.primary.main }} />
                         </Tooltip>
                     )}
                 </Stack>
                 {description && (
-                    <Typography variant="d3" maxWidth="600px">
+                    <Typography variant="d3" maxWidth="600px" color="text.secondary">
                         {description}
                     </Typography>
                 )}
@@ -553,7 +541,7 @@ export default function SpinNFT({ collection, setView }) {
                     component="button"
                     underline="always"
                     variant="body2"
-                    // color="#33C2FF"
+                    color="primary.main"
                     onClick={() => {
                         setView('');
                     }}

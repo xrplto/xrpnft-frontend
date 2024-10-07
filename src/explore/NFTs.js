@@ -36,7 +36,7 @@ const GlassyBox = styled(Box)(({ theme }) => ({
     background: alpha(theme.palette.background.paper, 0.15),
     backdropFilter: 'blur(20px)',
     borderRadius: theme.shape.borderRadius * 2,
-    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
     boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
 }));
 
@@ -46,11 +46,17 @@ const SearchTextField = styled(TextField)(({ theme }) => ({
             borderColor: 'transparent',
         },
         '&:hover fieldset': {
-            borderColor: 'transparent',
+            borderColor: alpha(theme.palette.primary.main, 0.3),
         },
         '&.Mui-focused fieldset': {
-            borderColor: 'transparent',
+            borderColor: theme.palette.primary.main,
         },
+    },
+    '& .MuiInputBase-input': {
+        color: theme.palette.text.primary,
+    },
+    '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+        color: theme.palette.primary.main,
     },
 }));
 
@@ -151,22 +157,31 @@ export default function NFTs({ collection }) {
         () => ({
             startAdornment: (
                 <InputAdornment position="start" sx={{ mr: 0.7 }}>
-                    <SearchIcon />
+                    <SearchIcon color="primary" />
                 </InputAdornment>
             ),
             endAdornment: (
                 <InputAdornment position="start">
-                    {loading && <ClipLoader color="#ff0000" size={15} />}
+                    {loading && <ClipLoader color={theme.palette.primary.main} size={15} />}
                 </InputAdornment>
             )
         }),
-        [loading]
+        [loading, theme.palette.primary.main]
     );
 
     return (
         <>
             <GlassyBox sx={{ mb: 2, p: 1, display: 'flex', alignItems: 'center' }}>
-                <IconButton aria-label="filter" onClick={handleShowFilter}>
+                <IconButton 
+                    aria-label="filter" 
+                    onClick={handleShowFilter}
+                    sx={{
+                        color: 'primary.main',
+                        '&:hover': {
+                            backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                        },
+                    }}
+                >
                     <FilterListIcon fontSize="large" />
                 </IconButton>
                 <SearchTextField
@@ -215,6 +230,11 @@ export default function NFTs({ collection }) {
                         }}
                         hasMore={hasMore}
                         scrollThreshold={0.6}
+                        loader={
+                            <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+                                <ClipLoader color={theme.palette.primary.main} size={30} />
+                            </Box>
+                        }
                     >
                         <Grid container spacing={1}>
                             {nfts.map((nft, index) => (
@@ -230,12 +250,20 @@ export default function NFTs({ collection }) {
                                     <NFTCard
                                         nft={nft}
                                         handleRemove={handleRemove}
-                                        // Assuming NFTCard accepts a component for the image
                                         imageComponent={
                                             <LazyLoadImage
-                                                src={nft.imageUrl} // Replace with your image source
+                                                src={nft.imageUrl}
                                                 alt={nft.name}
-                                                effect="blur" // Optional: add a blur effect while loading
+                                                effect="blur"
+                                                wrapperProps={{
+                                                    style: { 
+                                                        display: 'block', 
+                                                        height: '100%', 
+                                                        width: '100%',
+                                                        borderRadius: theme.shape.borderRadius,
+                                                        overflow: 'hidden',
+                                                    }
+                                                }}
                                             />
                                         }
                                     />

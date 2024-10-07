@@ -24,7 +24,8 @@ import {
     Tooltip,
     Typography,
     useTheme,
-    useMediaQuery
+    useMediaQuery,
+    alpha
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -40,22 +41,21 @@ const StickyTableCell = withStyles((theme) => ({
         position: 'sticky',
         zIndex: 100,
         top: 0,
-        left: 24
+        left: 24,
+        backgroundColor: theme.palette.background.paper,
     },
     body: {
         position: 'sticky',
         zIndex: 100,
-        left: 24
+        left: 24,
+        backgroundColor: theme.palette.background.paper,
     }
 }))(TableCell);
 
 const TransitionTypo = styled(Typography)(
-    () => `
-        -webkit-transition: background-color 300ms linear, color 1s linear;
-        -moz-transition: background-color 300ms linear, color 1s linear;
-        -o-transition: background-color 300ms linear, color 1s linear;
-        -ms-transition: background-color 300ms linear, color 1s linear;
+    ({ theme }) => `
         transition: background-color 300ms linear, color 1s linear;
+        color: ${theme.palette.text.primary};
     `
 );
 
@@ -66,12 +66,11 @@ const CardOverlay = styled('div')(
     justify-content: center;
     align-items: center;
     position: absolute;
-    background: black;
+    background: ${theme.palette.primary.main};
     inset: 0;
     opacity: 0;
     z-index: 1;
     transition: opacity 0.5s;
-    // border-radius: 20px;
     &:hover {
         opacity: 0.3;
     }
@@ -80,25 +79,19 @@ const CardOverlay = styled('div')(
 
 const CardWrapper = styled('div')(
     ({ theme }) => `
-        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)};
+        border-radius: ${theme.shape.borderRadius * 2}px;
         backdrop-filter: blur(50px);
-        background: rgb(2, 0, 36);
-        padding: 10px;
+        background: ${alpha(theme.palette.background.paper, 0.9)};
+        padding: ${theme.spacing(1)};
         text-align: center;
         object-fit: cover;
         cursor: pointer;
         overflow: hidden;
-        transition: width 1s ease-in-out, height .5s ease-in-out !important;
-        -webkit-tap-highlight-color: transparent;
-        &:hover, &.Mui-focusVisible {
-            z-index: 1;
-            & .MuiImageBackdrop-root {
-                opacity: 0.1;
-            }
-            & .MuiIconEditButton-root {
-                opacity: 1;
-            }
+        transition: all 0.3s ease-in-out;
+        &:hover {
+            box-shadow: 0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.2)};
+            background: ${alpha(theme.palette.background.paper, 0.95)};
         }
   `
 );
@@ -107,24 +100,15 @@ const IconCover = styled('div')(
     ({ theme }) => `
         width: 72px;
         height: 72px;
-        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-
-        border: 1px solid ${theme.colors.alpha.black[50]};
-        border-radius: 10px;
-        box-shadow: rgb(0 0 0 / 8%) 0px 5px 10px;
-        background-color: ${theme.colors.alpha.white[70]};
+        box-shadow: 0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)};
+        border: 1px solid ${alpha(theme.palette.primary.main, 0.1)};
+        border-radius: ${theme.shape.borderRadius}px;
+        background-color: ${alpha(theme.palette.background.paper, 0.9)};
         position: relative;
         overflow: hidden;
-        transition: width 1s ease-in-out, height .5s ease-in-out !important;
-        -webkit-tap-highlight-color: transparent;
-        &:hover, &.Mui-focusVisible {
-            z-index: 1;
-            & .MuiImageBackdrop-root {
-                opacity: 0.1;
-            }
-            & .MuiIconEditButton-root {
-                opacity: 1;
-            }
+        transition: all 0.3s ease-in-out;
+        &:hover {
+            box-shadow: 0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.2)};
         }
 
         ${theme.breakpoints.down('sm')} {
@@ -266,7 +250,16 @@ export default function Row({ id, item }) {
     };
 
     return (
-        <TableRow hover onClick={handleRowClick} style={{ cursor: 'pointer' }}>
+        <TableRow 
+            hover 
+            onClick={handleRowClick} 
+            style={{ cursor: 'pointer' }}
+            sx={ {
+                '&:hover': {
+                    backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                }
+            }}
+        >
             <TableCell align="left" sx={{ p: 0, border: 'none' }}>
                 <Stack
                     direction="row"
@@ -276,7 +269,7 @@ export default function Row({ id, item }) {
                 >
                     <Typography
                         variant={isMobile ? 's8' : 's3'}
-                        sx={{ width: isMobile ? '12px' : '16px' }}
+                        sx={{ width: isMobile ? '12px' : '16px', color: 'text.secondary' }}
                     >
                         {id}
                     </Typography>
@@ -299,9 +292,8 @@ export default function Row({ id, item }) {
                                     noWrap
                                     sx={{
                                         width: isMobile ? '80px' : undefined,
-                                        textOverflow: isMobile
-                                            ? 'ellipsis'
-                                            : 'none'
+                                        textOverflow: isMobile ? 'ellipsis' : 'none',
+                                        color: 'text.primary',
                                     }}
                                 >
                                     {name}
@@ -310,7 +302,7 @@ export default function Row({ id, item }) {
                                     <Tooltip title="Verified Collection">
                                         <VerifiedIcon
                                             fontSize="small"
-                                            style={{ color: '#4589ff' }}
+                                            color="primary"
                                         />
                                     </Tooltip>
                                 )}
@@ -318,6 +310,7 @@ export default function Row({ id, item }) {
                             <Typography
                                 variant={isMobile ? 's12' : 's7'}
                                 noWrap
+                                color="text.secondary"
                             >
                                 Created: {strDateTime}
                             </Typography>
@@ -328,11 +321,12 @@ export default function Row({ id, item }) {
 
             <TableCell align="right" sx={{ pl: 0, pr: 0, border: 'none' }}>
                 <Tooltip title="Floor Price">
-                    <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                    <Typography variant={isMobile ? 's8' : 's3'} noWrap color="primary.main">
                         <Icon
                             icon={rippleSolid}
                             width={isMobile ? 12 : 16}
                             height={isMobile ? 12 : 16}
+                            color={theme.palette.primary.main}
                         />{' '}
                         {fNumber(floorPrice)}
                     </Typography>
@@ -341,11 +335,12 @@ export default function Row({ id, item }) {
 
             <TableCell align="right" sx={{ pl: 0, pr: 0, border: 'none' }}>
                 <Tooltip title="24h Volume">
-                    <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                    <Typography variant={isMobile ? 's8' : 's3'} noWrap color="primary.main">
                         <Icon
                             icon={rippleSolid}
                             width={isMobile ? 12 : 16}
                             height={isMobile ? 12 : 16}
+                            color={theme.palette.primary.main}
                         />{' '}
                         {fNumber(totalVol24h)}
                     </Typography>
@@ -362,11 +357,12 @@ export default function Row({ id, item }) {
                 }}
             >
                 <Tooltip title="Total Volume">
-                    <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                    <Typography variant={isMobile ? 's8' : 's3'} noWrap color="primary.main">
                         <Icon
                             icon={rippleSolid}
                             width={isMobile ? 12 : 16}
                             height={isMobile ? 12 : 16}
+                            color={theme.palette.primary.main}
                         />{' '}
                         {volume2}
                     </Typography>
@@ -383,7 +379,7 @@ export default function Row({ id, item }) {
                 }}
             >
                 <Tooltip title="Number of Owners">
-                    <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                    <Typography variant={isMobile ? 's8' : 's3'} noWrap color="primary.main">
                         {fIntNumber(owners || 0)}
                     </Typography>
                 </Tooltip>
@@ -399,7 +395,7 @@ export default function Row({ id, item }) {
                 }}
             >
                 <Tooltip title="Total Items">
-                    <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                    <Typography variant={isMobile ? 's8' : 's3'} noWrap color="primary.main">
                         {fIntNumber(items)}
                     </Typography>
                 </Tooltip>

@@ -24,7 +24,9 @@ import {
     ToggleButton,
     ToggleButtonGroup,
     Tooltip,
-    Typography
+    Typography,
+    useTheme,
+    alpha
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import ImageIcon from '@mui/icons-material/Image';
@@ -50,78 +52,70 @@ import { CATEGORIES } from 'src/utils/constants';
 import LoadingTextField from 'src/components/LoadingTextField';
 import AddCostDialog from './AddCostDialog';
 
-const CardWrapper = styled('div')(
-    ({ theme }) => `
-    border: dashed 3px;
-    border-radius: 5px;
-    padding: 5px;
-    width: fit-content;
-    &:hover {
-        cursor: pointer;
+const CardWrapper = styled('div')(({ theme }) => ({
+    border: `dashed 3px ${alpha(theme.palette.primary.main, 0.3)}`,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(0.5),
+    width: 'fit-content',
+    '&:hover': {
+        cursor: 'pointer',
+        borderColor: theme.palette.primary.main,
     }
-`
-);
+}));
 
-const CardWrapperCircle = styled('div')(
-    ({ theme }) => `
-    border: dashed 3px;
-    border-radius: 50%;
-    padding: 5px;
-    width: fit-content;
-    overflow: hidden;
-    &:hover {
-        cursor: pointer;
+const CardWrapperCircle = styled('div')(({ theme }) => ({
+    border: `dashed 3px ${alpha(theme.palette.primary.main, 0.3)}`,
+    borderRadius: '50%',
+    padding: theme.spacing(0.5),
+    width: 'fit-content',
+    overflow: 'hidden',
+    '&:hover': {
+        cursor: 'pointer',
+        borderColor: theme.palette.primary.main,
     }
-`
-);
+}));
 
-const CardWrapper3 = styled('div')(
-    ({ theme }) => `
-    border: dashed 3px;
-    border-radius: 5px;
-    padding: 5px;
-    // width: fit-content;
-    &:hover {
-        cursor: pointer;
+const CardWrapper3 = styled('div')(({ theme }) => ({
+    border: `dashed 3px ${alpha(theme.palette.primary.main, 0.3)}`,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(0.5),
+    '&:hover': {
+        cursor: 'pointer',
+        borderColor: theme.palette.primary.main,
     }
-`
-);
+}));
 
-const CardOverlay = styled('div')(
-    ({ theme }) => `
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    background: black;
-    inset: 0;
-    opacity: 0;
-    z-index: 1;
-    transition: opacity 0.5s;
-    &:hover {
-        opacity: 0.6;
+const CardOverlay = styled('div')(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    background: alpha(theme.palette.common.black, 0.6),
+    inset: 0,
+    opacity: 0,
+    zIndex: 1,
+    transition: 'opacity 0.5s',
+    '&:hover': {
+        opacity: 1,
     }
-`
-);
+}));
 
-const CardOverlayCircle = styled('div')(
-    ({ theme }) => `
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    background: black;
-    inset: 0;
-    opacity: 0;
-    z-index: 1;
-    transition: opacity 0.5s;
-    &:hover {
-        opacity: 0.6;
+const CardOverlayCircle = styled('div')(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    background: alpha(theme.palette.common.black, 0.6),
+    inset: 0,
+    opacity: 0,
+    zIndex: 1,
+    transition: 'opacity 0.5s',
+    '&:hover': {
+        opacity: 1,
     }
-`
-);
+}));
 
 const DisabledButton = withStyles({
     root: {
@@ -134,11 +128,19 @@ const DisabledButton = withStyles({
 
 const CustomSelect = styled(Select)(({ theme }) => ({
     '& .MuiOutlinedInput-notchedOutline': {
-        border_left: 'none'
+        borderLeft: 'none'
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: alpha(theme.palette.primary.main, 0.5),
+    },
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: theme.palette.primary.main,
     }
 }));
 
 export default function CreateCollection({ showHeader = true, onCreate }) {
+    const theme = useTheme();
+
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const fileRef1 = useRef();
@@ -292,7 +294,7 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                         "Issuer": "rEBKhngY8izMvRrgGg3Yh5zdiQgHH9cExg",
                         "minter": "xrpnft.com",
                         "image": "QmbUaafMaftkUTt44DVdTaSwgKzf51UWMD4NNNc7Jt4fCf",
-                        "URI": "516D656A506E6E6775635A5664723637583937324C313842726A366F317241503842794754796137645259763234",
+                        "URI": "516D656A506E6E6775635A5664723637583937324C313842726A6F317241503842794754796137645259763234",
                         "uuid": "d1dcfe3cac80409793629707de2aafbf",
                         "minted": false,
                         "_id": "6308bc3d7a1dec795f21fc33"
@@ -969,8 +971,7 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                                     Spinner GIF image
                                 </Typography>
                                 <Typography variant="p3">
-                                    This image will be used for spinning NFTs.
-                                    If you don't select, the &nbsp;
+                                    This image will be used for spinning NFTs. If you don't select, the &nbsp;
                                     <Link
                                         target="_blank"
                                         href={`/static/spin.gif`}
@@ -978,8 +979,7 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                                     >
                                         default spinning image
                                     </Link>
-                                    &nbsp; will be used. 600 x 400 recommended.
-                                    (Max: 10MB)
+                                    &nbsp; will be used. 600 x 400 recommended. (Max: 10MB)
                                 </Typography>
                                 <CardWrapper>
                                     <input
@@ -1258,7 +1258,14 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                     loadingPosition="start"
                     startIcon={<SendIcon />}
                     onClick={onCreateCollection}
-                    sx={{ mt: 5, mb: 6 }}
+                    sx={{ 
+                        mt: 5, 
+                        mb: 6,
+                        backgroundColor: theme.palette.primary.main,
+                        '&:hover': {
+                            backgroundColor: theme.palette.primary.dark,
+                        },
+                    }}
                 >
                     Create
                 </LoadingButton>

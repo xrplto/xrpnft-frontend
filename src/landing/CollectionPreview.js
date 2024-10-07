@@ -2,7 +2,7 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 
 // Material
-import { styled, Link, Paper, Stack, Tooltip, Typography } from '@mui/material';
+import { styled, Link, Paper, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Context
@@ -20,60 +20,51 @@ import { getNftCoverUrl } from 'src/utils/parse';
 // box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
 // box-shadow: 0px 5px 20px 1px;
 
-const CustomImage = styled('img')(
-    ({ theme }) => `
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-  `
-);
+const CustomImage = styled('img')(({ theme }) => ({
+    borderTopLeftRadius: theme.shape.borderRadius,
+    borderTopRightRadius: theme.shape.borderRadius,
+    width: '100%',
+    height: 'auto',
+    objectFit: 'cover',
+}));
 
-const CustomCarousel = styled(Carousel)(
-    ({ theme }) => `
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
-    border-radius: 6px;
-    overflow: hidden;
-  `
-);
+const CustomCarousel = styled(Carousel)(({ theme }) => ({
+    filter: `drop-shadow(0 4px 12px ${theme.palette.primary.main}20)`,
+    borderRadius: theme.shape.borderRadius,
+    overflow: 'hidden',
+}));
 
-const CollectionCard = styled(Paper)(
-    ({ theme }) => `
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+const CollectionCard = styled(Paper)(({ theme }) => ({
+    position: 'relative',
+    overflow: 'hidden',
+    transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+    '&:hover': {
+        transform: 'translateY(-5px)',
+        boxShadow: `0 8px 16px ${theme.palette.primary.main}20`,
+    },
+    '&::after': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: `linear-gradient(to bottom, ${theme.palette.background.default}00 70%, ${theme.palette.background.default}B3 100%)`,
+        pointerEvents: 'none',
+    },
+}));
 
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    }
-
-    &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(to bottom, rgba(0,0,0,0) 70%, rgba(0,0,0,0.7) 100%);
-        pointer-events: none;
-    }
-  `
-);
-
-const CollectionInfo = styled(Stack)(
-    ({ theme }) => `
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    right: 8px;
-    z-index: 1;
-  `
-);
+const CollectionInfo = styled(Stack)(({ theme }) => ({
+    position: 'absolute',
+    bottom: theme.spacing(1),
+    left: theme.spacing(1),
+    right: theme.spacing(1),
+    zIndex: 1,
+}));
 
 export default function CollectionPreview({ collections }) {
     const { darkMode } = useContext(AppContext);
+    const theme = useTheme();
 
     const images = [
         {
@@ -233,9 +224,7 @@ export default function CollectionPreview({ collections }) {
                             <CollectionCard
                                 elevation={0}
                                 style={{
-                                    background: darkMode
-                                        ? '#21252B'
-                                        : '#FFFFFF'
+                                    background: theme.palette.background.paper,
                                 }}
                             >
                                 <CustomImage src={imgUrl} alt={name} />
@@ -247,9 +236,9 @@ export default function CollectionPreview({ collections }) {
                                     <Typography
                                         variant="subtitle1"
                                         sx={{
-                                            color: '#FFFFFF',
+                                            color: theme.palette.primary.contrastText,
                                             fontWeight: 600,
-                                            textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+                                            textShadow: `0 1px 2px ${theme.palette.primary.main}80`,
                                         }}
                                     >
                                         {name}
@@ -258,7 +247,7 @@ export default function CollectionPreview({ collections }) {
                                         <Tooltip title="Verified">
                                             <VerifiedIcon
                                                 fontSize="small"
-                                                style={{ color: '#4589ff' }}
+                                                sx={{ color: theme.palette.primary.main }}
                                             />
                                         </Tooltip>
                                     )}

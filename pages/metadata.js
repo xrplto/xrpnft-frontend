@@ -3,11 +3,13 @@ import JSONPretty from 'react-json-pretty';
 // Material
 import {
     styled,
+    useTheme,
     Box,
     Container,
     Stack,
     Typography,
-    Toolbar
+    Toolbar,
+    alpha
 } from '@mui/material';
 
 // Components
@@ -17,8 +19,39 @@ import ScrollToTop from 'src/components/ScrollToTop';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
-        // overflow: hidden;
         flex: 1;
+        background-color: ${alpha(theme.palette.background.default, 0.9)};
+`
+);
+
+const StyledJSONPretty = styled(JSONPretty)(
+    ({ theme }) => `
+        background-color: ${alpha(theme.palette.background.paper, 0.1)} !important;
+        padding: ${theme.spacing(2)} !important;
+        border-radius: ${theme.shape.borderRadius}px !important;
+        border: 1px solid ${alpha(theme.palette.primary.main, 0.1)} !important;
+        
+        .json-pretty {
+            line-height: 1.3;
+            color: ${theme.palette.text.primary};
+            background: transparent;
+        }
+        
+        .json-key {
+            color: ${theme.palette.primary.main};
+        }
+        
+        .json-value {
+            color: ${theme.palette.secondary.main};
+        }
+        
+        .json-string {
+            color: ${theme.palette.success.main};
+        }
+        
+        .json-boolean {
+            color: ${theme.palette.warning.main};
+        }
 `
 );
 
@@ -112,6 +145,7 @@ const meta = {
 }
 
 export default function Overview({data}) {
+    const theme = useTheme();
 
     return (
         <OverviewWrapper>
@@ -121,12 +155,19 @@ export default function Overview({data}) {
 
             <Container maxWidth="lg">
                 <Stack spacing={1} sx={{mt: 4, mb:3}}>
-                    <Typography variant="h1a">Metadata structure</Typography>
-                    <Typography variant="d1"><Typography variant="s4" color="error">xrpnft.com.v0</Typography> based on XLS-24d</Typography>
+                    <Typography variant="h1a" color="primary.main">Metadata structure</Typography>
+                    <Typography variant="d1">
+                        <Typography variant="s4" color="error.main">xrpnft.com.v0</Typography> based on XLS-24d
+                    </Typography>
                 </Stack>
-                <Stack>
-                    <JSONPretty id="json-pretty" data={meta || ''} space="4"></JSONPretty>
-                </Stack>
+                <Box sx={{
+                    backgroundColor: alpha(theme.palette.background.paper, 0.05),
+                    borderRadius: theme.shape.borderRadius,
+                    p: 2,
+                    border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
+                }}>
+                    <StyledJSONPretty id="json-pretty" data={meta || ''} space="4" />
+                </Box>
             </Container>
 
             <ScrollToTop />

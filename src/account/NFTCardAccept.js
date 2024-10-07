@@ -18,6 +18,7 @@ import {
     Grid,
     CardContent,
     useMediaQuery,
+    alpha,
 } from '@mui/material';
 // import FavoriteIcon from '@mui/icons-material/Favorite';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
@@ -41,24 +42,23 @@ import { normalizeAmount } from 'src/utils/normalizers';
 // Components
 // import FlagsContainer from 'src/components/Flags';
 
-const CardWrapper = styled(Card)(
-    ({ theme }) => `
-        // box-shadow: 0px -0.5px 4px rgba(100, 100, 111, 0.9);
-        // filter: drop-shadow(16px 16px 10px rgba(0,0,0,0.8));
-        // filter: drop-shadow(0 0 0.2rem rgba(0,0,0,0.8));
-        border-radius: 10px;
-        backdrop-filter: blur(50px);
-        // background: rgb(2, 0, 36);
-        padding: 0px;
-        // text-align: center;
-        object-fit: cover;
-        cursor: pointer;
-        transition: width 1s ease-in-out, height .5s ease-in-out !important;
-        -webkit-tap-highlight-color: transparent;
-        overflow: hidden;
-        padding-bottom: 0px;
-  `
-);
+const CardWrapper = styled(Card)(({ theme }) => ({
+    borderRadius: theme.shape.borderRadius * 2,
+    backdropFilter: 'blur(20px)',
+    background: alpha(theme.palette.background.paper, 0.15),
+    padding: 0,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease-in-out',
+    overflow: 'hidden',
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    
+    '&:hover': {
+        transform: 'translateY(-4px)',
+        boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
+        background: alpha(theme.palette.background.paper, 0.2),
+    }
+}));
 
 export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
     const theme = useTheme();
@@ -227,7 +227,21 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                             <Typography variant="s8" style={{ textAlign: 'center' }}>Waiting to accept</Typography>
                             {accountLogin === profileAccount ? 
                             (<Tooltip title="Accept NFT">
-                                <Button variant="outlined" color="success" size="small" onClick={() => handleApprove(nft)}>Accept</Button>
+                                <Button 
+                                    variant="outlined" 
+                                    color="success" 
+                                    size="small" 
+                                    onClick={() => handleApprove(nft)}
+                                    sx={{
+                                        borderColor: theme.palette.success.main,
+                                        color: theme.palette.success.main,
+                                        '&:hover': {
+                                            backgroundColor: alpha(theme.palette.success.main, 0.1),
+                                        },
+                                    }}
+                                >
+                                    Accept
+                                </Button>
                             </Tooltip>):(
                                 <Typography variant="s8" style={{ textAlign: 'center' }}></Typography>
                             )}
@@ -337,9 +351,25 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                             </Stack>
                             <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mb:1, pl:0, pr:0}}>
                                 <Typography variant="s8" alignItems='center' justifyContent='space-evenly' sx={{mt:1}}>Waiting to accept</Typography>
-                                {accountLogin === profileAccount && <Tooltip title="Accept NFT">
-                                    <Button variant="outlined" size="small" color="success" onClick={() => handleApprove(nft)}>Accept</Button>
-                                </Tooltip>}
+                                {accountLogin === profileAccount && 
+                                    <Tooltip title="Accept NFT">
+                                        <Button 
+                                            variant="outlined" 
+                                            size="small" 
+                                            color="success" 
+                                            onClick={() => handleApprove(nft)}
+                                            sx={{
+                                                borderColor: theme.palette.success.main,
+                                                color: theme.palette.success.main,
+                                                '&:hover': {
+                                                    backgroundColor: alpha(theme.palette.success.main, 0.1),
+                                                },
+                                            }}
+                                        >
+                                            Accept
+                                        </Button>
+                                    </Tooltip>
+                                }
                             </Stack>
                         </Box>
                     )}

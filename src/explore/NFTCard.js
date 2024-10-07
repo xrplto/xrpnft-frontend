@@ -18,7 +18,6 @@ import {
     Grid,
     CardContent
 } from '@mui/material';
-// import FavoriteIcon from '@mui/icons-material/Favorite';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -26,7 +25,6 @@ import CloseIcon from '@mui/icons-material/Close';
 // Iconify
 import { Icon } from '@iconify/react';
 import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
-// import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Utils
 import { getMinterName } from "src/utils/constants";
@@ -34,12 +32,8 @@ import { fNumber, fIntNumber } from 'src/utils/formatNumber';
 import { getNftCoverUrl } from 'src/utils/parse';
 
 // Components
-// import FlagsContainer from 'src/components/Flags';
 import Label from './Label';
 import { AppContext } from "src/AppContext";
-
-// Remove this line as it's a duplicate import
-// import { useTheme, alpha } from '@mui/material/styles';
 
 const CardWrapper = styled(Card)(({ theme }) => ({
     borderRadius: theme.shape.borderRadius * 2,
@@ -48,8 +42,8 @@ const CardWrapper = styled(Card)(({ theme }) => ({
     padding: 0,
     cursor: 'pointer',
     transition: 'all 0.3s ease-in-out',
-    overflow: 'visible', // Keep this as 'visible'
-    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    overflow: 'visible',
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
     boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
     
     '&:hover': {
@@ -64,7 +58,7 @@ const CardWrapper = styled(Card)(({ theme }) => ({
 const GlassContent = styled(CardContent)(({ theme }) => ({
     background: alpha(theme.palette.background.paper, 0.1),
     backdropFilter: 'blur(10px)',
-    borderTop: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
 }));
 
 export default function NFTCard({ nft, handleRemove }) {
@@ -73,30 +67,17 @@ export default function NFTCard({ nft, handleRemove }) {
     const { accountProfile } = useContext(AppContext);
     const isAdmin = accountProfile?.admin;
 
-    // const [imgUrl, setImgUrl] = useState('');
-    // const [loading, setLoading] = useState(false);
-
-    // const [isLike, setIsLike] = useState(false);
     const [colors, setColors] = useState([]);
-    
-
-    // const like = () => setIsLike(!isLike);
+    const [loadingImg, setLoadingImg] = useState(true);
 
     const {
         uuid,
-        // name,
-        // flag,
         account,
-        // minter,
         cost,
         costb,
-        // issuer,
-        // date,
         meta,
         dfile,
         NFTokenID,
-        // URI,
-        // status,
         destination,
         rarity,
         rarity_rank,
@@ -104,14 +85,8 @@ export default function NFTCard({ nft, handleRemove }) {
     } = nft;
 
     const isSold = false;
-
-    // const imgUrl = '/static/nft.png';
-    const imgUrl = getNftCoverUrl(nft, 'small');// , 300);
-
-    const isVideo = /*meta?.video ? true : */false; // disabling for  now video as showing animated thumbnails
-
-    const [loadingImg, setLoadingImg] = useState(true)
-
+    const imgUrl = getNftCoverUrl(nft, 'small');
+    const isVideo = false;
     const name = nft.meta?.name || meta?.Name || 'No Name';
 
     const getColors = colors => {
@@ -137,9 +112,9 @@ export default function NFTCard({ nft, handleRemove }) {
     return (
         <Box sx={{ 
             position: 'relative', 
-            padding: '12px', // Add padding to contain the shadow
+            padding: '12px',
             '&:hover': {
-                zIndex: 1, // Ensure hovered card appears above others
+                zIndex: 1,
             }
         }}>
             <Link href={`/nft/${NFTokenID}`} underline='none'>
@@ -150,7 +125,7 @@ export default function NFTCard({ nft, handleRemove }) {
                         aspectRatio: '3 / 4',
                         display: 'flex',
                         flexDirection: 'column',
-                        overflow: 'hidden', // Change this to 'hidden'
+                        overflow: 'hidden',
                     }}
                 >
                     {isAdmin &&
@@ -159,7 +134,8 @@ export default function NFTCard({ nft, handleRemove }) {
                                 position: 'absolute',
                                 top: 0,
                                 right: 0,
-                                zIndex: 1500
+                                zIndex: 1500,
+                                color: theme.palette.primary.main,
                             }}
                             onClick={(e) => handleRemoveNft(e)}
                         />
@@ -188,8 +164,8 @@ export default function NFTCard({ nft, handleRemove }) {
                             width: '100%',
                             flexGrow: 1,
                             objectFit: 'cover',
-                            borderTopLeftRadius: theme.shape.borderRadius * 2,  // Add this
-                            borderTopRightRadius: theme.shape.borderRadius * 2, // Add this
+                            borderTopLeftRadius: theme.shape.borderRadius * 2,
+                            borderTopRightRadius: theme.shape.borderRadius * 2,
                         }}
                     />
                     {loadingImg && (
@@ -198,8 +174,9 @@ export default function NFTCard({ nft, handleRemove }) {
                             sx={{
                                 width: '100%',
                                 flexGrow: 1,
-                                borderTopLeftRadius: theme.shape.borderRadius * 2,  // Add this
-                                borderTopRightRadius: theme.shape.borderRadius * 2, // Add this
+                                borderTopLeftRadius: theme.shape.borderRadius * 2,
+                                borderTopRightRadius: theme.shape.borderRadius * 2,
+                                bgcolor: alpha(theme.palette.primary.main, 0.1),
                             }}
                         />
                     )}
@@ -214,11 +191,11 @@ export default function NFTCard({ nft, handleRemove }) {
                         />
                     }
                     <GlassContent sx={{ 
-                        padding: '8px', // Reduced from 12px
+                        padding: '8px',
                         display: 'flex', 
                         flexDirection: 'column', 
                         flexShrink: 0, 
-                        height: '90px' // Reduced from 100px
+                        height: '90px'
                     }}>
                         <Typography
                             variant="subtitle2"
@@ -231,7 +208,8 @@ export default function NFTCard({ nft, handleRemove }) {
                                 WebkitLineClamp: 2,
                                 WebkitBoxOrient: 'vertical',
                                 lineHeight: 1.2,
-                                fontSize: '0.75rem', // Reduced from 0.8rem
+                                fontSize: '0.75rem',
+                                color: theme.palette.text.primary,
                             }}
                         >
                             {name}
@@ -258,11 +236,11 @@ export default function NFTCard({ nft, handleRemove }) {
         
         return cost.currency === "XRP" ? (
             <Stack direction="row" spacing={0.5} alignItems="center">
-                <Icon icon={rippleSolid} width="14" height="14" />
-                <Typography variant="body2" fontWeight="600" fontSize="0.75rem">{fNumber(cost.amount)}</Typography>
+                <Icon icon={rippleSolid} width="14" height="14" color={theme.palette.primary.main} />
+                <Typography variant="body2" fontWeight="600" fontSize="0.75rem" color="primary.main">{fNumber(cost.amount)}</Typography>
             </Stack>
         ) : (
-            <Typography variant="body2" fontWeight="600" fontSize="0.75rem">{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
+            <Typography variant="body2" fontWeight="600" fontSize="0.75rem" color="primary.main">{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
         );
     }
     
@@ -274,11 +252,11 @@ export default function NFTCard({ nft, handleRemove }) {
                 <Typography variant='caption' color="text.secondary" fontSize="0.65rem">Offer:</Typography>
                 {costb.currency === "XRP" ? (
                     <>
-                        <Icon icon={rippleSolid} color="#00AB55" width="10" height="10" />
-                        <Typography variant='caption' color="#00AB55" fontWeight="600" fontSize="0.65rem">{fNumber(costb.amount)}</Typography>
+                        <Icon icon={rippleSolid} color={theme.palette.success.main} width="10" height="10" />
+                        <Typography variant='caption' color="success.main" fontWeight="600" fontSize="0.65rem">{fNumber(costb.amount)}</Typography>
                     </>
                 ) : (
-                    <Typography variant='caption' color="#00AB55" fontWeight="600" fontSize="0.65rem">
+                    <Typography variant='caption' color="success.main" fontWeight="600" fontSize="0.65rem">
                         {fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}
                     </Typography>
                 )}
@@ -293,10 +271,12 @@ export default function NFTCard({ nft, handleRemove }) {
             <Chip
                 variant="outlined"
                 size="small"
-                icon={<LeaderboardOutlinedIcon sx={{width: '10px'}} />}
+                icon={<LeaderboardOutlinedIcon sx={{width: '10px', color: theme.palette.primary.main}} />}
                 label={fIntNumber(rarity_rank)}
                 sx={{
                     height: '18px',
+                    borderColor: theme.palette.primary.main,
+                    color: theme.palette.primary.main,
                     '& .MuiChip-label': {
                         px: 0.5,
                         fontSize: '0.6rem',

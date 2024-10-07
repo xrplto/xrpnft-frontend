@@ -5,9 +5,13 @@ import {
     Stack,
     Typography,
     Tooltip,
+    useTheme,
 } from '@mui/material';
 
 export default function Trait({ prop, total }) {
+    const theme = useTheme();
+    const primaryColor = theme.palette.primary.main;
+    
     const type = prop.type || prop.trait_type;
     const value = prop.value;
     const count = prop.count || 0;
@@ -25,15 +29,15 @@ export default function Trait({ prop, total }) {
                     width: '100%',
                     height: "100%",
                     borderRadius: '8px',
-                    border: '1px solid #1e90ff',
+                    border: `1px solid ${primaryColor}`,
                     padding: 1,
                     textAlign: 'center',
-                    background: 'linear-gradient(145deg, #1e90ff10, #1e90ff20)',
+                    background: `linear-gradient(145deg, ${primaryColor}10, ${primaryColor}20)`,
                     transition: 'all 0.3s ease',
                     '&:hover': {
                         transform: 'translateY(-2px)',
-                        boxShadow: '0 4px 12px rgba(30, 144, 255, 0.3)',
-                        background: 'linear-gradient(145deg, #1e90ff20, #1e90ff30)',
+                        boxShadow: `0 4px 12px ${primaryColor}4D`,
+                        background: `linear-gradient(145deg, ${primaryColor}20, ${primaryColor}30)`,
                     },
                 }}
             >
@@ -41,7 +45,7 @@ export default function Trait({ prop, total }) {
                     <Typography sx={{ 
                         overflowWrap: 'break-word', 
                         textTransform: 'uppercase', 
-                        color: '#1e90ff', 
+                        color: primaryColor, 
                         fontWeight: 700, 
                         fontSize: 10,
                         letterSpacing: 0.5,

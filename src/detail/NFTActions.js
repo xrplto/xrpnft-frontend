@@ -79,8 +79,8 @@ const GlassPanel = styled(Glass)(({ theme }) => ({
     backdropFilter: 'blur(10px)',
     borderRadius: theme.shape.borderRadius * 2,
     padding: theme.spacing(3),
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.common.black, 0.1)}`,
-    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`
 }));
 
 // const NFT_FLAGS = {
@@ -594,7 +594,8 @@ export default function NFTActions({ nft }) {
                                 '&:hover': {
                                     backgroundColor: (theme) =>
                                         alpha(theme.palette.primary.main, 0.2)
-                                }
+                                },
+                                color: 'primary.main'
                             }}
                             onClick={handleOpenShare}
                         >
@@ -739,14 +740,14 @@ export default function NFTActions({ nft }) {
                 <Stack spacing={2}>
                     {isOwner && (
                         <Accordion defaultExpanded elevation={0}>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon color="primary" />}>
                                 <Stack
                                     direction="row"
                                     spacing={2}
                                     alignItems="center"
                                 >
                                     <LocalOfferIcon color="primary" />
-                                    <Typography variant="h6">
+                                    <Typography variant="h6" color="primary.main">
                                         Sell Offers
                                     </Typography>
                                 </Stack>
@@ -764,14 +765,16 @@ export default function NFTActions({ nft }) {
                     )}
 
                     <Accordion defaultExpanded elevation={0}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon color="primary" />}>
                             <Stack
                                 direction="row"
                                 spacing={2}
                                 alignItems="center"
                             >
                                 <PanToolIcon color="primary" />
-                                <Typography variant="h6">Offers</Typography>
+                                <Typography variant="h6" color="primary.main">
+                                    Offers
+                                </Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
@@ -786,14 +789,16 @@ export default function NFTActions({ nft }) {
                     </Accordion>
 
                     <Accordion defaultExpanded elevation={0}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon color="primary" />}>
                             <Stack
                                 direction="row"
                                 spacing={2}
                                 alignItems="center"
                             >
                                 <HistoryIcon color="primary" />
-                                <Typography variant="h6">History</Typography>
+                                <Typography variant="h6" color="primary.main">
+                                    History
+                                </Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
