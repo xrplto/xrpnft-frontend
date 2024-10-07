@@ -12,7 +12,7 @@ import {
     Stack,
     Tooltip,
     Typography,
-    useTheme  // Add this import
+    useTheme // Add this import
 } from '@mui/material';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -99,7 +99,7 @@ function getProperties(meta) {
 
 export default function NFTDetails({ nft }) {
     const { accountProfile, openSnackbar } = useContext(AppContext);
-    const theme = useTheme();  // Add this line to get the theme
+    const theme = useTheme(); // Add this line to get the theme
 
     const {
         uuid,
@@ -183,7 +183,9 @@ export default function NFTDetails({ nft }) {
                                 <Icon
                                     icon="majesticons:checkbox-list-detail-line"
                                     fontSize={25}
-                                    style={{ color: theme.palette.primary.main }}
+                                    style={{
+                                        color: theme.palette.primary.main
+                                    }}
                                 />
                                 <Typography variant="s16" color="primary.main">
                                     Properties

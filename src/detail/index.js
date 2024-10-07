@@ -15,7 +15,7 @@ export default function Detail({ nft }) {
     const { status, costs } = nft;
 
     return (
-        <Container maxWidth="lg">
+        <Container maxWidth="xl"> {/* Changed from "lg" to "xl" for a wider layout */}
             <Box py={8}>
                 {' '}
                 {/* Increased vertical padding */}
@@ -26,14 +26,14 @@ export default function Detail({ nft }) {
                 ) : (
                     <Grid
                         container
-                        spacing={6} // Increased spacing between grid items
+                        spacing={3} // Changed back to 3 for better spacing in the wider layout
                         justifyContent="center"
                         alignItems="flex-start"
                     >
-                        <Grid item xs={12} md={5}>
+                        <Grid item xs={12} md={5}> {/* Changed from md={6} to md={5} */}
                             <NFTDetails nft={nft} />
                         </Grid>
-                        <Grid item xs={12} md={7}>
+                        <Grid item xs={12} md={7}> {/* Changed from md={6} to md={7} */}
                             <Box mt={isMobile ? 4 : 0}>
                                 {' '}
                                 {/* Add top margin on mobile */}

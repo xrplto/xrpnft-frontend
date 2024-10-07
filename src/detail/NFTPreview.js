@@ -281,110 +281,163 @@ export default function NFTPreview({ nft }) {
         setPan({ x: 0, y: 0 });
     };
 
-    const handleZoom = useCallback((delta, mouseX, mouseY) => {
-        setZoom((prevZoom) => {
-            const newZoom = Math.max(1, Math.min(prevZoom + delta, 5));
-            if (newZoom !== prevZoom && imageRef.current && containerRef.current) {
-                const image = imageRef.current;
-                const container = containerRef.current;
-                const rect = image.getBoundingClientRect();
-                const containerRect = container.getBoundingClientRect();
+    const handleZoom = useCallback(
+        (delta, mouseX, mouseY) => {
+            setZoom((prevZoom) => {
+                const newZoom = Math.max(1, Math.min(prevZoom + delta, 5));
+                if (
+                    newZoom !== prevZoom &&
+                    imageRef.current &&
+                    containerRef.current
+                ) {
+                    const image = imageRef.current;
+                    const container = containerRef.current;
+                    const rect = image.getBoundingClientRect();
+                    const containerRect = container.getBoundingClientRect();
 
-                // Calculate the center of the container
-                const containerCenterX = containerRect.width / 2;
-                const containerCenterY = containerRect.height / 2;
+                    // Calculate the center of the container
+                    const containerCenterX = containerRect.width / 2;
+                    const containerCenterY = containerRect.height / 2;
 
-                // Calculate the point on the image where we're zooming
-                const zoomPointX = (mouseX - containerRect.left - pan.x) / (rect.width * prevZoom);
-                const zoomPointY = (mouseY - containerRect.top - pan.y) / (rect.height * prevZoom);
+                    // Calculate the point on the image where we're zooming
+                    const zoomPointX =
+                        (mouseX - containerRect.left - pan.x) /
+                        (rect.width * prevZoom);
+                    const zoomPointY =
+                        (mouseY - containerRect.top - pan.y) /
+                        (rect.height * prevZoom);
 
-                // Calculate new dimensions
-                const newWidth = rect.width * (newZoom / prevZoom);
-                const newHeight = rect.height * (newZoom / prevZoom);
+                    // Calculate new dimensions
+                    const newWidth = rect.width * (newZoom / prevZoom);
+                    const newHeight = rect.height * (newZoom / prevZoom);
 
-                // Calculate new pan values
-                let newPanX = pan.x - (newWidth - rect.width) * zoomPointX;
-                let newPanY = pan.y - (newHeight - rect.height) * zoomPointY;
+                    // Calculate new pan values
+                    let newPanX = pan.x - (newWidth - rect.width) * zoomPointX;
+                    let newPanY =
+                        pan.y - (newHeight - rect.height) * zoomPointY;
 
-                // Adjust pan to keep image centered if smaller than container
-                if (newWidth < containerRect.width) {
-                    newPanX = containerCenterX - newWidth / 2;
+                    // Adjust pan to keep image centered if smaller than container
+                    if (newWidth < containerRect.width) {
+                        newPanX = containerCenterX - newWidth / 2;
+                    }
+                    if (newHeight < containerRect.height) {
+                        newPanY = containerCenterY - newHeight / 2;
+                    }
+
+                    // Calculate the maximum allowed pan values
+                    const maxPanX = Math.max(
+                        0,
+                        (newWidth - containerRect.width) / 2
+                    );
+                    const maxPanY = Math.max(
+                        0,
+                        (newHeight - containerRect.height) / 2
+                    );
+
+                    // Clamp the pan values to keep the image within bounds
+                    const clampedPanX = Math.max(
+                        -maxPanX,
+                        Math.min(maxPanX, newPanX)
+                    );
+                    const clampedPanY = Math.max(
+                        -maxPanY,
+                        Math.min(maxPanY, newPanY)
+                    );
+
+                    setPan({ x: clampedPanX, y: clampedPanY });
                 }
-                if (newHeight < containerRect.height) {
-                    newPanY = containerCenterY - newHeight / 2;
-                }
+                return newZoom;
+            });
+        },
+        [pan]
+    );
 
-                // Calculate the maximum allowed pan values
-                const maxPanX = Math.max(0, (newWidth - containerRect.width) / 2);
-                const maxPanY = Math.max(0, (newHeight - containerRect.height) / 2);
-
-                // Clamp the pan values to keep the image within bounds
-                const clampedPanX = Math.max(-maxPanX, Math.min(maxPanX, newPanX));
-                const clampedPanY = Math.max(-maxPanY, Math.min(maxPanY, newPanY));
-
-                setPan({ x: clampedPanX, y: clampedPanY });
-            }
-            return newZoom;
-        });
-    }, [pan]);
-
-    const handleWheel = useCallback((e) => {
-        e.preventDefault();
-        const delta = -e.deltaY * 0.01;
-        handleZoom(delta, e.clientX, e.clientY);
-    }, [handleZoom]);
+    const handleWheel = useCallback(
+        (e) => {
+            e.preventDefault();
+            const delta = -e.deltaY * 0.01;
+            handleZoom(delta, e.clientX, e.clientY);
+        },
+        [handleZoom]
+    );
 
     const handleZoomIn = useCallback(() => {
         if (containerRef.current) {
             const rect = containerRef.current.getBoundingClientRect();
-            handleZoom(0.5, rect.left + rect.width / 2, rect.top + rect.height / 2);
+            handleZoom(
+                0.5,
+                rect.left + rect.width / 2,
+                rect.top + rect.height / 2
+            );
         }
     }, [handleZoom]);
 
     const handleZoomOut = useCallback(() => {
         if (containerRef.current) {
             const rect = containerRef.current.getBoundingClientRect();
-            handleZoom(-0.5, rect.left + rect.width / 2, rect.top + rect.height / 2);
+            handleZoom(
+                -0.5,
+                rect.left + rect.width / 2,
+                rect.top + rect.height / 2
+            );
         }
     }, [handleZoom]);
 
-    const handleMouseDown = useCallback((e) => {
-        if (zoom > 1) {
-            setIsDragging(true);
-            setDragStart({ x: e.clientX, y: e.clientY });
-        }
-    }, [zoom]);
+    const handleMouseDown = useCallback(
+        (e) => {
+            if (zoom > 1) {
+                setIsDragging(true);
+                setDragStart({ x: e.clientX, y: e.clientY });
+            }
+        },
+        [zoom]
+    );
 
-    const handleMouseMove = useCallback((e) => {
-        if (isDragging && zoom > 1) {
-            const dx = e.clientX - dragStart.x;
-            const dy = e.clientY - dragStart.y;
-            setPan((prevPan) => {
-                const image = imageRef.current;
-                const container = containerRef.current;
-                if (image && container) {
-                    const rect = image.getBoundingClientRect();
-                    const containerRect = container.getBoundingClientRect();
+    const handleMouseMove = useCallback(
+        (e) => {
+            if (isDragging && zoom > 1) {
+                const dx = e.clientX - dragStart.x;
+                const dy = e.clientY - dragStart.y;
+                setPan((prevPan) => {
+                    const image = imageRef.current;
+                    const container = containerRef.current;
+                    if (image && container) {
+                        const rect = image.getBoundingClientRect();
+                        const containerRect = container.getBoundingClientRect();
 
-                    // Calculate the maximum allowed pan values
-                    const maxPanX = Math.max(0, (rect.width * zoom - containerRect.width) / 2);
-                    const maxPanY = Math.max(0, (rect.height * zoom - containerRect.height) / 2);
+                        // Calculate the maximum allowed pan values
+                        const maxPanX = Math.max(
+                            0,
+                            (rect.width * zoom - containerRect.width) / 2
+                        );
+                        const maxPanY = Math.max(
+                            0,
+                            (rect.height * zoom - containerRect.height) / 2
+                        );
 
-                    // Calculate new pan values
-                    const newPanX = prevPan.x + dx;
-                    const newPanY = prevPan.y + dy;
+                        // Calculate new pan values
+                        const newPanX = prevPan.x + dx;
+                        const newPanY = prevPan.y + dy;
 
-                    // Clamp the pan values to keep the image within bounds
-                    const clampedPanX = Math.max(-maxPanX, Math.min(maxPanX, newPanX));
-                    const clampedPanY = Math.max(-maxPanY, Math.min(maxPanY, newPanY));
+                        // Clamp the pan values to keep the image within bounds
+                        const clampedPanX = Math.max(
+                            -maxPanX,
+                            Math.min(maxPanX, newPanX)
+                        );
+                        const clampedPanY = Math.max(
+                            -maxPanY,
+                            Math.min(maxPanY, newPanY)
+                        );
 
-                    return { x: clampedPanX, y: clampedPanY };
-                }
-                return prevPan;
-            });
-            setDragStart({ x: e.clientX, y: e.clientY });
-        }
-    }, [isDragging, zoom, dragStart]);
+                        return { x: clampedPanX, y: clampedPanY };
+                    }
+                    return prevPan;
+                });
+                setDragStart({ x: e.clientX, y: e.clientY });
+            }
+        },
+        [isDragging, zoom, dragStart]
+    );
 
     const handleMouseUp = useCallback(() => {
         setIsDragging(false);
@@ -399,14 +452,18 @@ export default function NFTPreview({ nft }) {
             component="button"
             underline="none"
             onClick={() => handleOpenFullScreen(file.cachedUrl)}
+            sx={{ display: 'block', width: '100%', height: '100%' }}
         >
             {loadingImage(nft)}
             <img
                 style={{
                     ...imageStyle,
-                    display: loaded ? 'inline-block' : 'none',
+                    display: loaded ? 'block' : 'none',
                     verticalAlign: 'bottom',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover'
                 }}
                 onLoad={() => {
                     setLoaded(true);
@@ -437,7 +494,7 @@ export default function NFTPreview({ nft }) {
 
     return (
         <>
-            <Card>
+            <Card sx={{ overflow: 'hidden' }}>
                 {contentTabList.length > 1 && (
                     <div style={{ height: '31px', margin: '18px' }}>
                         <span className="tabs-inline" style={{ float: 'left' }}>
@@ -660,7 +717,12 @@ export default function NFTPreview({ nft }) {
                         justifyContent: 'center',
                         alignItems: 'center',
                         overflow: 'hidden',
-                        cursor: zoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
+                        cursor:
+                            zoom > 1
+                                ? isDragging
+                                    ? 'grabbing'
+                                    : 'grab'
+                                : 'default'
                     }}
                     onWheel={handleWheel}
                     onMouseDown={handleMouseDown}
@@ -676,7 +738,7 @@ export default function NFTPreview({ nft }) {
                             right: 16,
                             top: 16,
                             color: 'white',
-                            zIndex: 1,
+                            zIndex: 1
                         }}
                     >
                         <CloseIcon />
@@ -688,7 +750,7 @@ export default function NFTPreview({ nft }) {
                             bottom: 16,
                             display: 'flex',
                             flexDirection: 'row',
-                            zIndex: 1,
+                            zIndex: 1
                         }}
                     >
                         <Tooltip title="Zoom In">
@@ -719,8 +781,10 @@ export default function NFTPreview({ nft }) {
                             maxHeight: '100%',
                             objectFit: 'contain',
                             transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`,
-                            transition: isDragging ? 'none' : 'transform 0.1s ease-out',
-                            pointerEvents: 'none', // Prevents the image from interfering with mouse events
+                            transition: isDragging
+                                ? 'none'
+                                : 'transform 0.1s ease-out',
+                            pointerEvents: 'none' // Prevents the image from interfering with mouse events
                         }}
                     />
                 </Box>
