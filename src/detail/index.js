@@ -16,7 +16,9 @@ export default function Detail({ nft }) {
 
     return (
         <Container maxWidth="lg">
-            <Box py={8}> {/* Increased vertical padding */}
+            <Box py={8}>
+                {' '}
+                {/* Increased vertical padding */}
                 {isMobile && status !== NFToken.SELL_WITH_MINT_BULK ? (
                     <Stack spacing={4}>
                         <NFTDetailsMobile nft={nft} />
@@ -32,7 +34,9 @@ export default function Detail({ nft }) {
                             <NFTDetails nft={nft} />
                         </Grid>
                         <Grid item xs={12} md={7}>
-                            <Box mt={isMobile ? 4 : 0}> {/* Add top margin on mobile */}
+                            <Box mt={isMobile ? 4 : 0}>
+                                {' '}
+                                {/* Add top margin on mobile */}
                                 {status === NFToken.SELL_WITH_MINT_BULK ? (
                                     <NFTActionsBulk nft={nft} />
                                 ) : (

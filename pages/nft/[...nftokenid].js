@@ -1,14 +1,9 @@
-import axios from 'axios'
+import axios from 'axios';
 import dynamic from 'next/dynamic';
 import { performance } from 'perf_hooks';
 
 // Material
-import {
-    Box,
-    Container,
-    styled,
-    Toolbar
-} from '@mui/material';
+import { Box, Container, styled, Toolbar } from '@mui/material';
 
 // Utils
 import { getNftCoverUrl } from 'src/utils/parse';
@@ -33,11 +28,11 @@ const MainContent = styled(Box)(
 `
 );
 
-export default function Overview({data}) {
+export default function Overview({ data }) {
     return (
         <OverviewWrapper>
             <Header />
-            
+
             <MainContent>
                 <Toolbar id="back-to-top-anchor" />
                 <Container maxWidth="xl" sx={{ maxWidth: '1600px' }}>
@@ -56,7 +51,6 @@ export async function getServerSideProps(ctx) {
 
     let data = null;
     try {
-
         const params = ctx.params.nftokenid;
 
         const NFTokenID = params[0];
@@ -72,12 +66,14 @@ export async function getServerSideProps(ctx) {
         var t2 = performance.now();
         var dt = (t2 - t1).toFixed(2);
 
-        console.log(`2. getServerSideProps NFTokenID: ${NFTokenID} took: ${dt}ms`);
+        console.log(
+            `2. getServerSideProps NFTokenID: ${NFTokenID} took: ${dt}ms`
+        );
     } catch (e) {
         console.log(e);
     }
     let ret = {};
-    const nft = data?.nft
+    const nft = data?.nft;
     if (nft) {
         /*{
             "res": "success",
@@ -99,39 +95,38 @@ export async function getServerSideProps(ctx) {
             }
         } */
 
-        const {
-            NFTokenID,
-            meta,
-            dfile,
-            collection
-        } = nft;
+        const { NFTokenID, meta, dfile, collection } = nft;
 
-        const name = meta?.name || nft.meta?.Name  || "No Name";
+        const name = meta?.name || nft.meta?.Name || 'No Name';
         const description = meta?.description;
-        const cname = collection || "";
+        const cname = collection || '';
 
         let ogp = {};
         ogp.canonical = `https://xrpnft.com/nft/${NFTokenID}`;
-        ogp.title = cname?`${name} - ${cname}`:`${name}`;
+        ogp.title = cname ? `${name} - ${cname}` : `${name}`;
         ogp.url = `https://xrpnft.com/nft/${NFTokenID}`;
-        ogp.imgUrl = getNftCoverUrl(nft, '', 'image') || getNftCoverUrl(nft, '', 'animation'); // (NFTokenID, meta, dfile, 48)
+        ogp.imgUrl =
+            getNftCoverUrl(nft, '', 'image') ||
+            getNftCoverUrl(nft, '', 'animation'); // (NFTokenID, meta, dfile, 48)
         ogp.videoUrl = getNftCoverUrl(nft, '', 'video');
-        ogp.desc = description?description:`XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
-        ogp.isVideo = meta?.video?true:false;
+        ogp.desc = description
+            ? description
+            : `XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
+        ogp.isVideo = meta?.video ? true : false;
 
-        ret = {data, ogp};
+        ret = { data, ogp };
     } else {
         return {
             redirect: {
                 permanent: false,
                 destination: '/404'
             }
-        }
+        };
     }
 
     return {
-        props: ret, // will be passed to the page component as props
-    }
+        props: ret // will be passed to the page component as props
+    };
 }
 
 // This function gets called at build time
