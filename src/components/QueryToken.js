@@ -42,25 +42,22 @@ export default function QueryToken({token, setToken}) {
 
     const loadTokens = () => {
         setLoading(true);
-        // https://api.xrpl.to/api/xrpnft/tokens?filter=
         axios.get(`${API_XRPL_TO_URL}/xrpnft/tokens?filter=${filter}`)
         .then(res => {
             try {
                 if (res.status === 200 && res.data) {
                     const ret = res.data;
-                    const newTokens = [XRP_TOKEN].concat(ret.tokens);
-
+                    // Filter out XRP token from API response to avoid duplication
+                    const apiTokens = ret.tokens.filter(t => t.currency !== 'XRP');
+                    const newTokens = [XRP_TOKEN, ...apiTokens];
                     setTokens(newTokens);
-                    // if (ret.tokens.length > 0)
-                    //     setTokens(ret.tokens);
                 }
             } catch (error) {
                 console.log(error);
             }
         }).catch(err => {
             console.log("err->>", err);
-        }).then(function () {
-            // Always executed
+        }).finally(() => {
             setLoading(false);
         });
     };

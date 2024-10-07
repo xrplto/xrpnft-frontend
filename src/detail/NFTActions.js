@@ -527,6 +527,15 @@ export default function NFTActions({ nft }) {
         setOpenShare(false);
     };
 
+    const handleCloseCreateOffer = () => {
+        setOpenCreateOffer(false);
+        setIsSellOffer(false);
+    };
+
+    const handleCloseTransfer = () => {
+        setOpenTransfer(false);
+    };
+
     return (
         <GlassPanel elevation={0}>
             <Stack spacing={3}>
@@ -807,6 +816,19 @@ export default function NFTActions({ nft }) {
                     </Accordion>
                 </Stack>
             </Stack>
+            <CreateOfferDialog
+                open={openCreateOffer}
+                setOpen={setOpenCreateOffer}
+                onClose={handleCloseCreateOffer}
+                nft={nft}
+                isSellOffer={isSellOffer}
+            />
+            <TransferDialog
+                open={openTransfer}
+                setOpen={setOpenTransfer}
+                onClose={handleCloseTransfer}
+                nft={nft}
+            />
         </GlassPanel>
     );
 }

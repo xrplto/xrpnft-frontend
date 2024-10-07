@@ -44,13 +44,18 @@ const OfferDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogActions-root': {
         padding: theme.spacing(1),
     },
+    '& .MuiPaper-root': {
+        borderColor: theme.palette.primary.main,
+        borderWidth: 2,
+        borderStyle: 'solid',
+    },
 }));
 
 const OfferDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
     return (
-        <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+        <DialogTitle sx={{ m: 0, p: 2, bgcolor: 'primary.main', color: 'primary.contrastText' }} {...other}>
             {children}
             {onClose ? (
                 <IconButton
@@ -60,7 +65,7 @@ const OfferDialogTitle = (props) => {
                         position: 'absolute',
                         right: 8,
                         top: 8,
-                        color: (theme) => theme.palette.grey[500],
+                        color: (theme) => theme.palette.primary.contrastText,
                     }}
                 >
                     <CloseIcon />
@@ -71,7 +76,7 @@ const OfferDialogTitle = (props) => {
 };
 
 
-export default function TransferDialog({ open, setOpen, nft }) {
+export default function TransferDialog({ open, setOpen, onClose, nft }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -245,7 +250,7 @@ export default function TransferDialog({ open, setOpen, nft }) {
                 sx={{ color: "#000", zIndex: 1303 }}
                 open={loading}
             >
-                <PulseLoader color={"#FF4842"} size={10} />
+                <PulseLoader color={(theme) => theme.palette.primary.main} size={10} />
             </Backdrop>
 
             <OfferDialog
@@ -254,46 +259,58 @@ export default function TransferDialog({ open, setOpen, nft }) {
                 fullWidth
                 maxWidth='xs'
                 open={open}
-                // sx={{zIndex: 1302}}
                 hideBackdrop={true}
                 disableScrollLock
                 disablePortal
                 keepMounted
             >
                 <OfferDialogTitle id="customized-dialog-title" onClose={handleClose}>
-                    <Typography variant="p4">Transfer</Typography>
+                    <Typography variant="h6">Transfer NFT</Typography>
                 </OfferDialogTitle>
 
                 <DialogContent>
-                    <Typography >For this transfer to be completed, the recipient must accept it through their wallet.</Typography>
-                    <Stack spacing={2} mt={1}>
-                        {/* <Typography variant='p2'>Destination</Typography> */}
+                    <Typography color="text.secondary" sx={{ mb: 3 }}>
+                        For this transfer to be completed, the recipient must accept it through their wallet.
+                    </Typography>
+                    <Stack spacing={2}>
                         <TextField
                             id='receive-account'
-                            // autoFocus
                             variant='outlined'
-                            placeholder='Destination'
+                            label='Destination Address'
+                            placeholder='Enter XRP address'
                             onChange={handleChangeAccount}
                             value={destination}
                             onFocus={event => {
                                 event.target.select();
                             }}
                             onKeyDown={(e) => e.stopPropagation()}
-                        // sx={{width: 100}}
+                            fullWidth
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: 'primary.main',
+                                    },
+                                },
+                            }}
                         />
                     </Stack>
 
-                    <Stack direction='row' spacing={2} justifyContent="center" sx={{ mt: 3, mb: 3 }}>
+                    <Stack direction='row' spacing={2} justifyContent="center" sx={{ mt: 4 }}>
                         <Button
-                            variant="outlined"
+                            variant="contained"
                             startIcon={<SendIcon />}
-                            // size="small"
                             onClick={handleTransferNFT}
+                            color="primary"
+                            sx={{
+                                px: 4,
+                                py: 1,
+                                borderRadius: 2,
+                                boxShadow: (theme) => `0px 4px 8px ${alpha(theme.palette.primary.main, 0.24)}`,
+                            }}
                         >
-                            Transfer
+                            Transfer NFT
                         </Button>
                     </Stack>
-                    {/* </Stack> */}
                 </DialogContent>
             </OfferDialog>
 

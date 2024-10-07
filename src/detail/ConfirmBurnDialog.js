@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 // ----------------------------------------------------------------------
 const ConfirmDialog = styled(Dialog) (({ theme }) => ({
     backdropFilter: 'blur(1px)',
@@ -78,31 +79,35 @@ export default function ConfirmBurnDialog({open, setOpen, onContinue }) {
             keepMounted
         >
             <ConfirmDialogTitle id="customized-dialog-title" onClose={handleClose}>
-                <Stack direction="row" spacing={1}>
-                    <ErrorOutlineIcon color="error" />
-                    <Typography variant="p4" color="error">Warning!</Typography>
+                <Stack direction="row" spacing={1} alignItems="center">
+                    <WarningAmberIcon color="warning" fontSize="large" />
+                    <Typography variant="h6" color="warning.main" fontWeight="bold">
+                        Burn NFT
+                    </Typography>
                 </Stack>
             </ConfirmDialogTitle>
 
             <DialogContent>
-                <Stack sx={{pl:1, pr:1}}>
-                    <Typography variant="p5" sx={{mt: 2}}>Do you really want to burn your NFT?</Typography>
-                    <Stack direction='row' spacing={2} justifyContent="center" sx={{mt:3, mb:4}}>
-                        <Button
-                            variant="contained"
-                            onClick={handleNo}
-                            color='primary'
-                            // size='medium'
-                        >
-                            No
-                        </Button>
+                <Stack spacing={3} sx={{p: 1}}>
+                    <Typography variant="body1" align="center">
+                        Are you sure you want to burn your NFT? This action cannot be undone.
+                    </Typography>
+                    <Stack direction='row' spacing={2} justifyContent="center">
                         <Button
                             variant="outlined"
-                            onClick={handleYes}
+                            onClick={handleNo}
                             color='primary'
-                            // size='medium'
+                            size='large'
                         >
-                            Yes
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={handleYes}
+                            color='error'
+                            size='large'
+                        >
+                            Burn NFT
                         </Button>
                     </Stack>
                 </Stack>
