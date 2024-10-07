@@ -17,6 +17,7 @@ const BaseLayout = ({ children }) => {
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
+          maxWidth: '1400px !important', // Override the default 'xl' max-width
         }}
       >
         {children}

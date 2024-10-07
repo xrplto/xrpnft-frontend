@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 // Material
 import { visuallyHidden } from '@mui/utils';
-import { styled, alpha } from '@mui/material/styles';
 import {
     Box,
     TableRow,
@@ -14,23 +13,6 @@ import {
 } from '@mui/material';
 // ----------------------------------------------------------------------
 
-const StickyTableCell = styled(TableCell)(({ theme }) => ({
-    position: 'sticky',
-    zIndex: 1000,
-    top: 0,
-    backgroundColor: theme.palette.mode === 'light'
-        ? alpha(theme.palette.background.paper, 0.8)
-        : alpha(theme.palette.background.paper, 0.6),
-    backdropFilter: 'blur(10px)',
-    borderBottom: `2px solid ${theme.palette.primary.main}`,
-    transition: theme.transitions.create(['background-color', 'box-shadow']),
-    '&:hover': {
-        backgroundColor: theme.palette.mode === 'light'
-            ? alpha(theme.palette.primary.main, 0.1)
-            : alpha(theme.palette.primary.main, 0.2),
-    }
-}));
-
 const TABLE_HEAD = (isMobile) => {
     if (isMobile) {
         return [
@@ -39,99 +21,131 @@ const TABLE_HEAD = (isMobile) => {
                 id: 'name',
                 label: 'Collection',
                 align: 'left',
-                width: '40%'
+                width: '40%',
+                order: false
             },
             {
                 no: 1,
                 id: 'floor.amount',
-                label: 'Floor Price',
+                label: 'Floor',
                 align: 'right',
-                width: '30%'
+                width: '30%',
+                order: true
             },
             {
                 no: 2,
                 id: 'totalVol24h',
-                label: '24h Volume',
+                label: '24h Vol',
                 align: 'right',
-                width: '30%'
+                width: '30%',
+                order: true
             }
         ];
     }
-
     return [
-        { no: 0, id: 'name', label: 'Collection', align: 'left', width: '40%' },
+        {
+            no: 0,
+            id: 'name',
+            label: 'Collection',
+            align: 'left',
+            width: '40%',
+            order: false
+        },
         {
             no: 1,
             id: 'floor.amount',
-            label: 'Floor Price',
+            label: 'Floor',
             align: 'right',
-            width: '10%'
+            width: '10%',
+            order: true
         },
         {
             no: 2,
             id: 'totalVol24h',
-            label: '24h Volume',
+            label: '24h Vol',
             align: 'right',
-            width: '10%'
+            width: '10%',
+            order: true
+        },
+        {
+            no: 3,
+            id: 'totalVolume',
+            label: 'Total Vol',
+            align: 'right',
+            width: '10%',
+            order: true
         },
         {
             no: 4,
-            id: 'totalVolume',
-            label: 'Total Volume',
+            id: 'owners',
+            label: 'Owners',
             align: 'right',
-            width: '10%'
+            width: '8%',
+            order: true
         },
-        { no: 5, id: 'owners', label: 'Owners', align: 'right', width: '8%' },
         {
-            no: 6,
+            no: 5,
             id: 'items',
-            label: 'Total Items',
+            label: 'Items',
             align: 'right',
-            width: '8%'
+            width: '8%',
+            order: true
         }
     ];
 };
 
-export default function ListHead({}) {
+export default function ListHead({ order, orderBy, onRequestSort }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    const createSortHandler = (id) => (event) => {
+        onRequestSort(event, id);
+    };
 
     return (
         <TableHead>
             <TableRow>
                 {TABLE_HEAD(isMobile).map((headCell) => (
-                    <StickyTableCell
+                    <TableCell
                         key={headCell.id}
                         align={headCell.align}
-                        sortDirection={false}
+                        sortDirection={orderBy === headCell.id ? order : false}
                         width={headCell.width}
-                        sx={{
-                            padding: theme.spacing(2),
-                            ...(headCell.no > 0 && {
-                                pl: 1,
-                                pr: 1
-                            })
-                        }}
                     >
-                        <Typography
-                            variant="subtitle1"
-                            fontWeight="600"
-                            noWrap
-                            sx={{
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.5px',
-                                color: theme.palette.primary.main,
-                                transition: 'color 0.2s',
-                                '&:hover': {
-                                    color: theme.palette.primary.dark,
-                                }
-                            }}
+                        <TableSortLabel
+                            hideSortIcon
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : 'desc'}
+                            onClick={
+                                headCell.order
+                                    ? createSortHandler(headCell.id)
+                                    : undefined
+                            }
                         >
-                            {headCell.label}
-                        </Typography>
-                    </StickyTableCell>
+                            <Typography
+                                variant={isMobile ? "body2" : "body1"}
+                                fontWeight="600"
+                                noWrap
+                            >
+                                {headCell.label}
+                            </Typography>
+                            {orderBy === headCell.id ? (
+                                <Box sx={{ ...visuallyHidden }}>
+                                    {order === 'desc'
+                                        ? 'sorted descending'
+                                        : 'sorted ascending'}
+                                </Box>
+                            ) : null}
+                        </TableSortLabel>
+                    </TableCell>
                 ))}
             </TableRow>
         </TableHead>
     );
 }
+
+ListHead.propTypes = {
+    order: PropTypes.oneOf(['asc', 'desc']),
+    orderBy: PropTypes.string,
+    onRequestSort: PropTypes.func.isRequired
+};

@@ -15,29 +15,29 @@ import EditIcon from '@mui/icons-material/Edit';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Utils
-import { formatMonthYearDate } from 'src/utils/formatTime';
 import { fNumber, fIntNumber, fVolume } from 'src/utils/formatNumber';
 
 // Iconify
-import { Icon } from '@iconify/react';
-import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
+// import { Icon } from '@iconify/react';
+// import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
 // Components
 
+// Add this import for better typography control
+import { alpha } from '@mui/material/styles';
+
 const IconCover = styled('div')(
     ({ theme }) => `
-        width: 72px;
-        height: 72px;
+        width: 60px;
+        height: 60px;
         box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-
-        border: 1px solid ${theme.colors.alpha.black[50]};
-        border-radius: 10px;
-        box-shadow: rgb(0 0 0 / 8%) 0px 5px 10px;
-        background-color: ${theme.colors.alpha.white[70]};
+        border: 1px solid ${theme.palette.primary.main};
+        background-color: ${theme.palette.primary.lighter};
         position: relative;
         overflow: hidden;
         transition: width 1s ease-in-out, height .5s ease-in-out !important;
         -webkit-tap-highlight-color: transparent;
+        border-radius: 12px; // Add this line to create rounded corners
         &:hover, &.Mui-focusVisible {
             z-index: 1;
             & .MuiImageBackdrop-root {
@@ -49,8 +49,9 @@ const IconCover = styled('div')(
         }
 
         ${theme.breakpoints.down('sm')} {
-            width: 52px;
-            height: 52px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px; // Add this line for smaller rounded corners on mobile
         }
     `
 );
@@ -60,12 +61,14 @@ const IconWrapper = styled('div')(
         box-sizing: border-box;
         display: inline-block;
         position: relative;
-        width: 70px;
-        height: 70px;
+        width: 58px;
+        height: 58px;
+        border-radius: 12px; // Add this line to match the IconCover's border-radius
 
         ${theme.breakpoints.down('sm')} {
-            width: 50px;
-            height: 50px;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px; // Add this line for smaller rounded corners on mobile
         }
   `
 );
@@ -79,13 +82,14 @@ const IconImage = styled('img')(
     border: none;
     margin: auto;
     display: block;
-    width: 0px; height: 0px;
-    min-width: 100%;
-    max-width: 100%;
-    min-height: 100%;
-    max-height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 0px;
+    border-radius: 12px; // Add this line to match the IconCover's border-radius
+
+    ${theme.breakpoints.down('sm')} {
+        border-radius: 8px; // Add this line for smaller rounded corners on mobile
+    }
   `
 );
 
@@ -117,7 +121,6 @@ export default function Row({ id, item, isMine }) {
         extra,
         minter,
         verified,
-        created,
         volume,
         totalVolume,
         floor,
@@ -129,9 +132,7 @@ export default function Row({ id, item, isMine }) {
     let volume1 = fVolume(volume || 0);
     let volume2 = fVolume(totalVolume || 0);
 
-    const strDateTime = formatMonthYearDate(created);
-
-    // const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;
+    // Reintroduce this line to define logoImageUrl
     const logoImageUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
 
     const theme = useTheme();
@@ -150,25 +151,25 @@ export default function Row({ id, item, isMine }) {
             onClick={handleRowClick}
             style={{ cursor: 'pointer' }}
         >
-            <TableCell align="left" sx={{ p: 0, border: 'none' }}>
+            <TableCell align="left" sx={{ py: 1.5, px: 2, border: 'none' }}>
                 <Stack
                     direction="row"
                     alignItems="center"
                     spacing={2}
-                    sx={{ pt: 1, pb: 1 }}
+                    sx={{ py: 0.5 }}
                 >
                     <Typography
-                        variant={isMobile ? 's8' : 's3'}
-                        sx={{ /*width: isMobile ? '12px' : '16px'*/ }}
+                        variant={isMobile ? 'body2' : 'body1'}
+                        sx={{
+                            color: theme.palette.text.secondary,
+                            minWidth: isMobile ? '24px' : '32px',
+                            fontWeight: 500
+                        }}
                     >
                         {id}
                     </Typography>
                     <Link
-                        href={
-                            isMine
-                                ? `/collection/${slug}/edit`
-                                : `/collection/${slug}`
-                        }
+                        href={isMine ? `/collection/${slug}/edit` : `/collection/${slug}`}
                         underline="none"
                     >
                         <IconCover>
@@ -199,16 +200,16 @@ export default function Row({ id, item, isMine }) {
                     </Link>
 
                     <Link underline="none" href={`/collection/${slug}`}>
-                        <Stack spacing={0.4}>
-                            <Stack direction="row" spacing={0.5} sx={{ pt: 0 }}>
+                        <Stack spacing={0.5}>
+                            <Stack direction="row" spacing={0.5} alignItems="center">
                                 <Typography
-                                    variant={isMobile ? 's8' : 's3'}
+                                    variant={isMobile ? 'subtitle2' : 'subtitle1'}
                                     noWrap
                                     sx={{
-                                        width: isMobile ? '80px' : undefined,
-                                        textOverflow: isMobile
-                                            ? 'ellipsis'
-                                            : 'none'
+                                        maxWidth: isMobile ? '100px' : '150px',
+                                        textOverflow: 'ellipsis',
+                                        fontWeight: 600,
+                                        color: theme.palette.text.primary
                                     }}
                                 >
                                     {name}
@@ -216,73 +217,69 @@ export default function Row({ id, item, isMine }) {
                                 {verified === 'yes' && (
                                     <Tooltip title="Verified">
                                         <VerifiedIcon
-                                            fontSize="small"
-                                            style={{ color: '#4589ff' }}
+                                            fontSize={isMobile ? 'small' : 'medium'}
+                                            style={{ color: theme.palette.primary.main }}
                                         />
                                     </Tooltip>
                                 )}
                             </Stack>
-                            <Typography
-                                variant={isMobile ? 's12' : 's7'}
-                                noWrap
-                            >
-                                {strDateTime}
-                            </Typography>
                         </Stack>
                     </Link>
                 </Stack>
             </TableCell>
 
-            <TableCell align="right" sx={{ pl: 0, pr: 0, border: 'none' }}>
-                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
-                    <Icon
-                        icon={rippleSolid}
-                        width={isMobile ? 12 : 16}
-                        height={isMobile ? 12 : 16}
-                    />{' '}
-                    {fNumber(floorPrice)}
+            <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+                <Typography
+                    variant={isMobile ? 'body2' : 'body1'}
+                    noWrap
+                    sx={{ fontWeight: 500, color: theme.palette.text.primary }}
+                >
+                    ✕ {fNumber(floorPrice)}
                 </Typography>
             </TableCell>
 
-            <TableCell align="right" sx={{ pl: 0, pr: 0, border: 'none' }}>
-                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
-                    <Icon
-                        icon={rippleSolid}
-                        width={isMobile ? 12 : 16}
-                        height={isMobile ? 12 : 16}
-                    />{' '}
-                    {fNumber(totalVol24h)}
-                </Typography>
-            </TableCell>
-
-            {/* <TableCell align="right" sx={{pl:0, pr:0}}>
-                <Typography variant="s3" noWrap><Icon icon={rippleSolid} width={16} height={16} /> {volume1}</Typography>
-            </TableCell> */}
-
-            <TableCell
-                align="right"
-                sx={{
-                    pl: 0,
-                    pr: 0,
-                    border: 'none',
-                    display: { xs: 'none', sm: 'table-cell' }
-                }}
-            >
-                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
-                    <Icon icon={rippleSolid} width={16} height={16} /> {volume2}
+            <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+                <Typography
+                    variant={isMobile ? 'body2' : 'body1'}
+                    noWrap
+                    sx={{ fontWeight: 500, color: theme.palette.text.primary }}
+                >
+                    ✕ {fNumber(totalVol24h)}
                 </Typography>
             </TableCell>
 
             <TableCell
                 align="right"
                 sx={{
-                    pl: 0,
-                    pr: 0,
+                    py: 1.5,
+                    px: 2,
                     border: 'none',
                     display: { xs: 'none', sm: 'table-cell' }
                 }}
             >
-                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                <Typography
+                    variant="body1"
+                    noWrap
+                    sx={{ fontWeight: 500, color: theme.palette.text.primary }}
+                >
+                    ✕ {volume2}
+                </Typography>
+            </TableCell>
+
+            <TableCell
+                align="right"
+                sx={{
+                    py: 1.5,
+                    px: 2,
+                    border: 'none',
+                    display: { xs: 'none', sm: 'table-cell' }
+                }}
+            >
+                <Typography
+                    variant="body1"
+                    noWrap
+                    sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
+                >
                     {fIntNumber(owners || 0)}
                 </Typography>
             </TableCell>
@@ -290,13 +287,17 @@ export default function Row({ id, item, isMine }) {
             <TableCell
                 align="right"
                 sx={{
-                    pl: 0,
-                    pr: 0,
+                    py: 1.5,
+                    px: 2,
                     border: 'none',
                     display: { xs: 'none', sm: 'table-cell' }
                 }}
             >
-                <Typography variant={isMobile ? 's8' : 's3'} noWrap>
+                <Typography
+                    variant="body1"
+                    noWrap
+                    sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
+                >
                     {fIntNumber(items)}
                 </Typography>
             </TableCell>

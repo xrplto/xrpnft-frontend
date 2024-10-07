@@ -148,17 +148,44 @@ export default function CollectionList({ type, category }) {
                     value={choice}
                     exclusive
                     onChange={handleChangeChoice}
+                    sx={{ mb: 2 }}
                 >
                     <ToggleButton
                         value="all"
-                        sx={{ pl: 2, pr: 2, pt: 0.3, pb: 0.3 }}
+                        sx={{
+                            pl: 2,
+                            pr: 2,
+                            pt: 0.3,
+                            pb: 0.3,
+                            color: theme.palette.primary.main,
+                            '&.Mui-selected': {
+                                backgroundColor: theme.palette.primary.main,
+                                color: theme.palette.primary.contrastText,
+                                '&:hover': {
+                                    backgroundColor: theme.palette.primary.dark,
+                                },
+                            },
+                        }}
                         style={{ textTransform: 'none' }}
                     >
                         All
                     </ToggleButton>
                     <ToggleButton
                         value="verified"
-                        sx={{ pl: 2, pr: 2, pt: 0.3, pb: 0.3 }}
+                        sx={{
+                            pl: 2,
+                            pr: 2,
+                            pt: 0.3,
+                            pb: 0.3,
+                            color: theme.palette.primary.main,
+                            '&.Mui-selected': {
+                                backgroundColor: theme.palette.primary.main,
+                                color: theme.palette.primary.contrastText,
+                                '&:hover': {
+                                    backgroundColor: theme.palette.primary.dark,
+                                },
+                            },
+                        }}
                         style={{ textTransform: 'none' }}
                     >
                         Verified
@@ -176,7 +203,12 @@ export default function CollectionList({ type, category }) {
                     '& > *': {
                         scrollSnapAlign: 'center'
                     },
-                    '::-webkit-scrollbar': { display: 'none' }
+                    '::-webkit-scrollbar': { display: 'none' },
+                    borderColor: theme.palette.primary.main,
+                    borderWidth: 1,
+                    borderStyle: 'solid',
+                    borderRadius: 1,
+                    marginBottom: 3, // Add margin to the bottom
                 }}
             >
                 <Table style={{ minWidth: isMobile ? undefined : '1000px' }}>

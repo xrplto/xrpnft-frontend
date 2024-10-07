@@ -12,7 +12,7 @@ export default function CollectionList({ collections }) {
             setVisibleRows(collections.length);
             setAllVisible(true);
         } else {
-            setVisibleRows(prevVisibleRows => prevVisibleRows + 5);
+            setVisibleRows((prevVisibleRows) => prevVisibleRows + 5);
         }
     };
 
@@ -21,16 +21,31 @@ export default function CollectionList({ collections }) {
     };
 
     return (
-        <TableContainer>
+        <TableContainer
+            sx={{
+                width: '100%',
+                maxWidth: 1400,
+                margin: '0 auto',
+                border: '1px solid white',
+                borderRadius: '16px', // Increased border radius for more rounded corners
+                overflow: 'hidden', // This ensures the table content doesn't overflow the rounded corners
+            }}
+        >
             <Table>
                 <ListHead />
                 <TableBody>
-                    {collections.slice(0, visibleRows).map((collection, index) => (
-                        <Row key={collection.uuid} id={index + 1} item={collection} />
-                    ))}
+                    {collections
+                        .slice(0, visibleRows)
+                        .map((collection, index) => (
+                            <Row
+                                key={collection.uuid}
+                                id={index + 1}
+                                item={collection}
+                            />
+                        ))}
                 </TableBody>
             </Table>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
                 {allVisible ? (
                     <Button onClick={handleViewAll} variant="outlined">
                         View All Collections

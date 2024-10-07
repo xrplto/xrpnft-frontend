@@ -7,14 +7,19 @@ import {
     Stack,
     Pagination,
     Select,
-    MenuItem
+    MenuItem,
+    Typography
 } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
 const CustomSelect = styled(Select)(({ theme }) => ({
-    '& .MuiOutlinedInput-notchedOutline' : {
+    '& .MuiOutlinedInput-notchedOutline': {
         border: 'none'
+    },
+    '&.MuiInputBase-root': {
+        fontSize: '0.875rem',
+        marginLeft: theme.spacing(1)
     }
 }));
 
@@ -49,32 +54,36 @@ export default function ListToolbar({ rows, setRows, page, setPage, total}) {
         }
     };
 
-    // sx={{ display: { xs: 'none', sm: 'none', md: 'block' } }}
-
     return (
-        <Grid container rowSpacing={2} alignItems="center" sx={{mt: 0}}>
-            <Grid container item xs={12} sx={{ display: { xs: 'block', md: 'none' } }}>
+        <Grid container spacing={2} alignItems="center" sx={{mt: 0, mb: 4}}>
+            <Grid item xs={12} md={4} lg={4}>
+                <Typography variant="body2" color="text.secondary">
+                    Showing {start} - {end} out of {total}
+                </Typography>
+            </Grid>
+
+            <Grid item xs={12} md={4} lg={4}>
                 <Stack alignItems='center'>
-                    <Pagination page={page+1} onChange={handleChangePage} count={page_count} size="small"/>
+                    <Pagination 
+                        page={page+1} 
+                        onChange={handleChangePage} 
+                        count={page_count}
+                        size="small"
+                        siblingCount={1}
+                        boundaryCount={1}
+                    />
                 </Stack>
             </Grid>
 
-            <Grid container item xs={6} md={4} lg={4}>
-                Showing {start} - {end} out of {total}
-            </Grid>
-
-            <Grid container item xs={0} md={4} lg={4} sx={{ display: { xs: 'none', md: 'block' } }}>
-                <Stack alignItems='center'>
-                    <Pagination page={page+1} onChange={handleChangePage} count={page_count}/>
-                </Stack>
-            </Grid>
-
-            <Grid container item xs={6} md={4} lg={4} justifyContent="flex-end">
-                <Stack direction='row' alignItems='center'>
-                    Show Rows
+            <Grid item xs={12} md={4} lg={4}>
+                <Stack direction='row' alignItems='center' justifyContent="flex-end">
+                    <Typography variant="body2" color="text.secondary">
+                        Show Rows
+                    </Typography>
                     <CustomSelect
                         value={rows}
                         onChange={handleChangeRows}
+                        size="small"
                     >
                         <MenuItem value={50}>50</MenuItem>
                         <MenuItem value={20}>20</MenuItem>

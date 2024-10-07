@@ -9,7 +9,6 @@ import { ColorExtractor } from 'react-color-extractor';
 // Iconify
 import { Icon } from '@iconify/react';
 import arrowsExchange from '@iconify/icons-gg/arrows-exchange';
-import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -42,13 +41,13 @@ const StickyTableCell = withStyles((theme) => ({
         zIndex: 100,
         top: 0,
         left: 24,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme.palette.background.paper
     },
     body: {
         position: 'sticky',
         zIndex: 100,
         left: 24,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme.palette.background.paper
     }
 }))(TableCell);
 
@@ -98,22 +97,30 @@ const CardWrapper = styled('div')(
 
 const IconCover = styled('div')(
     ({ theme }) => `
-        width: 72px;
-        height: 72px;
-        box-shadow: 0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)};
-        border: 1px solid ${alpha(theme.palette.primary.main, 0.1)};
-        border-radius: ${theme.shape.borderRadius}px;
-        background-color: ${alpha(theme.palette.background.paper, 0.9)};
+        width: 60px;
+        height: 60px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        border: 1px solid ${theme.palette.primary.main};
+        background-color: ${theme.palette.primary.lighter};
         position: relative;
         overflow: hidden;
-        transition: all 0.3s ease-in-out;
-        &:hover {
-            box-shadow: 0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.2)};
+        transition: width 1s ease-in-out, height .5s ease-in-out !important;
+        -webkit-tap-highlight-color: transparent;
+        border-radius: 12px;
+        &:hover, &.Mui-focusVisible {
+            z-index: 1;
+            & .MuiImageBackdrop-root {
+                opacity: 0.1;
+            }
+            & .MuiIconEditButton-root {
+                opacity: 1;
+            }
         }
 
         ${theme.breakpoints.down('sm')} {
-            width: 52px;
-            height: 52px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
         }
     `
 );
@@ -123,12 +130,14 @@ const IconWrapper = styled('div')(
         box-sizing: border-box;
         display: inline-block;
         position: relative;
-        width: 70px;
-        height: 70px;
+        width: 58px;
+        height: 58px;
+        border-radius: 12px;
 
         ${theme.breakpoints.down('sm')} {
-            width: 50px;
-            height: 50px;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
         }
   `
 );
@@ -142,13 +151,14 @@ const IconImage = styled('img')(
     border: none;
     margin: auto;
     display: block;
-    width: 0px; height: 0px;
-    min-width: 100%;
-    max-width: 100%;
-    min-height: 100%;
-    max-height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 0px;
+    border-radius: 12px;
+
+    ${theme.breakpoints.down('sm')} {
+        border-radius: 8px;
+    }
   `
 );
 
@@ -226,10 +236,8 @@ export default function Row({ id, item }) {
     let volume1 = fVolume(volume || 0);
     let volume2 = fVolume(totalVolume || 0);
 
-    const strDateTime = formatMonthYearDate(created);
-
-    // const featuredImageUrl = '/static/covers/6.jpg';
-    // const logoImageUrl = '/static/covers/icon1.png';
+    // Remove the following line
+    // const strDateTime = formatMonthYearDate(created);
 
     const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;
     const logoImageUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
@@ -250,26 +258,26 @@ export default function Row({ id, item }) {
     };
 
     return (
-        <TableRow 
-            hover 
-            onClick={handleRowClick} 
+        <TableRow
+            hover
+            key={uuid}
+            onClick={handleRowClick}
             style={{ cursor: 'pointer' }}
-            sx={ {
-                '&:hover': {
-                    backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.1),
-                }
-            }}
         >
-            <TableCell align="left" sx={{ p: 0, border: 'none' }}>
+            <TableCell align="left" sx={{ py: 1.5, px: 2, border: 'none' }}>
                 <Stack
                     direction="row"
                     alignItems="center"
                     spacing={2}
-                    sx={{ pt: 1, pb: 1 }}
+                    sx={{ py: 0.5 }}
                 >
                     <Typography
-                        variant={isMobile ? 's8' : 's3'}
-                        sx={{ width: isMobile ? '12px' : '16px', color: 'text.secondary' }}
+                        variant={isMobile ? 'body2' : 'body1'}
+                        sx={{
+                            color: theme.palette.text.secondary,
+                            minWidth: isMobile ? '24px' : '32px',
+                            fontWeight: 500
+                        }}
                     >
                         {id}
                     </Typography>
@@ -281,124 +289,111 @@ export default function Row({ id, item }) {
                                     alt={`${name} logo`}
                                 />
                             </IconWrapper>
+                            <ImageBackdrop className="MuiImageBackdrop-root" />
                         </IconCover>
                     </Link>
 
                     <Link underline="none" href={`/collection/${slug}`}>
-                        <Stack spacing={0.4}>
-                            <Stack direction="row" spacing={0.5} sx={{ pt: 0 }}>
+                        <Stack spacing={0.5}>
+                            <Stack direction="row" spacing={0.5} alignItems="center">
                                 <Typography
-                                    variant={isMobile ? 's8' : 's3'}
+                                    variant={isMobile ? 'subtitle2' : 'subtitle1'}
                                     noWrap
                                     sx={{
-                                        width: isMobile ? '80px' : undefined,
-                                        textOverflow: isMobile ? 'ellipsis' : 'none',
-                                        color: 'text.primary',
+                                        maxWidth: isMobile ? '100px' : '150px',
+                                        textOverflow: 'ellipsis',
+                                        fontWeight: 600,
+                                        color: theme.palette.text.primary
                                     }}
                                 >
                                     {name}
                                 </Typography>
                                 {verified === 'yes' && (
-                                    <Tooltip title="Verified Collection">
+                                    <Tooltip title="Verified">
                                         <VerifiedIcon
-                                            fontSize="small"
-                                            color="primary"
+                                            fontSize={isMobile ? 'small' : 'medium'}
+                                            style={{ color: theme.palette.primary.main }}
                                         />
                                     </Tooltip>
                                 )}
                             </Stack>
-                            <Typography
-                                variant={isMobile ? 's12' : 's7'}
-                                noWrap
-                                color="text.secondary"
-                            >
-                                Created: {strDateTime}
-                            </Typography>
                         </Stack>
                     </Link>
                 </Stack>
             </TableCell>
 
-            <TableCell align="right" sx={{ pl: 0, pr: 0, border: 'none' }}>
-                <Tooltip title="Floor Price">
-                    <Typography variant={isMobile ? 's8' : 's3'} noWrap color="primary.main">
-                        <Icon
-                            icon={rippleSolid}
-                            width={isMobile ? 12 : 16}
-                            height={isMobile ? 12 : 16}
-                            color={theme.palette.primary.main}
-                        />{' '}
-                        {fNumber(floorPrice)}
-                    </Typography>
-                </Tooltip>
+            <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+                <Typography
+                    variant={isMobile ? 'body2' : 'body1'}
+                    noWrap
+                    sx={{ fontWeight: 500, color: theme.palette.text.primary }}
+                >
+                    ✕ {fNumber(floorPrice)}
+                </Typography>
             </TableCell>
 
-            <TableCell align="right" sx={{ pl: 0, pr: 0, border: 'none' }}>
-                <Tooltip title="24h Volume">
-                    <Typography variant={isMobile ? 's8' : 's3'} noWrap color="primary.main">
-                        <Icon
-                            icon={rippleSolid}
-                            width={isMobile ? 12 : 16}
-                            height={isMobile ? 12 : 16}
-                            color={theme.palette.primary.main}
-                        />{' '}
-                        {fNumber(totalVol24h)}
-                    </Typography>
-                </Tooltip>
+            <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+                <Typography
+                    variant={isMobile ? 'body2' : 'body1'}
+                    noWrap
+                    sx={{ fontWeight: 500, color: theme.palette.text.primary }}
+                >
+                    ✕ {fNumber(totalVol24h)}
+                </Typography>
             </TableCell>
 
             <TableCell
                 align="right"
                 sx={{
-                    pl: 0,
-                    pr: 0,
+                    py: 1.5,
+                    px: 2,
                     border: 'none',
                     display: { xs: 'none', sm: 'table-cell' }
                 }}
             >
-                <Tooltip title="Total Volume">
-                    <Typography variant={isMobile ? 's8' : 's3'} noWrap color="primary.main">
-                        <Icon
-                            icon={rippleSolid}
-                            width={isMobile ? 12 : 16}
-                            height={isMobile ? 12 : 16}
-                            color={theme.palette.primary.main}
-                        />{' '}
-                        {volume2}
-                    </Typography>
-                </Tooltip>
+                <Typography
+                    variant="body1"
+                    noWrap
+                    sx={{ fontWeight: 500, color: theme.palette.text.primary }}
+                >
+                    ✕ {volume2}
+                </Typography>
             </TableCell>
 
             <TableCell
                 align="right"
                 sx={{
-                    pl: 0,
-                    pr: 0,
+                    py: 1.5,
+                    px: 2,
                     border: 'none',
                     display: { xs: 'none', sm: 'table-cell' }
                 }}
             >
-                <Tooltip title="Number of Owners">
-                    <Typography variant={isMobile ? 's8' : 's3'} noWrap color="primary.main">
-                        {fIntNumber(owners || 0)}
-                    </Typography>
-                </Tooltip>
+                <Typography
+                    variant="body1"
+                    noWrap
+                    sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
+                >
+                    {fIntNumber(owners || 0)}
+                </Typography>
             </TableCell>
 
             <TableCell
                 align="right"
                 sx={{
-                    pl: 0,
-                    pr: 0,
+                    py: 1.5,
+                    px: 2,
                     border: 'none',
                     display: { xs: 'none', sm: 'table-cell' }
                 }}
             >
-                <Tooltip title="Total Items">
-                    <Typography variant={isMobile ? 's8' : 's3'} noWrap color="primary.main">
-                        {fIntNumber(items)}
-                    </Typography>
-                </Tooltip>
+                <Typography
+                    variant="body1"
+                    noWrap
+                    sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
+                >
+                    {fIntNumber(items)}
+                </Typography>
             </TableCell>
         </TableRow>
     );

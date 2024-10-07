@@ -1,6 +1,6 @@
+import PropTypes from 'prop-types';
 // Material
 import { visuallyHidden } from '@mui/utils';
-import { withStyles } from '@mui/styles';
 import {
     Box,
     TableRow,
@@ -8,20 +8,12 @@ import {
     TableHead,
     TableSortLabel,
     useTheme,
-    useMediaQuery
+    useMediaQuery,
+    Typography
 } from '@mui/material';
 // ----------------------------------------------------------------------
 
-const StickyTableCell = withStyles((theme) => ({
-    head: {
-        position: 'sticky',
-        zIndex: 1000,
-        top: 0
-    }
-}))(TableCell);
-
-//    { id: 'holders', label: 'Holders', align: 'left', order: true },
-//    { id: 'offers', label: 'Offers', align: 'left', order: true },
+// Removed StickyTableCell styled component
 
 const TABLE_HEAD = (isMobile) => {
     if (isMobile) {
@@ -115,19 +107,13 @@ export default function ListHead({ order, orderBy, onRequestSort }) {
 
     return (
         <TableHead>
-            <TableRow style={{ background: '#00000000' }}>
+            <TableRow>
                 {TABLE_HEAD(isMobile).map((headCell) => (
-                    <StickyTableCell
+                    <TableCell
                         key={headCell.id}
                         align={headCell.align}
                         sortDirection={orderBy === headCell.id ? order : false}
                         width={headCell.width}
-                        sx={{
-                            ...(headCell.no > 0 && {
-                                pl: 0,
-                                pr: 0
-                            })
-                        }}
                     >
                         <TableSortLabel
                             hideSortIcon
@@ -139,7 +125,13 @@ export default function ListHead({ order, orderBy, onRequestSort }) {
                                     : undefined
                             }
                         >
-                            {headCell.label}
+                            <Typography
+                                variant={isMobile ? "body2" : "body1"}
+                                fontWeight="600"
+                                noWrap
+                            >
+                                {headCell.label}
+                            </Typography>
                             {orderBy === headCell.id ? (
                                 <Box sx={{ ...visuallyHidden }}>
                                     {order === 'desc'
@@ -148,9 +140,15 @@ export default function ListHead({ order, orderBy, onRequestSort }) {
                                 </Box>
                             ) : null}
                         </TableSortLabel>
-                    </StickyTableCell>
+                    </TableCell>
                 ))}
             </TableRow>
         </TableHead>
     );
 }
+
+ListHead.propTypes = {
+    order: PropTypes.oneOf(['asc', 'desc']),
+    orderBy: PropTypes.string,
+    onRequestSort: PropTypes.func.isRequired
+};
