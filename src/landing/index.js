@@ -163,6 +163,8 @@ export default function Landing({ collections }) {
             <Box sx={{ mt: { xs: 8, md: 16 }, mb: { xs: 4, md: 8 } }}>
                 <CollectionList collections={collections} />
             </Box>
+
+            <Box sx={{ height: { xs: 60, md: 120 } }} />
         </Container>
     );
 }

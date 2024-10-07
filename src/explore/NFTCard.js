@@ -48,16 +48,16 @@ const CardWrapper = styled(Card)(({ theme }) => ({
     padding: 0,
     cursor: 'pointer',
     transition: 'all 0.3s ease-in-out',
-    overflow: 'hidden',
+    overflow: 'visible', // Keep this as 'visible'
     border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
-    boxShadow: `0 8px 32px 0 ${alpha('#0095D9', 0.2)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
     
     '&:hover': {
         transform: 'translateY(-4px)',
-        boxShadow: `0 12px 48px 0 ${alpha('#0095D9', 0.3)}`,
+        boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
         background: alpha(theme.palette.background.paper, 0.2),
-        outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`, // Add outline on hover
-        outlineOffset: '2px', // Add some space between the card and the outline
+        outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`,
+        outlineOffset: '2px',
     }
 }));
 
@@ -135,105 +135,122 @@ export default function NFTCard({ nft, handleRemove }) {
     }
 
     return (
-        <Link href={`/nft/${NFTokenID}`} underline='none' sx={{ position: 'relative' }}>
-            <CardWrapper
-                sx={{
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                    width: '100%',
-                    maxWidth: 280,
-                    aspectRatio: '9 / 14',
-                    display: 'flex',
-                    flexDirection: 'column',
-                }}
-            >
-                {isAdmin &&
-                    <CloseIcon
-                        sx={{
-                            position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            zIndex: 1500
-                        }}
-                        onClick={(e) => handleRemoveNft(e)}
-                    />
-                }
-                {isSold && (
-                    <Label
-                        variant="filled"
-                        color={(isSold && 'error') || 'info'}
-                        sx={{
-                            zIndex: 9,
-                            top: 24,
-                            right: 24,
-                            position: 'absolute',
-                            textTransform: 'uppercase'
-                        }}
-                    >
-                        SOLD
-                    </Label>
-                )}
-                <CardMedia
-                    component={loadingImg ? 'div' : (isVideo ? 'video' : 'img')}
-                    image={imgUrl}
-                    loading={loadingImg.toString()}
-                    alt={'NFT' + uuid}
+        <Box sx={{ 
+            position: 'relative', 
+            padding: '12px', // Add padding to contain the shadow
+            '&:hover': {
+                zIndex: 1, // Ensure hovered card appears above others
+            }
+        }}>
+            <Link href={`/nft/${NFTokenID}`} underline='none'>
+                <CardWrapper
                     sx={{
                         width: '100%',
-                        flexGrow: 1,
-                        objectFit: 'cover'
+                        maxWidth: 240,
+                        aspectRatio: '3 / 4',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        overflow: 'hidden', // Change this to 'hidden'
                     }}
-                />
-                {loadingImg && (
-                    <Skeleton
-                        variant='rectangular'
+                >
+                    {isAdmin &&
+                        <CloseIcon
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 0,
+                                zIndex: 1500
+                            }}
+                            onClick={(e) => handleRemoveNft(e)}
+                        />
+                    }
+                    {isSold && (
+                        <Label
+                            variant="filled"
+                            color={(isSold && 'error') || 'info'}
+                            sx={{
+                                zIndex: 9,
+                                top: 24,
+                                right: 24,
+                                position: 'absolute',
+                                textTransform: 'uppercase'
+                            }}
+                        >
+                            SOLD
+                        </Label>
+                    )}
+                    <CardMedia
+                        component={loadingImg ? 'div' : (isVideo ? 'video' : 'img')}
+                        image={imgUrl}
+                        loading={loadingImg.toString()}
+                        alt={'NFT' + uuid}
                         sx={{
                             width: '100%',
                             flexGrow: 1,
+                            objectFit: 'cover',
+                            borderTopLeftRadius: theme.shape.borderRadius * 2,  // Add this
+                            borderTopRightRadius: theme.shape.borderRadius * 2, // Add this
                         }}
                     />
-                )}
-                <img src={imgUrl}
-                    style={{ display: 'none' }}
-                    onLoad={onImageLoaded} />
-                {
-                    isVideo &&
-                    <video src={imgUrl}
+                    {loadingImg && (
+                        <Skeleton
+                            variant='rectangular'
+                            sx={{
+                                width: '100%',
+                                flexGrow: 1,
+                                borderTopLeftRadius: theme.shape.borderRadius * 2,  // Add this
+                                borderTopRightRadius: theme.shape.borderRadius * 2, // Add this
+                            }}
+                        />
+                    )}
+                    <img src={imgUrl}
                         style={{ display: 'none' }}
-                        onCanPlay={onImageLoaded}
-                    />
-                }
-                <GlassContent sx={{ padding: '12px', display: 'flex', flexDirection: 'column', flexShrink: 0, height: '100px' }}>
-                    <Typography
-                        variant="subtitle2"
-                        sx={{
-                            fontWeight: 600,
-                            mb: 0.5,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            lineHeight: 1.2,
-                            fontSize: '0.8rem',
-                        }}
-                    >
-                        {name}
-                    </Typography>
-                    
-                    <Stack spacing={0.5} mt="auto">
-                        <Stack direction="row" alignItems='center' justifyContent='space-between'>
-                            {renderPrice()}
-                            {renderRarityRank()}
+                        onLoad={onImageLoaded} />
+                    {
+                        isVideo &&
+                        <video src={imgUrl}
+                            style={{ display: 'none' }}
+                            onCanPlay={onImageLoaded}
+                        />
+                    }
+                    <GlassContent sx={{ 
+                        padding: '8px', // Reduced from 12px
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        flexShrink: 0, 
+                        height: '90px' // Reduced from 100px
+                    }}>
+                        <Typography
+                            variant="subtitle2"
+                            sx={{
+                                fontWeight: 600,
+                                mb: 0.5,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                                lineHeight: 1.2,
+                                fontSize: '0.75rem', // Reduced from 0.8rem
+                            }}
+                        >
+                            {name}
+                        </Typography>
+                        
+                        <Stack spacing={0.5} mt="auto">
+                            <Stack direction="row" alignItems='center' justifyContent='space-between'>
+                                {renderPrice()}
+                                {renderRarityRank()}
+                            </Stack>
+                            <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                {renderOffer()}
+                                {renderEvent()}
+                            </Stack>
                         </Stack>
-                        <Stack direction="row" justifyContent="space-between" alignItems="center">
-                            {renderOffer()}
-                            {renderEvent()}
-                        </Stack>
-                    </Stack>
-                </GlassContent>
-            </CardWrapper>
-        </Link>
+                    </GlassContent>
+                </CardWrapper>
+            </Link>
+        </Box>
     );
     
     function renderPrice() {

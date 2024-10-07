@@ -9,6 +9,7 @@ import React, {
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import debounce from 'lodash.debounce';
+import { styled, alpha } from '@mui/material/styles';
 
 // Material
 import {
@@ -30,6 +31,28 @@ import { ClipLoader } from 'react-spinners';
 import NFTCard from './NFTCard';
 import FilterDetail from './FilterDetail';
 import { AppContext } from 'src/AppContext';
+
+const GlassyBox = styled(Box)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.15),
+    backdropFilter: 'blur(20px)',
+    borderRadius: theme.shape.borderRadius * 2,
+    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+}));
+
+const SearchTextField = styled(TextField)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+            borderColor: 'transparent',
+        },
+        '&:hover fieldset': {
+            borderColor: 'transparent',
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: 'transparent',
+        },
+    },
+}));
 
 export default function NFTs({ collection }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -142,11 +165,11 @@ export default function NFTs({ collection }) {
 
     return (
         <>
-            <Box display="flex" alignItems="center">
+            <GlassyBox sx={{ mb: 2, p: 1, display: 'flex', alignItems: 'center' }}>
                 <IconButton aria-label="filter" onClick={handleShowFilter}>
                     <FilterListIcon fontSize="large" />
                 </IconButton>
-                <TextField
+                <SearchTextField
                     id="textFilter"
                     fullWidth
                     variant="outlined"
@@ -161,19 +184,21 @@ export default function NFTs({ collection }) {
                     onKeyDown={(e) => e.stopPropagation()}
                     InputProps={inputProps}
                 />
-            </Box>
+            </GlassyBox>
             <Grid container spacing={1} justifyContent="space-between" mt={1}>
                 {showFilter && (
                     <Grid item xs={12} md={3} xl={2} pt={0.5}>
-                        <FilterDetail
-                            collection={collection}
-                            filter={filter}
-                            setFilter={setFilter}
-                            subFilter={subFilter}
-                            setSubFilter={setSubFilter}
-                            setFilterAttrs={setFilterAttrs}
-                            setPage={setPage}
-                        />
+                        <GlassyBox sx={{ p: 2 }}>
+                            <FilterDetail
+                                collection={collection}
+                                filter={filter}
+                                setFilter={setFilter}
+                                subFilter={subFilter}
+                                setSubFilter={setSubFilter}
+                                setFilterAttrs={setFilterAttrs}
+                                setPage={setPage}
+                            />
+                        </GlassyBox>
                     </Grid>
                 )}
                 <Grid

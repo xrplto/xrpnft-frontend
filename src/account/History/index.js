@@ -87,7 +87,7 @@ export default function ActivityList({ account }) {
     }, [account, page, rows]);
 
     return (
-        <Container maxWidth="md" sx={{ pl: 0, pr: 0 }}>
+        <Container maxWidth={false} sx={{ pl: 0, pr: 0 }}>
             {loading ? (
                 <Stack alignItems="center">
                     <PulseLoader color="#00AB55" size={10} />

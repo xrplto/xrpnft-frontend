@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Box } from '@mui/material';
+import { Box, Container } from '@mui/material';
 
 const BaseLayout = ({ children }) => {
   return (
@@ -7,10 +7,20 @@ const BaseLayout = ({ children }) => {
       sx={{
         display: 'flex',
         flex: 1,
-        height: '100%'
+        height: '100%',
+        justifyContent: 'center', // Center the content horizontally
       }}
     >
-      {children}
+      <Container
+        maxWidth="xl" // Use 'xl' for a wide layout
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+        }}
+      >
+        {children}
+      </Container>
     </Box>
   );
 };

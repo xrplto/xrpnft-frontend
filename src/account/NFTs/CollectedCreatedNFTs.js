@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { styled, alpha } from '@mui/material/styles';
 
 // Material
 import {
@@ -11,7 +12,7 @@ import {
     IconButton,
     InputAdornment,
     TextField,
-    Typography,
+    Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -25,7 +26,36 @@ import NFTCard from 'src/explore/NFTCard';
 import CollectionCard from 'src/explore/CollectionCard';
 import FilterDetail from '../FilterDetail';
 
-export default function CollectedCreatedNFTs({ type, account, limit, collection, setHasCreatedNFTs, setCreatedNFTsLoaded }) {
+const GlassyBox = styled(Box)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.15),
+    backdropFilter: 'blur(20px)',
+    borderRadius: theme.shape.borderRadius * 2,
+    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+}));
+
+const SearchTextField = styled(TextField)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+            borderColor: 'transparent',
+        },
+        '&:hover fieldset': {
+            borderColor: 'transparent',
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: 'transparent',
+        },
+    },
+}));
+
+export default function CollectedCreatedNFTs({
+    type,
+    account,
+    limit,
+    collection,
+    setHasCreatedNFTs,
+    setCreatedNFTsLoaded
+}) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const theme = useTheme();
@@ -40,7 +70,6 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection,
     const [loading, setLoading] = useState(false);
 
     const [showFilter, setShowFilter] = useState(collection ? true : false);
-    // const [filter, setFilter] = useState(collection?.imported === 'yes' ? 0 : 4);
     const [filter, setFilter] = useState(0);
 
     const [subFilter, setSubFilter] = useState('pricexrpasc');
@@ -52,11 +81,16 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection,
     const fetchNfts = () => {
         setLoading(true);
 
-        //const limit = 20;
-
-        // const body = { page, limit, flag, cid: collection?.uuid, search, filter, subFilter };
-
-        const body = { type, account, page, limit, search, filter, subFilter, collection };
+        const body = {
+            type,
+            account,
+            page,
+            limit,
+            search,
+            filter,
+            subFilter,
+            collection
+        };
 
         axios
             .post(`${BASE_URL}/account/collectedCreated`, body)
@@ -75,8 +109,7 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection,
             .catch((err) => {
                 console.log('Error on getting nfts!', err);
             })
-            .then(function () {
-                // always executed
+            .finally(() => {
                 setLoading(false);
             });
     };
@@ -85,11 +118,10 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection,
         setNfts([]);
         setPage(0);
         setHasMore(true);
-    }
-    useEffect(() => { // seems like useless, so created resetNfts() to be used in like handleChangeSearch()
-        resetNfts(); // doesn't seem to reset anything but keeping
-        //setSync(sync + 1); // webxtor: disable duplicate loading on start
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
+
+    useEffect(() => {
+        resetNfts();
     }, [flag, search, filter, subFilter]);
 
     useEffect(() => {
@@ -117,7 +149,7 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection,
         setSearch(e.target.value);
     };
 
-    const handleShowFilter = (e) => {
+    const handleShowFilter = () => {
         setShowFilter(!showFilter);
     };
 
@@ -127,23 +159,19 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection,
 
     const nftItems = () => (
         <Grid container spacing={1}>
-          {nfts.map((nft, index) => (
-            <Grid
-              item
-              xs={6}
-              sm={4}
-              md={3}
-              lg={2.4}
-              xl={1.5}
-              key={index}
-            >
-              {collection ? (
-                <NFTCard nft={nft} />
-              ) : (
-                <CollectionCard collectionData={nft} type={type} account={account} />
-              )}
-            </Grid>
-          ))}
+            {nfts.map((nft, index) => (
+                <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={index} sx={{ py: 2 }}> 
+                    {collection ? (
+                        <NFTCard nft={nft} />
+                    ) : (
+                        <CollectionCard
+                            collectionData={nft}
+                            type={type}
+                            account={account}
+                        />
+                    )}
+                </Grid>
+            ))}
         </Grid>
     );
 
@@ -151,18 +179,16 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection,
         <>
             {(type !== 'created' || nfts.length > 0) && (
                 <>
-                    <Box
-                        id="nfts"
-                        display="flex"
-                        alignItems="center"
-                        // sx={{ pl: 0, pr:0 }}
-                    >
-                        <IconButton aria-label="filter" onClick={handleShowFilter}>
+                    <GlassyBox sx={{ mb: 2, p: 1, display: 'flex', alignItems: 'center' }}>
+                        <IconButton
+                            aria-label="filter"
+                            onClick={handleShowFilter}
+                            sx={{ color: theme.palette.primary.main }}
+                        >
                             <FilterListIcon fontSize="large" />
                         </IconButton>
-                        <TextField
+                        <SearchTextField
                             id="textFilter"
-                            // autoFocus
                             fullWidth
                             variant="outlined"
                             placeholder="Search by name or attribute"
@@ -171,9 +197,7 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection,
                             autoComplete="new-password"
                             inputProps={{ autoComplete: 'off' }}
                             value={search}
-                            onFocus={(event) => {
-                                event.target.select();
-                            }}
+                            onFocus={(event) => event.target.select()}
                             sx={{ pl: 2, pr: 1, pt: 0, pb: 0, mt: 0 }}
                             onKeyDown={(e) => e.stopPropagation()}
                             InputProps={{
@@ -184,54 +208,63 @@ export default function CollectedCreatedNFTs({ type, account, limit, collection,
                                 ),
                                 endAdornment: (
                                     <InputAdornment position="start">
-                                        {loading && (
-                                            <ClipLoader color="#ff0000" size={15} />
-                                        )}
+                                        {loading && <ClipLoader color="#ff0000" size={15} />}
                                     </InputAdornment>
                                 )
                             }}
                         />
-                    </Box>
+                    </GlassyBox>
                     {collection && (
-                        <Box display="flex" justifyContent="center">
-                            <IconButton onClick={handleBack}>
+                        <Box display="flex" justifyContent="center" mb={2}>
+                            <IconButton
+                                onClick={handleBack}
+                                sx={{
+                                    p: 1,
+                                    '&:hover': {
+                                        background: theme.palette.mode === 'dark'
+                                            ? 'rgba(255, 255, 255, 0.1)'
+                                            : 'rgba(255, 255, 255, 0.8)',
+                                    },
+                                }}
+                            >
                                 <ArrowBackIcon fontSize="large" />
-                                <Typography variant="s3" fontSize="medium">Go back</Typography>
+                                <Typography variant="s3" fontSize="medium" sx={{ ml: 1 }}>
+                                    Go back
+                                </Typography>
                             </IconButton>
                         </Box>
                     )}
-                    <Grid container spacing={1} justifyContent="space-between" mt={1}>
+                    <Grid container spacing={2} justifyContent="space-between">
                         {showFilter && (
-                            <Grid item xs={12} md={3} xl={2} pt={0.5}>
-                                <FilterDetail
-                                    onSaleCount={onSaleCount}
-                                    filter={filter}
-                                    setFilter={setFilter}
-                                    subFilter={subFilter}
-                                    setSubFilter={setSubFilter}
-                                    setPage={setPage}
-                                />
+                            <Grid item xs={12} md={3} xl={2}>
+                                <GlassyBox sx={{ p: 2 }}>
+                                    <FilterDetail
+                                        onSaleCount={onSaleCount}
+                                        filter={filter}
+                                        setFilter={setFilter}
+                                        subFilter={subFilter}
+                                        setSubFilter={setSubFilter}
+                                        setPage={setPage}
+                                    />
+                                </GlassyBox>
                             </Grid>
                         )}
-                        <Grid
-                            item
-                            xs={12}
-                            md={showFilter ? 9 : 12}
-                            xl={showFilter ? 10 : 12}
-                        >
+                        <Grid item xs={12} md={showFilter ? 9 : 12} xl={showFilter ? 10 : 12}>
                             {collection && collection !== '' ? (
-                            <InfiniteScroll
-                                dataLength={nfts.length}
-                                next={() => {
-                                setPage(page + 1);
-                                setSync(sync + 1);
-                                }}
-                                hasMore={hasMore}
-                                scrollThreshold={0.6}
-                            >
-                                {nftItems()}
-                            </InfiniteScroll>
-                            ) : nftItems()}
+                                <InfiniteScroll
+                                    dataLength={nfts.length}
+                                    next={() => {
+                                        setPage(page + 1);
+                                        setSync(sync + 1);
+                                    }}
+                                    hasMore={hasMore}
+                                    scrollThreshold={0.6}
+                                >
+                                    {nftItems()}
+                                </InfiniteScroll>
+                            ) : (
+                                nftItems()
+                            )}
                         </Grid>
                     </Grid>
                 </>

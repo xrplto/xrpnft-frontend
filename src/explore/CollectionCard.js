@@ -1,137 +1,86 @@
-import { normalizeCurrencyCodeXummImpl } from "src/utils/normalizers";
-import { useContext, useState } from "react";
-
-// Material
-import {
-    styled, useTheme,
-    Box,
-    CardMedia,
-    Chip,
-    Link,
-    Stack,
-    Tooltip,
-    Typography,
-    Skeleton,
-    Card,
-    Grid,
-    CardContent
-} from '@mui/material';
-// import FavoriteIcon from '@mui/icons-material/Favorite';
-import SportsScoreIcon from '@mui/icons-material/SportsScore';
+import { useState, useContext } from "react";
+import { styled, useTheme, alpha, Box, CardMedia, Chip, Link, Stack, Typography, Skeleton, Card, CardContent } from '@mui/material';
 import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
 import CloseIcon from '@mui/icons-material/Close';
-
-// Iconify
-import { Icon } from '@iconify/react';
-import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
-// import infoFilled from '@iconify/icons-ep/info-filled';
-
-// Utils
-import { getMinterName } from "src/utils/constants";
-import { fNumber, fIntNumber } from 'src/utils/formatNumber';
-import { getNftCoverUrl } from 'src/utils/parse';
-
-// Components
-// import FlagsContainer from 'src/components/Flags';
-import Label from './Label';
+import { fIntNumber } from 'src/utils/formatNumber';
 import { AppContext } from "src/AppContext";
 
-const CardWrapper = styled(Card)(
-    ({ theme }) => `
-        border-radius: 12px;
-        backdrop-filter: blur(50px);
-        padding: 0;
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+const CardWrapper = styled(Card)(({ theme }) => ({
+    borderRadius: theme.shape.borderRadius * 2,
+    backdropFilter: 'blur(20px)',
+    background: alpha(theme.palette.background.paper, 0.15),
+    padding: 0,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease-in-out',
+    overflow: 'visible',
+    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    marginTop: theme.spacing(3),
+    
+    '&:hover': {
+        transform: 'translateY(-4px)',
+        boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
+        background: alpha(theme.palette.background.paper, 0.2),
+        outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`,
+        outlineOffset: '2px',
+    }
+}));
 
-        &:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-        }
-  `
-);
+const GlassContent = styled(CardContent)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.1),
+    backdropFilter: 'blur(10px)',
+    borderTop: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+}));
 
 export default function CollectionCard({ collectionData, type, account, handleRemove }) {
-    const collection = collectionData.collection;
-    //console.log(`CollectionCard: ${JSON.stringify(collection)}`);
     const theme = useTheme();
-
     const { accountProfile } = useContext(AppContext);
     const isAdmin = accountProfile?.admin;
+    const [loadingImg, setLoadingImg] = useState(true);
 
-    // const [imgUrl, setImgUrl] = useState('');
-    // const [loading, setLoading] = useState(false);
-
-    // const [isLike, setIsLike] = useState(false);
-    const [colors, setColors] = useState([]);
-    
-
-    // const like = () => setIsLike(!isLike);
-
-    const {
-        uuid,
-        // name,
-        // flag,
-        //account,
-        // minter,
-        cost,
-        costb,
-        // issuer,
-        // date,
-        meta,
-        dfile,
-        NFTokenID,
-        // URI,
-        // status,
-        destination,
-        rarity,
-        rarity_rank
-    } = collection;
-
-    const isSold = false;
-
-    // const imgUrl = '/static/nft.png';
-    const imgUrl = `https://s1.xrpnft.com/collection/${collection.logoImage}`//getNftCoverUrl(nft, 'small');//get..ImgUrl(nft, 300);
-
-    const isVideo = /*meta?.video ? true : */false; // disabling for  now video as showing animated thumbnails
-
-    const [loadingImg, setLoadingImg] = useState(true)
-
+    const collection = collectionData.collection;
     const name = collection.name || 'No Name';
-
-    const getColors = colors => {
-        setColors(c => [...c, ...colors]);
-    }
+    const imgUrl = `https://s1.xrpnft.com/collection/${collection.logoImage}`;
+    const collectionType = type.charAt(0).toUpperCase() + type.slice(1);
 
     const onImageLoaded = () => {
-        setLoadingImg(false)
-    }
+        setLoadingImg(false);
+    };
 
-    const handleRemoveNft = (e) => {
+    const handleRemoveCollection = (e) => {
         e.preventDefault();
-
         if (!isAdmin) return;
-
         if (!confirm(`Are you sure you want to remove "${name}"?`)) {
             return;
         }
-
-        handleRemove(NFTokenID);
-    }
-
-    const collectionType = type.charAt(0).toUpperCase() + type.slice(1)
+        handleRemove(collection.id);
+    };
 
     return (
-        <Link href={`/account/${account}/collection${collectionType}/${collectionData.collection.id/*slug*/}`} underline='none' sx={{ position: 'relative' }}>
+        <Link href={`/account/${account}/collection${collectionType}/${collection.id}`} underline='none' sx={{ position: 'relative' }}>
             <CardWrapper
                 sx={{
                     marginLeft: 'auto',
                     marginRight: 'auto',
                     width: '100%',
                     maxWidth: 280,
-                    aspectRatio: '9 / 15',
+                    aspectRatio: '9 / 14',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    ml: 1,
+                    overflow: 'hidden',
+                    '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: -4,
+                        left: -4,
+                        right: -4,
+                        bottom: -4,
+                        background: 'inherit',
+                        borderRadius: 'inherit',
+                        zIndex: -1,
+                        filter: 'blur(8px)',
+                    },
                 }}
             >
                 {isAdmin &&
@@ -142,34 +91,20 @@ export default function CollectionCard({ collectionData, type, account, handleRe
                             right: 0,
                             zIndex: 1500
                         }}
-                        onClick={(e) => handleRemoveNft(e)}
+                        onClick={(e) => handleRemoveCollection(e)}
                     />
                 }
-                {isSold && (
-                    <Label
-                        variant="filled"
-                        color={(isSold && 'error') || 'info'}
-                        sx={{
-                            zIndex: 9,
-                            top: 24,
-                            right: 24,
-                            position: 'absolute',
-                            textTransform: 'uppercase'
-                        }}
-                    >
-                        SOLD
-                    </Label>
-                )}
                 <CardMedia
-                    component={loadingImg ? 'div' : (isVideo ? 'video' : 'img')}
+                    component={loadingImg ? 'div' : 'img'}
                     image={imgUrl}
                     loading={loadingImg.toString()}
-                    alt={'NFT' + uuid}
+                    alt={name}
                     sx={{
                         width: '100%',
-                        height: '75%',
-                        maxWidth: 280,
-                        objectFit: 'cover'
+                        flexGrow: 1,
+                        objectFit: 'cover',
+                        borderTopLeftRadius: theme.shape.borderRadius * 2,
+                        borderTopRightRadius: theme.shape.borderRadius * 2,
                     }}
                 />
                 {loadingImg && (
@@ -177,60 +112,59 @@ export default function CollectionCard({ collectionData, type, account, handleRe
                         variant='rectangular'
                         sx={{
                             width: '100%',
-                            height: '75%'
+                            flexGrow: 1,
+                            borderTopLeftRadius: theme.shape.borderRadius * 2,
+                            borderTopRightRadius: theme.shape.borderRadius * 2,
                         }}
                     />
                 )}
                 <img src={imgUrl} style={{ display: 'none' }} onLoad={onImageLoaded} />
-                {isVideo && <video src={imgUrl} style={{ display: 'none' }} onCanPlay={onImageLoaded} />}
-
-                <CardContent sx={{ padding: '12px 16px' }}>
-                    <Box display={'flex'} flexDirection='column' justifyContent={'space-between'} height="100%">
-                        <Typography
-                            variant="subtitle1"
-                            sx={{
-                                fontWeight: 600,
-                                mb: 1,
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                                whiteSpace: 'nowrap'
-                            }}
-                        >
-                            {name}
+                <GlassContent sx={{ padding: '12px', display: 'flex', flexDirection: 'column', flexShrink: 0, height: '100px' }}>
+                    <Typography
+                        variant="subtitle2"
+                        sx={{
+                            fontWeight: 600,
+                            mb: 0.5,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            lineHeight: 1.2,
+                            fontSize: '0.8rem',
+                        }}
+                    >
+                        {name}
+                    </Typography>
+                    
+                    <Stack spacing={0.5} mt="auto">
+                        <Stack direction="row" alignItems='center' justifyContent='space-between'>
+                            <Typography variant='body2' color="text.secondary" fontSize="0.75rem">
+                                {collectionData.nftCount} item{collectionData.nftCount !== 1 && 's'}
+                            </Typography>
+                            {collection.rarity_rank > 0 && (
+                                <Chip
+                                    variant="outlined"
+                                    size="small"
+                                    icon={<LeaderboardOutlinedIcon sx={{width: '10px'}} />}
+                                    label={fIntNumber(collection.rarity_rank)}
+                                    sx={{
+                                        height: '18px',
+                                        '& .MuiChip-label': {
+                                            px: 0.5,
+                                            fontSize: '0.6rem',
+                                            fontWeight: 600,
+                                        }
+                                    }}
+                                />
+                            )}
+                        </Stack>
+                        <Typography variant='body2' color="text.secondary" fontSize="0.75rem">
+                            {collectionData.nftsForSale} listed
                         </Typography>
-
-                        <Grid container alignItems='center' spacing={1}>
-                            <Grid item xs={12}>
-                                <Stack direction="row" alignItems='center' justifyContent='space-between'>
-                                    <Typography variant='body2' color="text.secondary">
-                                        {collectionData.nftCount} item{collectionData.nftCount !== 1 && 's'}
-                                    </Typography>
-
-                                    {rarity_rank > 0 && (
-                                        <Chip
-                                            variant="outlined"
-                                            icon={<LeaderboardOutlinedIcon sx={{ width: '14px' }} />}
-                                            label={<Typography variant="caption" fontWeight={600}>{fIntNumber(rarity_rank)}</Typography>}
-                                            sx={{
-                                                height: '24px',
-                                                borderColor: theme.palette.primary.main,
-                                                '& .MuiChip-icon': {
-                                                    color: theme.palette.primary.main
-                                                }
-                                            }}
-                                        />
-                                    )}
-                                </Stack>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Typography variant='body2' color="text.secondary">
-                                    {collectionData.nftsForSale} listed
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </CardContent>
+                    </Stack>
+                </GlassContent>
             </CardWrapper>
         </Link>
     );
-};
+}

@@ -19,11 +19,16 @@ import Footer from 'src/components/Footer';
 import TokenDetail from 'src/detail';
 import ScrollToTop from 'src/components/ScrollToTop';
 
-// const DynamicTokenDetail = dynamic(() => import('src/detail'));
-
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
-        // overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+`
+);
+
+const MainContent = styled(Box)(
+    ({ theme }) => `
         flex: 1;
 `
 );
@@ -31,18 +36,17 @@ const OverviewWrapper = styled(Box)(
 export default function Overview({data}) {
     return (
         <OverviewWrapper>
-            <Toolbar id="back-to-top-anchor" />
-
             <Header />
-
-            <Container maxWidth="lg">
-                <TokenDetail nft={data.nft} />
-            </Container>
-
-            <ScrollToTop />
+            
+            <MainContent>
+                <Toolbar id="back-to-top-anchor" />
+                <Container maxWidth="xl" sx={{ maxWidth: '1600px' }}>
+                    <TokenDetail nft={data.nft} />
+                </Container>
+                <ScrollToTop />
+            </MainContent>
 
             <Footer />
-
         </OverviewWrapper>
     );
 }
