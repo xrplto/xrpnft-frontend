@@ -4,16 +4,24 @@ import '@mui/lab/themeAugmentation';
 // import i18n from 'src/i18n/i18n';
 
 const themeColors = {
-    primary: '#f4f5fb', // '#CB3C1D', #04CD58
-    secondary: '#A1A1A1',
-    success: '#57CA22',
-    warning: '#FFA319',
-    error: '#FF1943',
-    info: '#33C2FF',
-    black: '#FFFFFF',
-    white: '#252525',
-    primaryAlt: '#090A0C',
-    trueWhite: '#ffffff'
+    primary: '#4A90E2', // A softer blue for primary actions
+    secondary: '#B0BEC5', // A lighter gray for secondary elements
+    success: '#66BB6A', // A softer green for success states
+    warning: '#FFA726', // A muted orange for warnings
+    error: '#EF5350', // A softer red for errors
+    info: '#29B6F6', // A lighter blue for informational elements
+    black: '#FFFFFF', // Keep white for contrast
+    white: '#1E1E1E', // A dark gray for backgrounds
+    primaryAlt: '#121212', // An even darker shade for alternative backgrounds
+    trueWhite: '#ffffff', // Keep true white for specific cases
+    text: {
+        primary: '#E0E0E0', // Light gray for primary text
+        secondary: '#9E9E9E' // Darker gray for secondary text
+    },
+    background: {
+        default: '#121212', // Very dark gray for main background
+        paper: '#1E1E1E' // Slightly lighter for elevated surfaces
+    }
 };
 
 const colors = {
