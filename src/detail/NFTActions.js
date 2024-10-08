@@ -76,6 +76,13 @@ import Glass from '@mui/material/Paper';
 // Add this import at the top of the file
 import Wallet from 'src/components/Wallet';
 
+// Add these imports at the top of the file
+import { Client } from 'xrpl';
+import { xrpToDrops, dropsToXrp } from 'xrpl';
+
+// Add this import at the top of the file
+import CreateOfferXRPCafe from './CreateOfferXRPCafe';
+
 // Create a styled component for the glass effect
 const GlassPanel = styled(Glass)(({ theme }) => ({
     background: alpha(theme.palette.background.paper, 0.7),
@@ -219,6 +226,10 @@ export default function NFTActions({ nft }) {
 
     const [sync, setSync] = useState(0);
 
+    const [lowestSellOffer, setLowestSellOffer] = useState(null);
+
+    const [openCreateOfferXRPCafe, setOpenCreateOfferXRPCafe] = useState(false);
+
     useEffect(() => {
         function getOffers() {
             setLoading(true);
@@ -326,13 +337,84 @@ export default function NFTActions({ nft }) {
         };
     }, [openScanQR, xummUuid, sync]);
 
+    useEffect(() => {
+        async function getLowestSellOffer() {
+            const client = new Client('wss://s1.ripple.com');
+
+            try {
+                await client.connect();
+                console.log('Connected to XRPL');
+
+                const request = {
+                    command: 'nft_sell_offers',
+                    nft_id: NFTokenID,
+                };
+
+                const response = await client.request(request);
+                console.log('NFT Sell Offers:', JSON.stringify(response.result, null, 2));
+
+                // Find the lowest sell offer
+                let lowestOffer = null;
+                if (response.result.offers && response.result.offers.length > 0) {
+                    lowestOffer = response.result.offers.reduce((min, offer) => {
+                        const amount = BigInt(offer.amount);
+                        return amount < BigInt(min.amount) ? { amount, offer } : min;
+                    }, { amount: BigInt(Number.MAX_SAFE_INTEGER).toString(), offer: null });
+                }
+
+                if (lowestOffer.offer) {
+                    const baseAmount = parseFloat(dropsToXrp(lowestOffer.amount.toString()));
+                    const hasBroker = lowestOffer.offer.destination === "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC";
+                    const brokerFee = hasBroker ? baseAmount * 0.01589 : 0;
+                    const totalAmount = baseAmount + brokerFee;
+
+                    setLowestSellOffer({
+                        baseAmount,
+                        totalAmount,
+                        brokerFee,
+                        hasBroker,
+                        offerIndex: lowestOffer.offer.nft_offer_index,
+                        seller: lowestOffer.offer.owner,
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching NFT sell offers:', error);
+            } finally {
+                await client.disconnect();
+                console.log('Disconnected from XRPL');
+            }
+        }
+
+        getLowestSellOffer();
+    }, [NFTokenID]);
+
     const doProcessOffer = async (offer, isAcceptOrCancel) => {
         if (!accountLogin || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
         }
 
-        // ... (existing validation code)
+        const index = offer.nft_offer_index;
+        const owner = offer.owner;
+        const destination = offer.destination;
+        const isSell = offer.flags === 1;
+
+        if (isAcceptOrCancel) {
+            // Accept mode
+            if (accountLogin === owner) {
+                openSnackbar(
+                    'You are the owner of this offer, you can not accept it.',
+                    'error'
+                );
+                return;
+            }
+        } else {
+            // Cancel mode
+            if (accountLogin !== owner) {
+                openSnackbar('You are not the owner of this offer', 'error');
+                return;
+            }
+        }
 
         setPageLoading(true);
         try {
@@ -344,10 +426,10 @@ export default function NFTActions({ nft }) {
                 account: accountLogin,
                 uuid,
                 NFTokenID,
-                index: offer.nft_offer_index,
-                destination: offer.destination,
+                index,
+                destination,
                 accept: isAcceptOrCancel ? 'yes' : 'no',
-                sell: offer.flags === 1 ? 'yes' : 'no',
+                sell: isSell ? 'yes' : 'no',
                 user_token
             };
 
@@ -365,7 +447,7 @@ export default function NFTActions({ nft }) {
                 let newQrType = isAcceptOrCancel
                     ? 'NFTokenAcceptOffer'
                     : 'NFTokenCancelOffer';
-                if (offer.flags === 1) newQrType += ' [Sell Offer]';
+                if (isSell) newQrType += ' [Sell Offer]';
                 else newQrType += ' [Buy Offer]';
 
                 setQrType(newQrType);
@@ -376,7 +458,6 @@ export default function NFTActions({ nft }) {
             }
         } catch (err) {
             console.error(err);
-            openSnackbar('Error processing offer', 'error');
         }
         setPageLoading(false);
     };
@@ -494,19 +575,13 @@ export default function NFTActions({ nft }) {
     };
 
     const onContinueAccept = async () => {
-        if (acceptOffer) {
-            await doProcessOffer(acceptOffer, true);
-        }
-        setOpenConfirm(false);
+        doProcessOffer(acceptOffer, true);
     };
 
     const handleBuyNow = async () => {
-        if (!cost || !cost.offer) {
-            openSnackbar('No valid sell offer available', 'error');
-            return;
-        }
-
-        if (sellOffers.length > 1) {
+        if (lowestSellOffer && lowestSellOffer.hasBroker) {
+            setOpenCreateOfferXRPCafe(true);
+        } else if (sellOffers.length > 1) {
             setOpenSelectPrice(true);
         } else {
             handleAcceptOffer(cost.offer);
@@ -551,7 +626,7 @@ export default function NFTActions({ nft }) {
                                 >
                                     <Typography
                                         variant="h6"
-                                        sx={{ 
+                                        sx={{
                                             fontWeight: 'bold',
                                             color: 'primary.main' // Add this line to set the primary color
                                         }}
@@ -748,6 +823,50 @@ export default function NFTActions({ nft }) {
                     )}
                 </Stack>
 
+                {/* Add this section to display the lowest sell offer */}
+                {!isOwner && lowestSellOffer && (
+                    <Stack spacing={2}>
+                        <Stack
+                            direction="row"
+                            justifyContent="space-between"
+                            alignItems="baseline"
+                        >
+                            <Typography variant="body2" color="text.secondary">
+                                Lowest Sell Offer
+                            </Typography>
+                            <Stack direction="row" spacing={1} alignItems="center">
+                                <Icon icon={rippleSolid} width="24" height="24" />
+                                <Typography variant="h5" fontWeight="bold">
+                                    {fNumber(lowestSellOffer.totalAmount)} XRP
+                                </Typography>
+                            </Stack>
+                        </Stack>
+                        {lowestSellOffer.hasBroker && (
+                            <Stack direction="row" justifyContent="space-between">
+                                <Typography variant="body2" color="text.secondary">
+                                    Base Price
+                                </Typography>
+                                <Typography variant="body2">
+                                    {fNumber(lowestSellOffer.baseAmount)} XRP
+                                </Typography>
+                            </Stack>
+                        )}
+                        {lowestSellOffer.hasBroker && (
+                            <Stack direction="row" justifyContent="space-between">
+                                <Typography variant="body2" color="text.secondary">
+                                    Broker Fee (1.589%)
+                                </Typography>
+                                <Typography variant="body2">
+                                    {fNumber(lowestSellOffer.brokerFee)} XRP
+                                </Typography>
+                            </Stack>
+                        )}
+                        <Typography variant="body2" color="text.secondary">
+                            Seller: {truncate(lowestSellOffer.seller, 16)}
+                        </Typography>
+                    </Stack>
+                )}
+
                 {/* Offers and History sections */}
                 <Stack spacing={2}>
                     {isOwner && (
@@ -841,18 +960,12 @@ export default function NFTActions({ nft }) {
                 onClose={handleCloseTransfer}
                 nft={nft}
             />
-            <ConfirmAcceptOfferDialog
-                open={openConfirm}
-                onClose={() => setOpenConfirm(false)}
-                onConfirm={onContinueAccept}
-                offer={acceptOffer}
-            />
-            <QRDialog
-                open={openScanQR}
-                onClose={handleScanQRClose}
-                qrUrl={qrUrl}
-                nextUrl={nextUrl}
-                type={qrType}
+            <CreateOfferXRPCafe
+                open={openCreateOfferXRPCafe}
+                setOpen={setOpenCreateOfferXRPCafe}
+                nft={nft}
+                isSellOffer={false}
+                initialAmount={lowestSellOffer ? lowestSellOffer.totalAmount : 0}
             />
         </GlassPanel>
     );

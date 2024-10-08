@@ -260,9 +260,15 @@ export default function CreateOfferDialog({ open, setOpen, nft, isSellOffer }) {
                 user_token
             };
 
+            // Log the request body
+            console.log('Create Offer request body:', body);
+
             const res = await axios.post(`${BASE_URL}/offers/create`, body, {
                 headers: { 'x-access-token': accountToken }
             });
+
+            // Existing console.log for the response
+            console.log('Response from /offers/create:', res.data);
 
             if (res.status === 200) {
                 const uuid = res.data.data.uuid;
