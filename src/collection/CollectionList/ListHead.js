@@ -9,11 +9,21 @@ import {
     TableSortLabel,
     useTheme,
     useMediaQuery,
-    Typography
+    Typography,
+    styled
 } from '@mui/material';
 // ----------------------------------------------------------------------
 
-// Removed StickyTableCell styled component
+// Add this styled component
+const StyledTableHead = styled(TableHead)(({ theme }) => ({
+    '&.MuiTableHead-root': {
+        backgroundColor: 'transparent',
+    },
+    '& .MuiTableCell-root': {
+        backgroundColor: 'transparent',
+        borderBottom: `1px solid ${theme.palette.divider}`,
+    },
+}));
 
 const TABLE_HEAD = (isMobile) => {
     if (isMobile) {
@@ -106,7 +116,7 @@ export default function ListHead({ order, orderBy, onRequestSort }) {
     };
 
     return (
-        <TableHead>
+        <StyledTableHead>
             <TableRow>
                 {TABLE_HEAD(isMobile).map((headCell) => (
                     <TableCell
@@ -143,7 +153,7 @@ export default function ListHead({ order, orderBy, onRequestSort }) {
                     </TableCell>
                 ))}
             </TableRow>
-        </TableHead>
+        </StyledTableHead>
     );
 }
 

@@ -559,7 +559,10 @@ export default function NFTActions({ nft }) {
                                 >
                                     <Typography
                                         variant="h6"
-                                        sx={{ fontWeight: 'bold' }}
+                                        sx={{ 
+                                            fontWeight: 'bold',
+                                            color: 'primary.main' // Add this line to set the primary color
+                                        }}
                                     >
                                         {collectionName}
                                     </Typography>

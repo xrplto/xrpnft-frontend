@@ -24,16 +24,17 @@ const CustomSelect = styled(Select)(({ theme }) => ({
 }));
 
 export default function ListToolbar({ rows, setRows, page, setPage, total}) {
-    const num = total / rows;
-    let page_count = Math.floor(num)
-    if (num % 1 != 0) page_count++;
+    const effectiveRows = rows === 'all' ? total : Math.min(rows, total);
+    const num = total / effectiveRows;
+    let page_count = Math.max(1, Math.ceil(num));
     
-    const start = page * rows + 1;
-    let end = start + rows - 1;
-    if (end > total) end = total;
+    const start = page * effectiveRows + 1;
+    let end = Math.min(start + effectiveRows - 1, total);
 
     const handleChangeRows = (event) => {
-        setRows(parseInt(event.target.value, 10));
+        const newRows = event.target.value === 'all' ? 'all' : parseInt(event.target.value, 10);
+        setRows(newRows);
+        setPage(0); // Reset to first page when changing row count
     };
 
     const handleChangePage = (event, newPage) => {
@@ -85,6 +86,7 @@ export default function ListToolbar({ rows, setRows, page, setPage, total}) {
                         onChange={handleChangeRows}
                         size="small"
                     >
+                        <MenuItem value="all">All</MenuItem>
                         <MenuItem value={50}>50</MenuItem>
                         <MenuItem value={20}>20</MenuItem>
                         <MenuItem value={10}>10</MenuItem>

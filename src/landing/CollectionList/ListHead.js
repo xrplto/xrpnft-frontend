@@ -9,7 +9,8 @@ import {
     TableSortLabel,
     useTheme,
     useMediaQuery,
-    Typography
+    Typography,
+    styled
 } from '@mui/material';
 // ----------------------------------------------------------------------
 
@@ -67,6 +68,7 @@ const TABLE_HEAD = (isMobile) => {
             width: '10%',
             order: true
         },
+        // Remove the 'volume' entry and adjust the numbering
         {
             no: 3,
             id: 'totalVolume',
@@ -94,6 +96,14 @@ const TABLE_HEAD = (isMobile) => {
     ];
 };
 
+// Add this styled component
+const StyledTableHead = styled(TableHead)(({ theme }) => ({
+    backgroundColor: 'transparent',
+    '& .MuiTableCell-root': {
+        backgroundColor: 'transparent',
+    },
+}));
+
 export default function ListHead({ order, orderBy, onRequestSort }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -103,7 +113,7 @@ export default function ListHead({ order, orderBy, onRequestSort }) {
     };
 
     return (
-        <TableHead>
+        <StyledTableHead>
             <TableRow>
                 {TABLE_HEAD(isMobile).map((headCell) => (
                     <TableCell
@@ -140,7 +150,7 @@ export default function ListHead({ order, orderBy, onRequestSort }) {
                     </TableCell>
                 ))}
             </TableRow>
-        </TableHead>
+        </StyledTableHead>
     );
 }
 

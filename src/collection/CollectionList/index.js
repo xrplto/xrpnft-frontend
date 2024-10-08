@@ -11,7 +11,10 @@ import {
     ToggleButton,
     ToggleButtonGroup,
     useMediaQuery,
-    useTheme
+    useTheme,
+    styled,
+    Container,
+    Typography
 } from '@mui/material';
 
 // Utils
@@ -27,6 +30,59 @@ import Row from './Row';
 import ListHead from './ListHead';
 import ListToolbar from './ListToolbar';
 
+import { alpha } from '@mui/material/styles';
+
+const GradientTypography = styled(Typography)(
+    ({ theme }) => `
+        background: linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main});
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+    `
+);
+
+const StyledToggleButton = styled(ToggleButton)(
+    ({ theme }) => `
+        padding: 8px 16px;
+        font-weight: 600;
+        text-transform: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        
+        &.Mui-selected {
+            background: linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main});
+            color: ${theme.palette.common.white};
+            
+            &:hover {
+                background: linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark});
+            }
+        }
+
+        &:not(.Mui-selected) {
+            color: ${theme.palette.text.primary};
+            
+            &:hover {
+                background: rgba(${theme.palette.primary.main}, 0.05);
+            }
+        }
+    `
+);
+
+const GlassBox = styled(Box)(({ theme }) => ({
+    borderRadius: theme.shape.borderRadius * 2,
+    backdropFilter: 'blur(20px)',
+    background: alpha(theme.palette.background.paper, 0.15),
+    padding: theme.spacing(3),
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    transition: 'all 0.3s ease-in-out',
+
+    '&:hover': {
+        boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
+        background: alpha(theme.palette.background.paper, 0.2)
+    }
+}));
+
 export default function CollectionList({ type, category }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -36,9 +92,9 @@ export default function CollectionList({ type, category }) {
 
     const [filter, setFilter] = useState('');
     const [page, setPage] = useState(0);
-    const [rows, setRows] = useState(10);
+    const [rows, setRows] = useState('all'); // Change this line to set 'all' as default
     const [order, setOrder] = useState('desc');
-    const [orderBy, setOrderBy] = useState('totalVol24h');//vol24h
+    const [orderBy, setOrderBy] = useState('totalVol24h'); //vol24h
 
     const [total, setTotal] = useState(0);
     const [collections, setCollections] = useState([]);
@@ -63,7 +119,7 @@ export default function CollectionList({ type, category }) {
                 filter,
                 type,
                 page,
-                limit: rows,
+                limit: rows === 'all' ? total : rows, // Update this line
                 order,
                 orderBy,
                 choice
@@ -100,7 +156,7 @@ export default function CollectionList({ type, category }) {
                 });
         };
         loadCollections();
-    }, [sync, order, orderBy, page, rows, account]);
+    }, [sync, order, orderBy, page, rows, account, total]); // Add total to the dependency array
 
     useEffect(() => {
         var timer = null;
@@ -134,110 +190,69 @@ export default function CollectionList({ type, category }) {
     };
 
     return (
-        <>
-            {/* <SearchToolbar
-                filter={filter}
-                setFilter={setFilter}
-                rows={rows}
-                setRows={setRows}
-            /> */}
-
-            {type !== CollectionListType.LANDING && (
-                <ToggleButtonGroup
-                    color="primary"
-                    value={choice}
-                    exclusive
-                    onChange={handleChangeChoice}
-                    sx={{ mb: 2 }}
+        <Container maxWidth="xl">
+            <Box sx={{ mt: { xs: 4, md: 6 }, mb: { xs: 4, md: 6 } }}>
+                <GradientTypography
+                    variant="h2"
+                    fontWeight="bold"
+                    sx={{
+                        fontSize: {
+                            xs: '2rem',
+                            sm: '2.5rem',
+                            md: '3rem'
+                        },
+                        mb: 3
+                    }}
                 >
-                    <ToggleButton
-                        value="all"
-                        sx={{
-                            pl: 2,
-                            pr: 2,
-                            pt: 0.3,
-                            pb: 0.3,
-                            color: theme.palette.primary.main,
-                            '&.Mui-selected': {
-                                backgroundColor: theme.palette.primary.main,
-                                color: theme.palette.primary.contrastText,
-                                '&:hover': {
-                                    backgroundColor: theme.palette.primary.dark,
-                                },
-                            },
-                        }}
-                        style={{ textTransform: 'none' }}
-                    >
-                        All
-                    </ToggleButton>
-                    <ToggleButton
-                        value="verified"
-                        sx={{
-                            pl: 2,
-                            pr: 2,
-                            pt: 0.3,
-                            pb: 0.3,
-                            color: theme.palette.primary.main,
-                            '&.Mui-selected': {
-                                backgroundColor: theme.palette.primary.main,
-                                color: theme.palette.primary.contrastText,
-                                '&:hover': {
-                                    backgroundColor: theme.palette.primary.dark,
-                                },
-                            },
-                        }}
-                        style={{ textTransform: 'none' }}
-                    >
-                        Verified
-                    </ToggleButton>
-                </ToggleButtonGroup>
-            )}
+                    {type === CollectionListType.MINE ? 'My Collections' : ''}
+                </GradientTypography>
 
-            <Box
-                sx={{
-                    display: 'flex',
-                    gap: 1,
-                    py: 1,
-                    overflow: 'auto',
-                    width: '100%',
-                    '& > *': {
-                        scrollSnapAlign: 'center'
-                    },
-                    '::-webkit-scrollbar': { display: 'none' },
-                    borderColor: theme.palette.primary.main,
-                    borderWidth: 1,
-                    borderStyle: 'solid',
-                    borderRadius: 1,
-                    marginBottom: 3, // Add margin to the bottom
-                }}
-            >
-                <Table style={{ minWidth: isMobile ? undefined : '1000px' }}>
-                    <ListHead
-                        order={order}
-                        orderBy={orderBy}
-                        onRequestSort={handleRequestSort}
-                    />
-                    <TableBody>
-                        {collections.map((row, idx) => {
-                            return (
-                                <Row
-                                    key={idx}
-                                    id={page * rows + idx + 1}
-                                    item={row}
-                                    isMine={isMine}
-                                />
-                            );
-                        })}
-                    </TableBody>
-                </Table>
+                {type !== CollectionListType.LANDING && (
+                    <ToggleButtonGroup
+                        color="primary"
+                        value={choice}
+                        exclusive
+                        onChange={handleChangeChoice}
+                        sx={{ mb: 4 }}
+                    >
+                        <StyledToggleButton value="all">All</StyledToggleButton>
+                        <StyledToggleButton value="verified">
+                            Verified
+                        </StyledToggleButton>
+                    </ToggleButtonGroup>
+                )}
+
+                <GlassBox>
+                    <Table
+                        style={{ minWidth: isMobile ? undefined : '1000px' }}
+                    >
+                        <ListHead
+                            order={order}
+                            orderBy={orderBy}
+                            onRequestSort={handleRequestSort}
+                        />
+                        <TableBody>
+                            {collections.map((row, idx) => {
+                                return (
+                                    <Row
+                                        key={idx}
+                                        id={page * Math.min(rows, total) + idx + 1} // Update this line
+                                        item={row}
+                                        isMine={isMine}
+                                    />
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                </GlassBox>
+                <ListToolbar
+                    rows={rows}
+                    setRows={setRows}
+                    page={page}
+                    setPage={setPage}
+                    total={total}
+                />
             </Box>
-            <ListToolbar
-                rows={rows}
-                setRows={setRows}
-                page={page}
-                setPage={setPage}
-                total={total}
-            />
-        </>
+        </Container>
     );
 }

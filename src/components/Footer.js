@@ -12,6 +12,9 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
+// Custom components
+import Logo from './Logo';
+
 const FooterWrapper = styled(Box)(({ theme }) => ({
     width: '100%',
     background: alpha(theme.palette.background.paper, 0.7),
@@ -41,10 +44,6 @@ export default function Footer() {
     const { darkMode } = useContext(AppContext);
     const theme = useTheme();
 
-    const img = darkMode
-        ? '/logo/xrpnft-logo-white.svg'
-        : '/logo/xrpnft-logo-black.svg';
-
     return (
         <FooterWrapper>
             <Stack
@@ -55,12 +54,7 @@ export default function Footer() {
                 sx={{ maxWidth: 'xxl', margin: '0 auto', width: '100%' }}
             >
                 <Link href="/" underline="none">
-                    <Box
-                        component="img"
-                        src={img}
-                        sx={{ height: 30 }}
-                        alt="XRPNFT Logo"
-                    />
+                    <Logo />
                 </Link>
                 <Stack direction="row" spacing={2}>
                     <StyledLink href="/explore" underline="hover">
