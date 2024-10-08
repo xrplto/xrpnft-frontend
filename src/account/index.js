@@ -272,7 +272,7 @@ export default function Account({ profile, limit, tab, collection, type }) {
 
     const bannerImage = banner
         ? `https://s1.xrpnft.com/profile/${banner}`
-        : null;
+        : logoImage; // Use logoImage as fallback for banner
 
     const gotoTabView = (event) => {
         const anchor = (event.target.ownerDocument || document).querySelector(
