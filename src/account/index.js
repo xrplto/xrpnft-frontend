@@ -231,11 +231,38 @@ export default function Account({ profile, limit, tab, collection, type }) {
 
     const [tabID, setTabID] = useState(getTabID(tab));
 
-    const [acceptNfts, setAcceptNfts] = useState(0);
-    const [orphanedOffers, setOrphanedOffers] = useState(0);
-    const [buyOffers, setBuyOffers] = useState(0);
-    const [sellOffers, setSellOffers] = useState(0);
-    const [receivedOffers, setReceivedOffers] = useState(0);
+    const [notificationCounts, setNotificationCounts] = useState({
+        acceptNfts: 0,
+        orphanedOffers: 0,
+        buyOffers: 0,
+        sellOffers: 0,
+        receivedOffers: 0
+    });
+
+    useEffect(() => {
+        async function getOffersCount() {
+            try {
+                const response = await axios.post(`${BASE_URL}/account/notification`, { account });
+                if (response.status === 200) {
+                    const data = response.data;
+                    console.log('Notification data received:', data);
+                    setNotificationCounts({
+                        acceptNfts: data.acceptNfts || 0,
+                        orphanedOffers: data.orphanedOffers || 0,
+                        buyOffers: data.buyOffers || 0,
+                        sellOffers: data.sellOffers || 0,
+                        receivedOffers: data.receivedOffers || 0
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching notification counts:', error);
+            }
+        }
+
+        if (account) {
+            getOffersCount();
+        }
+    }, [account, sync]);
 
     const { account, name, logo, banner, description, minterWallet } = profile;
 
@@ -246,33 +273,6 @@ export default function Account({ profile, limit, tab, collection, type }) {
     const bannerImage = banner
         ? `https://s1.xrpnft.com/profile/${banner}`
         : null;
-
-    /*useEffect(() => {
-        function getOffersCount() {
-            const body = {
-                account
-            };
-
-            axios
-                .post(`${BASE_URL}/account/notification`, body)
-                .then((res) => {
-                    let ret = res.status === 200 ? res.data : undefined;
-                    if (ret) {
-                        setAcceptNfts(ret.acceptNfts);
-                        setOrphanedOffers(ret.orphanedOffers);
-
-                        // setOrphanedOffers(1);
-                    }
-                })
-                .catch((err) => {
-                    console.log('Error on getting header info!!!', err);
-                })
-                .then(function () {
-                    // always executed
-                });
-        }
-        getOffersCount();
-    }, [accountLogin, sync]);*/
 
     const gotoTabView = (event) => {
         const anchor = (event.target.ownerDocument || document).querySelector(
@@ -317,6 +317,11 @@ export default function Account({ profile, limit, tab, collection, type }) {
             openSnackbar('Logout failed', 'error');
         }
     };
+
+    const totalNotifications = Object.values(notificationCounts).reduce((sum, count) => sum + count, 0);
+
+    console.log('Current notification counts:', notificationCounts);
+    console.log('Total notifications:', totalNotifications);
 
     return (
         <>
@@ -480,8 +485,6 @@ export default function Account({ profile, limit, tab, collection, type }) {
                 <Tabs
                     value={tabID}
                     onChange={handleChangeTab}
-                    // variant="scrollable"
-                    // scrollButtons='auto'
                     aria-label="token-tabs"
                     sx={{
                         '& .MuiTabs-scroller, .MuiTab-root': {
@@ -498,13 +501,7 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         label={
                             <StyledBadge
                                 color="primary"
-                                badgeContent={
-                                    acceptNfts +
-                                    orphanedOffers +
-                                    buyOffers +
-                                    sellOffers +
-                                    receivedOffers
-                                }
+                                badgeContent={totalNotifications}
                             >
                                 {tabLabels[1]}
                             </StyledBadge>
@@ -529,16 +526,12 @@ export default function Account({ profile, limit, tab, collection, type }) {
                     <Stack sx={{ minHeight: '20vh' }}>
                         <Offers
                             account={account}
-                            acceptNfts={acceptNfts}
-                            setAcceptNfts={setAcceptNfts}
-                            orphanedOffers={orphanedOffers}
-                            setOrphanedOffers={setOrphanedOffers}
-                            buyOffers={buyOffers}
-                            setBuyOffers={setBuyOffers}
-                            sellOffers={sellOffers}
-                            setSellOffers={setSellOffers}
-                            receivedOffers={receivedOffers}
-                            setReceivedOffers={setReceivedOffers}
+                            {...notificationCounts}
+                            setAcceptNfts={(value) => setNotificationCounts(prev => ({ ...prev, acceptNfts: value }))}
+                            setOrphanedOffers={(value) => setNotificationCounts(prev => ({ ...prev, orphanedOffers: value }))}
+                            setBuyOffers={(value) => setNotificationCounts(prev => ({ ...prev, buyOffers: value }))}
+                            setSellOffers={(value) => setNotificationCounts(prev => ({ ...prev, sellOffers: value }))}
+                            setReceivedOffers={(value) => setNotificationCounts(prev => ({ ...prev, receivedOffers: value }))}
                         />
                     </Stack>
                 </TabPanel>
@@ -547,14 +540,6 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         <History account={account} />
                     </Stack>
                 </TabPanel>
-                {/* <TabPanel value={tabID} id={4}>
-                    <Stack sx={{ minHeight: '20vh' }}>
-                        <OffersList
-                            account={account}
-                            type={tabMoreValues[moreMenu]}
-                        />
-                    </Stack>
-                </TabPanel> */}
             </Box>
         </>
     );
