@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { styled, alpha } from '@mui/material/styles';
 
-// Material
+// Material-UI Components
 import {
     useTheme,
     useMediaQuery,
@@ -21,11 +21,12 @@ import ArrowBackIcon from '@mui/icons-material/KeyboardBackspace';
 // Loader
 import { ClipLoader } from 'react-spinners';
 
-// Components
+// Custom Components
 import NFTCard from 'src/explore/NFTCard';
 import CollectionCard from 'src/explore/CollectionCard';
 import FilterDetail from '../FilterDetail';
 
+// Styled Components
 const GlassyBox = styled(Box)(({ theme }) => ({
     background: alpha(theme.palette.background.paper, 0.15),
     backdropFilter: 'blur(20px)',
@@ -48,6 +49,20 @@ const SearchTextField = styled(TextField)(({ theme }) => ({
     },
 }));
 
+/**
+ * CollectedCreatedNFTs Component
+ * 
+ * This component handles the display of both collected and created NFTs based on the `type` prop.
+ * 
+ * Props:
+ * - type: 'collected' | 'created' - Determines the type of NFTs to display.
+ * - account: string - User account identifier.
+ * - limit: number - Number of NFTs to fetch per API call.
+ * - collection: string (optional) - Specific collection to filter NFTs.
+ * - setHasCreatedNFTs: function (optional) - Callback to set if there are created NFTs.
+ * - setCreatedNFTsLoaded: function (optional) - Callback to set if created NFTs have been loaded.
+ * - setCreatedNFTsCount: function (optional) - Callback to set the count of created NFTs.
+ */
 export default function CollectedCreatedNFTs({
     type,
     account,
@@ -55,13 +70,14 @@ export default function CollectedCreatedNFTs({
     collection,
     setHasCreatedNFTs,
     setCreatedNFTsLoaded,
-    setCreatedNFTsCount // Add this prop
+    setCreatedNFTsCount // Additional prop for created NFTs count
 }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
+    // State Variables
     const [nfts, setNfts] = useState([]);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
@@ -79,6 +95,9 @@ export default function CollectedCreatedNFTs({
 
     const [sync, setSync] = useState(0);
 
+    /**
+     * Fetch NFTs from the API based on current state parameters.
+     */
     const fetchNfts = () => {
         setLoading(true);
 
@@ -96,44 +115,54 @@ export default function CollectedCreatedNFTs({
         axios
             .post(`${BASE_URL}/account/collectedCreated`, body)
             .then((res) => {
-                console.log('API response from xrpnft:', res.data); // Added console.log here
+                console.log('API response from xrpnft:', res.data); // Debugging log
                 const newNfts = res.data.nfts;
                 const length = newNfts.length;
+
                 if (length < limit) {
                     setHasMore(false);
                 } else {
                     setHasMore(true);
                 }
+
                 if (length > 0) {
-                    setNfts([...nfts, ...newNfts]);
+                    setNfts((prevNfts) => [...prevNfts, ...newNfts]);
                 }
             })
             .catch((err) => {
-                console.log('Error on getting nfts!', err);
+                console.error('Error fetching NFTs:', err);
             })
             .finally(() => {
                 setLoading(false);
             });
     };
 
+    /**
+     * Reset NFT state when filters or search terms change.
+     */
     const resetNfts = () => {
         setNfts([]);
         setPage(0);
         setHasMore(true);
     };
 
+    // Effect to reset NFTs when dependencies change
     useEffect(() => {
         resetNfts();
-    }, [flag, search, filter, subFilter]);
+    }, [flag, search, filter, subFilter, collection]);
 
+    // Effect to fetch NFTs when dependencies change
     useEffect(() => {
         fetchNfts();
-    }, [sync, flag, search, filter, subFilter]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sync, flag, search, filter, subFilter, collection]);
 
+    // Effect to handle responsiveness for filter visibility
     useEffect(() => {
         if (fullScreen) setShowFilter(false);
     }, [fullScreen]);
 
+    // Effect to handle created NFTs specific callbacks
     useEffect(() => {
         if (type === 'created') {
             console.log('Created NFTs count:', nfts.length);
@@ -144,28 +173,50 @@ export default function CollectedCreatedNFTs({
                 setCreatedNFTsLoaded(true);
             }
             if (setCreatedNFTsCount) {
-                setCreatedNFTsCount(nfts.length); // Set the created NFTs count
+                setCreatedNFTsCount(nfts.length); // Update created NFTs count
             }
         }
     }, [nfts, type, setHasCreatedNFTs, setCreatedNFTsLoaded, setCreatedNFTsCount]);
 
+    /**
+     * Handle search input changes.
+     * @param {Event} e - Input change event.
+     */
     const handleChangeSearch = (e) => {
         resetNfts();
         setSearch(e.target.value);
     };
 
+    /**
+     * Toggle filter visibility.
+     */
     const handleShowFilter = () => {
-        setShowFilter(!showFilter);
+        setShowFilter((prev) => !prev);
     };
 
+    /**
+     * Navigate back to the account page.
+     */
     const handleBack = () => {
         window.location.href = `/account/${account}`;
     };
 
+    /**
+     * Render NFT Items as a grid.
+     */
     const nftItems = () => (
         <Grid container spacing={1}>
             {nfts.map((nft, index) => (
-                <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={index} sx={{ py: 2 }}> 
+                <Grid
+                    item
+                    xs={6}
+                    sm={4}
+                    md={3}
+                    lg={2.4}
+                    xl={1.5}
+                    key={nft.id || index} // Prefer unique ID if available
+                    sx={{ py: 2 }}
+                >
                     {collection ? (
                         <NFTCard nft={nft} />
                     ) : (
@@ -182,8 +233,10 @@ export default function CollectedCreatedNFTs({
 
     return (
         <>
+            {/* Render only if type is not 'created' or if there are NFTs to display */}
             {(type !== 'created' || nfts.length > 0) && (
                 <>
+                    {/* Search and Filter Bar */}
                     <GlassyBox sx={{ mb: 2, p: 1, display: 'flex', alignItems: 'center' }}>
                         <IconButton
                             aria-label="filter"
@@ -212,13 +265,15 @@ export default function CollectedCreatedNFTs({
                                     </InputAdornment>
                                 ),
                                 endAdornment: (
-                                    <InputAdornment position="start">
+                                    <InputAdornment position="end">
                                         {loading && <ClipLoader color="#ff0000" size={15} />}
                                     </InputAdornment>
                                 )
                             }}
                         />
                     </GlassyBox>
+
+                    {/* Back Button for Collection View */}
                     {collection && (
                         <Box display="flex" justifyContent="center" mb={2}>
                             <IconButton
@@ -226,20 +281,24 @@ export default function CollectedCreatedNFTs({
                                 sx={{
                                     p: 1,
                                     '&:hover': {
-                                        background: theme.palette.mode === 'dark'
-                                            ? 'rgba(255, 255, 255, 0.1)'
-                                            : 'rgba(255, 255, 255, 0.8)',
+                                        background:
+                                            theme.palette.mode === 'dark'
+                                                ? 'rgba(255, 255, 255, 0.1)'
+                                                : 'rgba(255, 255, 255, 0.8)',
                                     },
                                 }}
                             >
                                 <ArrowBackIcon fontSize="large" />
-                                <Typography variant="s3" fontSize="medium" sx={{ ml: 1 }}>
+                                <Typography variant="body2" fontSize="medium" sx={{ ml: 1 }}>
                                     Go back
                                 </Typography>
                             </IconButton>
                         </Box>
                     )}
+
+                    {/* Main Content Grid */}
                     <Grid container spacing={2} justifyContent="space-between">
+                        {/* Filter Sidebar */}
                         {showFilter && (
                             <Grid item xs={12} md={3} xl={2}>
                                 <GlassyBox sx={{ p: 2 }}>
@@ -254,25 +313,60 @@ export default function CollectedCreatedNFTs({
                                 </GlassyBox>
                             </Grid>
                         )}
-                        <Grid item xs={12} md={showFilter ? 9 : 12} xl={showFilter ? 10 : 12}>
-                            {collection && collection !== '' ? (
+
+                        {/* NFTs Display Area */}
+                        <Grid
+                            item
+                            xs={12}
+                            md={showFilter ? 9 : 12}
+                            xl={showFilter ? 10 : 12}
+                        >
+                            {collection ? (
                                 <InfiniteScroll
                                     dataLength={nfts.length}
                                     next={() => {
-                                        setPage(page + 1);
-                                        setSync(sync + 1);
+                                        setPage((prevPage) => prevPage + 1);
+                                        setSync((prevSync) => prevSync + 1);
                                     }}
                                     hasMore={hasMore}
+                                    loader={
+                                        <Box display="flex" justifyContent="center" mt={2}>
+                                            <ClipLoader color="#ff0000" size={35} />
+                                        </Box>
+                                    }
+                                    endMessage={
+                                        <Typography variant="body2" align="center" mt={2}>
+                                            {nfts.length === 0
+                                                ? 'No NFTs found.'
+                                                : 'You have seen all NFTs.'}
+                                        </Typography>
+                                    }
                                     scrollThreshold={0.6}
                                 >
                                     {nftItems()}
                                 </InfiniteScroll>
                             ) : (
-                                nftItems()
+                                // If not filtering by collection, display NFTs without infinite scroll
+                                <>
+                                    {nfts.length > 0 ? (
+                                        nftItems()
+                                    ) : (
+                                        <Typography variant="body2" align="center" mt={2}>
+                                            No NFTs found.
+                                        </Typography>
+                                    )}
+                                </>
                             )}
                         </Grid>
                     </Grid>
                 </>
+            )}
+
+            {/* Optional: Display message if type is 'created' but no NFTs are present */}
+            {type === 'created' && nfts.length === 0 && (
+                <Typography variant="body2" align="center" mt={4}>
+                    You haven't created any NFTs yet.
+                </Typography>
             )}
         </>
     );
