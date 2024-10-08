@@ -29,6 +29,8 @@ import useDebounce from 'src/hooks/useDebounce';
 // Utils
 import { getHashIcon } from 'src/utils/parse';
 
+import { useTheme } from '@mui/material/styles';
+
 const RenderOption = ({
     uuid,
     meta,
@@ -89,15 +91,23 @@ const RenderOption = ({
                     {
                         <Avatar
                             alt="X"
-                            variant={logo?"":"square"}
+                            variant={option_type === "NFTS" ? "rounded" : logo ? "circular" : "square"}
                             sx={{
-                                backgroundColor: '#00000000'
+                                backgroundColor: '#00000000',
+                                borderRadius: option_type === "NFTS" ? '8px' : undefined,
+                                overflow: 'hidden', // Add this line to ensure the image respects the border radius
                             }}
                         >
                             <CardMedia
                                 component={isVideo ? "video" : 'img'}
                                 src={imgUrl}
                                 alt='X'
+                                sx={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                    borderRadius: option_type === "NFTS" ? '8px' : undefined,
+                                }}
                             />
                         </Avatar>
                     }
@@ -154,31 +164,24 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
     const [loading, setLoading] = useState(false);
 
     const getData = (search) => {
-
-        // type = SEARCH_ITEM_COLLECTION_ACCOUNT
-        // type = SEARCH_ITEM_NAME_OR_ATTRIBUTE
-
-        // if (!search) return;
-
         setLoading(true);
         const body = {};
         body.search = search;
         body.type = type;
-        // https://api.xrpnft.com/api/search
         axios.post(`${BASE_URL}/search`, body).then(res => {
             try {
                 if (res.status === 200 && res.data) {
                     const ret = res.data;
                     const newOptions = [];
-                    for (const nft of ret.nfts) {
+                    for (const nft of ret.nfts.slice(0, 5)) {
                         nft.option_type = "NFTS";
                         newOptions.push(nft);
                     }
-                    for (const collection of ret.collections) {
+                    for (const collection of ret.collections.slice(0, 5)) {
                         collection.option_type = "COLLECTIONS";
                         newOptions.push(collection);
                     }
-                    for (const account of ret.accounts) {
+                    for (const account of ret.accounts.slice(0, 5)) {
                         account.option_type = "ACCOUNTS";
                         newOptions.push(account);
                     }
@@ -190,7 +193,6 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
         }).catch(err => {
             console.log("err->>", err);
         }).then(function () {
-            // Always executed
             setLoading(false);
         });
     }
@@ -216,6 +218,8 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
         // setCollections([]);
     }
 
+    const theme = useTheme();
+
     return (
         <Autocomplete
             freeSolo
@@ -227,13 +231,19 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
             // handleHomeEndKeys
             id={id}
             sx={{
-                // width: '100%',
-                // zIndex: 10001,
-                // width: { xs: '100%', md: 500 },
                 width: '100%',
                 '&.MuiAutocomplete-root .MuiOutlinedInput-root': {
                     paddingTop: 0.5,
-                    paddingBottom: 0.5
+                    paddingBottom: 0.5,
+                    '& fieldset': {
+                        borderColor: theme.palette.primary.main,
+                    },
+                    '&:hover fieldset': {
+                        borderColor: theme.palette.primary.light,
+                    },
+                    '&.Mui-focused fieldset': {
+                        borderColor: theme.palette.primary.dark,
+                    },
                 },
                 '&.MuiTextField-root': {
                     marginTop: 1
@@ -271,11 +281,12 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                                         <IconButton
                                             aria-label='back'
                                             onClick={handleBack}
+                                            sx={{ color: theme.palette.primary.main }}
                                         >
                                             <ArrowBackIcon />
                                         </IconButton>
                                         :
-                                        <SearchIcon />
+                                        <SearchIcon sx={{ color: theme.palette.primary.main }} />
                                     }
                                 </InputAdornment>
                             ),
