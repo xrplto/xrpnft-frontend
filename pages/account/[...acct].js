@@ -2,7 +2,7 @@ import axios from 'axios';
 import { performance } from 'perf_hooks';
 
 // Material
-import { Box, Container, styled, Toolbar } from '@mui/material';
+import { Box, Container, styled, Toolbar, alpha } from '@mui/material';
 
 // Context
 import { useContext } from 'react';
@@ -13,6 +13,9 @@ import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
 import Account from 'src/account';
 import ScrollToTop from 'src/components/ScrollToTop';
+
+// Import the getHashIcon function
+import { getHashIcon } from 'src/utils/parse';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
@@ -33,30 +36,44 @@ const MainContent = styled(Box)(
 const BannerWrapper = styled('div')(
     ({ theme }) => `
     position: relative;
-    max-height: 320px;
     overflow: hidden;
+    height: 320px;
+    margin-bottom: ${theme.spacing(6)};
+    background-color: ${theme.palette.background.default};
 `
 );
 
+const BackgroundImage = styled('div')(({ theme }) => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    opacity: 0.5,
+    zIndex: 0
+}));
+
+const BackgroundBlur = styled('div')(({ theme }) => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backdropFilter: 'blur(20px)',
+    backgroundColor: alpha(theme.palette.background.default, 0.7),
+    zIndex: 1
+}));
+
 const BannerImage = styled('img')(
     ({ theme }) => `
-    position: absolute;
-    top:0;
-    left:0;
-    bottom:0;
-    right:0;
-    inset: 0px;
-    box-sizing: border-box;
-    padding: 0px;
-    border: none;
-    margin: auto;
-    display: block;
-    width: 0px; height: 0px;
-    min-width: 100%;
-    max-width: 100%;
-    min-height: 100%;
-    max-height: 100%;
+    position: relative;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    z-index: 2;
   `
 );
 
@@ -65,14 +82,11 @@ export default function Overview({ data }) {
 
     const profile = data.profile;
 
-    let default_banner = darkMode
-        ? '/static/banner_black.png'
-        : '/static/banner_white.png';
+    // Use getHashIcon to generate the banner image
+    const bannerImage = profile.banner
+        ? `https://s1.xrpnft.com/profile/${profile.banner}`
+        : getHashIcon(profile.account);
 
-    //const bannerImage = profile.banner?`https://s1.xrpnft.com/profile/${profile.banner}`:default_banner;
-    let bannerImage = darkMode
-        ? '/static/banner_black.png'
-        : '/static/banner_white.png'; // Change the custom banner above till we can reset nba
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
@@ -81,14 +95,13 @@ export default function Overview({ data }) {
 
             <MainContent>
                 <BannerWrapper>
-                    <div
-                        style={{
-                            height: 0,
-                            paddingBottom: '10%'
+                    <BackgroundImage
+                        sx={{
+                            backgroundImage: `url(${bannerImage})`
                         }}
-                    >
-                        <BannerImage alt="" src={bannerImage} decoding="async" />
-                    </div>
+                    />
+                    <BackgroundBlur />
+                    <BannerImage alt="" src={bannerImage} decoding="async" />
                 </BannerWrapper>
 
                 <Container maxWidth="xxl">
