@@ -236,7 +236,7 @@ export default function CollectionList({ type, category }) {
                                 return (
                                     <Row
                                         key={idx}
-                                        id={page * Math.min(rows, total) + idx + 1} // Update this line
+                                        id={idx + 1} // Update this line
                                         item={row}
                                         isMine={isMine}
                                     />
