@@ -73,6 +73,9 @@ import HistoryList from './HistoryList';
 import { alpha, styled } from '@mui/material/styles';
 import Glass from '@mui/material/Paper';
 
+// Add this import at the top of the file
+import Wallet from 'src/components/Wallet';
+
 // Create a styled component for the glass effect
 const GlassPanel = styled(Glass)(({ theme }) => ({
     background: alpha(theme.palette.background.paper, 0.7),
@@ -728,24 +731,30 @@ export default function NFTActions({ nft }) {
                                     </Typography>
                                 )}
                             </Stack>
-                            <Button
-                                fullWidth
-                                disabled={!cost || burnt}
-                                variant="contained"
-                                size="large"
-                                onClick={handleBuyNow}
-                            >
-                                Buy Now
-                            </Button>
-                            <Button
-                                fullWidth
-                                disabled={!accountLogin || burnt}
-                                variant="outlined"
-                                size="large"
-                                onClick={handleCreateBuyOffer}
-                            >
-                                Make Offer
-                            </Button>
+                            {accountLogin ? (
+                                <>
+                                    <Button
+                                        fullWidth
+                                        disabled={!cost || burnt}
+                                        variant="contained"
+                                        size="large"
+                                        onClick={handleBuyNow}
+                                    >
+                                        Buy Now
+                                    </Button>
+                                    <Button
+                                        fullWidth
+                                        disabled={burnt}
+                                        variant="outlined"
+                                        size="large"
+                                        onClick={handleCreateBuyOffer}
+                                    >
+                                        Make Offer
+                                    </Button>
+                                </>
+                            ) : (
+                                <Wallet />
+                            )}
                         </Stack>
                     )}
                 </Stack>
