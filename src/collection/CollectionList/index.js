@@ -113,7 +113,7 @@ export default function CollectionList({ type, category }) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(50); // Set a default value for rows per page
     const [order, setOrder] = useState('desc');
-    const [orderBy, setOrderBy] = useState('totalVol24h'); //vol24h
+    const [orderBy, setOrderBy] = useState('totalVol24h');
 
     const [total, setTotal] = useState(0);
     const [collections, setCollections] = useState([]);
@@ -151,9 +151,9 @@ export default function CollectionList({ type, category }) {
                 filter,
                 type,
                 page,
-                limit: rowsPerPage, // Use rowsPerPage instead of rows
+                limit: rowsPerPage,
                 order,
-                orderBy,
+                orderBy: sortOption === 'Volume' ? 'totalVol24h' : orderBy,
                 choice
             };
 
@@ -228,8 +228,11 @@ export default function CollectionList({ type, category }) {
     const handleSortChange = (event) => {
         const option = event.target.value;
         setSortOption(option);
-        const sorted = sortCollections(filteredAndSortedCollections, option);
-        setFilteredAndSortedCollections(sorted);
+        if (option === 'Volume') {
+            setOrderBy('totalVol24h');
+            setOrder('desc');
+        }
+        setSync(sync + 1);
     };
 
     const handleRequestSort = (event, id) => {
