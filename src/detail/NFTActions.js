@@ -597,7 +597,13 @@ export default function NFTActions({ nft }) {
         } else if (sellOffers.length > 1) {
             setOpenSelectPrice(true);
         } else {
-            handleAcceptOffer(cost.offer);
+            if (lowestSellOffer && !lowestSellOffer.destination) {
+                // Use ConfirmAcceptOfferDialog when there's no broker/destination
+                setAcceptOffer(lowestSellOffer);
+                setOpenConfirm(true);
+            } else {
+                handleAcceptOffer(cost.offer);
+            }
         }
     };
 
@@ -979,6 +985,12 @@ export default function NFTActions({ nft }) {
                 isSellOffer={false}
                 initialAmount={lowestSellOffer ? lowestSellOffer.totalAmount : 0}
                 brokerFeePercentage={lowestSellOffer ? lowestSellOffer.brokerFeePercentage : 0}
+            />
+            <ConfirmAcceptOfferDialog
+                open={openConfirm}
+                setOpen={setOpenConfirm}
+                offer={acceptOffer}
+                onContinue={onContinueAccept}
             />
         </GlassPanel>
     );
