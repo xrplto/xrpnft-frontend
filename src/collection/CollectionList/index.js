@@ -29,8 +29,10 @@ import { AppContext } from 'src/AppContext';
 import Row from './Row';
 import ListHead from './ListHead';
 import ListToolbar from './ListToolbar';
+import NFTCardView from './NFTCardView';
 
 import { alpha } from '@mui/material/styles';
+import { ViewList, ViewModule } from '@mui/icons-material';
 
 const GradientTypography = styled(Typography)(
     ({ theme }) => `
@@ -107,6 +109,8 @@ export default function CollectionList({ type, category }) {
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    const [viewMode, setViewMode] = useState('table');
 
     useEffect(() => {
         const loadCollections = () => {
@@ -189,6 +193,12 @@ export default function CollectionList({ type, category }) {
         }
     };
 
+    const handleViewModeChange = (event, newMode) => {
+        if (newMode !== null) {
+            setViewMode(newMode);
+        }
+    };
+
     return (
         <Container maxWidth="xl">
             <Box sx={{ mt: { xs: 4, md: 6 }, mb: { xs: 4, md: 6 } }}>
@@ -208,42 +218,61 @@ export default function CollectionList({ type, category }) {
                 </GradientTypography>
 
                 {type !== CollectionListType.LANDING && (
-                    <ToggleButtonGroup
-                        color="primary"
-                        value={choice}
-                        exclusive
-                        onChange={handleChangeChoice}
-                        sx={{ mb: 4 }}
-                    >
-                        <StyledToggleButton value="all">All</StyledToggleButton>
-                        <StyledToggleButton value="verified">
-                            Verified
-                        </StyledToggleButton>
-                    </ToggleButtonGroup>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+                        <ToggleButtonGroup
+                            color="primary"
+                            value={choice}
+                            exclusive
+                            onChange={handleChangeChoice}
+                        >
+                            <StyledToggleButton value="all">All</StyledToggleButton>
+                            <StyledToggleButton value="verified">
+                                Verified
+                            </StyledToggleButton>
+                        </ToggleButtonGroup>
+
+                        <ToggleButtonGroup
+                            value={viewMode}
+                            exclusive
+                            onChange={handleViewModeChange}
+                            aria-label="view mode"
+                        >
+                            <StyledToggleButton value="table" aria-label="table view">
+                                <ViewList />
+                            </StyledToggleButton>
+                            <StyledToggleButton value="card" aria-label="card view">
+                                <ViewModule />
+                            </StyledToggleButton>
+                        </ToggleButtonGroup>
+                    </Box>
                 )}
 
                 <GlassBox>
-                    <Table
-                        style={{ minWidth: isMobile ? undefined : '1000px' }}
-                    >
-                        <ListHead
-                            order={order}
-                            orderBy={orderBy}
-                            onRequestSort={handleRequestSort}
-                        />
-                        <TableBody>
-                            {collections.map((row, idx) => {
-                                return (
-                                    <Row
-                                        key={idx}
-                                        id={idx + 1} // Update this line
-                                        item={row}
-                                        isMine={isMine}
-                                    />
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
+                    {viewMode === 'table' ? (
+                        <Table
+                            style={{ minWidth: isMobile ? undefined : '1000px' }}
+                        >
+                            <ListHead
+                                order={order}
+                                orderBy={orderBy}
+                                onRequestSort={handleRequestSort}
+                            />
+                            <TableBody>
+                                {collections.map((row, idx) => {
+                                    return (
+                                        <Row
+                                            key={idx}
+                                            id={idx + 1}
+                                            item={row}
+                                            isMine={isMine}
+                                        />
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+                    ) : (
+                        <NFTCardView collections={collections} isMine={isMine} />
+                    )}
                 </GlassBox>
                 <ListToolbar
                     rows={rows}
