@@ -85,9 +85,9 @@ import CreateOfferXRPCafe from './CreateOfferXRPCafe';
 
 // Add these constants at the top of the file
 const BROKER_ADDRESSES = {
-  "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv": 0.0005, // 0.05% //Art Dept Fun
-  "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC": 0.01589, // 1.589% //XRP Cafe
-  "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC": 0.015 // 1.5% //BIDDS
+  "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv": { fee: 0.0005, name: "Art Dept Fun" }, // 0.05%
+  "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC": { fee: 0.01589, name: "XRP Cafe" }, // 1.589%
+  "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC": { fee: 0.015, name: "BIDDS" } // 1.5%
 };
 
 // Create a styled component for the glass effect
@@ -369,11 +369,12 @@ export default function NFTActions({ nft }) {
                     }, { amount: BigInt(Number.MAX_SAFE_INTEGER).toString(), offer: null });
                 }
 
-                if (lowestOffer.offer) {
+                if (lowestOffer && lowestOffer.offer) {
                     const baseAmount = parseFloat(dropsToXrp(lowestOffer.amount.toString()));
                     const brokerAddress = lowestOffer.offer.destination;
                     const hasBroker = brokerAddress in BROKER_ADDRESSES;
-                    const brokerFeePercentage = hasBroker ? BROKER_ADDRESSES[brokerAddress] : 0;
+                    const brokerInfo = hasBroker ? BROKER_ADDRESSES[brokerAddress] : null;
+                    const brokerFeePercentage = brokerInfo ? brokerInfo.fee : 0;
                     const brokerFee = hasBroker ? baseAmount * brokerFeePercentage : 0;
                     const totalAmount = baseAmount + brokerFee;
 
@@ -383,8 +384,10 @@ export default function NFTActions({ nft }) {
                         brokerFee,
                         brokerFeePercentage,
                         hasBroker,
+                        brokerName: brokerInfo ? brokerInfo.name : null,
                         offerIndex: lowestOffer.offer.nft_offer_index,
                         seller: lowestOffer.offer.owner,
+                        destination: brokerAddress
                     });
                 }
             } catch (error) {
@@ -780,7 +783,7 @@ export default function NFTActions({ nft }) {
                                 </Typography>
                                 {loading ? (
                                     <PulseLoader color="#00AB55" size={10} />
-                                ) : cost ? (
+                                ) : lowestSellOffer ? (
                                     <Stack
                                         direction="row"
                                         spacing={1}
@@ -795,8 +798,7 @@ export default function NFTActions({ nft }) {
                                             variant="h5"
                                             fontWeight="bold"
                                         >
-                                            {fNumber(cost.amount)}{' '}
-                                            {cost.currency}
+                                            {fNumber(lowestSellOffer.totalAmount)} XRP
                                         </Typography>
                                     </Stack>
                                 ) : (
@@ -809,7 +811,7 @@ export default function NFTActions({ nft }) {
                                 <>
                                     <Button
                                         fullWidth
-                                        disabled={!cost || burnt}
+                                        disabled={!lowestSellOffer || burnt}
                                         variant="contained"
                                         size="large"
                                         onClick={handleBuyNow}
@@ -869,11 +871,11 @@ export default function NFTActions({ nft }) {
                                         {fNumber(lowestSellOffer.brokerFee)} XRP
                                     </Typography>
                                 </Stack>
+                                <Typography variant="body2" color="text.secondary">
+                                    Broker: {lowestSellOffer.brokerName} ({truncate(lowestSellOffer.destination, 16)})
+                                </Typography>
                             </>
                         )}
-                        <Typography variant="body2" color="text.secondary">
-                            Seller: {truncate(lowestSellOffer.seller, 16)}
-                        </Typography>
                     </Stack>
                 )}
 
