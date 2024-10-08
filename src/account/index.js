@@ -26,6 +26,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Icon } from '@iconify/react';
+import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
+import infoFilled from '@iconify/icons-ep/info-filled';
 
 // Context
 import { useContext } from 'react';
@@ -90,7 +92,9 @@ const BannerWrapper = styled('div')(
     height: 280px;  // Decreased from 320px to 280px
     margin-bottom: ${theme.spacing(6)};
     background-color: ${theme.palette.background.default};
-    border-radius: ${theme.shape.borderRadius}px;  // Add this line for rounded corners
+    border-radius: ${
+        theme.shape.borderRadius
+    }px;  // Add this line for rounded corners
 `
 );
 
@@ -127,6 +131,27 @@ const BannerImage = styled('img')(
     z-index: 2;
   `
 );
+
+const GlassBox = styled(Box)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.1),
+    backdropFilter: 'blur(10px)',
+    borderRadius: theme.shape.borderRadius * 2,
+    padding: theme.spacing(3),
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+    '&:hover': {
+        background: alpha(theme.palette.background.paper, 0.15),
+        boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.3)}`
+    },
+    display: 'flex',
+    flexDirection: { xs: 'column', md: 'row' },
+    alignItems: { xs: 'center', md: 'flex-start' },
+    position: 'relative',
+    zIndex: 1,
+    mx: { xs: -2, md: -4 }, // Add negative margins to extend to the sides
+    px: { xs: 4, md: 6 },   // Increase padding to compensate for negative margins
+    py: 4                   // Add some vertical padding
+}));
 
 function TabPanel(props) {
     const { children, value, id, ...other } = props;
@@ -242,7 +267,10 @@ export default function Account({ profile, limit, tab, collection, type }) {
     useEffect(() => {
         async function getOffersCount() {
             try {
-                const response = await axios.post(`${BASE_URL}/account/notification`, { account });
+                const response = await axios.post(
+                    `${BASE_URL}/account/notification`,
+                    { account }
+                );
                 if (response.status === 200) {
                     const data = response.data;
                     console.log('Notification data received:', data);
@@ -318,151 +346,182 @@ export default function Account({ profile, limit, tab, collection, type }) {
         }
     };
 
-    const totalNotifications = Object.values(notificationCounts).reduce((sum, count) => sum + count, 0);
+    const totalNotifications = Object.values(notificationCounts).reduce(
+        (sum, count) => sum + count,
+        0
+    );
 
     console.log('Current notification counts:', notificationCounts);
     console.log('Total notifications:', totalNotifications);
 
     return (
         <>
-            <Box sx={{ position: 'relative', mt: 7 }}>  {/* Increased margin top from 6 to 7 */}
-                <BannerWrapper>
-                    {bannerImage ? (
-                        <>
-                            <BackgroundImage
-                                sx={{
-                                    backgroundImage: `url(${bannerImage})`
-                                }}
-                            />
-                            <BackgroundBlur />
-                            <BannerImage alt="" src={bannerImage} decoding="async" />
-                        </>
-                    ) : (
+            <Box sx={{ position: 'relative', mt: 7, mx: { xs: 2, md: 4 } }}>
+                <BackgroundImage
+                    sx={{
+                        backgroundImage: `url(${bannerImage})`
+                    }}
+                />
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        bgcolor: (theme) =>
+                            alpha(theme.palette.background.default, 0.8),
+                        backdropFilter: 'blur(15px)',
+                        zIndex: 0
+                    }}
+                />
+                <GlassBox
+                    sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', md: 'row' },
+                        alignItems: { xs: 'center', md: 'flex-start' },
+                        position: 'relative',
+                        zIndex: 1,
+                        mx: { xs: -2, md: -4 }, // Add negative margins to extend to the sides
+                        px: { xs: 4, md: 6 },   // Increase padding to compensate for negative margins
+                        py: 4                   // Add some vertical padding
+                    }}
+                >
+                    <Avatar
+                        variant="square"
+                        sx={{
+                            width: { xs: 150, md: 220 },
+                            height: { xs: 150, md: 220 },
+                            mr: { md: 4 },
+                            mb: { xs: 4, md: 0 },
+                            borderRadius: (theme) => `${theme.shape.borderRadius * 2}px`,
+                            boxShadow: (theme) => `0 10px 30px ${alpha(theme.palette.primary.main, 0.3)}`,
+                            position: 'relative',
+                            overflow: 'hidden'
+                        }}
+                    >
+                        <BackgroundBlur
+                            sx={{
+                                backgroundImage: `url(${logoImage})`,
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center'
+                            }}
+                        />
                         <Box
                             sx={{
+                                position: 'relative',
                                 width: '100%',
                                 height: '100%',
                                 display: 'flex',
                                 justifyContent: 'center',
-                                alignItems: 'center',
-                                backgroundColor: 'background.default',
+                                alignItems: 'center'
                             }}
                         >
-                            <Avatar
-                                variant="square"
+                            <IconImage
+                                src={logoImage}
+                                alt={name || account}
                                 sx={{
-                                    width: '100%',
-                                    height: '100%',
-                                    backgroundColor: 'transparent',
+                                    width: '90%',
+                                    height: '90%',
+                                    objectFit: 'contain'
                                 }}
-                            >
-                                <IconImage src={getHashIcon(account)} />
-                            </Avatar>
-                        </Box>
-                    )}
-                </BannerWrapper>
-
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        bottom: 16,
-                        left: 16,
-                        right: 16,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 3,
-                        zIndex: 2,
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'flex-end',
-                            justifyContent: 'space-between',
-                            gap: 3,
-                        }}
-                    >
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                            <Avatar
-                                variant="square" // Change this to 'square'
-                                sx={{
-                                    width: { md: 90, xs: 50 },
-                                    height: { md: 90, xs: 50 },
-                                    backgroundColor: '#00000000',
-                                    borderRadius: (theme) => `${theme.shape.borderRadius}px`, // Add this line for rounded corners
-                                }}
-                            >
-                                <IconImage src={logoImage} />
-                                {accountLogin === account && (
-                                    <Link href={`/setting`} underline="none">
-                                        <CardOverlay>
-                                            <EditIcon
-                                                className="MuiIconEditButton-root"
-                                                fontSize="large"
-                                                sx={{ opacity: 0, zIndex: 1 }}
-                                            />
-                                        </CardOverlay>
-                                        <ImageBackdrop className="MuiImageBackdrop-root" />
-                                    </Link>
-                                )}
-                            </Avatar>
-                            <Box>
-                                <Typography variant="h3" sx={{ color: 'common.white' }}>
-                                    {name || account?.toString().slice(0, 5)}
-                                </Typography>
-                                <Box display="flex" alignItems={'center'}>
-                                    <Typography
-                                        style={{ wordWrap: 'break-word' }}
-                                        variant="d3"
-                                        sx={{ color: 'common.white' }}
-                                    >
-                                        {account.slice(0, 4) + '...' + account.slice(-4)}
-                                    </Typography>
-                                    <CopyToClipboard
-                                        text={account}
-                                        onCopy={() => {
-                                            openSnackbar('Copied!', 'success');
-                                        }}
-                                    >
-                                        <Tooltip title="Click to copy">
-                                            <IconButton sx={{ color: 'common.white' }}>
-                                                <ContentCopyIcon fontSize="small" />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </CopyToClipboard>
-                                    <Link
-                                        color="inherit"
-                                        target="_blank"
-                                        href={`https://bithomp.com/explorer/${account}`}
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <IconButton sx={{ color: 'common.white' }}>
-                                            <OpenInNewIcon />
-                                        </IconButton>
-                                    </Link>
-                                </Box>
-                            </Box>
+                            />
                         </Box>
                         {accountLogin === account && (
-                            <Button
-                                variant="contained"
-                                onClick={onLogoutXumm}
-                                startIcon={<Icon icon="mdi:logout" />}
-                                sx={{
-                                    backgroundColor: (theme) =>
-                                        theme.palette.error.main,
-                                    color: (theme) => theme.palette.error.contrastText,
-                                    '&:hover': {
+                            <Link href={`/setting`} underline="none">
+                                <CardOverlay>
+                                    <EditIcon
+                                        className="MuiIconEditButton-root"
+                                        fontSize="large"
+                                        sx={{ opacity: 0, zIndex: 1 }}
+                                    />
+                                </CardOverlay>
+                                <ImageBackdrop className="MuiImageBackdrop-root" />
+                            </Link>
+                        )}
+                    </Avatar>
+
+                    <Box sx={{ flex: 1 }}>
+                        <Stack
+                            direction={{ xs: 'column', md: 'row' }}
+                            spacing={2}
+                            justifyContent="space-between"
+                            alignItems={{ xs: 'center', md: 'flex-start' }}
+                            sx={{ mb: 3 }}
+                        >
+                            <Stack direction="row" spacing={1} alignItems="center">
+                                <Typography variant="h3" fontWeight="bold" color="primary.main">
+                                    {name || account?.toString().slice(0, 5)}
+                                </Typography>
+                            </Stack>
+
+                            {accountLogin === account && (
+                                <Button
+                                    variant="contained"
+                                    onClick={onLogoutXumm}
+                                    startIcon={<Icon icon="mdi:logout" />}
+                                    sx={{
                                         backgroundColor: (theme) =>
-                                            theme.palette.error.dark
-                                    },
+                                            theme.palette.error.main,
+                                        color: (theme) =>
+                                            theme.palette.error.contrastText,
+                                        '&:hover': {
+                                            backgroundColor: (theme) =>
+                                                theme.palette.error.dark
+                                        }
+                                    }}
+                                >
+                                    Logout
+                                </Button>
+                            )}
+                        </Stack>
+
+                        <Box display="flex" alignItems="center" sx={{ mb: 2 }}>
+                            <Typography
+                                variant="body1"
+                                sx={{ color: 'text.secondary' }}
+                            >
+                                {account.slice(0, 4) + '...' + account.slice(-4)}
+                            </Typography>
+                            <CopyToClipboard
+                                text={account}
+                                onCopy={() => {
+                                    openSnackbar('Copied!', 'success');
                                 }}
                             >
-                                Logout
-                            </Button>
-                        )}
+                                <Tooltip title="Click to copy">
+                                    <IconButton>
+                                        <ContentCopyIcon fontSize="small" />
+                                    </IconButton>
+                                </Tooltip>
+                            </CopyToClipboard>
+                            <Link
+                                color="inherit"
+                                target="_blank"
+                                href={`https://bithomp.com/explorer/${account}`}
+                                rel="noreferrer noopener nofollow"
+                            >
+                                <IconButton>
+                                    <OpenInNewIcon />
+                                </IconButton>
+                            </Link>
+                        </Box>
+
+                        <SeeMoreTypography
+                            variant="body1"
+                            text={description}
+                            maxLines={3}
+                            sx={{ mb: 4 }}
+                        />
+
+                        {/* Add more account statistics here if needed */}
                     </Box>
-                </Box>
+                </GlassBox>
             </Box>
 
             <Box sx={{ mt: 2, px: 2 }}>
@@ -528,11 +587,36 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         <Offers
                             account={account}
                             {...notificationCounts}
-                            setAcceptNfts={(value) => setNotificationCounts(prev => ({ ...prev, acceptNfts: value }))}
-                            setOrphanedOffers={(value) => setNotificationCounts(prev => ({ ...prev, orphanedOffers: value }))}
-                            setBuyOffers={(value) => setNotificationCounts(prev => ({ ...prev, buyOffers: value }))}
-                            setSellOffers={(value) => setNotificationCounts(prev => ({ ...prev, sellOffers: value }))}
-                            setReceivedOffers={(value) => setNotificationCounts(prev => ({ ...prev, receivedOffers: value }))}
+                            setAcceptNfts={(value) =>
+                                setNotificationCounts((prev) => ({
+                                    ...prev,
+                                    acceptNfts: value
+                                }))
+                            }
+                            setOrphanedOffers={(value) =>
+                                setNotificationCounts((prev) => ({
+                                    ...prev,
+                                    orphanedOffers: value
+                                }))
+                            }
+                            setBuyOffers={(value) =>
+                                setNotificationCounts((prev) => ({
+                                    ...prev,
+                                    buyOffers: value
+                                }))
+                            }
+                            setSellOffers={(value) =>
+                                setNotificationCounts((prev) => ({
+                                    ...prev,
+                                    sellOffers: value
+                                }))
+                            }
+                            setReceivedOffers={(value) =>
+                                setNotificationCounts((prev) => ({
+                                    ...prev,
+                                    receivedOffers: value
+                                }))
+                            }
                         />
                     </Stack>
                 </TabPanel>
