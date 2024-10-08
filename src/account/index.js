@@ -83,6 +83,51 @@ const CardOverlay = styled('div')(
 `
 );
 
+const BannerWrapper = styled('div')(
+    ({ theme }) => `
+    position: relative;
+    overflow: hidden;
+    height: 280px;  // Decreased from 320px to 280px
+    margin-bottom: ${theme.spacing(6)};
+    background-color: ${theme.palette.background.default};
+    border-radius: ${theme.shape.borderRadius}px;  // Add this line for rounded corners
+`
+);
+
+const BackgroundImage = styled('div')(({ theme }) => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    opacity: 0.5,
+    zIndex: 0
+}));
+
+const BackgroundBlur = styled('div')(({ theme }) => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backdropFilter: 'blur(20px)',
+    backgroundColor: alpha(theme.palette.common.black, 0.5), // Changed to black with 50% opacity
+    zIndex: 1
+}));
+
+const BannerImage = styled('img')(
+    ({ theme }) => `
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2;
+  `
+);
+
 function TabPanel(props) {
     const { children, value, id, ...other } = props;
 
@@ -178,7 +223,8 @@ const StyledMenu = styled((props) => (
 
 export default function Account({ profile, limit, tab, collection, type }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { accountProfile, openSnackbar, sync, setAccountProfile } = useContext(AppContext);
+    const { accountProfile, openSnackbar, sync, setAccountProfile } =
+        useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
     const accountUuid = accountProfile?.xuuid;
@@ -197,6 +243,9 @@ export default function Account({ profile, limit, tab, collection, type }) {
         ? `https://s1.xrpnft.com/profile/${logo}`
         : getHashIcon(account);
 
+    const bannerImage = banner
+        ? `https://s1.xrpnft.com/profile/${banner}`
+        : null;
 
     /*useEffect(() => {
         function getOffersCount() {
@@ -253,14 +302,17 @@ export default function Account({ profile, limit, tab, collection, type }) {
 
     const onLogoutXumm = async () => {
         try {
-            const res = await axios.delete(`${BASE_URL}/account/logout/${accountLogin}/${accountUuid}`, {headers: {'x-access-token': accountToken}});
+            const res = await axios.delete(
+                `${BASE_URL}/account/logout/${accountLogin}/${accountUuid}`,
+                { headers: { 'x-access-token': accountToken } }
+            );
             if (res.status === 200) {
                 setAccountProfile(null);
                 openSnackbar('Logged out successfully', 'success');
                 // Redirect to home page or refresh the current page
                 window.location.href = '/';
             }
-        } catch(err) {
+        } catch (err) {
             console.error('Logout failed', err);
             openSnackbar('Logout failed', 'error');
         }
@@ -268,93 +320,148 @@ export default function Account({ profile, limit, tab, collection, type }) {
 
     return (
         <>
-            <Box
-                sx={{
-                    display: 'flex',
-                    gap: 3,
-                    alignItems: 'center',
-                    my: 2,
-                    mt: { md: -5, xs: -4 }
-                    // zIndex: 10000,
-                }}
-            >
-                <Avatar
-                    variant={logo ? '' : 'square'}
-                    sx={{
-                        width: { md: 90, xs: 50 },
-                        height: { md: 90, xs: 50 },
-                        backgroundColor: '#00000000'
-                    }}
-                >
-                    <IconImage src={logoImage} />
-                    {accountLogin === account && (
-                        <Link href={`/setting`} underline="none">
-                            <CardOverlay>
-                                <EditIcon
-                                    className="MuiIconEditButton-root"
-                                    // color='primary'
-                                    fontSize="large"
-                                    sx={{ opacity: 0, zIndex: 1 }}
-                                />
-                            </CardOverlay>
-                            <ImageBackdrop className="MuiImageBackdrop-root" />
-                        </Link>
-                    )}
-                </Avatar>
-                <Box position={'relative'}>
-                    <Typography variant="h3">
-                        {name || account?.toString().slice(0, 5)}
-                    </Typography>
-                    <Box display="flex" alignItems={'center'}>
-                        <Typography
-                            style={{ wordWrap: 'break-word' }}
-                            variant="d3"
-                        >
-                            {account.slice(0, 4) + '...' + account.slice(-4)}
-                        </Typography>
-                        <CopyToClipboard
-                            text={account}
-                            onCopy={() => {
-                                openSnackbar('Copied!', 'success');
+            <Box sx={{ position: 'relative', mt: 7 }}>  {/* Increased margin top from 6 to 7 */}
+                <BannerWrapper>
+                    {bannerImage ? (
+                        <>
+                            <BackgroundImage
+                                sx={{
+                                    backgroundImage: `url(${bannerImage})`
+                                }}
+                            />
+                            <BackgroundBlur />
+                            <BannerImage alt="" src={bannerImage} decoding="async" />
+                        </>
+                    ) : (
+                        <Box
+                            sx={{
+                                width: '100%',
+                                height: '100%',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: 'background.default',
                             }}
                         >
-                            <Tooltip title="Click to copy">
-                                <IconButton>
-                                    <ContentCopyIcon fontSize="small" />
-                                </IconButton>
-                            </Tooltip>
-                        </CopyToClipboard>
-                        <Link
-                            color="inherit"
-                            target="_blank"
-                            href={`https://bithomp.com/explorer/${account}`}
-                            rel="noreferrer noopener nofollow"
-                        >
-                            <IconButton>
-                                <OpenInNewIcon />
-                            </IconButton>
-                        </Link>
-                    </Box>
-                </Box>
-                {accountLogin === account && (
-                    <Button
-                        variant="contained"
-                        onClick={onLogoutXumm}
-                        startIcon={<Icon icon="mdi:logout" />}
+                            <Avatar
+                                variant="square"
+                                sx={{
+                                    width: '100%',
+                                    height: '100%',
+                                    backgroundColor: 'transparent',
+                                }}
+                            >
+                                <IconImage src={getHashIcon(account)} />
+                            </Avatar>
+                        </Box>
+                    )}
+                </BannerWrapper>
+
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        bottom: 16,
+                        left: 16,
+                        right: 16,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 3,
+                        zIndex: 2,
+                    }}
+                >
+                    <Box
                         sx={{
-                            backgroundColor: (theme) => theme.palette.error.main,
-                            color: (theme) => theme.palette.error.contrastText,
-                            '&:hover': {
-                                backgroundColor: (theme) => theme.palette.error.dark,
-                            },
+                            display: 'flex',
+                            alignItems: 'flex-end',
+                            justifyContent: 'space-between',
+                            gap: 3,
                         }}
                     >
-                        Logout
-                    </Button>
-                )}
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                            <Avatar
+                                variant={logo ? '' : 'square'}
+                                sx={{
+                                    width: { md: 90, xs: 50 },
+                                    height: { md: 90, xs: 50 },
+                                    backgroundColor: '#00000000'
+                                }}
+                            >
+                                <IconImage src={logoImage} />
+                                {accountLogin === account && (
+                                    <Link href={`/setting`} underline="none">
+                                        <CardOverlay>
+                                            <EditIcon
+                                                className="MuiIconEditButton-root"
+                                                fontSize="large"
+                                                sx={{ opacity: 0, zIndex: 1 }}
+                                            />
+                                        </CardOverlay>
+                                        <ImageBackdrop className="MuiImageBackdrop-root" />
+                                    </Link>
+                                )}
+                            </Avatar>
+                            <Box>
+                                <Typography variant="h3" sx={{ color: 'common.white' }}>
+                                    {name || account?.toString().slice(0, 5)}
+                                </Typography>
+                                <Box display="flex" alignItems={'center'}>
+                                    <Typography
+                                        style={{ wordWrap: 'break-word' }}
+                                        variant="d3"
+                                        sx={{ color: 'common.white' }}
+                                    >
+                                        {account.slice(0, 4) + '...' + account.slice(-4)}
+                                    </Typography>
+                                    <CopyToClipboard
+                                        text={account}
+                                        onCopy={() => {
+                                            openSnackbar('Copied!', 'success');
+                                        }}
+                                    >
+                                        <Tooltip title="Click to copy">
+                                            <IconButton sx={{ color: 'common.white' }}>
+                                                <ContentCopyIcon fontSize="small" />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </CopyToClipboard>
+                                    <Link
+                                        color="inherit"
+                                        target="_blank"
+                                        href={`https://bithomp.com/explorer/${account}`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <IconButton sx={{ color: 'common.white' }}>
+                                            <OpenInNewIcon />
+                                        </IconButton>
+                                    </Link>
+                                </Box>
+                            </Box>
+                        </Box>
+                        {accountLogin === account && (
+                            <Button
+                                variant="contained"
+                                onClick={onLogoutXumm}
+                                startIcon={<Icon icon="mdi:logout" />}
+                                sx={{
+                                    backgroundColor: (theme) =>
+                                        theme.palette.error.main,
+                                    color: (theme) => theme.palette.error.contrastText,
+                                    '&:hover': {
+                                        backgroundColor: (theme) =>
+                                            theme.palette.error.dark
+                                    },
+                                }}
+                            >
+                                Logout
+                            </Button>
+                        )}
+                    </Box>
+                </Box>
             </Box>
 
-            <SeeMoreTypography variant="d3" text={description} />
+            <Box sx={{ mt: 2, px: 2 }}>
+                <SeeMoreTypography variant="d3" text={description} />
+            </Box>
 
             <Box
                 sx={{
@@ -381,7 +488,7 @@ export default function Account({ profile, limit, tab, collection, type }) {
                             overflow: 'visible !important'
                         },
                         '& .MuiBadge-overlapRectangular': {
-                          borderRadius: '50%'
+                            borderRadius: '50%'
                         }
                     }}
                 >
@@ -391,7 +498,13 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         label={
                             <StyledBadge
                                 color="primary"
-                                badgeContent={acceptNfts + orphanedOffers + buyOffers + sellOffers + receivedOffers}
+                                badgeContent={
+                                    acceptNfts +
+                                    orphanedOffers +
+                                    buyOffers +
+                                    sellOffers +
+                                    receivedOffers
+                                }
                             >
                                 {tabLabels[1]}
                             </StyledBadge>
@@ -404,7 +517,12 @@ export default function Account({ profile, limit, tab, collection, type }) {
             <Box sx={{ my: 1 }}>
                 <TabPanel value={tabID} id={0}>
                     <Stack sx={{ minHeight: '20vh' }}>
-                        <NFTs account={account} limit={limit} collection={collection} type={type} />
+                        <NFTs
+                            account={account}
+                            limit={limit}
+                            collection={collection}
+                            type={type}
+                        />
                     </Stack>
                 </TabPanel>
                 <TabPanel value={tabID} id={1}>

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { performance } from 'perf_hooks';
 
 // Material
-import { Box, Container, styled, Toolbar, alpha } from '@mui/material';
+import { Box, Container, styled, Toolbar } from '@mui/material';
 
 // Context
 import { useContext } from 'react';
@@ -33,59 +33,10 @@ const MainContent = styled(Box)(
 `
 );
 
-const BannerWrapper = styled('div')(
-    ({ theme }) => `
-    position: relative;
-    overflow: hidden;
-    height: 320px;
-    margin-bottom: ${theme.spacing(6)};
-    background-color: ${theme.palette.background.default};
-`
-);
-
-const BackgroundImage = styled('div')(({ theme }) => ({
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    opacity: 0.5,
-    zIndex: 0
-}));
-
-const BackgroundBlur = styled('div')(({ theme }) => ({
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backdropFilter: 'blur(20px)',
-    backgroundColor: alpha(theme.palette.background.default, 0.7),
-    zIndex: 1
-}));
-
-const BannerImage = styled('img')(
-    ({ theme }) => `
-    position: relative;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 2;
-  `
-);
-
 export default function Overview({ data }) {
     const { darkMode } = useContext(AppContext);
 
     const profile = data.profile;
-
-    // Use getHashIcon to generate the banner image
-    const bannerImage = profile.banner
-        ? `https://s1.xrpnft.com/profile/${profile.banner}`
-        : getHashIcon(profile.account);
 
     return (
         <OverviewWrapper>
@@ -94,18 +45,14 @@ export default function Overview({ data }) {
             <Header />
 
             <MainContent>
-                <BannerWrapper>
-                    <BackgroundImage
-                        sx={{
-                            backgroundImage: `url(${bannerImage})`
-                        }}
-                    />
-                    <BackgroundBlur />
-                    <BannerImage alt="" src={bannerImage} decoding="async" />
-                </BannerWrapper>
-
                 <Container maxWidth="xxl">
-                    <Account profile={profile} tab={data.tab} limit={data.limit} collection={data.collection} type={data.type} />
+                    <Account
+                        profile={profile}
+                        tab={data.tab}
+                        limit={data.limit}
+                        collection={data.collection}
+                        type={data.type}
+                    />
                 </Container>
 
                 <ScrollToTop />
@@ -147,7 +94,7 @@ export async function getServerSideProps(ctx) {
     }
 
     if (tab) data.tab = tab;
-    
+
     if (tab?.includes('collection')) {
         data.collection = params[2];
         data.type = tab.replace('collection', '').toLowerCase();
