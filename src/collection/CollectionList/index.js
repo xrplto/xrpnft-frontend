@@ -14,7 +14,11 @@ import {
     useTheme,
     styled,
     Container,
-    Typography
+    Typography,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel
 } from '@mui/material';
 
 // Utils
@@ -30,6 +34,7 @@ import Row from './Row';
 import ListHead from './ListHead';
 import ListToolbar from './ListToolbar';
 import NFTCardView from './NFTCardView';
+import SearchBar from './SearchBar';
 
 import { alpha } from '@mui/material/styles';
 import { ViewList, ViewModule } from '@mui/icons-material';
@@ -85,6 +90,18 @@ const GlassBox = styled(Box)(({ theme }) => ({
     }
 }));
 
+const StyledFormControl = styled(FormControl)(({ theme }) => ({
+    minWidth: 120,
+    marginLeft: theme.spacing(2),
+    '& .MuiInputBase-root': {
+        height: '40px', // Adjust this value to match your SearchBar height
+    },
+    '& .MuiSelect-select': {
+        paddingTop: '8px',
+        paddingBottom: '8px',
+    },
+}));
+
 export default function CollectionList({ type, category }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -110,7 +127,17 @@ export default function CollectionList({ type, category }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const [viewMode, setViewMode] = useState('table');
+    // Change the default view mode to 'card'
+    const [viewMode, setViewMode] = useState('card');
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredCollections, setFilteredCollections] = useState([]);
+
+    // Change the default sort option to 'Volume'
+    const [sortOption, setSortOption] = useState('Volume');
+
+    const [filteredAndSortedCollections, setFilteredAndSortedCollections] =
+        useState([]);
 
     useEffect(() => {
         const loadCollections = () => {
@@ -154,29 +181,45 @@ export default function CollectionList({ type, category }) {
                 })
                 .catch((err) => {
                     console.log('err->>', err);
-                })
-                .then(function () {
-                    // Always executed
                 });
         };
         loadCollections();
-    }, [sync, order, orderBy, page, rows, account, total]); // Add total to the dependency array
+    }, [sync, order, orderBy, page, rows, account, total]);
 
     useEffect(() => {
-        var timer = null;
+        const filtered = collections.filter((collection) =>
+            collection.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
-        const handleValue = () => {
-            setPage(0);
-            setSync(sync + 1);
-        };
+        let sorted = [...filtered];
+        switch (sortOption) {
+            case 'A-Z':
+                sorted.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'Z-A':
+                sorted.sort((a, b) => b.name.localeCompare(a.name));
+                break;
+            case 'Floor Low':
+                sorted.sort(
+                    (a, b) => (a.floor?.amount || 0) - (b.floor?.amount || 0)
+                );
+                break;
+            case 'Floor High':
+                sorted.sort(
+                    (a, b) => (b.floor?.amount || 0) - (a.floor?.amount || 0)
+                );
+                break;
+            case 'Volume':  // Change this line
+                sorted.sort(
+                    (a, b) => (b.totalVol24h || 0) - (a.totalVol24h || 0)
+                );
+                break;
+            default:
+                break;
+        }
 
-        timer = setTimeout(handleValue, 500);
-        return () => {
-            if (timer) {
-                clearTimeout(timer);
-            }
-        };
-    }, [filter]);
+        setFilteredAndSortedCollections(sorted);
+    }, [collections, searchTerm, sortOption]);
 
     const handleRequestSort = (event, id) => {
         const isDesc = orderBy === id && order === 'desc';
@@ -199,6 +242,44 @@ export default function CollectionList({ type, category }) {
         }
     };
 
+    const handleSearch = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const handleSortChange = (event) => {
+        setSortOption(event.target.value);
+    };
+
+    useEffect(() => {
+        let sortedCollections = [...filteredCollections];
+        switch (sortOption) {
+            case 'A-Z':
+                sortedCollections.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'Z-A':
+                sortedCollections.sort((a, b) => b.name.localeCompare(a.name));
+                break;
+            case 'Floor Low':
+                sortedCollections.sort(
+                    (a, b) => (a.floor?.amount || 0) - (b.floor?.amount || 0)
+                );
+                break;
+            case 'Floor High':
+                sortedCollections.sort(
+                    (a, b) => (b.floor?.amount || 0) - (a.floor?.amount || 0)
+                );
+                break;
+            case 'Volume':  // Change this line
+                sortedCollections.sort(
+                    (a, b) => (b.totalVol24h || 0) - (a.totalVol24h || 0)
+                );
+                break;
+            default:
+                break;
+        }
+        setFilteredCollections(sortedCollections);
+    }, [sortOption, collections, searchTerm]);
+
     return (
         <Container maxWidth="xl">
             <Box sx={{ mt: { xs: 4, md: 6 }, mb: { xs: 4, md: 6 } }}>
@@ -218,18 +299,55 @@ export default function CollectionList({ type, category }) {
                 </GradientTypography>
 
                 {type !== CollectionListType.LANDING && (
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-                        <ToggleButtonGroup
-                            color="primary"
-                            value={choice}
-                            exclusive
-                            onChange={handleChangeChoice}
-                        >
-                            <StyledToggleButton value="all">All</StyledToggleButton>
-                            <StyledToggleButton value="verified">
-                                Verified
-                            </StyledToggleButton>
-                        </ToggleButtonGroup>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            mb: 4
+                        }}
+                    >
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <ToggleButtonGroup
+                                color="primary"
+                                value={choice}
+                                exclusive
+                                onChange={handleChangeChoice}
+                            >
+                                <StyledToggleButton value="all">
+                                    All
+                                </StyledToggleButton>
+                                <StyledToggleButton value="verified">
+                                    Verified
+                                </StyledToggleButton>
+                            </ToggleButtonGroup>
+                            <SearchBar
+                                value={searchTerm}
+                                onChange={handleSearch}
+                            />
+                            <StyledFormControl size="small"> {/* Add size="small" here */}
+                                <InputLabel id="sort-select-label">
+                                    Sort
+                                </InputLabel>
+                                <Select
+                                    labelId="sort-select-label"
+                                    id="sort-select"
+                                    value={sortOption}
+                                    label="Sort"
+                                    onChange={handleSortChange}
+                                >
+                                    <MenuItem value="Volume">Volume</MenuItem>  {/* Change this line */}
+                                    <MenuItem value="Floor High">
+                                        Floor High
+                                    </MenuItem>
+                                    <MenuItem value="Floor Low">
+                                        Floor Low
+                                    </MenuItem>
+                                    <MenuItem value="A-Z">A-Z</MenuItem>
+                                    <MenuItem value="Z-A">Z-A</MenuItem>
+                                </Select>
+                            </StyledFormControl>
+                        </Box>
 
                         <ToggleButtonGroup
                             value={viewMode}
@@ -237,20 +355,33 @@ export default function CollectionList({ type, category }) {
                             onChange={handleViewModeChange}
                             aria-label="view mode"
                         >
-                            <StyledToggleButton value="table" aria-label="table view">
-                                <ViewList />
-                            </StyledToggleButton>
-                            <StyledToggleButton value="card" aria-label="card view">
+                            <StyledToggleButton
+                                value="card"
+                                aria-label="card view"
+                            >
                                 <ViewModule />
+                            </StyledToggleButton>
+                            <StyledToggleButton
+                                value="table"
+                                aria-label="table view"
+                            >
+                                <ViewList />
                             </StyledToggleButton>
                         </ToggleButtonGroup>
                     </Box>
                 )}
 
                 <GlassBox>
-                    {viewMode === 'table' ? (
+                    {viewMode === 'card' ? (
+                        <NFTCardView
+                            collections={filteredAndSortedCollections}
+                            isMine={isMine}
+                        />
+                    ) : (
                         <Table
-                            style={{ minWidth: isMobile ? undefined : '1000px' }}
+                            style={{
+                                minWidth: isMobile ? undefined : '1000px'
+                            }}
                         >
                             <ListHead
                                 order={order}
@@ -258,20 +389,20 @@ export default function CollectionList({ type, category }) {
                                 onRequestSort={handleRequestSort}
                             />
                             <TableBody>
-                                {collections.map((row, idx) => {
-                                    return (
-                                        <Row
-                                            key={idx}
-                                            id={idx + 1}
-                                            item={row}
-                                            isMine={isMine}
-                                        />
-                                    );
-                                })}
+                                {filteredAndSortedCollections.map(
+                                    (row, idx) => {
+                                        return (
+                                            <Row
+                                                key={idx}
+                                                id={idx + 1}
+                                                item={row}
+                                                isMine={isMine}
+                                            />
+                                        );
+                                    }
+                                )}
                             </TableBody>
                         </Table>
-                    ) : (
-                        <NFTCardView collections={collections} isMine={isMine} />
                     )}
                 </GlassBox>
                 <ListToolbar
@@ -279,7 +410,7 @@ export default function CollectionList({ type, category }) {
                     setRows={setRows}
                     page={page}
                     setPage={setPage}
-                    total={total}
+                    total={filteredAndSortedCollections.length}
                 />
             </Box>
         </Container>
