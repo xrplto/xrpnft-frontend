@@ -264,6 +264,15 @@ export default function Account({ profile, limit, tab, collection, type }) {
         receivedOffers: 0
     });
 
+    const [nftStats, setNftStats] = useState({ 
+        totalCount: 0, 
+        totalForSale: 0, 
+        collectionCount: 0,
+        createdCount: 0 // Add this line
+    });
+
+    const [createdNFTsCount, setCreatedNFTsCount] = useState(0);
+
     useEffect(() => {
         async function getOffersCount() {
             try {
@@ -287,10 +296,44 @@ export default function Account({ profile, limit, tab, collection, type }) {
             }
         }
 
+        async function fetchNFTStats() {
+            try {
+                const response = await axios.post(
+                    `${BASE_URL}/account/collectedCreated`,
+                    { account, type: 'collected' }
+                );
+                if (response.status === 200) {
+                    const data = response.data;
+                    console.log('API response from xrpnft:', data);
+                    
+                    const totalCount = data.nfts.reduce((sum, collection) => sum + collection.nftCount, 0);
+                    const totalForSale = data.nfts.reduce((sum, collection) => sum + collection.nftsForSale, 0);
+                    const collectionCount = data.nfts.length;
+                    
+                    setNftStats(prevStats => ({ 
+                        ...prevStats, 
+                        totalCount, 
+                        totalForSale, 
+                        collectionCount
+                    }));
+                }
+            } catch (error) {
+                console.error('Error fetching NFT stats:', error);
+            }
+        }
+
         if (account) {
             getOffersCount();
+            fetchNFTStats();
         }
     }, [account, sync]);
+
+    useEffect(() => {
+        setNftStats(prevStats => ({
+            ...prevStats,
+            createdCount: createdNFTsCount
+        }));
+    }, [createdNFTsCount]);
 
     const { account, name, logo, banner, description, minterWallet } = profile;
 
@@ -519,7 +562,21 @@ export default function Account({ profile, limit, tab, collection, type }) {
                             sx={{ mb: 4 }}
                         />
 
-                        {/* Add more account statistics here if needed */}
+                        {/* Add NFT statistics here */}
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                            <Typography variant="body2" color="text.secondary">
+                                Collections: {nftStats.collectionCount}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Total NFTs: {nftStats.totalCount}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                NFTs for Sale: {nftStats.totalForSale}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Created NFTs: {nftStats.createdCount}
+                            </Typography>
+                        </Box>
                     </Box>
                 </GlassBox>
             </Box>
@@ -579,6 +636,7 @@ export default function Account({ profile, limit, tab, collection, type }) {
                             limit={limit}
                             collection={collection}
                             type={type}
+                            setCreatedNFTsCount={setCreatedNFTsCount} // Add this prop
                         />
                     </Stack>
                 </TabPanel>

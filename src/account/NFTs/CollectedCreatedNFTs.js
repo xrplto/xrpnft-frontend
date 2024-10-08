@@ -54,7 +54,8 @@ export default function CollectedCreatedNFTs({
     limit,
     collection,
     setHasCreatedNFTs,
-    setCreatedNFTsLoaded
+    setCreatedNFTsLoaded,
+    setCreatedNFTsCount // Add this prop
 }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -95,6 +96,7 @@ export default function CollectedCreatedNFTs({
         axios
             .post(`${BASE_URL}/account/collectedCreated`, body)
             .then((res) => {
+                console.log('API response from xrpnft:', res.data); // Added console.log here
                 const newNfts = res.data.nfts;
                 const length = newNfts.length;
                 if (length < limit) {
@@ -141,8 +143,11 @@ export default function CollectedCreatedNFTs({
             if (setCreatedNFTsLoaded) {
                 setCreatedNFTsLoaded(true);
             }
+            if (setCreatedNFTsCount) {
+                setCreatedNFTsCount(nfts.length); // Set the created NFTs count
+            }
         }
-    }, [nfts, type, setHasCreatedNFTs, setCreatedNFTsLoaded]);
+    }, [nfts, type, setHasCreatedNFTs, setCreatedNFTsLoaded, setCreatedNFTsCount]);
 
     const handleChangeSearch = (e) => {
         resetNfts();
