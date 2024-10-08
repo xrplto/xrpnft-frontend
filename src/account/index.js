@@ -343,22 +343,25 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         ledger_index: 'validated'
                     });
 
-                    const accountObjectsResponse = await client.request({
-                        command: 'account_objects',
-                        account: account,
-                        ledger_index: 'validated'
-                    });
-
                     if (accountInfoResponse.result && accountInfoResponse.result.account_data) {
                         const totalBalance = parseFloat(accountInfoResponse.result.account_data.Balance) / 1000000;
-                        const objectCount = accountObjectsResponse.result.account_objects.length;
-                        const baseReserve = 10; // Current base reserve
-                        const objectReserve = 2 * objectCount; // 2 XRP per object
-                        const totalReserve = baseReserve + objectReserve;
-                        const available = Math.max(totalBalance - totalReserve, 0);
+                        const ownerCount = parseInt(accountInfoResponse.result.account_data.OwnerCount);
 
-                        setXrpBalance(totalBalance.toFixed(2));
-                        setAvailableBalance(available.toFixed(2));
+                        // Fetch current reserve settings
+                        const serverInfoResponse = await client.request({
+                            command: 'server_info'
+                        });
+
+                        if (serverInfoResponse.result && serverInfoResponse.result.info) {
+                            const baseReserve = parseFloat(serverInfoResponse.result.info.validated_ledger.reserve_base_xrp);
+                            const ownerReserve = parseFloat(serverInfoResponse.result.info.validated_ledger.reserve_inc_xrp);
+
+                            const totalReserve = baseReserve + (ownerCount * ownerReserve);
+                            const available = Math.max(totalBalance - totalReserve, 0);
+
+                            setXrpBalance(totalBalance.toFixed(2));
+                            setAvailableBalance(available.toFixed(2));
+                        }
                     }
                 } catch (error) {
                     console.error('Error fetching XRP balance:', error);
