@@ -197,23 +197,6 @@ export default function Wallet() {
         setLoading(false);
     };
 
-    const onLogoutXumm = async () => {
-        setLoading(true);
-        try {
-            const res = await axios.delete(`${BASE_URL}/account/logout/${accountLogin}/${accountUuid}`, {headers: {'x-access-token': accountToken}});
-            if (res.status === 200) {
-                setAccountProfile(null);
-                setUuid(null);
-            }
-        } catch(err) {
-        }
-        setAccountProfile(null);
-        setUuid(null);
-        setAcceptNfts(0);
-
-        setLoading(false);
-    };
-
     const handleOpen = () => {
         setOpen(true);
     };
@@ -228,8 +211,9 @@ export default function Wallet() {
 
     const handleLogout = () => {
         setOpen(false);
-        onLogoutXumm();
-    }
+        // Instead of logging out here, redirect to the account page
+        window.location.href = `/account/${accountLogin}`;
+    };
 
     const handleLoginClose = () => {
         setOpenLogin(false);
@@ -242,7 +226,7 @@ export default function Wallet() {
                 <Tooltip title="Account">
                     <IconButton
                         ref={anchorRef}
-                        onClick={handleOpen}
+                        onClick={() => { window.location.href = `/account/${accountLogin}`; }}
                         sx={{
                             padding: 0.5,
                             border: `2px solid ${theme.palette.primary.main}`,
@@ -283,76 +267,7 @@ export default function Wallet() {
                 aria-describedby="wallet-modal-description"
             >
                 <StyledBox>
-                    {accountLogin ? (
-                        <>
-                            <Typography variant="h5" component="h2" gutterBottom color="primary" sx={{ mb: 3 }}>
-                                Account Dashboard
-                            </Typography>
-                            <StyledMenuItem
-                                key="account_profile"
-                                onClick={() => { setOpen(false); window.location.href = `/account/${accountLogin}`; }}
-                            >
-                                <Stack direction='row' spacing={2} alignItems='center'>
-                                    <Badge 
-                                        color="primary" 
-                                        badgeContent={acceptNfts + orphanedOffers}
-                                        sx={{
-                                            '& .MuiBadge-badge': {
-                                                backgroundColor: theme.palette.secondary.main,
-                                                color: theme.palette.secondary.contrastText,
-                                            },
-                                        }}
-                                    >
-                                        <AccountBoxIcon color="primary" fontSize="large" />
-                                    </Badge>
-                                    <Typography variant='body1'>Profile</Typography>
-                                </Stack>
-                            </StyledMenuItem>
-                            {/* Add other menu items here with similar styling */}
-                            <Divider sx={{ my: 3 }} />
-                            <Stack spacing={2} alignItems='center' sx={{ pt: 2, pb: 2 }}>
-                                <Avatar
-                                    alt="user"
-                                    src={logoImageUrl || getHashIcon(accountLogin)}
-                                    sx={{ width: 64, height: 64, mb: 2 }}
-                                />
-                                <Typography variant="subtitle1" color="text.secondary">
-                                    {accountLogin}
-                                </Typography>
-                                <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                                    <Button
-                                        variant="contained"
-                                        onClick={handleLogout}
-                                        startIcon={<Icon icon="mdi:logout" />}
-                                        sx={{
-                                            backgroundColor: theme.palette.error.main,
-                                            color: theme.palette.error.contrastText,
-                                            '&:hover': {
-                                                backgroundColor: theme.palette.error.dark,
-                                            },
-                                        }}
-                                    >
-                                        Logout
-                                    </Button>
-                                    <CopyToClipboard text={accountLogin} onCopy={() => {}}>
-                                        <Button
-                                            variant="outlined"
-                                            startIcon={<Icon icon="mdi:content-copy" />}
-                                            sx={{
-                                                borderColor: theme.palette.primary.main,
-                                                color: theme.palette.primary.main,
-                                                '&:hover': {
-                                                    backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                                                },
-                                            }}
-                                        >
-                                            Copy Address
-                                        </Button>
-                                    </CopyToClipboard>
-                                </Stack>
-                            </Stack>
-                        </>
-                    ) : (
+                    {!accountLogin && (
                         <>
                             <Typography variant="h5" component="h2" gutterBottom color="primary" sx={{ mb: 3 }}>
                                 Connect Wallet

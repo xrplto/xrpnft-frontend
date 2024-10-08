@@ -19,11 +19,13 @@ import {
     Tab,
     Tabs,
     Tooltip,
-    Typography
+    Typography,
+    Button
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import { Icon } from '@iconify/react';
 
 // Context
 import { useContext } from 'react';
@@ -176,10 +178,10 @@ const StyledMenu = styled((props) => (
 
 export default function Account({ profile, limit, tab, collection, type }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { accountProfile, openSnackbar, sync } = useContext(AppContext);
+    const { accountProfile, openSnackbar, sync, setAccountProfile } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
-    // const accountToken = accountProfile?.token;
-    // const accountUuid = accountProfile?.xuuid;
+    const accountToken = accountProfile?.token;
+    const accountUuid = accountProfile?.xuuid;
 
     const [tabID, setTabID] = useState(getTabID(tab));
 
@@ -247,6 +249,21 @@ export default function Account({ profile, limit, tab, collection, type }) {
         window.history.pushState({}, null, url);
         setTabID(newID);
         gotoTabView(event);
+    };
+
+    const onLogoutXumm = async () => {
+        try {
+            const res = await axios.delete(`${BASE_URL}/account/logout/${accountLogin}/${accountUuid}`, {headers: {'x-access-token': accountToken}});
+            if (res.status === 200) {
+                setAccountProfile(null);
+                openSnackbar('Logged out successfully', 'success');
+                // Redirect to home page or refresh the current page
+                window.location.href = '/';
+            }
+        } catch(err) {
+            console.error('Logout failed', err);
+            openSnackbar('Logout failed', 'error');
+        }
     };
 
     return (
@@ -319,6 +336,22 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         </Link>
                     </Box>
                 </Box>
+                {accountLogin === account && (
+                    <Button
+                        variant="contained"
+                        onClick={onLogoutXumm}
+                        startIcon={<Icon icon="mdi:logout" />}
+                        sx={{
+                            backgroundColor: (theme) => theme.palette.error.main,
+                            color: (theme) => theme.palette.error.contrastText,
+                            '&:hover': {
+                                backgroundColor: (theme) => theme.palette.error.dark,
+                            },
+                        }}
+                    >
+                        Logout
+                    </Button>
+                )}
             </Box>
 
             <SeeMoreTypography variant="d3" text={description} />
