@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { Client } from 'xrpl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // Material
@@ -20,14 +21,20 @@ import {
     Tabs,
     Tooltip,
     Typography,
-    Button
+    Button,
+    Grid,
+    Paper
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Icon } from '@iconify/react';
-import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 import infoFilled from '@iconify/icons-ep/info-filled';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import ImageIcon from '@mui/icons-material/Image';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import BrushIcon from '@mui/icons-material/Brush';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 // Context
 import { useContext } from 'react';
@@ -273,6 +280,9 @@ export default function Account({ profile, limit, tab, collection, type }) {
 
     const [createdNFTsCount, setCreatedNFTsCount] = useState(0);
 
+    const [xrpBalance, setXrpBalance] = useState(null);
+    const [availableBalance, setAvailableBalance] = useState(null);
+
     useEffect(() => {
         async function getOffersCount() {
             try {
@@ -322,9 +332,46 @@ export default function Account({ profile, limit, tab, collection, type }) {
             }
         }
 
+        async function fetchXRPBalance() {
+            if (account) {
+                const client = new Client('wss://s1.ripple.com');
+                try {
+                    await client.connect();
+                    const accountInfoResponse = await client.request({
+                        command: 'account_info',
+                        account: account,
+                        ledger_index: 'validated'
+                    });
+
+                    const accountObjectsResponse = await client.request({
+                        command: 'account_objects',
+                        account: account,
+                        ledger_index: 'validated'
+                    });
+
+                    if (accountInfoResponse.result && accountInfoResponse.result.account_data) {
+                        const totalBalance = parseFloat(accountInfoResponse.result.account_data.Balance) / 1000000;
+                        const objectCount = accountObjectsResponse.result.account_objects.length;
+                        const baseReserve = 10; // Current base reserve
+                        const objectReserve = 2 * objectCount; // 2 XRP per object
+                        const totalReserve = baseReserve + objectReserve;
+                        const available = Math.max(totalBalance - totalReserve, 0);
+
+                        setXrpBalance(totalBalance.toFixed(2));
+                        setAvailableBalance(available.toFixed(2));
+                    }
+                } catch (error) {
+                    console.error('Error fetching XRP balance:', error);
+                } finally {
+                    client.disconnect();
+                }
+            }
+        }
+
         if (account) {
             getOffersCount();
             fetchNFTStats();
+            fetchXRPBalance();
         }
     }, [account, sync]);
 
@@ -563,20 +610,45 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         />
 
                         {/* Add NFT statistics here */}
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                            <Typography variant="body2" color="text.secondary">
-                                Collections: {nftStats.collectionCount}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                Total NFTs: {nftStats.totalCount}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                NFTs for Sale: {nftStats.totalForSale}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                Created NFTs: {nftStats.createdCount}
-                            </Typography>
-                        </Box>
+                        <Grid container spacing={2} sx={{ mb: 3 }}>
+                            {[
+                                { label: 'Collections', value: nftStats.collectionCount, icon: <CollectionsIcon /> },
+                                { label: 'Total NFTs', value: nftStats.totalCount, icon: <ImageIcon /> },
+                                { label: 'NFTs for Sale', value: nftStats.totalForSale, icon: <ShoppingCartIcon /> },
+                                { label: 'Created NFTs', value: nftStats.createdCount, icon: <BrushIcon /> },
+                                { label: 'XRP Available', value: availableBalance, icon: <AccountBalanceWalletIcon /> },
+                            ].map((stat, index) => (
+                                <Grid item xs={6} sm={4} md={2.4} key={index}>
+                                    <Paper
+                                        elevation={3}
+                                        sx={{
+                                            p: 2,
+                                            height: '100%',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            textAlign: 'center',
+                                            transition: 'all 0.3s',
+                                            '&:hover': {
+                                                transform: 'translateY(-5px)',
+                                                boxShadow: (theme) => theme.shadows[6],
+                                            },
+                                        }}
+                                    >
+                                        <Tooltip title={stat.label}>
+                                            {stat.icon}
+                                        </Tooltip>
+                                        <Typography variant="h6" sx={{ mt: 1, fontWeight: 'bold' }}>
+                                            {stat.value || '0'}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {stat.label}
+                                        </Typography>
+                                    </Paper>
+                                </Grid>
+                            ))}
+                        </Grid>
                     </Box>
                 </GlassBox>
             </Box>
