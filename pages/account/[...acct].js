@@ -16,8 +16,17 @@ import ScrollToTop from 'src/components/ScrollToTop';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
-        // overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+`
+);
+
+const MainContent = styled(Box)(
+    ({ theme }) => `
         flex: 1;
+        display: flex;
+        flex-direction: column;
 `
 );
 
@@ -70,22 +79,24 @@ export default function Overview({ data }) {
 
             <Header />
 
-            <BannerWrapper>
-                <div
-                    style={{
-                        height: 0,
-                        paddingBottom: '10%'
-                    }}
-                >
-                    <BannerImage alt="" src={bannerImage} decoding="async" />
-                </div>
-            </BannerWrapper>
+            <MainContent>
+                <BannerWrapper>
+                    <div
+                        style={{
+                            height: 0,
+                            paddingBottom: '10%'
+                        }}
+                    >
+                        <BannerImage alt="" src={bannerImage} decoding="async" />
+                    </div>
+                </BannerWrapper>
 
-            <Container maxWidth="xxl">
-                <Account profile={profile} tab={data.tab} limit={data.limit} collection={data.collection} type={data.type} />
-            </Container>
+                <Container maxWidth="xxl">
+                    <Account profile={profile} tab={data.tab} limit={data.limit} collection={data.collection} type={data.type} />
+                </Container>
 
-            <ScrollToTop />
+                <ScrollToTop />
+            </MainContent>
 
             <Footer />
         </OverviewWrapper>
