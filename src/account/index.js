@@ -57,7 +57,7 @@ const IconImage = styled('img')(
     min-height: 100%;
     max-height: 100%;
     object-fit: cover;
-    border-radius: 0px;
+    border-radius: ${theme.shape.borderRadius}px; // Add this line for rounded corners
   `
 );
 
@@ -384,11 +384,12 @@ export default function Account({ profile, limit, tab, collection, type }) {
                     >
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                             <Avatar
-                                variant={logo ? '' : 'square'}
+                                variant="square" // Change this to 'square'
                                 sx={{
                                     width: { md: 90, xs: 50 },
                                     height: { md: 90, xs: 50 },
-                                    backgroundColor: '#00000000'
+                                    backgroundColor: '#00000000',
+                                    borderRadius: (theme) => `${theme.shape.borderRadius}px`, // Add this line for rounded corners
                                 }}
                             >
                                 <IconImage src={logoImage} />
