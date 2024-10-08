@@ -118,7 +118,8 @@ export default function CollectionList({ type, category }) {
     const [total, setTotal] = useState(0);
     const [collections, setCollections] = useState([]);
 
-    const [choice, setChoice] = useState('verified');
+    // Change the default choice to 'all'
+    const [choice, setChoice] = useState('all');
 
     const [sync, setSync] = useState(0);
 
