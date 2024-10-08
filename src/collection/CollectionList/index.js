@@ -94,12 +94,12 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
     minWidth: 120,
     marginLeft: theme.spacing(2),
     '& .MuiInputBase-root': {
-        height: '40px', // Adjust this value to match your SearchBar height
+        height: '40px' // Adjust this value to match your SearchBar height
     },
     '& .MuiSelect-select': {
         paddingTop: '8px',
-        paddingBottom: '8px',
-    },
+        paddingBottom: '8px'
+    }
 }));
 
 export default function CollectionList({ type, category }) {
@@ -111,7 +111,7 @@ export default function CollectionList({ type, category }) {
 
     const [filter, setFilter] = useState('');
     const [page, setPage] = useState(0);
-    const [rows, setRows] = useState('all'); // Change this line to set 'all' as default
+    const [rowsPerPage, setRowsPerPage] = useState(50); // Set a default value for rows per page
     const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('totalVol24h'); //vol24h
 
@@ -151,7 +151,7 @@ export default function CollectionList({ type, category }) {
                 filter,
                 type,
                 page,
-                limit: rows === 'all' ? total : rows, // Update this line
+                limit: rowsPerPage, // Use rowsPerPage instead of rows
                 order,
                 orderBy,
                 choice
@@ -165,62 +165,72 @@ export default function CollectionList({ type, category }) {
             } else if (type === CollectionListType.LANDING) {
             }
 
+            console.log('Request body:', body);
+
             axios
                 .post(`${BASE_URL}/collection/getlistbyorder`, body, {
                     headers: { 'x-access-token': accountToken }
                 })
                 .then((res) => {
-                    try {
-                        if (res.status === 200 && res.data) {
-                            const ret = res.data;
-                            setTotal(ret.count);
-                            setCollections(ret.collections);
-                        }
-                    } catch (error) {
-                        console.log(error);
+                    if (res.status === 200 && res.data) {
+                        const { count, collections } = res.data;
+                        console.log(`Received ${collections.length} collections out of ${count} total`);
+                        setTotal(count);
+                        setCollections(collections);
+                        
+                        // Apply initial filtering and sorting
+                        const filtered = collections.filter((collection) =>
+                            collection.name.toLowerCase().includes(searchTerm.toLowerCase())
+                        );
+                        const sorted = sortCollections(filtered, sortOption);
+                        setFilteredAndSortedCollections(sorted);
                     }
                 })
                 .catch((err) => {
-                    console.log('err->>', err);
+                    console.error('API Error:', err);
+                    openSnackbar('Failed to load collections', 'error');
                 });
         };
         loadCollections();
-    }, [sync, order, orderBy, page, rows, account, total]);
+    }, [sync, order, orderBy, page, rowsPerPage, account, searchTerm, sortOption]); // Update dependencies
 
-    useEffect(() => {
+    // New function to handle sorting
+    const sortCollections = (collections, sortOption) => {
+        return [...collections].sort((a, b) => {
+            switch (sortOption) {
+                case 'A-Z':
+                    return a.name.localeCompare(b.name);
+                case 'Z-A':
+                    return b.name.localeCompare(a.name);
+                case 'Floor Low':
+                    return (a.floor?.amount || 0) - (b.floor?.amount || 0);
+                case 'Floor High':
+                    return (b.floor?.amount || 0) - (a.floor?.amount || 0);
+                case 'Volume':
+                    return (b.totalVol24h || 0) - (a.totalVol24h || 0);
+                default:
+                    return 0;
+            }
+        });
+    };
+
+    // Update search and sort handlers
+    const handleSearch = (event) => {
+        const term = event.target.value;
+        setSearchTerm(term);
         const filtered = collections.filter((collection) =>
-            collection.name.toLowerCase().includes(searchTerm.toLowerCase())
+            collection.name.toLowerCase().includes(term.toLowerCase())
         );
-
-        let sorted = [...filtered];
-        switch (sortOption) {
-            case 'A-Z':
-                sorted.sort((a, b) => a.name.localeCompare(b.name));
-                break;
-            case 'Z-A':
-                sorted.sort((a, b) => b.name.localeCompare(a.name));
-                break;
-            case 'Floor Low':
-                sorted.sort(
-                    (a, b) => (a.floor?.amount || 0) - (b.floor?.amount || 0)
-                );
-                break;
-            case 'Floor High':
-                sorted.sort(
-                    (a, b) => (b.floor?.amount || 0) - (a.floor?.amount || 0)
-                );
-                break;
-            case 'Volume':  // Change this line
-                sorted.sort(
-                    (a, b) => (b.totalVol24h || 0) - (a.totalVol24h || 0)
-                );
-                break;
-            default:
-                break;
-        }
-
+        const sorted = sortCollections(filtered, sortOption);
         setFilteredAndSortedCollections(sorted);
-    }, [collections, searchTerm, sortOption]);
+    };
+
+    const handleSortChange = (event) => {
+        const option = event.target.value;
+        setSortOption(option);
+        const sorted = sortCollections(filteredAndSortedCollections, option);
+        setFilteredAndSortedCollections(sorted);
+    };
 
     const handleRequestSort = (event, id) => {
         const isDesc = orderBy === id && order === 'desc';
@@ -243,43 +253,14 @@ export default function CollectionList({ type, category }) {
         }
     };
 
-    const handleSearch = (event) => {
-        setSearchTerm(event.target.value);
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
     };
 
-    const handleSortChange = (event) => {
-        setSortOption(event.target.value);
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
     };
-
-    useEffect(() => {
-        let sortedCollections = [...filteredCollections];
-        switch (sortOption) {
-            case 'A-Z':
-                sortedCollections.sort((a, b) => a.name.localeCompare(b.name));
-                break;
-            case 'Z-A':
-                sortedCollections.sort((a, b) => b.name.localeCompare(a.name));
-                break;
-            case 'Floor Low':
-                sortedCollections.sort(
-                    (a, b) => (a.floor?.amount || 0) - (b.floor?.amount || 0)
-                );
-                break;
-            case 'Floor High':
-                sortedCollections.sort(
-                    (a, b) => (b.floor?.amount || 0) - (a.floor?.amount || 0)
-                );
-                break;
-            case 'Volume':  // Change this line
-                sortedCollections.sort(
-                    (a, b) => (b.totalVol24h || 0) - (a.totalVol24h || 0)
-                );
-                break;
-            default:
-                break;
-        }
-        setFilteredCollections(sortedCollections);
-    }, [sortOption, collections, searchTerm]);
 
     return (
         <Container maxWidth="xl">
@@ -326,7 +307,9 @@ export default function CollectionList({ type, category }) {
                                 value={searchTerm}
                                 onChange={handleSearch}
                             />
-                            <StyledFormControl size="small"> {/* Add size="small" here */}
+                            <StyledFormControl size="small">
+                                {' '}
+                                {/* Add size="small" here */}
                                 <InputLabel id="sort-select-label">
                                     Sort
                                 </InputLabel>
@@ -337,7 +320,8 @@ export default function CollectionList({ type, category }) {
                                     label="Sort"
                                     onChange={handleSortChange}
                                 >
-                                    <MenuItem value="Volume">Volume</MenuItem>  {/* Change this line */}
+                                    <MenuItem value="Volume">Volume</MenuItem>{' '}
+                                    {/* Change this line */}
                                     <MenuItem value="Floor High">
                                         Floor High
                                     </MenuItem>
@@ -390,28 +374,24 @@ export default function CollectionList({ type, category }) {
                                 onRequestSort={handleRequestSort}
                             />
                             <TableBody>
-                                {filteredAndSortedCollections.map(
-                                    (row, idx) => {
-                                        return (
-                                            <Row
-                                                key={idx}
-                                                id={idx + 1}
-                                                item={row}
-                                                isMine={isMine}
-                                            />
-                                        );
-                                    }
-                                )}
+                                {filteredAndSortedCollections.map((row, idx) => (
+                                    <Row
+                                        key={row._id}
+                                        id={page * rowsPerPage + idx + 1} // Update the id calculation
+                                        item={row}
+                                        isMine={isMine}
+                                    />
+                                ))}
                             </TableBody>
                         </Table>
                     )}
                 </GlassBox>
                 <ListToolbar
-                    rows={rows}
-                    setRows={setRows}
+                    rowsPerPage={rowsPerPage}
                     page={page}
-                    setPage={setPage}
-                    total={filteredAndSortedCollections.length}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    total={total}
                 />
             </Box>
         </Container>
