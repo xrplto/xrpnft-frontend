@@ -9,7 +9,6 @@ import {
     DialogContent,
     DialogTitle,
     IconButton,
-    Link,
     Stack,
     Typography
 } from '@mui/material';
@@ -51,29 +50,25 @@ const ConfirmDialogTitle = (props) => {
     );
 };
 
-export default function ConfirmAcceptOfferDialog({open, setOpen, offer, onContinue }) {
+export default function ConfirmAcceptOfferDialog({open, onClose, offer, onConfirm }) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
     const price = normalizeAmount(offer?.amount);
 
-    const handleClose = () => {
-        setOpen(false);
-    }
-
     const handleYes = () => {
-        setOpen(false);
-        onContinue();
+        onClose();
+        onConfirm();
     }
 
     const handleNo = () => {
-        setOpen(false);
+        onClose();
     }
 
     return (
         <ConfirmDialog
             fullScreen={fullScreen}
-            onClose={handleClose}
+            onClose={onClose}
             open={open}
             // sx={{zIndex: 1302}}
             maxWidth="xs"
@@ -82,7 +77,7 @@ export default function ConfirmAcceptOfferDialog({open, setOpen, offer, onContin
             disablePortal
             keepMounted
         >
-            <ConfirmDialogTitle id="customized-dialog-title" onClose={handleClose}>
+            <ConfirmDialogTitle id="customized-dialog-title" onClose={onClose}>
                 <Stack direction="row" spacing={1}>
                     <ErrorOutlineIcon color="error" />
                     <Typography variant="p4" color="error">Confirm</Typography>
