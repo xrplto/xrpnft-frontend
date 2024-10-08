@@ -83,6 +83,13 @@ import { xrpToDrops, dropsToXrp } from 'xrpl';
 // Add this import at the top of the file
 import CreateOfferXRPCafe from './CreateOfferXRPCafe';
 
+// Add these constants at the top of the file
+const BROKER_ADDRESSES = {
+  "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv": 0.0005, // 0.05% //Art Dept Fun
+  "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC": 0.01589, // 1.589% //XRP Cafe
+  "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC": 0.015 // 1.5% //BIDDS
+};
+
 // Create a styled component for the glass effect
 const GlassPanel = styled(Glass)(({ theme }) => ({
     background: alpha(theme.palette.background.paper, 0.7),
@@ -364,14 +371,17 @@ export default function NFTActions({ nft }) {
 
                 if (lowestOffer.offer) {
                     const baseAmount = parseFloat(dropsToXrp(lowestOffer.amount.toString()));
-                    const hasBroker = lowestOffer.offer.destination === "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC";
-                    const brokerFee = hasBroker ? baseAmount * 0.01589 : 0;
+                    const brokerAddress = lowestOffer.offer.destination;
+                    const hasBroker = brokerAddress in BROKER_ADDRESSES;
+                    const brokerFeePercentage = hasBroker ? BROKER_ADDRESSES[brokerAddress] : 0;
+                    const brokerFee = hasBroker ? baseAmount * brokerFeePercentage : 0;
                     const totalAmount = baseAmount + brokerFee;
 
                     setLowestSellOffer({
                         baseAmount,
                         totalAmount,
                         brokerFee,
+                        brokerFeePercentage,
                         hasBroker,
                         offerIndex: lowestOffer.offer.nft_offer_index,
                         seller: lowestOffer.offer.owner,
@@ -842,24 +852,24 @@ export default function NFTActions({ nft }) {
                             </Stack>
                         </Stack>
                         {lowestSellOffer.hasBroker && (
-                            <Stack direction="row" justifyContent="space-between">
-                                <Typography variant="body2" color="text.secondary">
-                                    Base Price
-                                </Typography>
-                                <Typography variant="body2">
-                                    {fNumber(lowestSellOffer.baseAmount)} XRP
-                                </Typography>
-                            </Stack>
-                        )}
-                        {lowestSellOffer.hasBroker && (
-                            <Stack direction="row" justifyContent="space-between">
-                                <Typography variant="body2" color="text.secondary">
-                                    Broker Fee (1.589%)
-                                </Typography>
-                                <Typography variant="body2">
-                                    {fNumber(lowestSellOffer.brokerFee)} XRP
-                                </Typography>
-                            </Stack>
+                            <>
+                                <Stack direction="row" justifyContent="space-between">
+                                    <Typography variant="body2" color="text.secondary">
+                                        Base Price
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {fNumber(lowestSellOffer.baseAmount)} XRP
+                                    </Typography>
+                                </Stack>
+                                <Stack direction="row" justifyContent="space-between">
+                                    <Typography variant="body2" color="text.secondary">
+                                        Broker Fee ({(lowestSellOffer.brokerFeePercentage * 100).toFixed(3)}%)
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {fNumber(lowestSellOffer.brokerFee)} XRP
+                                    </Typography>
+                                </Stack>
+                            </>
                         )}
                         <Typography variant="body2" color="text.secondary">
                             Seller: {truncate(lowestSellOffer.seller, 16)}
@@ -966,6 +976,7 @@ export default function NFTActions({ nft }) {
                 nft={nft}
                 isSellOffer={false}
                 initialAmount={lowestSellOffer ? lowestSellOffer.totalAmount : 0}
+                brokerFeePercentage={lowestSellOffer ? lowestSellOffer.brokerFeePercentage : 0}
             />
         </GlassPanel>
     );

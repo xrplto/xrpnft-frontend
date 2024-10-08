@@ -48,7 +48,8 @@ export default function CreateOfferXRPCafe({
     setOpen,
     nft,
     isSellOffer,
-    initialAmount
+    initialAmount,
+    brokerFeePercentage
 }) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -183,7 +184,8 @@ export default function CreateOfferXRPCafe({
                 isSellOffer,
                 NFTokenID: nft.NFTokenID,
                 owner: nft.account,
-                user_token: accountProfile?.user_token
+                user_token: accountProfile?.user_token,
+                brokerFeePercentage // Add this line
             };
 
             console.log('Create Offer request body:', body);
@@ -288,7 +290,7 @@ export default function CreateOfferXRPCafe({
                             />
                             {isAmountFixed && (
                                 <Typography variant="body2" color="text.secondary">
-                                    This amount includes the broker fee of 1.589%
+                                    This amount includes the broker fee of {(brokerFeePercentage * 100).toFixed(3)}%
                                     and cannot be changed.
                                 </Typography>
                             )}
