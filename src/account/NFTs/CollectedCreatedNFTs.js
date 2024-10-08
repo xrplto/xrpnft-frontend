@@ -86,11 +86,9 @@ export default function CollectedCreatedNFTs({
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const [showFilter, setShowFilter] = useState(collection ? true : false);
+    const [showFilter, setShowFilter] = useState(false);
     const [filter, setFilter] = useState(0);
-
     const [subFilter, setSubFilter] = useState('pricexrpasc');
-
     const [onSaleCount, setOnSaleCount] = useState(0);
 
     const [sync, setSync] = useState(0);
@@ -233,18 +231,19 @@ export default function CollectedCreatedNFTs({
 
     return (
         <>
-            {/* Render only if type is not 'created' or if there are NFTs to display */}
             {(type !== 'created' || nfts.length > 0) && (
                 <>
                     {/* Search and Filter Bar */}
                     <GlassyBox sx={{ mb: 2, p: 1, display: 'flex', alignItems: 'center' }}>
-                        <IconButton
-                            aria-label="filter"
-                            onClick={handleShowFilter}
-                            sx={{ color: theme.palette.primary.main }}
-                        >
-                            <FilterListIcon fontSize="large" />
-                        </IconButton>
+                        {collection && ( // Show filter button only for NFTs within a collection
+                            <IconButton
+                                aria-label="filter"
+                                onClick={handleShowFilter}
+                                sx={{ color: theme.palette.primary.main }}
+                            >
+                                <FilterListIcon fontSize="large" />
+                            </IconButton>
+                        )}
                         <SearchTextField
                             id="textFilter"
                             fullWidth
@@ -299,7 +298,7 @@ export default function CollectedCreatedNFTs({
                     {/* Main Content Grid */}
                     <Grid container spacing={2} justifyContent="space-between">
                         {/* Filter Sidebar */}
-                        {showFilter && (
+                        {showFilter && collection && (
                             <Grid item xs={12} md={3} xl={2}>
                                 <GlassyBox sx={{ p: 2 }}>
                                     <FilterDetail
@@ -318,8 +317,8 @@ export default function CollectedCreatedNFTs({
                         <Grid
                             item
                             xs={12}
-                            md={showFilter ? 9 : 12}
-                            xl={showFilter ? 10 : 12}
+                            md={showFilter && collection ? 9 : 12}
+                            xl={showFilter && collection ? 10 : 12}
                         >
                             {collection ? (
                                 <InfiniteScroll
