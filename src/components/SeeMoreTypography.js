@@ -11,7 +11,7 @@ export default function SeeMoreTypography({variant, text}) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.up('sm'));
 
-    const limit = fullScreen?100:30;
+    const limit = fullScreen ? 100 : 30;
 
     const [showContent, setShowContent] = useState(false);
 
@@ -25,14 +25,20 @@ export default function SeeMoreTypography({variant, text}) {
             :
             <>
             <Typography variant={variant}>
-                {showContent ? text: text.slice(0, limit) + " ... "}
+                {showContent ? text : text.slice(0, limit) + " ... "}
                 <Link
                     component="button"
                     onClick={() => {
                         setShowContent(!showContent);
                     }}
                 >
-                    <Typography variant={variant} color='#2de370' sx={{ml:1}}>{showContent?'See Less':'See More'}</Typography>
+                    <Typography 
+                        variant={variant} 
+                        color="primary" 
+                        sx={{ml:1}}
+                    >
+                        {showContent ? 'See Less' : 'See More'}
+                    </Typography>
                 </Link>
             </Typography>
             </>
