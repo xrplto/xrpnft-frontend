@@ -269,12 +269,13 @@ export default function Landing({ collections }) {
                                 fontWeight="bold"
                                 sx={{
                                     fontSize: {
-                                        xs: '2.5rem',
-                                        sm: '3rem',
-                                        md: '3.5rem',
-                                        lg: '4rem'
+                                        xs: '2rem',
+                                        sm: '2.5rem',
+                                        md: '3rem',
+                                        lg: '3.5rem'
                                     },
-                                    textAlign: { xs: 'center', md: 'left' }
+                                    textAlign: { xs: 'center', md: 'left' },
+                                    whiteSpace: 'nowrap' // Add this line to prevent line breaks
                                 }}
                             >
                                 XRP NFT Marketplace
@@ -329,9 +330,24 @@ export default function Landing({ collections }) {
                             </Stack>
 
                             {/* Updated Supported Marketplaces section */}
-                            <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' } }}>
-                                <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
-                                    Supported Marketplaces: xrp.cafe, bidds, Art Dept
+                            <Box
+                                sx={{
+                                    mt: 2,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: {
+                                        xs: 'center',
+                                        md: 'flex-start'
+                                    }
+                                }}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                    sx={{ fontSize: '0.7rem' }}
+                                >
+                                    Supported Marketplaces: xrp.cafe, bidds, Art
+                                    Dept
                                 </Typography>
                             </Box>
                         </AutoStack>
