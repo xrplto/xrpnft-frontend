@@ -1,10 +1,5 @@
 // Material
-import {
-    styled,
-    Box,
-    Container,
-    Toolbar
-} from '@mui/material';
+import { styled, Box, Container, Toolbar } from '@mui/material';
 
 // Components
 import Header from 'src/components/Header';
@@ -24,7 +19,6 @@ const OverviewWrapper = styled(Box)(
 );
 
 export default function Overview() {
-
     return (
         <OverviewWrapper>
             <Toolbar id="back-to-top-anchor" />
@@ -38,7 +32,6 @@ export default function Overview() {
             <ScrollToTop />
 
             <Footer />
-
         </OverviewWrapper>
     );
 }
@@ -51,18 +44,18 @@ export async function getStaticProps() {
 
     const ogp = {};
     ogp.canonical = 'https://xrpnft.com/collections';
-    ogp.title = 'Collections';
+    ogp.title = 'NFT Collections on XRP Ledger | XRPNFT';
     ogp.url = 'https://xrpnft.com/collections';
     ogp.imgUrl = 'https://xrpnft.com/static/ogp.png';
-    ogp.desc = 'XRPNFT a community-centered marketplace for NFTs and digital collectibles on the XRP Ledger. Trade Non-Fungible Tokens Using XRP and earn rewards.';
+    ogp.desc = 'Explore and browse NFT collections on the XRP Ledger. Discover unique digital assets and collectibles on XRPNFT.';
 
-    ret = {ogp};
+    ret = { ogp };
 
     return {
-        props: ret, // will be passed to the page component as props
+        props: ret // will be passed to the page component as props
         // Next.js will attempt to re-generate the page:
         // - When a request comes in
         // - At most once every 10 seconds
         // revalidate: 10, // In seconds
-    }
+    };
 }
