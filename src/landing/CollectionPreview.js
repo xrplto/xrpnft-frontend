@@ -2,7 +2,15 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 
 // Material
-import { styled, Link, Paper, Stack, Tooltip, Typography, useTheme } from '@mui/material';
+import {
+    styled,
+    Link,
+    Paper,
+    Stack,
+    Tooltip,
+    Typography,
+    useTheme
+} from '@mui/material';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Context
@@ -24,14 +32,17 @@ const CustomImage = styled('img')(({ theme }) => ({
     borderTopLeftRadius: theme.shape.borderRadius,
     borderTopRightRadius: theme.shape.borderRadius,
     width: '100%',
-    height: 'auto',
+    aspectRatio: '1 / 1', // This ensures a perfect square
     objectFit: 'cover',
+    objectPosition: 'center'
 }));
 
 const CustomCarousel = styled(Carousel)(({ theme }) => ({
     filter: `drop-shadow(0 4px 12px ${theme.palette.primary.main}20)`,
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
+    maxWidth: '90%', // Increase from 85% to 90%
+    margin: '0 auto'
 }));
 
 const CollectionCard = styled(Paper)(({ theme }) => ({
@@ -40,7 +51,7 @@ const CollectionCard = styled(Paper)(({ theme }) => ({
     transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
     '&:hover': {
         transform: 'translateY(-5px)',
-        boxShadow: `0 8px 16px ${theme.palette.primary.main}20`,
+        boxShadow: `0 8px 16px ${theme.palette.primary.main}20`
     },
     '&::after': {
         content: '""',
@@ -50,22 +61,24 @@ const CollectionCard = styled(Paper)(({ theme }) => ({
         right: 0,
         bottom: 0,
         background: `linear-gradient(to bottom, ${theme.palette.background.default}00 70%, ${theme.palette.background.default}B3 100%)`,
-        pointerEvents: 'none',
+        pointerEvents: 'none'
     },
+    width: '100%', // Ensure the card takes full width of its container
+    maxWidth: '550px', // Increase from 500px to 550px
+    margin: '0 auto', // Center the card
+    display: 'flex',
+    flexDirection: 'column'
 }));
 
 const CollectionInfo = styled(Stack)(({ theme }) => ({
-    position: 'absolute',
-    bottom: theme.spacing(1),
-    left: theme.spacing(1),
-    right: theme.spacing(1),
-    zIndex: 1,
+    position: 'relative', // Changed from absolute to relative
+    padding: theme.spacing(1),
+    zIndex: 1
 }));
 
 export default function CollectionPreview({ collections }) {
     const { darkMode } = useContext(AppContext);
     const theme = useTheme();
-
 
     const fadeAnimationHandler = (props, state) => {
         const transitionTime = props.transitionTime + 'ms';
@@ -124,10 +137,9 @@ export default function CollectionPreview({ collections }) {
             autoPlay={true}
             stopOnHover={false}
             swipeable={false}
-            // dynamicHeight={true}
             animationHandler={fadeAnimationHandler}
             minHeight="100%"
-            minWidth="100%"
+            emulateTouch={true} // Add touch emulation for better mobile experience
         >
             {collections.map((item, idx) => {
                 const {
@@ -164,7 +176,10 @@ export default function CollectionPreview({ collections }) {
                 }
 
                 return (
-                    <Stack key={idx} sx={{ pr: 1, pb: 1 }}>
+                    <Stack
+                        key={idx}
+                        sx={{ p: 1, maxWidth: '100%', margin: '0 auto' }}
+                    >
                         <Link
                             underline="none"
                             color="inherit"
@@ -175,7 +190,7 @@ export default function CollectionPreview({ collections }) {
                             <CollectionCard
                                 elevation={0}
                                 style={{
-                                    background: theme.palette.background.paper,
+                                    background: theme.palette.background.paper
                                 }}
                             >
                                 <CustomImage src={imgUrl} alt={name} />
@@ -183,13 +198,20 @@ export default function CollectionPreview({ collections }) {
                                     direction="row"
                                     spacing={1}
                                     alignItems="center"
+                                    justifyContent="center" // Center the content horizontally
                                 >
                                     <Typography
-                                        variant="subtitle1"
+                                        variant="subtitle1" // Change back to subtitle1 for slightly larger text
                                         sx={{
-                                            color: theme.palette.primary.contrastText,
+                                            color: theme.palette.text.primary, // Changed from primary.contrastText
                                             fontWeight: 600,
                                             textShadow: `0 1px 2px ${theme.palette.primary.main}80`,
+                                            textAlign: 'center', // Center the text
+                                            flexGrow: 1, // Allow the text to take up available space
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            fontSize: '1.5rem' // Increase font size from 1.4rem to 1.5rem
                                         }}
                                     >
                                         {name}
@@ -197,8 +219,12 @@ export default function CollectionPreview({ collections }) {
                                     {verified === 'yes' && (
                                         <Tooltip title="Verified">
                                             <VerifiedIcon
-                                                fontSize="small"
-                                                sx={{ color: theme.palette.primary.main }}
+                                                fontSize="large" // Change from medium to large
+                                                sx={{
+                                                    color: theme.palette.primary
+                                                        .main,
+                                                    flexShrink: 0
+                                                }}
                                             />
                                         </Tooltip>
                                     )}

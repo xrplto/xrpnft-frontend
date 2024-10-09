@@ -14,6 +14,9 @@ import {
 import CollectionPreview from './CollectionPreview';
 import CollectionList from './CollectionList';
 
+// Add this new import
+import { useTheme } from '@mui/material/styles';
+
 const AutoStack = styled(Stack)(
     ({ theme }) => `
         align-items: center;
@@ -68,8 +71,10 @@ const HeroButton = styled(Button)(
 );
 
 export default function Landing({ collections }) {
+    const theme = useTheme();
+
     return (
-        <Container maxWidth="xl">
+        <Container maxWidth="lg">
             <Grid
                 container
                 spacing={6}
@@ -78,7 +83,7 @@ export default function Landing({ collections }) {
                 sx={{ mt: { xs: 4, md: 10 }, mb: { xs: 6, md: 14 } }}
             >
                 <Grid item xs={12} lg={6}>
-                    <AutoStack spacing={4}>
+                    <AutoStack spacing={4} sx={{ maxWidth: { md: '55%', lg: '45%' }, mx: 'auto' }}>
                         <GradientTypography
                             variant="h1"
                             fontWeight="bold"
@@ -88,7 +93,8 @@ export default function Landing({ collections }) {
                                     sm: '3rem',
                                     md: '3.5rem',
                                     lg: '4rem'
-                                }
+                                },
+                                textAlign: { xs: 'center', md: 'left' }
                             }}
                         >
                             XRP NFT Marketplace
@@ -101,7 +107,8 @@ export default function Landing({ collections }) {
                                     xs: '1.25rem',
                                     sm: '1.5rem',
                                     md: '1.75rem'
-                                }
+                                },
+                                textAlign: { xs: 'center', md: 'left' }
                             }}
                         >
                             Trade XRP NFTs{' '}
