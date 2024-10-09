@@ -88,7 +88,7 @@ export default function Overview({data}) {
 
             <Header />
 
-            <Container maxWidth="lg">
+            <Container maxWidth="xl"> 
                 <Landing collections={collections} />
             </Container>
 

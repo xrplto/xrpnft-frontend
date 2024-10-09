@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 import { useState, useEffect } from 'react';
-import { ThemeProvider } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material';
 import { themeCreator } from './base';
 import { StylesProvider } from '@mui/styles';
 
@@ -10,7 +10,20 @@ const ThemeProviderWrapper = (props) => {
 
     const { darkMode } = useContext(AppContext);
     
-    const theme = themeCreator(darkMode);
+    let theme = themeCreator(darkMode);
+
+    // Modify the theme to have a wider default maxWidth for containers
+    theme = createTheme(theme, {
+        components: {
+            MuiContainer: {
+                styleOverrides: {
+                    root: {
+                        maxWidth: '1600px !important', // Adjust this value as needed
+                    },
+                },
+            },
+        },
+    });
 
     useEffect(() => {
         setIsMounted(true);
