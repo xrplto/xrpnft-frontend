@@ -18,7 +18,7 @@ const ThemeProviderWrapper = (props) => {
             MuiContainer: {
                 styleOverrides: {
                     root: {
-                        maxWidth: '1600px !important',
+                        maxWidth: '1800px !important', // Updated to match the header
                     },
                 },
             },

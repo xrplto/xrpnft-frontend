@@ -53,6 +53,13 @@ const HeaderWrapper = styled(AppBar)(({ theme }) => ({
     boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`
 }));
 
+// Update the StyledToolbar component
+const StyledToolbar = styled(Toolbar)(({ theme }) => ({
+    maxWidth: '2445px', // Increased from 2400px to 2600px
+    width: '100%',
+    margin: '0 auto',
+}));
+
 const StyledButton = styled(Button)(({ theme }) => ({
     color: theme.palette.text.primary,
     '&:hover': {
@@ -91,7 +98,7 @@ export default function Header() {
 
     return (
         <HeaderWrapper position="sticky" enableColorOnDark={true} elevation={0}>
-            <Toolbar disableGutters sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
+            <StyledToolbar disableGutters sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
                 <Box
                     id="logo-container-laptop"
                     sx={{
@@ -295,7 +302,7 @@ export default function Header() {
                         </Menu>
                     </Box>
                 )}
-            </Toolbar>
+            </StyledToolbar>
         </HeaderWrapper>
     );
 }
