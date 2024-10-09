@@ -66,55 +66,6 @@ export default function CollectionPreview({ collections }) {
     const { darkMode } = useContext(AppContext);
     const theme = useTheme();
 
-    const images = [
-        {
-            title: 'XPEPE',
-            src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images5.png',
-            link: 'https://xrpepe.com/'
-        },
-        {
-            title: 'Muscle Mutant Club',
-            src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images4.png',
-            link: 'https://www.mutantmuscleclub.org/'
-        },
-        {
-            title: 'Bored Apes XRP Club',
-            src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images2.png',
-            link: 'https://x-apes.com/'
-        },
-        {
-            title: 'HOGS',
-            src: 'https://s1.xrpnft.com/static/collection/NFT_Labs_Images3.png',
-            link: 'https://x-apes.com/'
-        },
-
-        {
-            title: 'FAT CATS',
-            src: 'https://s1.xrpnft.com/static/collection/fat-cats-xrpl.jpg',
-            link: 'https://fatcats.nftlabs.to/'
-        },
-        {
-            title: 'FRACTALS',
-            src: 'https://s1.xrpnft.com/static/collection/fractals.jpg',
-            link: 'https://fractal.nftlabs.to/'
-        },
-        // {title: 'LEDGERPUNK', src: 'https://s1.xrpnft.com/static/collection/ledgerpunks-nft.jpg', link: 'https://ledgerpunks.com/'},
-        {
-            title: 'RIPPLE SHARKS',
-            src: 'https://s1.xrpnft.com/static/collection/Ripple-Sharks.jpg',
-            link: 'https://nftlabs.to/projects/ripple-sharks/'
-        },
-        {
-            title: 'LLAMMAPALOOZA',
-            src: 'https://s1.xrpnft.com/static/collection/llamapalooza-xrplnft.jpg',
-            link: 'https://llamapalooza.nftlabs.to/'
-        },
-        {
-            title: 'TRIPPY APES CLUB',
-            src: 'https://s1.xrpnft.com/static/collection/TRIPPY.jpg',
-            link: 'https://trippyapes.nftlabs.to/'
-        }
-    ];
 
     const fadeAnimationHandler = (props, state) => {
         const transitionTime = props.transitionTime + 'ms';
