@@ -23,6 +23,9 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import CollectionPreview from './CollectionPreview';
 import CollectionList from './CollectionList';
 
+// Add this import at the top of the file
+import Image from 'next/image';
+
 const AutoStack = styled(Stack)(
     ({ theme }) => `
         align-items: center;
@@ -324,6 +327,13 @@ export default function Landing({ collections }) {
                                     </HeroButton>
                                 </Link>
                             </Stack>
+
+                            {/* Updated Supported Marketplaces section */}
+                            <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' } }}>
+                                <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+                                    Supported Marketplaces: xrp.cafe, bidds, Art Dept
+                                </Typography>
+                            </Box>
                         </AutoStack>
                     </Grid>
 
