@@ -17,12 +17,6 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 // Utils
 import { fNumber, fIntNumber, fVolume } from 'src/utils/formatNumber';
 
-// Iconify
-// import { Icon } from '@iconify/react';
-// import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
-
-// Components
-
 // Add this import for better typography control
 import { alpha } from '@mui/material/styles';
 
@@ -30,14 +24,14 @@ const IconCover = styled('div')(
     ({ theme }) => `
         width: 60px;
         height: 60px;
-        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-        border: 1px solid ${theme.palette.primary.main};
-        background-color: ${theme.palette.primary.lighter};
+        box-shadow: ${theme.shadows[4]};
+        border: 1px solid ${theme.palette.divider};
+        background-color: ${theme.palette.background.neutral};
         position: relative;
         overflow: hidden;
         transition: width 1s ease-in-out, height .5s ease-in-out !important;
         -webkit-tap-highlight-color: transparent;
-        border-radius: 12px; // Add this line to create rounded corners
+        border-radius: ${theme.shape.borderRadius * 1.5}px;
         &:hover, &.Mui-focusVisible {
             z-index: 1;
             & .MuiImageBackdrop-root {
@@ -51,7 +45,7 @@ const IconCover = styled('div')(
         ${theme.breakpoints.down('sm')} {
             width: 40px;
             height: 40px;
-            border-radius: 8px; // Add this line for smaller rounded corners on mobile
+            border-radius: ${theme.shape.borderRadius}px;
         }
     `
 );
@@ -63,12 +57,12 @@ const IconWrapper = styled('div')(
         position: relative;
         width: 58px;
         height: 58px;
-        border-radius: 12px; // Add this line to match the IconCover's border-radius
+        border-radius: ${theme.shape.borderRadius * 1.5}px;
 
         ${theme.breakpoints.down('sm')} {
             width: 38px;
             height: 38px;
-            border-radius: 8px; // Add this line for smaller rounded corners on mobile
+            border-radius: ${theme.shape.borderRadius}px;
         }
   `
 );
@@ -85,10 +79,10 @@ const IconImage = styled('img')(
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 12px; // Add this line to match the IconCover's border-radius
+    border-radius: ${theme.shape.borderRadius * 1.5}px;
 
     ${theme.breakpoints.down('sm')} {
-        border-radius: 8px; // Add this line for smaller rounded corners on mobile
+        border-radius: ${theme.shape.borderRadius}px;
     }
   `
 );
@@ -163,7 +157,7 @@ export default function Row({ id, item, isMine }) {
                         sx={{
                             color: theme.palette.text.secondary,
                             minWidth: isMobile ? '24px' : '32px',
-                            fontWeight: 500
+                            fontWeight: 600
                         }}
                     >
                         {id}
@@ -174,7 +168,7 @@ export default function Row({ id, item, isMine }) {
                     >
                         <IconCover>
                             <IconWrapper>
-                                <IconImage src={logoImageUrl} />
+                                <IconImage src={logoImageUrl} alt={`${name} logo`} />
                             </IconWrapper>
 
                             {isMine ? (
@@ -232,7 +226,7 @@ export default function Row({ id, item, isMine }) {
                 <Typography
                     variant={isMobile ? 'body2' : 'body1'}
                     noWrap
-                    sx={{ fontWeight: 500, color: theme.palette.text.primary }}
+                    sx={{ fontWeight: 600, color: theme.palette.primary.main }}
                 >
                     ✕ {fNumber(floorPrice)}
                 </Typography>
@@ -242,7 +236,7 @@ export default function Row({ id, item, isMine }) {
                 <Typography
                     variant={isMobile ? 'body2' : 'body1'}
                     noWrap
-                    sx={{ fontWeight: 500, color: theme.palette.text.primary }}
+                    sx={{ fontWeight: 600, color: theme.palette.success.main }}
                 >
                     ✕ {fNumber(totalVol24h)}
                 </Typography>
@@ -260,7 +254,7 @@ export default function Row({ id, item, isMine }) {
                 <Typography
                     variant="body1"
                     noWrap
-                    sx={{ fontWeight: 500, color: theme.palette.text.primary }}
+                    sx={{ fontWeight: 600, color: theme.palette.info.main }}
                 >
                     ✕ {volume2}
                 </Typography>

@@ -99,14 +99,14 @@ const IconCover = styled('div')(
     ({ theme }) => `
         width: 60px;
         height: 60px;
-        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-        border: 1px solid ${theme.palette.primary.main};
-        background-color: ${theme.palette.primary.lighter};
+        box-shadow: ${theme.shadows[4]};
+        border: 1px solid ${theme.palette.divider};
+        background-color: ${theme.palette.background.neutral};
         position: relative;
         overflow: hidden;
         transition: width 1s ease-in-out, height .5s ease-in-out !important;
         -webkit-tap-highlight-color: transparent;
-        border-radius: 12px;
+        border-radius: ${theme.shape.borderRadius * 1.5}px;
         &:hover, &.Mui-focusVisible {
             z-index: 1;
             & .MuiImageBackdrop-root {
@@ -120,7 +120,7 @@ const IconCover = styled('div')(
         ${theme.breakpoints.down('sm')} {
             width: 40px;
             height: 40px;
-            border-radius: 8px;
+            border-radius: ${theme.shape.borderRadius}px;
         }
     `
 );
@@ -276,7 +276,7 @@ export default function Row({ id, item }) {
                         sx={{
                             color: theme.palette.text.secondary,
                             minWidth: isMobile ? '24px' : '32px',
-                            fontWeight: 500
+                            fontWeight: 600
                         }}
                     >
                         {id}
@@ -326,7 +326,7 @@ export default function Row({ id, item }) {
                 <Typography
                     variant={isMobile ? 'body2' : 'body1'}
                     noWrap
-                    sx={{ fontWeight: 500, color: theme.palette.text.primary }}
+                    sx={{ fontWeight: 600, color: theme.palette.primary.main }}
                 >
                     ✕ {fNumber(floorPrice)}
                 </Typography>
@@ -336,7 +336,7 @@ export default function Row({ id, item }) {
                 <Typography
                     variant={isMobile ? 'body2' : 'body1'}
                     noWrap
-                    sx={{ fontWeight: 500, color: theme.palette.text.primary }}
+                    sx={{ fontWeight: 600, color: theme.palette.success.main }}
                 >
                     ✕ {fNumber(totalVol24h)}
                 </Typography>
@@ -354,7 +354,7 @@ export default function Row({ id, item }) {
                 <Typography
                     variant="body1"
                     noWrap
-                    sx={{ fontWeight: 500, color: theme.palette.text.primary }}
+                    sx={{ fontWeight: 600, color: theme.palette.info.main }}
                 >
                     ✕ {volume2}
                 </Typography>

@@ -76,6 +76,14 @@ const CollectionInfo = styled(Stack)(({ theme }) => ({
     zIndex: 1
 }));
 
+// Add this new styled component for the gradient text
+const GradientText = styled(Typography)(({ theme }) => ({
+    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    display: 'inline-block'
+}));
+
 export default function CollectionPreview({ collections }) {
     const { darkMode } = useContext(AppContext);
     const theme = useTheme();
@@ -200,7 +208,7 @@ export default function CollectionPreview({ collections }) {
                                     alignItems="center"
                                     justifyContent="center" // Center the content horizontally
                                 >
-                                    <Typography
+                                    <GradientText
                                         variant="subtitle1" // Change back to subtitle1 for slightly larger text
                                         sx={{
                                             color: theme.palette.text.primary, // Changed from primary.contrastText
@@ -215,7 +223,7 @@ export default function CollectionPreview({ collections }) {
                                         }}
                                     >
                                         {name}
-                                    </Typography>
+                                    </GradientText>
                                     {verified === 'yes' && (
                                         <Tooltip title="Verified">
                                             <VerifiedIcon
