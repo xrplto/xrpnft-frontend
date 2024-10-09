@@ -60,6 +60,23 @@ const SearchTextField = styled(TextField)(({ theme }) => ({
     },
 }));
 
+const sortNFTs = (nfts, sortOption) => {
+    if (sortOption === 'pricexrpasc') {
+        return nfts.sort((a, b) => {
+            const aAmount = a.cost ? Number(a.cost.amount) : 0;
+            const bAmount = b.cost ? Number(b.cost.amount) : 0;
+            
+            // Move unlisted (amount: 0) NFTs to the end
+            if (aAmount === 0 && bAmount !== 0) return 1;
+            if (aAmount !== 0 && bAmount === 0) return -1;
+            
+            // Sort by price ascending, ignoring unlisted NFTs
+            return aAmount - bAmount;
+        });
+    }
+    return nfts; // Return unsorted if not 'pricexrpasc'
+};
+
 export default function NFTs({ collection }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -81,7 +98,7 @@ export default function NFTs({ collection }) {
 
     const fetchNfts = useCallback(() => {
         setLoading(true);
-        const limit = 32; // 20 per page
+        const limit = 32; // 32 per page as per your API response
         const body = {
             page,
             limit,
@@ -96,7 +113,16 @@ export default function NFTs({ collection }) {
         axios
             .post(`${BASE_URL}/nfts`, body)
             .then((res) => {
-                const newNfts = res.data.nfts;
+                console.log('XRPNFT API Response:', res.data); // Logs the full API response
+
+                let newNfts = res.data.nfts.map(nft => ({
+                    ...nft,
+                    cost: nft.cost && Number(nft.cost.amount) === 0 ? null : nft.cost
+                }));
+
+                // Apply sorting
+                newNfts = sortNFTs(newNfts, subFilter);
+
                 const length = newNfts.length;
                 setHasMore(length === limit);
                 setNfts((prevNfts) => [...prevNfts, ...newNfts]);
@@ -108,19 +134,19 @@ export default function NFTs({ collection }) {
             .finally(() => {
                 setLoading(false);
             });
-    }/*, [page, flag, search, filter, subFilter, filterAttrs, collection?.uuid]*/);
+    }, [page, flag, search, filter, subFilter, filterAttrs, collection?.uuid, setDeletingNfts]);
 
     useEffect(() => {
         setNfts([]);
         setDeletingNfts([]);
         setPage(0);
         setHasMore(true);
-        ///setSync((prevSync) => prevSync + 1); // webxtor: disable duplicate loading on start
-    }, [flag, search, filter, subFilter, attrSync, filterAttrs]);
+        // setSync((prevSync) => prevSync + 1); // webxtor: disable duplicate loading on start
+    }, [flag, search, filter, subFilter, attrSync, filterAttrs, setDeletingNfts]);
 
     useEffect(() => {
         fetchNfts();
-    }, [sync/*, fetchNfts*/, flag, search, filter, subFilter, attrSync, filterAttrs]);
+    }, [sync, fetchNfts, flag, search, filter, subFilter, attrSync, filterAttrs]);
 
     const handleChangeSearch = (e) => {
         setSearch(e.target.value);
@@ -245,7 +271,7 @@ export default function NFTs({ collection }) {
                                     md={3}
                                     lg={2.4}
                                     xl={1.5}
-                                    key={index}
+                                    key={nft.NFTokenID || index}
                                 >
                                     <NFTCard
                                         nft={nft}
