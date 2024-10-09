@@ -11,7 +11,6 @@ import {
     AppBar,
     Box,
     Button,
-    Container,
     Divider,
     Grid,
     IconButton,
@@ -92,213 +91,211 @@ export default function Header() {
 
     return (
         <HeaderWrapper position="sticky" enableColorOnDark={true} elevation={0}>
-            <Container maxWidth="xxl">
-                <Toolbar disableGutters>
+            <Toolbar disableGutters sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
+                <Box
+                    id="logo-container-laptop"
+                    sx={{
+                        mr: 2,
+                        display: { xs: 'none', sm: 'flex' }
+                    }}
+                >
+                    <NFTLogo />
+                </Box>
+
+                {fullSearch && (
+                    <NavSearchBar
+                        id="id_search_items_collections_accounts"
+                        placeholder="Search NFTs, collections, and accounts"
+                        type="SEARCH_ITEM_COLLECTION_ACCOUNT"
+                        fullSearch={fullSearch}
+                        setFullSearch={setFullSearch}
+                    />
+                )}
+
+                {!fullSearch && (
                     <Box
-                        id="logo-container-laptop"
+                        id="logo-container-mobile"
                         sx={{
                             mr: 2,
-                            display: { xs: 'none', sm: 'flex' }
+                            display: { xs: 'flex', sm: 'none' }
                         }}
                     >
                         <NFTLogo />
                     </Box>
+                )}
+                {!fullSearch && !isMobile && (
+                    <NavSearchBar
+                        id="id_search_items_collections_accounts"
+                        placeholder="Search NFTs, collections, and accounts"
+                        type="SEARCH_ITEM_COLLECTION_ACCOUNT"
+                        fullSearch={fullSearch}
+                        setFullSearch={setFullSearch}
+                    />
+                )}
 
-                    {fullSearch && (
-                        <NavSearchBar
-                            id="id_search_items_collections_accounts"
-                            placeholder="Search NFTs, collections, and accounts"
-                            type="SEARCH_ITEM_COLLECTION_ACCOUNT"
-                            fullSearch={fullSearch}
-                            setFullSearch={setFullSearch}
-                        />
+                <Box
+                    sx={{
+                        flexGrow: 1,
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        alignItems: 'center'
+                    }}
+                >
+                    {!isMobile && (
+                        <>
+                            <Link
+                                underline="none"
+                                color="inherit"
+                                href={`/explore`}
+                                rel="noreferrer noopener nofollow"
+                            >
+                                <StyledButton>Explore</StyledButton>
+                            </Link>
+                            <Link
+                                underline="none"
+                                color="inherit"
+                                href={`/collections`}
+                                rel="noreferrer noopener nofollow"
+                            >
+                                <StyledButton>Collections</StyledButton>
+                            </Link>
+                            <Link
+                                underline="none"
+                                color="inherit"
+                                href={`/create`}
+                                rel="noreferrer noopener nofollow"
+                            >
+                                <StyledButton>Create</StyledButton>
+                            </Link>
+                        </>
                     )}
 
-                    {!fullSearch && (
-                        <Box
-                            id="logo-container-mobile"
+                    {!fullSearch && isMobile && (
+                        <IconButton
+                            aria-label="search"
+                            onClick={handleFullSearch}
                             sx={{
-                                mr: 2,
-                                display: { xs: 'flex', sm: 'none' }
+                                color: 'primary.main'
                             }}
                         >
-                            <NFTLogo />
-                        </Box>
+                            <SearchIcon />
+                        </IconButton>
                     )}
-                    {!fullSearch && !isMobile && (
-                        <NavSearchBar
-                            id="id_search_items_collections_accounts"
-                            placeholder="Search NFTs, collections, and accounts"
-                            type="SEARCH_ITEM_COLLECTION_ACCOUNT"
-                            fullSearch={fullSearch}
-                            setFullSearch={setFullSearch}
-                        />
+                    {!fullSearch && (
+                        <Wallet>
+                            {({ openWalletConnect }) => (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={openWalletConnect}
+                                    startIcon={<AccountBalanceWalletOutlinedIcon />}
+                                    sx={{
+                                        mr: 2,
+                                        textTransform: 'none',
+                                        '&:hover': {
+                                            backgroundColor: alpha(
+                                                theme.palette.primary.main,
+                                                0.8
+                                            )
+                                        }
+                                    }}
+                                >
+                                    Connect
+                                </Button>
+                            )}
+                        </Wallet>
                     )}
+                    {!isMobile && (
+                        <IconButton
+                            onClick={toggleTheme}
+                            sx={{
+                                bgcolor: alpha(
+                                    theme.palette.primary.main,
+                                    0.1
+                                ),
+                                color: 'primary.main',
+                                '&:hover': {
+                                    bgcolor: alpha(
+                                        theme.palette.primary.main,
+                                        0.2
+                                    )
+                                }
+                            }}
+                        >
+                            {darkMode ? (
+                                <Icon icon={baselineBrightness4} />
+                            ) : (
+                                <Icon icon={baselineBrightnessHigh} />
+                            )}
+                        </IconButton>
+                    )}
+                </Box>
 
+                {!fullSearch && (
                     <Box
+                        id="nav-menu-mobile"
                         sx={{
-                            flexGrow: 1,
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                            alignItems: 'center'
+                            flexGrow: 0,
+                            display: { sm: 'flex', md: 'none' }
                         }}
                     >
-                        {!isMobile && (
-                            <>
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/explore`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <StyledButton>Explore</StyledButton>
-                                </Link>
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/collections`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <StyledButton>Collections</StyledButton>
-                                </Link>
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/create`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <StyledButton>Create</StyledButton>
-                                </Link>
-                            </>
-                        )}
-
-                        {!fullSearch && isMobile && (
-                            <IconButton
-                                aria-label="search"
-                                onClick={handleFullSearch}
-                                sx={{
-                                    color: 'primary.main'
-                                }}
-                            >
-                                <SearchIcon />
-                            </IconButton>
-                        )}
-                        {!fullSearch && (
-                            <Wallet>
-                                {({ openWalletConnect }) => (
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={openWalletConnect}
-                                        startIcon={<AccountBalanceWalletOutlinedIcon />}
-                                        sx={{
-                                            mr: 2,
-                                            textTransform: 'none',
-                                            '&:hover': {
-                                                backgroundColor: alpha(
-                                                    theme.palette.primary.main,
-                                                    0.8
-                                                )
-                                            }
-                                        }}
-                                    >
-                                        Connect
-                                    </Button>
-                                )}
-                            </Wallet>
-                        )}
-                        {!isMobile && (
-                            <IconButton
-                                onClick={toggleTheme}
-                                sx={{
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleOpenNavMenu}
+                            sx={{
+                                bgcolor: alpha(
+                                    theme.palette.primary.main,
+                                    0.1
+                                ),
+                                color: 'primary.main',
+                                '&:hover': {
                                     bgcolor: alpha(
                                         theme.palette.primary.main,
-                                        0.1
-                                    ),
-                                    color: 'primary.main',
-                                    '&:hover': {
-                                        bgcolor: alpha(
-                                            theme.palette.primary.main,
-                                            0.2
-                                        )
-                                    }
-                                }}
-                            >
-                                {darkMode ? (
-                                    <Icon icon={baselineBrightness4} />
-                                ) : (
-                                    <Icon icon={baselineBrightnessHigh} />
-                                )}
-                            </IconButton>
-                        )}
-                    </Box>
-
-                    {!fullSearch && (
-                        <Box
-                            id="nav-menu-mobile"
-                            sx={{
-                                flexGrow: 0,
-                                display: { sm: 'flex', md: 'none' }
+                                        0.2
+                                    )
+                                }
                             }}
                         >
-                            <IconButton
-                                size="large"
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                onClick={handleOpenNavMenu}
-                                sx={{
-                                    bgcolor: alpha(
+                            <MenuIcon />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorElNav}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left'
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left'
+                            }}
+                            open={Boolean(anchorElNav)}
+                            onClose={handleCloseNavMenu}
+                            sx={{
+                                display: { xs: 'block', md: 'none' },
+                                '& .MuiPaper-root': {
+                                    background: alpha(
+                                        theme.palette.background.paper,
+                                        0.9
+                                    ),
+                                    backdropFilter: 'blur(10px)',
+                                    boxShadow: `0 8px 32px 0 ${alpha(
                                         theme.palette.primary.main,
                                         0.1
-                                    ),
-                                    color: 'primary.main',
-                                    '&:hover': {
-                                        bgcolor: alpha(
-                                            theme.palette.primary.main,
-                                            0.2
-                                        )
-                                    }
-                                }}
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={anchorElNav}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'left'
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'left'
-                                }}
-                                open={Boolean(anchorElNav)}
-                                onClose={handleCloseNavMenu}
-                                sx={{
-                                    display: { xs: 'block', md: 'none' },
-                                    '& .MuiPaper-root': {
-                                        background: alpha(
-                                            theme.palette.background.paper,
-                                            0.9
-                                        ),
-                                        backdropFilter: 'blur(10px)',
-                                        boxShadow: `0 8px 32px 0 ${alpha(
-                                            theme.palette.primary.main,
-                                            0.1
-                                        )}`
-                                    }
-                                }}
-                            >
-                                {/* Menu items remain the same */}
-                                {/* ... */}
-                            </Menu>
-                        </Box>
-                    )}
-                </Toolbar>
-            </Container>
+                                    )}`
+                                }
+                            }}
+                        >
+                            {/* Menu items remain the same */}
+                            {/* ... */}
+                        </Menu>
+                    </Box>
+                )}
+            </Toolbar>
         </HeaderWrapper>
     );
 }

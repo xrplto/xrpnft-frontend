@@ -10,20 +10,23 @@ const ThemeProviderWrapper = (props) => {
 
     const { darkMode } = useContext(AppContext);
     
-    let theme = themeCreator(darkMode);
+    let baseTheme = themeCreator(darkMode);
 
-    // Modify the theme to have a wider default maxWidth for containers
-    theme = createTheme(theme, {
+    // Create the main theme with wider maxWidth for containers
+    let mainTheme = createTheme(baseTheme, {
         components: {
             MuiContainer: {
                 styleOverrides: {
                     root: {
-                        maxWidth: '1600px !important', // Adjust this value as needed
+                        maxWidth: '1600px !important',
                     },
                 },
             },
         },
     });
+
+    // Create a separate theme for the Header without the maxWidth override
+    let headerTheme = createTheme(baseTheme);
 
     useEffect(() => {
         setIsMounted(true);
@@ -31,8 +34,15 @@ const ThemeProviderWrapper = (props) => {
     
     return (
         <StylesProvider injectFirst>
-            <ThemeProvider theme={theme}>
-                {isMounted && props.children}
+            <ThemeProvider theme={mainTheme}>
+                {isMounted && (
+                    <>
+                        <ThemeProvider theme={headerTheme}>
+                            {props.header}
+                        </ThemeProvider>
+                        {props.children}
+                    </>
+                )}
             </ThemeProvider>
         </StylesProvider>
     );
