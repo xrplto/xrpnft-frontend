@@ -40,12 +40,49 @@ export default function CreateHeader({ state }) {
     }, [state]);
 
     return (
-        <Box sx={{ px: { xs: 2, sm: 4 }, py: 4 }}>
-            <Container maxWidth="md">
-                <Typography variant={isMobile ? 'h3' : 'h1'} sx={{ my: 2 }}>
+        <Box
+            sx={{
+                px: { xs: 2, sm: 4 },
+                py: { xs: 6, sm: 8 },
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+                position: 'relative',
+                overflow: 'hidden',
+                '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: `linear-gradient(135deg, ${theme.palette.primary.light}33 25%, transparent 25%)`,
+                    backgroundSize: '20px 20px',
+                    zIndex: 1,
+                },
+            }}
+        >
+            <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
+                <Typography
+                    variant={isMobile ? 'h3' : 'h1'}
+                    sx={{
+                        my: 2,
+                        fontWeight: 'bold',
+                        textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
+                        letterSpacing: '-0.5px',
+                    }}
+                >
                     {title}
                 </Typography>
-                <Typography variant={'p7'}>{subTitle}</Typography>
+                <Typography
+                    variant={'h6'}
+                    sx={{
+                        opacity: 0.9,
+                        maxWidth: '600px',
+                        lineHeight: 1.6,
+                    }}
+                >
+                    {subTitle}
+                </Typography>
             </Container>
         </Box>
     );

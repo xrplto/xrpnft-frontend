@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Material
-import { styled, Card, Stack, Typography, Button } from '@mui/material';
+import { styled, Card, Stack, Typography, Button, Box } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 
 const IconCover = styled('div')(
@@ -114,33 +114,76 @@ export default function NFTCard({ onCreate }) {
     return (
         <Card
             sx={{
-                px: 4,
+                p: 4,
                 width: 1,
-                height: 1
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease-in-out',
+                background: (theme) => `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
+                '&:hover': {
+                    transform: 'translateY(-5px)',
+                    boxShadow: (theme) => `0 8px 30px ${theme.palette.secondary.main}33`,
+                },
             }}
             onClick={handleExpand}
         >
             <Stack
                 sx={{
-                    height: 1,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    cursor: 'pointer',
-                    height: '200px'
+                    flexGrow: 1,
                 }}
             >
-                <UploadIcon sx={{ fontSize: 72, mb: 1 }} />
-                <Typography variant="p2">Create a single NFT</Typography>
+                <Box
+                    sx={{
+                        backgroundColor: (theme) => theme.palette.secondary.main,
+                        borderRadius: '50%',
+                        p: 3,
+                        mb: 3,
+                        transition: 'all 0.3s ease-in-out',
+                        '&:hover': {
+                            transform: 'rotate(15deg)',
+                        },
+                    }}
+                >
+                    <UploadIcon
+                        sx={{
+                            fontSize: 48,
+                            color: (theme) => theme.palette.secondary.contrastText,
+                        }}
+                    />
+                </Box>
+                <Typography variant="h5" align="center" sx={{ fontWeight: 'bold', mb: 1 }}>
+                    Create a single NFT
+                </Typography>
+                <Typography variant="body1" align="center" sx={{ color: 'text.secondary' }}>
+                    Mint a unique NFT in your collection
+                </Typography>
             </Stack>
-            {expanded &&
-                collections.map(({ name, logoImage }, index) => (
-                    <Stack
-                        key={index}
-                        direction="row"
-                        sx={{ alignItems: 'center', mb: 2 }}
-                        onClick={() => onCreate(name)}
-                    >
-                        <Button>
+            {expanded && (
+                <Box sx={{ mt: 4 }}>
+                    <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+                        Select a collection:
+                    </Typography>
+                    {collections.map(({ name, logoImage }, index) => (
+                        <Stack
+                            key={index}
+                            direction="row"
+                            sx={{
+                                alignItems: 'center',
+                                mb: 2,
+                                p: 2,
+                                borderRadius: 1,
+                                transition: 'all 0.2s ease-in-out',
+                                '&:hover': {
+                                    backgroundColor: (theme) => theme.palette.action.hover,
+                                    transform: 'translateX(5px)',
+                                },
+                            }}
+                            onClick={() => onCreate(name)}
+                        >
                             <IconCover>
                                 <IconWrapper>
                                     <IconImage
@@ -148,12 +191,13 @@ export default function NFTCard({ onCreate }) {
                                     />
                                 </IconWrapper>
                             </IconCover>
-                            <Typography variant="h8" sx={{ ml: 2 }}>
+                            <Typography variant="subtitle1" sx={{ ml: 2, fontWeight: 'medium' }}>
                                 {name}
                             </Typography>
-                        </Button>
-                    </Stack>
-                ))}
+                        </Stack>
+                    ))}
+                </Box>
+            )}
         </Card>
     );
 }

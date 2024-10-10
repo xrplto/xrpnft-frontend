@@ -12,11 +12,14 @@ import {
     IconButton,
     Link,
     Stack,
-    Typography
+    Typography,
+    CircularProgress,
+    Chip
 } from '@mui/material';
 
 import {
-    Close as CloseIcon
+    Close as CloseIcon,
+    OpenInNew as OpenInNewIcon
 } from '@mui/icons-material';
 
 const ExDialog = styled(Dialog) (({ theme }) => ({
@@ -33,13 +36,18 @@ const ExDialog = styled(Dialog) (({ theme }) => ({
 }));
 
 const LinkTypography = styled(Typography)(({ theme }) => ({
-    // backgroundColor: alpha(theme.palette.background.paper, 0.0),
-    borderRadius: '2px',
-    border: '0px solid #00AB88',
-    padding: '0.5em',
-    // backgroundColor: alpha("#00AB88", 0.99),
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    borderRadius: '4px',
+    padding: '0.5em 1em',
+    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+    transition: 'background-color 0.3s',
+    '&:hover': {
+        backgroundColor: alpha(theme.palette.primary.main, 0.2),
+    },
 }));
-  
+
 const ExDialogTitle = (props) => {
     const { children, onClose, ...other } = props;
 
@@ -68,11 +76,15 @@ export default function QRDialogNoPush({open, type, qrUrl, nextUrl, onClose}) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [showQR, setShowQR] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
-    // useEffect(() => {
-    //     setShowQR(false);
-    // }, [open]);
+    useEffect(() => {
+        if (qrUrl) {
+            const img = new Image();
+            img.onload = () => setIsLoading(false);
+            img.src = qrUrl;
+        }
+    }, [qrUrl]);
 
     return (
         <ExDialog
@@ -88,38 +100,28 @@ export default function QRDialogNoPush({open, type, qrUrl, nextUrl, onClose}) {
             </ExDialogTitle>
 
             <DialogContent dividers>
-                <Stack alignItems='center' spacing={2}>
-                    <Typography variant='subtitle1'>{type}</Typography>
-                    <Typography variant='subtitle1'>Sign the transaction on your XUMM App</Typography>
-                    {/* <Link
-                        component="button"
-                        underline="hover"
-                        variant="body2"
-                        color="inherit"
-                        onClick={() => {
-                            setShowQR(true);
-                        }}
-                    >
-                        <Typography variant='s4' color='error'>Didn't receive a notification? Click here to scan QR!</Typography>
-                    </Link> */}
-                </Stack>
-                <div
-                    style={{
-                        display: showQR?"flex":"none",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        paddingBottom: 50,
-                        marginTop: 50
-                    }}
-                >
-
-                    <Box
-                        component="img"
-                        alt="QR"
-                        src={qrUrl}
-                        sx={{mb:2}}
-                    />
+                <Stack alignItems='center' spacing={3}>
+                    <Chip label={type} color="primary" variant="outlined" />
+                    <Typography variant='subtitle1' textAlign="center">
+                        Sign the transaction on your XUMM App
+                    </Typography>
+                    
+                    {isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Box
+                            component="img"
+                            alt="QR"
+                            src={qrUrl}
+                            sx={{
+                                width: '100%',
+                                maxWidth: 250,
+                                height: 'auto',
+                                borderRadius: 2,
+                                boxShadow: 3
+                            }}
+                        />
+                    )}
                     
                     <Link
                         underline="none"
@@ -128,9 +130,12 @@ export default function QRDialogNoPush({open, type, qrUrl, nextUrl, onClose}) {
                         href={nextUrl}
                         rel="noreferrer noopener nofollow"
                     >
-                        <LinkTypography variant="subtitle2" color='primary'>Open in XUMM</LinkTypography>
+                        <LinkTypography variant="subtitle2" color='primary'>
+                            Open in XUMM
+                            <OpenInNewIcon fontSize="small" />
+                        </LinkTypography>
                     </Link>
-                </div>
+                </Stack>
             </DialogContent>
         </ExDialog>
     );
