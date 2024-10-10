@@ -22,14 +22,9 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 // Components
 import CollectionPreview from './CollectionPreview';
 import CollectionList from './CollectionList';
-import MarqueeBar from '../components/MarqueeBar';
 
 // Add this import at the top of the file
 import Image from 'next/image';
-
-import { IconButton } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const AutoStack = styled(Stack)(
     ({ theme }) => `
@@ -169,7 +164,6 @@ const useRandomMessages = (messages, minDelay = 2000, maxDelay = 4000) => {
 
 export default function Landing({ collections }) {
     const theme = useTheme();
-    const [showMarquee, setShowMarquee] = useState(true);
 
     // Chat messages array
     const chatMessages = [
@@ -212,10 +206,6 @@ export default function Landing({ collections }) {
 
         return () => clearInterval(intervalId);
     }, []);
-
-    const toggleMarquee = () => {
-        setShowMarquee(!showMarquee);
-    };
 
     return (
         <Container maxWidth="lg">
@@ -406,26 +396,6 @@ export default function Landing({ collections }) {
                 <ChatBubble aria-label="chat">
                     <ChatBubbleOutlineIcon />
                 </ChatBubble>
-
-                {/* Add this near the end of the component, just before the MarqueeBar */}
-                <IconButton
-                    onClick={toggleMarquee}
-                    sx={{
-                        position: 'fixed',
-                        bottom: theme.spacing(4),
-                        left: theme.spacing(4),
-                        backgroundColor: theme.palette.background.paper,
-                        boxShadow: theme.shadows[2],
-                        '&:hover': {
-                            backgroundColor: theme.palette.action.hover,
-                        },
-                    }}
-                    aria-label={showMarquee ? "Hide Marquee" : "Show Marquee"}
-                >
-                    {showMarquee ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                </IconButton>
-
-                <MarqueeBar isVisible={showMarquee} />
             </Box>
         </Container>
     );
