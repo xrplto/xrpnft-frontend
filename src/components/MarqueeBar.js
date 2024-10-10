@@ -15,9 +15,10 @@ const MarqueeContainer = styled(Box)(({ theme }) => ({
     borderBottom: `1px solid ${theme.palette.divider}`
 }));
 
-const MarqueeContent = styled(Box)(({ theme }) => ({
+const MarqueeContent = styled(Box)(({ theme, startPosition }) => ({
     display: 'flex',
-    animation: 'marquee 80s linear infinite', // Slowed down for a more elegant feel
+    animation: `marquee 80s linear infinite`,
+    animationDelay: `${startPosition}s`,
     '&:hover': {
         animationPlayState: 'paused'
     },
@@ -50,12 +51,16 @@ const NFTImage = styled('img')({
     boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' // Reduced shadow
 });
 
-const MarqueeBar = () => {
+const MarqueeBar = ({ isVisible = true }) => {
     const [nfts, setNfts] = useState([]);
+    const [startPosition, setStartPosition] = useState(0);
     const BASE_URL = 'https://api.xrpnft.com/api';
     const theme = useTheme();
 
     useEffect(() => {
+        // Set a random start position between -80 and 0
+        setStartPosition(Math.random() * -80);
+
         const fetchRecentNFTs = async () => {
             try {
                 const body = {
@@ -132,9 +137,13 @@ const MarqueeBar = () => {
         );
     };
 
+    if (!isVisible) {
+        return null;
+    }
+
     return (
         <MarqueeContainer>
-            <MarqueeContent>
+            <MarqueeContent startPosition={startPosition}>
                 {nfts.map((nft, index) => (
                     <Link
                         key={nft.NFTokenID || index}

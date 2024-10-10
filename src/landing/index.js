@@ -22,9 +22,14 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 // Components
 import CollectionPreview from './CollectionPreview';
 import CollectionList from './CollectionList';
+import MarqueeBar from '../components/MarqueeBar';
 
 // Add this import at the top of the file
 import Image from 'next/image';
+
+import { IconButton } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const AutoStack = styled(Stack)(
     ({ theme }) => `
@@ -106,11 +111,11 @@ const ChatMessage = styled(Paper)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     position: 'absolute',
-    animation: `${float} 3s ease-in-out forwards`,
+    animation: `${float} 2s ease-in-out forwards`, // Reduced from 3s to 2s
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     opacity: 0,
     zIndex: 10,
-    pointerEvents: 'none' // Add this line to make the messages non-interactive
+    pointerEvents: 'none'
 }));
 
 // Add this new styled component for the animated text
@@ -121,45 +126,50 @@ const AnimatedText = styled(Box)(({ theme }) => ({
     color: theme.palette.primary.main
 }));
 
-// Update the useRandomMessages hook with new delay values
-const useRandomMessages = (messages, minDelay = 7000, maxDelay = 10000) => {
-    const [visibleMessage, setVisibleMessage] = useState(null);
+// Update the useRandomMessages hook
+const useRandomMessages = (messages, minDelay = 2000, maxDelay = 4000) => {
+    const [visibleMessages, setVisibleMessages] = useState([]);
 
     useEffect(() => {
         const showNextMessage = () => {
             const randomMessage =
                 messages[Math.floor(Math.random() * messages.length)];
-            setVisibleMessage({
+            const newMessage = {
                 ...randomMessage,
                 key: Date.now(),
                 position: {
-                    top: `${Math.random() * 20}%`,
-                    left: `${Math.random() * 80 + 10}%`
+                    top: `${Math.random() * 80}%`,
+                    left: `${Math.random() * 80}%`
                 }
+            };
+
+            setVisibleMessages(prevMessages => {
+                const updatedMessages = [...prevMessages, newMessage];
+                if (updatedMessages.length > 3) {
+                    updatedMessages.shift();
+                }
+                return updatedMessages;
             });
 
-            // Calculate a random delay between minDelay and maxDelay
             const nextDelay =
                 Math.floor(Math.random() * (maxDelay - minDelay + 1)) +
                 minDelay;
 
-            // Schedule the next message
             setTimeout(showNextMessage, nextDelay);
         };
 
-        // Start the cycle
-        const initialDelay =
-            Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
+        const initialDelay = Math.floor(Math.random() * 2000) + 1000; // Reduced initial delay
         const timer = setTimeout(showNextMessage, initialDelay);
 
         return () => clearTimeout(timer);
     }, [messages, minDelay, maxDelay]);
 
-    return visibleMessage;
+    return visibleMessages;
 };
 
 export default function Landing({ collections }) {
     const theme = useTheme();
+    const [showMarquee, setShowMarquee] = useState(true);
 
     // Chat messages array
     const chatMessages = [
@@ -187,7 +197,7 @@ export default function Landing({ collections }) {
     ];
 
     // Use the updated hook with new min and max delay values
-    const visibleMessage = useRandomMessages(chatMessages, 7000, 10000);
+    const visibleMessages = useRandomMessages(chatMessages, 2000, 4000);
 
     // Add this new state and effect for text animation
     const [animatedText, setAnimatedText] = useState('with No Barriers');
@@ -202,6 +212,10 @@ export default function Landing({ collections }) {
 
         return () => clearInterval(intervalId);
     }, []);
+
+    const toggleMarquee = () => {
+        setShowMarquee(!showMarquee);
+    };
 
     return (
         <Container maxWidth="lg">
@@ -218,13 +232,13 @@ export default function Landing({ collections }) {
                         pointerEvents: 'none'
                     }}
                 >
-                    {visibleMessage && (
+                    {visibleMessages.map((message) => (
                         <ChatMessage
-                            key={visibleMessage.key}
+                            key={message.key}
                             elevation={1}
                             sx={{
-                                top: visibleMessage.position.top,
-                                left: visibleMessage.position.left
+                                top: message.position.top,
+                                left: message.position.left
                             }}
                         >
                             <Avatar
@@ -235,13 +249,13 @@ export default function Landing({ collections }) {
                                     fontSize: '0.8rem'
                                 }}
                             >
-                                {visibleMessage.avatar}
+                                {message.avatar}
                             </Avatar>
                             <Typography variant="body2">
-                                {visibleMessage.message}
+                                {message.message}
                             </Typography>
                         </ChatMessage>
-                    )}
+                    ))}
                 </Box>
 
                 <Grid
@@ -392,6 +406,26 @@ export default function Landing({ collections }) {
                 <ChatBubble aria-label="chat">
                     <ChatBubbleOutlineIcon />
                 </ChatBubble>
+
+                {/* Add this near the end of the component, just before the MarqueeBar */}
+                <IconButton
+                    onClick={toggleMarquee}
+                    sx={{
+                        position: 'fixed',
+                        bottom: theme.spacing(4),
+                        left: theme.spacing(4),
+                        backgroundColor: theme.palette.background.paper,
+                        boxShadow: theme.shadows[2],
+                        '&:hover': {
+                            backgroundColor: theme.palette.action.hover,
+                        },
+                    }}
+                    aria-label={showMarquee ? "Hide Marquee" : "Show Marquee"}
+                >
+                    {showMarquee ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                </IconButton>
+
+                <MarqueeBar isVisible={showMarquee} />
             </Box>
         </Container>
     );
