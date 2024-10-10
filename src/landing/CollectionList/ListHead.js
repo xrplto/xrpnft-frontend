@@ -68,7 +68,6 @@ const TABLE_HEAD = (isMobile) => {
             width: '10%',
             order: true
         },
-        // Remove the 'volume' entry and adjust the numbering
         {
             no: 3,
             id: 'totalVolume',
@@ -88,7 +87,7 @@ const TABLE_HEAD = (isMobile) => {
         {
             no: 5,
             id: 'items',
-            label: 'Items',
+            label: 'Supply',
             align: 'right',
             width: '8%',
             order: true

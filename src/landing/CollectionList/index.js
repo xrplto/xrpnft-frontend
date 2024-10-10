@@ -33,7 +33,7 @@ export default function CollectionList({ collections }) {
         <TableContainer
             sx={{
                 width: '100%',
-                maxWidth: 1400,
+                maxWidth: 1750, // Changed from 1800 to 1750
                 margin: '0 auto',
                 borderRadius: theme.shape.borderRadius * 0.1, // Even slightly less rounded corners
                 overflow: 'hidden',
