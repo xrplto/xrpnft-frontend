@@ -262,7 +262,7 @@ export default function NFTs({ collection }) {
                             </Box>
                         }
                     >
-                        <Grid container spacing={1}>
+                        <Grid container spacing={0.5}> {/* Changed spacing from 1 to 0.5 */}
                             {nfts.map((nft, index) => (
                                 <Grid
                                     item

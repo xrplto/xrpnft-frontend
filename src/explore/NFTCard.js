@@ -93,6 +93,7 @@ export default function NFTCard({ nft, handleRemove }) {
         setColors(c => [...c, ...colors]);
     }
 
+
     const onImageLoaded = () => {
         setLoadingImg(false)
     }
@@ -112,7 +113,7 @@ export default function NFTCard({ nft, handleRemove }) {
     return (
         <Box sx={{ 
             position: 'relative', 
-            padding: '12px',
+            padding: '16px', // Increased padding
             '&:hover': {
                 zIndex: 1,
             }
@@ -121,7 +122,7 @@ export default function NFTCard({ nft, handleRemove }) {
                 <CardWrapper
                     sx={{
                         width: '100%',
-                        maxWidth: 240,
+                        maxWidth: { xs: '100%', sm: 320, md: 340, lg: 360 }, // Increased max-width
                         aspectRatio: '3 / 4',
                         display: 'flex',
                         flexDirection: 'column',
@@ -191,31 +192,31 @@ export default function NFTCard({ nft, handleRemove }) {
                         />
                     }
                     <GlassContent sx={{ 
-                        padding: '8px',
+                        padding: '16px', // Increased padding
                         display: 'flex', 
                         flexDirection: 'column', 
                         flexShrink: 0, 
-                        height: '90px'
+                        height: '110px' // Slightly increased height
                     }}>
                         <Typography
                             variant="subtitle2"
                             sx={{
                                 fontWeight: 600,
-                                mb: 0.5,
+                                mb: 0.75, // Slightly increased margin
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 display: '-webkit-box',
                                 WebkitLineClamp: 2,
                                 WebkitBoxOrient: 'vertical',
                                 lineHeight: 1.2,
-                                fontSize: '0.75rem',
+                                fontSize: '0.9rem', // Increased font size
                                 color: theme.palette.text.primary,
                             }}
                         >
                             {name}
                         </Typography>
                         
-                        <Stack spacing={0.5} mt="auto">
+                        <Stack spacing={0.75} mt="auto"> {/* Increased spacing */}
                             <Stack direction="row" alignItems='center' justifyContent='space-between'>
                                 {renderPrice()}
                                 {renderRarityRank()}
@@ -232,31 +233,31 @@ export default function NFTCard({ nft, handleRemove }) {
     );
     
     function renderPrice() {
-        if (!cost) return <Typography variant='body2' color="text.secondary" fontSize="0.75rem">Unlisted</Typography>;
+        if (!cost) return <Typography variant='body2' color="text.secondary" fontSize="0.85rem">Unlisted</Typography>;
         
         return cost.currency === "XRP" ? (
             <Stack direction="row" spacing={0.5} alignItems="center">
-                <Icon icon={rippleSolid} width="14" height="14" color={theme.palette.primary.main} />
-                <Typography variant="body2" fontWeight="600" fontSize="0.75rem" color="primary.main">{fNumber(cost.amount)}</Typography>
+                <Icon icon={rippleSolid} width="18" height="18" color={theme.palette.primary.main} />
+                <Typography variant="body2" fontWeight="600" fontSize="0.85rem" color="primary.main">{fNumber(cost.amount)}</Typography>
             </Stack>
         ) : (
-            <Typography variant="body2" fontWeight="600" fontSize="0.75rem" color="primary.main">{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
+            <Typography variant="body2" fontWeight="600" fontSize="0.85rem" color="primary.main">{fNumber(cost.amount)} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
         );
     }
     
     function renderOffer() {
-        if (!costb) return <Box sx={{ visibility: 'hidden', fontSize: '0.65rem' }}>No offer</Box>;
+        if (!costb) return <Box sx={{ visibility: 'hidden', fontSize: '0.75rem' }}>No offer</Box>;
         
         return (
             <Stack direction="row" spacing={0.5} alignItems="center">
-                <Typography variant='caption' color="text.secondary" fontSize="0.65rem">Offer:</Typography>
+                <Typography variant='caption' color="text.secondary" fontSize="0.75rem">Offer:</Typography>
                 {costb.currency === "XRP" ? (
                     <>
-                        <Icon icon={rippleSolid} color={theme.palette.success.main} width="10" height="10" />
-                        <Typography variant='caption' color="success.main" fontWeight="600" fontSize="0.65rem">{fNumber(costb.amount)}</Typography>
+                        <Icon icon={rippleSolid} color={theme.palette.success.main} width="14" height="14" />
+                        <Typography variant='caption' color="success.main" fontWeight="600" fontSize="0.75rem">{fNumber(costb.amount)}</Typography>
                     </>
                 ) : (
-                    <Typography variant='caption' color="success.main" fontWeight="600" fontSize="0.65rem">
+                    <Typography variant='caption' color="success.main" fontWeight="600" fontSize="0.75rem">
                         {fNumber(costb.amount)} {normalizeCurrencyCodeXummImpl(costb.currency)}
                     </Typography>
                 )}
@@ -271,15 +272,15 @@ export default function NFTCard({ nft, handleRemove }) {
             <Chip
                 variant="outlined"
                 size="small"
-                icon={<LeaderboardOutlinedIcon sx={{width: '10px', color: theme.palette.primary.main}} />}
+                icon={<LeaderboardOutlinedIcon sx={{width: '14px', color: theme.palette.primary.main}} />}
                 label={fIntNumber(rarity_rank)}
                 sx={{
-                    height: '18px',
+                    height: '22px',
                     borderColor: theme.palette.primary.main,
                     color: theme.palette.primary.main,
                     '& .MuiChip-label': {
                         px: 0.5,
-                        fontSize: '0.6rem',
+                        fontSize: '0.75rem',
                         fontWeight: 600,
                     }
                 }}
@@ -289,7 +290,7 @@ export default function NFTCard({ nft, handleRemove }) {
 
     function renderEvent() {
         return (
-            <Typography variant='caption' color="text.secondary" sx={{fontSize: '0.6rem', textAlign: 'right'}}>
+            <Typography variant='caption' color="text.secondary" sx={{fontSize: '0.7rem', textAlign: 'right'}}>
                 Updated: {updateEvent}
             </Typography>
         );
