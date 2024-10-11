@@ -1,10 +1,13 @@
 import Header from './Header';
+import Footer from './Footer';
 import ThemeProviderWrapper from '../theme/ThemeProvider';
 
 const Layout = ({ children }) => {
   return (
-    <ThemeProviderWrapper header={<Header />}>
+    <ThemeProviderWrapper>
+      <Header />
       <main>{children}</main>
+      <Footer />
     </ThemeProviderWrapper>
   );
 };

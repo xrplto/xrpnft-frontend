@@ -1,11 +1,10 @@
 // Material
-import { styled, Box, Container, Toolbar } from '@mui/material';
+import { styled, Box } from '@mui/material';
 
 // Components
-import Header from 'src/components/Header';
-import Footer from 'src/components/Footer';
 import AllCollections from 'src/collection/AllCollections';
 import ScrollToTop from 'src/components/ScrollToTop';
+import Layout from 'src/components/Layout';
 
 // overflow: scroll;
 // overflow: auto;
@@ -13,26 +12,18 @@ import ScrollToTop from 'src/components/ScrollToTop';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
-        // overflow: hidden;
         flex: 1;
 `
 );
 
-export default function Overview() {
+export default function CollectionsPage() {
     return (
-        <OverviewWrapper>
-            <Toolbar id="back-to-top-anchor" />
-
-            <Header />
-
-            <Container maxWidth="lg">
+        <Layout>
+            <OverviewWrapper>
                 <AllCollections />
-            </Container>
-
-            <ScrollToTop />
-
-            <Footer />
-        </OverviewWrapper>
+                <ScrollToTop />
+            </OverviewWrapper>
+        </Layout>
     );
 }
 

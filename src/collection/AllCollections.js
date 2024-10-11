@@ -1,11 +1,14 @@
 import React from 'react';
+import { alpha } from '@mui/material/styles';
 
 // Material
 import {
     Stack,
     Typography,
-    styled,
-    Container
+    Container,
+    Box,
+    useTheme,
+    useMediaQuery
 } from '@mui/material';
 
 // Utils
@@ -14,39 +17,71 @@ import { CollectionListType } from 'src/utils/constants';
 // Components
 import CollectionList from './CollectionList';
 
-const GradientTypography = styled(Typography)(
-    ({ theme }) => `
-        background: linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main});
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
-    `
-);
-
 export default function Collections() {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isLightMode = theme.palette.mode === 'light';
+
     return (
-        <Container maxWidth="xl">
-            <Stack spacing={1} sx={{ mt: 4, mb: 3 }}>
-                <GradientTypography
-                    variant="h2"
-                    fontWeight="bold"
-                    sx={{
-                        fontSize: {
-                            xs: '2rem',
-                            sm: '2.5rem',
-                            md: '3rem'
-                        },
-                        mb: 3
-                    }}
-                >
-                    Explore Collections
-                </GradientTypography>
-                {/* <Typography variant="h2b">Discover the leading NFT collections on XRPNFT, ranked by metrics such as volume, floor price, and other key stats.</Typography> */}
-            </Stack>
-            
-            <Stack sx={{mt: 5, minHeight: '50vh'}}>
-                <CollectionList type={CollectionListType.ALL}/>
-            </Stack>
-        </Container>
+        <>
+            <Box
+                sx={{
+                    width: '100vw',
+                    marginLeft: 'calc(-50vw + 50%)',
+                    px: { xs: 2, sm: 4 },
+                    py: { xs: 6, sm: 8 },
+                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${alpha(theme.palette.primary.main, 0.8)})`,
+                    color: isLightMode ? 'black' : theme.palette.primary.contrastText,
+                    position: 'relative',
+                    overflow: 'hidden',
+                    '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='${encodeURIComponent(theme.palette.primary.contrastText)}' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E")`,
+                        backgroundSize: '20px 20px',
+                        zIndex: 1
+                    }
+                }}
+            >
+                <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
+                    <Typography
+                        variant={isMobile ? 'h3' : 'h1'}
+                        sx={{
+                            my: 2,
+                            fontWeight: 800,
+                            textShadow: isLightMode ? 'none' : '2px 2px 4px rgba(0,0,0,0.2)',
+                            letterSpacing: '-0.5px',
+                            color: isLightMode ? 'black' : theme.palette.primary.contrastText,
+                        }}
+                    >
+                        Explore Collections
+                    </Typography>
+                    <Typography
+                        variant={'h6'}
+                        sx={{
+                            opacity: 0.9,
+                            maxWidth: '600px',
+                            lineHeight: 1.6,
+                            fontWeight: 300,
+                            letterSpacing: '0.5px',
+                            textShadow: isLightMode ? 'none' : '1px 1px 2px rgba(0,0,0,0.1)',
+                            color: isLightMode ? 'black' : theme.palette.primary.contrastText,
+                        }}
+                    >
+                        Discover the leading NFT collections on XRPNFT, ranked by metrics such as volume, floor price, and other key stats.
+                    </Typography>
+                </Container>
+            </Box>
+
+            <Container maxWidth="xl">
+                <Stack sx={{mt: 5, minHeight: '50vh'}}>
+                    <CollectionList type={CollectionListType.ALL}/>
+                </Stack>
+            </Container>
+        </>
     );
 }

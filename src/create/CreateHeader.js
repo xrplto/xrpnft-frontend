@@ -13,6 +13,7 @@ import {
 export default function CreateHeader({ state }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isLightMode = theme.palette.mode === 'light';
 
     const title = useMemo(() => {
         switch (state) {
@@ -46,7 +47,7 @@ export default function CreateHeader({ state }) {
                 px: { xs: 2, sm: 4 },
                 py: { xs: 6, sm: 8 },
                 background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${alpha(theme.palette.primary.main, 0.8)})`,
-                color: theme.palette.primary.contrastText,
+                color: isLightMode ? 'black' : theme.palette.primary.contrastText,
                 position: 'relative',
                 overflow: 'hidden',
                 '&::before': {
@@ -68,9 +69,9 @@ export default function CreateHeader({ state }) {
                     sx={{
                         my: 2,
                         fontWeight: 800,
-                        textShadow: '2px 2px 4px rgba(0,0,0,0.2)',
+                        textShadow: isLightMode ? 'none' : '2px 2px 4px rgba(0,0,0,0.2)',
                         letterSpacing: '-0.5px',
-                        color: theme.palette.primary.contrastText,
+                        color: isLightMode ? 'black' : theme.palette.primary.contrastText,
                     }}
                 >
                     {title}
@@ -83,7 +84,8 @@ export default function CreateHeader({ state }) {
                         lineHeight: 1.6,
                         fontWeight: 300,
                         letterSpacing: '0.5px',
-                        textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+                        textShadow: isLightMode ? 'none' : '1px 1px 2px rgba(0,0,0,0.1)',
+                        color: isLightMode ? 'black' : theme.palette.primary.contrastText,
                     }}
                 >
                     {subTitle}
