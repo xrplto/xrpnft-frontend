@@ -20,10 +20,10 @@ export default function ExploreBanner({ collection }) {
     }, [collection]);
 
     const subTitle = useMemo(() => {
-        return (
-            collection?.description ||
-            'Discover unique digital assets on the XRP Ledger.'
-        );
+        if (collection?.description) {
+            return collection.description;
+        }
+        return 'Discover unique digital assets on the XRP Ledger. Experience real-time NFT events including minting, trading, and transfers as they happen.';
     }, [collection]);
 
     return (
@@ -54,10 +54,7 @@ export default function ExploreBanner({ collection }) {
                 }
             }}
         >
-            <Container
-                maxWidth="lg"
-                sx={{ position: 'relative', zIndex: 2 }}
-            >
+            <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
                 <Typography
                     variant={isMobile ? 'h3' : 'h1'}
                     sx={{
@@ -78,7 +75,7 @@ export default function ExploreBanner({ collection }) {
                     variant={'h6'}
                     sx={{
                         opacity: 0.9,
-                        maxWidth: '600px',
+                        maxWidth: '800px',
                         lineHeight: 1.6,
                         fontWeight: 300,
                         letterSpacing: '0.5px',
