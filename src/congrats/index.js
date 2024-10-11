@@ -51,6 +51,10 @@ const CardWrapper = styled(motion.div)(
         padding: 20px;
         text-align: center;
         transition: all 0.3s ease-in-out;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
         &:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
@@ -385,9 +389,8 @@ export default function Congrats() {
                                         width: '100%',
                                         height: '100%',
                                         borderRadius: 16,
-                                        objectFit: 'cover',
-                                        boxShadow:
-                                            '0 10px 30px rgba(0, 0, 0, 0.2)'
+                                        objectFit: 'contain',
+                                        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
                                     }}
                                 />
                             </ColorExtractor>
