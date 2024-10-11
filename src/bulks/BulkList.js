@@ -162,6 +162,34 @@ function StatusContainer({ bulk, flag, theme }) {
     );
 }
 
+// Add these styled components after the existing styled components
+
+const CardWrapper = styled(Card)(({ theme }) => ({
+    borderRadius: theme.shape.borderRadius * 2,
+    backdropFilter: 'blur(20px)',
+    background: alpha(theme.palette.background.paper, 0.15),
+    padding: 0,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease-in-out',
+    overflow: 'visible',
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    
+    '&:hover': {
+        transform: 'translateY(-4px)',
+        boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
+        background: alpha(theme.palette.background.paper, 0.2),
+        outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`,
+        outlineOffset: '2px',
+    }
+}));
+
+const GlassContent = styled(CardContent)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.1),
+    backdropFilter: 'blur(10px)',
+    borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+}));
+
 export default function BulkList() {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -333,21 +361,14 @@ export default function BulkList() {
 
                             return (
                                 <Grid item xs={12} md={6} lg={4} key={uuid}>
-                                    <Card
+                                    <CardWrapper
                                         sx={{
                                             height: '100%',
                                             display: 'flex',
                                             flexDirection: 'column',
-                                            transition:
-                                                'transform 0.3s, box-shadow 0.3s',
-                                            '&:hover': {
-                                                transform: 'translateY(-5px)',
-                                                boxShadow: (theme) =>
-                                                    theme.shadows[10]
-                                            }
                                         }}
                                     >
-                                        <CardContent sx={{ flexGrow: 1 }}>
+                                        <GlassContent sx={{ flexGrow: 1 }}>
                                             <Box
                                                 sx={{
                                                     position: 'relative',
@@ -554,7 +575,7 @@ export default function BulkList() {
                                             >
                                                 Created: {strDateTime}
                                             </Typography>
-                                        </CardContent>
+                                        </GlassContent>
 
                                         {infoIPFS &&
                                             infoIPFS.cid &&
@@ -567,12 +588,12 @@ export default function BulkList() {
                                                     startIcon={
                                                         <CollectionsIcon />
                                                     }
-                                                    sx={{ mt: 'auto' }}
+                                                    sx={{ mt: 'auto', borderRadius: 0, borderBottomLeftRadius: theme.shape.borderRadius * 2, borderBottomRightRadius: theme.shape.borderRadius * 2 }}
                                                 >
                                                     Bulk Mint
                                                 </Button>
                                             )}
-                                    </Card>
+                                    </CardWrapper>
                                 </Grid>
                             );
                         })}
