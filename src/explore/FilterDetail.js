@@ -31,7 +31,7 @@ export default function FilterDetail({
     subFilter,
     setSubFilter,
     setFilterAttrs,
-    setPage // reset the page when applying a filter
+    setPage
 }) {
     const theme = useTheme();
     const type = collection?.type;
@@ -39,23 +39,17 @@ export default function FilterDetail({
     const attrs = collection?.attrs || [];
 
     const handleFlagChange = (e) => {
-        const value = e.target.value;
+        const value = parseInt(e.target.value);
         let newFilter = filter ^ value;
-        if (value === '4') {
-            newFilter &= 0x07;
-        } else if (value === '8') {
-            newFilter &= 0x0b;
-        } else if (value === '16') {
-            newFilter &= 0x13;
-        }
         setFilter(newFilter);
         setPage(0);
     };
 
-    const handleOnSaleFlagChange = (event) => {
+    const handleSortChange = (event) => {
         const value = event.target.value;
         setSubFilter(value);
-        setPage(0)
+        // Pass both the new subFilter value and the setFilter function
+        setPage(0);
     };
 
     return (
@@ -69,7 +63,7 @@ export default function FilterDetail({
                     >
                         <Stack spacing={2} direction="row" alignItems="center">
                             <FactCheckIcon color="primary" />
-                            <Typography variant="s3" color="primary.main">Status</Typography>
+                            <Typography variant="s3" color="primary.main">Status & Sorting</Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -89,7 +83,7 @@ export default function FilterDetail({
                                             </Tooltip>
                                         </Stack>
                                     }
-                                    value={1}
+                                    value="1"
                                     control={
                                         <Checkbox
                                             checked={(filter & 1) !== 0}
@@ -114,7 +108,7 @@ export default function FilterDetail({
                                             </Tooltip>
                                         </Stack>
                                     }
-                                    value={2}
+                                    value="2"
                                     control={
                                         <Checkbox
                                             checked={(filter & 2) !== 0}
@@ -127,59 +121,13 @@ export default function FilterDetail({
                             <FormControlLabel
                                 label={
                                     <Typography variant="s3">
-                                        On Sale{' '}
-                                        <Typography variant="s7" color="text.secondary">
-                                            ({extra?.onSaleCount})
-                                        </Typography>
-                                    </Typography>
-                                }
-                                value={4}
-                                control={
-                                    <Checkbox
-                                        checked={(filter & 4) !== 0}
-                                        onChange={handleFlagChange}
-                                        color="primary"
-                                    />
-                                }
-                            />
-
-                            {(filter & 0x04) !== 0 && (
-                                <FormControl sx={{ ml: 5 }}>
-                                    <RadioGroup
-                                        aria-labelledby="demo-controlled-radio-buttons-group"
-                                        name="controlled-radio-buttons-group"
-                                        value={subFilter}
-                                        onChange={handleOnSaleFlagChange}
-                                    >
-                                        <FormControlLabel
-                                            value="pricenoxrp"
-                                            control={<Radio color="primary" />}
-                                            label="Price (noXRP)"
-                                        />
-                                        <FormControlLabel
-                                            value="pricexrpasc"
-                                            control={<Radio color="primary" />}
-                                            label="Price (XRP, Asc)"
-                                        />
-                                        <FormControlLabel
-                                            value="pricexrpdesc"
-                                            control={<Radio color="primary" />}
-                                            label="Price (XRP, Desc)"
-                                        />
-                                    </RadioGroup>
-                                </FormControl>
-                            )}
-
-                            <FormControlLabel
-                                label={
-                                    <Typography variant="s3">
-                                        Idle{' '}
+                                        Unlisted{' '}
                                         <Typography variant="s7" color="text.secondary">
                                             ({extra?.notOnSaleCount})
                                         </Typography>
                                     </Typography>
                                 }
-                                value={8}
+                                value="8"
                                 control={
                                     <Checkbox
                                         checked={(filter & 8) !== 0}
@@ -188,7 +136,6 @@ export default function FilterDetail({
                                     />
                                 }
                             />
-
                             <FormControlLabel
                                 label={
                                     <Stack direction="row" spacing={0.5} alignItems="center">
@@ -200,7 +147,7 @@ export default function FilterDetail({
                                         </Tooltip>
                                     </Stack>
                                 }
-                                value={16}
+                                value="16"
                                 control={
                                     <Checkbox
                                         checked={(filter & 16) !== 0}
@@ -209,38 +156,61 @@ export default function FilterDetail({
                                     />
                                 }
                             />
+                            <FormControl component="fieldset">
+                                <Typography variant="s3" color="text.secondary" sx={{ mt: 2, mb: 1 }}>Sort by:</Typography>
+                                <RadioGroup
+                                    aria-label="sorting"
+                                    name="sorting"
+                                    value={subFilter}
+                                    onChange={handleSortChange}
+                                >
+                                    <FormControlLabel 
+                                        value="latestActivity" 
+                                        control={<Radio color="primary" />} 
+                                        label="Latest Activity"
+                                    />
+                                    <FormControlLabel 
+                                        value="pricenoxrp" 
+                                        control={<Radio color="primary" />} 
+                                        label={
+                                            <Typography variant="s3">
+                                                Listed (non-XRP){' '}
+                                                <Typography variant="s7" color="text.secondary">
+                                                    ({extra?.onSaleCount})
+                                                </Typography>
+                                            </Typography>
+                                        }
+                                    />
+                                    <FormControlLabel value="pricexrpasc" control={<Radio color="primary" />} label="XRP Price: Low to High" />
+                                    <FormControlLabel value="pricexrpdesc" control={<Radio color="primary" />} label="XRP Price: High to Low" />
+                                </RadioGroup>
+                            </FormControl>
                         </FormGroup>
                     </AccordionDetails>
                 </Accordion>
             </Stack>
-            <Stack sx={{ pr: 0, mt: 1 }}>
-                <Accordion defaultExpanded style={{ margin: 0 }}>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon color="primary" />}
-                        aria-controls="panel2bh-content"
-                        id="panel2bh-header2"
-                    >
-                        <Stack spacing={2} direction="row" alignItems="center">
-                            <BookmarkAddedIcon color="primary" />
-                            <Typography variant="s3" color="primary.main">Attributes</Typography>
-                        </Stack>
-                    </AccordionSummary>
-                    <AccordionDetails style={{ padding: 0 }}>
-                        {!attrs || attrs.length === 0 ? (
-                            <Stack alignItems="center">
-                                <Typography variant="s7" mt={2} mb={2} color="text.secondary">
-                                    No Attributes
-                                </Typography>
+            {attrs && attrs.length > 0 && (
+                <Stack sx={{ pr: 0, mt: 1 }}>
+                    <Accordion defaultExpanded style={{ margin: 0 }}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon color="primary" />}
+                            aria-controls="panel2bh-content"
+                            id="panel2bh-header2"
+                        >
+                            <Stack spacing={2} direction="row" alignItems="center">
+                                <BookmarkAddedIcon color="primary" />
+                                <Typography variant="s3" color="primary.main">Attributes</Typography>
                             </Stack>
-                        ) : (
+                        </AccordionSummary>
+                        <AccordionDetails style={{ padding: 0 }}>
                             <AttributeFilter
                                 setFilterAttrs={setFilterAttrs}
                                 attrs={attrs}
                             />
-                        )}
-                    </AccordionDetails>
-                </Accordion>
-            </Stack>
+                        </AccordionDetails>
+                    </Accordion>
+                </Stack>
+            )}
         </>
     );
 }

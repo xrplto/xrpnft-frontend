@@ -61,20 +61,29 @@ const SearchTextField = styled(TextField)(({ theme }) => ({
 }));
 
 const sortNFTs = (nfts, sortOption) => {
-    if (sortOption === 'pricexrpasc') {
-        return nfts.sort((a, b) => {
-            const aAmount = a.cost ? Number(a.cost.amount) : 0;
-            const bAmount = b.cost ? Number(b.cost.amount) : 0;
-            
-            // Move unlisted (amount: 0) NFTs to the end
-            if (aAmount === 0 && bAmount !== 0) return 1;
-            if (aAmount !== 0 && bAmount === 0) return -1;
-            
-            // Sort by price ascending, ignoring unlisted NFTs
-            return aAmount - bAmount;
-        });
+    switch (sortOption) {
+        case 'pricexrpasc':
+            return nfts.sort((a, b) => {
+                const aAmount = a.cost && a.cost.currency === 'XRP' ? Number(a.cost.amount) : Infinity;
+                const bAmount = b.cost && b.cost.currency === 'XRP' ? Number(b.cost.amount) : Infinity;
+                return aAmount - bAmount;
+            });
+        case 'pricexrpdesc':
+            return nfts.sort((a, b) => {
+                const aAmount = a.cost && a.cost.currency === 'XRP' ? Number(a.cost.amount) : -Infinity;
+                const bAmount = b.cost && b.cost.currency === 'XRP' ? Number(b.cost.amount) : -Infinity;
+                return bAmount - aAmount;
+            });
+        case 'pricenoxrp':
+            return nfts.sort((a, b) => {
+                const aIsXRP = a.cost && a.cost.currency === 'XRP';
+                const bIsXRP = b.cost && b.cost.currency === 'XRP';
+                if (aIsXRP === bIsXRP) return 0;
+                return aIsXRP ? 1 : -1;
+            });
+        default:
+            return nfts;
     }
-    return nfts; // Return unsorted if not 'pricexrpasc'
 };
 
 export default function NFTs({ collection }) {
@@ -91,14 +100,14 @@ export default function NFTs({ collection }) {
     const [loading, setLoading] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
     const [filter, setFilter] = useState(0);
-    const [subFilter, setSubFilter] = useState(0);
+    const [subFilter, setSubFilter] = useState('latestActivity'); // Set default to 'latestActivity'
     const [filterAttrs, setFilterAttrs] = useState([]);
     const [sync, setSync] = useState(0);
     const [attrSync, setAttrSync] = useState(0);
 
     const fetchNfts = useCallback(() => {
         setLoading(true);
-        const limit = 32; // 32 per page as per your API response
+        const limit = 32;
         const body = {
             page,
             limit,
@@ -106,27 +115,29 @@ export default function NFTs({ collection }) {
             cid: collection?.uuid,
             search,
             filter,
-            subFilter,
+            subFilter: subFilter === 'latestActivity' ? '' : subFilter,
             filterAttrs
         };
 
         axios
             .post(`${BASE_URL}/nfts`, body)
             .then((res) => {
-                console.log('XRPNFT API Response:', res.data); // Logs the full API response
+                console.log('XRPNFT API Response:', res.data);
 
                 let newNfts = res.data.nfts.map(nft => ({
                     ...nft,
                     cost: nft.cost && Number(nft.cost.amount) === 0 ? null : nft.cost
                 }));
 
-                // Apply sorting
-                newNfts = sortNFTs(newNfts, subFilter);
+                // Apply client-side sorting only for specific cases
+                if (subFilter !== 'latestActivity') {
+                    newNfts = sortNFTs(newNfts, subFilter);
+                }
 
                 const length = newNfts.length;
                 setHasMore(length === limit);
-                setNfts((prevNfts) => [...prevNfts, ...newNfts]);
-                setDeletingNfts((prevNfts) => [...prevNfts, ...newNfts]);
+                setNfts((prevNfts) => (page === 0 ? newNfts : [...prevNfts, ...newNfts]));
+                setDeletingNfts((prevNfts) => (page === 0 ? newNfts : [...prevNfts, ...newNfts]));
             })
             .catch((err) => {
                 console.log('Error on getting nfts!', err);
@@ -141,7 +152,7 @@ export default function NFTs({ collection }) {
         setDeletingNfts([]);
         setPage(0);
         setHasMore(true);
-        // setSync((prevSync) => prevSync + 1); // webxtor: disable duplicate loading on start
+        setSync((prevSync) => prevSync + 1); // Trigger a new fetch
     }, [flag, search, filter, subFilter, attrSync, filterAttrs, setDeletingNfts]);
 
     useEffect(() => {
@@ -195,6 +206,25 @@ export default function NFTs({ collection }) {
         [loading, theme.palette.primary.main]
     );
 
+    const handleSortChange = (newSubFilter) => {
+        setSubFilter(newSubFilter);
+        setPage(0);
+        setNfts([]);
+        setDeletingNfts([]);
+        setHasMore(true);
+
+        // Adjust the filter based on the selected sorting option
+        let newFilter = filter;
+        if (newSubFilter !== 'latestActivity') {
+            newFilter |= 4; // Set the "On Sale" flag (4) for non-latestActivity options
+        } else {
+            newFilter &= ~4; // Unset the "On Sale" flag for latestActivity
+        }
+        setFilter(newFilter);
+
+        setSync((prevSync) => prevSync + 1); // Trigger a new fetch
+    };
+
     return (
         <Box sx={{ width: '100%' }}>
             <GlassyBox sx={{ mb: 2, p: 1, display: 'flex', alignItems: 'center' }}>
@@ -235,7 +265,7 @@ export default function NFTs({ collection }) {
                                 filter={filter}
                                 setFilter={setFilter}
                                 subFilter={subFilter}
-                                setSubFilter={setSubFilter}
+                                setSubFilter={handleSortChange} // Use the new handleSortChange function
                                 setFilterAttrs={setFilterAttrs}
                                 setPage={setPage}
                             />
