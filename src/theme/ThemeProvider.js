@@ -25,9 +25,6 @@ const ThemeProviderWrapper = (props) => {
         },
     });
 
-    // Create a separate theme for the Header without the maxWidth override
-    let headerTheme = createTheme(baseTheme);
-
     useEffect(() => {
         setIsMounted(true);
     }, []);
@@ -35,14 +32,7 @@ const ThemeProviderWrapper = (props) => {
     return (
         <StylesProvider injectFirst>
             <ThemeProvider theme={mainTheme}>
-                {isMounted && (
-                    <>
-                        <ThemeProvider theme={headerTheme}>
-                            {props.header}
-                        </ThemeProvider>
-                        {props.children}
-                    </>
-                )}
+                {isMounted && props.children}
             </ThemeProvider>
         </StylesProvider>
     );

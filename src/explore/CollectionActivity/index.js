@@ -131,7 +131,7 @@ export default function CollectionActivity({collection}) {
     });
 
     return (
-        <Container maxWidth={false} sx={{ pl: 0, pr: 0, width: '100vw' }}>
+        <Box sx={{ width: '100%' }}>
             {loading ? (
                 <Stack alignItems="center">
                     <PulseLoader color='#00AB55' size={10} />
@@ -385,6 +385,6 @@ export default function CollectionActivity({collection}) {
                     onClose={closeLightbox}
                 />
             }
-        </Container>
+        </Box>
     );
 }

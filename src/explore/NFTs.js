@@ -196,7 +196,7 @@ export default function NFTs({ collection }) {
     );
 
     return (
-        <>
+        <Box sx={{ width: '100%' }}>
             <GlassyBox sx={{ mb: 2, p: 1, display: 'flex', alignItems: 'center' }}>
                 <IconButton 
                     aria-label="filter" 
@@ -299,6 +299,6 @@ export default function NFTs({ collection }) {
                     </InfiniteScroll>
                 </Grid>
             </Grid>
-        </>
+        </Box>
     );
 }

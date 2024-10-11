@@ -17,6 +17,8 @@ import {
     TabPanel
 } from "@mui/lab";
 
+import { Container } from "@mui/material";
+
 // Components
 import NFTs from './NFTs';
 import CollectionActivity from './CollectionActivity';
@@ -71,50 +73,52 @@ export default function ExploreNFT({ collection }) {
     };
 
     return (
-        <Box sx={{ width: '100%', typography: 'body1' }}>
-            <TabContext value={value}>
-                <Box sx={{ 
-                    borderBottom: 1, 
-                    borderColor: 'divider', 
-                    display: 'flex', 
-                    flexDirection: isMobile ? 'column' : 'row',
-                    justifyContent: 'space-between',
-                    alignItems: isMobile ? 'stretch' : 'center',
-                    mb: 2
-                }}>
-                    <TabList 
-                        onChange={handleChange} 
-                        aria-label="explore tabs"
-                        variant={isMobile ? "fullWidth" : "standard"}
-                    >
-                        <Tab label="NFTs" value="tab-nfts" />
-                        <Tab label="Activities" value="tab-activities" />
-                    </TabList>
-                    
-                    {isAdmin && (
-                        <Button
-                            variant='contained'
-                            color='error'
-                            sx={{ 
-                                mt: isMobile ? 2 : 0,
-                                py: 1,
-                                px: 2,
-                                minWidth: 120
-                            }}
-                            onClick={handleRemoveAll}
-                            disabled={deletingNfts.length === 0}
+        <Container maxWidth={false} disableGutters>
+            <Box sx={{ width: '100%', typography: 'body1' }}>
+                <TabContext value={value}>
+                    <Box sx={{ 
+                        borderBottom: 1, 
+                        borderColor: 'divider', 
+                        display: 'flex', 
+                        flexDirection: isMobile ? 'column' : 'row',
+                        justifyContent: 'space-between',
+                        alignItems: isMobile ? 'stretch' : 'center',
+                        mb: 2
+                    }}>
+                        <TabList 
+                            onChange={handleChange} 
+                            aria-label="explore tabs"
+                            variant={isMobile ? "fullWidth" : "standard"}
                         >
-                            Delete All
-                        </Button>
-                    )}
-                </Box>
-                <TabPanel value="tab-nfts" sx={{p: 0}}>
-                    <NFTs collection={collection} />
-                </TabPanel>
-                <TabPanel value="tab-activities" sx={{p: 0}}>
-                    <CollectionActivity collection={collection} />
-                </TabPanel>
-            </TabContext>
-        </Box>
+                            <Tab label="NFTs" value="tab-nfts" />
+                            <Tab label="Activities" value="tab-activities" />
+                        </TabList>
+                        
+                        {isAdmin && (
+                            <Button
+                                variant='contained'
+                                color='error'
+                                sx={{ 
+                                    mt: isMobile ? 2 : 0,
+                                    py: 1,
+                                    px: 2,
+                                    minWidth: 120
+                                }}
+                                onClick={handleRemoveAll}
+                                disabled={deletingNfts.length === 0}
+                            >
+                                Delete All
+                            </Button>
+                        )}
+                    </Box>
+                    <TabPanel value="tab-nfts" sx={{p: 0}}>
+                        <NFTs collection={collection} />
+                    </TabPanel>
+                    <TabPanel value="tab-activities" sx={{p: 0}}>
+                        <CollectionActivity collection={collection} />
+                    </TabPanel>
+                </TabContext>
+            </Box>
+        </Container>
     );
 }
