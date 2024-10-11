@@ -1,0 +1,95 @@
+import { useMemo } from 'react';
+import { alpha } from '@mui/material/styles';
+
+// Material
+import {
+    Box,
+    Container,
+    Typography,
+    useTheme,
+    useMediaQuery
+} from '@mui/material';
+
+export default function ExploreBanner({ collection }) {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isLightMode = theme.palette.mode === 'light';
+
+    const title = useMemo(() => {
+        return collection?.name || 'Explore NFTs';
+    }, [collection]);
+
+    const subTitle = useMemo(() => {
+        return (
+            collection?.description ||
+            'Discover unique digital assets on the XRP Ledger.'
+        );
+    }, [collection]);
+
+    return (
+        <Box
+            sx={{
+                px: { xs: 2, sm: 4 },
+                py: { xs: 6, sm: 8 },
+                background: `linear-gradient(135deg, ${
+                    theme.palette.primary.main
+                }, ${alpha(theme.palette.primary.main, 0.8)})`,
+                color: isLightMode
+                    ? 'black'
+                    : theme.palette.primary.contrastText,
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='${encodeURIComponent(
+                        theme.palette.primary.contrastText
+                    )}' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E")`,
+                    backgroundSize: '20px 20px',
+                    zIndex: 1
+                }
+            }}
+        >
+            <Container maxWidth={false} sx={{ position: 'relative', zIndex: 2 }}>
+                <Typography
+                    variant={isMobile ? 'h3' : 'h1'}
+                    sx={{
+                        my: 2,
+                        fontWeight: 800,
+                        textShadow: isLightMode
+                            ? 'none'
+                            : '2px 2px 4px rgba(0,0,0,0.2)',
+                        letterSpacing: '-0.5px',
+                        color: isLightMode
+                            ? 'black'
+                            : theme.palette.primary.contrastText
+                    }}
+                >
+                    {title}
+                </Typography>
+                <Typography
+                    variant={'h6'}
+                    sx={{
+                        opacity: 0.9,
+                        maxWidth: '600px',
+                        lineHeight: 1.6,
+                        fontWeight: 300,
+                        letterSpacing: '0.5px',
+                        textShadow: isLightMode
+                            ? 'none'
+                            : '1px 1px 2px rgba(0,0,0,0.1)',
+                        color: isLightMode
+                            ? 'black'
+                            : theme.palette.primary.contrastText
+                    }}
+                >
+                    {subTitle}
+                </Typography>
+            </Container>
+        </Box>
+    );
+}
