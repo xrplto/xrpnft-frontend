@@ -63,7 +63,9 @@ export default function FilterDetail({
                     >
                         <Stack spacing={2} direction="row" alignItems="center">
                             <FactCheckIcon color="primary" />
-                            <Typography variant="s3" color="primary.main">Status & Sorting</Typography>
+                            <Typography variant="s3" color="primary.main">
+                                Status & Sorting
+                            </Typography>
                         </Stack>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -71,15 +73,29 @@ export default function FilterDetail({
                             {type === 'bulk' && (
                                 <FormControlLabel
                                     label={
-                                        <Stack direction="row" spacing={0.5} alignItems="center">
+                                        <Stack
+                                            direction="row"
+                                            spacing={0.5}
+                                            alignItems="center"
+                                        >
                                             <Typography variant="s3">
                                                 Buy with Mints{' '}
-                                                <Typography variant="s7" color="text.secondary">
+                                                <Typography
+                                                    component="span"
+                                                    variant="s3"
+                                                    color="text.secondary"
+                                                >
                                                     ({extra?.buyWithMints})
                                                 </Typography>
                                             </Typography>
                                             <Tooltip title="Disabled on Spinning collections, only enabled on Bulk collections.">
-                                                <Icon icon={infoFilled} color={theme.palette.primary.main} />
+                                                <Icon
+                                                    icon={infoFilled}
+                                                    color={
+                                                        theme.palette.primary
+                                                            .main
+                                                    }
+                                                />
                                             </Tooltip>
                                         </Stack>
                                     }
@@ -96,15 +112,29 @@ export default function FilterDetail({
                             {type !== 'normal' && (
                                 <FormControlLabel
                                     label={
-                                        <Stack direction="row" spacing={0.5} alignItems="center">
+                                        <Stack
+                                            direction="row"
+                                            spacing={0.5}
+                                            alignItems="center"
+                                        >
                                             <Typography variant="s3">
                                                 Recently Minted{' '}
-                                                <Typography variant="s7" color="text.secondary">
+                                                <Typography
+                                                    component="span"
+                                                    variant="s3"
+                                                    color="text.secondary"
+                                                >
                                                     ({extra?.boughtWithMints})
                                                 </Typography>
                                             </Typography>
                                             <Tooltip title="Display recently Minted NFTs and being transferred to users. Or NFTs that pending to be accepted by users.">
-                                                <Icon icon={infoFilled} color={theme.palette.primary.main} />
+                                                <Icon
+                                                    icon={infoFilled}
+                                                    color={
+                                                        theme.palette.primary
+                                                            .main
+                                                    }
+                                                />
                                             </Tooltip>
                                         </Stack>
                                     }
@@ -122,7 +152,11 @@ export default function FilterDetail({
                                 label={
                                     <Typography variant="s3">
                                         Unlisted{' '}
-                                        <Typography variant="s7" color="text.secondary">
+                                        <Typography
+                                            component="span"
+                                            variant="s3"
+                                            color="text.secondary"
+                                        >
                                             ({extra?.notOnSaleCount})
                                         </Typography>
                                     </Typography>
@@ -138,12 +172,21 @@ export default function FilterDetail({
                             />
                             <FormControlLabel
                                 label={
-                                    <Stack direction="row" spacing={0.5} alignItems="center">
+                                    <Stack
+                                        direction="row"
+                                        spacing={0.5}
+                                        alignItems="center"
+                                    >
                                         <Typography variant="s3">
                                             Rarity
                                         </Typography>
                                         <Tooltip title="Sort NFTs with rarity">
-                                            <Icon icon={infoFilled} color={theme.palette.primary.main} />
+                                            <Icon
+                                                icon={infoFilled}
+                                                color={
+                                                    theme.palette.primary.main
+                                                }
+                                            />
                                         </Tooltip>
                                     </Stack>
                                 }
@@ -157,32 +200,50 @@ export default function FilterDetail({
                                 }
                             />
                             <FormControl component="fieldset">
-                                <Typography variant="s3" color="text.secondary" sx={{ mt: 2, mb: 1 }}>Sort by:</Typography>
+                                <Typography
+                                    variant="s3"
+                                    color="text.secondary"
+                                    sx={{ mt: 2, mb: 1 }}
+                                >
+                                    Sort by:
+                                </Typography>
                                 <RadioGroup
                                     aria-label="sorting"
                                     name="sorting"
                                     value={subFilter}
                                     onChange={handleSortChange}
                                 >
-                                    <FormControlLabel 
-                                        value="latestActivity" 
-                                        control={<Radio color="primary" />} 
-                                        label="Latest Activity"
+                                    <FormControlLabel
+                                        value="latestActivity"
+                                        control={<Radio color="primary" />}
+                                        label={<Typography variant="s3">Latest Activity</Typography>}
                                     />
-                                    <FormControlLabel 
-                                        value="pricenoxrp" 
-                                        control={<Radio color="primary" />} 
+                                    <FormControlLabel
+                                        value="pricenoxrp"
+                                        control={<Radio color="primary" />}
                                         label={
                                             <Typography variant="s3">
                                                 Listed (non-XRP){' '}
-                                                <Typography variant="s7" color="text.secondary">
+                                                <Typography
+                                                    component="span"
+                                                    variant="s3"
+                                                    color="text.secondary"
+                                                >
                                                     ({extra?.onSaleCount})
                                                 </Typography>
                                             </Typography>
                                         }
                                     />
-                                    <FormControlLabel value="pricexrpasc" control={<Radio color="primary" />} label="XRP Price: Low to High" />
-                                    <FormControlLabel value="pricexrpdesc" control={<Radio color="primary" />} label="XRP Price: High to Low" />
+                                    <FormControlLabel
+                                        value="pricexrpasc"
+                                        control={<Radio color="primary" />}
+                                        label={<Typography variant="s3">XRP Price: Low to High</Typography>}
+                                    />
+                                    <FormControlLabel
+                                        value="pricexrpdesc"
+                                        control={<Radio color="primary" />}
+                                        label={<Typography variant="s3">XRP Price: High to Low</Typography>}
+                                    />
                                 </RadioGroup>
                             </FormControl>
                         </FormGroup>
@@ -197,9 +258,15 @@ export default function FilterDetail({
                             aria-controls="panel2bh-content"
                             id="panel2bh-header2"
                         >
-                            <Stack spacing={2} direction="row" alignItems="center">
+                            <Stack
+                                spacing={2}
+                                direction="row"
+                                alignItems="center"
+                            >
                                 <BookmarkAddedIcon color="primary" />
-                                <Typography variant="s3" color="primary.main">Attributes</Typography>
+                                <Typography variant="s3" color="primary.main">
+                                    Attributes
+                                </Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails style={{ padding: 0 }}>
