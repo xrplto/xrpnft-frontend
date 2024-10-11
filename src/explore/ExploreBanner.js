@@ -54,7 +54,10 @@ export default function ExploreBanner({ collection }) {
                 }
             }}
         >
-            <Container maxWidth={false} sx={{ position: 'relative', zIndex: 2 }}>
+            <Container
+                maxWidth="lg"
+                sx={{ position: 'relative', zIndex: 2 }}
+            >
                 <Typography
                     variant={isMobile ? 'h3' : 'h1'}
                     sx={{
