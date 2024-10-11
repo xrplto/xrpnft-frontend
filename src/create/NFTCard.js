@@ -83,7 +83,6 @@ export default function NFTCard({ onCreate }) {
         }
 
         const BASE_URL = 'https://api.xrpnft.com/api';
-        // https://api.xrpnft.com/api/collection/query?filter=
         axios
             .get(`${BASE_URL}/collection/query?account=${account}`, {
                 headers: { 'x-access-token': accountToken }
@@ -92,8 +91,12 @@ export default function NFTCard({ onCreate }) {
                 try {
                     if (res.status === 200 && res.data) {
                         const ret = res.data;
-                        if (ret.collections.length > 0)
-                            setCollections(ret.collections);
+                        console.log('Collections returned by XRPNFT API:', ret.collections);
+                        if (ret.collections.length > 0) {
+                            // Filter out collections with type: "bulk"
+                            const filteredCollections = ret.collections.filter(collection => collection.type !== "bulk");
+                            setCollections(filteredCollections);
+                        }
                     }
                 } catch (error) {
                     console.log(error);
@@ -101,9 +104,6 @@ export default function NFTCard({ onCreate }) {
             })
             .catch((err) => {
                 console.log('err->>', err);
-            })
-            .then(function () {
-                // Always executed
             });
     };
 
