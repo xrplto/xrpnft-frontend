@@ -4,6 +4,7 @@ import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import Decimal from 'decimal.js';
+import { Client } from 'xrpl';
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -175,8 +176,17 @@ export default function Minting({ showHeader = true, defaultValues }) {
               // const account = res.account;
               const dispatched_result = res.dispatched_result;
       
+              console.log('Xumm dispatch result:', dispatched_result); // Log Xumm response
+              
+              // Check if txid is available and log it
+              if (res.txid) {
+                console.log('Transaction ID (txid):', res.txid);
+              }
+              
               return dispatched_result;
-            } catch (err) {}
+            } catch (err) {
+              console.error('Error getting dispatch result:', err);
+            }
         }
 
         const startInterval = () => {
@@ -184,6 +194,7 @@ export default function Minting({ showHeader = true, defaultValues }) {
       
             dispatchTimer = setInterval(async () => {
                 const dispatched_result = await getDispatchResult();
+                console.log('Xumm interval check result:', dispatched_result); // Log Xumm response
                 if (dispatched_result && dispatched_result === 'tesSUCCESS') {
                     openSnackbar('Successful!', 'success');
                     stopInterval();
@@ -239,6 +250,48 @@ export default function Minting({ showHeader = true, defaultValues }) {
         };
     }, [openScanQR, uuid, uuidNft]);
 
+    useEffect(() => {
+        let ws;
+
+        if (openScanQR && uuid) {
+            ws = new WebSocket(`wss://xumm.app/sign/${uuid}`);
+
+            ws.onopen = () => {
+                console.log('WebSocket connection opened');
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log('WebSocket message received:', data);
+
+                if (data.txid) {
+                    console.log('Transaction ID (txid) from WebSocket:', data.txid);
+                    getTransactionInfo(data.txid);
+                }
+
+                if (data.signed === true) {
+                    console.log('Transaction signed successfully');
+                    // You might want to trigger some action here, like closing the QR dialog
+                    // handleScanQRClose();
+                }
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket connection closed');
+            };
+        }
+
+        return () => {
+            if (ws) {
+                ws.close();
+            }
+        };
+    }, [openScanQR, uuid]);
+
     const onCreateNft = async () => {
         if (!account && !accountToken && !user_token) {
             openSnackbar('Please login', 'error');
@@ -287,6 +340,8 @@ export default function Minting({ showHeader = true, defaultValues }) {
                 }
             });
 
+            console.log('Xumm mint response:', res.data); // Log Xumm response
+
             if (res.status === 200) {
                 const ret = res.data;
                 if (ret.status) {
@@ -294,6 +349,8 @@ export default function Minting({ showHeader = true, defaultValues }) {
                     const uuid = ret.uuid;
                     const qrlink = ret.qrUrl;
                     const nextlink = ret.next;
+
+                    console.log('Xumm successful mint details:', { uuid_nft, uuid, qrlink, nextlink }); // Log Xumm response details
 
                     setUuidNft(uuid_nft);
                     setUuid(uuid);
@@ -306,11 +363,12 @@ export default function Minting({ showHeader = true, defaultValues }) {
                 } else {
                     // { status: false, data: null, err: 'ERR_URL_SLUG' }
                     const err = ret.err;
+                    console.log('Xumm mint error:', err); // Log Xumm error response
                     openSnackbar(err, 'error');
                 }
             }
         } catch (err) {
-            console.error(err);
+            console.error('Error creating NFT:', err);
         }
         setLoading(false);
     };
@@ -321,11 +379,14 @@ export default function Minting({ showHeader = true, defaultValues }) {
             const res = await axios.delete(
                 `${BASE_URL}/mint/cancel/${uuid}/${uuidNft}`
             );
+            console.log('Xumm disconnect response:', res.data); // Log Xumm response
             if (res.status === 200) {
                 setUuid(null);
                 setUuidNft(null);
             }
-        } catch (err) {}
+        } catch (err) {
+            console.error('Error disconnecting Xumm:', err);
+        }
         setLoading(false);
     };
 
@@ -432,6 +493,45 @@ export default function Minting({ showHeader = true, defaultValues }) {
             if (t.type !== type) newTraits.push(t);
         }
         setTraits(newTraits);
+    };
+
+    const getTransactionInfo = async (txid) => {
+        const client = new Client('wss://s1.ripple.com');
+        try {
+            await client.connect();
+            console.log('Connected to XRPL');
+
+            const tx = await client.request({
+                command: 'tx',
+                transaction: txid
+            });
+
+            console.log('Transaction Information:', JSON.stringify(tx.result, null, 2));
+
+            // Log specific details
+            console.log('Transaction Type:', tx.result.TransactionType);
+            console.log('Account:', tx.result.Account);
+            console.log('Fee:', tx.result.Fee);
+            console.log('Sequence:', tx.result.Sequence);
+            console.log('Result:', tx.result.meta.TransactionResult);
+
+            if (tx.result.TransactionType === 'NFTokenMint') {
+                console.log('NFTokenTaxon:', tx.result.NFTokenTaxon);
+                console.log('URI:', tx.result.URI);
+            }
+
+            // Extract and log the NFTokenID directly from the metadata
+            if (tx.result.meta && tx.result.meta.nftoken_id) {
+                console.log('NFToken ID:', tx.result.meta.nftoken_id);
+            } else {
+                console.log('NFToken ID not found in transaction metadata');
+            }
+
+        } catch (error) {
+            console.error('Error fetching transaction info:', error);
+        } finally {
+            client.disconnect();
+        }
     };
 
     return (
