@@ -462,6 +462,8 @@ export default function BulkList() {
                     setPage={setPage}
                 />
             }
+            {/* Add this Box component to create space at the bottom */}
+            <Box sx={{ py: 10 }} /> {/* Adjust the py (padding-y) value as needed */}
         </>
     );
 }

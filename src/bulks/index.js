@@ -25,6 +25,8 @@ import QRDialog from 'src/components/QRDialog';
 import BulkList from './BulkList';
 import MintList from './MintList';
 
+import { Card, CardContent, Divider } from '@mui/material';
+
 export default function Bulks() {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -139,42 +141,43 @@ export default function Bulks() {
                 <PulseLoader color={"#FF4842"} size={10} />
             </Backdrop>
 
-            <Stack spacing={1} sx={{mt: 4, mb:2}}>
+            <Stack spacing={2} sx={{mt: 4, mb: 4}}>
                 <Typography variant="h1a">Manage Bulks</Typography>
                 <Typography variant="d1">Prepare to mint bulk NFTs, get zip files from google drive, extract and pin to IPFS.</Typography>
             </Stack>
 
-            {minterWallet &&
-                <Stack spacing={1} sx={{mt: 1, mb: 2}}>
-                    <Typography variant="s6">You should set the NFTokenMinter account setting of your Account to the following address and don't change your NFTokenMinter to another address other than this one.</Typography>
+            {minterWallet && (
+                <Card sx={{ mb: 4 }}>
+                    <CardContent>
+                        <Typography variant="h6" gutterBottom>NFTokenMinter Settings</Typography>
+                        <Typography variant="body2" sx={{ mb: 2 }}>
+                            You should set the NFTokenMinter account setting of your Account to the following address and don't change your NFTokenMinter to another address other than this one.
+                        </Typography>
 
-                    <Stack direction="row" spacing={1} alignItems="center">
-                        <Link
-                            color="inherit"
-                            target="_blank"
-                            href={`https://bithomp.com/explorer/${minterWallet.address}`}
-                            rel="noreferrer noopener nofollow"
+                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+                            <Link
+                                color="inherit"
+                                target="_blank"
+                                href={`https://bithomp.com/explorer/${minterWallet.address}`}
+                                rel="noreferrer noopener nofollow"
+                            >
+                                <Typography variant="body2">
+                                    {minterWallet.address} <Typography component="span" variant="caption" color="error">({minterWallet.name})</Typography>
+                                </Typography>
+                            </Link>
+                        </Stack>
+
+                        <Button 
+                            variant="contained" 
+                            color="primary" 
+                            onClick={handleNFTMinterSet}
+                            startIcon={<ApprovalOutlinedIcon />}
                         >
-                            <Typography variant="s6">{minterWallet.address} <Typography variant="s3" color="error">({minterWallet.name})</Typography></Typography>
-                        </Link>
-
-                        {/* <Tooltip
-                            title="This is the account that mints NFTs for you.
-                            Click to set NFTokenMinter and don't change your NFTokenMinter to another address other than this one."
-                        >
-                            <IconButton size="small" onClick={()=>handleNFTMinterSet()}>
-                                <ApprovalOutlinedIcon color="error" fontSize="medium" />
-                            </IconButton>
-                        </Tooltip> */}
-                    </Stack>
-
-                    <Stack direction="row">
-                        <Button variant="contained" color="primary" size="small" onClick={()=>handleNFTMinterSet()}>
                             Set NFTokenMinter
                         </Button>
-                    </Stack>
-                </Stack>
-            }
+                    </CardContent>
+                </Card>
+            )}
 
             <QRDialog
                 open={openScanQR}
@@ -184,7 +187,9 @@ export default function Bulks() {
                 nextUrl={nextUrl}
             />
 
-            <Stack sx={{mt:2, minHeight: '50vh'}}>
+            <Divider sx={{ my: 4 }} />
+
+            <Stack spacing={4} sx={{ minHeight: '50vh' }}>
                 <BulkList />
                 <MintList />
             </Stack>
