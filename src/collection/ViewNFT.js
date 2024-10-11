@@ -396,7 +396,7 @@ export default function ViewNFT({ collection }) {
             </Box>
 
             <Box sx={{ mx: { xs: 2, md: 4 } }}>
-                <ExploreNFT collection={collection} />
+                <ExploreNFT collection={collection} showBanner={false} />
             </Box>
 
             <Popover
