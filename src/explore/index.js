@@ -24,7 +24,7 @@ import NFTs from './NFTs';
 import CollectionActivity from './CollectionActivity';
 import { AppContext } from 'src/AppContext';
 
-export default function ExploreNFT({ collection }) {
+export default function ExploreNFT({ collection, topMargin = 4 }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const { deletingNfts, accountProfile } = useContext(AppContext);
@@ -73,7 +73,7 @@ export default function ExploreNFT({ collection }) {
     };
 
     return (
-        <Container maxWidth={false} disableGutters>
+        <Container maxWidth={false} disableGutters sx={{ mt: topMargin }}>
             <Box sx={{ width: '100%', typography: 'body1' }}>
                 <TabContext value={value}>
                     <Box sx={{ 
