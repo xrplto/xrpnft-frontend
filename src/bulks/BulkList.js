@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { useState, useEffect, useCallback } from 'react';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // Material
 import { withStyles } from '@mui/styles';
 import {
-    styled, useTheme,
+    styled,
+    useTheme,
     Avatar,
     Backdrop,
     Box,
@@ -22,9 +23,14 @@ import {
     Divider,
     CircularProgress,
     Skeleton,
-    Chip
+    Chip,
+    Card,
+    CardContent,
+    Grid,
+    Container,
+    Button
 } from '@mui/material';
-import { tableCellClasses } from "@mui/material/TableCell";
+import { tableCellClasses } from '@mui/material/TableCell';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import PendingIcon from '@mui/icons-material/Pending';
@@ -40,6 +46,11 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ApprovalOutlinedIcon from '@mui/icons-material/ApprovalOutlined';
 import CasinoIcon from '@mui/icons-material/Casino';
 import AnimationIcon from '@mui/icons-material/Animation';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import { alpha } from '@mui/material/styles';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 // Context
 import { useContext } from 'react';
@@ -50,7 +61,7 @@ import { fIntNumber } from 'src/utils/formatNumber';
 import { formatDateTime } from 'src/utils/formatTime';
 
 // Loader
-import { PulseLoader, ClockLoader } from "react-spinners";
+import { PulseLoader, ClockLoader } from 'react-spinners';
 import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
@@ -60,37 +71,37 @@ import BulkToolbar from './BulkToolbar';
 // ----------------------------------------------------------------------
 const CancelTypography = withStyles({
     root: {
-        color: "#FF6C40",
+        color: '#FF6C40',
         borderRadius: '6px',
         border: '0.05em solid #FF6C40',
         //fontSize: '0.5rem',
         lineHeight: '1',
         paddingLeft: '3px',
-        paddingRight: '3px',
+        paddingRight: '3px'
     }
 })(Typography);
 
 const BuyTypography = withStyles({
     root: {
-        color: "#007B55",
+        color: '#007B55',
         borderRadius: '6px',
         border: '0.05em solid #007B55',
         //fontSize: '0.5rem',
         lineHeight: '1',
         paddingLeft: '3px',
-        paddingRight: '3px',
+        paddingRight: '3px'
     }
 })(Typography);
 
 const SellTypography = withStyles({
     root: {
-        color: "#B72136",
+        color: '#B72136',
         borderRadius: '6px',
         border: '0.05em solid #B72136',
         //fontSize: '0.5rem',
         lineHeight: '1',
         paddingLeft: '3px',
-        paddingRight: '3px',
+        paddingRight: '3px'
     }
 })(Typography);
 
@@ -112,43 +123,42 @@ const FLAG_MINT = 3;
 
 function getBulkStatus(bulk, flag) {
     const status = bulk.status;
-    if (flag === FLAG_GOOGLE)
-        return status & 0x03;
-    else if (flag === FLAG_UNZIP)
-        return (status >> 2) & 0x03;
-    else if (flag === FLAG_IPFS)
-        return (status >> 4) & 0x03;
-    else if (flag === FLAG_MINT)
-        return (status >> 6) & 0x0F;
+    if (flag === FLAG_GOOGLE) return status & 0x03;
+    else if (flag === FLAG_UNZIP) return (status >> 2) & 0x03;
+    else if (flag === FLAG_IPFS) return (status >> 4) & 0x03;
+    else if (flag === FLAG_MINT) return (status >> 6) & 0x0f;
 }
 
 // Modify the StatusContainer to accept theme as a prop
-function StatusContainer({bulk, flag, theme}) {
+function StatusContainer({ bulk, flag, theme }) {
     const status = getBulkStatus(bulk, flag);
     return (
         <>
-        {status === STATUS_PENDING &&
-            <Tooltip title='PENDING'>
-                <PendingIcon fontSize='large' sx={{ color: theme.palette.text.secondary }} />
-            </Tooltip>
-        }
-        {status === STATUS_START &&
-            <Tooltip title='WORKING'>
-                <CircularProgress size={24} thickness={4} />
-            </Tooltip>
-        }
-        {status === STATUS_ERROR &&
-            <Tooltip title='ERROR'>
-                <ErrorIcon color='error' fontSize='large' />
-            </Tooltip>
-        }
-        {status === STATUS_SUCCESS &&
-            <Tooltip title='OK'>
-                <CheckCircleIcon color='success' fontSize='large' />
-            </Tooltip>
-        }
+            {status === STATUS_PENDING && (
+                <Tooltip title="PENDING">
+                    <PendingIcon
+                        fontSize="large"
+                        sx={{ color: theme.palette.text.secondary }}
+                    />
+                </Tooltip>
+            )}
+            {status === STATUS_START && (
+                <Tooltip title="WORKING">
+                    <CircularProgress size={24} thickness={4} />
+                </Tooltip>
+            )}
+            {status === STATUS_ERROR && (
+                <Tooltip title="ERROR">
+                    <ErrorIcon color="error" fontSize="large" />
+                </Tooltip>
+            )}
+            {status === STATUS_SUCCESS && (
+                <Tooltip title="OK">
+                    <CheckCircleIcon color="success" fontSize="large" />
+                </Tooltip>
+            )}
         </>
-    )
+    );
 }
 
 export default function BulkList() {
@@ -164,6 +174,7 @@ export default function BulkList() {
     const [count, setCount] = useState(0);
     const [bulks, setBulks] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [viewMode, setViewMode] = useState('card');
 
     const getBulkCollections = useCallback(() => {
         if (!account || !accountToken) {
@@ -172,16 +183,23 @@ export default function BulkList() {
         }
 
         setLoading(true);
-        axios.get(`${BASE_URL}/collection/list?account=${account}&page=${page}&limit=${rows}&type=bulk`, {headers: {'x-access-token': accountToken}})
-            .then(res => {
+        axios
+            .get(
+                `${BASE_URL}/collection/list?account=${account}&page=${page}&limit=${rows}&type=bulk`,
+                { headers: { 'x-access-token': accountToken } }
+            )
+            .then((res) => {
+                console.log('XRPNFT API Response:', res.data); // Add this line to log the response
                 let ret = res.status === 200 ? res.data : undefined;
                 if (ret) {
                     setCount(ret.count);
                     setBulks(ret.collections);
                 }
-            }).catch(err => {
-                console.log("Error on getting bulk list!!!", err);
-            }).finally(() => {
+            })
+            .catch((err) => {
+                console.log('Error on getting bulk list!!!', err);
+            })
+            .finally(() => {
                 setLoading(false);
             });
     }, [account, accountToken, page, rows, openSnackbar]);
@@ -190,35 +208,78 @@ export default function BulkList() {
         getBulkCollections();
     }, [getBulkCollections]);
 
+    const handleViewModeChange = (event, newMode) => {
+        if (newMode !== null) {
+            setViewMode(newMode);
+        }
+    };
+
     return (
-        <>
-            <Box sx={{ width: "100%", overflow: "auto" }}>
-                <Table stickyHeader sx={{
-                    [`& .${tableCellClasses.root}`]: {
-                        borderBottom: "1px solid",
-                        borderColor: theme.palette.divider
-                    }
-                }}>
-                    <TableBody>
-                    {loading ? (
-                        // Show skeleton loader when loading
-                        [...Array(5)].map((_, index) => (
-                            <TableRow key={index}>
-                                <TableCell width='15%'>
-                                    <Skeleton variant="rectangular" width={160} height={160} />
-                                </TableCell>
-                                <TableCell>
-                                    <Skeleton variant="text" width="80%" />
-                                    <Skeleton variant="text" width="60%" />
-                                    <Skeleton variant="text" width="40%" />
-                                </TableCell>
-                                <TableCell width='15%'>
-                                    <Skeleton variant="circular" width={56} height={56} />
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    ) : (
-                        bulks && bulks.map((row) => {
+        <Container maxWidth="xl">
+            <Box sx={{ mb: 5, mt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                    <Typography variant="h3" gutterBottom>
+                        Bulk Collections
+                    </Typography>
+                    <Typography variant="subtitle1" color="text.secondary">
+                        Manage and mint your bulk NFT collections
+                    </Typography>
+                </div>
+                <ToggleButtonGroup
+                    value={viewMode}
+                    exclusive
+                    onChange={handleViewModeChange}
+                    aria-label="view mode"
+                >
+                    <ToggleButton value="card" aria-label="card view">
+                        <ViewModuleIcon />
+                    </ToggleButton>
+                    <ToggleButton value="list" aria-label="list view">
+                        <ViewListIcon />
+                    </ToggleButton>
+                </ToggleButtonGroup>
+            </Box>
+
+            {loading ? (
+                viewMode === 'card' ? (
+                    <Grid container spacing={3}>
+                        {[...Array(6)].map((_, index) => (
+                            <Grid item xs={12} md={6} lg={4} key={index}>
+                                <Card>
+                                    <CardContent>
+                                        <Skeleton variant="rectangular" width="100%" height={200} />
+                                        <Skeleton variant="text" width="80%" sx={{ mt: 2 }} />
+                                        <Skeleton variant="text" width="60%" />
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                ) : (
+                    <Table>
+                        <TableBody>
+                            {[...Array(5)].map((_, index) => (
+                                <TableRow key={index}>
+                                    <TableCell width="15%">
+                                        <Skeleton variant="rectangular" width={160} height={160} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" width="80%" />
+                                        <Skeleton variant="text" width="60%" />
+                                        <Skeleton variant="text" width="40%" />
+                                    </TableCell>
+                                    <TableCell width="15%">
+                                        <Skeleton variant="circular" width={56} height={56} />
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                )
+            ) : (
+                viewMode === 'card' ? (
+                    <Grid container spacing={3}>
+                        {bulks && bulks.map((row) => {
                             const {
                                 uuid,
                                 slug,
@@ -228,225 +289,366 @@ export default function BulkList() {
                                 name,
                                 created,
                                 description,
-                                infoDOWNLOAD, // {size: '1.34 GB'}
-                                infoUNZIP, // {count: 1000}
+                                infoDOWNLOAD,
+                                infoUNZIP,
                                 infoIPFS,
-                                infoMINT, // {count: 0, length: metadata.length};
-                                minter,
-                                minterName,
+                                infoMINT,
                                 category,
-                                type
+                                type,
+                                items,
+                                owners,
+                                taxon,
+                                minterName
                             } = row;
 
                             const strDateTime = formatDateTime(created);
 
                             return (
-                                <TableRow
-                                    key={uuid}
-                                    hover
-                                    sx={{
-                                        transition: 'background-color 0.2s',
-                                        '&:hover': {
-                                            backgroundColor: theme.palette.action.hover,
-                                        },
-                                    }}
-                                >
-                                    <TableCell align="left" width='15%'>
-                                        <Avatar 
-                                            alt={name} 
-                                            src={`https://s1.xrpnft.com/collection/${logoImage}`}
-                                            variant="rounded"
-                                            sx={{
-                                                width: 160,
-                                                height: 160,
-                                                borderRadius: '16px', // This creates rounded corners
-                                                filter: infoIPFS && infoIPFS.cid 
-                                                    ? `drop-shadow(0 4px 8px rgba(0,0,0,0.1))` 
-                                                    : 'grayscale(100%)',
-                                            }}
-                                        />
-                                    </TableCell>
+                                <Grid item xs={12} md={6} lg={4} key={uuid}>
+                                    <Card
+                                        sx={{
+                                            height: '100%',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            transition: 'transform 0.3s, box-shadow 0.3s',
+                                            '&:hover': {
+                                                transform: 'translateY(-5px)',
+                                                boxShadow: (theme) => theme.shadows[10],
+                                            },
+                                        }}
+                                    >
+                                        <CardContent sx={{ flexGrow: 1 }}>
+                                            <Box sx={{ position: 'relative', mb: 2 }}>
+                                                <Avatar
+                                                    alt={name}
+                                                    src={`https://s1.xrpnft.com/collection/${logoImage}`}
+                                                    variant="rounded"
+                                                    sx={{
+                                                        width: '100%',
+                                                        height: 200,
+                                                        borderRadius: '16px',
+                                                        filter: infoIPFS && infoIPFS.cid
+                                                            ? `drop-shadow(0 4px 8px rgba(0,0,0,0.1))`
+                                                            : 'grayscale(100%)'
+                                                    }}
+                                                />
+                                                <Chip
+                                                    label={category}
+                                                    size="small"
+                                                    color="primary"
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        top: 8,
+                                                        right: 8,
+                                                        backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.8),
+                                                    }}
+                                                />
+                                            </Box>
 
-                                    <TableCell align="left">
-                                        <Stack spacing={2}>
-                                            <Stack direction="row" spacing={2} alignItems="center">
-                                                <Link href={`/collection/${slug}`} underline="hover">
-                                                    <Typography variant="h5" color="primary">{name}</Typography>
-                                                </Link>
-                                                {type === "random" &&
-                                                    <Tooltip title='Random Collection'>
-                                                        <CasinoIcon color='info' fontSize="small" />
-                                                    </Tooltip>
-                                                }
-                                                {type === "sequence" &&
-                                                    <Tooltip title='Sequence Collection'>
-                                                        <AnimationIcon color='info' fontSize="small" />
-                                                    </Tooltip>
-                                                }
-                                                <Chip label={category} size="small" color="primary" variant="outlined" />
+                                            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
+                                                <Typography variant="h5" component="div">
+                                                    {name}
+                                                </Typography>
+                                                <Tooltip title={`${type.charAt(0).toUpperCase() + type.slice(1)} Collection`}>
+                                                    {type === "random" ? <CasinoIcon color='info' /> :
+                                                     type === "sequence" ? <AnimationIcon color='info' /> :
+                                                     type === "normal" ? <ViewListIcon color='info' /> :
+                                                     <ViewModuleIcon color='info' />}
+                                                </Tooltip>
                                             </Stack>
 
-                                            {infoIPFS && infoIPFS.cid &&
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    {/* <Typography variant="d3" color="#FFA319">Please check the following CID before Bulk-Mint your items</Typography> */}
-                                                    <Link
-                                                        color="inherit"
-                                                        target="_blank"
-                                                        href={`https://gateway.xrpnft.com/ipfs/${infoIPFS.cid}`}
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        <Typography variant="d3" color="#33C2FF">{infoIPFS.cid}</Typography>
-                                                    </Link>
-                                                    <Link
-                                                        color="inherit"
-                                                        target="_blank"
-                                                        href={`https://gateway.xrpnft.com/ipfs/${infoIPFS.cid}`}
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        <Tooltip title='Check on IPFS'>
-                                                            <IconButton>
-                                                                <OpenInNewIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </Link>
-                                                    <CopyToClipboard text={`${infoIPFS.cid}`} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                        <Tooltip title='Click to copy'>
-                                                            <IconButton>
-                                                                <ContentCopyIcon />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </CopyToClipboard>
-                                                </Stack>
-                                            }
-                                            {description &&
-                                                <Typography variant="d4" sx={{mb: 1}}>{description}</Typography>
-                                            }
-                                            <Stack direction="row" spacing={2} alignItems="center">
-                                                <Typography variant="p3">{strDateTime}</Typography>
-                                                <Link
-                                                    color="inherit"
-                                                    target="_blank"
-                                                    href={bulkUrl}
-                                                    rel="noreferrer noopener nofollow"
-                                                >
-                                                    <Typography variant="p3">{bulkUrl}</Typography>
-                                                </Link>
-                                            </Stack>
-                                            <Stack direction="row" spacing={3} sx={{mt:1}}>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <StatusContainer bulk={row} flag={FLAG_GOOGLE} theme={theme} />
-                                                    <Stack>
-                                                        <Typography variant="s4">Download</Typography>
-                                                        {infoDOWNLOAD &&
-                                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                                <CloudDownloadIcon fontSize='small' color='info'/>
-                                                                <Typography variant="d4" color="primary">{infoDOWNLOAD.size}</Typography>
-                                                                {/* <PushPinIcon fontSize='small' color='warning'/> */}
-                                                            </Stack>
-                                                        }
-                                                    </Stack>
-                                                </Stack>
-                                                <Divider orientation="vertical" flexItem/>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <StatusContainer bulk={row} flag={FLAG_UNZIP} theme={theme} />
-                                                    <Stack>
-                                                        <Typography variant="s4">Unzip</Typography>
-                                                        {infoUNZIP &&
-                                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                                <FolderZipIcon fontSize='small' color='info'/>
-                                                                <Typography variant="d4" color="primary">{fIntNumber(infoUNZIP.count)}</Typography>
-                                                                {/* <PushPinIcon fontSize='small' color='warning'/> */}
-                                                            </Stack>
-                                                        }
-                                                    </Stack>
-                                                </Stack>
-                                                <Divider orientation="vertical" flexItem/>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <StatusContainer bulk={row} flag={FLAG_IPFS} theme={theme} />
-                                                    <Stack>
-                                                        <Typography variant="s4">Pin to IPFS</Typography>
-                                                        {infoIPFS && infoIPFS.count &&
-                                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                                <FiberPinIcon fontSize='small' color='info'/>
-                                                                <Typography variant="d4" color="primary">{fIntNumber(infoIPFS.count)}</Typography>
-                                                                {/* <PushPinIcon fontSize='small' color='warning'/> */}
-                                                            </Stack>
-                                                        }
-                                                    </Stack>
-                                                </Stack>
-                                                <Divider orientation="vertical" flexItem/>
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <StatusContainer bulk={row} flag={FLAG_MINT} theme={theme} />
-                                                    <Typography variant="s4">Mint</Typography>
-                                                </Stack>
-                                            </Stack>
-                                        </Stack>
-                                    </TableCell>
+                                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                                {description}
+                                            </Typography>
 
-                                    <TableCell align="left">
-                                        {infoIPFS && infoIPFS.cid && status === 0x3F && // 0x3F = b0011 1111
-                                            <Stack alignItems="center">
-                                                <Link
-                                                    color="inherit"
-                                                    // target="_blank"
-                                                    href={`/bulks/mint/${slug}`}
-                                                    // rel="noreferrer noopener nofollow"
-                                                >
-                                                    <IconButton aria-label='bulk-mint'>
-                                                        <CollectionsIcon sx={{width:56, height:56}} />
-                                                    </IconButton>
-                                                </Link>
-                                                <Typography variant="d4">Bulk Mint</Typography>
-                                            </Stack>
-                                        }
-                                        {infoMINT &&
-                                            <Stack alignItems="center">
-                                                {infoMINT.count !== infoMINT.length?(
-                                                    <RotatingSquare
-                                                        height="100"
-                                                        width="100"
-                                                        color="#4fa94d"
-                                                        ariaLabel="rotating-square-loading"
-                                                        strokeWidth="4"
-                                                        wrapperStyle={{}}
-                                                        wrapperClass=""
-                                                        visible={true}
+                                            <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+                                                <Box>
+                                                    <StatusChip 
+                                                        flag={FLAG_GOOGLE} 
+                                                        status={getBulkStatus(row, FLAG_GOOGLE)} 
+                                                        label="Download" 
                                                     />
-                                                ):(
-                                                    <Vortex
-                                                        visible={true}
-                                                        height="80"
-                                                        width="80"
-                                                        ariaLabel="vortex-loading"
-                                                        wrapperStyle={{}}
-                                                        wrapperClass="vortex-wrapper"
-                                                        colors={['red', 'green', 'blue', 'yellow', 'orange', 'purple']}
-                                                    />
-                                                )}
-
-
-                                                <Typography variant="d4" color="#33C2FF">{infoMINT.count} / {infoMINT.length}</Typography>
+                                                    {infoDOWNLOAD && infoDOWNLOAD.size && (
+                                                        <Typography variant="caption" display="block" sx={{ mt: 0.5 }}>
+                                                            {infoDOWNLOAD.size}
+                                                        </Typography>
+                                                    )}
+                                                </Box>
+                                                <StatusChip 
+                                                    flag={FLAG_UNZIP} 
+                                                    status={getBulkStatus(row, FLAG_UNZIP)} 
+                                                    label="Unzip" 
+                                                    count={infoUNZIP ? infoUNZIP.count : undefined} 
+                                                />
+                                                <StatusChip 
+                                                    flag={FLAG_IPFS} 
+                                                    status={getBulkStatus(row, FLAG_IPFS)} 
+                                                    label="IPFS" 
+                                                    count={infoIPFS ? infoIPFS.count : undefined} 
+                                                />
+                                                <StatusChip 
+                                                    flag={FLAG_MINT} 
+                                                    status={getBulkStatus(row, FLAG_MINT)} 
+                                                    label="Mint" 
+                                                />
                                             </Stack>
-                                        }
-                                    </TableCell>
-                                </TableRow>
+
+                                            {infoIPFS && infoIPFS.cid && (
+                                                <Stack direction="column" spacing={1} sx={{ mb: 2 }}>
+                                                    <Typography variant="body2" color="primary">
+                                                        IPFS CID: {infoIPFS.cid}
+                                                    </Typography>
+                                                    <Typography variant="body2" color="info.main">
+                                                        Pinned Items: {fIntNumber(infoIPFS.count)}
+                                                    </Typography>
+                                                </Stack>
+                                            )}
+
+                                            <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
+                                                <Typography variant="body2">
+                                                    Items: {infoUNZIP ? fIntNumber(infoUNZIP.count) : 'N/A'}
+                                                </Typography>
+                                                <Typography variant="body2">Owners: {owners}</Typography>
+                                            </Stack>
+
+                                            <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
+                                                <Typography variant="body2">Taxon: {taxon}</Typography>
+                                                <Typography variant="body2">Minter: {minterName}</Typography>
+                                            </Stack>
+
+                                            <Typography variant="caption" color="text.secondary">
+                                                Created: {strDateTime}
+                                            </Typography>
+                                        </CardContent>
+
+                                        {infoIPFS && infoIPFS.cid && status === 0x3f && (
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                fullWidth
+                                                href={`/bulks/mint/${slug}`}
+                                                startIcon={<CollectionsIcon />}
+                                                sx={{ mt: 'auto' }}
+                                            >
+                                                Bulk Mint
+                                            </Button>
+                                        )}
+                                    </Card>
+                                </Grid>
                             );
-                        })
-                    )}
-                    </TableBody>
-                </Table>
-            </Box>
-            { count > 0 &&
-                <BulkToolbar
-                    count={count}
-                    rows={rows}
-                    setRows={setRows}
-                    page={page}
-                    setPage={setPage}
-                    onRefresh={getBulkCollections}  // Add this line
-                />
-            }
-            <Box sx={{ py: 4 }} />
-        </>
+                        })}
+                    </Grid>
+                ) : (
+                    <Table
+                        stickyHeader
+                        sx={{
+                            [`& .${tableCellClasses.root}`]: {
+                                borderBottom: '1px solid',
+                                borderColor: theme.palette.divider
+                            }
+                        }}
+                    >
+                        <TableBody>
+                            {bulks && bulks.map((row) => {
+                                const {
+                                    uuid,
+                                    slug,
+                                    bulkUrl,
+                                    status,
+                                    logoImage,
+                                    name,
+                                    created,
+                                    description,
+                                    infoDOWNLOAD,
+                                    infoUNZIP,
+                                    infoIPFS,
+                                    infoMINT,
+                                    category,
+                                    type,
+                                    items,
+                                    owners,
+                                    taxon,
+                                    minterName
+                                } = row;
+
+                                const strDateTime = formatDateTime(created);
+
+                                return (
+                                    <TableRow
+                                        key={uuid}
+                                        hover
+                                        sx={{
+                                            transition: 'background-color 0.2s',
+                                            '&:hover': {
+                                                backgroundColor: theme.palette.action.hover
+                                            }
+                                        }}
+                                    >
+                                        <TableCell align="left" width="15%">
+                                            <Avatar
+                                                alt={name}
+                                                src={`https://s1.xrpnft.com/collection/${logoImage}`}
+                                                variant="rounded"
+                                                sx={{
+                                                    width: 160,
+                                                    height: 160,
+                                                    borderRadius: '16px',
+                                                    filter: infoIPFS && infoIPFS.cid
+                                                        ? `drop-shadow(0 4px 8px rgba(0,0,0,0.1))`
+                                                        : 'grayscale(100%)'
+                                                }}
+                                            />
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            <Stack spacing={2}>
+                                                <Typography variant="h5" component="div">
+                                                    {name}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {description}
+                                                </Typography>
+                                                <Stack direction="row" spacing={2}>
+                                                    <Box>
+                                                        <StatusChip 
+                                                            flag={FLAG_GOOGLE} 
+                                                            status={getBulkStatus(row, FLAG_GOOGLE)} 
+                                                            label="Download" 
+                                                        />
+                                                        {infoDOWNLOAD && infoDOWNLOAD.size && (
+                                                            <Typography variant="caption" display="block" sx={{ mt: 0.5 }}>
+                                                                {infoDOWNLOAD.size}
+                                                            </Typography>
+                                                        )}
+                                                    </Box>
+                                                    <StatusChip 
+                                                        flag={FLAG_UNZIP} 
+                                                        status={getBulkStatus(row, FLAG_UNZIP)} 
+                                                        label="Unzip" 
+                                                        count={infoUNZIP ? infoUNZIP.count : undefined} 
+                                                    />
+                                                    <StatusChip 
+                                                        flag={FLAG_IPFS} 
+                                                        status={getBulkStatus(row, FLAG_IPFS)} 
+                                                        label="IPFS" 
+                                                        count={infoIPFS ? infoIPFS.count : undefined} 
+                                                    />
+                                                    <StatusChip 
+                                                        flag={FLAG_MINT} 
+                                                        status={getBulkStatus(row, FLAG_MINT)} 
+                                                        label="Mint" 
+                                                    />
+                                                </Stack>
+                                                {infoIPFS && infoIPFS.cid && (
+                                                    <Stack direction="column" spacing={1}>
+                                                        <Typography variant="body2" color="primary">
+                                                            IPFS CID: {infoIPFS.cid}
+                                                        </Typography>
+                                                        <Typography variant="body2" color="info.main">
+                                                            Pinned Items: {fIntNumber(infoIPFS.count)}
+                                                        </Typography>
+                                                    </Stack>
+                                                )}
+                                                <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
+                                                    <Typography variant="body2">
+                                                        Items: {infoUNZIP ? fIntNumber(infoUNZIP.count) : 'N/A'}
+                                                    </Typography>
+                                                    <Typography variant="body2">Owners: {owners}</Typography>
+                                                </Stack>
+                                                <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
+                                                    <Typography variant="body2">Taxon: {taxon}</Typography>
+                                                    <Typography variant="body2">Minter: {minterName}</Typography>
+                                                </Stack>
+                                                <Typography variant="caption" color="text.secondary">
+                                                    Created: {strDateTime}
+                                                </Typography>
+                                            </Stack>
+                                        </TableCell>
+                                        <TableCell align="center" width="20%">
+                                            {infoIPFS && infoIPFS.cid && status === 0x3f ? (
+                                                <Stack spacing={1} alignItems="center">
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        href={`/bulks/mint/${slug}`}
+                                                        startIcon={<CollectionsIcon />}
+                                                        fullWidth
+                                                    >
+                                                        Bulk Mint
+                                                    </Button>
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        Ready to mint
+                                                    </Typography>
+                                                </Stack>
+                                            ) : (
+                                                <Stack spacing={1} alignItems="center">
+                                                    <Button
+                                                        variant="outlined"
+                                                        color="primary"
+                                                        disabled
+                                                        startIcon={<CollectionsIcon />}
+                                                        fullWidth
+                                                    >
+                                                        Bulk Mint
+                                                    </Button>
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        {status === 0x3f ? 'IPFS pending' : 'Processing'}
+                                                    </Typography>
+                                                </Stack>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                )
+            )}
+
+            {count > 0 && (
+                <Box sx={{ mt: 4 }}>
+                    <BulkToolbar
+                        count={count}
+                        rows={rows}
+                        setRows={setRows}
+                        page={page}
+                        setPage={setPage}
+                        onRefresh={getBulkCollections}
+                    />
+                </Box>
+            )}
+        </Container>
+    );
+}
+
+// New component for status chips
+function StatusChip({ flag, status, label, count }) {
+    let color;
+    let icon;
+
+    switch (status) {
+        case STATUS_SUCCESS:
+            color = 'success';
+            icon = <CheckCircleIcon />;
+            break;
+        case STATUS_ERROR:
+            color = 'error';
+            icon = <ErrorIcon />;
+            break;
+        case STATUS_START:
+            color = 'warning';
+            icon = <PendingIcon />;
+            break;
+        default:
+            color = 'default';
+            icon = <PendingIcon />;
+    }
+
+    return (
+        <Chip
+            label={count !== undefined ? `${label} (${fIntNumber(count)})` : label}
+            color={color}
+            size="small"
+            icon={icon}
+        />
     );
 }
