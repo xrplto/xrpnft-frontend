@@ -93,8 +93,10 @@ export default function NFTCard({ onCreate }) {
                         const ret = res.data;
                         console.log('Collections returned by XRPNFT API:', ret.collections);
                         if (ret.collections.length > 0) {
-                            // Filter out collections with type: "bulk"
-                            const filteredCollections = ret.collections.filter(collection => collection.type !== "bulk");
+                            // Filter out collections with type: "bulk", "random", or "sequence"
+                            const filteredCollections = ret.collections.filter(collection => 
+                                !["bulk", "random", "sequence"].includes(collection.type)
+                            );
                             setCollections(filteredCollections);
                         }
                     }
