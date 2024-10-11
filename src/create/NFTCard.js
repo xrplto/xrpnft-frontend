@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
 // Context
 import { useContext, useEffect, useState } from 'react';
@@ -58,12 +59,14 @@ const IconImage = styled('img')(
 );
 
 export default function NFTCard({ onCreate }) {
+    const router = useRouter();
     const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
     const [collections, setCollections] = useState([]);
     const [expanded, setExpanded] = useState(false);
+    const [hasBulkCollections, setHasBulkCollections] = useState(false);
 
     const handleExpand = async () => {
         if (expanded === false && collections.length === 0) {
@@ -98,6 +101,12 @@ export default function NFTCard({ onCreate }) {
                                 !["bulk", "random", "sequence"].includes(collection.type)
                             );
                             setCollections(filteredCollections);
+
+                            // Check if user has any bulk, random, or sequence collections
+                            const hasBulkTypes = ret.collections.some(collection => 
+                                ["bulk", "random", "sequence"].includes(collection.type)
+                            );
+                            setHasBulkCollections(hasBulkTypes);
                         }
                     }
                 } catch (error) {
