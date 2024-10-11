@@ -216,36 +216,46 @@ export default function FilterDetail({
                                     <FormControlLabel
                                         value="latestActivity"
                                         control={<Radio color="primary" />}
-                                        label={<Typography variant="s3">Latest Activity</Typography>}
+                                        label={
+                                            <Typography variant="s3">
+                                                Latest Activity
+                                            </Typography>
+                                        }
                                     />
                                     <FormControlLabel
                                         value="pricenoxrp"
                                         control={<Radio color="primary" />}
                                         label={
                                             <Typography variant="s3">
-                                                Listed (non-XRP){' '}
-                                                <Typography
-                                                    component="span"
-                                                    variant="s3"
-                                                    color="text.secondary"
-                                                >
-                                                    ({extra?.onSaleCount})
-                                                </Typography>
+                                                Listed (non-XRP)
                                             </Typography>
                                         }
                                     />
                                     <FormControlLabel
                                         value="pricexrpasc"
                                         control={<Radio color="primary" />}
-                                        label={<Typography variant="s3">XRP Price: Low to High</Typography>}
+                                        label={
+                                            <Typography variant="s3">
+                                                XRP Price: Low to High
+                                            </Typography>
+                                        }
                                     />
                                     <FormControlLabel
                                         value="pricexrpdesc"
                                         control={<Radio color="primary" />}
-                                        label={<Typography variant="s3">XRP Price: High to Low</Typography>}
+                                        label={
+                                            <Typography variant="s3">
+                                                XRP Price: High to Low
+                                            </Typography>
+                                        }
                                     />
                                 </RadioGroup>
                             </FormControl>
+                            {extra?.onSaleCount !== undefined && (
+                                <Typography variant="s3" color="text.secondary" sx={{ mt: 2 }}>
+                                    Total NFTs for sale: {extra.onSaleCount}
+                                </Typography>
+                            )}
                         </FormGroup>
                     </AccordionDetails>
                 </Accordion>
