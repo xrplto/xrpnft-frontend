@@ -2,20 +2,23 @@ import useSound from 'use-sound';
 import Confetti from 'react-confetti';
 import { ColorExtractor } from 'react-color-extractor';
 import useWindowSize from 'react-use/lib/useWindowSize';
-import React, { useEffect, useState, createRef } from "react";
+import React, { useEffect, useState } from "react";
 import { FacebookShareButton, TwitterShareButton } from "react-share";
 import { FacebookIcon, TwitterIcon } from "react-share";
+import { useRouter } from 'next/router';
 
 // Material
 import { useTheme } from '@mui/material/styles';
 import {
     styled,
     Button,
-    CardMedia,
+    Container,
     Link,
     Stack,
     Typography,
-    useMediaQuery
+    useMediaQuery,
+    Box,
+    Fade,
 } from '@mui/material';
 
 const CardWrapper = styled('div')(
@@ -26,90 +29,108 @@ const CardWrapper = styled('div')(
             width: 500px;
             height: 500px;
         }
-        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-        border-radius: 30px;
-        backdrop-filter: blur(50px);
-        background: rgb(2, 0, 36);
-        padding: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        backdrop-filter: blur(20px);
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
         text-align: center;
-        object-fit: cover;
-        transition: width 1s ease-in-out, height .5s ease-in-out !important;
-        -webkit-tap-highlight-color: transparent;
+        transition: all 0.3s ease-in-out;
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
   `
 );
 
-export default function Congrats({ data }) {
+const ShareButton = styled(Button)(({ theme }) => ({
+    minWidth: 'auto',
+    padding: theme.spacing(1.5),
+    borderRadius: '50%',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backdropFilter: 'blur(10px)',
+    '&:hover': {
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    },
+}));
+
+const ActionButton = styled(Button)(({ theme }) => `
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    &.MuiButton-contained {
+        background: linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main});
+        color: ${theme.palette.common.white};
+        border: none;
+
+        &:hover {
+            background: linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark});
+        }
+    }
+
+    &.MuiButton-outlined {
+        border: 2px solid ${theme.palette.primary.main};
+        color: ${theme.palette.primary.main};
+
+        &:hover {
+            background: rgba(${theme.palette.primary.main}, 0.05);
+        }
+    }
+`);
+
+
+const GradientTypography = styled(Typography)(
+    ({ theme }) => `
+        background: linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main});
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+    `
+);
+
+const AnimatedBackground = styled('div')(({ theme }) => ({
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: -1,
+    background: `linear-gradient(45deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 99%, ${theme.palette.secondary.light} 100%)`,
+    backgroundSize: '400% 400%',
+    animation: 'gradientBG 15s ease infinite',
+    '@keyframes gradientBG': {
+        '0%': { backgroundPosition: '0% 50%' },
+        '50%': { backgroundPosition: '100% 50%' },
+        '100%': { backgroundPosition: '0% 50%' },
+    },
+}));
+
+export default function Congrats() {
+    const router = useRouter();
+    const { nfTokenID } = router.query;
     const theme = useTheme();
     const { width, height } = useWindowSize();
     const [play, { stop }] = useSound('/static/sounds/mixkit-fireworks-bang-in-sky-2989.wav');
     const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
 
-    const nft = data.nft;
-    const collection = data.collection;
-    const isEditCollection = data.isEditCollection;
-    const isImportCollection = data.isImportCollection;
-    const isCreateCollection = !isEditCollection && !isImportCollection;
-    const isBuyAssets = data.isBuyAssets;
-    const isBurnNft = data.isBurnNft;
-    const isMintNft = data.isMintNft;
-
+    const [nft, setNft] = useState(null);
     const [colors, setColors] = useState([]);
-
     const [congrats, setCongrats] = useState(true);
 
-    let imgUrl;
-    let isVideo = false;
-    let url, title, desc;
-    if (nft) {
-        // {
-        //     "_id": "630b722e2aa4d0244dcfc62b",
-        //     "name": "FAT CATS - 1",
-        //     "externalLink": "",
-        //     "description": "",
-        //     "collection": "",
-        //     "Flags": 13,
-        //     "Issuer": "rpcmZhxthTeWoLMpro5dfRAsAmwZCrsxGK",
-        //     "minter": "xrpnft.com",
-        //     "image": "QmeBkwfxtCygbxCeZFRf8A1Qoh7vf1VoU4AxQCXCDwscUx",
-        //     "URI": "516D6653394D70417754756F684B674E795146636939726D6348654566727874705533473976324842674837735A",
-        //     "uuid": "4a23c44e703944909b29b53f5e94a44b",
-        //     "minted": true,
-        //     "TokenID": "000D000011BBE0160B08A0743C13E22918573B2AAC759E9E16E5DA9C00000001"
-        // }
-        const {
-            uuid,
-            name,
-            description,
-            collection,
-            NFTokenID,
-            meta,
-        } = nft;
-        imgUrl = `https://gateway.xrpnft.com/ipfs/${meta?.image||meta?.video}`;
-        isVideo = nft.meta.video;
-        url = `https://xrpnft.com/nft/${NFTokenID}`;
-        title = `${name}`;
-        desc = description?description:`XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
-    } else {
-        const {
-            name,
-            slug,
-            items,
-            type,
-            description,
-            logoImage,
-            featuredImage,
-            bannerImage,
-        } = collection;
-
-        imgUrl = `https://s1.xrpnft.com/collection/${collection.logoImage}`;
-        url = `https://xrpnft.com/collection/${slug}`;
-        title = `${name}`;
-        desc = description?description:`XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
-    }
-
-    const getColors = (colors, idx) => {
-        setColors(c => [...c, ...colors]);
-    }
+    useEffect(() => {
+        if (nfTokenID) {
+            fetchNFTData(nfTokenID);
+        }
+    }, [nfTokenID]);
 
     useEffect(() => {
         if (congrats) {
@@ -118,7 +139,42 @@ export default function Congrats({ data }) {
                 setCongrats(false);
             }, 3000);
         }
-    }, [congrats]);
+    }, [congrats, play]);
+
+    const fetchNFTData = async (nfTokenID) => {
+        try {
+            const response = await fetch(`https://api.xrpnft.com/api/nft/${nfTokenID}`);
+            const data = await response.json();
+            if (data.res === "success") {
+                setNft(data.nft);
+            } else {
+                console.error('Error fetching NFT data:', data);
+            }
+        } catch (error) {
+            console.error('Error fetching NFT data:', error);
+        }
+    };
+
+    const getColors = (colors) => {
+        setColors(prevColors => [...prevColors, ...colors]);
+    }
+
+    if (!nft) {
+        return <Typography>Loading...</Typography>;
+    }
+
+    const {
+        name,
+        meta,
+        NFTokenID,
+        collection,
+    } = nft;
+
+    const imgUrl = meta?.image ? `https://gateway.xrpnft.com/ipfs/${meta.image.replace('ipfs://', '')}` : '';
+    const isVideo = false; // Adjust this if you need to handle video NFTs
+    const url = `https://xrpnft.com/nft/${NFTokenID}`;
+    const title = name || "My New NFT";
+    const desc = meta?.description || `XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.`;
 
     return (
         <>
@@ -130,191 +186,111 @@ export default function Congrats({ data }) {
                 run={true}
                 recycle={congrats}
                 gravity={0.2}
-                numberOfPieces={width / 3}
+                numberOfPieces={width / 4}
                 tweenDuration={100}
+                colors={[theme.palette.primary.light, theme.palette.secondary.light, theme.palette.success.light, theme.palette.warning.light]}
             />
-            <Stack spacing={1} sx={{mt: 4, mb:3}}>
-                <Stack direction="row" spacing={2} alignItems="center">
-                    <Typography variant="h1a" >Congratulations!</Typography>
-                    <img src='/static/party-popper.png'
-                        style={{
-                            width: 32,
-                            height: 32
-                        }}
-                    />
-                </Stack>
-
-                <Stack spacing={2} alignItems="center" sx={{pt: 3}}>
-                    {nft &&
-                        <>
-                            {isMintNft &&
-                                <Typography variant="d3">Your NFT has been minted on the XRP Ledger.</Typography>
-                            }
-                            {isBuyAssets &&
-                                <Typography variant="d3">You've successfully purchased a NFT.</Typography>
-                            }
-                            {isBurnNft &&
-                                <Typography variant="d3">Your NFT has been burnt from the XRP Ledger.</Typography>
-                            }
-                        </>
-                    }
-
-                    {collection &&
-                        <>
-                            {isCreateCollection &&
-                                <Typography variant="d3">Your collection has been created.</Typography>
-                            }
-                            {isEditCollection &&
-                                <Typography variant="d3">Your collection has been edited.</Typography>
-                            }
-                            {isImportCollection &&
-                                <Typography variant="d3">Import Collection successful.</Typography>
-                            }
-                        </>
-                    }
-
-                    <Stack direction="row" spacing={2}>
-                        <FacebookShareButton
-                            url={url}
-                            quote={title}
-                            hashtag={"#"}
-                            description={desc}
-                        >
-                            <FacebookIcon size={32} round />
-                        </FacebookShareButton>
-                        <TwitterShareButton
-                            title={title}
-                            url={url}
-                            hashtag={"#"}
-                        >
-                            <TwitterIcon size={32} round />
-                        </TwitterShareButton>
-                    </Stack>
-
-                    <CardWrapper
-                        style={{
-                            background: `radial-gradient(
-                                    circle,
-                                    rgba(255, 255, 255, 0.05) 0%,
-                                    ${colors[0]} 0%,
-                                    rgba(255, 255, 255, 0.05) 70%
-                                )`,
-                        }}
-                    >
-                        {isVideo ?
-                            <CardMedia
-                                component={isVideo?'video':'img'}
-                                image={imgUrl}
-                                alt={'NFT'}
-                                controls={isVideo}
+            <AnimatedBackground />
+            <Container maxWidth="md">
+                <Fade in={true} timeout={1000}>
+                    <Stack spacing={6} sx={{ mt: 12, mb: 12, alignItems: 'center' }}>
+                        <Stack direction="row" spacing={2} alignItems="center">
+                            <GradientTypography
+                                variant="h2"
+                                fontWeight="bold"
+                                sx={{
+                                    fontSize: {
+                                        xs: '2rem',
+                                        sm: '2.5rem',
+                                        md: '3rem',
+                                        lg: '3.5rem'
+                                    },
+                                    textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+                                }}
+                            >
+                                Congratulations!
+                            </GradientTypography>
+                            <img src='/static/party-popper.png'
+                                alt="Party popper"
                                 style={{
-                                    width: fullScreen?'480px':'280px',
-                                    height: fullScreen?'480px':'280px',
-                                    // marginTop: 5,
-                                    borderRadius: 20,
-                                    objectFit: 'cover'
+                                    width: 56,
+                                    height: 56
                                 }}
                             />
-                            :
+                        </Stack>
+
+                        <Typography variant="h5" textAlign="center" color="text.secondary" sx={{ maxWidth: '600px' }}>
+                            Your NFT has been successfully minted on the XRP Ledger. You're now part of an exclusive digital art community.
+                        </Typography>
+
+                        <CardWrapper>
                             <ColorExtractor getColors={getColors}>
                                 <img src={imgUrl}
+                                    alt={name}
                                     style={{
-                                        width: fullScreen?'480px':'280px',
-                                        height: fullScreen?'480px':'280px',
-                                        // marginTop: 5,
-                                        borderRadius: 20,
-                                        objectFit: 'cover'
+                                        width: '100%',
+                                        height: '100%',
+                                        borderRadius: 16,
+                                        objectFit: 'cover',
+                                        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
                                     }}
                                 />
                             </ColorExtractor>
-                        }
-                    </CardWrapper>
+                        </CardWrapper>
 
-                    {nft &&
-                        <>
-                            {isBuyAssets &&
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/collection/${nft.cslug}`}
-                                >
-                                    <Button variant="outlined">Buy another NFT</Button>
-                                </Link>
-                            }
-                            {isBurnNft &&
-                                <>
-                                    <Link
-                                        underline="none"
-                                        color="inherit"
-                                        href={`/collection/${nft.cslug}`}
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Button variant="contained">Burn another NFT</Button>
-                                    </Link>
-                                </>
-                            }
-                            {isMintNft &&
-                                <>
-                                    <Link
-                                        underline="none"
-                                        color="inherit"
-                                        href={`/nft/${nft.NFTokenID}`}
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Button variant="contained">View NFT Detail</Button>
-                                    </Link>
+                        <GradientTypography variant="h3" fontWeight="medium" sx={{ textShadow: '1px 1px 3px rgba(0,0,0,0.1)' }}>{title}</GradientTypography>
+                        {collection && (
+                            <Typography variant="h6" color="text.secondary">
+                                Collection: {collection}
+                            </Typography>
+                        )}
 
-                                    <Link
-                                        underline="none"
-                                        color="inherit"
-                                        href={`/create`}
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Button variant="outlined">Create another NFT</Button>
-                                    </Link>
-                                </>
-                            }
-                        </>
-                    }
+                        <Stack direction="row" spacing={3} justifyContent="center">
+                            <ShareButton
+                                component={FacebookShareButton}
+                                url={url}
+                                quote={title}
+                                hashtag={"#XRPNFT"}
+                                description={desc}
+                            >
+                                <FacebookIcon size={32} round bgStyle={{ fill: 'transparent' }} iconFillColor={theme.palette.primary.contrastText} />
+                            </ShareButton>
+                            <ShareButton
+                                component={TwitterShareButton}
+                                title={title}
+                                url={url}
+                                hashtag={"#XRPNFT"}
+                            >
+                                <TwitterIcon size={32} round bgStyle={{ fill: 'transparent' }} iconFillColor={theme.palette.primary.contrastText} />
+                            </ShareButton>
+                        </Stack>
 
-                    {collection &&
-                        <>
-                            {collection.type !== 'normal' &&
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/bulks`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <Button variant="contained">Manage Bulks</Button>
-                                </Link>
-                            }
+                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
+                            <Link
+                                underline="none"
+                                color="inherit"
+                                href={`/nft/${NFTokenID}`}
+                                rel="noreferrer noopener nofollow"
+                            >
+                                <ActionButton variant="contained" size="large">
+                                    View NFT Details
+                                </ActionButton>
+                            </Link>
 
                             <Link
                                 underline="none"
                                 color="inherit"
-                                href={`/collection/${collection.slug}`}
+                                href={`/create`}
                                 rel="noreferrer noopener nofollow"
                             >
-                                <Button variant="contained">View Collection</Button>
+                                <ActionButton variant="outlined" size="large">
+                                    Create Another NFT
+                                </ActionButton>
                             </Link>
-
-                            {isCreateCollection &&
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/collection/create`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <Button variant="outlined">Create another Collection</Button>
-                                </Link>
-                            }
-                        </>
-                    }
-
-                </Stack>
-
-            </Stack>
+                        </Stack>
+                    </Stack>
+                </Fade>
+            </Container>
         </>
     );
-};
+}

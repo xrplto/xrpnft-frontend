@@ -507,8 +507,6 @@ export default function Minting({ showHeader = true, defaultValues }) {
             });
 
             console.log('Transaction Information:', JSON.stringify(tx.result, null, 2));
-
-            // Log only the transaction result
             console.log('Result:', tx.result.meta.TransactionResult);
 
             if (tx.result.tx_json && tx.result.tx_json.TransactionType === 'NFTokenMint') {
@@ -516,9 +514,13 @@ export default function Minting({ showHeader = true, defaultValues }) {
                 console.log('URI:', tx.result.tx_json.URI);
             }
 
-            // Extract and log the NFTokenID directly from the metadata
+            let nfTokenID = null;
             if (tx.result.meta && tx.result.meta.nftoken_id) {
-                console.log('NFToken ID:', tx.result.meta.nftoken_id);
+                nfTokenID = tx.result.meta.nftoken_id;
+                console.log('NFToken ID:', nfTokenID);
+                
+                // Redirect to the congrats page with the NFToken ID
+                window.location.href = `/congrats/${nfTokenID}`;
             } else {
                 console.log('NFToken ID not found in transaction metadata');
             }
