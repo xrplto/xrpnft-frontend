@@ -8,6 +8,8 @@ import {
     Stack,
     Toolbar
 } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 // ----------------------------------------------------------------------
 
@@ -26,7 +28,7 @@ const CustomSelect = styled(Select)(({ theme }) => ({
     }
 }));
 
-export default function BulkToolbar({ count, rows, setRows, page, setPage}) {
+export default function BulkToolbar({ count, rows, setRows, page, setPage, onRefresh }) {
     const num = count / rows;
     let page_count = Math.floor(num)
     if (num % 1 != 0) page_count++;
@@ -58,7 +60,7 @@ export default function BulkToolbar({ count, rows, setRows, page, setPage}) {
     };
 
     return (
-        <Grid container rowSpacing={2} alignItems="center" sx={{mt: 0}}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ py: 2 }}>
             <Grid container item xs={12} sx={{ display: { xs: 'block', md: 'none' } }}>
                 <Stack alignItems='center'>
                     <Pagination page={page+1} onChange={handleChangePage} count={page_count} size="small"/>
@@ -88,6 +90,12 @@ export default function BulkToolbar({ count, rows, setRows, page, setPage}) {
                     </CustomSelect>
                 </Stack>
             </Grid>
-        </Grid>
+
+            <Tooltip title="Refresh">
+                <IconButton onClick={onRefresh}>
+                    <RefreshIcon />
+                </IconButton>
+            </Tooltip>
+        </Stack>
     );
 }

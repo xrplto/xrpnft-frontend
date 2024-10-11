@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
@@ -19,7 +19,10 @@ import {
     TableRow,
     Tooltip,
     Typography,
-    Divider
+    Divider,
+    CircularProgress,
+    Skeleton,
+    Chip
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -119,23 +122,19 @@ function getBulkStatus(bulk, flag) {
         return (status >> 6) & 0x0F;
 }
 
-function StatusContainer({bulk, flag}) {
+// Modify the StatusContainer to accept theme as a prop
+function StatusContainer({bulk, flag, theme}) {
     const status = getBulkStatus(bulk, flag);
-    // return (
-    //     <ClockLoader color='#FFA319' size={30} />
-    // )
     return (
         <>
         {status === STATUS_PENDING &&
             <Tooltip title='PENDING'>
-                <PendingIcon fontSize='large'/>
+                <PendingIcon fontSize='large' sx={{ color: theme.palette.text.secondary }} />
             </Tooltip>
         }
         {status === STATUS_START &&
             <Tooltip title='WORKING'>
-                <Stack>
-                    <ClockLoader color='#FFA319' size={30} />
-                </Stack>
+                <CircularProgress size={24} thickness={4} />
             </Tooltip>
         }
         {status === STATUS_ERROR &&
@@ -164,51 +163,36 @@ export default function BulkList() {
     const [rows, setRows] = useState(10);
     const [count, setCount] = useState(0);
     const [bulks, setBulks] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const getBulkCollections = useCallback(() => {
+        if (!account || !accountToken) {
+            openSnackbar('Please login', 'error');
+            return;
+        }
+
+        setLoading(true);
+        axios.get(`${BASE_URL}/collection/list?account=${account}&page=${page}&limit=${rows}&type=bulk`, {headers: {'x-access-token': accountToken}})
+            .then(res => {
+                let ret = res.status === 200 ? res.data : undefined;
+                if (ret) {
+                    setCount(ret.count);
+                    setBulks(ret.collections);
+                }
+            }).catch(err => {
+                console.log("Error on getting bulk list!!!", err);
+            }).finally(() => {
+                setLoading(false);
+            });
+    }, [account, accountToken, page, rows, openSnackbar]);
 
     useEffect(() => {
-        function getBulkCollections() {
-            if (!account || !accountToken) {
-                openSnackbar('Please login', 'error');
-                return;
-            }
-
-            // https://api.xrpnft.com/api/collection/list?account=rhhh&page=0&limit=10
-            axios.get(`${BASE_URL}/collection/list?account=${account}&page=${page}&limit=${rows}&type=bulk`, {headers: {'x-access-token': accountToken}})
-                .then(res => {
-                    let ret = res.status === 200 ? res.data : undefined;
-                    if (ret) {
-                        setCount(ret.count);
-                        setBulks(ret.collections);
-                    }
-                }).catch(err => {
-                    console.log("Error on getting bulk list!!!", err);
-                }).then(function () {
-                    // always executed
-                });
-        }
         getBulkCollections();
-        const timer = setInterval(() => getBulkCollections(), 8000);
-
-        return () => {
-            clearInterval(timer);
-        }
-    }, [account, accountToken, page, rows]);
+    }, [getBulkCollections]);
 
     return (
         <>
-            <Box
-                sx={{
-                    display: "flex",
-                    gap: 1,
-                    py: 1,
-                    overflow: "auto",
-                    width: "100%",
-                    "& > *": {
-                        scrollSnapAlign: "center",
-                    },
-                    "::-webkit-scrollbar": { display: "none" },
-                }}
-            >
+            <Box sx={{ width: "100%", overflow: "auto" }}>
                 <Table stickyHeader sx={{
                     [`& .${tableCellClasses.root}`]: {
                         borderBottom: "1px solid",
@@ -216,28 +200,24 @@ export default function BulkList() {
                     }
                 }}>
                     <TableBody>
-                    {
-                        // {
-                        //     "_id": "632683afa45d7f463e8ef870",
-                        //     "account": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
-                        //     "name": "TestCollection-1",
-                        //     "slug": "test1",
-                        //     "type": "bulk",
-                        //     "bulkUrl": "https://drive.google.com/file/d/1xjA-1bodiMrvSCtdTEMim5x1Cam74bXU/view",
-                        //     "status": 7,
-                        //     "description": "This is the description of test1 collection",
-                        //     "logoImage": "1663468463243_3d1cc658af10407fabf2c5e96bde2ab4.png",
-                        //     "featuredImage": "1663468463243_220f174cbce64122b203c6bccafab57c.jpg",
-                        //     "bannerImage": "1663468463245_dcb8db64b5b84da49fd2839508cc0618.jpg",
-                        //     "created": 1663468463251,
-                        //     "modified": 1663468463251,
-                        //     "uuid": "92d8b1d1ac3d48369e98463e6ec29678",
-                        //     "creator": "xrpnft.com",
-                        //     "infoDOWNLOAD": {
-                        //         "size": "2.47 GB"
-                        //     }
-                        // }
-                        // exchs.slice(page * rows, page * rows + rows)
+                    {loading ? (
+                        // Show skeleton loader when loading
+                        [...Array(5)].map((_, index) => (
+                            <TableRow key={index}>
+                                <TableCell width='15%'>
+                                    <Skeleton variant="rectangular" width={160} height={160} />
+                                </TableCell>
+                                <TableCell>
+                                    <Skeleton variant="text" width="80%" />
+                                    <Skeleton variant="text" width="60%" />
+                                    <Skeleton variant="text" width="40%" />
+                                </TableCell>
+                                <TableCell width='15%'>
+                                    <Skeleton variant="circular" width={56} height={56} />
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    ) : (
                         bulks && bulks.map((row) => {
                             const {
                                 uuid,
@@ -262,45 +242,48 @@ export default function BulkList() {
 
                             return (
                                 <TableRow
-                                    // hover
                                     key={uuid}
+                                    hover
                                     sx={{
-                                        [`& .${tableCellClasses.root}`]: {
-                                            // color: (error ? '#B72136' : '#B72136')
-                                        }
+                                        transition: 'background-color 0.2s',
+                                        '&:hover': {
+                                            backgroundColor: theme.palette.action.hover,
+                                        },
                                     }}
                                 >
-                                    {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
                                     <TableCell align="left" width='15%'>
-                                        <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${logoImage}`}
+                                        <Avatar 
+                                            alt={name} 
+                                            src={`https://s1.xrpnft.com/collection/${logoImage}`}
+                                            variant="rounded"
                                             sx={{
-                                                mr:2,
                                                 width: 160,
                                                 height: 160,
-                                                filter: infoIPFS && infoIPFS.cid?`drop-shadow(16px 16px 10px rgba(0,0,0,0.8))`:'grayscale(100%)',
+                                                borderRadius: '16px', // This creates rounded corners
+                                                filter: infoIPFS && infoIPFS.cid 
+                                                    ? `drop-shadow(0 4px 8px rgba(0,0,0,0.1))` 
+                                                    : 'grayscale(100%)',
                                             }}
                                         />
                                     </TableCell>
 
                                     <TableCell align="left">
-                                        <Stack>
+                                        <Stack spacing={2}>
                                             <Stack direction="row" spacing={2} alignItems="center">
-                                                <Link href={`/collection/${slug}`}>
-                                                    <Typography variant="h3" color="#33C2FF">{name}</Typography>
+                                                <Link href={`/collection/${slug}`} underline="hover">
+                                                    <Typography variant="h5" color="primary">{name}</Typography>
                                                 </Link>
                                                 {type === "random" &&
                                                     <Tooltip title='Random Collection'>
-                                                        <CasinoIcon color='info'/>
+                                                        <CasinoIcon color='info' fontSize="small" />
                                                     </Tooltip>
                                                 }
                                                 {type === "sequence" &&
                                                     <Tooltip title='Sequence Collection'>
-                                                        <AnimationIcon color='info'/>
+                                                        <AnimationIcon color='info' fontSize="small" />
                                                     </Tooltip>
                                                 }
-                                                <Tooltip title="Category">
-                                                    <Typography variant="s7" color="#4fa94d">{category}</Typography>
-                                                </Tooltip>
+                                                <Chip label={category} size="small" color="primary" variant="outlined" />
                                             </Stack>
 
                                             {infoIPFS && infoIPFS.cid &&
@@ -351,7 +334,7 @@ export default function BulkList() {
                                             </Stack>
                                             <Stack direction="row" spacing={3} sx={{mt:1}}>
                                                 <Stack direction="row" spacing={1} alignItems="center">
-                                                    <StatusContainer bulk={row} flag={FLAG_GOOGLE} />
+                                                    <StatusContainer bulk={row} flag={FLAG_GOOGLE} theme={theme} />
                                                     <Stack>
                                                         <Typography variant="s4">Download</Typography>
                                                         {infoDOWNLOAD &&
@@ -365,7 +348,7 @@ export default function BulkList() {
                                                 </Stack>
                                                 <Divider orientation="vertical" flexItem/>
                                                 <Stack direction="row" spacing={1} alignItems="center">
-                                                    <StatusContainer bulk={row} flag={FLAG_UNZIP} />
+                                                    <StatusContainer bulk={row} flag={FLAG_UNZIP} theme={theme} />
                                                     <Stack>
                                                         <Typography variant="s4">Unzip</Typography>
                                                         {infoUNZIP &&
@@ -379,7 +362,7 @@ export default function BulkList() {
                                                 </Stack>
                                                 <Divider orientation="vertical" flexItem/>
                                                 <Stack direction="row" spacing={1} alignItems="center">
-                                                    <StatusContainer bulk={row} flag={FLAG_IPFS} />
+                                                    <StatusContainer bulk={row} flag={FLAG_IPFS} theme={theme} />
                                                     <Stack>
                                                         <Typography variant="s4">Pin to IPFS</Typography>
                                                         {infoIPFS && infoIPFS.count &&
@@ -393,7 +376,7 @@ export default function BulkList() {
                                                 </Stack>
                                                 <Divider orientation="vertical" flexItem/>
                                                 <Stack direction="row" spacing={1} alignItems="center">
-                                                    <StatusContainer bulk={row} flag={FLAG_MINT} />
+                                                    <StatusContainer bulk={row} flag={FLAG_MINT} theme={theme} />
                                                     <Typography variant="s4">Mint</Typography>
                                                 </Stack>
                                             </Stack>
@@ -449,7 +432,7 @@ export default function BulkList() {
                                 </TableRow>
                             );
                         })
-                    }
+                    )}
                     </TableBody>
                 </Table>
             </Box>
@@ -460,10 +443,10 @@ export default function BulkList() {
                     setRows={setRows}
                     page={page}
                     setPage={setPage}
+                    onRefresh={getBulkCollections}  // Add this line
                 />
             }
-            {/* Add this Box component to create space at the bottom */}
-            <Box sx={{ py: 10 }} /> {/* Adjust the py (padding-y) value as needed */}
+            <Box sx={{ py: 4 }} />
         </>
     );
 }
