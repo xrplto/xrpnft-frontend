@@ -508,16 +508,12 @@ export default function Minting({ showHeader = true, defaultValues }) {
 
             console.log('Transaction Information:', JSON.stringify(tx.result, null, 2));
 
-            // Log specific details
-            console.log('Transaction Type:', tx.result.TransactionType);
-            console.log('Account:', tx.result.Account);
-            console.log('Fee:', tx.result.Fee);
-            console.log('Sequence:', tx.result.Sequence);
+            // Log only the transaction result
             console.log('Result:', tx.result.meta.TransactionResult);
 
-            if (tx.result.TransactionType === 'NFTokenMint') {
-                console.log('NFTokenTaxon:', tx.result.NFTokenTaxon);
-                console.log('URI:', tx.result.URI);
+            if (tx.result.tx_json && tx.result.tx_json.TransactionType === 'NFTokenMint') {
+                console.log('NFTokenTaxon:', tx.result.tx_json.NFTokenTaxon);
+                console.log('URI:', tx.result.tx_json.URI);
             }
 
             // Extract and log the NFTokenID directly from the metadata
