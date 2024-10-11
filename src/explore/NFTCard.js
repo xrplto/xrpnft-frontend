@@ -59,6 +59,10 @@ const GlassContent = styled(CardContent)(({ theme }) => ({
     background: alpha(theme.palette.background.paper, 0.1),
     backdropFilter: 'blur(10px)',
     borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    height: '120px', // Increased height to accommodate content
 }));
 
 export default function NFTCard({ nft, handleRemove }) {
@@ -113,7 +117,7 @@ export default function NFTCard({ nft, handleRemove }) {
     return (
         <Box sx={{ 
             position: 'relative', 
-            padding: '16px', // Increased padding
+            padding: '16px',
             '&:hover': {
                 zIndex: 1,
             }
@@ -122,7 +126,7 @@ export default function NFTCard({ nft, handleRemove }) {
                 <CardWrapper
                     sx={{
                         width: '100%',
-                        maxWidth: { xs: '100%', sm: 320, md: 340, lg: 360 }, // Increased max-width
+                        maxWidth: { xs: '100%', sm: 320, md: 340, lg: 360 },
                         aspectRatio: '3 / 4',
                         display: 'flex',
                         flexDirection: 'column',
@@ -191,32 +195,26 @@ export default function NFTCard({ nft, handleRemove }) {
                             onCanPlay={onImageLoaded}
                         />
                     }
-                    <GlassContent sx={{ 
-                        padding: '16px', // Increased padding
-                        display: 'flex', 
-                        flexDirection: 'column', 
-                        flexShrink: 0, 
-                        height: '110px' // Slightly increased height
-                    }}>
+                    <GlassContent>
                         <Typography
                             variant="subtitle2"
                             sx={{
                                 fontWeight: 600,
-                                mb: 0.75, // Slightly increased margin
+                                mb: 0.75,
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 display: '-webkit-box',
                                 WebkitLineClamp: 2,
                                 WebkitBoxOrient: 'vertical',
                                 lineHeight: 1.2,
-                                fontSize: '0.9rem', // Increased font size
+                                fontSize: '0.9rem',
                                 color: theme.palette.text.primary,
                             }}
                         >
                             {name}
                         </Typography>
                         
-                        <Stack spacing={0.75} mt="auto"> {/* Increased spacing */}
+                        <Stack spacing={0.75}>
                             <Stack direction="row" alignItems='center' justifyContent='space-between'>
                                 {renderPrice()}
                                 {renderRarityRank()}
@@ -289,8 +287,17 @@ export default function NFTCard({ nft, handleRemove }) {
     }
 
     function renderEvent() {
+        if (!updateEvent) return null;
+
         return (
-            <Typography variant='caption' color="text.secondary" sx={{fontSize: '0.7rem', textAlign: 'right'}}>
+            <Typography variant='caption' color="text.secondary" sx={{
+                fontSize: '0.7rem',
+                textAlign: 'right',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: '50%', // Limit the width to prevent overflow
+            }}>
                 Updated: {updateEvent}
             </Typography>
         );
