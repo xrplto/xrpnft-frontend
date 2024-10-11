@@ -51,6 +51,7 @@ import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import { alpha } from '@mui/material/styles';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Context
 import { useContext } from 'react';
@@ -176,6 +177,9 @@ export default function BulkList() {
     const [loading, setLoading] = useState(true);
     const [viewMode, setViewMode] = useState('card');
 
+    // Add this line to check if the screen is mobile
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     const getBulkCollections = useCallback(() => {
         if (!account || !accountToken) {
             openSnackbar('Please login', 'error');
@@ -216,7 +220,15 @@ export default function BulkList() {
 
     return (
         <Container maxWidth="xl">
-            <Box sx={{ mb: 5, mt: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box
+                sx={{
+                    mb: 5,
+                    mt: 3,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                }}
+            >
                 <div>
                     <Typography variant="h3" gutterBottom>
                         Bulk Collections
@@ -247,8 +259,16 @@ export default function BulkList() {
                             <Grid item xs={12} md={6} lg={4} key={index}>
                                 <Card>
                                     <CardContent>
-                                        <Skeleton variant="rectangular" width="100%" height={200} />
-                                        <Skeleton variant="text" width="80%" sx={{ mt: 2 }} />
+                                        <Skeleton
+                                            variant="rectangular"
+                                            width="100%"
+                                            height={200}
+                                        />
+                                        <Skeleton
+                                            variant="text"
+                                            width="80%"
+                                            sx={{ mt: 2 }}
+                                        />
                                         <Skeleton variant="text" width="60%" />
                                     </CardContent>
                                 </Card>
@@ -261,7 +281,11 @@ export default function BulkList() {
                             {[...Array(5)].map((_, index) => (
                                 <TableRow key={index}>
                                     <TableCell width="15%">
-                                        <Skeleton variant="rectangular" width={160} height={160} />
+                                        <Skeleton
+                                            variant="rectangular"
+                                            width={160}
+                                            height={160}
+                                        />
                                     </TableCell>
                                     <TableCell>
                                         <Skeleton variant="text" width="80%" />
@@ -269,17 +293,21 @@ export default function BulkList() {
                                         <Skeleton variant="text" width="40%" />
                                     </TableCell>
                                     <TableCell width="15%">
-                                        <Skeleton variant="circular" width={56} height={56} />
+                                        <Skeleton
+                                            variant="circular"
+                                            width={56}
+                                            height={56}
+                                        />
                                     </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 )
-            ) : (
-                viewMode === 'card' ? (
-                    <Grid container spacing={3}>
-                        {bulks && bulks.map((row) => {
+            ) : viewMode === 'card' ? (
+                <Grid container spacing={3}>
+                    {bulks &&
+                        bulks.map((row) => {
                             const {
                                 uuid,
                                 slug,
@@ -310,15 +338,22 @@ export default function BulkList() {
                                             height: '100%',
                                             display: 'flex',
                                             flexDirection: 'column',
-                                            transition: 'transform 0.3s, box-shadow 0.3s',
+                                            transition:
+                                                'transform 0.3s, box-shadow 0.3s',
                                             '&:hover': {
                                                 transform: 'translateY(-5px)',
-                                                boxShadow: (theme) => theme.shadows[10],
-                                            },
+                                                boxShadow: (theme) =>
+                                                    theme.shadows[10]
+                                            }
                                         }}
                                     >
                                         <CardContent sx={{ flexGrow: 1 }}>
-                                            <Box sx={{ position: 'relative', mb: 2 }}>
+                                            <Box
+                                                sx={{
+                                                    position: 'relative',
+                                                    mb: 2
+                                                }}
+                                            >
                                                 <Avatar
                                                     alt={name}
                                                     src={`https://s1.xrpnft.com/collection/${logoImage}`}
@@ -327,9 +362,11 @@ export default function BulkList() {
                                                         width: '100%',
                                                         height: 200,
                                                         borderRadius: '16px',
-                                                        filter: infoIPFS && infoIPFS.cid
-                                                            ? `drop-shadow(0 4px 8px rgba(0,0,0,0.1))`
-                                                            : 'grayscale(100%)'
+                                                        filter:
+                                                            infoIPFS &&
+                                                            infoIPFS.cid
+                                                                ? `drop-shadow(0 4px 8px rgba(0,0,0,0.1))`
+                                                                : 'grayscale(100%)'
                                                     }}
                                                 />
                                                 <Chip
@@ -340,116 +377,219 @@ export default function BulkList() {
                                                         position: 'absolute',
                                                         top: 8,
                                                         right: 8,
-                                                        backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.8),
+                                                        backgroundColor: (
+                                                            theme
+                                                        ) =>
+                                                            alpha(
+                                                                theme.palette
+                                                                    .primary
+                                                                    .main,
+                                                                0.8
+                                                            )
                                                     }}
                                                 />
                                             </Box>
 
-                                            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-                                                <Typography variant="h5" component="div">
+                                            <Stack
+                                                direction="row"
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                                mb={2}
+                                            >
+                                                <Typography
+                                                    variant="h5"
+                                                    component="div"
+                                                >
                                                     {name}
                                                 </Typography>
-                                                <Tooltip title={`${type.charAt(0).toUpperCase() + type.slice(1)} Collection`}>
-                                                    {type === "random" ? <CasinoIcon color='info' /> :
-                                                     type === "sequence" ? <AnimationIcon color='info' /> :
-                                                     type === "normal" ? <ViewListIcon color='info' /> :
-                                                     <ViewModuleIcon color='info' />}
+                                                <Tooltip
+                                                    title={`${
+                                                        type
+                                                            .charAt(0)
+                                                            .toUpperCase() +
+                                                        type.slice(1)
+                                                    } Collection`}
+                                                >
+                                                    {type === 'random' ? (
+                                                        <CasinoIcon color="info" />
+                                                    ) : type === 'sequence' ? (
+                                                        <AnimationIcon color="info" />
+                                                    ) : type === 'normal' ? (
+                                                        <ViewListIcon color="info" />
+                                                    ) : (
+                                                        <ViewModuleIcon color="info" />
+                                                    )}
                                                 </Tooltip>
                                             </Stack>
 
-                                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                            <Typography
+                                                variant="body2"
+                                                color="text.secondary"
+                                                sx={{ mb: 2 }}
+                                            >
                                                 {description}
                                             </Typography>
 
-                                            <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+                                            <Stack
+                                                direction="row"
+                                                spacing={2}
+                                                sx={{ mb: 2 }}
+                                            >
                                                 <Box>
-                                                    <StatusChip 
-                                                        flag={FLAG_GOOGLE} 
-                                                        status={getBulkStatus(row, FLAG_GOOGLE)} 
-                                                        label="Download" 
+                                                    <StatusChip
+                                                        flag={FLAG_GOOGLE}
+                                                        status={getBulkStatus(
+                                                            row,
+                                                            FLAG_GOOGLE
+                                                        )}
+                                                        label="Download"
                                                     />
-                                                    {infoDOWNLOAD && infoDOWNLOAD.size && (
-                                                        <Typography variant="caption" display="block" sx={{ mt: 0.5 }}>
-                                                            {infoDOWNLOAD.size}
-                                                        </Typography>
-                                                    )}
+                                                    {infoDOWNLOAD &&
+                                                        infoDOWNLOAD.size && (
+                                                            <Typography
+                                                                variant="caption"
+                                                                display="block"
+                                                                sx={{ mt: 0.5 }}
+                                                            >
+                                                                {
+                                                                    infoDOWNLOAD.size
+                                                                }
+                                                            </Typography>
+                                                        )}
                                                 </Box>
-                                                <StatusChip 
-                                                    flag={FLAG_UNZIP} 
-                                                    status={getBulkStatus(row, FLAG_UNZIP)} 
-                                                    label="Unzip" 
-                                                    count={infoUNZIP ? infoUNZIP.count : undefined} 
+                                                <StatusChip
+                                                    flag={FLAG_UNZIP}
+                                                    status={getBulkStatus(
+                                                        row,
+                                                        FLAG_UNZIP
+                                                    )}
+                                                    label="Unzip"
+                                                    count={
+                                                        infoUNZIP
+                                                            ? infoUNZIP.count
+                                                            : undefined
+                                                    }
                                                 />
-                                                <StatusChip 
-                                                    flag={FLAG_IPFS} 
-                                                    status={getBulkStatus(row, FLAG_IPFS)} 
-                                                    label="IPFS" 
-                                                    count={infoIPFS ? infoIPFS.count : undefined} 
+                                                <StatusChip
+                                                    flag={FLAG_IPFS}
+                                                    status={getBulkStatus(
+                                                        row,
+                                                        FLAG_IPFS
+                                                    )}
+                                                    label="IPFS"
+                                                    count={
+                                                        infoIPFS
+                                                            ? infoIPFS.count
+                                                            : undefined
+                                                    }
                                                 />
-                                                <StatusChip 
-                                                    flag={FLAG_MINT} 
-                                                    status={getBulkStatus(row, FLAG_MINT)} 
-                                                    label="Mint" 
+                                                <StatusChip
+                                                    flag={FLAG_MINT}
+                                                    status={getBulkStatus(
+                                                        row,
+                                                        FLAG_MINT
+                                                    )}
+                                                    label="Mint"
                                                 />
                                             </Stack>
 
                                             {infoIPFS && infoIPFS.cid && (
-                                                <Stack direction="column" spacing={1} sx={{ mb: 2 }}>
-                                                    <Typography variant="body2" color="primary">
+                                                <Stack
+                                                    direction="column"
+                                                    spacing={1}
+                                                    sx={{ mb: 2 }}
+                                                >
+                                                    <Typography
+                                                        variant="body2"
+                                                        color="primary"
+                                                    >
                                                         IPFS CID: {infoIPFS.cid}
                                                     </Typography>
-                                                    <Typography variant="body2" color="info.main">
-                                                        Pinned Items: {fIntNumber(infoIPFS.count)}
+                                                    <Typography
+                                                        variant="body2"
+                                                        color="info.main"
+                                                    >
+                                                        Pinned Items:{' '}
+                                                        {fIntNumber(
+                                                            infoIPFS.count
+                                                        )}
                                                     </Typography>
                                                 </Stack>
                                             )}
 
-                                            <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
+                                            <Stack
+                                                direction="row"
+                                                justifyContent="space-between"
+                                                sx={{ mb: 1 }}
+                                            >
                                                 <Typography variant="body2">
-                                                    Items: {infoUNZIP ? fIntNumber(infoUNZIP.count) : 'N/A'}
+                                                    Items:{' '}
+                                                    {infoUNZIP
+                                                        ? fIntNumber(
+                                                              infoUNZIP.count
+                                                          )
+                                                        : 'N/A'}
                                                 </Typography>
-                                                <Typography variant="body2">Owners: {owners}</Typography>
+                                                <Typography variant="body2">
+                                                    Owners: {owners}
+                                                </Typography>
                                             </Stack>
 
-                                            <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
-                                                <Typography variant="body2">Taxon: {taxon}</Typography>
-                                                <Typography variant="body2">Minter: {minterName}</Typography>
+                                            <Stack
+                                                direction="row"
+                                                justifyContent="space-between"
+                                                sx={{ mb: 1 }}
+                                            >
+                                                <Typography variant="body2">
+                                                    Taxon: {taxon}
+                                                </Typography>
+                                                <Typography variant="body2">
+                                                    Minter: {minterName}
+                                                </Typography>
                                             </Stack>
 
-                                            <Typography variant="caption" color="text.secondary">
+                                            <Typography
+                                                variant="caption"
+                                                color="text.secondary"
+                                            >
                                                 Created: {strDateTime}
                                             </Typography>
                                         </CardContent>
 
-                                        {infoIPFS && infoIPFS.cid && status === 0x3f && (
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                fullWidth
-                                                href={`/bulks/mint/${slug}`}
-                                                startIcon={<CollectionsIcon />}
-                                                sx={{ mt: 'auto' }}
-                                            >
-                                                Bulk Mint
-                                            </Button>
-                                        )}
+                                        {infoIPFS &&
+                                            infoIPFS.cid &&
+                                            status === 0x3f && (
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    fullWidth
+                                                    href={`/bulks/mint/${slug}`}
+                                                    startIcon={
+                                                        <CollectionsIcon />
+                                                    }
+                                                    sx={{ mt: 'auto' }}
+                                                >
+                                                    Bulk Mint
+                                                </Button>
+                                            )}
                                     </Card>
                                 </Grid>
                             );
                         })}
-                    </Grid>
-                ) : (
-                    <Table
-                        stickyHeader
-                        sx={{
-                            [`& .${tableCellClasses.root}`]: {
-                                borderBottom: '1px solid',
-                                borderColor: theme.palette.divider
-                            }
-                        }}
-                    >
-                        <TableBody>
-                            {bulks && bulks.map((row) => {
+                </Grid>
+            ) : (
+                <Table
+                    stickyHeader
+                    sx={{
+                        [`& .${tableCellClasses.root}`]: {
+                            borderBottom: '1px solid',
+                            borderColor: theme.palette.divider
+                        }
+                    }}
+                >
+                    <TableBody>
+                        {bulks &&
+                            bulks.map((row) => {
                                 const {
                                     uuid,
                                     slug,
@@ -480,128 +620,187 @@ export default function BulkList() {
                                         sx={{
                                             transition: 'background-color 0.2s',
                                             '&:hover': {
-                                                backgroundColor: theme.palette.action.hover
+                                                backgroundColor:
+                                                    theme.palette.action.hover
                                             }
                                         }}
                                     >
-                                        <TableCell align="left" width="15%">
+                                        <TableCell align="left" width={isMobile ? "30%" : "15%"}>
                                             <Avatar
                                                 alt={name}
                                                 src={`https://s1.xrpnft.com/collection/${logoImage}`}
                                                 variant="rounded"
                                                 sx={{
-                                                    width: 160,
-                                                    height: 160,
+                                                    width: isMobile ? 80 : 160,
+                                                    height: isMobile ? 80 : 160,
                                                     borderRadius: '16px',
-                                                    filter: infoIPFS && infoIPFS.cid
-                                                        ? `drop-shadow(0 4px 8px rgba(0,0,0,0.1))`
-                                                        : 'grayscale(100%)'
+                                                    filter:
+                                                        infoIPFS && infoIPFS.cid
+                                                            ? `drop-shadow(0 4px 8px rgba(0,0,0,0.1))`
+                                                            : 'grayscale(100%)'
                                                 }}
                                             />
                                         </TableCell>
                                         <TableCell align="left">
                                             <Stack spacing={2}>
-                                                <Typography variant="h5" component="div">
+                                                <Typography
+                                                    variant={isMobile ? "h6" : "h5"}
+                                                    component="div"
+                                                >
                                                     {name}
                                                 </Typography>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    {description}
-                                                </Typography>
-                                                <Stack direction="row" spacing={2}>
-                                                    <Box>
-                                                        <StatusChip 
-                                                            flag={FLAG_GOOGLE} 
-                                                            status={getBulkStatus(row, FLAG_GOOGLE)} 
-                                                            label="Download" 
-                                                        />
-                                                        {infoDOWNLOAD && infoDOWNLOAD.size && (
-                                                            <Typography variant="caption" display="block" sx={{ mt: 0.5 }}>
-                                                                {infoDOWNLOAD.size}
-                                                            </Typography>
-                                                        )}
-                                                    </Box>
-                                                    <StatusChip 
-                                                        flag={FLAG_UNZIP} 
-                                                        status={getBulkStatus(row, FLAG_UNZIP)} 
-                                                        label="Unzip" 
-                                                        count={infoUNZIP ? infoUNZIP.count : undefined} 
+                                                {!isMobile && (
+                                                    <Typography
+                                                        variant="body2"
+                                                        color="text.secondary"
+                                                    >
+                                                        {description}
+                                                    </Typography>
+                                                )}
+                                                <Stack
+                                                    direction={isMobile ? "column" : "row"}
+                                                    spacing={1}
+                                                >
+                                                    <StatusChip
+                                                        flag={FLAG_GOOGLE}
+                                                        status={getBulkStatus(row, FLAG_GOOGLE)}
+                                                        label="Download"
                                                     />
-                                                    <StatusChip 
-                                                        flag={FLAG_IPFS} 
-                                                        status={getBulkStatus(row, FLAG_IPFS)} 
-                                                        label="IPFS" 
-                                                        count={infoIPFS ? infoIPFS.count : undefined} 
+                                                    <StatusChip
+                                                        flag={FLAG_UNZIP}
+                                                        status={getBulkStatus(row, FLAG_UNZIP)}
+                                                        label="Unzip"
+                                                        count={infoUNZIP ? infoUNZIP.count : undefined}
                                                     />
-                                                    <StatusChip 
-                                                        flag={FLAG_MINT} 
-                                                        status={getBulkStatus(row, FLAG_MINT)} 
-                                                        label="Mint" 
+                                                    <StatusChip
+                                                        flag={FLAG_IPFS}
+                                                        status={getBulkStatus(row, FLAG_IPFS)}
+                                                        label="IPFS"
+                                                        count={infoIPFS ? infoIPFS.count : undefined}
+                                                    />
+                                                    <StatusChip
+                                                        flag={FLAG_MINT}
+                                                        status={getBulkStatus(row, FLAG_MINT)}
+                                                        label="Mint"
                                                     />
                                                 </Stack>
-                                                {infoIPFS && infoIPFS.cid && (
-                                                    <Stack direction="column" spacing={1}>
-                                                        <Typography variant="body2" color="primary">
+                                                {!isMobile && infoIPFS && infoIPFS.cid && (
+                                                    <Stack
+                                                        direction="column"
+                                                        spacing={1}
+                                                    >
+                                                        <Typography
+                                                            variant="body2"
+                                                            color="primary"
+                                                        >
                                                             IPFS CID: {infoIPFS.cid}
                                                         </Typography>
-                                                        <Typography variant="body2" color="info.main">
+                                                        <Typography
+                                                            variant="body2"
+                                                            color="info.main"
+                                                        >
                                                             Pinned Items: {fIntNumber(infoIPFS.count)}
                                                         </Typography>
                                                     </Stack>
                                                 )}
-                                                <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
+                                                <Stack
+                                                    direction="row"
+                                                    justifyContent="space-between"
+                                                    sx={{ mb: 1 }}
+                                                >
                                                     <Typography variant="body2">
                                                         Items: {infoUNZIP ? fIntNumber(infoUNZIP.count) : 'N/A'}
                                                     </Typography>
-                                                    <Typography variant="body2">Owners: {owners}</Typography>
+                                                    <Typography variant="body2">
+                                                        Owners: {owners}
+                                                    </Typography>
                                                 </Stack>
-                                                <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
-                                                    <Typography variant="body2">Taxon: {taxon}</Typography>
-                                                    <Typography variant="body2">Minter: {minterName}</Typography>
-                                                </Stack>
-                                                <Typography variant="caption" color="text.secondary">
-                                                    Created: {strDateTime}
-                                                </Typography>
+                                                {!isMobile && (
+                                                    <>
+                                                        <Stack
+                                                            direction="row"
+                                                            justifyContent="space-between"
+                                                            sx={{ mb: 1 }}
+                                                        >
+                                                            <Typography variant="body2">
+                                                                Taxon: {taxon}
+                                                            </Typography>
+                                                            <Typography variant="body2">
+                                                                Minter: {minterName}
+                                                            </Typography>
+                                                        </Stack>
+                                                        <Typography
+                                                            variant="caption"
+                                                            color="text.secondary"
+                                                        >
+                                                            Created: {strDateTime}
+                                                        </Typography>
+                                                    </>
+                                                )}
                                             </Stack>
                                         </TableCell>
-                                        <TableCell align="center" width="20%">
-                                            {infoIPFS && infoIPFS.cid && status === 0x3f ? (
-                                                <Stack spacing={1} alignItems="center">
+                                        <TableCell align="center" width={isMobile ? "30%" : "20%"}>
+                                            {infoIPFS &&
+                                            infoIPFS.cid &&
+                                            status === 0x3f ? (
+                                                <Stack
+                                                    spacing={1}
+                                                    alignItems="center"
+                                                >
                                                     <Button
                                                         variant="contained"
                                                         color="primary"
                                                         href={`/bulks/mint/${slug}`}
-                                                        startIcon={<CollectionsIcon />}
+                                                        startIcon={
+                                                            <CollectionsIcon />
+                                                        }
                                                         fullWidth
                                                     >
-                                                        Bulk Mint
+                                                        {isMobile ? "Mint" : "Bulk Mint"}
                                                     </Button>
-                                                    <Typography variant="caption" color="text.secondary">
-                                                        Ready to mint
-                                                    </Typography>
+                                                    {!isMobile && (
+                                                        <Typography
+                                                            variant="caption"
+                                                            color="text.secondary"
+                                                        >
+                                                            Ready to mint
+                                                        </Typography>
+                                                    )}
                                                 </Stack>
                                             ) : (
-                                                <Stack spacing={1} alignItems="center">
+                                                <Stack
+                                                    spacing={1}
+                                                    alignItems="center"
+                                                >
                                                     <Button
                                                         variant="outlined"
                                                         color="primary"
                                                         disabled
-                                                        startIcon={<CollectionsIcon />}
+                                                        startIcon={
+                                                            <CollectionsIcon />
+                                                        }
                                                         fullWidth
                                                     >
-                                                        Bulk Mint
+                                                        {isMobile ? "Mint" : "Bulk Mint"}
                                                     </Button>
-                                                    <Typography variant="caption" color="text.secondary">
-                                                        {status === 0x3f ? 'IPFS pending' : 'Processing'}
-                                                    </Typography>
+                                                    {!isMobile && (
+                                                        <Typography
+                                                            variant="caption"
+                                                            color="text.secondary"
+                                                        >
+                                                            {status === 0x3f
+                                                                ? 'IPFS pending'
+                                                                : 'Processing'}
+                                                        </Typography>
+                                                    )}
                                                 </Stack>
                                             )}
                                         </TableCell>
                                     </TableRow>
                                 );
                             })}
-                        </TableBody>
-                    </Table>
-                )
+                    </TableBody>
+                </Table>
             )}
 
             {count > 0 && (
@@ -645,7 +844,9 @@ function StatusChip({ flag, status, label, count }) {
 
     return (
         <Chip
-            label={count !== undefined ? `${label} (${fIntNumber(count)})` : label}
+            label={
+                count !== undefined ? `${label} (${fIntNumber(count)})` : label
+            }
             color={color}
             size="small"
             icon={icon}
