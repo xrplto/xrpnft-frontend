@@ -42,13 +42,11 @@ export default function CreateContainer() {
                 flexDirection: 'column',
                 minHeight: '100vh',
                 backgroundColor: theme.palette.background.default,
-                backgroundImage: `linear-gradient(135deg, ${theme.palette.primary.main}22 25%, transparent 25%),
-                                  linear-gradient(225deg, ${theme.palette.primary.main}22 25%, transparent 25%),
-                                  linear-gradient(45deg, ${theme.palette.primary.main}22 25%, transparent 25%),
-                                  linear-gradient(315deg, ${theme.palette.primary.main}22 25%, ${theme.palette.background.default} 25%)`,
-                backgroundPosition: '10px 0, 10px 0, 0 0, 0 0',
-                backgroundSize: '20px 20px',
-                backgroundRepeat: 'repeat',
+                backgroundImage: `radial-gradient(circle at 50% 50%, ${theme.palette.primary.main}22 0%, transparent 50%), 
+                                  radial-gradient(circle at 100% 0%, ${theme.palette.secondary.main}22 0%, transparent 50%)`,
+                backgroundSize: '100% 100%, 50% 50%',
+                backgroundPosition: 'center center, top right',
+                backgroundRepeat: 'no-repeat',
             }}
         >
             <Box flexGrow={1}>
