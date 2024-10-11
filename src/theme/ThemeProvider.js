@@ -12,13 +12,23 @@ const ThemeProviderWrapper = (props) => {
     
     let baseTheme = themeCreator(darkMode);
 
-    // Create the main theme with wider maxWidth for containers
+    // Create the main theme with full width for containers
     let mainTheme = createTheme(baseTheme, {
         components: {
             MuiContainer: {
                 styleOverrides: {
                     root: {
-                        maxWidth: '2440px !important', // Updated to match the header
+                        maxWidth: '100% !important', // Updated to full width
+                        paddingLeft: '24px',
+                        paddingRight: '24px',
+                        [baseTheme.breakpoints.up('sm')]: {
+                            paddingLeft: '32px',
+                            paddingRight: '32px',
+                        },
+                        [baseTheme.breakpoints.up('md')]: {
+                            paddingLeft: '48px',
+                            paddingRight: '48px',
+                        },
                     },
                 },
             },
