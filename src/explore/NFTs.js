@@ -1,11 +1,5 @@
 import axios from 'axios';
-import React, {
-    useState,
-    useEffect,
-    useContext,
-    useCallback,
-    useMemo
-} from 'react';
+import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import debounce from 'lodash.debounce';
@@ -14,7 +8,6 @@ import { styled, alpha } from '@mui/material/styles';
 // Material
 import {
     useTheme,
-    useMediaQuery,
     Box,
     Grid,
     IconButton,
@@ -37,41 +30,53 @@ const GlassyBox = styled(Box)(({ theme }) => ({
     backdropFilter: 'blur(20px)',
     borderRadius: theme.shape.borderRadius * 2,
     border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`
 }));
 
 const SearchTextField = styled(TextField)(({ theme }) => ({
     '& .MuiOutlinedInput-root': {
         '& fieldset': {
-            borderColor: 'transparent',
+            borderColor: 'transparent'
         },
         '&:hover fieldset': {
-            borderColor: alpha(theme.palette.primary.main, 0.3),
+            borderColor: alpha(theme.palette.primary.main, 0.3)
         },
         '&.Mui-focused fieldset': {
-            borderColor: theme.palette.primary.main,
-        },
+            borderColor: theme.palette.primary.main
+        }
     },
     '& .MuiInputBase-input': {
-        color: theme.palette.text.primary,
+        color: theme.palette.text.primary
     },
     '& .MuiInputAdornment-root .MuiSvgIcon-root': {
-        color: theme.palette.primary.main,
-    },
+        color: theme.palette.primary.main
+    }
 }));
 
 const sortNFTs = (nfts, sortOption) => {
     switch (sortOption) {
         case 'pricexrpasc':
             return nfts.sort((a, b) => {
-                const aAmount = a.cost && a.cost.currency === 'XRP' ? Number(a.cost.amount) : Infinity;
-                const bAmount = b.cost && b.cost.currency === 'XRP' ? Number(b.cost.amount) : Infinity;
+                const aAmount =
+                    a.cost && a.cost.currency === 'XRP'
+                        ? Number(a.cost.amount)
+                        : Infinity;
+                const bAmount =
+                    b.cost && b.cost.currency === 'XRP'
+                        ? Number(b.cost.amount)
+                        : Infinity;
                 return aAmount - bAmount;
             });
         case 'pricexrpdesc':
             return nfts.sort((a, b) => {
-                const aAmount = a.cost && a.cost.currency === 'XRP' ? Number(a.cost.amount) : -Infinity;
-                const bAmount = b.cost && b.cost.currency === 'XRP' ? Number(b.cost.amount) : -Infinity;
+                const aAmount =
+                    a.cost && a.cost.currency === 'XRP'
+                        ? Number(a.cost.amount)
+                        : -Infinity;
+                const bAmount =
+                    b.cost && b.cost.currency === 'XRP'
+                        ? Number(b.cost.amount)
+                        : -Infinity;
                 return bAmount - aAmount;
             });
         case 'pricenoxrp':
@@ -100,12 +105,12 @@ export default function NFTs({ collection }) {
     const [loading, setLoading] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
     const [filter, setFilter] = useState(0);
-    const [subFilter, setSubFilter] = useState('latestActivity'); // Set default to 'latestActivity'
+    const [subFilter, setSubFilter] = useState('latestActivity');
     const [filterAttrs, setFilterAttrs] = useState([]);
-    const [sync, setSync] = useState(0);
-    const [attrSync, setAttrSync] = useState(0);
 
     const fetchNfts = useCallback(() => {
+        if (loading) return;
+
         setLoading(true);
         const limit = 32;
         const body = {
@@ -124,12 +129,11 @@ export default function NFTs({ collection }) {
             .then((res) => {
                 console.log('XRPNFT API Response:', res.data);
 
-                let newNfts = res.data.nfts.map(nft => ({
+                let newNfts = res.data.nfts.map((nft) => ({
                     ...nft,
                     cost: nft.cost && Number(nft.cost.amount) === 0 ? null : nft.cost
                 }));
 
-                // Apply client-side sorting only for specific cases
                 if (subFilter !== 'latestActivity') {
                     newNfts = sortNFTs(newNfts, subFilter);
                 }
@@ -152,16 +156,15 @@ export default function NFTs({ collection }) {
         setDeletingNfts([]);
         setPage(0);
         setHasMore(true);
-        setSync((prevSync) => prevSync + 1); // Trigger a new fetch
-    }, [flag, search, filter, subFilter, attrSync, filterAttrs, setDeletingNfts]);
+    }, [flag, search, filter, subFilter, filterAttrs, setDeletingNfts]);
 
     useEffect(() => {
         fetchNfts();
-    }, [sync, fetchNfts, flag, search, filter, subFilter, attrSync, filterAttrs]);
+    }, [fetchNfts]);
 
-    const handleChangeSearch = (e) => {
+    const handleChangeSearch = debounce((e) => {
         setSearch(e.target.value);
-    };
+    }, 300);
 
     const handleShowFilter = () => {
         setShowFilter((prevShow) => !prevShow);
@@ -189,23 +192,6 @@ export default function NFTs({ collection }) {
             });
     };
 
-    // useMemo to avoid unnecessary re-renders
-    const inputProps = useMemo(
-        () => ({
-            startAdornment: (
-                <InputAdornment position="start" sx={{ mr: 0.7 }}>
-                    <SearchIcon color="primary" />
-                </InputAdornment>
-            ),
-            endAdornment: (
-                <InputAdornment position="start">
-                    {loading && <ClipLoader color={theme.palette.primary.main} size={15} />}
-                </InputAdornment>
-            )
-        }),
-        [loading, theme.palette.primary.main]
-    );
-
     const handleSortChange = (newSubFilter) => {
         setSubFilter(newSubFilter);
         setPage(0);
@@ -213,29 +199,30 @@ export default function NFTs({ collection }) {
         setDeletingNfts([]);
         setHasMore(true);
 
-        // Adjust the filter based on the selected sorting option
         let newFilter = filter;
         if (newSubFilter !== 'latestActivity') {
-            newFilter |= 4; // Set the "On Sale" flag (4) for non-latestActivity options
+            newFilter |= 4;
         } else {
-            newFilter &= ~4; // Unset the "On Sale" flag for latestActivity
+            newFilter &= ~4;
         }
         setFilter(newFilter);
-
-        setSync((prevSync) => prevSync + 1); // Trigger a new fetch
     };
+
+    const loadMore = useCallback(() => {
+        if (!loading && hasMore) {
+            setPage((prevPage) => prevPage + 1);
+        }
+    }, [loading, hasMore]);
 
     return (
         <Box sx={{ width: '100%' }}>
             <GlassyBox sx={{ mb: 2, p: 1, display: 'flex', alignItems: 'center' }}>
-                <IconButton 
-                    aria-label="filter" 
+                <IconButton
+                    aria-label="filter"
                     onClick={handleShowFilter}
                     sx={{
                         color: 'primary.main',
-                        '&:hover': {
-                            backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                        },
+                        '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.1) }
                     }}
                 >
                     <FilterListIcon fontSize="large" />
@@ -249,11 +236,21 @@ export default function NFTs({ collection }) {
                     onChange={handleChangeSearch}
                     autoComplete="new-password"
                     inputProps={{ autoComplete: 'off' }}
-                    value={search}
                     onFocus={(event) => event.target.select()}
                     sx={{ pl: 2, pr: 0, pt: 0, pb: 0, mt: 0 }}
                     onKeyDown={(e) => e.stopPropagation()}
-                    InputProps={inputProps}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start" sx={{ mr: 0.7 }}>
+                                <SearchIcon color="primary" />
+                            </InputAdornment>
+                        ),
+                        endAdornment: (
+                            <InputAdornment position="start">
+                                {loading && <ClipLoader color={theme.palette.primary.main} size={15} />}
+                            </InputAdornment>
+                        )
+                    }}
                 />
             </GlassyBox>
             <Grid container spacing={1} justifyContent="space-between" mt={1}>
@@ -265,44 +262,28 @@ export default function NFTs({ collection }) {
                                 filter={filter}
                                 setFilter={setFilter}
                                 subFilter={subFilter}
-                                setSubFilter={handleSortChange} // Use the new handleSortChange function
+                                setSubFilter={handleSortChange}
                                 setFilterAttrs={setFilterAttrs}
                                 setPage={setPage}
                             />
                         </GlassyBox>
                     </Grid>
                 )}
-                <Grid
-                    item
-                    xs={12}
-                    md={showFilter ? 9 : 12}
-                    xl={showFilter ? 10 : 12}
-                >
+                <Grid item xs={12} md={showFilter ? 9 : 12} xl={showFilter ? 10 : 12}>
                     <InfiniteScroll
                         dataLength={nfts.length}
-                        next={() => {
-                            setPage((prevPage) => prevPage + 1);
-                            setSync((prevSync) => prevSync + 1);
-                        }}
+                        next={loadMore}
                         hasMore={hasMore}
-                        scrollThreshold={0.6}
                         loader={
                             <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
                                 <ClipLoader color={theme.palette.primary.main} size={30} />
                             </Box>
                         }
+                        scrollThreshold={0.9}
                     >
-                        <Grid container spacing={0.5}> {/* Changed spacing from 1 to 0.5 */}
+                        <Grid container spacing={0.5}>
                             {nfts.map((nft, index) => (
-                                <Grid
-                                    item
-                                    xs={6}
-                                    sm={4}
-                                    md={3}
-                                    lg={2.4}
-                                    xl={1.5}
-                                    key={nft.NFTokenID || index}
-                                >
+                                <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.NFTokenID || index}>
                                     <NFTCard
                                         nft={nft}
                                         handleRemove={handleRemove}
@@ -312,12 +293,12 @@ export default function NFTs({ collection }) {
                                                 alt={nft.name}
                                                 effect="blur"
                                                 wrapperProps={{
-                                                    style: { 
-                                                        display: 'block', 
-                                                        height: '100%', 
+                                                    style: {
+                                                        display: 'block',
+                                                        height: '100%',
                                                         width: '100%',
                                                         borderRadius: theme.shape.borderRadius,
-                                                        overflow: 'hidden',
+                                                        overflow: 'hidden'
                                                     }
                                                 }}
                                             />

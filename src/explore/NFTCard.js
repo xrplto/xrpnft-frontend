@@ -79,8 +79,8 @@ const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    borderTopLeftRadius: theme.shape.borderRadius * 2,  // Add this line
-    borderTopRightRadius: theme.shape.borderRadius * 2  // Add this line
+    borderTopLeftRadius: theme.shape.borderRadius * 2, // Add this line
+    borderTopRightRadius: theme.shape.borderRadius * 2 // Add this line
 }));
 
 export default function NFTCard({ nft, handleRemove }) {
@@ -233,7 +233,9 @@ export default function NFTCard({ nft, handleRemove }) {
                             {name}
                         </Typography>
 
-                        <Stack spacing={0.2}> {/* Further reduced spacing from 0.25 to 0.2 */}
+                        <Stack spacing={0.2}>
+                            {' '}
+                            {/* Further reduced spacing from 0.25 to 0.2 */}
                             <Stack
                                 direction="row"
                                 alignItems="center"
