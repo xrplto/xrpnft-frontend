@@ -16,8 +16,8 @@ const GradientXRP = styled('span')(({ theme }) => ({
   WebkitTextFillColor: 'transparent',
   fontWeight: 'bold',
   marginRight: '4px',
-  fontSize: '0.875rem', // Match the Typography variant="body2" font size
-  lineHeight: 1, // Adjust line height to align with the text
+  fontSize: '1rem', // Increased from 0.875rem to 1rem
+  lineHeight: 1,
   display: 'inline-flex',
   alignItems: 'center',
 }));
@@ -125,7 +125,6 @@ const FloatingFooter = () => {
               <Tooltip title="XRP Price">
                 <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
                   <GradientXRP>✕</GradientXRP>
-                  <AttachMoneyIcon fontSize="small" sx={{ mr: 0.5 }} />
                   {xrpPrice.toFixed(2)} USD
                 </Typography>
               </Tooltip>
