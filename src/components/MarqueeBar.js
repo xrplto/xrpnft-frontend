@@ -15,16 +15,15 @@ const MarqueeContainer = styled(Box)(({ theme }) => ({
     borderBottom: `1px solid ${theme.palette.divider}`
 }));
 
-const MarqueeContent = styled(Box)(({ theme, startPosition }) => ({
+const MarqueeContent = styled(Box)(({ theme }) => ({
     display: 'flex',
-    animation: `marquee 80s linear infinite`,
-    animationDelay: `${startPosition}s`,
+    animation: `marquee 25s linear infinite`, // Changed from 30s to 25s
     '&:hover': {
         animationPlayState: 'paused'
     },
     '@keyframes marquee': {
-        '0%': { transform: 'translateX(100%)' },
-        '100%': { transform: 'translateX(-100%)' }
+        '0%': { transform: 'translateX(0)' },
+        '100%': { transform: 'translateX(-50%)' }
     }
 }));
 
@@ -68,14 +67,10 @@ const NFTLink = styled(Link)({
 
 const MarqueeBar = ({ isVisible = true }) => {
     const [nfts, setNfts] = useState([]);
-    const [startPosition, setStartPosition] = useState(0);
     const BASE_URL = 'https://api.xrpnft.com/api';
     const theme = useTheme();
 
     useEffect(() => {
-        // Set a random start position between -80 and 0
-        setStartPosition(Math.random() * -80);
-
         const fetchRecentNFTs = async () => {
             try {
                 const body = {
@@ -156,11 +151,13 @@ const MarqueeBar = ({ isVisible = true }) => {
         return null;
     }
 
+    const duplicatedNfts = [...nfts, ...nfts]; // Duplicate the NFTs array
+
     return (
         <MarqueeContainer>
-            <MarqueeContent startPosition={startPosition}>
-                {nfts.map((nft, index) => (
-                    <React.Fragment key={nft.NFTokenID || index}>
+            <MarqueeContent>
+                {duplicatedNfts.map((nft, index) => (
+                    <React.Fragment key={`${nft.NFTokenID}-${index}`}>
                         <NFTLink
                             href={`/nft/${nft.NFTokenID}`}
                             underline="none"
@@ -223,7 +220,7 @@ const MarqueeBar = ({ isVisible = true }) => {
                                 )}
                             </MarqueeItem>
                         </NFTLink>
-                        {index < nfts.length - 1 && <Divider />}
+                        {index < duplicatedNfts.length - 1 && <Divider />}
                     </React.Fragment>
                 ))}
             </MarqueeContent>
