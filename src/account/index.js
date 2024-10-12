@@ -320,24 +320,33 @@ export default function Account({ profile, limit, tab, collection, type }) {
 
         async function fetchNFTStats() {
             try {
-                const response = await axios.post(
+                const collectedResponse = await axios.post(
                     `${BASE_URL}/account/collectedCreated`,
                     { account, type: 'collected' }
                 );
-                if (response.status === 200) {
-                    const data = response.data;
-                    console.log('API response from xrpnft:', data);
+                const createdResponse = await axios.post(
+                    `${BASE_URL}/account/collectedCreated`,
+                    { account, type: 'created' }
+                );
+
+                if (collectedResponse.status === 200 && createdResponse.status === 200) {
+                    const collectedData = collectedResponse.data;
+                    const createdData = createdResponse.data;
+                    console.log('API response for collected:', collectedData);
+                    console.log('API response for created:', createdData);
                     
-                    const totalCount = data.nfts.reduce((sum, collection) => sum + collection.nftCount, 0);
-                    const totalForSale = data.nfts.reduce((sum, collection) => sum + collection.nftsForSale, 0);
-                    const collectionCount = data.nfts.length;
+                    const totalCount = collectedData.nfts.reduce((sum, collection) => sum + collection.nftCount, 0);
+                    const totalForSale = collectedData.nfts.reduce((sum, collection) => sum + collection.nftsForSale, 0);
+                    const collectionCount = collectedData.nfts.length;
+                    const createdCount = createdData.nfts.length;
                     
-                    setNftStats(prevStats => ({ 
-                        ...prevStats, 
+                    setNftStats({ 
                         totalCount, 
                         totalForSale, 
-                        collectionCount
-                    }));
+                        collectionCount,
+                        createdCount
+                    });
+                    setCreatedNFTsCount(createdCount);
                 }
             } catch (error) {
                 console.error('Error fetching NFT stats:', error);
@@ -736,7 +745,7 @@ export default function Account({ profile, limit, tab, collection, type }) {
                             limit={limit}
                             collection={collection}
                             type={type}
-                            setCreatedNFTsCount={setCreatedNFTsCount} // Add this prop
+                            setCreatedNFTsCount={setCreatedNFTsCount}
                         />
                     </Stack>
                 </TabPanel>
