@@ -8,6 +8,7 @@ import "./zMain.css";
 // Components
 import XSnackbar from 'src/components/Snackbar';
 import { useSnackbar } from 'src/components/useSnackbar';
+import FloatingFooter from 'src/components/FloatingFooter';
 
 function XRPNFTApp(props) {
     const { isOpen, msg, variant, openSnackbar, closeSnackbar } = useSnackbar();
@@ -73,6 +74,7 @@ function XRPNFTApp(props) {
                         <CssBaseline />
                         <Component {...pageProps} />
                         <XSnackbar isOpen={isOpen} message={msg} variant={variant} close={closeSnackbar} />
+                        <FloatingFooter />
                     </SnackbarProvider>
                 </ThemeProvider>
             </ContextProvider>

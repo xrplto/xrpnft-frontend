@@ -17,7 +17,6 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { keyframes } from '@mui/system';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 // Components
 import CollectionPreview from './CollectionPreview';
@@ -78,18 +77,6 @@ const HeroButton = styled(Button)(
         }
     `
 );
-
-// Add this new styled component for the chat bubble
-const ChatBubble = styled(Fab)(({ theme }) => ({
-    position: 'fixed',
-    bottom: theme.spacing(4),
-    right: theme.spacing(4),
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.common.white,
-    '&:hover': {
-        backgroundColor: theme.palette.primary.dark
-    }
-}));
 
 // Update the float keyframe
 const float = keyframes`
@@ -379,11 +366,6 @@ export default function Landing({ collections }) {
                 </Box>
 
                 <Box sx={{ height: { xs: 80, md: 160 } }} />
-
-                {/* Add the chat bubble */}
-                <ChatBubble aria-label="chat">
-                    <ChatBubbleOutlineIcon />
-                </ChatBubble>
             </Box>
         </Container>
     );

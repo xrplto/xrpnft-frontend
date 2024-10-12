@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Material
-import { Box, Link, Stack, Typography, IconButton } from '@mui/material';
+import { Box, Link, Stack, Typography, IconButton, Container } from '@mui/material';
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import Glass from '@mui/material/Paper';
 
@@ -21,7 +21,8 @@ const FooterWrapper = styled(Box)(({ theme }) => ({
     backdropFilter: 'blur(10px)',
     borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
     boxShadow: `0 -8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
-    padding: theme.spacing(3),
+    padding: theme.spacing(3, 0), // Remove horizontal padding
+    paddingBottom: theme.spacing(8), // Keep extra padding at the bottom
     marginTop: 'auto' // This will push the footer to the bottom
 }));
 
@@ -46,62 +47,64 @@ export default function Footer() {
 
     return (
         <FooterWrapper>
-            <Stack
-                direction={{ xs: 'column', sm: 'row' }}
-                justifyContent="space-between"
-                alignItems="center"
-                spacing={2}
-                sx={{ maxWidth: 'xxl', margin: '0 auto', width: '100%' }}
-            >
-                <Link href="/" underline="none">
-                    <Logo />
-                </Link>
-                <Stack direction="row" spacing={2}>
-                    <StyledLink href="/explore" underline="hover">
-                        <Typography variant="body2">Explore</Typography>
-                    </StyledLink>
-                    <StyledLink href="/collections" underline="hover">
-                        <Typography variant="body2">Collections</Typography>
-                    </StyledLink>
-                    <StyledLink href="/create" underline="hover">
-                        <Typography variant="body2">Create</Typography>
-                    </StyledLink>
+            <Container maxWidth="lg"> {/* Add Container component */}
+                <Stack
+                    direction={{ xs: 'column', sm: 'row' }}
+                    justifyContent="space-between"
+                    alignItems="center"
+                    spacing={2}
+                    sx={{ width: '100%' }}
+                >
+                    <Link href="/" underline="none">
+                        <Logo />
+                    </Link>
+                    <Stack direction="row" spacing={2}>
+                        <StyledLink href="/explore" underline="hover">
+                            <Typography variant="body2">Explore</Typography>
+                        </StyledLink>
+                        <StyledLink href="/collections" underline="hover">
+                            <Typography variant="body2">Collections</Typography>
+                        </StyledLink>
+                        <StyledLink href="/create" underline="hover">
+                            <Typography variant="body2">Create</Typography>
+                        </StyledLink>
+                    </Stack>
+                    <Stack direction="row" spacing={1}>
+                        <SocialIcon
+                            aria-label="Twitter"
+                            href="https://twitter.com/XRPNFTdotcom/"
+                            target="_blank"
+                            size="small"
+                        >
+                            <TwitterIcon fontSize="small" />
+                        </SocialIcon>
+                        <SocialIcon
+                            aria-label="Facebook"
+                            href="https://www.facebook.com/xrpnft/"
+                            target="_blank"
+                            size="small"
+                        >
+                            <FacebookIcon fontSize="small" />
+                        </SocialIcon>
+                        <SocialIcon
+                            aria-label="Instagram"
+                            href="https://www.instagram.com/xrpnftdotcom"
+                            target="_blank"
+                            size="small"
+                        >
+                            <InstagramIcon fontSize="small" />
+                        </SocialIcon>
+                        <SocialIcon
+                            aria-label="Discord"
+                            href="https://xrpnft.com/discord"
+                            target="_blank"
+                            size="small"
+                        >
+                            <LinkedInIcon fontSize="small" />
+                        </SocialIcon>
+                    </Stack>
                 </Stack>
-                <Stack direction="row" spacing={1}>
-                    <SocialIcon
-                        aria-label="Twitter"
-                        href="https://twitter.com/XRPNFTdotcom/"
-                        target="_blank"
-                        size="small"
-                    >
-                        <TwitterIcon fontSize="small" />
-                    </SocialIcon>
-                    <SocialIcon
-                        aria-label="Facebook"
-                        href="https://www.facebook.com/xrpnft/"
-                        target="_blank"
-                        size="small"
-                    >
-                        <FacebookIcon fontSize="small" />
-                    </SocialIcon>
-                    <SocialIcon
-                        aria-label="Instagram"
-                        href="https://www.instagram.com/xrpnftdotcom"
-                        target="_blank"
-                        size="small"
-                    >
-                        <InstagramIcon fontSize="small" />
-                    </SocialIcon>
-                    <SocialIcon
-                        aria-label="Discord"
-                        href="https://xrpnft.com/discord"
-                        target="_blank"
-                        size="small"
-                    >
-                        <LinkedInIcon fontSize="small" />
-                    </SocialIcon>
-                </Stack>
-            </Stack>
+            </Container>
         </FooterWrapper>
     );
 }
