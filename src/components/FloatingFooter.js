@@ -10,6 +10,18 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SpeedIcon from '@mui/icons-material/Speed';
 import ChatIcon from '@mui/icons-material/Chat';
 
+const GradientXRP = styled('span')(({ theme }) => ({
+  background: 'linear-gradient(45deg, #00B4DB 30%, #0083B0 90%)',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  fontWeight: 'bold',
+  marginRight: '4px',
+  fontSize: '0.875rem', // Match the Typography variant="body2" font size
+  lineHeight: 1, // Adjust line height to align with the text
+  display: 'inline-flex',
+  alignItems: 'center',
+}));
+
 const FloatingFooterWrapper = styled(Box)(({ theme }) => ({
   position: 'fixed',
   bottom: 0,
@@ -112,9 +124,9 @@ const FloatingFooter = () => {
             {xrpPrice && (
               <Tooltip title="XRP Price">
                 <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
-                  <span style={{ marginRight: '4px' }}>✕</span>
+                  <GradientXRP>✕</GradientXRP>
                   <AttachMoneyIcon fontSize="small" sx={{ mr: 0.5 }} />
-                  {xrpPrice.toFixed(4)} USD
+                  {xrpPrice.toFixed(2)} USD
                 </Typography>
               </Tooltip>
             )}
