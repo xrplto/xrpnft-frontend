@@ -361,18 +361,6 @@ export default function Landing({ collections }) {
                         <Box
                             sx={{
                                 position: 'relative',
-                                '&::before': {
-                                    content: '""',
-                                    position: 'absolute',
-                                    top: -15,
-                                    left: -15,
-                                    right: 15,
-                                    bottom: 15,
-                                    background:
-                                        'linear-gradient(45deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 100%)',
-                                    borderRadius: '20px',
-                                    zIndex: -1
-                                }
                             }}
                         >
                             <CollectionPreview

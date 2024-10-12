@@ -38,11 +38,14 @@ const CustomImage = styled('img')(({ theme }) => ({
 }));
 
 const CustomCarousel = styled(Carousel)(({ theme }) => ({
-    filter: `drop-shadow(0 4px 12px ${theme.palette.primary.main}20)`,
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
-    maxWidth: '90%', // Increase from 85% to 90%
-    margin: '0 auto'
+    maxWidth: '90%',
+    margin: '0 auto',
+    '& .slide': {
+        background: 'transparent !important', // Remove the gray background
+        boxShadow: 'none !important', // Remove any shadow
+    }
 }));
 
 const CollectionCard = styled(Paper)(({ theme }) => ({
@@ -63,11 +66,12 @@ const CollectionCard = styled(Paper)(({ theme }) => ({
         background: `linear-gradient(to bottom, ${theme.palette.background.default}00 70%, ${theme.palette.background.default}B3 100%)`,
         pointerEvents: 'none'
     },
-    width: '100%', // Ensure the card takes full width of its container
-    maxWidth: '550px', // Increase from 500px to 550px
-    margin: '0 auto', // Center the card
+    width: '100%',
+    maxWidth: '550px',
+    margin: '0 auto',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    background: theme.palette.background.paper, // Set the background here instead of inline style
 }));
 
 const CollectionInfo = styled(Stack)(({ theme }) => ({
@@ -147,7 +151,7 @@ export default function CollectionPreview({ collections }) {
             swipeable={false}
             animationHandler={fadeAnimationHandler}
             minHeight="100%"
-            emulateTouch={true} // Add touch emulation for better mobile experience
+            emulateTouch={true}
         >
             {collections.map((item, idx) => {
                 const {
@@ -184,62 +188,53 @@ export default function CollectionPreview({ collections }) {
                 }
 
                 return (
-                    <Stack
+                    <CollectionCard
                         key={idx}
-                        sx={{ p: 1, maxWidth: '100%', margin: '0 auto' }}
+                        elevation={0}
                     >
                         <Link
                             underline="none"
                             color="inherit"
-                            // target="_blank"
                             href={`/collection/${slug}`}
-                            // rel="noreferrer noopener"
+                            sx={{ display: 'block', width: '100%' }}
                         >
-                            <CollectionCard
-                                elevation={0}
-                                style={{
-                                    background: theme.palette.background.paper
-                                }}
+                            <CustomImage src={imgUrl} alt={name} />
+                            <CollectionInfo
+                                direction="row"
+                                spacing={1}
+                                alignItems="center"
+                                justifyContent="center"
                             >
-                                <CustomImage src={imgUrl} alt={name} />
-                                <CollectionInfo
-                                    direction="row"
-                                    spacing={1}
-                                    alignItems="center"
-                                    justifyContent="center" // Center the content horizontally
+                                <GradientText
+                                    variant="subtitle1"
+                                    sx={{
+                                        color: theme.palette.text.primary,
+                                        fontWeight: 600,
+                                        textShadow: `0 1px 2px ${theme.palette.primary.main}80`,
+                                        textAlign: 'center',
+                                        flexGrow: 1,
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                        fontSize: '1.5rem'
+                                    }}
                                 >
-                                    <GradientText
-                                        variant="subtitle1" // Change back to subtitle1 for slightly larger text
-                                        sx={{
-                                            color: theme.palette.text.primary, // Changed from primary.contrastText
-                                            fontWeight: 600,
-                                            textShadow: `0 1px 2px ${theme.palette.primary.main}80`,
-                                            textAlign: 'center', // Center the text
-                                            flexGrow: 1, // Allow the text to take up available space
-                                            overflow: 'hidden',
-                                            textOverflow: 'ellipsis',
-                                            whiteSpace: 'nowrap',
-                                            fontSize: '1.5rem' // Increase font size from 1.4rem to 1.5rem
-                                        }}
-                                    >
-                                        {name}
-                                    </GradientText>
-                                    {verified === 'yes' && (
-                                        <Tooltip title="Verified">
-                                            <VerifiedIcon
-                                                fontSize="large" // Change from medium to large
-                                                sx={{
-                                                    color: theme.palette.primary
-                                                        .main,
-                                                    flexShrink: 0
-                                                }}
-                                            />
-                                        </Tooltip>
-                                    )}
-                                </CollectionInfo>
-                            </CollectionCard>
+                                    {name}
+                                </GradientText>
+                                {verified === 'yes' && (
+                                    <Tooltip title="Verified">
+                                        <VerifiedIcon
+                                            fontSize="large"
+                                            sx={{
+                                                color: theme.palette.primary.main,
+                                                flexShrink: 0
+                                            }}
+                                        />
+                                    </Tooltip>
+                                )}
+                            </CollectionInfo>
                         </Link>
-                    </Stack>
+                    </CollectionCard>
                 );
             })}
         </CustomCarousel>
