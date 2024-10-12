@@ -117,7 +117,7 @@ const MarqueeBar = ({ isVisible = true }) => {
             case 'MINT':
                 return 'Newly Minted';
             case 'TRANSFER':
-                return 'Transferred';
+                return 'Transfer'; // Changed from 'Transferred' to 'Transfer'
             default:
                 return updateEvent;
         }
