@@ -42,7 +42,7 @@ const CardWrapper = styled(Card)(({ theme }) => ({
     padding: 0,
     cursor: 'pointer',
     transition: 'all 0.3s ease-in-out',
-    overflow: 'visible',
+    overflow: 'hidden', // Changed from 'visible' to 'hidden'
     border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
     boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
 
@@ -135,7 +135,7 @@ export default function NFTCard({ nft, handleRemove }) {
         <Box
             sx={{
                 position: 'relative',
-                padding: '10px', // Further reduced padding from 12px to 10px
+                padding: '10px',
                 '&:hover': {
                     zIndex: 1
                 }
@@ -145,7 +145,7 @@ export default function NFTCard({ nft, handleRemove }) {
                 <CardWrapper
                     sx={{
                         width: '100%',
-                        maxWidth: { xs: '100%', sm: 290, md: 310, lg: 330 }, // Further reduced max-widths
+                        maxWidth: { xs: '100%', sm: 290, md: 310, lg: 330 },
                         height: '100%'
                     }}
                 >
