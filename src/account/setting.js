@@ -4,14 +4,18 @@ import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
     styled,
     Card,
     IconButton,
     Stack,
     TextField,
-    Typography
+    Typography,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button
 } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import ImageIcon from '@mui/icons-material/Image';
@@ -89,7 +93,7 @@ const FILE_UNCHANGED = 0;
 const FILE_NEW = 1;
 const FILE_REMOVED = 2;
 
-export default function EditProfile() {
+export default function EditProfileModal({ open, onClose }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const fileRef1 = useRef();
@@ -274,130 +278,119 @@ export default function EditProfile() {
     }
 
     return (
-        <>
-            <Stack spacing={1} sx={{mt: 4, mb:3}}>
-                <Typography variant="h1a">Edit Profile</Typography>
-                <Typography variant='p2'><Typography variant='s2'>*</Typography> Required fields</Typography>
-                <Typography variant='p4' sx={{pt:2, pb:1}}>Logo image <Typography variant='s2'>*</Typography></Typography>
-                <Typography variant='p3'>This image will also be used for navigation. 350 x 350 recommended.(Max: 10MB)</Typography>
-                <CardWrapperCircle>
-                    <input
-                        ref={fileRef1}
-                        style={{ display: 'none' }}
-                        // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
-                        // accept='image/*'
-                        accept='.png, .jpg, .gif'
-                        id='contained-button-file'
-                        // multiple
-                        type='file'
-                        onChange={handleFileSelect1}
-                    />
-                    <Card
-                        sx={{
-                            display: 'flex',
-                            width: 140,
-                            height: 140,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            borderRadius: '50%',
-                            position: 'relative'
-                        }}
-                    >
-                        <CardOverlayCircle
-                            onClick={() => fileRef1.current.click()}
-                        >
-                            <IconButton
-                                aria-label='close' onClick={(e) => handleResetFile1(e)}
-                                sx={fileUrl1 ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
-                            >
-                                <CloseIcon color='white' />
-                            </IconButton>
-                        </CardOverlayCircle>
-                        <img src={fileUrl1} alt='' style={fileUrl1 ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} />
-                        <ImageIcon fontSize='large' sx={fileUrl1 ? { display: 'none' } : {width: 64, height: 64}} />
-                    </Card>
-                </CardWrapperCircle>
-
-                <Typography variant='p4' sx={{pt:2, pb:1}}>Banner image</Typography>
-                <Typography variant='p3'>This image will appear at the top of your account page. Avoid including too much text in this banner image, as the dimensions change on different devices. 1400 x 350 recommended.(Max: 10MB)</Typography>
-                <CardWrapper>
-                    <input
-                        ref={fileRef2}
-                        style={{ display: 'none' }}
-                        // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
-                        // accept='image/*'
-                        accept='.png, .jpg, .gif'
-                        id='contained-button-file'
-                        // multiple
-                        type='file'
-                        onChange={handleFileSelect2}
-                    />
-                    <Card
-                        sx={{
-                            display: 'flex',
-                            // maxWidth: 700,
-                            height: 200,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            overflow: 'auto',
-                            position: 'relative'
-                        }}
-                    >
-                        <CardOverlay
-                            onClick={() => fileRef2.current.click()}
-                        >
-                            <IconButton
-                                aria-label='close' onClick={(e) => handleResetFile2(e)}
-                                sx={fileUrl2 ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
-                            >
-                                <CloseIcon color='white' />
-                            </IconButton>
-                        </CardOverlay>
-                        <img src={fileUrl2} alt='' style={fileUrl2 ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} />
-                        <ImageIcon fontSize='large' sx={fileUrl2 ? { display: 'none' } : {width: 100, height: 100}} />
-                    </Card>
-                </CardWrapper>
-
-                <Typography variant='p4' sx={{pt:2, pb:1}}>Name <Typography variant='s2'>*</Typography></Typography>
-
-                <TextField
-                    id='id_profile_name'
-                    placeholder='Account Name'
-                    value={name}
-                    onChange={(e) => {
-                        setName(e.target.value);
-                    }}
-                />
-            </Stack>
-
-            <Stack spacing={2} mb={3}>
-                <Typography variant='p4'>Description</Typography>
-                <Typography variant='p3'>
-                    Only 0 of 1000 characters allowed.
-                </Typography>
-                <TextField
-                    placeholder=''
-                    margin='dense'
-                    multiline
-                    maxRows={4}
-                    value={description}
-                    onChange={(e) => {
-                        setDescription(e.target.value)
-                    }}
+        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+            <DialogTitle>
+                Edit Profile
+                <IconButton
+                    aria-label="close"
+                    onClick={onClose}
                     sx={{
-                        '&.MuiTextField-root': {
-                            marginTop: 1,
-                            minHeight: 10
-                        },
-                        '& .MuiOutlinedInput-root': {
-                            height: 100,
-                            alignItems: 'start'
-                        }
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: (theme) => theme.palette.grey[500],
                     }}
-                />
-            </Stack>
+                >
+                    <CloseIcon />
+                </IconButton>
+            </DialogTitle>
+            <DialogContent>
+                <Stack spacing={1} sx={{mt: 2, mb:3}}>
+                    <Typography variant='p2'><Typography variant='s2'>*</Typography> Required fields</Typography>
+                    <Typography variant='p4' sx={{pt:2, pb:1}}>Logo image <Typography variant='s2'>*</Typography></Typography>
+                    <Typography variant='p3'>This image will also be used for navigation. 350 x 350 recommended.(Max: 10MB)</Typography>
+                    <CardWrapperCircle>
+                        <input
+                            ref={fileRef1}
+                            style={{ display: 'none' }}
+                            // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
+                            // accept='image/*'
+                            accept='.png, .jpg, .gif'
+                            id='contained-button-file'
+                            // multiple
+                            type='file'
+                            onChange={handleFileSelect1}
+                        />
+                        <Card
+                            sx={{
+                                display: 'flex',
+                                width: 140,
+                                height: 140,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                borderRadius: '50%',
+                                position: 'relative'
+                            }}
+                        >
+                            <CardOverlayCircle
+                                onClick={() => fileRef1.current.click()}
+                            >
+                                <IconButton
+                                    aria-label='close' onClick={(e) => handleResetFile1(e)}
+                                    sx={fileUrl1 ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
+                                >
+                                    <CloseIcon color='white' />
+                                </IconButton>
+                            </CardOverlayCircle>
+                            <img src={fileUrl1} alt='' style={fileUrl1 ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} />
+                            <ImageIcon fontSize='large' sx={fileUrl1 ? { display: 'none' } : {width: 64, height: 64}} />
+                        </Card>
+                    </CardWrapperCircle>
 
-            <Stack alignItems='right'>
+                    <Typography variant='p4' sx={{pt:2, pb:1}}>Banner image</Typography>
+                    <Typography variant='p3'>This image will appear at the top of your account page. Avoid including too much text in this banner image, as the dimensions change on different devices. 1400 x 350 recommended.(Max: 10MB)</Typography>
+                    <CardWrapper>
+                        <input
+                            ref={fileRef2}
+                            style={{ display: 'none' }}
+                            // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
+                            // accept='image/*'
+                            accept='.png, .jpg, .gif'
+                            id='contained-button-file'
+                            // multiple
+                            type='file'
+                            onChange={handleFileSelect2}
+                        />
+                        <Card
+                            sx={{
+                                display: 'flex',
+                                // maxWidth: 700,
+                                height: 200,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                overflow: 'auto',
+                                position: 'relative'
+                            }}
+                        >
+                            <CardOverlay
+                                onClick={() => fileRef2.current.click()}
+                            >
+                                <IconButton
+                                    aria-label='close' onClick={(e) => handleResetFile2(e)}
+                                    sx={fileUrl2 ? { position: 'absolute', right: '1vw', top: '1vh' } : { display: 'none' }}
+                                >
+                                    <CloseIcon color='white' />
+                                </IconButton>
+                            </CardOverlay>
+                            <img src={fileUrl2} alt='' style={fileUrl2 ? {objectFit:'cover', width: '100%', height: '100%', overflow:'hidden'} : { display: 'none' }} />
+                            <ImageIcon fontSize='large' sx={fileUrl2 ? { display: 'none' } : {width: 100, height: 100}} />
+                        </Card>
+                    </CardWrapper>
+
+                    <Typography variant='p4' sx={{pt:2, pb:1}}>Name <Typography variant='s2'>*</Typography></Typography>
+
+                    <TextField
+                        id='id_profile_name'
+                        placeholder='Account Name'
+                        value={name}
+                        onChange={(e) => {
+                            setName(e.target.value);
+                        }}
+                    />
+                </Stack>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={onClose}>Cancel</Button>
                 <LoadingButton
                     disabled={!canSaveChanges}
                     variant='contained'
@@ -405,11 +398,10 @@ export default function EditProfile() {
                     loadingPosition='start'
                     startIcon={<SendIcon />}
                     onClick={onEditProfile}
-                    sx={{ mt: 5, mb: 6 }}
                 >
                     Save Changes
                 </LoadingButton>
-            </Stack>
-        </>
+            </DialogActions>
+        </Dialog>
     );
 }

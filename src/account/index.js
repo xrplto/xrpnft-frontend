@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Client } from 'xrpl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
@@ -35,6 +35,7 @@ import ImageIcon from '@mui/icons-material/Image';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import BrushIcon from '@mui/icons-material/Brush';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import SettingsIcon from '@mui/icons-material/Settings'; // Add this import
 
 // Context
 import { useContext } from 'react';
@@ -50,6 +51,7 @@ import History from './History';
 // import FavoritedList from './FavoritedList';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
 import StyledBadge from './StyledBadge';
+import EditProfileModal from './setting'; // Import the modal component
 
 const IconImage = styled('img')(
     ({ theme }) => `
@@ -282,6 +284,16 @@ export default function Account({ profile, limit, tab, collection, type }) {
 
     const [xrpBalance, setXrpBalance] = useState(null);
     const [availableBalance, setAvailableBalance] = useState(null);
+
+    const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+
+    const handleOpenSettingsModal = () => {
+        setIsSettingsModalOpen(true);
+    };
+
+    const handleCloseSettingsModal = () => {
+        setIsSettingsModalOpen(false);
+    };
 
     useEffect(() => {
         async function getOffersCount() {
@@ -554,23 +566,36 @@ export default function Account({ profile, limit, tab, collection, type }) {
                             </Stack>
 
                             {accountLogin === account && (
-                                <Button
-                                    variant="contained"
-                                    onClick={onLogoutXumm}
-                                    startIcon={<Icon icon="mdi:logout" />}
-                                    sx={{
-                                        backgroundColor: (theme) =>
-                                            theme.palette.error.main,
-                                        color: (theme) =>
-                                            theme.palette.error.contrastText,
-                                        '&:hover': {
-                                            backgroundColor: (theme) =>
-                                                theme.palette.error.dark
-                                        }
-                                    }}
-                                >
-                                    Logout
-                                </Button>
+                                <Stack direction="row" spacing={2}>
+                                    <Button
+                                        variant="contained"
+                                        onClick={handleOpenSettingsModal}
+                                        startIcon={<SettingsIcon />}
+                                        sx={{
+                                            backgroundColor: (theme) => theme.palette.primary.main,
+                                            color: (theme) => theme.palette.primary.contrastText,
+                                            '&:hover': {
+                                                backgroundColor: (theme) => theme.palette.primary.dark
+                                            }
+                                        }}
+                                    >
+                                        Settings
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        onClick={onLogoutXumm}
+                                        startIcon={<Icon icon="mdi:logout" />}
+                                        sx={{
+                                            backgroundColor: (theme) => theme.palette.error.main,
+                                            color: (theme) => theme.palette.error.contrastText,
+                                            '&:hover': {
+                                                backgroundColor: (theme) => theme.palette.error.dark
+                                            }
+                                        }}
+                                    >
+                                        Logout
+                                    </Button>
+                                </Stack>
                             )}
                         </Stack>
 
@@ -759,6 +784,11 @@ export default function Account({ profile, limit, tab, collection, type }) {
                     </Stack>
                 </TabPanel>
             </Box>
+
+            <EditProfileModal 
+                open={isSettingsModalOpen} 
+                onClose={handleCloseSettingsModal} 
+            />
         </>
     );
 }
