@@ -32,7 +32,7 @@ const MarqueeItem = styled(Box)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     whiteSpace: 'nowrap',
-    padding: theme.spacing(0, 2), // Reduced horizontal padding
+    padding: theme.spacing(0, 2),
     transition: 'all 0.3s ease-in-out',
     '&:hover': {
         transform: 'scale(1.02)',
@@ -49,6 +49,21 @@ const NFTImage = styled('img')({
     objectFit: 'cover',
     border: '1px solid #fff', // Thinner border
     boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' // Reduced shadow
+});
+
+const Divider = styled('div')(({ theme }) => ({
+    width: '1px',
+    height: '28px', // Increased from 24px to 28px
+    backgroundColor: theme.palette.divider,
+    margin: theme.spacing(0, 1),
+    flexShrink: 0,
+    alignSelf: 'center', // Center the divider vertically
+}));
+
+const NFTLink = styled(Link)({
+    display: 'flex',
+    alignItems: 'center',
+    textDecoration: 'none',
 });
 
 const MarqueeBar = ({ isVisible = true }) => {
@@ -115,9 +130,9 @@ const MarqueeBar = ({ isVisible = true }) => {
             case 'SALE':
                 return 'Buy';
             case 'MINT':
-                return 'Newly Minted';
+                return 'MINT'; // Changed from 'Newly Minted' to 'MINT'
             case 'TRANSFER':
-                return 'Transfer'; // Changed from 'Transferred' to 'Transfer'
+                return 'Transfer';
             default:
                 return updateEvent;
         }
@@ -145,69 +160,71 @@ const MarqueeBar = ({ isVisible = true }) => {
         <MarqueeContainer>
             <MarqueeContent startPosition={startPosition}>
                 {nfts.map((nft, index) => (
-                    <Link
-                        key={nft.NFTokenID || index}
-                        href={`/nft/${nft.NFTokenID}`}
-                        underline="none"
-                        color="inherit" // Use inherit to respect the parent's text color
-                    >
-                        <MarqueeItem>
-                            {nft.image && (
-                                <NFTImage
-                                    src={`https://s2.xrpnft.com/d1/${nft.image}`}
-                                    alt={nft.name}
-                                />
-                            )}
-                            <Box>
-                                <Typography
-                                    variant="body2" // Changed from subtitle1 to body2
-                                    sx={{ fontWeight: 600 }}
-                                >
-                                    <NameDisplay
-                                        name={nft.name}
-                                        maxLength={18} // Reduced max length
+                    <React.Fragment key={nft.NFTokenID || index}>
+                        <NFTLink
+                            href={`/nft/${nft.NFTokenID}`}
+                            underline="none"
+                            color="inherit"
+                        >
+                            <MarqueeItem>
+                                {nft.image && (
+                                    <NFTImage
+                                        src={`https://s2.xrpnft.com/d1/${nft.image}`}
+                                        alt={nft.name}
                                     />
-                                </Typography>
-                                <Typography
-                                    variant="caption"
-                                    sx={{ opacity: 0.8, fontSize: '0.7rem' }} // Reduced font size
-                                >
-                                    {nft.collection && (
+                                )}
+                                <Box>
+                                    <Typography
+                                        variant="body2" // Changed from subtitle1 to body2
+                                        sx={{ fontWeight: 600 }}
+                                    >
                                         <NameDisplay
-                                            name={nft.collection}
-                                            maxLength={12} // Reduced max length
+                                            name={nft.name}
+                                            maxLength={18} // Reduced max length
                                         />
-                                    )}
-                                </Typography>
-                            </Box>
-                            <Typography
-                                variant="caption" // Changed from body2 to caption
-                                sx={{
-                                    marginLeft: 1.5, // Reduced margin
-                                    fontWeight: 500,
-                                    color: theme.palette.primary.main,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px'
-                                }}
-                            >
-                                {getEventText(nft.updateEvent)}
-                            </Typography>
-                            {nft.cost && (
+                                    </Typography>
+                                    <Typography
+                                        variant="caption"
+                                        sx={{ opacity: 0.8, fontSize: '0.7rem' }} // Reduced font size
+                                    >
+                                        {nft.collection && (
+                                            <NameDisplay
+                                                name={nft.collection}
+                                                maxLength={12} // Reduced max length
+                                            />
+                                        )}
+                                    </Typography>
+                                </Box>
                                 <Typography
                                     variant="caption" // Changed from body2 to caption
                                     sx={{
                                         marginLeft: 1.5, // Reduced margin
-                                        fontWeight: 700,
-                                        color: theme.palette.success.main
+                                        fontWeight: 500,
+                                        color: theme.palette.primary.main,
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px'
                                     }}
                                 >
-                                    {`${Number(nft.cost.amount).toFixed(
-                                        2
-                                    )} XRP`}
+                                    {getEventText(nft.updateEvent)}
                                 </Typography>
-                            )}
-                        </MarqueeItem>
-                    </Link>
+                                {nft.cost && (
+                                    <Typography
+                                        variant="caption" // Changed from body2 to caption
+                                        sx={{
+                                            marginLeft: 1.5, // Reduced margin
+                                            fontWeight: 700,
+                                            color: theme.palette.success.main
+                                        }}
+                                    >
+                                        {`${Number(nft.cost.amount).toFixed(
+                                            2
+                                        )} XRP`}
+                                    </Typography>
+                                )}
+                            </MarqueeItem>
+                        </NFTLink>
+                        {index < nfts.length - 1 && <Divider />}
+                    </React.Fragment>
                 ))}
             </MarqueeContent>
         </MarqueeContainer>
