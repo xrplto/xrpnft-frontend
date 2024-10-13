@@ -173,18 +173,32 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                 if (res.status === 200 && res.data) {
                     const ret = res.data;
                     const newOptions = [];
+
+                    // Sort collections to prioritize verified ones
+                    const sortedCollections = ret.collections.sort((a, b) => {
+                        if (a.verified === 'yes' && b.verified !== 'yes') return -1;
+                        if (a.verified !== 'yes' && b.verified === 'yes') return 1;
+                        return 0;
+                    });
+
+                    // Add NFTs (up to 5)
                     for (const nft of ret.nfts.slice(0, 5)) {
                         nft.option_type = "NFTS";
                         newOptions.push(nft);
                     }
-                    for (const collection of ret.collections.slice(0, 5)) {
+
+                    // Add sorted collections (up to 5)
+                    for (const collection of sortedCollections.slice(0, 5)) {
                         collection.option_type = "COLLECTIONS";
                         newOptions.push(collection);
                     }
+
+                    // Add accounts (up to 5)
                     for (const account of ret.accounts.slice(0, 5)) {
                         account.option_type = "ACCOUNTS";
                         newOptions.push(account);
                     }
+
                     setOptions(newOptions);
                 }
             } catch (error) {
