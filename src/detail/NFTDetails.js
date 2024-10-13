@@ -134,7 +134,7 @@ export default function NFTDetails({ nft }) {
     }
 
     const collectionName =
-        collection || meta?.collection?.name || '[No Collection]';
+        collection || /*meta?.collection?.name ||*/ '[No Collection]';
 
     const properties = props || getProperties(meta);
     const hasProperties = properties && properties.length > 0;
