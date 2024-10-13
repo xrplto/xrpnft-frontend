@@ -98,7 +98,7 @@ const ImageBackdrop = styled('span')(({ theme }) => ({
     transition: theme.transitions.create('opacity')
 }));
 
-export default function Row({ id, item, isMine }) {
+export default function Row({ id, item, isMine, currency, convertToUsd }) {
     const {
         uuid,
         account,
@@ -136,6 +136,11 @@ export default function Row({ id, item, isMine }) {
         // history.push(`/collection/${slug}`);
         // onclick="document.location = 'links.html';"
         document.location = `/collection/${slug}`;
+    };
+
+    const formatPrice = (price) => {
+        const value = currency === 'USD' ? convertToUsd(price) : price;
+        return `${currency === 'USD' ? '$' : '✕'} ${fNumber(value)}`;
     };
 
     return (
@@ -228,7 +233,7 @@ export default function Row({ id, item, isMine }) {
                     noWrap
                     sx={{ fontWeight: 600, color: theme.palette.primary.main }}
                 >
-                    ✕ {fNumber(floorPrice)}
+                    {formatPrice(floorPrice)}
                 </Typography>
             </TableCell>
 
@@ -238,7 +243,7 @@ export default function Row({ id, item, isMine }) {
                     noWrap
                     sx={{ fontWeight: 600, color: theme.palette.success.main }}
                 >
-                    ✕ {fNumber(totalVol24h)}
+                    {formatPrice(totalVol24h)}
                 </Typography>
             </TableCell>
 
@@ -256,7 +261,7 @@ export default function Row({ id, item, isMine }) {
                     noWrap
                     sx={{ fontWeight: 600, color: theme.palette.info.main }}
                 >
-                    ✕ {volume2}
+                    {formatPrice(totalVolume)}
                 </Typography>
             </TableCell>
 

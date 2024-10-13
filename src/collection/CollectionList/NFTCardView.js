@@ -14,9 +14,14 @@ import {
 import VerifiedIcon from '@mui/icons-material/Verified';
 import { fNumber, fIntNumber } from 'src/utils/formatNumber';
 
-const NFTCardView = ({ collections, isMine }) => {
+const NFTCardView = ({ collections, isMine, currency, convertToUsd }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    const formatPrice = (price) => {
+        const value = currency === 'USD' ? convertToUsd(price) : price;
+        return `${currency === 'USD' ? '$' : '✕'} ${fNumber(value)}`;
+    };
 
     return (
         <Grid container spacing={3}>
@@ -59,10 +64,10 @@ const NFTCardView = ({ collections, isMine }) => {
                                 )}
                             </Box>
                             <Typography variant="body2" color="text.secondary" gutterBottom>
-                                Floor: ✕ {fNumber(item.floor?.amount || 0)}
+                                Floor: {formatPrice(item.floor?.amount || 0)}
                             </Typography>
                             <Typography variant="body2" color="text.secondary" gutterBottom>
-                                24h Vol: ✕ {fNumber(item.totalVol24h)}
+                                24h Vol: {formatPrice(item.totalVol24h)}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                                 Items: {fIntNumber(item.items)}

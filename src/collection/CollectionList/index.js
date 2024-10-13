@@ -140,6 +140,22 @@ export default function CollectionList({ type, category }) {
     const [filteredAndSortedCollections, setFilteredAndSortedCollections] =
         useState([]);
 
+    // Add these new state variables
+    const [currency, setCurrency] = useState('XRP');
+    const xrpToUsdRate = 1.8828845971187824; // 1 USD = 1.88 XRP (you may want to fetch this dynamically)
+
+    // Add this function to handle currency change
+    const handleCurrencyChange = (event, newCurrency) => {
+        if (newCurrency !== null) {
+            setCurrency(newCurrency);
+        }
+    };
+
+    // Add this function to convert XRP to USD
+    const convertToUsd = (xrpValue) => {
+        return Math.floor(xrpValue / xrpToUsdRate);
+    };
+
     useEffect(() => {
         const loadCollections = () => {
             if (isMine && (!account || !accountToken)) {
@@ -338,23 +354,28 @@ export default function CollectionList({ type, category }) {
                         </Box>
 
                         <ToggleButtonGroup
+                            value={currency}
+                            exclusive
+                            onChange={handleCurrencyChange}
+                            size="small"
+                            sx={{ ml: 2 }}
+                        >
+                            <ToggleButton value="XRP">XRP</ToggleButton>
+                            <ToggleButton value="USD">USD</ToggleButton>
+                        </ToggleButtonGroup>
+
+                        <ToggleButtonGroup
                             value={viewMode}
                             exclusive
                             onChange={handleViewModeChange}
                             aria-label="view mode"
                         >
-                            <StyledToggleButton
-                                value="card"
-                                aria-label="card view"
-                            >
+                            <ToggleButton value="card" aria-label="card view">
                                 <ViewModule />
-                            </StyledToggleButton>
-                            <StyledToggleButton
-                                value="table"
-                                aria-label="table view"
-                            >
+                            </ToggleButton>
+                            <ToggleButton value="table" aria-label="table view">
                                 <ViewList />
-                            </StyledToggleButton>
+                            </ToggleButton>
                         </ToggleButtonGroup>
                     </Box>
                 )}
@@ -364,6 +385,8 @@ export default function CollectionList({ type, category }) {
                         <NFTCardView
                             collections={filteredAndSortedCollections}
                             isMine={isMine}
+                            currency={currency}
+                            convertToUsd={convertToUsd}
                         />
                     ) : (
                         <Table
@@ -375,14 +398,17 @@ export default function CollectionList({ type, category }) {
                                 order={order}
                                 orderBy={orderBy}
                                 onRequestSort={handleRequestSort}
+                                currency={currency}
                             />
                             <TableBody>
                                 {filteredAndSortedCollections.map((row, idx) => (
                                     <Row
                                         key={row._id}
-                                        id={page * rowsPerPage + idx + 1} // Update the id calculation
+                                        id={page * rowsPerPage + idx + 1}
                                         item={row}
                                         isMine={isMine}
+                                        currency={currency}
+                                        convertToUsd={convertToUsd}
                                     />
                                 ))}
                             </TableBody>
