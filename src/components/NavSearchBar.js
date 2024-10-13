@@ -164,7 +164,7 @@ const RenderOption = ({
                                 option_type === 'COLLECTIONS' &&
                                 <Stack direction="row" spacing={0.75} alignItems="center">
                                     {floor && <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Floor: <span style={{color: 'inherit', fontWeight: 'bold'}}>{floor.amount} {floor.currency}</span></Typography>}
-                                    <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Volume: <span style={{color: 'inherit', fontWeight: 'bold'}}>{formatNumber(totalVolume)} XRP</span></Typography>
+                                    <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Total Volume: <span style={{color: 'inherit', fontWeight: 'bold'}}>{formatNumber(totalVolume)} XRP</span></Typography>
                                 </Stack>
                             }
                             {
