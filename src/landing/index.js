@@ -1,5 +1,5 @@
 // React
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 // Material
 import {
@@ -13,14 +13,25 @@ import {
     Box,
     Paper,
     Avatar,
-    Fab
+    Fab,
+    Tooltip,
+    useTheme
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import { keyframes } from '@mui/system';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Components
-import CollectionPreview from './CollectionPreview';
 import CollectionList from './CollectionList';
+
+// Context
+import { AppContext } from 'src/AppContext';
+
+// Utils
+import { getNftCoverUrl } from 'src/utils/parse';
+
+// Third-party
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 // Add this import at the top of the file
 import Image from 'next/image';
@@ -149,8 +160,69 @@ const useRandomMessages = (messages, minDelay = 2000, maxDelay = 4000) => {
     return visibleMessages;
 };
 
+// Add the new styled components from CollectionPreview
+const CustomImage = styled('img')(({ theme }) => ({
+    borderRadius: theme.shape.borderRadius,
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    objectPosition: 'center'
+}));
+
+const CustomCarousel = styled(Carousel)(({ theme }) => ({
+    borderRadius: theme.shape.borderRadius,
+    overflow: 'hidden',
+    width: '100%',
+    height: '100%',
+    margin: '0 auto',
+    '& .slide': {
+        background: 'transparent !important',
+        boxShadow: 'none !important'
+    }
+}));
+
+const CollectionCard = styled(Paper)(({ theme }) => ({
+    position: 'relative',
+    overflow: 'hidden',
+    transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+    '&:hover': {
+        transform: 'translateY(-5px)',
+        boxShadow: `0 8px 16px ${theme.palette.primary.main}20`
+    },
+    '&::after': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: `linear-gradient(to bottom, ${theme.palette.background.default}00 70%, ${theme.palette.background.default}B3 100%)`,
+        pointerEvents: 'none'
+    },
+    width: '100%',
+    height: '100%',
+    margin: '0 auto',
+    display: 'flex',
+    flexDirection: 'column',
+    background: theme.palette.background.paper
+}));
+
+const CollectionInfo = styled(Stack)(({ theme }) => ({
+    position: 'relative',
+    padding: theme.spacing(1),
+    zIndex: 1
+}));
+
+const GradientText = styled(Typography)(({ theme }) => ({
+    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    display: 'inline-block'
+}));
+
 export default function Landing({ collections }) {
     const theme = useTheme();
+    const { darkMode } = useContext(AppContext);
 
     // Chat messages array
     const chatMessages = [
@@ -193,6 +265,51 @@ export default function Landing({ collections }) {
 
         return () => clearInterval(intervalId);
     }, []);
+
+    // Add the fadeAnimationHandler from CollectionPreview
+    const fadeAnimationHandler = (props, state) => {
+        const transitionTime = props.transitionTime + 'ms';
+        const transitionTimingFunction = 'ease-in-out';
+
+        let slideStyle = {
+            position: 'absolute',
+            display: 'block',
+            zIndex: -2,
+            minHeight: '100%',
+            opacity: 0,
+            top: 0,
+            right: 0,
+            left: 0,
+            bottom: 0,
+            transitionTimingFunction: transitionTimingFunction,
+            msTransitionTimingFunction: transitionTimingFunction,
+            MozTransitionTimingFunction: transitionTimingFunction,
+            WebkitTransitionTimingFunction: transitionTimingFunction,
+            OTransitionTimingFunction: transitionTimingFunction
+        };
+
+        if (!state.swiping) {
+            slideStyle = {
+                ...slideStyle,
+                WebkitTransitionDuration: transitionTime,
+                MozTransitionDuration: transitionTime,
+                OTransitionDuration: transitionTime,
+                transitionDuration: transitionTime,
+                msTransitionDuration: transitionTime
+            };
+        }
+
+        return {
+            slideStyle,
+            selectedStyle: {
+                ...slideStyle,
+                opacity: 1,
+                zIndex: 2,
+                position: 'relative'
+            },
+            prevStyle: { ...slideStyle }
+        };
+    };
 
     return (
         <Container maxWidth="lg">
@@ -239,14 +356,13 @@ export default function Landing({ collections }) {
                     container
                     spacing={4}
                     sx={{
-                        mt: { xs: 0, sm: 0, md: 1 }, // Top margin remains the same
-                        mb: { xs: 2, md: 6 }, // Bottom margin remains the same
+                        mt: { xs: 0, sm: 0, md: 1 },
+                        mb: { xs: 2, md: 6 },
                         position: 'relative',
                         zIndex: 1
                     }}
                 >
-                    <Grid item xs={12} md={1} />{' '}
-                    {/* Empty grid item for spacing */}
+                    <Grid item xs={12} md={1} />
                     <Grid
                         item
                         xs={12}
@@ -359,26 +475,118 @@ export default function Landing({ collections }) {
                                 width: '100%',
                                 maxWidth: '500px',
                                 aspectRatio: '1 / 1',
-                                mx: 'auto' // Center the preview
+                                mx: 'auto'
                             }}
                         >
-                            <CollectionPreview
-                                collections={
-                                    collections.length > 0
-                                        ? [collections[0]]
-                                        : []
-                                }
-                            />
+                            <CustomCarousel
+                                interval={4000}
+                                transitionTime={2000}
+                                showArrows={false}
+                                showStatus={false}
+                                showIndicators={false}
+                                infiniteLoop={true}
+                                showThumbs={false}
+                                useKeyboardArrows={true}
+                                autoPlay={true}
+                                stopOnHover={false}
+                                swipeable={false}
+                                animationHandler={fadeAnimationHandler}
+                                emulateTouch={true}
+                            >
+                                {collections.slice(0, 1).map((item, idx) => {
+                                    const {
+                                        uuid,
+                                        name,
+                                        slug,
+                                        logoImage,
+                                        verified,
+                                        nft
+                                    } = item;
+
+                                    let imgUrl = getNftCoverUrl(nft ? nft : {});
+
+                                    if (!imgUrl || nft?.meta?.video) {
+                                        imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
+                                    }
+
+                                    return (
+                                        <CollectionCard key={idx} elevation={0}>
+                                            <Link
+                                                underline="none"
+                                                color="inherit"
+                                                href={`/collection/${slug}`}
+                                                sx={{
+                                                    display: 'block',
+                                                    width: '100%',
+                                                    height: '100%'
+                                                }}
+                                            >
+                                                <CustomImage
+                                                    src={imgUrl}
+                                                    alt={name}
+                                                />
+                                                <CollectionInfo
+                                                    direction="row"
+                                                    spacing={1}
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        bottom: 0,
+                                                        left: 0,
+                                                        right: 0,
+                                                        padding: 2
+                                                    }}
+                                                >
+                                                    <GradientText
+                                                        variant="subtitle1"
+                                                        sx={{
+                                                            color: theme.palette
+                                                                .text.primary,
+                                                            fontWeight: 600,
+                                                            textShadow: `0 1px 2px ${theme.palette.primary.main}80`,
+                                                            textAlign: 'center',
+                                                            flexGrow: 1,
+                                                            overflow: 'hidden',
+                                                            textOverflow:
+                                                                'ellipsis',
+                                                            whiteSpace:
+                                                                'nowrap',
+                                                            fontSize: '1.5rem'
+                                                        }}
+                                                    >
+                                                        {name}
+                                                    </GradientText>
+                                                    {verified === 'yes' && (
+                                                        <Tooltip title="Verified">
+                                                            <VerifiedIcon
+                                                                fontSize="large"
+                                                                sx={{
+                                                                    color: theme
+                                                                        .palette
+                                                                        .primary
+                                                                        .main,
+                                                                    flexShrink: 0
+                                                                }}
+                                                            />
+                                                        </Tooltip>
+                                                    )}
+                                                </CollectionInfo>
+                                            </Link>
+                                        </CollectionCard>
+                                    );
+                                })}
+                            </CustomCarousel>
                         </Box>
                     </Grid>
                 </Grid>
 
-                {/* Modify this Box component */}
-                <Box sx={{ mt: { xs: 8, md: 12 }, mb: { xs: 4, md: 8 } }}> {/* Increased top margin */}
+                {/* Collection List */}
+                <Box sx={{ mt: { xs: 8, md: 12 }, mb: { xs: 4, md: 8 } }}>
                     <CollectionList collections={collections} />
                 </Box>
 
-                <Box sx={{ height: { xs: 24, md: 48 } }} /> {/* Further increased height for bottom spacing */}
+                <Box sx={{ height: { xs: 24, md: 48 } }} />
             </Box>
         </Container>
     );

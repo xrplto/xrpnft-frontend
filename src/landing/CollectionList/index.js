@@ -6,7 +6,8 @@ import {
     Button,
     Box,
     useTheme,
-    alpha
+    alpha,
+    useMediaQuery
 } from '@mui/material';
 import Row from './Row';
 import ListHead from './ListHead';
@@ -15,6 +16,7 @@ export default function CollectionList({ collections }) {
     const [visibleRows, setVisibleRows] = useState(5);
     const [allVisible, setAllVisible] = useState(false);
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const handleViewMore = () => {
         if (visibleRows + 5 >= collections.length) {
@@ -33,8 +35,8 @@ export default function CollectionList({ collections }) {
         <TableContainer
             sx={{
                 width: '100%',
-                maxWidth: '80%',
-                margin: '0 auto', // Removed top margin here
+                maxWidth: isMobile ? '100%' : '80%', // Full width on mobile
+                margin: '0 auto',
                 borderRadius: theme.shape.borderRadius * 0.1,
                 overflow: 'hidden',
                 backdropFilter: 'blur(20px)',
@@ -60,7 +62,15 @@ export default function CollectionList({ collections }) {
                 padding: 0,
             }}
         >
-            <Table size="small" sx={{ '& td, & th': { py: 1 } }}> {/* Reduce vertical padding for table cells */}
+            <Table 
+                size="small" 
+                sx={{ 
+                    '& td, & th': { 
+                        py: 1,
+                        px: isMobile ? 1 : 2, // Reduce horizontal padding on mobile
+                    } 
+                }}
+            >
                 <ListHead />
                 <TableBody>
                     {collections

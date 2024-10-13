@@ -264,18 +264,18 @@ export default function Row({ id, item }) {
             onClick={handleRowClick}
             style={{ cursor: 'pointer' }}
         >
-            <TableCell align="left" sx={{ py: 1.5, px: 2, border: 'none' }}>
+            <TableCell align="left" sx={{ py: 1.5, px: isMobile ? 1 : 2, border: 'none' }}>
                 <Stack
                     direction="row"
                     alignItems="center"
-                    spacing={2}
+                    spacing={isMobile ? 1 : 2}
                     sx={{ py: 0.5 }}
                 >
                     <Typography
                         variant={isMobile ? 'body2' : 'body1'}
                         sx={{
                             color: theme.palette.text.secondary,
-                            minWidth: isMobile ? '24px' : '32px',
+                            minWidth: isMobile ? '20px' : '32px',
                             fontWeight: 600
                         }}
                     >
@@ -297,10 +297,10 @@ export default function Row({ id, item }) {
                         <Stack spacing={0.5}>
                             <Stack direction="row" spacing={0.5} alignItems="center">
                                 <Typography
-                                    variant={isMobile ? 'subtitle2' : 'subtitle1'}
+                                    variant={isMobile ? 'caption' : 'subtitle1'}
                                     noWrap
                                     sx={{
-                                        maxWidth: isMobile ? '100px' : '150px',
+                                        maxWidth: isMobile ? '80px' : '150px',
                                         textOverflow: 'ellipsis',
                                         fontWeight: 600,
                                         color: theme.palette.text.primary
