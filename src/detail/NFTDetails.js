@@ -538,28 +538,30 @@ export default function NFTDetails({ nft }) {
 
                             {/* Add image link here */}
                             <Stack spacing={1} mt={2}>
-                                <Typography variant="caption">
-                                    Converted-image:
-                                </Typography>
                                 {files?.find((file) => file.type === 'image')
-                                    ?.cachedUrl && (
-                                    <Link
-                                        href={
-                                            files.find(
-                                                (file) => file.type === 'image'
-                                            ).cachedUrl
-                                        }
-                                        underline="hover"
-                                        target="_blank"
-                                        variant="body2"
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        {
-                                            files.find(
-                                                (file) => file.type === 'image'
-                                            ).cachedUrl
-                                        }
-                                    </Link>
+                                    ?.convertedFile && (
+                                    <>
+                                        <Typography variant="caption">
+                                            Converted image:
+                                        </Typography>    
+                                        <Link
+                                            href={
+                                                'https://s2.xrpnft.com/d1/' + files.find(
+                                                    (file) => file.type === 'image'
+                                                ).convertedFile
+                                            }
+                                            underline="hover"
+                                            target="_blank"
+                                            variant="body2"
+                                            rel="noreferrer noopener nofollow"
+                                        >
+                                            {
+                                                'https://s2.xrpnft.com/d1/' + files.find(
+                                                    (file) => file.type === 'image'
+                                                ).convertedFile
+                                            }
+                                        </Link>
+                                    </>
                                 )}
                             </Stack>
 
