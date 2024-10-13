@@ -12,13 +12,13 @@ import {
     Typography,
     styled
 } from '@mui/material';
+
 // ----------------------------------------------------------------------
 
-const TABLE_HEAD = (isMobile) => {
+const TABLE_HEAD = (isMobile, volumeType) => {
     if (isMobile) {
         return [
             {
-                no: 0,
                 id: 'name',
                 label: 'Collection',
                 align: 'left',
@@ -26,7 +26,6 @@ const TABLE_HEAD = (isMobile) => {
                 order: false
             },
             {
-                no: 1,
                 id: 'floor.amount',
                 label: 'Floor',
                 align: 'right',
@@ -34,9 +33,8 @@ const TABLE_HEAD = (isMobile) => {
                 order: true
             },
             {
-                no: 2,
-                id: 'totalVol24h',
-                label: '24h Vol',
+                id: volumeType === '24h' ? 'totalVol24h' : 'totalVolume',
+                label: volumeType === '24h' ? '24h Vol' : 'Total Vol',
                 align: 'right',
                 width: '30%',
                 order: true
@@ -45,7 +43,6 @@ const TABLE_HEAD = (isMobile) => {
     }
     return [
         {
-            no: 0,
             id: 'name',
             label: 'Collection',
             align: 'left',
@@ -53,43 +50,31 @@ const TABLE_HEAD = (isMobile) => {
             order: false
         },
         {
-            no: 1,
             id: 'floor.amount',
             label: 'Floor',
             align: 'right',
-            width: '10%',
+            width: '15%',
             order: true
         },
         {
-            no: 2,
-            id: 'totalVol24h',
-            label: '24h Vol',
+            id: volumeType === '24h' ? 'totalVol24h' : 'totalVolume',
+            label: volumeType === '24h' ? '24h Vol' : 'Total Vol',
             align: 'right',
-            width: '10%',
+            width: '15%',
             order: true
         },
         {
-            no: 3,
-            id: 'totalVolume',
-            label: 'Total Vol',
-            align: 'right',
-            width: '10%',
-            order: true
-        },
-        {
-            no: 4,
             id: 'owners',
             label: 'Owners',
             align: 'right',
-            width: '8%',
+            width: '15%',
             order: true
         },
         {
-            no: 5,
             id: 'items',
             label: 'Supply',
             align: 'right',
-            width: '8%',
+            width: '15%',
             order: true
         }
     ];
@@ -103,18 +88,18 @@ const StyledTableHead = styled(TableHead)(({ theme }) => ({
     },
 }));
 
-export default function ListHead({ order, orderBy, onRequestSort }) {
+export default function ListHead({ order, orderBy, onRequestSort, volumeType }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const createSortHandler = (id) => (event) => {
-        onRequestSort(event, id);
+    const createSortHandler = (property) => (event) => {
+        onRequestSort(event, property);
     };
 
     return (
         <StyledTableHead>
             <TableRow>
-                {TABLE_HEAD(isMobile).map((headCell) => (
+                {TABLE_HEAD(isMobile, volumeType).map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         align={headCell.align}
@@ -125,11 +110,7 @@ export default function ListHead({ order, orderBy, onRequestSort }) {
                             hideSortIcon
                             active={orderBy === headCell.id}
                             direction={orderBy === headCell.id ? order : 'desc'}
-                            onClick={
-                                headCell.order
-                                    ? createSortHandler(headCell.id)
-                                    : undefined
-                            }
+                            onClick={headCell.order ? createSortHandler(headCell.id) : undefined}
                         >
                             <Typography
                                 variant={isMobile ? "body2" : "body1"}
@@ -140,9 +121,7 @@ export default function ListHead({ order, orderBy, onRequestSort }) {
                             </Typography>
                             {orderBy === headCell.id ? (
                                 <Box sx={{ ...visuallyHidden }}>
-                                    {order === 'desc'
-                                        ? 'sorted descending'
-                                        : 'sorted ascending'}
+                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                 </Box>
                             ) : null}
                         </TableSortLabel>
@@ -156,5 +135,6 @@ export default function ListHead({ order, orderBy, onRequestSort }) {
 ListHead.propTypes = {
     order: PropTypes.oneOf(['asc', 'desc']),
     orderBy: PropTypes.string,
-    onRequestSort: PropTypes.func.isRequired
+    onRequestSort: PropTypes.func.isRequired,
+    volumeType: PropTypes.oneOf(['24h', 'all']).isRequired
 };

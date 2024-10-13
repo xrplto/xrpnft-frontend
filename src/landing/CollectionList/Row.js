@@ -207,7 +207,7 @@ function getPriceColor(token) {
     return color;
 }
 
-export default function Row({ id, item }) {
+export default function Row({ id, item, volumeType }) {
     const {
         uuid,
         account,
@@ -256,6 +256,8 @@ export default function Row({ id, item }) {
         // onclick="document.location = 'links.html';"
         document.location = `/collection/${slug}`;
     };
+
+    const displayVolume = volumeType === '24h' ? totalVol24h : totalVolume;
 
     return (
         <TableRow
@@ -338,25 +340,7 @@ export default function Row({ id, item }) {
                     noWrap
                     sx={{ fontWeight: 600, color: theme.palette.success.main }}
                 >
-                    ✕ {fNumber(totalVol24h)}
-                </Typography>
-            </TableCell>
-
-            <TableCell
-                align="right"
-                sx={{
-                    py: 1.5,
-                    px: 2,
-                    border: 'none',
-                    display: { xs: 'none', sm: 'table-cell' }
-                }}
-            >
-                <Typography
-                    variant="body1"
-                    noWrap
-                    sx={{ fontWeight: 600, color: theme.palette.info.main }}
-                >
-                    ✕ {volume2}
+                    ✕ {fNumber(displayVolume)}
                 </Typography>
             </TableCell>
 
