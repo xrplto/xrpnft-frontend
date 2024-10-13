@@ -33,8 +33,8 @@ export default function CollectionList({ collections }) {
         <TableContainer
             sx={{
                 width: '100%',
-                maxWidth: '80%', // Changed from 92% to 90%
-                margin: '0 auto',
+                maxWidth: '80%',
+                margin: '0 auto', // Removed top margin here
                 borderRadius: theme.shape.borderRadius * 0.1,
                 overflow: 'hidden',
                 backdropFilter: 'blur(20px)',
@@ -56,10 +56,11 @@ export default function CollectionList({ collections }) {
                         0.5
                     )}`,
                     outlineOffset: '2px'
-                }
+                },
+                padding: 0,
             }}
         >
-            <Table>
+            <Table size="small" sx={{ '& td, & th': { py: 1 } }}> {/* Reduce vertical padding for table cells */}
                 <ListHead />
                 <TableBody>
                     {collections
@@ -74,13 +75,19 @@ export default function CollectionList({ collections }) {
                 </TableBody>
             </Table>
             <Box
-                sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}
+                sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    py: 0.5, // Reduced vertical padding
+                }}
             >
                 {allVisible ? (
                     <Button
                         onClick={handleViewAll}
                         variant="outlined"
                         color="primary"
+                        size="small"
+                        sx={{ minHeight: '24px', py: 0.5 }} // Reduce button height
                     >
                         View All Collections
                     </Button>
@@ -89,6 +96,8 @@ export default function CollectionList({ collections }) {
                         onClick={handleViewMore}
                         variant="outlined"
                         color="primary"
+                        size="small"
+                        sx={{ minHeight: '24px', py: 0.5 }} // Reduce button height
                     >
                         View More
                     </Button>

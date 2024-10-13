@@ -237,10 +237,10 @@ export default function Landing({ collections }) {
 
                 <Grid
                     container
-                    spacing={6}
+                    spacing={4}
                     sx={{
-                        mt: { xs: 8, sm: 12, md: 16 }, // Increased top margin
-                        mb: { xs: 6, md: 14 },
+                        mt: { xs: 0, sm: 0, md: 1 }, // Top margin remains the same
+                        mb: { xs: 2, md: 6 }, // Bottom margin remains the same
                         position: 'relative',
                         zIndex: 1
                     }}
@@ -373,11 +373,12 @@ export default function Landing({ collections }) {
                     </Grid>
                 </Grid>
 
-                <Box sx={{ mt: { xs: 10, md: 20 }, mb: { xs: 5, md: 10 } }}>
+                {/* Modify this Box component */}
+                <Box sx={{ mt: { xs: 8, md: 12 }, mb: { xs: 4, md: 8 } }}> {/* Increased top margin */}
                     <CollectionList collections={collections} />
                 </Box>
 
-                <Box sx={{ height: { xs: 80, md: 160 } }} />
+                <Box sx={{ height: { xs: 24, md: 48 } }} /> {/* Further increased height for bottom spacing */}
             </Box>
         </Container>
     );
