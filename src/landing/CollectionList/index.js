@@ -17,7 +17,7 @@ import Row from './Row';
 import ListHead from './ListHead';
 
 export default function CollectionList({ collections }) {
-    const [visibleRows, setVisibleRows] = useState(5);
+    const [visibleRows, setVisibleRows] = useState(10);
     const [allVisible, setAllVisible] = useState(false);
     const [volumeType, setVolumeType] = useState('24h');
     const [order, setOrder] = useState('desc');
@@ -26,11 +26,11 @@ export default function CollectionList({ collections }) {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const handleViewMore = () => {
-        if (visibleRows + 5 >= collections.length) {
+        if (visibleRows + 10 >= collections.length) {
             setVisibleRows(collections.length);
             setAllVisible(true);
         } else {
-            setVisibleRows((prevVisibleRows) => prevVisibleRows + 5);
+            setVisibleRows((prevVisibleRows) => prevVisibleRows + 10);
         }
     };
 
