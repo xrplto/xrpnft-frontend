@@ -207,7 +207,7 @@ function getPriceColor(token) {
     return color;
 }
 
-export default function Row({ id, item, volumeType }) {
+export default function Row({ id, item, volumeType, currency, convertToUsd }) {
     const {
         uuid,
         account,
@@ -233,11 +233,16 @@ export default function Row({ id, item, volumeType }) {
     } = item;
 
     const floorPrice = floor?.amount || 0;
-    let volume1 = fVolume(volume || 0);
-    let volume2 = fVolume(totalVolume || 0);
+    
+    const formatFloorPrice = (price) => {
+        const value = currency === 'USD' ? convertToUsd(price) : price;
+        return `${fNumber(value)} ${currency}`;
+    };
 
-    // Remove the following line
-    // const strDateTime = formatMonthYearDate(created);
+    const formatVolume = (volume) => {
+        const value = currency === 'USD' ? convertToUsd(volume) : volume;
+        return `${fVolume(value)} ${currency}`;
+    };
 
     const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;
     const logoImageUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
@@ -330,7 +335,7 @@ export default function Row({ id, item, volumeType }) {
                     noWrap
                     sx={{ fontWeight: 600, color: theme.palette.primary.main }}
                 >
-                    ✕ {fNumber(floorPrice)}
+                    {formatFloorPrice(floorPrice)}
                 </Typography>
             </TableCell>
 
@@ -340,7 +345,7 @@ export default function Row({ id, item, volumeType }) {
                     noWrap
                     sx={{ fontWeight: 600, color: theme.palette.success.main }}
                 >
-                    ✕ {fNumber(displayVolume)}
+                    {formatVolume(displayVolume)}
                 </Typography>
             </TableCell>
 

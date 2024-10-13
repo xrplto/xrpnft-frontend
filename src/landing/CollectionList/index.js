@@ -22,6 +22,8 @@ export default function CollectionList({ collections }) {
     const [volumeType, setVolumeType] = useState('24h');
     const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('totalVol24h');
+    const [currency, setCurrency] = useState('XRP');
+    const xrpToUsdRate = 1.8828845971187824; // 1 USD = 1.88 XRP
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -49,6 +51,16 @@ export default function CollectionList({ collections }) {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
+    };
+
+    const handleCurrencyChange = (event, newCurrency) => {
+        if (newCurrency !== null) {
+            setCurrency(newCurrency);
+        }
+    };
+
+    const convertToUsd = (xrpValue) => {
+        return Math.floor(xrpValue / xrpToUsdRate);
     };
 
     const sortedCollections = React.useMemo(() => {
@@ -101,15 +113,26 @@ export default function CollectionList({ collections }) {
                     pb: 1
                 }}
             >
-                <ToggleButtonGroup
-                    value={volumeType}
-                    exclusive
-                    onChange={handleVolumeTypeChange}
-                    size="small"
-                >
-                    <ToggleButton value="24h">24h</ToggleButton>
-                    <ToggleButton value="all">All</ToggleButton>
-                </ToggleButtonGroup>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    <ToggleButtonGroup
+                        value={volumeType}
+                        exclusive
+                        onChange={handleVolumeTypeChange}
+                        size="small"
+                    >
+                        <ToggleButton value="24h">24h</ToggleButton>
+                        <ToggleButton value="all">All</ToggleButton>
+                    </ToggleButtonGroup>
+                    <ToggleButtonGroup
+                        value={currency}
+                        exclusive
+                        onChange={handleCurrencyChange}
+                        size="small"
+                    >
+                        <ToggleButton value="XRP">XRP</ToggleButton>
+                        <ToggleButton value="USD">USD</ToggleButton>
+                    </ToggleButtonGroup>
+                </Box>
                 <Link href="/collections" underline="none">
                     <Typography
                         variant="button"
@@ -141,6 +164,7 @@ export default function CollectionList({ collections }) {
                     order={order}
                     orderBy={orderBy}
                     onRequestSort={handleRequestSort}
+                    currency={currency}
                 />
                 <TableBody>
                     {sortedCollections
@@ -151,6 +175,8 @@ export default function CollectionList({ collections }) {
                                 id={index + 1}
                                 item={collection}
                                 volumeType={volumeType}
+                                currency={currency}
+                                convertToUsd={convertToUsd}
                             />
                         ))}
                 </TableBody>

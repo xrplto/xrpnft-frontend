@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 // Material
 import { visuallyHidden } from '@mui/utils';
@@ -15,7 +16,7 @@ import {
 
 // ----------------------------------------------------------------------
 
-const TABLE_HEAD = (isMobile, volumeType) => {
+const TABLE_HEAD = (isMobile, volumeType, currency) => {
     if (isMobile) {
         return [
             {
@@ -27,14 +28,14 @@ const TABLE_HEAD = (isMobile, volumeType) => {
             },
             {
                 id: 'floor.amount',
-                label: 'Floor',
+                label: `Floor (${currency})`,
                 align: 'right',
                 width: '30%',
                 order: true
             },
             {
                 id: volumeType === '24h' ? 'totalVol24h' : 'totalVolume',
-                label: volumeType === '24h' ? '24h Vol' : 'Total Vol',
+                label: `${volumeType === '24h' ? '24h Vol' : 'Total Vol'} (${currency})`,
                 align: 'right',
                 width: '30%',
                 order: true
@@ -51,14 +52,14 @@ const TABLE_HEAD = (isMobile, volumeType) => {
         },
         {
             id: 'floor.amount',
-            label: 'Floor',
+            label: `Floor (${currency})`,
             align: 'right',
             width: '15%',
             order: true
         },
         {
             id: volumeType === '24h' ? 'totalVol24h' : 'totalVolume',
-            label: volumeType === '24h' ? '24h Vol' : 'Total Vol',
+            label: `${volumeType === '24h' ? '24h Vol' : 'Total Vol'} (${currency})`,
             align: 'right',
             width: '15%',
             order: true
@@ -88,7 +89,7 @@ const StyledTableHead = styled(TableHead)(({ theme }) => ({
     },
 }));
 
-export default function ListHead({ order, orderBy, onRequestSort, volumeType }) {
+export default function ListHead({ order, orderBy, onRequestSort, volumeType, currency }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -99,7 +100,7 @@ export default function ListHead({ order, orderBy, onRequestSort, volumeType }) 
     return (
         <StyledTableHead>
             <TableRow>
-                {TABLE_HEAD(isMobile, volumeType).map((headCell) => (
+                {TABLE_HEAD(isMobile, volumeType, currency).map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         align={headCell.align}
@@ -136,5 +137,6 @@ ListHead.propTypes = {
     order: PropTypes.oneOf(['asc', 'desc']),
     orderBy: PropTypes.string,
     onRequestSort: PropTypes.func.isRequired,
-    volumeType: PropTypes.oneOf(['24h', 'all']).isRequired
+    volumeType: PropTypes.oneOf(['24h', 'all']).isRequired,
+    currency: PropTypes.string.isRequired
 };
