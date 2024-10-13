@@ -97,8 +97,8 @@ const CardWrapper = styled('div')(
 
 const IconCover = styled('div')(
     ({ theme }) => `
-        width: 60px;
-        height: 60px;
+        width: 50px; // Reduced from 60px
+        height: 50px; // Reduced from 60px
         box-shadow: ${theme.shadows[4]};
         border: 1px solid ${theme.palette.divider};
         background-color: ${theme.palette.background.neutral};
@@ -118,8 +118,8 @@ const IconCover = styled('div')(
         }
 
         ${theme.breakpoints.down('sm')} {
-            width: 40px;
-            height: 40px;
+            width: 35px; // Reduced from 40px
+            height: 35px; // Reduced from 40px
             border-radius: ${theme.shape.borderRadius}px;
         }
     `
@@ -130,14 +130,14 @@ const IconWrapper = styled('div')(
         box-sizing: border-box;
         display: inline-block;
         position: relative;
-        width: 58px;
-        height: 58px;
-        border-radius: 12px;
+        width: 48px; // Reduced from 58px
+        height: 48px; // Reduced from 58px
+        border-radius: 10px; // Slightly reduced from 12px
 
         ${theme.breakpoints.down('sm')} {
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
+            width: 33px; // Reduced from 38px
+            height: 33px; // Reduced from 38px
+            border-radius: 7px; // Slightly reduced from 8px
         }
   `
 );

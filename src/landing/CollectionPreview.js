@@ -29,10 +29,9 @@ import { getNftCoverUrl } from 'src/utils/parse';
 // box-shadow: 0px 5px 20px 1px;
 
 const CustomImage = styled('img')(({ theme }) => ({
-    borderTopLeftRadius: theme.shape.borderRadius,
-    borderTopRightRadius: theme.shape.borderRadius,
+    borderRadius: theme.shape.borderRadius,
     width: '100%',
-    aspectRatio: '1 / 1', // This ensures a perfect square
+    height: '100%',
     objectFit: 'cover',
     objectPosition: 'center'
 }));
@@ -40,11 +39,12 @@ const CustomImage = styled('img')(({ theme }) => ({
 const CustomCarousel = styled(Carousel)(({ theme }) => ({
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
-    maxWidth: '90%',
+    width: '100%',
+    height: '100%', // Ensure it takes full height of parent
     margin: '0 auto',
     '& .slide': {
-        background: 'transparent !important', // Remove the gray background
-        boxShadow: 'none !important', // Remove any shadow
+        background: 'transparent !important',
+        boxShadow: 'none !important',
     }
 }));
 
@@ -67,11 +67,11 @@ const CollectionCard = styled(Paper)(({ theme }) => ({
         pointerEvents: 'none'
     },
     width: '100%',
-    maxWidth: '550px',
+    height: '100%',
     margin: '0 auto',
     display: 'flex',
     flexDirection: 'column',
-    background: theme.palette.background.paper, // Set the background here instead of inline style
+    background: theme.palette.background.paper,
 }));
 
 const CollectionInfo = styled(Stack)(({ theme }) => ({
@@ -150,7 +150,6 @@ export default function CollectionPreview({ collections }) {
             stopOnHover={false}
             swipeable={false}
             animationHandler={fadeAnimationHandler}
-            minHeight="100%"
             emulateTouch={true}
         >
             {collections.map((item, idx) => {
@@ -196,7 +195,7 @@ export default function CollectionPreview({ collections }) {
                             underline="none"
                             color="inherit"
                             href={`/collection/${slug}`}
-                            sx={{ display: 'block', width: '100%' }}
+                            sx={{ display: 'block', width: '100%', height: '100%' }}
                         >
                             <CustomImage src={imgUrl} alt={name} />
                             <CollectionInfo
@@ -204,6 +203,7 @@ export default function CollectionPreview({ collections }) {
                                 spacing={1}
                                 alignItems="center"
                                 justifyContent="center"
+                                sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: 2 }}
                             >
                                 <GradientText
                                     variant="subtitle1"

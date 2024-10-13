@@ -33,9 +33,9 @@ export default function CollectionList({ collections }) {
         <TableContainer
             sx={{
                 width: '100%',
-                maxWidth: 1750, // Changed from 1800 to 1750
+                maxWidth: '80%', // Changed from 92% to 90%
                 margin: '0 auto',
-                borderRadius: theme.shape.borderRadius * 0.1, // Even slightly less rounded corners
+                borderRadius: theme.shape.borderRadius * 0.1,
                 overflow: 'hidden',
                 backdropFilter: 'blur(20px)',
                 background: alpha(theme.palette.background.paper, 0.15),

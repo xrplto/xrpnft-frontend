@@ -125,7 +125,7 @@ const useRandomMessages = (messages, minDelay = 2000, maxDelay = 4000) => {
                 }
             };
 
-            setVisibleMessages(prevMessages => {
+            setVisibleMessages((prevMessages) => {
                 const updatedMessages = [...prevMessages, newMessage];
                 if (updatedMessages.length > 3) {
                     updatedMessages.shift();
@@ -238,21 +238,30 @@ export default function Landing({ collections }) {
                 <Grid
                     container
                     spacing={6}
-                    justifyContent="center"
-                    alignItems="center"
                     sx={{
-                        mt: { xs: 4, md: 10 },
+                        mt: { xs: 8, sm: 12, md: 16 }, // Increased top margin
                         mb: { xs: 6, md: 14 },
                         position: 'relative',
                         zIndex: 1
                     }}
                 >
-                    <Grid item xs={12} lg={6}>
+                    <Grid item xs={12} md={1} />{' '}
+                    {/* Empty grid item for spacing */}
+                    <Grid
+                        item
+                        xs={12}
+                        md={6}
+                        lg={6}
+                        sx={{
+                            display: 'flex',
+                            justifyContent: { xs: 'center', md: 'flex-start' },
+                            pl: { xs: 0, md: 4 }
+                        }}
+                    >
                         <AutoStack
                             spacing={4}
                             sx={{
-                                maxWidth: { md: '55%', lg: '45%' },
-                                mx: 'auto'
+                                maxWidth: { xs: '100%', md: '90%' }
                             }}
                         >
                             <GradientTypography
@@ -266,7 +275,7 @@ export default function Landing({ collections }) {
                                         lg: '3.5rem'
                                     },
                                     textAlign: { xs: 'center', md: 'left' },
-                                    whiteSpace: 'nowrap' // Add this line to prevent line breaks
+                                    whiteSpace: 'nowrap'
                                 }}
                             >
                                 XRP NFT Marketplace
@@ -343,11 +352,14 @@ export default function Landing({ collections }) {
                             </Box>
                         </AutoStack>
                     </Grid>
-
-                    <Grid item xs={12} lg={6}>
+                    <Grid item xs={12} md={5} lg={5}>
                         <Box
                             sx={{
                                 position: 'relative',
+                                width: '100%',
+                                maxWidth: '500px',
+                                aspectRatio: '1 / 1',
+                                mx: 'auto' // Center the preview
                             }}
                         >
                             <CollectionPreview
