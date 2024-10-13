@@ -9,8 +9,6 @@ import {
   styled
 } from '@mui/material';
 
-import BaseLayout from 'src/layouts/BaseLayout';
-
 import Head from 'next/head';
 import RefreshTwoToneIcon from '@mui/icons-material/RefreshTwoTone';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -140,7 +138,3 @@ function Status500() {
 }
 
 export default Status500;
-
-Status500.getLayout = function getLayout(page) {
-  return <BaseLayout>{page}</BaseLayout>;
-};
