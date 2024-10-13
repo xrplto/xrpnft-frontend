@@ -107,7 +107,6 @@ export default function NFTs({ collection }) {
     const [filter, setFilter] = useState(0);
     const [subFilter, setSubFilter] = useState('latestActivity');
     const [filterAttrs, setFilterAttrs] = useState([]);
-    const [pollInterval, setPollInterval] = useState(null);
 
     const fetchNfts = useCallback(() => {
         if (loading) return;
@@ -141,14 +140,8 @@ export default function NFTs({ collection }) {
 
                 const length = newNfts.length;
                 setHasMore(length === limit);
-                setNfts((prevNfts) => {
-                    // Only update if there are changes
-                    if (JSON.stringify(prevNfts) !== JSON.stringify(newNfts)) {
-                        setDeletingNfts(newNfts);
-                        return newNfts;
-                    }
-                    return prevNfts;
-                });
+                setNfts((prevNfts) => (page === 0 ? newNfts : [...prevNfts, ...newNfts]));
+                setDeletingNfts((prevNfts) => (page === 0 ? newNfts : [...prevNfts, ...newNfts]));
             })
             .catch((err) => {
                 console.log('Error on getting nfts!', err);
@@ -159,40 +152,14 @@ export default function NFTs({ collection }) {
     }, [page, flag, search, filter, subFilter, filterAttrs, collection?.uuid, setDeletingNfts]);
 
     useEffect(() => {
-        fetchNfts();
-
-        // Set up polling interval
-        const interval = setInterval(() => {
-            fetchNfts();
-        }, 3000);
-
-        setPollInterval(interval);
-
-        // Clean up interval on component unmount
-        return () => {
-            if (pollInterval) {
-                clearInterval(pollInterval);
-            }
-        };
-    }, [fetchNfts]);
+        setNfts([]);
+        setDeletingNfts([]);
+        setPage(0);
+        setHasMore(true);
+    }, [flag, search, filter, subFilter, filterAttrs, setDeletingNfts]);
 
     useEffect(() => {
-        // Clear existing interval and set up a new one when fetchNfts dependencies change
-        if (pollInterval) {
-            clearInterval(pollInterval);
-        }
-
-        const newInterval = setInterval(() => {
-            fetchNfts();
-        }, 3000);
-
-        setPollInterval(newInterval);
-
-        return () => {
-            if (newInterval) {
-                clearInterval(newInterval);
-            }
-        };
+        fetchNfts();
     }, [fetchNfts]);
 
     const handleChangeSearch = debounce((e) => {
