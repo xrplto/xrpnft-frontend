@@ -14,7 +14,7 @@ import {
 import VerifiedIcon from '@mui/icons-material/Verified';
 import { fNumber, fIntNumber } from 'src/utils/formatNumber';
 
-const NFTCardView = ({ collections, isMine, currency, convertToUsd }) => {
+const NFTCardView = ({ collections, isMine, currency, convertToUsd, volumeType }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -67,7 +67,7 @@ const NFTCardView = ({ collections, isMine, currency, convertToUsd }) => {
                                 Floor: {formatPrice(item.floor?.amount || 0)}
                             </Typography>
                             <Typography variant="body2" color="text.secondary" gutterBottom>
-                                24h Vol: {formatPrice(item.totalVol24h)}
+                                Volume: {formatPrice(volumeType === '24h' ? item.totalVol24h : item.totalVolume)}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                                 Items: {fIntNumber(item.items)}

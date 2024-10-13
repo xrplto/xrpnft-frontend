@@ -98,7 +98,7 @@ const ImageBackdrop = styled('span')(({ theme }) => ({
     transition: theme.transitions.create('opacity')
 }));
 
-export default function Row({ id, item, isMine, currency, convertToUsd }) {
+export default function Row({ id, item, isMine, currency, convertToUsd, volumeType }) {
     const {
         uuid,
         account,
@@ -123,8 +123,7 @@ export default function Row({ id, item, isMine, currency, convertToUsd }) {
     } = item;
 
     const floorPrice = floor?.amount || 0;
-    let volume1 = fVolume(volume || 0);
-    let volume2 = fVolume(totalVolume || 0);
+    const volumeToDisplay = volumeType === '24h' ? totalVol24h : totalVolume;
 
     // Reintroduce this line to define logoImageUrl
     const logoImageUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
@@ -133,8 +132,6 @@ export default function Row({ id, item, isMine, currency, convertToUsd }) {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const handleRowClick = () => {
-        // history.push(`/collection/${slug}`);
-        // onclick="document.location = 'links.html';"
         document.location = `/collection/${slug}`;
     };
 
@@ -243,63 +240,33 @@ export default function Row({ id, item, isMine, currency, convertToUsd }) {
                     noWrap
                     sx={{ fontWeight: 600, color: theme.palette.success.main }}
                 >
-                    {formatPrice(totalVol24h)}
+                    {formatPrice(volumeToDisplay)}
                 </Typography>
             </TableCell>
 
-            <TableCell
-                align="right"
-                sx={{
-                    py: 1.5,
-                    px: 2,
-                    border: 'none',
-                    display: { xs: 'none', sm: 'table-cell' }
-                }}
-            >
-                <Typography
-                    variant="body1"
-                    noWrap
-                    sx={{ fontWeight: 600, color: theme.palette.info.main }}
-                >
-                    {formatPrice(totalVolume)}
-                </Typography>
-            </TableCell>
+            {!isMobile && (
+                <>
+                    <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+                        <Typography
+                            variant="body1"
+                            noWrap
+                            sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
+                        >
+                            {fIntNumber(owners || 0)}
+                        </Typography>
+                    </TableCell>
 
-            <TableCell
-                align="right"
-                sx={{
-                    py: 1.5,
-                    px: 2,
-                    border: 'none',
-                    display: { xs: 'none', sm: 'table-cell' }
-                }}
-            >
-                <Typography
-                    variant="body1"
-                    noWrap
-                    sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
-                >
-                    {fIntNumber(owners || 0)}
-                </Typography>
-            </TableCell>
-
-            <TableCell
-                align="right"
-                sx={{
-                    py: 1.5,
-                    px: 2,
-                    border: 'none',
-                    display: { xs: 'none', sm: 'table-cell' }
-                }}
-            >
-                <Typography
-                    variant="body1"
-                    noWrap
-                    sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
-                >
-                    {fIntNumber(items)}
-                </Typography>
-            </TableCell>
+                    <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+                        <Typography
+                            variant="body1"
+                            noWrap
+                            sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
+                        >
+                            {fIntNumber(items)}
+                        </Typography>
+                    </TableCell>
+                </>
+            )}
         </TableRow>
     );
 }

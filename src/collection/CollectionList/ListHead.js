@@ -25,7 +25,7 @@ const StyledTableHead = styled(TableHead)(({ theme }) => ({
     },
 }));
 
-const TABLE_HEAD = (isMobile) => {
+const TABLE_HEAD = (isMobile, volumeType) => {
     if (isMobile) {
         return [
             {
@@ -46,8 +46,8 @@ const TABLE_HEAD = (isMobile) => {
             },
             {
                 no: 2,
-                id: 'totalVol24h',
-                label: '24h Vol',
+                id: volumeType === '24h' ? 'totalVol24h' : 'totalVolume',
+                label: volumeType === '24h' ? '24h Vol' : 'Total Vol',
                 align: 'right',
                 width: '30%',
                 order: true
@@ -73,23 +73,14 @@ const TABLE_HEAD = (isMobile) => {
         },
         {
             no: 2,
-            id: 'totalVol24h',
-            label: '24h Vol',
-            align: 'right',
-            width: '10%',
-            order: true
-        },
-        // { no: 3, id: 'volume', label: 'Volume', align: 'right', width: '10%', order: true },
-        {
-            no: 4,
-            id: 'totalVolume',
-            label: 'Total Vol',
+            id: volumeType === '24h' ? 'totalVol24h' : 'totalVolume',
+            label: volumeType === '24h' ? '24h Vol' : 'Total Vol',
             align: 'right',
             width: '10%',
             order: true
         },
         {
-            no: 5,
+            no: 3,
             id: 'owners',
             label: 'Owners',
             align: 'right',
@@ -97,7 +88,7 @@ const TABLE_HEAD = (isMobile) => {
             order: true
         },
         {
-            no: 6,
+            no: 4,
             id: 'items',
             label: 'Items',
             align: 'right',
@@ -107,7 +98,7 @@ const TABLE_HEAD = (isMobile) => {
     ];
 };
 
-export default function ListHead({ order, orderBy, onRequestSort }) {
+export default function ListHead({ order, orderBy, onRequestSort, volumeType, currency }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -118,7 +109,7 @@ export default function ListHead({ order, orderBy, onRequestSort }) {
     return (
         <StyledTableHead>
             <TableRow>
-                {TABLE_HEAD(isMobile).map((headCell) => (
+                {TABLE_HEAD(isMobile, volumeType).map((headCell) => (
                     <TableCell
                         key={headCell.id}
                         align={headCell.align}
@@ -160,5 +151,7 @@ export default function ListHead({ order, orderBy, onRequestSort }) {
 ListHead.propTypes = {
     order: PropTypes.oneOf(['asc', 'desc']),
     orderBy: PropTypes.string,
-    onRequestSort: PropTypes.func.isRequired
+    onRequestSort: PropTypes.func.isRequired,
+    volumeType: PropTypes.oneOf(['24h', 'all']).isRequired,
+    currency: PropTypes.string.isRequired
 };

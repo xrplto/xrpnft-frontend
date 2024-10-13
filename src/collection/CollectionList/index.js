@@ -144,6 +144,9 @@ export default function CollectionList({ type, category }) {
     const [currency, setCurrency] = useState('XRP');
     const xrpToUsdRate = 1.8828845971187824; // 1 USD = 1.88 XRP (you may want to fetch this dynamically)
 
+    // Add this state variable
+    const [volumeType, setVolumeType] = useState('24h');
+
     // Add this function to handle currency change
     const handleCurrencyChange = (event, newCurrency) => {
         if (newCurrency !== null) {
@@ -154,6 +157,15 @@ export default function CollectionList({ type, category }) {
     // Add this function to convert XRP to USD
     const convertToUsd = (xrpValue) => {
         return Math.floor(xrpValue / xrpToUsdRate);
+    };
+
+    // Add this function to handle volume type change
+    const handleVolumeTypeChange = (event, newVolumeType) => {
+        if (newVolumeType !== null) {
+            setVolumeType(newVolumeType);
+            setOrderBy(newVolumeType === '24h' ? 'totalVol24h' : 'totalVolume');
+            setSync(sync + 1);
+        }
     };
 
     useEffect(() => {
@@ -169,7 +181,7 @@ export default function CollectionList({ type, category }) {
                 page,
                 limit: rowsPerPage,
                 order,
-                orderBy: sortOption === 'Volume' ? 'totalVol24h' : orderBy,
+                orderBy: volumeType === '24h' ? 'totalVol24h' : 'totalVolume',
                 choice
             };
 
@@ -190,13 +202,17 @@ export default function CollectionList({ type, category }) {
                 .then((res) => {
                     if (res.status === 200 && res.data) {
                         const { count, collections } = res.data;
-                        console.log(`Received ${collections.length} collections out of ${count} total`);
+                        console.log(
+                            `Received ${collections.length} collections out of ${count} total`
+                        );
                         setTotal(count);
                         setCollections(collections);
-                        
+
                         // Apply initial filtering and sorting
                         const filtered = collections.filter((collection) =>
-                            collection.name.toLowerCase().includes(searchTerm.toLowerCase())
+                            collection.name
+                                .toLowerCase()
+                                .includes(searchTerm.toLowerCase())
                         );
                         const sorted = sortCollections(filtered, sortOption);
                         setFilteredAndSortedCollections(sorted);
@@ -208,7 +224,17 @@ export default function CollectionList({ type, category }) {
                 });
         };
         loadCollections();
-    }, [sync, order, orderBy, page, rowsPerPage, account, searchTerm, sortOption]); // Update dependencies
+    }, [
+        sync,
+        order,
+        orderBy,
+        page,
+        rowsPerPage,
+        account,
+        searchTerm,
+        sortOption,
+        volumeType
+    ]); // Add volumeType to dependencies
 
     // New function to handle sorting
     const sortCollections = (collections, sortOption) => {
@@ -351,6 +377,16 @@ export default function CollectionList({ type, category }) {
                                     <MenuItem value="Z-A">Z-A</MenuItem>
                                 </Select>
                             </StyledFormControl>
+                            <ToggleButtonGroup
+                                value={volumeType}
+                                exclusive
+                                onChange={handleVolumeTypeChange}
+                                size="small"
+                                sx={{ ml: 2 }}
+                            >
+                                <ToggleButton value="24h">24h</ToggleButton>
+                                <ToggleButton value="all">All</ToggleButton>
+                            </ToggleButtonGroup>
                         </Box>
 
                         <ToggleButtonGroup
@@ -387,6 +423,7 @@ export default function CollectionList({ type, category }) {
                             isMine={isMine}
                             currency={currency}
                             convertToUsd={convertToUsd}
+                            volumeType={volumeType} // Add this line
                         />
                     ) : (
                         <Table
@@ -399,18 +436,22 @@ export default function CollectionList({ type, category }) {
                                 orderBy={orderBy}
                                 onRequestSort={handleRequestSort}
                                 currency={currency}
+                                volumeType={volumeType}
                             />
                             <TableBody>
-                                {filteredAndSortedCollections.map((row, idx) => (
-                                    <Row
-                                        key={row._id}
-                                        id={page * rowsPerPage + idx + 1}
-                                        item={row}
-                                        isMine={isMine}
-                                        currency={currency}
-                                        convertToUsd={convertToUsd}
-                                    />
-                                ))}
+                                {filteredAndSortedCollections.map(
+                                    (row, idx) => (
+                                        <Row
+                                            key={row._id}
+                                            id={page * rowsPerPage + idx + 1}
+                                            item={row}
+                                            isMine={isMine}
+                                            currency={currency}
+                                            convertToUsd={convertToUsd}
+                                            volumeType={volumeType} // Add this line
+                                        />
+                                    )
+                                )}
                             </TableBody>
                         </Table>
                     )}
