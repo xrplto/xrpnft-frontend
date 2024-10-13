@@ -31,6 +31,17 @@ import { getHashIcon } from 'src/utils/parse';
 
 import { useTheme } from '@mui/material/styles';
 
+// Add this helper function at the top of the file, outside of any component
+const formatNumber = (num) => {
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+    } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+    } else {
+        return num.toFixed(2);
+    }
+};
+
 const RenderOption = ({
     uuid,
     meta,
@@ -42,9 +53,10 @@ const RenderOption = ({
     account,
     name,
     verified,
-    items,
     type,
-    slug
+    slug,
+    floor,
+    totalVolume
  }) => {
 
     const [hLink, setHLink] = useState('')
@@ -87,7 +99,7 @@ const RenderOption = ({
             href={hLink}
         >
             <MenuItem sx={{ pt: 1, pb: 1 }}>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack direction="row" spacing={1} alignItems="center" width="100%">
                     {
                         <Avatar
                             alt="X"
@@ -111,31 +123,41 @@ const RenderOption = ({
                             />
                         </Avatar>
                     }
-                    <Typography variant="s5">{name ?? ''}</Typography>
-                    {
-                        option_type === 'COLLECTIONS' && <>
-                            {verified === 'yes' &&
-                                <Tooltip title='Verified'>
-                                    <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
-                                </Tooltip>
+                    <Stack direction="column" spacing={0} flexGrow={1}>
+                        <Stack direction="row" spacing={1} alignItems="center">
+                            <Typography variant="s5">{name ?? ''}</Typography>
+                            {
+                                option_type === 'COLLECTIONS' && <>
+                                    {verified === 'yes' &&
+                                        <Tooltip title='Verified'>
+                                            <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
+                                        </Tooltip>
+                                    }
+                                    {type === "random" &&
+                                        <Tooltip title="Random Collection">
+                                            <CasinoIcon color='info' fontSize="small" />
+                                        </Tooltip>
+                                    }
+                                    {type === "sequence" &&
+                                        <Tooltip title="Sequence Collection">
+                                            <AnimationIcon color='info' fontSize="small" />
+                                        </Tooltip>
+                                    }
+                                </>
                             }
-                            {type === "random" &&
-                                <Tooltip title="Random Collection">
-                                    <CasinoIcon color='info' fontSize="small" />
-                                </Tooltip>
-                            }
-                            {type === "sequence" &&
-                                <Tooltip title="Sequence Collection">
-                                    <AnimationIcon color='info' fontSize="small" />
-                                </Tooltip>
-                            }
-                            <Typography variant="s7">{items} items</Typography>
-                        </>
-                    }
-                    {
-                        option_type === 'ACCOUNTS' &&
-                        <Typography variant="s7">{account}</Typography>
-                    }
+                        </Stack>
+                        {
+                            option_type === 'COLLECTIONS' &&
+                            <Stack direction="row" spacing={1} alignItems="center">
+                                {floor && <Typography variant="s7">Floor: {floor.amount} {floor.currency}</Typography>}
+                                <Typography variant="s7">Total Volume: {formatNumber(totalVolume)} XRP</Typography>
+                            </Stack>
+                        }
+                        {
+                            option_type === 'ACCOUNTS' &&
+                            <Typography variant="s7">{account}</Typography>
+                        }
+                    </Stack>
                 </Stack>
             </MenuItem>
         </Link>
