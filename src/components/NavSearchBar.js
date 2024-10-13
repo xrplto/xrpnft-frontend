@@ -14,7 +14,11 @@ import {
     Stack,
     TextField,
     Tooltip,
-    Typography
+    Typography,
+    Box,
+    Divider,
+    Fade,
+    CircularProgress
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CasinoIcon from '@mui/icons-material/Casino';
@@ -29,7 +33,7 @@ import useDebounce from 'src/hooks/useDebounce';
 // Utils
 import { getHashIcon } from 'src/utils/parse';
 
-import { useTheme } from '@mui/material/styles';
+import { useTheme, alpha } from '@mui/material/styles';
 
 // Add this helper function at the top of the file, outside of any component
 const formatNumber = (num) => {
@@ -93,74 +97,85 @@ const RenderOption = ({
 
 
     return (
-        <Link
-            color="inherit"
-            underline='none'
-            href={hLink}
-        >
-            <MenuItem sx={{ pt: 1, pb: 1 }}>
-                <Stack direction="row" spacing={1} alignItems="center" width="100%">
-                    {
+        <Fade in={true} timeout={500}>
+            <Link
+                color="inherit"
+                underline='none'
+                href={hLink}
+            >
+                <MenuItem sx={{ 
+                    pt: 0.75,
+                    pb: 0.75,
+                    borderRadius: 1,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                        backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.08),
+                    }
+                }}>
+                    <Stack direction="row" spacing={0.75} alignItems="center" width="100%">
                         <Avatar
-                            alt="X"
+                            alt={name || 'Item'}
                             variant={option_type === "NFTS" ? "rounded" : logo ? "circular" : "square"}
                             sx={{
-                                backgroundColor: '#00000000',
-                                borderRadius: option_type === "NFTS" ? '8px' : undefined,
-                                overflow: 'hidden', // Add this line to ensure the image respects the border radius
+                                backgroundColor: 'transparent',
+                                borderRadius: option_type === "NFTS" ? '6px' : undefined,
+                                overflow: 'hidden',
+                                width: 36,
+                                height: 36,
+                                boxShadow: 1,
                             }}
                         >
                             <CardMedia
                                 component={isVideo ? "video" : 'img'}
                                 src={imgUrl}
-                                alt='X'
+                                alt={name || 'Item'}
                                 sx={{
                                     width: '100%',
                                     height: '100%',
                                     objectFit: 'cover',
-                                    borderRadius: option_type === "NFTS" ? '8px' : undefined,
+                                    borderRadius: option_type === "NFTS" ? '6px' : undefined,
                                 }}
                             />
                         </Avatar>
-                    }
-                    <Stack direction="column" spacing={0} flexGrow={1}>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                            <Typography variant="s5">{name ?? ''}</Typography>
+                        <Stack direction="column" spacing={0} flexGrow={1}>
+                            <Stack direction="row" spacing={0.5} alignItems="center">
+                                <Typography variant="body2" fontWeight="bold" fontSize="0.8rem">{name ?? ''}</Typography>
+                                {
+                                    option_type === 'COLLECTIONS' && <>
+                                        {verified === 'yes' &&
+                                            <Tooltip title='Verified'>
+                                                <VerifiedIcon fontSize="small" style={{color: "#4589ff", fontSize: '0.9rem'}} />
+                                            </Tooltip>
+                                        }
+                                        {type === "random" &&
+                                            <Tooltip title="Random Collection">
+                                                <CasinoIcon color='info' style={{fontSize: '0.9rem'}} />
+                                            </Tooltip>
+                                        }
+                                        {type === "sequence" &&
+                                            <Tooltip title="Sequence Collection">
+                                                <AnimationIcon color='info' style={{fontSize: '0.9rem'}} />
+                                            </Tooltip>
+                                        }
+                                    </>
+                                }
+                            </Stack>
                             {
-                                option_type === 'COLLECTIONS' && <>
-                                    {verified === 'yes' &&
-                                        <Tooltip title='Verified'>
-                                            <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
-                                        </Tooltip>
-                                    }
-                                    {type === "random" &&
-                                        <Tooltip title="Random Collection">
-                                            <CasinoIcon color='info' fontSize="small" />
-                                        </Tooltip>
-                                    }
-                                    {type === "sequence" &&
-                                        <Tooltip title="Sequence Collection">
-                                            <AnimationIcon color='info' fontSize="small" />
-                                        </Tooltip>
-                                    }
-                                </>
+                                option_type === 'COLLECTIONS' &&
+                                <Stack direction="row" spacing={0.75} alignItems="center">
+                                    {floor && <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Floor: <span style={{color: 'inherit', fontWeight: 'bold'}}>{floor.amount} {floor.currency}</span></Typography>}
+                                    <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Volume: <span style={{color: 'inherit', fontWeight: 'bold'}}>{formatNumber(totalVolume)} XRP</span></Typography>
+                                </Stack>
+                            }
+                            {
+                                option_type === 'ACCOUNTS' &&
+                                <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic', fontSize: '0.7rem' }}>{account}</Typography>
                             }
                         </Stack>
-                        {
-                            option_type === 'COLLECTIONS' &&
-                            <Stack direction="row" spacing={1} alignItems="center">
-                                {floor && <Typography variant="s7">Floor: {floor.amount} {floor.currency}</Typography>}
-                                <Typography variant="s7">Total Volume: {formatNumber(totalVolume)} XRP</Typography>
-                            </Stack>
-                        }
-                        {
-                            option_type === 'ACCOUNTS' &&
-                            <Typography variant="s7">{account}</Typography>
-                        }
                     </Stack>
-                </Stack>
-            </MenuItem>
-        </Link>
+                </MenuItem>
+            </Link>
+        </Fade>
     )
 }
 
@@ -271,14 +286,17 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                 '&.MuiAutocomplete-root .MuiOutlinedInput-root': {
                     paddingTop: 0.5,
                     paddingBottom: 0.5,
+                    transition: 'all 0.3s ease',
                     '& fieldset': {
-                        borderColor: theme.palette.primary.main,
+                        borderColor: alpha(theme.palette.primary.main, 0.5),
+                        borderWidth: 2,
                     },
                     '&:hover fieldset': {
-                        borderColor: theme.palette.primary.light,
+                        borderColor: theme.palette.primary.main,
                     },
                     '&.Mui-focused fieldset': {
-                        borderColor: theme.palette.primary.dark,
+                        borderColor: theme.palette.primary.main,
+                        borderWidth: 2,
                     },
                 },
                 '&.MuiTextField-root': {
@@ -298,6 +316,26 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
             options={options}
             renderOption={(props, option) => <RenderOption {...option} />}
             loading={loading}
+            renderGroup={(params) => (
+                <Box key={params.key}>
+                    <Divider textAlign="left" sx={{ my: 0.75 }}>
+                        <Typography variant="overline" color="primary" fontWeight="bold" fontSize="0.6rem">
+                            {params.group}
+                        </Typography>
+                    </Divider>
+                    {params.children}
+                </Box>
+            )}
+            noOptionsText={
+                <Box sx={{ p: 3, textAlign: 'center' }}>
+                    <Typography variant="body1" color="text.secondary">
+                        No results found
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                        Try adjusting your search or filter to find what you're looking for.
+                    </Typography>
+                </Box>
+            }
             renderInput={(params) => {
                 return (
                     <TextField
@@ -317,7 +355,13 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                                         <IconButton
                                             aria-label='back'
                                             onClick={handleBack}
-                                            sx={{ color: theme.palette.primary.main }}
+                                            sx={{ 
+                                                color: theme.palette.primary.main,
+                                                transition: 'all 0.3s ease',
+                                                '&:hover': {
+                                                    backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                                                }
+                                            }}
                                         >
                                             <ArrowBackIcon />
                                         </IconButton>
@@ -327,13 +371,13 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                                 </InputAdornment>
                             ),
                             endAdornment: (
-                                <InputAdornment position="end"
-                                // onClick={handleClear}
-                                >
+                                <InputAdornment position="end">
                                     {params.InputProps.endAdornment}
-                                    {/* {loading &&
-                                        <ClipLoader color='#ff0000' size={15} />
-                                    } */}
+                                    {loading && (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+                                            <CircularProgress size={20} color="primary" />
+                                        </Box>
+                                    )}
                                 </InputAdornment>
                             ),
                         }}
