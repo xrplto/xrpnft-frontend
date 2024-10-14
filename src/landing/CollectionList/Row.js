@@ -271,18 +271,18 @@ export default function Row({ id, item, volumeType, currency, convertToUsd }) {
             onClick={handleRowClick}
             style={{ cursor: 'pointer' }}
         >
-            <TableCell align="left" sx={{ py: 1.5, px: isMobile ? 1 : 2, border: 'none' }}>
+            <TableCell align="left" sx={{ py: 1.5, px: isMobile ? 0.5 : 2, border: 'none' }}>
                 <Stack
                     direction="row"
                     alignItems="center"
-                    spacing={isMobile ? 1 : 2}
+                    spacing={isMobile ? 0.5 : 2}
                     sx={{ py: 0.5 }}
                 >
                     <Typography
                         variant={isMobile ? 'body2' : 'body1'}
                         sx={{
                             color: theme.palette.text.secondary,
-                            minWidth: isMobile ? '20px' : '32px',
+                            minWidth: isMobile ? '16px' : '32px',
                             fontWeight: 600
                         }}
                     >
@@ -307,7 +307,7 @@ export default function Row({ id, item, volumeType, currency, convertToUsd }) {
                                     variant={isMobile ? 'caption' : 'subtitle1'}
                                     noWrap
                                     sx={{
-                                        maxWidth: isMobile ? '80px' : '150px',
+                                        maxWidth: isMobile ? '60px' : '150px',
                                         textOverflow: 'ellipsis',
                                         fontWeight: 600,
                                         color: theme.palette.text.primary
@@ -318,7 +318,7 @@ export default function Row({ id, item, volumeType, currency, convertToUsd }) {
                                 {verified === 'yes' && (
                                     <Tooltip title="Verified">
                                         <VerifiedIcon
-                                            fontSize={isMobile ? 'small' : 'medium'}
+                                            fontSize="small"
                                             style={{ color: theme.palette.primary.main }}
                                         />
                                     </Tooltip>
@@ -329,9 +329,9 @@ export default function Row({ id, item, volumeType, currency, convertToUsd }) {
                 </Stack>
             </TableCell>
 
-            <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+            <TableCell align="right" sx={{ py: 1.5, px: isMobile ? 0.5 : 2, border: 'none' }}>
                 <Typography
-                    variant={isMobile ? 'body2' : 'body1'}
+                    variant={isMobile ? 'caption' : 'body1'}
                     noWrap
                     sx={{ fontWeight: 600, color: theme.palette.primary.main }}
                 >
@@ -339,9 +339,9 @@ export default function Row({ id, item, volumeType, currency, convertToUsd }) {
                 </Typography>
             </TableCell>
 
-            <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+            <TableCell align="right" sx={{ py: 1.5, px: isMobile ? 0.5 : 2, border: 'none' }}>
                 <Typography
-                    variant={isMobile ? 'body2' : 'body1'}
+                    variant={isMobile ? 'caption' : 'body1'}
                     noWrap
                     sx={{ fontWeight: 600, color: theme.palette.success.main }}
                 >
@@ -349,41 +349,45 @@ export default function Row({ id, item, volumeType, currency, convertToUsd }) {
                 </Typography>
             </TableCell>
 
-            <TableCell
-                align="right"
-                sx={{
-                    py: 1.5,
-                    px: 2,
-                    border: 'none',
-                    display: { xs: 'none', sm: 'table-cell' }
-                }}
-            >
-                <Typography
-                    variant="body1"
-                    noWrap
-                    sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
-                >
-                    {fIntNumber(owners || 0)}
-                </Typography>
-            </TableCell>
+            {!isMobile && (
+                <>
+                    <TableCell
+                        align="right"
+                        sx={{
+                            py: 1.5,
+                            px: 2,
+                            border: 'none',
+                            display: { xs: 'none', sm: 'table-cell' }
+                        }}
+                    >
+                        <Typography
+                            variant="body1"
+                            noWrap
+                            sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
+                        >
+                            {fIntNumber(owners || 0)}
+                        </Typography>
+                    </TableCell>
 
-            <TableCell
-                align="right"
-                sx={{
-                    py: 1.5,
-                    px: 2,
-                    border: 'none',
-                    display: { xs: 'none', sm: 'table-cell' }
-                }}
-            >
-                <Typography
-                    variant="body1"
-                    noWrap
-                    sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
-                >
-                    {fIntNumber(items)}
-                </Typography>
-            </TableCell>
+                    <TableCell
+                        align="right"
+                        sx={{
+                            py: 1.5,
+                            px: 2,
+                            border: 'none',
+                            display: { xs: 'none', sm: 'table-cell' }
+                        }}
+                    >
+                        <Typography
+                            variant="body1"
+                            noWrap
+                            sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
+                        >
+                            {fIntNumber(items)}
+                        </Typography>
+                    </TableCell>
+                </>
+            )}
         </TableRow>
     );
 }

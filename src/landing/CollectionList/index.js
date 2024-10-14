@@ -84,19 +84,19 @@ export default function CollectionList({ collections }) {
         <TableContainer
             sx={{
                 width: '100%',
-                maxWidth: isMobile ? '100%' : '80%',
+                maxWidth: { xs: '100%', sm: '100%', md: '95%', lg: '90%' },
                 margin: '0 auto',
-                borderRadius: theme.shape.borderRadius * 0.1,
+                borderRadius: { xs: 0, sm: theme.shape.borderRadius * 0.1 },
                 overflow: 'hidden',
                 backdropFilter: 'blur(20px)',
                 background: alpha(theme.palette.background.paper, 0.15),
-                border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
-                boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+                border: { xs: 'none', sm: `1px solid ${alpha(theme.palette.primary.main, 0.18)}` },
+                boxShadow: { xs: 'none', sm: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}` },
                 transition: 'all 0.3s ease-in-out',
                 '&:hover': {
-                    boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
+                    boxShadow: { xs: 'none', sm: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}` },
                     background: alpha(theme.palette.background.paper, 0.2),
-                    outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`,
+                    outline: { xs: 'none', sm: `2px solid ${alpha(theme.palette.primary.main, 0.5)}` },
                     outlineOffset: '2px'
                 },
                 padding: 0
@@ -107,8 +107,8 @@ export default function CollectionList({ collections }) {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    pr: 2,
-                    pl: 2,
+                    pr: { xs: 0.5, sm: 2 },
+                    pl: { xs: 0.5, sm: 2 },
                     pt: 1,
                     pb: 1
                 }}
@@ -155,7 +155,7 @@ export default function CollectionList({ collections }) {
                 sx={{
                     '& td, & th': {
                         py: 1,
-                        px: isMobile ? 1 : 2
+                        px: { xs: 0.5, sm: 0.75, md: 1, lg: 2 }
                     }
                 }}
             >

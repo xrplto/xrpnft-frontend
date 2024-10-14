@@ -312,7 +312,7 @@ export default function Landing({ collections }) {
     };
 
     return (
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{ px: { xs: 0.5, sm: 2, md: 3 } }}>
             <Box sx={{ position: 'relative', minHeight: '100vh' }}>
                 {/* Chat message container */}
                 <Box
@@ -354,7 +354,7 @@ export default function Landing({ collections }) {
 
                 <Grid
                     container
-                    spacing={4}
+                    spacing={0}
                     sx={{
                         mt: { xs: 0, sm: 0, md: 1 },
                         mb: { xs: 2, md: 6 },
@@ -362,7 +362,7 @@ export default function Landing({ collections }) {
                         zIndex: 1
                     }}
                 >
-                    <Grid item xs={12} md={1} />
+                    <Grid item xs={12} md={1} sx={{ display: { xs: 'none', md: 'block' } }} />
                     <Grid
                         item
                         xs={12}
@@ -375,9 +375,10 @@ export default function Landing({ collections }) {
                         }}
                     >
                         <AutoStack
-                            spacing={4}
+                            spacing={3}
                             sx={{
-                                maxWidth: { xs: '100%', md: '90%' }
+                                maxWidth: { xs: '100%', sm: '100%', md: '90%' },
+                                px: { xs: 0.5, sm: 0 }
                             }}
                         >
                             <GradientTypography
@@ -473,9 +474,10 @@ export default function Landing({ collections }) {
                             sx={{
                                 position: 'relative',
                                 width: '100%',
-                                maxWidth: '500px',
+                                maxWidth: { xs: '100%', sm: '500px' },
                                 aspectRatio: '1 / 1',
-                                mx: 'auto'
+                                mx: 'auto',
+                                px: { xs: 1, sm: 0 }
                             }}
                         >
                             <CustomCarousel
@@ -582,7 +584,7 @@ export default function Landing({ collections }) {
                 </Grid>
 
                 {/* Collection List */}
-                <Box sx={{ mt: { xs: 8, md: 12 }, mb: { xs: 4, md: 8 } }}>
+                <Box sx={{ mt: { xs: 3, md: 8 }, mb: { xs: 3, md: 8 }, px: { xs: 0.5, sm: 2 } }}>
                     <CollectionList collections={collections} />
                 </Box>
 

@@ -23,21 +23,21 @@ const TABLE_HEAD = (isMobile, volumeType, currency) => {
                 id: 'name',
                 label: 'Collection',
                 align: 'left',
-                width: '40%',
+                width: '50%',
                 order: false
             },
             {
                 id: 'floor.amount',
-                label: `Floor (${currency})`,
+                label: `Floor`,
                 align: 'right',
-                width: '30%',
+                width: '25%',
                 order: true
             },
             {
                 id: volumeType === '24h' ? 'totalVol24h' : 'totalVolume',
-                label: `${volumeType === '24h' ? '24h Vol' : 'Total Vol'} (${currency})`,
+                label: `${volumeType === '24h' ? '24h Vol' : 'Total Vol'}`,
                 align: 'right',
-                width: '30%',
+                width: '25%',
                 order: true
             }
         ];
@@ -106,6 +106,7 @@ export default function ListHead({ order, orderBy, onRequestSort, volumeType, cu
                         align={headCell.align}
                         sortDirection={orderBy === headCell.id ? order : false}
                         width={headCell.width}
+                        sx={{ py: 1, px: isMobile ? 0.5 : 2 }}
                     >
                         <TableSortLabel
                             hideSortIcon
@@ -114,7 +115,7 @@ export default function ListHead({ order, orderBy, onRequestSort, volumeType, cu
                             onClick={headCell.order ? createSortHandler(headCell.id) : undefined}
                         >
                             <Typography
-                                variant={isMobile ? "body2" : "body1"}
+                                variant={isMobile ? "caption" : "body1"}
                                 fontWeight="600"
                                 noWrap
                             >
