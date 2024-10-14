@@ -362,7 +362,12 @@ export default function Landing({ collections }) {
                         zIndex: 1
                     }}
                 >
-                    <Grid item xs={12} md={1} sx={{ display: { xs: 'none', md: 'block' } }} />
+                    <Grid
+                        item
+                        xs={12}
+                        md={1}
+                        sx={{ display: { xs: 'none', md: 'block' } }}
+                    />
                     <Grid
                         item
                         xs={12}
@@ -584,7 +589,16 @@ export default function Landing({ collections }) {
                 </Grid>
 
                 {/* Collection List */}
-                <Box sx={{ mt: { xs: 3, md: 8 }, mb: { xs: 3, md: 8 }, px: { xs: 0.5, sm: 2 } }}>
+                <Box
+                    sx={{
+                        mt: { xs: 3, md: 8 },
+                        mb: { xs: 3, md: 8 },
+                        px: { xs: 0.5, sm: 2 },
+                        width: '100%',
+                        maxWidth: { xs: '100%', sm: '100%', md: '95%', lg: '90%' },
+                        margin: '0 auto'
+                    }}
+                >
                     <CollectionList collections={collections} />
                 </Box>
 
