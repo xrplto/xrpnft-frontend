@@ -195,14 +195,32 @@ export default function NFTs({ collection }) {
     };
 
     const handleSortChange = (newSubFilter) => {
-        setSubFilter(newSubFilter);
+        let subFilterValue = '';
+        switch (newSubFilter) {
+            case 'Listed (non-XRP)':
+                subFilterValue = 'pricenoxrp';
+                break;
+            case 'XRP Price: Low to High':
+                subFilterValue = 'pricexrpasc';
+                break;
+            case 'XRP Price: High to Low':
+                subFilterValue = 'pricexrpdesc';
+                break;
+            case 'Latest Activity':
+                subFilterValue = 'latestActivity';
+                break;
+            default:
+                subFilterValue = newSubFilter;
+        }
+
+        setSubFilter(subFilterValue);
         setPage(0);
         setNfts([]);
         setDeletingNfts([]);
         setHasMore(true);
 
         let newFilter = filter;
-        if (newSubFilter !== 'latestActivity') {
+        if (subFilterValue !== 'latestActivity') {
             newFilter |= 4;
         } else {
             newFilter &= ~4;
