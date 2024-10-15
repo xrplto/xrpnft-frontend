@@ -124,10 +124,12 @@ export default function NFTs({ collection }) {
             filterAttrs
         };
 
+        console.log('XRPNFT API Request:', body); // Add this line to log the request body
+
         axios
             .post(`${BASE_URL}/nfts`, body)
             .then((res) => {
-                console.log('XRPNFT API Response:', res.data);
+                console.log('XRPNFT API Response /collection:', res.data); // This line logs the API response
 
                 let newNfts = res.data.nfts.map((nft) => ({
                     ...nft,
