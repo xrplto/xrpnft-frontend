@@ -88,16 +88,19 @@ import ListToolbar from '../ListToolbar';
 
 // Helper Components
 const NFTokenIDLink = ({ NFTokenID }) => (
-    <Stack direction="row" spacing={1}>
-        <Typography variant="s7">NFTokenID: </Typography>
-        <Link
-            color="inherit"
-            target="_blank"
-            href={`https://bithomp.com/explorer/${NFTokenID}`}
-            rel="noreferrer noopener nofollow"
-        >
-            <Typography variant="s8">{NFTokenID}</Typography>
-        </Link>
+    <Stack spacing={1}>
+        <Stack direction="row" spacing={1}>
+            <Typography variant="s7">NFTokenID: </Typography>
+            <Link
+                color="inherit"
+                target="_blank"
+                href={`https://bithomp.com/explorer/${NFTokenID}`}
+                rel="noreferrer noopener nofollow"
+            >
+                <Typography variant="s8">{NFTokenID}</Typography>
+            </Link>
+        </Stack>
+        <NFTDetails NFTokenID={NFTokenID} />
     </Stack>
 );
 
@@ -172,6 +175,92 @@ const HashLink = ({ hash }) => (
         </Typography>
     </Link>
 );
+
+// Add this new component
+const NFTDetails = ({ NFTokenID }) => {
+    const [nftInfo, setNftInfo] = useState(null);
+
+    useEffect(() => {
+        const fetchNFTInfo = async () => {
+            try {
+                const response = await axios.get(`https://api.xrpnft.com/api/nft/${NFTokenID}`);
+                if (response.data.res === "success") {
+                    setNftInfo(response.data.nft);
+                }
+            } catch (error) {
+                console.error("Error fetching NFT info:", error);
+            }
+        };
+
+        if (NFTokenID) {
+            fetchNFTInfo();
+        }
+    }, [NFTokenID]);
+
+    if (!nftInfo) return null;
+
+    const getImageUrl = (nft) => {
+        if (nft.files && nft.files.length > 0) {
+            const imageFile = nft.files.find(file => file.parsedType === "image");
+            if (imageFile) {
+                if (imageFile.IPFSPath) {
+                    return `https://gateway.xrpnft.com/ipfs/${imageFile.IPFSPath}`;
+                } else if (imageFile.parsedUrl) {
+                    return imageFile.parsedUrl.startsWith('ipfs://')
+                        ? `https://gateway.xrpnft.com/ipfs/${imageFile.parsedUrl.slice(7)}`
+                        : imageFile.parsedUrl;
+                }
+            }
+        }
+        // Fallback options if no image found in files array
+        if (nft.meta?.image) {
+            return nft.meta.image.startsWith('ipfs://')
+                ? `https://gateway.xrpnft.com/ipfs/${nft.meta.image.slice(7)}`
+                : nft.meta.image;
+        } else if (nft.thumbnail?.big) {
+            return `https://s1.xrpnft.com/thumbnail/${nft.thumbnail.big}`;
+        }
+        return null;
+    };
+
+    const imageUrl = getImageUrl(nftInfo);
+
+    return (
+        <Stack direction="row" spacing={2} alignItems="center">
+            <Avatar
+                alt={nftInfo.name}
+                src={imageUrl}
+                sx={{ width: 60, height: 60 }}
+            />
+            <Stack>
+                <Typography variant="subtitle2">{nftInfo.name}</Typography>
+                <Typography variant="caption">Collection: {nftInfo.collection}</Typography>
+                {nftInfo.rarity_rank && nftInfo.total && (
+                    <Typography variant="caption">Rarity Rank: {nftInfo.rarity_rank} / {nftInfo.total}</Typography>
+                )}
+                {nftInfo.issuer && (
+                    <Typography variant="caption">Issuer: {nftInfo.issuer}</Typography>
+                )}
+                {nftInfo.taxon && (
+                    <Typography variant="caption">Taxon: {nftInfo.taxon}</Typography>
+                )}
+                {nftInfo.royalty && (
+                    <Typography variant="caption">Royalty: {nftInfo.royalty / 100}%</Typography>
+                )}
+                {nftInfo.props && nftInfo.props.length > 0 && (
+                    <Typography variant="caption">
+                        Attributes: {nftInfo.props.map(prop => `${prop.type}: ${prop.value}`).join(', ')}
+                    </Typography>
+                )}
+                {nftInfo.cfloor && (
+                    <Typography variant="caption">
+                        Collection Floor: {nftInfo.cfloor.amount} {nftInfo.cfloor.currency}
+                    </Typography>
+                )}
+            </Stack>
+        </Stack>
+    );
+};
 
 // Updated activityComponents to include cost display for ACCEPT_SELL_OFFER
 const activityComponents = {
@@ -403,12 +492,9 @@ const activityComponents = {
     [Activity.MINT_NFT]: {
         strActivity: 'Minted a NFT',
         componentIcon: <TokenIcon />,
-        renderComponentActivity: (data) =>
-            data.meta ? (
-                <NFTInfo data={data} />
-            ) : (
-                <NFTokenIDLink NFTokenID={data.NFTokenID} />
-            )
+        renderComponentActivity: (data) => (
+            <NFTokenIDLink NFTokenID={data.NFTokenID} />
+        )
     },
     [Activity.BURN_NFT]: {
         strActivity: 'Burned a NFT',
