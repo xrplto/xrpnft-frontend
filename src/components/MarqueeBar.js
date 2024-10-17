@@ -1,29 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import { Box, Typography, Link, Tooltip } from '@mui/material';
 import axios from 'axios';
+import { keyframes } from '@emotion/react'; // Import keyframes
+
+// Define the keyframes outside of the component
+const marqueeAnimation = keyframes`
+    0% { transform: translateX(0%) }
+    100% { transform: translateX(-100%) }
+`;
 
 const MarqueeContainer = styled(Box)(({ theme }) => ({
     width: '100%',
     overflow: 'hidden',
     color: theme.palette.text.primary,
-    padding: theme.spacing(1, 0), // Reduced vertical padding
+    padding: theme.spacing(1, 0),
     position: 'relative',
     zIndex: 1000,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)', // Reduced shadow
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.05)',
     borderBottom: `1px solid ${theme.palette.divider}`
 }));
 
-const MarqueeContent = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    animation: `marquee 25s linear infinite`, // Changed from 30s to 25s
+const MarqueeContent = styled(Box)(({ theme, animationDuration }) => ({
+    display: 'inline-flex',
+    animation: `${marqueeAnimation} ${animationDuration}s linear infinite`,
+    animationPlayState: 'running',
     '&:hover': {
         animationPlayState: 'paused'
-    },
-    '@keyframes marquee': {
-        '0%': { transform: 'translateX(0)' },
-        '100%': { transform: 'translateX(-50%)' }
     }
 }));
 
@@ -41,22 +45,22 @@ const MarqueeItem = styled(Box)(({ theme }) => ({
 }));
 
 const NFTImage = styled('img')({
-    width: '32px', // Reduced size
-    height: '32px', // Reduced size
-    marginRight: '12px', // Reduced margin
-    borderRadius: '6px', // Slightly reduced border radius
+    width: '32px',
+    height: '32px',
+    marginRight: '12px',
+    borderRadius: '6px',
     objectFit: 'cover',
-    border: '1px solid #fff', // Thinner border
-    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' // Reduced shadow
+    border: '1px solid #fff',
+    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)'
 });
 
 const Divider = styled('div')(({ theme }) => ({
     width: '1px',
-    height: '28px', // Increased from 24px to 28px
+    height: '28px',
     backgroundColor: theme.palette.divider,
     margin: theme.spacing(0, 1),
     flexShrink: 0,
-    alignSelf: 'center', // Center the divider vertically
+    alignSelf: 'center',
 }));
 
 const NFTLink = styled(Link)({
@@ -67,6 +71,9 @@ const NFTLink = styled(Link)({
 
 const MarqueeBar = ({ isVisible = true }) => {
     const [nfts, setNfts] = useState([]);
+    const [animationDuration, setAnimationDuration] = useState(50); // Default duration
+    const marqueeContainerRef = useRef(null);
+    const marqueeContentRef = useRef(null);
     const BASE_URL = 'https://api.xrpnft.com/api';
     const theme = useTheme();
 
@@ -106,7 +113,10 @@ const MarqueeBar = ({ isVisible = true }) => {
                     return 0;
                 });
 
-                setNfts(newNfts);
+                // Only update state if data has changed to prevent animation reset
+                if (JSON.stringify(newNfts) !== JSON.stringify(nfts)) {
+                    setNfts(newNfts);
+                }
                 console.log('Sorted NFTs:', newNfts);
             } catch (error) {
                 console.error('Error fetching recent NFTs:', error);
@@ -116,16 +126,41 @@ const MarqueeBar = ({ isVisible = true }) => {
         fetchRecentNFTs();
         const interval = setInterval(fetchRecentNFTs, 60000); // Refresh every minute
         return () => clearInterval(interval);
-    }, []);
+    }, [nfts]);
 
-    console.log('Rendering MarqueeBar with', nfts.length, 'NFTs'); // Add this log
+    useEffect(() => {
+        // Calculate animation duration based on content width
+        const calculateAnimationDuration = () => {
+            if (marqueeContainerRef.current && marqueeContentRef.current) {
+                const containerWidth = marqueeContainerRef.current.offsetWidth;
+                const contentWidth = marqueeContentRef.current.offsetWidth / 2; // Since content is duplicated
+                const totalWidth = contentWidth;
+
+                // Desired speed in pixels per second
+                const speed = 50; // Adjust this value to make the marquee slower or faster
+
+                // Calculate duration
+                const duration = totalWidth / speed;
+
+                setAnimationDuration(duration);
+            }
+        };
+
+        calculateAnimationDuration();
+
+        // Recalculate on window resize
+        window.addEventListener('resize', calculateAnimationDuration);
+        return () => window.removeEventListener('resize', calculateAnimationDuration);
+    }, [nfts]);
+
+    console.log('Rendering MarqueeBar with', nfts.length, 'NFTs');
 
     const getEventText = (updateEvent) => {
         switch (updateEvent) {
             case 'SALE':
                 return 'Buy';
             case 'MINT':
-                return 'MINT'; // Changed from 'Newly Minted' to 'MINT'
+                return 'MINT';
             case 'TRANSFER':
                 return 'Transfer';
             default:
@@ -151,11 +186,15 @@ const MarqueeBar = ({ isVisible = true }) => {
         return null;
     }
 
-    const duplicatedNfts = [...nfts, ...nfts]; // Duplicate the NFTs array
+    // Duplicate the content twice to ensure seamless scrolling
+    const duplicatedNfts = [...nfts, ...nfts];
 
     return (
-        <MarqueeContainer>
-            <MarqueeContent>
+        <MarqueeContainer ref={marqueeContainerRef}>
+            <MarqueeContent
+                ref={marqueeContentRef}
+                animationDuration={animationDuration}
+            >
                 {duplicatedNfts.map((nft, index) => (
                     <React.Fragment key={`${nft.NFTokenID}-${index}`}>
                         <NFTLink
@@ -172,30 +211,33 @@ const MarqueeBar = ({ isVisible = true }) => {
                                 )}
                                 <Box>
                                     <Typography
-                                        variant="body2" // Changed from subtitle1 to body2
+                                        variant="body2"
                                         sx={{ fontWeight: 600 }}
                                     >
                                         <NameDisplay
                                             name={nft.name}
-                                            maxLength={18} // Reduced max length
+                                            maxLength={18}
                                         />
                                     </Typography>
                                     <Typography
                                         variant="caption"
-                                        sx={{ opacity: 0.8, fontSize: '0.7rem' }} // Reduced font size
+                                        sx={{
+                                            opacity: 0.8,
+                                            fontSize: '0.7rem'
+                                        }}
                                     >
                                         {nft.collection && (
                                             <NameDisplay
                                                 name={nft.collection}
-                                                maxLength={12} // Reduced max length
+                                                maxLength={12}
                                             />
                                         )}
                                     </Typography>
                                 </Box>
                                 <Typography
-                                    variant="caption" // Changed from body2 to caption
+                                    variant="caption"
                                     sx={{
-                                        marginLeft: 1.5, // Reduced margin
+                                        marginLeft: 1.5,
                                         fontWeight: 500,
                                         color: theme.palette.primary.main,
                                         textTransform: 'uppercase',
@@ -206,9 +248,9 @@ const MarqueeBar = ({ isVisible = true }) => {
                                 </Typography>
                                 {nft.cost && (
                                     <Typography
-                                        variant="caption" // Changed from body2 to caption
+                                        variant="caption"
                                         sx={{
-                                            marginLeft: 1.5, // Reduced margin
+                                            marginLeft: 1.5,
                                             fontWeight: 700,
                                             color: theme.palette.success.main
                                         }}
