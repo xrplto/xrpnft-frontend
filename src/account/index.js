@@ -626,39 +626,49 @@ export default function Account({ profile, limit, tab, collection, type }) {
                             )}
                         </Stack>
 
-                        <Box display="flex" alignItems="center" sx={{ mb: { xs: 1, md: 2 } }}>
+                        <Box 
+                            display="flex" 
+                            alignItems="center" 
+                            justifyContent={{ xs: 'center', md: 'flex-start' }}
+                            flexWrap="wrap"
+                            sx={{ mb: { xs: 1, md: 2 } }}
+                        >
                             <Typography
                                 variant="body1"
                                 sx={{
                                     color: 'text.secondary',
-                                    textAlign: isMobile ? 'center' : 'left',
-                                    width: '100%',
+                                    textAlign: { xs: 'center', md: 'left' },
+                                    width: { xs: '100%', md: 'auto' },
+                                    mb: { xs: 1, md: 0 },
+                                    mr: { md: 1 }
                                 }}
                             >
                                 {account}
                             </Typography>
-                            <CopyToClipboard
-                                text={account}
-                                onCopy={() => {
-                                    openSnackbar('Copied!', 'success');
-                                }}
-                            >
-                                <Tooltip title="Click to copy">
-                                    <IconButton>
-                                        <ContentCopyIcon fontSize="small" />
+                            <Box display="flex" alignItems="center">
+                                <CopyToClipboard
+                                    text={account}
+                                    onCopy={() => {
+                                        openSnackbar('Copied!', 'success');
+                                    }}
+                                >
+                                    <Tooltip title="Click to copy">
+                                        <IconButton size="small">
+                                            <ContentCopyIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
+                                </CopyToClipboard>
+                                <Link
+                                    color="inherit"
+                                    target="_blank"
+                                    href={`https://bithomp.com/explorer/${account}`}
+                                    rel="noreferrer noopener nofollow"
+                                >
+                                    <IconButton size="small">
+                                        <OpenInNewIcon fontSize="small" />
                                     </IconButton>
-                                </Tooltip>
-                            </CopyToClipboard>
-                            <Link
-                                color="inherit"
-                                target="_blank"
-                                href={`https://bithomp.com/explorer/${account}`}
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <IconButton>
-                                    <OpenInNewIcon />
-                                </IconButton>
-                            </Link>
+                                </Link>
+                            </Box>
                         </Box>
 
                         <SeeMoreTypography

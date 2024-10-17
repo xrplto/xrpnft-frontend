@@ -32,28 +32,28 @@ const GlassyBox = styled(Box)(({ theme }) => ({
     backdropFilter: 'blur(20px)',
     borderRadius: theme.shape.borderRadius * 2,
     border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`
 }));
 
 const SearchTextField = styled(TextField)(({ theme }) => ({
     '& .MuiOutlinedInput-root': {
         '& fieldset': {
-            borderColor: 'transparent',
+            borderColor: 'transparent'
         },
         '&:hover fieldset': {
-            borderColor: 'transparent',
+            borderColor: 'transparent'
         },
         '&.Mui-focused fieldset': {
-            borderColor: 'transparent',
-        },
-    },
+            borderColor: 'transparent'
+        }
+    }
 }));
 
 /**
  * CollectedCreatedNFTs Component
- * 
+ *
  * This component handles the display of both collected and created NFTs based on the `type` prop.
- * 
+ *
  * Props:
  * - type: 'collected' | 'created' - Determines the type of NFTs to display.
  * - account: string - User account identifier.
@@ -174,7 +174,13 @@ export default function CollectedCreatedNFTs({
                 setCreatedNFTsCount(nfts.length); // Update created NFTs count
             }
         }
-    }, [nfts, type, setHasCreatedNFTs, setCreatedNFTsLoaded, setCreatedNFTsCount]);
+    }, [
+        nfts,
+        type,
+        setHasCreatedNFTs,
+        setCreatedNFTsLoaded,
+        setCreatedNFTsCount
+    ]);
 
     /**
      * Handle search input changes.
@@ -213,7 +219,11 @@ export default function CollectedCreatedNFTs({
                     lg={2.4}
                     xl={1.5}
                     key={nft.id || index} // Prefer unique ID if available
-                    sx={{ py: 2 }}
+                    sx={{
+                        py: 2,
+                        pl: { xs: 0.5, sm: 1 }, // Reduce left padding on mobile
+                        pr: { xs: 1.5, sm: 1 }  // Increase right padding on mobile
+                    }}
                 >
                     {collection ? (
                         <NFTCard nft={nft} />
@@ -234,7 +244,14 @@ export default function CollectedCreatedNFTs({
             {(type !== 'created' || nfts.length > 0) && (
                 <>
                     {/* Search and Filter Bar */}
-                    <GlassyBox sx={{ mb: 2, p: 1, display: 'flex', alignItems: 'center' }}>
+                    <GlassyBox
+                        sx={{
+                            mb: 2,
+                            p: 1,
+                            display: 'flex',
+                            alignItems: 'center'
+                        }}
+                    >
                         {collection && ( // Show filter button only for NFTs within a collection
                             <IconButton
                                 aria-label="filter"
@@ -259,13 +276,21 @@ export default function CollectedCreatedNFTs({
                             onKeyDown={(e) => e.stopPropagation()}
                             InputProps={{
                                 startAdornment: (
-                                    <InputAdornment position="start" sx={{ mr: 0.7 }}>
+                                    <InputAdornment
+                                        position="start"
+                                        sx={{ mr: 0.7 }}
+                                    >
                                         <SearchIcon />
                                     </InputAdornment>
                                 ),
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        {loading && <ClipLoader color="#ff0000" size={15} />}
+                                        {loading && (
+                                            <ClipLoader
+                                                color="#ff0000"
+                                                size={15}
+                                            />
+                                        )}
                                     </InputAdornment>
                                 )
                             }}
@@ -283,12 +308,16 @@ export default function CollectedCreatedNFTs({
                                         background:
                                             theme.palette.mode === 'dark'
                                                 ? 'rgba(255, 255, 255, 0.1)'
-                                                : 'rgba(255, 255, 255, 0.8)',
-                                    },
+                                                : 'rgba(255, 255, 255, 0.8)'
+                                    }
                                 }}
                             >
                                 <ArrowBackIcon fontSize="large" />
-                                <Typography variant="body2" fontSize="medium" sx={{ ml: 1 }}>
+                                <Typography
+                                    variant="body2"
+                                    fontSize="medium"
+                                    sx={{ ml: 1 }}
+                                >
                                     Go back
                                 </Typography>
                             </IconButton>
@@ -329,12 +358,23 @@ export default function CollectedCreatedNFTs({
                                     }}
                                     hasMore={hasMore}
                                     loader={
-                                        <Box display="flex" justifyContent="center" mt={2}>
-                                            <ClipLoader color="#ff0000" size={35} />
+                                        <Box
+                                            display="flex"
+                                            justifyContent="center"
+                                            mt={2}
+                                        >
+                                            <ClipLoader
+                                                color="#ff0000"
+                                                size={35}
+                                            />
                                         </Box>
                                     }
                                     endMessage={
-                                        <Typography variant="body2" align="center" mt={2}>
+                                        <Typography
+                                            variant="body2"
+                                            align="center"
+                                            mt={2}
+                                        >
                                             {nfts.length === 0
                                                 ? 'No NFTs found.'
                                                 : 'You have seen all NFTs.'}
@@ -350,7 +390,11 @@ export default function CollectedCreatedNFTs({
                                     {nfts.length > 0 ? (
                                         nftItems()
                                     ) : (
-                                        <Typography variant="body2" align="center" mt={2}>
+                                        <Typography
+                                            variant="body2"
+                                            align="center"
+                                            mt={2}
+                                        >
                                             No NFTs found.
                                         </Typography>
                                     )}
