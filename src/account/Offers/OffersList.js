@@ -87,12 +87,12 @@ export default function OffersList({ account, type, setTotalOffers }) {
     const [loadingImg, setLoadingImg] = useState(true);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    
+
     const [hideOffers, setHideOffers] = useState(0);
-    
+
     const onImageLoaded = () => {
         setLoadingImg(false);
-    }
+    };
 
     useEffect(() => {
         function getOffers() {
@@ -322,7 +322,6 @@ export default function OffersList({ account, type, setTotalOffers }) {
         doCancelAll();
     };
 
-
     const handleHideOffer = async (offer) => {
         if (!accountLogin || !accountToken) {
             openSnackbar('Please login', 'error');
@@ -384,20 +383,27 @@ export default function OffersList({ account, type, setTotalOffers }) {
                 />
             )}
 
-            {offers && offers.length > 0 && accountLogin === account && type !== "received" && (
-                <Stack direction="row" justifyContent="flex-end" sx={{ mb: 2 }}>
-                    <Button
-                        disabled={loading}
-                        variant="contained"
-                        color="error"
-                        onClick={handleCancelAll}
-                        startIcon={<HighlightOffIcon />}
-                        size="small"
+            {offers &&
+                offers.length > 0 &&
+                accountLogin === account &&
+                type !== 'received' && (
+                    <Stack
+                        direction="row"
+                        justifyContent="flex-end"
+                        sx={{ mb: 2 }}
                     >
-                        Cancel ALL
-                    </Button>
-                </Stack>
-            )}
+                        <Button
+                            disabled={loading}
+                            variant="contained"
+                            color="error"
+                            onClick={handleCancelAll}
+                            startIcon={<HighlightOffIcon />}
+                            size="small"
+                        >
+                            Cancel ALL
+                        </Button>
+                    </Stack>
+                )}
 
             {loading ? (
                 <Stack alignItems="center" sx={{ my: 4 }}>
@@ -455,8 +461,33 @@ export default function OffersList({ account, type, setTotalOffers }) {
     );
 }
 
-function OfferCard({ offer, isOwner, accountLogin, type, handleAcceptOffer, handleCancelOffer, handleHideOffer, isMobile }) {
-    const { price, isSell, NFTokenID, orphaned, meta, files, collection, slug, cslug, name, isVideo, imgUrl, expired, expire_string, owner } = parseOfferData(offer);
+function OfferCard({
+    offer,
+    isOwner,
+    accountLogin,
+    type,
+    handleAcceptOffer,
+    handleCancelOffer,
+    handleHideOffer,
+    isMobile
+}) {
+    const {
+        price,
+        isSell,
+        NFTokenID,
+        orphaned,
+        meta,
+        files,
+        collection,
+        slug,
+        cslug,
+        name,
+        isVideo,
+        imgUrl,
+        expired,
+        expire_string,
+        owner
+    } = parseOfferData(offer);
 
     return (
         <Card elevation={3}>
@@ -464,53 +495,97 @@ function OfferCard({ offer, isOwner, accountLogin, type, handleAcceptOffer, hand
                 <Grid container spacing={isMobile ? 1 : 2} alignItems="center">
                     <Grid item xs={12} sm={6} md={4}>
                         <Link href={`/nft/${NFTokenID}`} underline="none">
-                            <Stack direction="row" spacing={1} alignItems="center">
+                            <Stack
+                                direction="row"
+                                spacing={1}
+                                alignItems="center"
+                            >
                                 <CardMedia
                                     component={isVideo ? 'video' : 'img'}
                                     image={imgUrl}
                                     alt={name}
-                                    sx={{ width: isMobile ? 48 : 64, height: isMobile ? 36 : 48, borderRadius: 1 }}
+                                    sx={{
+                                        width: isMobile ? 48 : 64,
+                                        height: isMobile ? 36 : 48,
+                                        borderRadius: 1
+                                    }}
                                 />
                                 <Stack>
-                                    <Link href={`/collection/${cslug}`} underline="none">
-                                        <Typography variant="caption" color="text.secondary">
+                                    <Link
+                                        href={`/collection/${cslug}`}
+                                        underline="none"
+                                    >
+                                        <Typography
+                                            variant="caption"
+                                            color="text.secondary"
+                                        >
                                             {collection || ''}
                                         </Typography>
                                     </Link>
-                                    <Typography variant={isMobile ? "body2" : "subtitle2"} noWrap>
+                                    <Typography
+                                        variant={
+                                            isMobile ? 'body2' : 'subtitle2'
+                                        }
+                                        noWrap
+                                    >
                                         {name}
                                     </Typography>
-                                    <Typography variant="caption" color="text.secondary">
-                                        Owner: {truncate(owner, isMobile ? 8 : 10)}
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                    >
+                                        Owner:{' '}
+                                        {truncate(owner, isMobile ? 8 : 10)}
                                     </Typography>
                                 </Stack>
                             </Stack>
                         </Link>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                        <Typography variant={isMobile ? "subtitle1" : "h6"} component="div">
+                        <Typography
+                            variant={isMobile ? 'subtitle1' : 'h6'}
+                            component="div"
+                        >
                             {price.amount} {price.name}
                         </Typography>
                         {expire_string && (
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                                variant="caption"
+                                color="text.secondary"
+                            >
                                 Expires: {expire_string}
                             </Typography>
                         )}
-                        <Typography variant="caption" display="block" color="text.secondary">
+                        <Typography
+                            variant="caption"
+                            display="block"
+                            color="text.secondary"
+                        >
                             Offer ID: {truncate(offer.index, isMobile ? 8 : 10)}
                         </Typography>
-                        <Typography variant="caption" display="block" color="text.secondary">
-                            Offer by: {truncate(offer.account, isMobile ? 8 : 10)}
+                        <Typography
+                            variant="caption"
+                            display="block"
+                            color="text.secondary"
+                        >
+                            Offer by:{' '}
+                            {truncate(offer.account, isMobile ? 8 : 10)}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={2}>
                         <Stack direction="row" spacing={0.5} flexWrap="wrap">
                             <Chip
-                                label={isSell ? 'Sell offer' : type === 'orphaned' ? 'Orphaned offer' : 'Buy offer'}
+                                label={
+                                    isSell
+                                        ? 'Sell offer'
+                                        : type === 'orphaned'
+                                        ? 'Orphaned offer'
+                                        : 'Buy offer'
+                                }
                                 color={isSell ? 'primary' : 'secondary'}
                                 size="small"
                             />
-                            {orphaned === "yes" && (
+                            {orphaned === 'yes' && (
                                 <Chip
                                     label="Orphaned"
                                     color="warning"
@@ -527,8 +602,22 @@ function OfferCard({ offer, isOwner, accountLogin, type, handleAcceptOffer, hand
                         </Stack>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                        <Stack direction="row" spacing={1} justifyContent={isMobile ? 'flex-start' : 'flex-end'}>
-                            {renderActionButtons(offer, isOwner, accountLogin, type, handleAcceptOffer, handleCancelOffer, handleHideOffer)}
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            justifyContent={
+                                isMobile ? 'flex-start' : 'flex-end'
+                            }
+                        >
+                            {renderActionButtons(
+                                offer,
+                                isOwner,
+                                accountLogin,
+                                type,
+                                handleAcceptOffer,
+                                handleCancelOffer,
+                                handleHideOffer
+                            )}
                         </Stack>
                     </Grid>
                 </Grid>
@@ -537,32 +626,59 @@ function OfferCard({ offer, isOwner, accountLogin, type, handleAcceptOffer, hand
     );
 }
 
-function renderActionButtons(offer, isOwner, accountLogin, type, handleAcceptOffer, handleCancelOffer, handleHideOffer) {
+function renderActionButtons(
+    offer,
+    isOwner,
+    accountLogin,
+    type,
+    handleAcceptOffer,
+    handleCancelOffer,
+    handleHideOffer
+) {
     const { isSell, orphaned, offerAccount, destination, expired } = offer;
 
     if (expired) {
         return (
-            <Button variant="contained" size="small" color="error" onClick={() => handleCancelOffer(offer)}>
+            <Button
+                variant="contained"
+                size="small"
+                color="error"
+                onClick={() => handleCancelOffer(offer)}
+            >
                 Remove
             </Button>
         );
     }
 
-    if (type === "received" && accountLogin) {
+    if (type === 'received' && accountLogin) {
         return (
             <>
                 {isOwner && (
                     <>
-                        <Button variant="contained" size="small" color="success" onClick={() => handleAcceptOffer(offer)}>
+                        <Button
+                            variant="contained"
+                            size="small"
+                            color="success"
+                            onClick={() => handleAcceptOffer(offer)}
+                        >
                             Accept
                         </Button>
-                        <Button variant="outlined" size="small" onClick={() => handleHideOffer(offer)}>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => handleHideOffer(offer)}
+                        >
                             Hide
                         </Button>
                     </>
                 )}
                 {accountLogin === offerAccount && (
-                    <Button variant="contained" size="small" color="error" onClick={() => handleCancelOffer(offer)}>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        color="error"
+                        onClick={() => handleCancelOffer(offer)}
+                    >
                         Cancel
                     </Button>
                 )}
@@ -573,13 +689,31 @@ function renderActionButtons(offer, isOwner, accountLogin, type, handleAcceptOff
     if (isSell) {
         if (isOwner || accountLogin === offerAccount) {
             return (
-                <Button variant={type === "buys" && orphaned !== "yes" ? "outlined" : "contained"} size="small" color="error" onClick={() => handleCancelOffer(offer)}>
+                <Button
+                    variant={
+                        type === 'buys' && orphaned !== 'yes'
+                            ? 'outlined'
+                            : 'contained'
+                    }
+                    size="small"
+                    color="error"
+                    onClick={() => handleCancelOffer(offer)}
+                >
                     Cancel
                 </Button>
             );
-        } else if (orphaned !== 'yes' && destination && accountLogin === destination) {
+        } else if (
+            orphaned !== 'yes' &&
+            destination &&
+            accountLogin === destination
+        ) {
             return (
-                <Button variant="contained" size="small" color="primary" onClick={() => handleAcceptOffer(offer)}>
+                <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    onClick={() => handleAcceptOffer(offer)}
+                >
                     Accept
                 </Button>
             );
@@ -587,13 +721,27 @@ function renderActionButtons(offer, isOwner, accountLogin, type, handleAcceptOff
     } else {
         if (isOwner && accountLogin !== offerAccount) {
             return (
-                <Button variant="contained" size="small" color="primary" onClick={() => handleAcceptOffer(offer)}>
+                <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    onClick={() => handleAcceptOffer(offer)}
+                >
                     Accept
                 </Button>
             );
         } else if (accountLogin === offerAccount) {
             return (
-                <Button variant={type === "buys" && orphaned !== "yes" ? "outlined" : "contained"} size="small" color="error" onClick={() => handleCancelOffer(offer)}>
+                <Button
+                    variant={
+                        type === 'buys' && orphaned !== 'yes'
+                            ? 'outlined'
+                            : 'contained'
+                    }
+                    size="small"
+                    color="error"
+                    onClick={() => handleCancelOffer(offer)}
+                >
                     Cancel
                 </Button>
             );
@@ -606,35 +754,50 @@ function renderActionButtons(offer, isOwner, accountLogin, type, handleAcceptOff
 function parseOfferData(offer) {
     const price = normalizeAmount(offer.amount);
     const isSell = offer.flags === 1;
-    const { NFTokenID, orphaned, meta, files, cslug, owner, account, destination, expiration, index } = offer;
+    const {
+        NFTokenID,
+        orphaned,
+        meta,
+        files,
+        cslug,
+        owner,
+        account,
+        destination,
+        expiration,
+        index
+    } = offer;
 
-    const { flag, royalty, issuer, taxon, transferFee } = parseNFTokenID(NFTokenID);
+    const { flag, royalty, issuer, taxon, transferFee } =
+        parseNFTokenID(NFTokenID);
 
     const name = meta?.name || offer?.Name || 'No Name';
-    const collection = offer.collecion || offer.collection || (meta?.collection?.name) || '';
+    const collection =
+        offer.collecion || offer.collection || meta?.collection?.name || '';
 
     const isVideo = false; // Update this if you have a way to determine if it's a video
 
-    const imgUrl = getNftCoverUrl({files}, 'small');
+    const imgUrl = getNftCoverUrl({ files }, 'small');
 
     const expired = checkExpiration(expiration);
-    const expire = expiration ? (expiration > 946684800 ? expiration : expiration + 946684800) * 1000 : '';
+    const expire = expiration
+        ? (expiration > 946684800 ? expiration : expiration + 946684800) * 1000
+        : '';
     const expire_string = expire ? new Date(expire).toLocaleString() : '';
 
-    return { 
-        price, 
-        isSell, 
-        NFTokenID, 
-        orphaned, 
-        meta, 
-        files, 
-        collection, 
-        cslug, 
-        name, 
-        isVideo, 
-        imgUrl, 
-        expired, 
-        expire_string, 
+    return {
+        price,
+        isSell,
+        NFTokenID,
+        orphaned,
+        meta,
+        files,
+        collection,
+        cslug,
+        name,
+        isVideo,
+        imgUrl,
+        expired,
+        expire_string,
         owner,
         offerAccount: account,
         destination,

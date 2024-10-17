@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { Client } from 'xrpl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 // Material
 import {
@@ -487,6 +489,9 @@ export default function Account({ profile, limit, tab, collection, type }) {
     console.log('Current notification counts:', notificationCounts);
     console.log('Total notifications:', totalNotifications);
 
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     return (
         <>
             <Box sx={{ position: 'relative', mt: 7, mx: { xs: 2, md: 4 } }}>
@@ -630,9 +635,13 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         <Box display="flex" alignItems="center" sx={{ mb: 2 }}>
                             <Typography
                                 variant="body1"
-                                sx={{ color: 'text.secondary' }}
+                                sx={{
+                                    color: 'text.secondary',
+                                    textAlign: isMobile ? 'center' : 'left',
+                                    width: '100%',
+                                }}
                             >
-                                {account.slice(0, 4) + '...' + account.slice(-4)}
+                                {account}
                             </Typography>
                             <CopyToClipboard
                                 text={account}
