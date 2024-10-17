@@ -460,16 +460,16 @@ function OfferCard({ offer, isOwner, accountLogin, type, handleAcceptOffer, hand
 
     return (
         <Card elevation={3}>
-            <CardContent sx={{ p: 2 }}>
-                <Grid container spacing={2} alignItems="center">
+            <CardContent sx={{ p: isMobile ? 1 : 2 }}>
+                <Grid container spacing={isMobile ? 1 : 2} alignItems="center">
                     <Grid item xs={12} sm={6} md={4}>
                         <Link href={`/nft/${NFTokenID}`} underline="none">
-                            <Stack direction="row" spacing={2} alignItems="center">
+                            <Stack direction="row" spacing={1} alignItems="center">
                                 <CardMedia
                                     component={isVideo ? 'video' : 'img'}
                                     image={imgUrl}
                                     alt={name}
-                                    sx={{ width: 64, height: 48, borderRadius: 1 }}
+                                    sx={{ width: isMobile ? 48 : 64, height: isMobile ? 36 : 48, borderRadius: 1 }}
                                 />
                                 <Stack>
                                     <Link href={`/collection/${cslug}`} underline="none">
@@ -477,18 +477,18 @@ function OfferCard({ offer, isOwner, accountLogin, type, handleAcceptOffer, hand
                                             {collection || ''}
                                         </Typography>
                                     </Link>
-                                    <Typography variant="subtitle2" noWrap>
+                                    <Typography variant={isMobile ? "body2" : "subtitle2"} noWrap>
                                         {name}
                                     </Typography>
                                     <Typography variant="caption" color="text.secondary">
-                                        Owner: {truncate(owner, 10)}
+                                        Owner: {truncate(owner, isMobile ? 8 : 10)}
                                     </Typography>
                                 </Stack>
                             </Stack>
                         </Link>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                        <Typography variant="h6" component="div">
+                        <Typography variant={isMobile ? "subtitle1" : "h6"} component="div">
                             {price.amount} {price.name}
                         </Typography>
                         {expire_string && (
@@ -497,37 +497,37 @@ function OfferCard({ offer, isOwner, accountLogin, type, handleAcceptOffer, hand
                             </Typography>
                         )}
                         <Typography variant="caption" display="block" color="text.secondary">
-                            Offer ID: {truncate(offer.index, 10)}
+                            Offer ID: {truncate(offer.index, isMobile ? 8 : 10)}
                         </Typography>
                         <Typography variant="caption" display="block" color="text.secondary">
-                            Offer by: {truncate(offer.account, 10)}
+                            Offer by: {truncate(offer.account, isMobile ? 8 : 10)}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={2}>
-                        <Chip
-                            label={isSell ? 'Sell offer' : type === 'orphaned' ? 'Orphaned offer' : 'Buy offer'}
-                            color={isSell ? 'primary' : 'secondary'}
-                            size="small"
-                        />
-                        {orphaned === "yes" && (
+                        <Stack direction="row" spacing={0.5} flexWrap="wrap">
                             <Chip
-                                label="Orphaned"
-                                color="warning"
+                                label={isSell ? 'Sell offer' : type === 'orphaned' ? 'Orphaned offer' : 'Buy offer'}
+                                color={isSell ? 'primary' : 'secondary'}
                                 size="small"
-                                sx={{ mt: 1 }}
                             />
-                        )}
-                        {expired && (
-                            <Chip
-                                label="Expired"
-                                color="error"
-                                size="small"
-                                sx={{ mt: 1 }}
-                            />
-                        )}
+                            {orphaned === "yes" && (
+                                <Chip
+                                    label="Orphaned"
+                                    color="warning"
+                                    size="small"
+                                />
+                            )}
+                            {expired && (
+                                <Chip
+                                    label="Expired"
+                                    color="error"
+                                    size="small"
+                                />
+                            )}
+                        </Stack>
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
-                        <Stack direction="row" spacing={1} justifyContent={isMobile ? 'center' : 'flex-end'}>
+                        <Stack direction="row" spacing={1} justifyContent={isMobile ? 'flex-start' : 'flex-end'}>
                             {renderActionButtons(offer, isOwner, accountLogin, type, handleAcceptOffer, handleCancelOffer, handleHideOffer)}
                         </Stack>
                     </Grid>
