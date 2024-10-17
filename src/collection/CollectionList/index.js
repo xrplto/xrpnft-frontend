@@ -18,7 +18,12 @@ import {
     Select,
     MenuItem,
     FormControl,
-    InputLabel
+    InputLabel,
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions
 } from '@mui/material';
 
 // Utils
@@ -102,6 +107,13 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
     }
 }));
 
+// Add this new styled component for mobile-friendly buttons
+const MobileButton = styled(Button)(({ theme }) => ({
+  width: '100%',
+  marginBottom: theme.spacing(2),
+  padding: theme.spacing(1.5),
+}));
+
 export default function CollectionList({ type, category }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -146,6 +158,11 @@ export default function CollectionList({ type, category }) {
 
     // Add this state variable
     const [volumeType, setVolumeType] = useState('24h');
+
+    // Add this new function to handle mobile filter/sort dialog
+    const [mobileDialogOpen, setMobileDialogOpen] = useState(false);
+    const handleMobileDialogOpen = () => setMobileDialogOpen(true);
+    const handleMobileDialogClose = () => setMobileDialogOpen(false);
 
     // Add this function to handle currency change
     const handleCurrencyChange = (event, newCurrency) => {
@@ -315,7 +332,7 @@ export default function CollectionList({ type, category }) {
                     fontWeight="bold"
                     sx={{
                         fontSize: {
-                            xs: '2rem',
+                            xs: '1.75rem',
                             sm: '2.5rem',
                             md: '3rem'
                         },
@@ -329,90 +346,164 @@ export default function CollectionList({ type, category }) {
                     <Box
                         sx={{
                             display: 'flex',
+                            flexDirection: { xs: 'column', md: 'row' },
                             justifyContent: 'space-between',
-                            alignItems: 'center',
+                            alignItems: { xs: 'stretch', md: 'center' },
                             mb: 4
                         }}
                     >
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <ToggleButtonGroup
-                                color="primary"
-                                value={choice}
-                                exclusive
-                                onChange={handleChangeChoice}
-                            >
-                                <StyledToggleButton value="all">
-                                    All
-                                </StyledToggleButton>
-                                <StyledToggleButton value="verified">
-                                    Verified
-                                </StyledToggleButton>
-                            </ToggleButtonGroup>
-                            <SearchBar
-                                value={searchTerm}
-                                onChange={handleSearch}
-                            />
-                            <StyledFormControl size="small">
-                                {' '}
-                                {/* Add size="small" here */}
-                                <InputLabel id="sort-select-label">
-                                    Sort
-                                </InputLabel>
-                                <Select
-                                    labelId="sort-select-label"
-                                    id="sort-select"
-                                    value={sortOption}
-                                    label="Sort"
-                                    onChange={handleSortChange}
+                        {isMobile ? (
+                            <>
+                                <MobileButton
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleMobileDialogOpen}
                                 >
-                                    <MenuItem value="Volume">Volume</MenuItem>{' '}
-                                    {/* Change this line */}
-                                    <MenuItem value="Floor High">
-                                        Floor High
-                                    </MenuItem>
-                                    <MenuItem value="Floor Low">
-                                        Floor Low
-                                    </MenuItem>
-                                    <MenuItem value="A-Z">A-Z</MenuItem>
-                                    <MenuItem value="Z-A">Z-A</MenuItem>
-                                </Select>
-                            </StyledFormControl>
-                            <ToggleButtonGroup
-                                value={volumeType}
-                                exclusive
-                                onChange={handleVolumeTypeChange}
-                                size="small"
-                                sx={{ ml: 2 }}
-                            >
-                                <ToggleButton value="24h">24h</ToggleButton>
-                                <ToggleButton value="all">All</ToggleButton>
-                            </ToggleButtonGroup>
-                        </Box>
+                                    Filter & Sort
+                                </MobileButton>
+                                <Dialog
+                                    open={mobileDialogOpen}
+                                    onClose={handleMobileDialogClose}
+                                    fullWidth
+                                >
+                                    <DialogTitle>Filter & Sort</DialogTitle>
+                                    <DialogContent>
+                                        <Box sx={{ mb: 2 }}>
+                                            <ToggleButtonGroup
+                                                color="primary"
+                                                value={choice}
+                                                exclusive
+                                                onChange={handleChangeChoice}
+                                                fullWidth
+                                            >
+                                                <StyledToggleButton value="all">All</StyledToggleButton>
+                                                <StyledToggleButton value="verified">Verified</StyledToggleButton>
+                                            </ToggleButtonGroup>
+                                        </Box>
+                                        <SearchBar
+                                            value={searchTerm}
+                                            onChange={handleSearch}
+                                            fullWidth
+                                        />
+                                        <FormControl fullWidth sx={{ mt: 2 }}>
+                                            <InputLabel id="sort-select-label">Sort</InputLabel>
+                                            <Select
+                                                labelId="sort-select-label"
+                                                id="sort-select"
+                                                value={sortOption}
+                                                label="Sort"
+                                                onChange={handleSortChange}
+                                            >
+                                                <MenuItem value="Volume">Volume</MenuItem>
+                                                <MenuItem value="Floor High">Floor High</MenuItem>
+                                                <MenuItem value="Floor Low">Floor Low</MenuItem>
+                                                <MenuItem value="A-Z">A-Z</MenuItem>
+                                                <MenuItem value="Z-A">Z-A</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                        <Box sx={{ mt: 2 }}>
+                                            <ToggleButtonGroup
+                                                value={volumeType}
+                                                exclusive
+                                                onChange={handleVolumeTypeChange}
+                                                fullWidth
+                                            >
+                                                <ToggleButton value="24h">24h</ToggleButton>
+                                                <ToggleButton value="all">All</ToggleButton>
+                                            </ToggleButtonGroup>
+                                        </Box>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleMobileDialogClose}>Close</Button>
+                                    </DialogActions>
+                                </Dialog>
+                            </>
+                        ) : (
+                            // Existing desktop layout
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <ToggleButtonGroup
+                                        color="primary"
+                                        value={choice}
+                                        exclusive
+                                        onChange={handleChangeChoice}
+                                    >
+                                        <StyledToggleButton value="all">
+                                            All
+                                        </StyledToggleButton>
+                                        <StyledToggleButton value="verified">
+                                            Verified
+                                        </StyledToggleButton>
+                                    </ToggleButtonGroup>
+                                    <SearchBar
+                                        value={searchTerm}
+                                        onChange={handleSearch}
+                                    />
+                                    <StyledFormControl size="small">
+                                        {' '}
+                                        {/* Add size="small" here */}
+                                        <InputLabel id="sort-select-label">
+                                            Sort
+                                        </InputLabel>
+                                        <Select
+                                            labelId="sort-select-label"
+                                            id="sort-select"
+                                            value={sortOption}
+                                            label="Sort"
+                                            onChange={handleSortChange}
+                                        >
+                                            <MenuItem value="Volume">Volume</MenuItem>{' '}
+                                            {/* Change this line */}
+                                            <MenuItem value="Floor High">
+                                                Floor High
+                                            </MenuItem>
+                                            <MenuItem value="Floor Low">
+                                                Floor Low
+                                            </MenuItem>
+                                            <MenuItem value="A-Z">A-Z</MenuItem>
+                                            <MenuItem value="Z-A">Z-A</MenuItem>
+                                        </Select>
+                                    </StyledFormControl>
+                                    <ToggleButtonGroup
+                                        value={volumeType}
+                                        exclusive
+                                        onChange={handleVolumeTypeChange}
+                                        size="small"
+                                        sx={{ ml: 2 }}
+                                    >
+                                        <ToggleButton value="24h">24h</ToggleButton>
+                                        <ToggleButton value="all">All</ToggleButton>
+                                    </ToggleButtonGroup>
+                                </Box>
 
-                        <ToggleButtonGroup
-                            value={currency}
-                            exclusive
-                            onChange={handleCurrencyChange}
-                            size="small"
-                            sx={{ ml: 2 }}
-                        >
-                            <ToggleButton value="XRP">XRP</ToggleButton>
-                            <ToggleButton value="USD">USD</ToggleButton>
-                        </ToggleButtonGroup>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: { xs: 2, md: 0 } }}>
+                                    <ToggleButtonGroup
+                                        value={currency}
+                                        exclusive
+                                        onChange={handleCurrencyChange}
+                                        size="small"
+                                        sx={{ mr: 2 }}
+                                    >
+                                        <ToggleButton value="XRP">XRP</ToggleButton>
+                                        <ToggleButton value="USD">USD</ToggleButton>
+                                    </ToggleButtonGroup>
 
-                        <ToggleButtonGroup
-                            value={viewMode}
-                            exclusive
-                            onChange={handleViewModeChange}
-                            aria-label="view mode"
-                        >
-                            <ToggleButton value="card" aria-label="card view">
-                                <ViewModule />
-                            </ToggleButton>
-                            <ToggleButton value="table" aria-label="table view">
-                                <ViewList />
-                            </ToggleButton>
-                        </ToggleButtonGroup>
+                                    <ToggleButtonGroup
+                                        value={viewMode}
+                                        exclusive
+                                        onChange={handleViewModeChange}
+                                        aria-label="view mode"
+                                    >
+                                        <ToggleButton value="card" aria-label="card view">
+                                            <ViewModule />
+                                        </ToggleButton>
+                                        <ToggleButton value="table" aria-label="table view">
+                                            <ViewList />
+                                        </ToggleButton>
+                                    </ToggleButtonGroup>
+                                </Box>
+                            </Box>
+                        )}
                     </Box>
                 )}
 
