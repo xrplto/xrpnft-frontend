@@ -81,6 +81,9 @@ import Properties from './Properties';
 import { alpha, styled } from '@mui/material/styles';
 import Glass from '@mui/material/Paper';
 import CheckIcon from '@mui/icons-material/Check';
+import CreateOfferXRPCafe from './CreateOfferXRPCafe';
+import { Client } from 'xrpl';
+import { xrpToDrops, dropsToXrp } from 'xrpl';
 
 // const NFT_FLAGS = {
 //     0x00000001: 'lsfBurnable',
@@ -88,6 +91,14 @@ import CheckIcon from '@mui/icons-material/Check';
 //     0x00000004: 'lsfTrustLine',
 //     0x00000008: 'lsfTransferable',
 // }
+
+const BROKER_ADDRESSES = {
+  "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv": { fee: 0.01, name: "Art Dept Fun" },
+  "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC": { fee: 0.01589, name: "XRP Cafe" },
+  "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC": { fee: 0.015, name: "BIDDS" },
+  "rDeizxSRo6JHjKnih9ivpPkyD2EgXQvhSB": { fee: 0.015, name: "XPMarket" },
+  "rJcCJyJkiTXGcxU4Lt4ZvKJz8YmorZXu8r": { fee: 0.01, name: "OpulenceX" }
+};
 
 function getProperties(meta) {
     const properties = [];
@@ -316,6 +327,9 @@ export default function NFTDetailsMobile({ nft }) {
 
     const [sync, setSync] = useState(0);
 
+    const [openCreateOfferXRPCafe, setOpenCreateOfferXRPCafe] = useState(false);
+    const [lowestSellOffer, setLowestSellOffer] = useState(null);
+
     useEffect(() => {
         function getOffers() {
             setLoading(true);
@@ -380,6 +394,70 @@ export default function NFTDetailsMobile({ nft }) {
             }
         };
     }, [openScanQR, xummUuid, sync]);
+
+    useEffect(() => {
+        async function getLowestSellOffer() {
+            const client = new Client('wss://s1.ripple.com');
+
+            try {
+                await client.connect();
+                console.log('Connected to XRPL');
+
+                const request = {
+                    command: 'nft_sell_offers',
+                    nft_id: NFTokenID,
+                };
+
+                const response = await client.request(request);
+                console.log('NFT Sell Offers:', JSON.stringify(response.result, null, 2));
+
+                // Find the lowest valid sell offer
+                let lowestOffer = null;
+                if (response.result.offers && response.result.offers.length > 0) {
+                    lowestOffer = response.result.offers.reduce((min, offer) => {
+                        const amount = BigInt(offer.amount);
+                        const isValidBroker = offer.destination && BROKER_ADDRESSES[offer.destination];
+                        const isValidAmount = amount > BigInt(0);
+                        if (isValidBroker && isValidAmount && amount < BigInt(min.amount)) {
+                            return { amount, offer };
+                        }
+                        return min;
+                    }, { amount: BigInt(Number.MAX_SAFE_INTEGER).toString(), offer: null });
+                }
+
+                if (lowestOffer && lowestOffer.offer) {
+                    const baseAmount = parseFloat(dropsToXrp(lowestOffer.amount.toString()));
+                    const brokerAddress = lowestOffer.offer.destination;
+                    const hasBroker = brokerAddress in BROKER_ADDRESSES;
+                    const brokerInfo = hasBroker ? BROKER_ADDRESSES[brokerAddress] : null;
+                    const brokerFeePercentage = brokerInfo ? brokerInfo.fee : 0;
+                    const brokerFee = hasBroker ? baseAmount * brokerFeePercentage : 0;
+                    const totalAmount = baseAmount + brokerFee;
+
+                    setLowestSellOffer({
+                        baseAmount,
+                        totalAmount,
+                        brokerFee,
+                        brokerFeePercentage,
+                        hasBroker,
+                        brokerName: brokerInfo ? brokerInfo.name : null,
+                        offerIndex: lowestOffer.offer.nft_offer_index,
+                        seller: lowestOffer.offer.owner,
+                        destination: brokerAddress
+                    });
+                } else {
+                    setLowestSellOffer(null);
+                }
+            } catch (error) {
+                console.error('Error fetching NFT sell offers:', error);
+            } finally {
+                await client.disconnect();
+                console.log('Disconnected from XRPL');
+            }
+        }
+
+        getLowestSellOffer();
+    }, [NFTokenID]);
 
     const doProcessOffer = async (offer, isAcceptOrCancel) => {
         if (!accountLogin || !accountToken) {
@@ -562,11 +640,11 @@ export default function NFTDetailsMobile({ nft }) {
         doProcessOffer(acceptOffer, true);
     }
 
-    const handleBuyNow = async () => {
-        if (sellOffers.length > 1) {
-            setOpenSelectPrice(true);
+    const handleBuyNow = () => {
+        if (lowestSellOffer && lowestSellOffer.hasBroker) {
+            setOpenCreateOfferXRPCafe(true);
         } else {
-            handleAcceptOffer(cost.offer);
+            openSnackbar('Invalid offer or no broker available', 'error');
         }
     }
 
@@ -811,8 +889,9 @@ export default function NFTDetailsMobile({ nft }) {
                                             >
                                                 <Button
                                                     fullWidth
-                                                    disabled={!cost || burnt}
-                                                    variant='contained'
+                                                    disabled={!lowestSellOffer || burnt}
+                                                    variant="contained"
+                                                    size="large"
                                                     onClick={handleBuyNow}
                                                 >
                                                     Buy Now
@@ -1168,6 +1247,15 @@ export default function NFTDetailsMobile({ nft }) {
                     } */}
                     {/* NFT Leveled Properties end--- */}
                 </Stack>
+
+                <CreateOfferXRPCafe
+                    open={openCreateOfferXRPCafe}
+                    setOpen={setOpenCreateOfferXRPCafe}
+                    nft={nft}
+                    isSellOffer={false}
+                    initialAmount={lowestSellOffer ? lowestSellOffer.totalAmount : 0}
+                    brokerFeePercentage={lowestSellOffer ? lowestSellOffer.brokerFeePercentage : 0}
+                />
             </Stack>
         </GlassPanel>
     );
