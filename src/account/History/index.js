@@ -73,6 +73,7 @@ export default function ActivityList({ account }) {
                     if (ret) {
                         setTotal(ret.total);
                         setActs(ret.acts);
+                        console.log('History API response:', ret); // Add this line to log the response
                     }
                 })
                 .catch((err) => {
