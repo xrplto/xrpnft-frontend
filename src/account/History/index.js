@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
-// Material
+// Material UI Components
 import {
     useTheme,
     Avatar,
@@ -13,35 +13,71 @@ import {
     TableBody,
     TableCell,
     TableRow,
-    Typography
+    Typography,
+    Chip,
+    Tooltip
 } from '@mui/material';
 import { tableCellClasses } from '@mui/material/TableCell';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/Logout';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import GridOnIcon from '@mui/icons-material/GridOn';
-import Grid4x4Icon from '@mui/icons-material/Grid4x4';
-import ApprovalIcon from '@mui/icons-material/Approval';
-import TokenIcon from '@mui/icons-material/Token';
-import CollectionsIcon from '@mui/icons-material/Collections';
-import CasinoIcon from '@mui/icons-material/Casino';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import SportsScoreIcon from '@mui/icons-material/SportsScore';
-import FireplaceIcon from '@mui/icons-material/Fireplace';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import AnimationIcon from '@mui/icons-material/Animation';
-import PaymentIcon from '@mui/icons-material/Payment';
-import ImportExportIcon from '@mui/icons-material/ImportExport';
+
+// Icons
+import {
+    TaskAlt as TaskAltIcon,
+    Login as LoginIcon,
+    Logout as LogoutIcon,
+    ManageAccounts as ManageAccountsIcon,
+    GridOn as GridOnIcon,
+    Grid4x4 as Grid4x4Icon,
+    Approval as ApprovalIcon,
+    Token as TokenIcon,
+    Collections as CollectionsIcon,
+    Casino as CasinoIcon,
+    ShoppingBag as ShoppingBagIcon,
+    LocalOffer as LocalOfferIcon,
+    HighlightOff as HighlightOffIcon,
+    CheckCircleOutline as CheckCircleOutlineIcon,
+    HowToReg as HowToRegIcon,
+    SportsScore as SportsScoreIcon,
+    Fireplace as FireplaceIcon,
+    HelpOutline as HelpOutlineIcon,
+    Animation as AnimationIcon,
+    Payment as PaymentIcon,
+    ImportExport as ImportExportIcon
+} from '@mui/icons-material';
 
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';
-import { Activity } from 'src/utils/constants';
 import { normalizeAmount } from 'src/utils/normalizers';
+import { formatDistanceToNow } from 'date-fns';
+
+// Define Activity constants based on your activity codes
+const Activity = {
+    LOGIN: 1,
+    LOGOUT: 2,
+    UPDATE_PROFILE: 3,
+    CREATE_COLLECTION: 4,
+    UPDATE_COLLECTION: 5,
+    IMPORT_COLLECTION: 6,
+    MINT_BULK: 7,
+    BUY_MINT: 8,
+    BUY_RANDOM_NFT: 9,
+    BUY_SEQUENCE_NFT: 10,
+    BUY_BULK_NFT: 11,
+    CREATE_SELL_OFFER: 21,
+    CREATE_BUY_OFFER: 22,
+    CANCEL_SELL_OFFER: 23,
+    CANCEL_BUY_OFFER: 24,
+    ACCEPT_BUY_OFFER: 25,
+    ACCEPT_SELL_OFFER: 26,
+    OWNER_ACCEPTED_YOUR_BUY_OFFER: 27,
+    BUYER_ACCEPTED_YOUR_SELL_OFFER: 28,
+    YOU_RECEIVED_A_NFT: 29,
+    MINT_NFT: 30,
+    BURN_NFT: 31,
+    SET_NFT_MINTER: 32,
+    REFUND_BUYER: 33,
+    BROKER_ACCEPTED_YOUR_BUY_OFFER: 35,
+    BROKER_ACCEPTED_YOUR_SELL_OFFER: 36
+};
 
 // Loader
 import { PulseLoader } from 'react-spinners';
@@ -49,7 +85,452 @@ import { PulseLoader } from 'react-spinners';
 // Components
 import FlagsContainer from 'src/components/Flags';
 import ListToolbar from '../ListToolbar';
-// ----------------------------------------------------------------------
+
+// Helper Components
+const NFTokenIDLink = ({ NFTokenID }) => (
+    <Stack direction="row" spacing={1}>
+        <Typography variant="s7">NFTokenID: </Typography>
+        <Link
+            color="inherit"
+            target="_blank"
+            href={`https://bithomp.com/explorer/${NFTokenID}`}
+            rel="noreferrer noopener nofollow"
+        >
+            <Typography variant="s8">{NFTokenID}</Typography>
+        </Link>
+    </Stack>
+);
+
+const CollectionInfo = ({ data }) => (
+    <Stack direction="row" spacing={1} alignItems="center">
+        <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${data.logo}`} />
+        <Stack>
+            <Stack direction="row" spacing={1}>
+                <Typography variant="s7">Name: </Typography>
+                <Typography variant="s8">{data.name}</Typography>
+            </Stack>
+            <Stack direction="row" spacing={1}>
+                <Typography variant="s7">Type: </Typography>
+                <Typography variant="s8">{data.type}</Typography>
+            </Stack>
+        </Stack>
+    </Stack>
+);
+
+const NFTInfo = ({ data }) => (
+    <Stack
+        direction="row"
+        spacing={1}
+        justifyContent="space-between"
+        alignItems="center"
+    >
+        <Stack direction="row" spacing={1}>
+            <Avatar
+                alt="NFT"
+                src={`https://gateway.xrpnft.com/ipfs/${data.meta?.image}`}
+            />
+            <Stack>
+                <Stack direction="row" spacing={1}>
+                    <Typography variant="s7">Name: </Typography>
+                    <Typography variant="s8">{data.name}</Typography>
+                </Stack>
+                <Stack direction="row" spacing={1}>
+                    <Typography variant="s7">Type: </Typography>
+                    <Typography variant="s8">{data.type}</Typography>
+                </Stack>
+                {data.uuid && (
+                    <Stack direction="row" spacing={1}>
+                        <Typography variant="s7">UUID: </Typography>
+                        <Typography variant="s8">{data.uuid}</Typography>
+                    </Stack>
+                )}
+            </Stack>
+        </Stack>
+        {data.flag && <FlagsContainer Flags={data.flag} />}
+    </Stack>
+);
+
+const CostDisplay = ({ cost }) => (
+    <Tooltip title={`${cost.amount} ${cost.currency}`}>
+        <Chip
+            label={`${Number(cost.amount).toLocaleString()} ${cost.currency}`}
+            color="primary"
+            size="small"
+        />
+    </Tooltip>
+);
+
+const HashLink = ({ hash }) => (
+    <Link
+        href={`https://bithomp.com/explorer/${hash}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        underline="hover"
+    >
+        <Typography variant="caption">
+            {hash.substring(0, 8)}...{hash.substring(hash.length - 8)}
+        </Typography>
+    </Link>
+);
+
+// Updated activityComponents to include cost display for ACCEPT_SELL_OFFER
+const activityComponents = {
+    [Activity.LOGIN]: {
+        strActivity: 'Login',
+        componentIcon: <LoginIcon />,
+        renderComponentActivity: () => null
+    },
+    [Activity.LOGOUT]: {
+        strActivity: 'Logout',
+        componentIcon: <LogoutIcon />,
+        renderComponentActivity: () => null
+    },
+    [Activity.UPDATE_PROFILE]: {
+        strActivity: 'Update Profile',
+        componentIcon: <ManageAccountsIcon />,
+        renderComponentActivity: () => null
+    },
+    [Activity.CREATE_COLLECTION]: {
+        strActivity: 'Create a Collection',
+        componentIcon: <GridOnIcon />,
+        renderComponentActivity: (data) => <CollectionInfo data={data} />
+    },
+    [Activity.IMPORT_COLLECTION]: {
+        strActivity: 'Import a Collection',
+        componentIcon: <ImportExportIcon />,
+        renderComponentActivity: (data) => (
+            <Stack direction="row" spacing={1} alignItems="center">
+                <Avatar
+                    alt="C"
+                    src={`https://s1.xrpnft.com/collection/${data.logo}`}
+                />
+                <Link href={`/collection/${data.slug}`} underline="none">
+                    <Typography variant="s8">{data.name}</Typography>
+                </Link>
+            </Stack>
+        )
+    },
+    [Activity.UPDATE_COLLECTION]: {
+        strActivity: 'Update Collection',
+        componentIcon: <Grid4x4Icon />,
+        renderComponentActivity: (data) => <CollectionInfo data={data} />
+    },
+    [Activity.MINT_BULK]: {
+        strActivity: 'Mint Bulk NFTs',
+        componentIcon: <CollectionsIcon />,
+        renderComponentActivity: (data) => (
+            <Stack
+                direction="row"
+                spacing={1}
+                justifyContent="space-between"
+                alignItems="center"
+            >
+                <Stack direction="row" spacing={1}>
+                    <Avatar
+                        alt="C"
+                        src={`https://gateway.xrpnft.com/ipfs/${data.meta?.image}`}
+                    />
+                    <Stack>
+                        <Stack direction="row" spacing={1}>
+                            <Typography variant="s7">Minter: </Typography>
+                            <Typography variant="s8">{data.minter}</Typography>
+                        </Stack>
+                        <Stack direction="row" spacing={1}>
+                            <Typography variant="s7">Issuer: </Typography>
+                            <Typography variant="s8">{data.issuer}</Typography>
+                        </Stack>
+                        <Stack direction="row" spacing={1}>
+                            <Typography variant="s7">Total: </Typography>
+                            <Typography variant="s8">{data.count}</Typography>
+                        </Stack>
+                    </Stack>
+                </Stack>
+                <FlagsContainer Flags={data.flag} />
+            </Stack>
+        )
+    },
+    [Activity.BUY_MINT]: {
+        strActivity: 'Buy Mint',
+        componentIcon: <ShoppingBagIcon />,
+        renderComponentActivity: (data) => (
+            <Stack
+                direction="row"
+                spacing={1}
+                justifyContent="space-between"
+                alignItems="center"
+            >
+                <Stack direction="row" spacing={1}>
+                    <Avatar
+                        alt="C"
+                        src={`https://s1.xrpl.to/token/${data.cost?.md5}`}
+                    />
+                    <Stack>
+                        <Stack direction="row" spacing={1}>
+                            <Typography variant="s7">Collection: </Typography>
+                            <Typography variant="s8">{data.cname}</Typography>
+                        </Stack>
+                        <Stack
+                            direction="row"
+                            spacing={0.8}
+                            alignItems="center"
+                        >
+                            <Typography variant="p4" color="#EB5757">
+                                {data.cost?.amount}
+                            </Typography>
+                            <Typography variant="s2">
+                                {data.cost?.name}
+                            </Typography>
+                        </Stack>
+                    </Stack>
+                </Stack>
+                <Stack direction="row" spacing={1} alignItems="center">
+                    <Typography variant="s7">Quantity: </Typography>
+                    <Typography variant="s8">{data.quantity}</Typography>
+                </Stack>
+            </Stack>
+        )
+    },
+    [Activity.BUY_RANDOM_NFT]: {
+        strActivity: 'Buy Random NFT',
+        componentIcon: <CasinoIcon />,
+        renderComponentActivity: (data) => <NFTInfo data={data} />
+    },
+    [Activity.BUY_SEQUENCE_NFT]: {
+        strActivity: 'Buy Sequence NFT',
+        componentIcon: <AnimationIcon />,
+        renderComponentActivity: (data) => <NFTInfo data={data} />
+    },
+    [Activity.BUY_BULK_NFT]: {
+        strActivity: 'Buy Bulk NFT',
+        componentIcon: <TaskAltIcon />,
+        renderComponentActivity: (data) => <NFTInfo data={data} />
+    },
+    [Activity.CREATE_SELL_OFFER]: {
+        strActivity: 'Create Sell Offer',
+        componentIcon: <LocalOfferIcon />,
+        renderComponentActivity: (data) => (
+            <Stack spacing={1}>
+                <NFTokenIDLink NFTokenID={data.NFTokenID} />
+                {data.cost && <CostDisplay cost={data.cost} />}
+                {data.hash && <HashLink hash={data.hash} />}
+            </Stack>
+        )
+    },
+    [Activity.CREATE_BUY_OFFER]: {
+        strActivity: 'Create Buy Offer',
+        componentIcon: <LocalOfferIcon />,
+        renderComponentActivity: (data) => (
+            <Stack spacing={1}>
+                <NFTokenIDLink NFTokenID={data.NFTokenID} />
+                {data.cost && <CostDisplay cost={data.cost} />}
+                {data.hash && <HashLink hash={data.hash} />}
+            </Stack>
+        )
+    },
+    [Activity.CANCEL_SELL_OFFER]: {
+        strActivity: 'Cancel Sell Offer',
+        componentIcon: <HighlightOffIcon />,
+        renderComponentActivity: (data) => (
+            <Stack spacing={1}>
+                <NFTokenIDLink NFTokenID={data.NFTokenID} />
+                {data.cost && <CostDisplay cost={data.cost} />}
+                {data.hash && <HashLink hash={data.hash} />}
+            </Stack>
+        )
+    },
+    [Activity.CANCEL_BUY_OFFER]: {
+        strActivity: 'Cancel Buy Offer',
+        componentIcon: <HighlightOffIcon />,
+        renderComponentActivity: (data) => (
+            <Stack spacing={1}>
+                <NFTokenIDLink NFTokenID={data.NFTokenID} />
+                {data.cost && <CostDisplay cost={data.cost} />}
+                {data.hash && <HashLink hash={data.hash} />}
+            </Stack>
+        )
+    },
+    [Activity.ACCEPT_BUY_OFFER]: {
+        strActivity: 'Accept Buy Offer',
+        componentIcon: <CheckCircleOutlineIcon />,
+        renderComponentActivity: (data) => (
+            <Stack spacing={1}>
+                <NFTokenIDLink NFTokenID={data.NFTokenID} />
+                {data.cost && <CostDisplay cost={data.cost} />}
+                {data.hash && <HashLink hash={data.hash} />}
+            </Stack>
+        )
+    },
+    [Activity.ACCEPT_SELL_OFFER]: {
+        strActivity: (data) => data.cost && data.cost.amount === 0 ? 'Transfer NFT' : 'Accept Sell Offer',
+        componentIcon: <CheckCircleOutlineIcon />,
+        renderComponentActivity: (data) => (
+            <Stack spacing={1}>
+                <NFTokenIDLink NFTokenID={data.NFTokenID} />
+                {data.cost && data.cost.amount !== 0 && <CostDisplay cost={data.cost} />}
+                {data.hash && <HashLink hash={data.hash} />}
+                {data.cost && data.cost.amount === 0 && (
+                    <Typography variant="caption" color="text.secondary">
+                        This is a transfer (no cost involved)
+                    </Typography>
+                )}
+            </Stack>
+        )
+    },
+    [Activity.OWNER_ACCEPTED_YOUR_BUY_OFFER]: {
+        strActivity: 'NFT Owner accepted your Buy Offer',
+        componentIcon: <HowToRegIcon />,
+        renderComponentActivity: (data) => (
+            <NFTokenIDLink NFTokenID={data.NFTokenID} />
+        )
+    },
+    [Activity.BUYER_ACCEPTED_YOUR_SELL_OFFER]: {
+        strActivity: 'Buyer accepted your Sell Offer',
+        componentIcon: <HowToRegIcon />,
+        renderComponentActivity: (data) => (
+            <NFTokenIDLink NFTokenID={data.NFTokenID} />
+        )
+    },
+    [Activity.YOU_RECEIVED_A_NFT]: {
+        strActivity: 'You received a NFT',
+        componentIcon: <SportsScoreIcon />,
+        renderComponentActivity: (data) =>
+            data.NFTokenID ? (
+                <NFTokenIDLink NFTokenID={data.NFTokenID} />
+            ) : (
+                <NFTInfo data={data} />
+            )
+    },
+    [Activity.MINT_NFT]: {
+        strActivity: 'Minted a NFT',
+        componentIcon: <TokenIcon />,
+        renderComponentActivity: (data) =>
+            data.meta ? (
+                <NFTInfo data={data} />
+            ) : (
+                <NFTokenIDLink NFTokenID={data.NFTokenID} />
+            )
+    },
+    [Activity.BURN_NFT]: {
+        strActivity: 'Burned a NFT',
+        componentIcon: <FireplaceIcon />,
+        renderComponentActivity: (data) => (
+            <NFTokenIDLink NFTokenID={data.NFTokenID} />
+        )
+    },
+    [Activity.SET_NFT_MINTER]: {
+        strActivity: 'Set NFT Minter',
+        componentIcon: <ApprovalIcon />,
+        renderComponentActivity: (data) => (
+            <Stack direction="row" spacing={1}>
+                <Typography variant="s7">Minter: </Typography>
+                <Typography variant="s8">{data.NFTokenMinter}</Typography>
+            </Stack>
+        )
+    },
+    [Activity.REFUND_BUYER]: {
+        strActivity: 'Refund Mint Amount to Buyer',
+        componentIcon: <PaymentIcon />,
+        renderComponentActivity: (data) => {
+            const amount = normalizeAmount(data.amount);
+            return (
+                <Stack
+                    direction="row"
+                    spacing={1}
+                    justifyContent="space-between"
+                    alignItems="center"
+                >
+                    <Stack direction="row" spacing={1}>
+                        <Avatar
+                            alt="C"
+                            src={`https://s1.xrpl.to/token/${data.cost?.md5}`}
+                        />
+                        <Stack>
+                            <Stack direction="row" spacing={1}>
+                                <Typography variant="s7">Collection: </Typography>
+                                <Typography variant="s8">{data.cname}</Typography>
+                            </Stack>
+                            <Stack
+                                direction="row"
+                                spacing={0.8}
+                                alignItems="center"
+                            >
+                                <Typography variant="s7">
+                                    Cost x Quantity:{' '}
+                                </Typography>
+                                <Typography variant="s8">
+                                    {data.cost?.amount}
+                                </Typography>
+                                <Typography variant="s8">
+                                    {data.cost?.name}
+                                </Typography>
+                                <Typography variant="s8">x</Typography>
+                                <Typography variant="s8">
+                                    {data.quantity}
+                                </Typography>
+                            </Stack>
+                            <Stack direction="row" spacing={1}>
+                                <Typography variant="s7">To: </Typography>
+                                <Typography variant="s8">{data.dest}</Typography>
+                            </Stack>
+                        </Stack>
+                    </Stack>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                        <Stack direction="row" spacing={1}>
+                            <Typography variant="s7">Amount: </Typography>
+                            <Typography variant="s8">{amount.amount}</Typography>
+                            <Typography variant="s8">
+                                {data.cost?.name}
+                            </Typography>
+                        </Stack>
+                    </Stack>
+                </Stack>
+            );
+        }
+    },
+    [Activity.BROKER_ACCEPTED_YOUR_BUY_OFFER]: {
+        strActivity: 'Broker accepted your Buy Offer',
+        componentIcon: <HowToRegIcon />,
+        renderComponentActivity: (data) => (
+            <Stack spacing={1}>
+                <NFTokenIDLink NFTokenID={data.NFTokenID} />
+                <Stack direction="row" spacing={1}>
+                    <Typography variant="s7">Broker: </Typography>
+                    <Typography variant="s8">{data.broker}</Typography>
+                </Stack>
+                <Stack direction="row" spacing={1}>
+                    <Typography variant="s7">Cost: </Typography>
+                    <Typography variant="s8">{`${data.cost.amount} ${data.cost.currency}`}</Typography>
+                </Stack>
+            </Stack>
+        )
+    },
+    [Activity.BROKER_ACCEPTED_YOUR_SELL_OFFER]: {
+        strActivity: 'Broker accepted your Sell Offer',
+        componentIcon: <HowToRegIcon />,
+        renderComponentActivity: (data) => (
+            <Stack spacing={1}>
+                <NFTokenIDLink NFTokenID={data.NFTokenID} />
+                <Stack direction="row" spacing={1}>
+                    <Typography variant="s7">Broker: </Typography>
+                    <Typography variant="s8">{data.broker}</Typography>
+                </Stack>
+                <Stack direction="row" spacing={1}>
+                    <Typography variant="s7">Cost: </Typography>
+                    <Typography variant="s8">{`${data.cost.amount} ${data.cost.currency}`}</Typography>
+                </Stack>
+            </Stack>
+        )
+    },
+    // Handle unknown activities
+    default: {
+        strActivity: (activity) => `Unknown Activity: ${activity}`,
+        componentIcon: <HelpOutlineIcon />,
+        renderComponentActivity: (data) => (
+            <pre>{JSON.stringify(data, null, 2)}</pre>
+        )
+    }
+};
+
 export default function ActivityList({ account }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -58,49 +539,52 @@ export default function ActivityList({ account }) {
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
     const [acts, setActs] = useState([]);
-
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        function getActivities() {
+        const getActivities = async () => {
             setLoading(true);
-            axios
-                .get(
+            try {
+                const res = await axios.get(
                     `${BASE_URL}/account/activity?account=${account}&page=${page}&limit=${rows}`
-                )
-                .then((res) => {
-                    let ret = res.status === 200 ? res.data : undefined;
-                    if (ret) {
-                        setTotal(ret.total);
-                        setActs(ret.acts);
-                        console.log('History API response:', ret); // Add this line to log the response
-                    }
-                })
-                .catch((err) => {
-                    console.log('Error on getting activity list!!!', err);
-                })
-                .then(function () {
-                    // always executed
-                    setLoading(false);
-                });
-        }
+                );
+                if (res.status === 200) {
+                    const ret = res.data;
+                    setTotal(ret.total);
+                    setActs(ret.acts);
+                    console.log('History API response:', ret);
+                }
+            } catch (err) {
+                console.log('Error on getting activity list!!!', err);
+            } finally {
+                setLoading(false);
+            }
+        };
         getActivities();
     }, [account, page, rows]);
 
-    return (
-        <Container maxWidth={false} sx={{ pl: 0, pr: 0 }}>
-            {loading ? (
+    if (loading) {
+        return (
+            <Container maxWidth={false} sx={{ pl: 0, pr: 0 }}>
                 <Stack alignItems="center">
                     <PulseLoader color="#00AB55" size={10} />
                 </Stack>
-            ) : (
-                acts &&
-                acts.length === 0 && (
-                    <Stack alignItems="center" sx={{ mt: 5 }}>
-                        <Typography variant="s7">No Items</Typography>
-                    </Stack>
-                )
-            )}
+            </Container>
+        );
+    }
+
+    if (!loading && acts.length === 0) {
+        return (
+            <Container maxWidth={false} sx={{ pl: 0, pr: 0 }}>
+                <Stack alignItems="center" sx={{ mt: 5 }}>
+                    <Typography variant="s7">No Items</Typography>
+                </Stack>
+            </Container>
+        );
+    }
+
+    return (
+        <Container maxWidth={false} sx={{ pl: 0, pr: 0 }}>
             <Box
                 sx={{
                     display: 'flex',
@@ -124,1192 +608,57 @@ export default function ActivityList({ account }) {
                     }}
                 >
                     <TableBody>
-                        {
-                            // {
-                            //     "_id": "632683afa45d7f463e8ef870",
-                            //     "account": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
-                            //     "name": "TestCollection-1",
-                            //     "slug": "test1",
-                            //     "type": "bulk",
-                            //     "bulkUrl": "https://drive.google.com/file/d/1xjA-1bodiMrvSCtdTEMim5x1Cam74bXU/view",
-                            //     "status": 7,
-                            //     "description": "This is the description of test1 collection",
-                            //     "logoImage": "1663468463243_3d1cc658af10407fabf2c5e96bde2ab4.png",
-                            //     "featuredImage": "1663468463243_220f174cbce64122b203c6bccafab57c.jpg",
-                            //     "bannerImage": "1663468463245_dcb8db64b5b84da49fd2839508cc0618.jpg",
-                            //     "created": 1663468463251,
-                            //     "modified": 1663468463251,
-                            //     "uuid": "92d8b1d1ac3d48369e98463e6ec29678",
-                            //     "creator": "xrpnft.com",
-                            //     "infoDOWNLOAD": {
-                            //         "size": "2.47 GB"
-                            //     }
-                            // }
-                            // exchs.slice(page * rows, page * rows + rows)
-                            acts &&
-                                acts.map((row) => {
-                                    const { account, activity, data, time } =
-                                        row;
+                        {acts.map((row) => {
+                            const { activity, data, time } = row;
+                            const strDateTime = formatDateTime(time);
+                            const timeAgo = formatDistanceToNow(new Date(time), { addSuffix: true });
+                            const activityComponent =
+                                activityComponents[activity] ||
+                                activityComponents.default;
+                            const {
+                                strActivity,
+                                componentIcon,
+                                renderComponentActivity
+                            } = activityComponent;
 
-                                    const strDateTime = formatDateTime(time);
+                            const activityTitle =
+                                typeof strActivity === 'function'
+                                    ? strActivity(data)
+                                    : strActivity;
 
-                                    let strActivity = '';
-                                    let componentActivity = <></>;
-                                    let componentIcon = <TaskAltIcon />;
-                                    switch (activity) {
-                                        case Activity.LOGIN:
-                                            strActivity = 'Login';
-                                            componentIcon = <LoginIcon />;
-                                            componentActivity = <></>;
-                                            break;
-                                        case Activity.LOGOUT:
-                                            strActivity = 'Logout';
-                                            componentIcon = <LogoutIcon />;
-                                            componentActivity = <></>;
-                                            break;
-                                        case Activity.UPDATE_PROFILE:
-                                            strActivity = 'Update Profile';
-                                            componentIcon = (
-                                                <ManageAccountsIcon />
-                                            );
-                                            componentActivity = <></>;
-                                            break;
-                                        case Activity.CREATE_COLLECTION:
-                                            strActivity = 'Create a Collection';
-                                            componentIcon = <GridOnIcon />;
-                                            // {name, type, slug, logo: data.logoImage}
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                        alignItems="center"
-                                                    >
-                                                        <Avatar
-                                                            alt="C"
-                                                            src={`https://s1.xrpnft.com/collection/${data.logo}`}
-                                                        />
-                                                        <Stack>
-                                                            <Stack
-                                                                direction="row"
-                                                                spacing={1}
-                                                            >
-                                                                <Typography variant="s7">
-                                                                    Name:{' '}
-                                                                </Typography>
-                                                                <Typography variant="s8">
-                                                                    {data.name}
-                                                                </Typography>
-                                                            </Stack>
-                                                            <Stack
-                                                                direction="row"
-                                                                spacing={1}
-                                                            >
-                                                                <Typography variant="s7">
-                                                                    Type:{' '}
-                                                                </Typography>
-                                                                <Typography variant="s8">
-                                                                    {data.type}
-                                                                </Typography>
-                                                            </Stack>
-                                                        </Stack>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.IMPORT_COLLECTION:
-                                            strActivity = 'Import a Collection';
-                                            componentIcon = (
-                                                <ImportExportIcon />
-                                            );
-                                            // {name, type, slug, logo: data.logoImage}
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                        alignItems="center"
-                                                    >
-                                                        <Avatar
-                                                            alt="C"
-                                                            src={`https://s1.xrpnft.com/collection/${data.logo}`}
-                                                        />
-                                                        <Link
-                                                            href={`/collection/${data.slug}`}
-                                                            underline="none"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.name}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.UPDATE_COLLECTION:
-                                            strActivity = 'Update Collection';
-                                            componentIcon = <Grid4x4Icon />;
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                        alignItems="center"
-                                                    >
-                                                        <Avatar
-                                                            alt="C"
-                                                            src={`https://s1.xrpnft.com/collection/${data.logo}`}
-                                                        />
-                                                        <Stack>
-                                                            <Stack
-                                                                direction="row"
-                                                                spacing={1}
-                                                            >
-                                                                <Typography variant="s7">
-                                                                    Name:{' '}
-                                                                </Typography>
-                                                                <Typography variant="s8">
-                                                                    {data.name}
-                                                                </Typography>
-                                                            </Stack>
-                                                            <Stack
-                                                                direction="row"
-                                                                spacing={1}
-                                                            >
-                                                                <Typography variant="s7">
-                                                                    Type:{' '}
-                                                                </Typography>
-                                                                <Typography variant="s8">
-                                                                    {data.type}
-                                                                </Typography>
-                                                            </Stack>
-                                                        </Stack>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.MINT_BULK:
-                                            strActivity = 'Mint Bulk NFTs';
-                                            componentIcon = <CollectionsIcon />;
-                                            // {flag, minter, issuer, count: metadata.length, meta: metadata[0]}
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                        justifyContent="space-between"
-                                                        alignItems="center"
-                                                    >
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                        >
-                                                            <Avatar
-                                                                alt="C"
-                                                                src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}
-                                                            />
-                                                            <Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        Minter:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.minter
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        Issuer:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.issuer
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        Total:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.count
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                            </Stack>
-                                                        </Stack>
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                            alignItems="center"
-                                                        >
-                                                            <FlagsContainer
-                                                                Flags={
-                                                                    data.flag
-                                                                }
-                                                            />
-                                                        </Stack>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.BUY_MINT:
-                                            strActivity = 'Buy Mint';
-                                            componentIcon = <ShoppingBagIcon />;
-                                            // {cid, cname, cslug, amount, quantity}
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                        justifyContent="space-between"
-                                                        alignItems="center"
-                                                    >
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                        >
-                                                            <Avatar
-                                                                alt="C"
-                                                                src={`https://s1.xrpl.to/token/${data.cost?.md5}`}
-                                                            />
-                                                            <Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        Collection:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.cname
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={
-                                                                        0.8
-                                                                    }
-                                                                    alignItems="center"
-                                                                >
-                                                                    <Typography
-                                                                        variant="p4"
-                                                                        color="#EB5757"
-                                                                    >
-                                                                        {
-                                                                            data
-                                                                                .cost
-                                                                                ?.amount
-                                                                        }
-                                                                    </Typography>
-                                                                    <Typography variant="s2">
-                                                                        {
-                                                                            data
-                                                                                .cost
-                                                                                ?.name
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                            </Stack>
-                                                        </Stack>
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                            alignItems="center"
-                                                        >
-                                                            <Stack
-                                                                direction="row"
-                                                                spacing={1}
-                                                            >
-                                                                <Typography variant="s7">
-                                                                    Quantity:{' '}
-                                                                </Typography>
-                                                                <Typography variant="s8">
-                                                                    {
-                                                                        data.quantity
-                                                                    }
-                                                                </Typography>
-                                                            </Stack>
-                                                        </Stack>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.BUY_RANDOM_NFT:
-                                            strActivity = 'Buy Random NFT';
-                                            componentIcon = <CasinoIcon />;
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                        justifyContent="space-between"
-                                                        alignItems="center"
-                                                    >
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                        >
-                                                            <Avatar
-                                                                alt="C"
-                                                                src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}
-                                                            />
-                                                            <Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        Name:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.name
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        Type:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.type
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        uuid:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.uuid
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                            </Stack>
-                                                        </Stack>
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                            alignItems="center"
-                                                        >
-                                                            <FlagsContainer
-                                                                Flags={
-                                                                    data.flag
-                                                                }
-                                                            />
-                                                        </Stack>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.BUY_SEQUENCE_NFT:
-                                            strActivity = 'Buy Sequence NFT';
-                                            componentIcon = <AnimationIcon />;
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                        justifyContent="space-between"
-                                                        alignItems="center"
-                                                    >
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                        >
-                                                            <Avatar
-                                                                alt="C"
-                                                                src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}
-                                                            />
-                                                            <Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        Name:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.name
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        Type:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.type
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        uuid:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.uuid
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                            </Stack>
-                                                        </Stack>
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                            alignItems="center"
-                                                        >
-                                                            <FlagsContainer
-                                                                Flags={
-                                                                    data.flag
-                                                                }
-                                                            />
-                                                        </Stack>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.BUY_BULK_NFT:
-                                            strActivity = 'Buy Bulk NFT';
-                                            componentIcon = <TaskAltIcon />;
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                        justifyContent="space-between"
-                                                        alignItems="center"
-                                                    >
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                        >
-                                                            <Avatar
-                                                                alt="C"
-                                                                src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}
-                                                            />
-                                                            <Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        Name:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.name
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        Type:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.type
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        uuid:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.uuid
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                            </Stack>
-                                                        </Stack>
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                            alignItems="center"
-                                                        >
-                                                            <FlagsContainer
-                                                                Flags={
-                                                                    data.flag
-                                                                }
-                                                            />
-                                                        </Stack>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.CREATE_SELL_OFFER:
-                                            componentIcon = <LocalOfferIcon />;
-                                            strActivity = 'Create Sell Offer';
-                                            // NFTokenID
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            NFTokenID:{' '}
-                                                        </Typography>
-                                                        <Link
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`/nft/${data.NFTokenID}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.NFTokenID}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.CREATE_BUY_OFFER:
-                                            componentIcon = <LocalOfferIcon />;
-                                            strActivity = 'Create Buy Offer';
-                                            // NFTokenID
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            NFTokenID:{' '}
-                                                        </Typography>
-                                                        <Link
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`/nft/${data.NFTokenID}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.NFTokenID}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
+                            const componentActivity =
+                                renderComponentActivity(data);
 
-                                        case Activity.CANCEL_SELL_OFFER:
-                                            componentIcon = (
-                                                <HighlightOffIcon />
-                                            );
-                                            strActivity = 'Cancel Sell Offer';
-                                            // NFTokenID
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            NFTokenID:{' '}
-                                                        </Typography>
-                                                        <Link
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`https://bithomp.com/explorer/${data.NFTokenID}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.NFTokenID}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.CANCEL_BUY_OFFER:
-                                            componentIcon = (
-                                                <HighlightOffIcon />
-                                            );
-                                            strActivity = 'Cancel Buy Offer';
-                                            // NFTokenID
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            NFTokenID:{' '}
-                                                        </Typography>
-                                                        <Link
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`https://bithomp.com/explorer/${data.NFTokenID}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.NFTokenID}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-
-                                        case Activity.ACCEPT_BUY_OFFER:
-                                            componentIcon = (
-                                                <CheckCircleOutlineIcon />
-                                            );
-                                            strActivity = 'Accept Buy Offer';
-                                            // NFTokenID
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            NFTokenID:{' '}
-                                                        </Typography>
-                                                        <Link
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`https://bithomp.com/explorer/${data.NFTokenID}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.NFTokenID}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.ACCEPT_SELL_OFFER:
-                                            componentIcon = (
-                                                <CheckCircleOutlineIcon />
-                                            );
-                                            strActivity = 'Accept Sell Offer';
-                                            // NFTokenID
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            NFTokenID:{' '}
-                                                        </Typography>
-                                                        <Link
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`https://bithomp.com/explorer/${data.NFTokenID}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.NFTokenID}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-
-                                        case Activity.OWNER_ACCPETED_YOUR_BUY_OFFER:
-                                            componentIcon = <HowToRegIcon />;
-                                            strActivity =
-                                                'NFT Owner accepted your Buy Offer';
-                                            // NFTokenID
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            NFTokenID:{' '}
-                                                        </Typography>
-                                                        <Link
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`https://bithomp.com/explorer/${data.NFTokenID}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.NFTokenID}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.BUYER_ACCEPTED_YOUR_SELL_OFFER:
-                                            componentIcon = <HowToRegIcon />;
-                                            strActivity =
-                                                'Buyer accepted your Sell Offer';
-                                            // NFTokenID
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            NFTokenID:{' '}
-                                                        </Typography>
-                                                        <Link
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`https://bithomp.com/explorer/${data.NFTokenID}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.NFTokenID}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-
-                                        case Activity.YOU_RECEIVED_A_NFT:
-                                            componentIcon = <SportsScoreIcon />;
-                                            strActivity = 'You received a NFT';
-                                            // NFTokenID
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            NFTokenID:{' '}
-                                                        </Typography>
-                                                        <Link
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`https://bithomp.com/explorer/${data.NFTokenID}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.NFTokenID}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-
-                                        case Activity.MINT_NFT:
-                                            strActivity = 'Minted a NFT';
-                                            componentIcon = <TokenIcon />;
-                                            componentActivity = (
-                                                <>
-                                                    {data.meta ? (
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                            justifyContent="space-between"
-                                                            alignItems="center"
-                                                        >
-                                                            <Stack
-                                                                direction="row"
-                                                                spacing={1}
-                                                            >
-                                                                <Avatar
-                                                                    alt="C"
-                                                                    src={`https://gateway.xrpnft.com/ipfs/${data.meta.image}`}
-                                                                />
-                                                                <Stack>
-                                                                    <Stack
-                                                                        direction="row"
-                                                                        spacing={
-                                                                            1
-                                                                        }
-                                                                    >
-                                                                        <Typography variant="s7">
-                                                                            Name:{' '}
-                                                                        </Typography>
-                                                                        <Typography variant="s8">
-                                                                            {
-                                                                                data.name
-                                                                            }
-                                                                        </Typography>
-                                                                    </Stack>
-                                                                    <Stack
-                                                                        direction="row"
-                                                                        spacing={
-                                                                            1
-                                                                        }
-                                                                    >
-                                                                        <Typography variant="s7">
-                                                                            Type:{' '}
-                                                                        </Typography>
-                                                                        <Typography variant="s8">
-                                                                            {
-                                                                                data.type
-                                                                            }
-                                                                        </Typography>
-                                                                    </Stack>
-                                                                </Stack>
-                                                            </Stack>
-                                                            <Stack
-                                                                direction="row"
-                                                                spacing={1}
-                                                                alignItems="center"
-                                                            >
-                                                                <FlagsContainer
-                                                                    Flags={
-                                                                        data.flag
-                                                                    }
-                                                                />
-                                                            </Stack>
-                                                        </Stack>
-                                                    ) : (
-                                                        <Stack>
-                                                            <Stack
-                                                                direction="row"
-                                                                spacing={1}
-                                                            >
-                                                                <Typography variant="s7">
-                                                                    NFTokenID:{' '}
-                                                                </Typography>
-                                                                <Link
-                                                                    color="inherit"
-                                                                    target="_blank"
-                                                                    href={`https://bithomp.com/explorer/${data.NFTokenID}`}
-                                                                    rel="noreferrer noopener nofollow"
-                                                                >
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.NFTokenID
-                                                                        }
-                                                                    </Typography>
-                                                                </Link>
-                                                            </Stack>
-                                                            {/* <Typography variant="s8">{data.URI}</Typography> */}
-                                                        </Stack>
-                                                    )}
-                                                </>
-                                            );
-                                            break;
-
-                                        case Activity.BURN_NFT:
-                                            componentIcon = <FireplaceIcon />;
-                                            strActivity = 'Burnt a NFT';
-                                            // NFTokenID
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            NFTokenID:{' '}
-                                                        </Typography>
-                                                        <Link
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`https://bithomp.com/explorer/${data.NFTokenID}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.NFTokenID}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-
-                                        case Activity.SET_NFT_MINTER:
-                                            strActivity = 'Set NFT Minter';
-                                            componentIcon = <ApprovalIcon />;
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            Minter:{' '}
-                                                        </Typography>
-                                                        <Typography variant="s8">
-                                                            {data.NFTokenMinter}
-                                                        </Typography>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.REFUND_BUYER:
-                                            strActivity =
-                                                'Refund Mint Amount to Buyer';
-                                            componentIcon = <PaymentIcon />;
-                                            const amount = normalizeAmount(
-                                                data.amount
-                                            );
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                        justifyContent="space-between"
-                                                        alignItems="center"
-                                                    >
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                        >
-                                                            <Avatar
-                                                                alt="C"
-                                                                src={`https://s1.xrpl.to/token/${data.cost?.md5}`}
-                                                            />
-                                                            <Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        Collection:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.cname
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={
-                                                                        0.8
-                                                                    }
-                                                                    alignItems="center"
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        Cost x
-                                                                        Quantity:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data
-                                                                                .cost
-                                                                                ?.amount
-                                                                        }
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data
-                                                                                .cost
-                                                                                ?.name
-                                                                        }
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        x
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.quantity
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                >
-                                                                    <Typography variant="s7">
-                                                                        To:{' '}
-                                                                    </Typography>
-                                                                    <Typography variant="s8">
-                                                                        {
-                                                                            data.dest
-                                                                        }
-                                                                    </Typography>
-                                                                </Stack>
-                                                            </Stack>
-                                                        </Stack>
-                                                        <Stack
-                                                            direction="row"
-                                                            spacing={1}
-                                                            alignItems="center"
-                                                        >
-                                                            <Stack
-                                                                direction="row"
-                                                                spacing={1}
-                                                            >
-                                                                <Typography variant="s7">
-                                                                    Amount:{' '}
-                                                                </Typography>
-                                                                <Typography variant="s8">
-                                                                    {
-                                                                        amount.amount
-                                                                    }
-                                                                </Typography>
-                                                                <Typography variant="s8">
-                                                                    {
-                                                                        data
-                                                                            .cost
-                                                                            ?.name
-                                                                    }
-                                                                </Typography>
-                                                            </Stack>
-                                                        </Stack>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.BROKER_ACCEPTED_YOUR_BUY_OFFER:
-                                            componentIcon = <HowToRegIcon />;
-                                            strActivity =
-                                                'Broker accepted your Buy Offer';
-                                            // NFTokenID
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            NFTokenID:{' '}
-                                                        </Typography>
-                                                        <Link
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`https://bithomp.com/explorer/${data.NFTokenID}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.NFTokenID}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        case Activity.BROKER_ACCEPTED_YOUR_SELL_OFFER:
-                                            componentIcon = <HowToRegIcon />;
-                                            strActivity =
-                                                'Broker accepted your Sell Offer';
-                                            // NFTokenID
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    >
-                                                        <Typography variant="s7">
-                                                            NFTokenID:{' '}
-                                                        </Typography>
-                                                        <Link
-                                                            color="inherit"
-                                                            target="_blank"
-                                                            href={`https://bithomp.com/explorer/${data.NFTokenID}`}
-                                                            rel="noreferrer noopener nofollow"
-                                                        >
-                                                            <Typography variant="s8">
-                                                                {data.NFTokenID}
-                                                            </Typography>
-                                                        </Link>
-                                                    </Stack>
-                                                </>
-                                            );
-                                            break;
-                                        default:
-                                            strActivity = `Unknown Activity: ${activity}`;
-                                            componentIcon = <HelpOutlineIcon />;
-                                            componentActivity = (
-                                                <>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                    ></Stack>
-                                                </>
-                                            );
-                                            break;
-                                    }
-
-                                    return (
-                                        <TableRow
-                                            // hover
-                                            key={time}
-                                            sx={{
-                                                [`& .${tableCellClasses.root}`]:
-                                                    {
-                                                        // color: (error ? '#B72136' : '#B72136')
-                                                    }
-                                            }}
-                                        >
-                                            {/* <TableCell align="left"><Typography variant="subtitle2">{id}</Typography></TableCell> */}
-                                            <TableCell align="left">
-                                                {componentIcon}
-                                            </TableCell>
-
-                                            <TableCell align="left">
-                                                <Stack spacing={0.5}>
-                                                    <Stack
-                                                        direction="row"
-                                                        spacing={1}
-                                                        justifyContent="space-between"
-                                                        alignItems="center"
-                                                    >
-                                                        <Typography variant="s8">
-                                                            {strActivity}
-                                                        </Typography>
-                                                        <Typography variant="s7">
-                                                            {strDateTime}
-                                                        </Typography>
-                                                    </Stack>
-                                                    {componentActivity}
-                                                    {/* <Link
-                                                color="inherit"
-                                                target="_blank"
-                                                href={`https://bithomp.com/explorer/${account}`}
-                                                rel="noreferrer noopener nofollow"
+                            return (
+                                <TableRow key={time}>
+                                    <TableCell align="left">
+                                        <Tooltip title={activityTitle}>
+                                            {componentIcon}
+                                        </Tooltip>
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        <Stack spacing={0.5}>
+                                            <Stack
+                                                direction="row"
+                                                spacing={1}
+                                                justifyContent="space-between"
+                                                alignItems="center"
                                             >
-                                                <Typography variant="s4" color="#33C2FF">{account}</Typography>
-                                            </Link> */}
-                                                </Stack>
-                                            </TableCell>
-
-                                            <TableCell align="left"></TableCell>
-                                        </TableRow>
-                                    );
-                                })
-                        }
+                                                <Typography variant="subtitle2">
+                                                    {activityTitle}
+                                                </Typography>
+                                                <Tooltip title={strDateTime}>
+                                                    <Typography variant="caption">
+                                                        {timeAgo}
+                                                    </Typography>
+                                                </Tooltip>
+                                            </Stack>
+                                            {componentActivity}
+                                        </Stack>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })}
                     </TableBody>
                 </Table>
             </Box>
