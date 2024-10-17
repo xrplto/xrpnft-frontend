@@ -221,7 +221,8 @@ export default function CollectedCreatedNFTs({
                     key={nft.id || index}
                     sx={{
                         py: { xs: 0.5, sm: 2 }, // Reduce vertical padding on mobile
-                        px: { xs: 0.5, sm: 1 }  // Reduce horizontal padding on mobile
+                        px: { xs: 0.5, sm: 1 }, // Reduce horizontal padding on mobile
+                        pr: { xs: 1.5, sm: 2 }  // Increase padding on the right a bit more
                     }}
                 >
                     {collection ? (

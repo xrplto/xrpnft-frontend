@@ -1,24 +1,39 @@
 import { useState, useEffect } from 'react';
 
 // Material
-import { Box, Paper, Stack } from '@mui/material';
+import { Box, Paper, Stack, useTheme, useMediaQuery } from '@mui/material';
 
 // Components
 import CollectedCreatedNFTs from './CollectedCreatedNFTs';
 
 export default function NFTs({ account, limit, collection, type }) {
-    const [hasCreatedNFTs, setHasCreatedNFTs] = useState(true); // Start with true to always show initially
+    const [hasCreatedNFTs, setHasCreatedNFTs] = useState(true);
     const [createdNFTsLoaded, setCreatedNFTsLoaded] = useState(false);
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     useEffect(() => {
         console.log('hasCreatedNFTs:', hasCreatedNFTs);
         console.log('createdNFTsLoaded:', createdNFTsLoaded);
     }, [hasCreatedNFTs, createdNFTsLoaded]);
 
+    const paperStyle = {
+        border: 'none',
+        backgroundColor: 'transparent',
+        boxShadow: 'none',
+        width: '100%'
+    };
+
+    const boxStyle = {
+        mx: isMobile ? 0 : 2,
+        my: 2
+    };
+
     return (
-        <Stack rowGap={2}>
-            <Paper sx={{ border: 'none', backgroundColor: 'transparent', boxShadow: 'none' }}>
-                <Box m={2}>
+        <Stack rowGap={2} width="100%">
+            <Paper sx={paperStyle}>
+                <Box sx={boxStyle}>
                     <CollectedCreatedNFTs
                         type="collected"
                         account={account}
@@ -28,8 +43,8 @@ export default function NFTs({ account, limit, collection, type }) {
                 </Box>
             </Paper>
 
-            <Paper sx={{ border: 'none', backgroundColor: 'transparent', boxShadow: 'none' }}>
-                <Box m={2}>
+            <Paper sx={paperStyle}>
+                <Box sx={boxStyle}>
                     <CollectedCreatedNFTs
                         type="created"
                         account={account}

@@ -158,9 +158,9 @@ const GlassBox = styled(Box)(({ theme }) => ({
     alignItems: { xs: 'center', md: 'flex-start' },
     position: 'relative',
     zIndex: 1,
-    mx: { xs: -2, md: -4 }, // Add negative margins to extend to the sides
-    px: { xs: 4, md: 6 },   // Increase padding to compensate for negative margins
-    py: 4,                   // Add some vertical padding
+    mx: { xs: -2, md: -4 }, // Extend to full width on mobile
+    px: { xs: 4, md: 6 },   // Keep consistent padding
+    py: 4,                   // Keep vertical padding consistent
     [theme.breakpoints.down('sm')]: {
         padding: theme.spacing(2),
         flexDirection: 'column',
@@ -499,7 +499,7 @@ export default function Account({ profile, limit, tab, collection, type }) {
 
     return (
         <>
-            <Box sx={{ position: 'relative', mt: { xs: 4, md: 7 }, mx: { xs: 2, md: 4 } }}>
+            <Box sx={{ position: 'relative', mt: { xs: 4, md: 7 }, mx: { xs: 0, md: 4 } }}>
                 <BackgroundImage
                     sx={{
                         backgroundImage: `url(${bannerImage})`
