@@ -183,12 +183,14 @@ const NFTDetails = ({ NFTokenID }) => {
     useEffect(() => {
         const fetchNFTInfo = async () => {
             try {
-                const response = await axios.get(`https://api.xrpnft.com/api/nft/${NFTokenID}`);
-                if (response.data.res === "success") {
+                const response = await axios.get(
+                    `https://api.xrpnft.com/api/nft/${NFTokenID}`
+                );
+                if (response.data.res === 'success') {
                     setNftInfo(response.data.nft);
                 }
             } catch (error) {
-                console.error("Error fetching NFT info:", error);
+                console.error('Error fetching NFT info:', error);
             }
         };
 
@@ -201,18 +203,21 @@ const NFTDetails = ({ NFTokenID }) => {
 
     const getImageUrl = (nft) => {
         if (nft.files && nft.files.length > 0) {
-            const imageFile = nft.files.find(file => file.parsedType === "image");
+            const imageFile = nft.files.find(
+                (file) => file.parsedType === 'image'
+            );
             if (imageFile) {
                 if (imageFile.IPFSPath) {
                     return `https://gateway.xrpnft.com/ipfs/${imageFile.IPFSPath}`;
                 } else if (imageFile.parsedUrl) {
                     return imageFile.parsedUrl.startsWith('ipfs://')
-                        ? `https://gateway.xrpnft.com/ipfs/${imageFile.parsedUrl.slice(7)}`
+                        ? `https://gateway.xrpnft.com/ipfs/${imageFile.parsedUrl.slice(
+                              7
+                          )}`
                         : imageFile.parsedUrl;
                 }
             }
         }
-        // Fallback options if no image found in files array
         if (nft.meta?.image) {
             return nft.meta.image.startsWith('ipfs://')
                 ? `https://gateway.xrpnft.com/ipfs/${nft.meta.image.slice(7)}`
@@ -224,7 +229,7 @@ const NFTDetails = ({ NFTokenID }) => {
     };
 
     const getNFTName = (nft) => {
-        if (nft.name && nft.name !== "No Name") return nft.name;
+        if (nft.name && nft.name !== 'No Name') return nft.name;
         if (nft.meta?.name) return nft.meta.name;
         if (nft.collection) return `${nft.collection} #${nft.sequence}`;
         return `NFT #${nft.sequence}`;
@@ -234,44 +239,44 @@ const NFTDetails = ({ NFTokenID }) => {
     const nftName = getNFTName(nftInfo);
 
     return (
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 1 }}>
             <Avatar
                 alt={nftName}
                 src={imageUrl}
                 sx={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: '12px',
+                    width: 48,
+                    height: 48,
+                    borderRadius: '8px'
                 }}
-                variant="square"
+                variant="rounded"
             />
-            <Stack>
-                <Typography variant="subtitle2">{nftName}</Typography>
-                <Typography variant="caption">Collection: {nftInfo.collection}</Typography>
-                {nftInfo.rarity_rank && nftInfo.total && (
-                    <Typography variant="caption">Rarity Rank: {nftInfo.rarity_rank} / {nftInfo.total}</Typography>
-                )}
-                {nftInfo.issuer && (
-                    <Typography variant="caption">Issuer: {nftInfo.issuer}</Typography>
-                )}
-                {nftInfo.taxon && (
-                    <Typography variant="caption">Taxon: {nftInfo.taxon}</Typography>
-                )}
-                {nftInfo.royalty && (
-                    <Typography variant="caption">Royalty: {nftInfo.royalty / 1000}%</Typography>
-                )}
-                {nftInfo.props && nftInfo.props.length > 0 && (
-                    <Typography variant="caption">
-                        Attributes: {nftInfo.props.map(prop => `${prop.type}: ${prop.value}`).join(', ')}
+            <Stack spacing={0.5} sx={{ flexGrow: 1, minWidth: 0 }}>
+                <Typography variant="subtitle2" noWrap>{nftName}</Typography>
+                <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
+                    <Typography variant="caption" color="text.secondary" noWrap>
+                        {nftInfo.collection}
                     </Typography>
-                )}
-                {nftInfo.cfloor && (
-                    <Typography variant="caption">
-                        Collection Floor: {nftInfo.cfloor.amount} {nftInfo.cfloor.currency}
-                    </Typography>
-                )}
+                    {nftInfo.rarity_rank && nftInfo.total && (
+                        <Typography variant="caption" color="text.secondary" noWrap>
+                            Rank: {nftInfo.rarity_rank}/{nftInfo.total}
+                        </Typography>
+                    )}
+                    {nftInfo.royalty && (
+                        <Typography variant="caption" color="text.secondary" noWrap>
+                            Royalty: {nftInfo.royalty / 1000}%
+                        </Typography>
+                    )}
+                </Stack>
             </Stack>
-        </Stack>
+            {nftInfo.cfloor && (
+                <Chip
+                    label={`Floor: ${nftInfo.cfloor.amount} ${nftInfo.cfloor.currency}`}
+                    size="small"
+                    color="primary"
+                    sx={{ height: 24 }}
+                />
+            )}
+        </Box>
     );
 };
 
