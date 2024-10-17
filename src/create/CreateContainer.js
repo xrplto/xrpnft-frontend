@@ -61,7 +61,7 @@ export default function CreateContainer() {
                             alignItems: 'stretch',
                         }}
                     >
-                        <CollectionCard onCreate={() => {/* handle collection creation */}} />
+                        <CollectionCard />
                         <NFTCard onCreate={() => {/* handle NFT creation */}} />
                         <BulkCollectionsCard hasBulkCollections={hasBulkCollections} />
                         <MyCollectionsCard collections={collections} />

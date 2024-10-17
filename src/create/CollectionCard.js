@@ -1,7 +1,14 @@
+import { useRouter } from 'next/router';
 import { Card, Stack, Typography, Box } from '@mui/material';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 
-export default function CollectionCard({ onCreate }) {
+export default function CollectionCard() {
+    const router = useRouter();
+
+    const handleCreateCollection = () => {
+        router.push('/collection/create');
+    };
+
     return (
         <Card
             sx={{
@@ -20,7 +27,7 @@ export default function CollectionCard({ onCreate }) {
                     boxShadow: (theme) => `0 8px 30px ${theme.palette.primary.main}33`,
                 },
             }}
-            onClick={onCreate}
+            onClick={handleCreateCollection}
         >
             <Box
                 sx={{
