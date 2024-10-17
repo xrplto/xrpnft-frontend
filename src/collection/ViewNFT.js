@@ -189,6 +189,9 @@ export default function ViewNFT({ collection }) {
         totalVol24h
     } = collection;
 
+    // Add this line to log the API URL
+    console.log('API URL for Collection data:', `https://api.xrpnft.com/collection/${slug}`);
+
     console.log('Collection data:', collection);
     console.log('Account login:', accountLogin);
     console.log('Is mobile:', isMobile);
@@ -376,6 +379,21 @@ export default function ViewNFT({ collection }) {
                         >
                             {[
                                 {
+                                    label: 'Floor Price',
+                                    value: `${fNumber(floorPrice)} XRP`,
+                                    icon: <LocalOfferIcon />
+                                },
+                                {
+                                    label: '24h Volume',
+                                    value: `${volume24h} XRP`,
+                                    icon: <ShowChartIcon />
+                                },
+                                {
+                                    label: 'Total Volume',
+                                    value: `${volume2} XRP`,
+                                    icon: <ShowChartIcon />
+                                },
+                                {
                                     label: 'Items',
                                     value: items,
                                     icon: <CollectionsIcon />
@@ -384,21 +402,6 @@ export default function ViewNFT({ collection }) {
                                     label: 'Owners',
                                     value: extra.owners,
                                     icon: <PeopleIcon />
-                                },
-                                {
-                                    label: 'Total Volume',
-                                    value: `Ͱ${volume2}`,
-                                    icon: <ShowChartIcon />
-                                },
-                                {
-                                    label: 'Floor Price',
-                                    value: `Ͱ${fNumber(floorPrice)}`,
-                                    icon: <LocalOfferIcon />
-                                },
-                                {
-                                    label: '24h Volume',
-                                    value: `Ͱ${volume24h}`,
-                                    icon: <ShowChartIcon />
                                 },
                                 {
                                     label: '% Listed',
