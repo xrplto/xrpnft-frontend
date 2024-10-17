@@ -121,6 +121,25 @@ const BackgroundBlur = styled('div')(({ theme }) => ({
     zIndex: -1
 }));
 
+// Add this import
+import CheckIcon from '@mui/icons-material/Check';
+
+// Add this new styled component for the verification badge
+const VerificationBadge = styled('div')(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 20,
+  height: 20,
+  borderRadius: '50%',
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.common.white,
+  boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+  '& svg': {
+    fontSize: 14,
+  },
+}));
+
 export default function ViewNFT({ collection }) {
     const anchorRef = useRef(null);
     const theme = useTheme();
@@ -238,7 +257,9 @@ export default function ViewNFT({ collection }) {
                                 </Typography>
                                 {verified === 'yes' && (
                                     <Tooltip title="Verified">
-                                        <VerifiedIcon color="primary" />
+                                        <VerificationBadge>
+                                            <CheckIcon />
+                                        </VerificationBadge>
                                     </Tooltip>
                                 )}
                             </Stack>

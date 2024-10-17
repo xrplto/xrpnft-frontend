@@ -37,6 +37,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
 import MessageIcon from '@mui/icons-material/Message';
 import MessageOutlinedIcon from '@mui/icons-material/MessageOutlined';
+import CheckIcon from '@mui/icons-material/Check';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -85,11 +86,11 @@ import CreateOfferXRPCafe from './CreateOfferXRPCafe';
 
 // Add these constants at the top of the file
 const BROKER_ADDRESSES = {
-  "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv": { fee: 0.01, name: "Art Dept Fun" }, // 0.01% doesn't accept right away
-  "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC": { fee: 0.01589, name: "XRP Cafe" }, // 1.589% Accepts
-  "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC": { fee: 0.015, name: "BIDDS" }, // 1.5%  doesn't accept right away
-  "rDeizxSRo6JHjKnih9ivpPkyD2EgXQvhSB": { fee: 0.015, name: "XPMarket" }, // 1.5% doesn't accept right away
-  "rJcCJyJkiTXGcxU4Lt4ZvKJz8YmorZXu8r": { fee: 0.01, name: "OpulenceX" } // 1% Unknown
+  "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv": { fee: 0.01, name: "Art Dept Fun" },
+  "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC": { fee: 0.01589, name: "XRP Cafe" },
+  "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC": { fee: 0.015, name: "BIDDS" },
+  "rDeizxSRo6JHjKnih9ivpPkyD2EgXQvhSB": { fee: 0.015, name: "XPMarket" },
+  "rJcCJyJkiTXGcxU4Lt4ZvKJz8YmorZXu8r": { fee: 0.01, name: "OpulenceX" }
 };
 
 // Create a styled component for the glass effect
@@ -102,6 +103,22 @@ const GlassPanel = styled(Glass)(({ theme }) => ({
     border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
     maxWidth: '90%', // Change this from 95% to 90%
     margin: '0 auto'
+}));
+
+// Add this new styled component for the verification badge
+const VerificationBadge = styled('div')(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 16,
+  height: 16,
+  borderRadius: '50%',
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.common.white,
+  boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+  '& svg': {
+    fontSize: 12,
+  },
 }));
 
 // const NFT_FLAGS = {
@@ -362,12 +379,17 @@ export default function NFTActions({ nft }) {
                 const response = await client.request(request);
                 console.log('NFT Sell Offers:', JSON.stringify(response.result, null, 2));
 
-                // Find the lowest sell offer
+                // Find the lowest valid sell offer
                 let lowestOffer = null;
                 if (response.result.offers && response.result.offers.length > 0) {
                     lowestOffer = response.result.offers.reduce((min, offer) => {
                         const amount = BigInt(offer.amount);
-                        return amount < BigInt(min.amount) ? { amount, offer } : min;
+                        const isValidBroker = offer.destination && BROKER_ADDRESSES[offer.destination];
+                        const isValidAmount = amount > BigInt(0);
+                        if (isValidBroker && isValidAmount && amount < BigInt(min.amount)) {
+                            return { amount, offer };
+                        }
+                        return min;
                     }, { amount: BigInt(Number.MAX_SAFE_INTEGER).toString(), offer: null });
                 }
 
@@ -391,6 +413,8 @@ export default function NFTActions({ nft }) {
                         seller: lowestOffer.offer.owner,
                         destination: brokerAddress
                     });
+                } else {
+                    setLowestSellOffer(null);
                 }
             } catch (error) {
                 console.error('Error fetching NFT sell offers:', error);
@@ -596,16 +620,8 @@ export default function NFTActions({ nft }) {
     const handleBuyNow = async () => {
         if (lowestSellOffer && lowestSellOffer.hasBroker) {
             setOpenCreateOfferXRPCafe(true);
-        } else if (sellOffers.length > 1) {
-            setOpenSelectPrice(true);
         } else {
-            if (lowestSellOffer && !lowestSellOffer.destination) {
-                // Use ConfirmAcceptOfferDialog when there's no broker/destination
-                setAcceptOffer(lowestSellOffer);
-                setOpenConfirm(true);
-            } else {
-                handleAcceptOffer(cost.offer);
-            }
+            openSnackbar('Invalid offer or no broker available', 'error');
         }
     };
 
@@ -649,7 +665,7 @@ export default function NFTActions({ nft }) {
                                         variant="h6"
                                         sx={{
                                             fontWeight: 'bold',
-                                            color: 'primary.main' // Add this line to set the primary color
+                                            color: 'primary.main'
                                         }}
                                     >
                                         {collectionName}
@@ -657,13 +673,9 @@ export default function NFTActions({ nft }) {
                                 </Link>
                                 {cverified === 'yes' && (
                                     <Tooltip title="Verified">
-                                        <VerifiedIcon
-                                            fontSize="small"
-                                            sx={{
-                                                color: (theme) =>
-                                                    theme.palette.primary.main
-                                            }}
-                                        />
+                                        <VerificationBadge>
+                                            <CheckIcon />
+                                        </VerificationBadge>
                                     </Tooltip>
                                 )}
                             </Stack>
@@ -890,7 +902,7 @@ export default function NFTActions({ nft }) {
                 {/* Offers and History sections */}
                 <Stack spacing={2}>
                     {isOwner && (
-                        <Accordion defaultExpanded elevation={0}>
+                        <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon color="primary" />}
                             >
@@ -920,7 +932,7 @@ export default function NFTActions({ nft }) {
                         </Accordion>
                     )}
 
-                    <Accordion defaultExpanded elevation={0}>
+                    <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon color="primary" />}
                         >
@@ -946,7 +958,7 @@ export default function NFTActions({ nft }) {
                         </AccordionDetails>
                     </Accordion>
 
-                    <Accordion defaultExpanded elevation={0}>
+                    <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon color="primary" />}
                         >

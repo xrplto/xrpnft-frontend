@@ -77,6 +77,11 @@ import SeeMoreTypography from 'src/components/SeeMoreTypography';
 import FlagsContainer from 'src/components/Flags';
 import Properties from './Properties';
 
+// Add these imports
+import { alpha, styled } from '@mui/material/styles';
+import Glass from '@mui/material/Paper';
+import CheckIcon from '@mui/icons-material/Check';
+
 // const NFT_FLAGS = {
 //     0x00000001: 'lsfBurnable',
 //     0x00000002: 'lsfOnlyXRP',
@@ -183,6 +188,34 @@ function truncate(str, n) {
     //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
+
+// Create a styled component for the glass effect
+const GlassPanel = styled(Glass)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.7),
+    backdropFilter: 'blur(10px)',
+    borderRadius: theme.shape.borderRadius * 2,
+    padding: theme.spacing(3),
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+    maxWidth: '90%',
+    margin: '0 auto'
+}));
+
+// Add this new styled component for the verification badge
+const VerificationBadge = styled('div')(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 16,
+  height: 16,
+  borderRadius: '50%',
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.common.white,
+  boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+  '& svg': {
+    fontSize: 12,
+  },
+}));
 
 export default function NFTDetailsMobile({ nft }) {
     const anchorRef = useRef(null);
@@ -546,599 +579,596 @@ export default function NFTDetailsMobile({ nft }) {
     };
 
     return (
-        <Stack spacing={2}>
-            <Backdrop
-                sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={pageLoading}
-            >
-                <ProgressBar
-                    height="80"
-                    width="80"
-                    ariaLabel="progress-bar-loading"
-                    wrapperStyle={{}}
-                    wrapperClass="progress-bar-wrapper"
-                    borderColor='#F4442E'
-                    barColor='#51E5FF'
+        <GlassPanel elevation={0}>
+            <Stack spacing={2}>
+                <Backdrop
+                    sx={{ color: '#000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={pageLoading}
+                >
+                    <ProgressBar
+                        height="80"
+                        width="80"
+                        ariaLabel="progress-bar-loading"
+                        wrapperStyle={{}}
+                        wrapperClass="progress-bar-wrapper"
+                        borderColor='#F4442E'
+                        barColor='#51E5FF'
+                    />
+                </Backdrop>
+
+                <ConfirmAcceptOfferDialog open={openConfirm} setOpen={setOpenConfirm} offer={acceptOffer} onContinue={onContinueAccept} />
+
+                <QRDialog
+                    open={openScanQR}
+                    type={qrType}
+                    onClose={handleScanQRClose}
+                    qrUrl={qrUrl}
+                    nextUrl={nextUrl}
                 />
-            </Backdrop>
 
-            <ConfirmAcceptOfferDialog open={openConfirm} setOpen={setOpenConfirm} offer={acceptOffer} onContinue={onContinueAccept} />
+                <CreateOfferDialog
+                    open={openCreateOffer}
+                    setOpen={setOpenCreateOffer}
+                    nft={nft}
+                    isSellOffer={isSellOffer}
+                />
+                <TransferDialog
+                    open={openTransfer}
+                    setOpen={setOpenTransfer}
+                    nft={nft}
+                />
 
-            <QRDialog
-                open={openScanQR}
-                type={qrType}
-                onClose={handleScanQRClose}
-                qrUrl={qrUrl}
-                nextUrl={nextUrl}
-            />
+                <SelectPriceDialog
+                    open={openSelectPrice}
+                    setOpen={setOpenSelectPrice}
+                    offers={sellOffers}
+                    handleAccept={handleAcceptOffer}
+                />
 
-            <CreateOfferDialog
-                open={openCreateOffer}
-                setOpen={setOpenCreateOffer}
-                nft={nft}
-                isSellOffer={isSellOffer}
-            />
-            <TransferDialog
-                open={openTransfer}
-                setOpen={setOpenTransfer}
-                nft={nft}
-            />
-
-            <SelectPriceDialog
-                open={openSelectPrice}
-                setOpen={setOpenSelectPrice}
-                offers={sellOffers}
-                handleAccept={handleAcceptOffer}
-            />
-
-            {self &&
-                <Stack direction="row" spacing={2} justifyContent="space-between" sx={{ mt: 1, mb: 1 }}>
-                    <Stack>
-                        <Stack direction="row" spacing={1}>
-                            <Link href={`/collection/${cslug}`} underline='none'>
-                                <Typography variant="s5" sx={{pl:0}}>{collectionName}</Typography>
-                            </Link>
-                            {cverified === 'yes' &&
-                                <Tooltip title='Verified'>
-                                    <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
-                                </Tooltip>
-                            }
-                        </Stack>
-
-                        <Stack direction="row" spacing={0.5} alignItems='center'>
-                            <Typography variant="s7" noWrap>Global Floor</Typography>
-                            <Icon icon={rippleSolid} width="16" height="16" />
-                            <Typography variant="s7" noWrap>{fNumber(floorPrice)}</Typography>
-                        </Stack>
-                    </Stack>
-
-                    <Stack direction="row" alignItems="center" spacing={1}>
-                        <Tooltip title="Share">
-                            <IconButton size='medium' sx={{ padding: 1 }}
-                                ref={anchorRef}
-                                onClick={handleOpenShare}
-                            >
-                                <ShareIcon />
-                            </IconButton>
-                        </Tooltip>
-
-                        <Popover
-                            open={openShare}
-                            onClose={handleCloseShare}
-                            anchorEl={anchorRef.current}
-                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                            PaperProps={{
-                                sx: {
-                                    // mt: 1.5,
-                                    // ml: 0.5,
-                                    // overflow: 'inherit',
-                                    // boxShadow: (theme) => theme.customShadows.z20,
-                                    // border: (theme) => `solid 1px ${alpha('#919EAB', 0.08)}`,
-                                    // width: 'auto',
+                {self &&
+                    <Stack direction="row" spacing={2} justifyContent="space-between" sx={{ mt: 1, mb: 1 }}>
+                        <Stack>
+                            <Stack direction="row" spacing={1}>
+                                <Link href={`/collection/${cslug}`} underline='none'>
+                                    <Typography variant="s5" sx={{pl:0}}>{collectionName}</Typography>
+                                </Link>
+                                {cverified === 'yes' &&
+                                    <Tooltip title='Verified'>
+                                        <VerificationBadge>
+                                            <CheckIcon />
+                                        </VerificationBadge>
+                                    </Tooltip>
                                 }
-                            }}
-                        >
-                            <Stack direction="row" spacing={2} sx={{pt: 1.5, pl: 1, pr: 1, pb: 1}}>
-                                <FacebookShareButton
-                                    url={shareUrl}
-                                    quote={shareTitle}
-                                    hashtag={"#"}
-                                    description={shareDesc}
-                                    onClick={handleCloseShare}
-                                >
-                                    <FacebookIcon size={24} round />
-                                </FacebookShareButton>
-                                <TwitterShareButton
-                                    title={shareTitle}
-                                    url={shareUrl}
-                                    hashtag={"#"}
-                                    onClick={handleCloseShare}
-                                >
-                                    <TwitterIcon size={24} round />
-                                </TwitterShareButton>
                             </Stack>
-                        </Popover>
-                    </Stack>
-                </Stack>
-            }
 
-            <Stack spacing={2} sx={{ mt: 2 }}>
-                {/* <Link underline='none' color={'text.primary'}>
-                    Name
-                </Link> */}
-                <Typography variant='h2a'>{nftName}</Typography>
-            </Stack>
-
-            {/* {meta?.description &&
-                <SeeMoreTypography variant="s7" text={meta.description} />
-            } */}
-
-            {self && rarity_rank > 0 &&
-                <Stack direction="row" >
-                    <Tooltip title={`Rarity Rank #${fIntNumber(rarity_rank)} / ${fIntNumber(citems)}`}>
-                        <Stack direction="row" spacing={1} alignItems="center" >
-                            <LeaderboardOutlinedIcon sx={{width: '14px'}} width="auto" style={{color: '#B2B2B2'}}/>
-                            <Typography variant="s7"><Typography variant="s14">{fIntNumber(rarity_rank)}</Typography> / {fIntNumber(citems)}</Typography>
+                            <Stack direction="row" spacing={0.5} alignItems='center'>
+                                <Typography variant="s7" noWrap>Global Floor</Typography>
+                                <Icon icon={rippleSolid} width="16" height="16" />
+                                <Typography variant="s7" noWrap>{fNumber(floorPrice)}</Typography>
+                            </Stack>
                         </Stack>
-                    </Tooltip>
-                </Stack>
-            }
 
-            <NFTPreview nft={nft} /> {/* NFTokenID={NFTokenID} meta={meta} dfile={dfile} */}
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                            <Tooltip title="Share">
+                                <IconButton size='medium' sx={{ padding: 1 }}
+                                    ref={anchorRef}
+                                    onClick={handleOpenShare}
+                                >
+                                    <ShareIcon />
+                                </IconButton>
+                            </Tooltip>
 
-            {/* Make offer start */}
-            <Paper
-                sx={{
-                    padding: 2,
-                }}
-            >
-                {burnt ?
-                    <Typography variant="s5">This NFT is burnt.</Typography>
-                    :
-                    <>
-                        {destination && getMinterName(account) ? (
-                            <>
-                                {destination === accountLogin ?
-                                    <Typography variant="s5">This NFT is being transferred to you. Click <CheckCircleOutlineIcon color='success' /> to accept it.</Typography>
-                                    :
-                                    <Typography variant="s5">This NFT is being transferred to &nbsp;
-                                        <Link
-                                            color="inherit"
-                                            target="_blank"
-                                            href={`https://bithomp.com/explorer/${destination}`}
-                                            rel="noreferrer noopener nofollow"
-                                        >
-                                            <Typography variant="s3" color="#33C2FF">{destination}</Typography>
-                                        </Link>.
-                                    </Typography>
-                                }
-                            </>
-                        ) : (
-                            isOwner ? (
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-around',
-                                    gap: 1
-                                }}>
-                                    <Button
-                                        fullWidth
-                                        // sx={{ minWidth: 150 }}
-                                        variant='outlined'
-                                        startIcon={<LocalOfferIcon />}
-                                        onClick={handleCreateSellOffer}
-                                        color='success'
-                                        disabled={!accountLogin || burnt}
+                            <Popover
+                                open={openShare}
+                                onClose={handleCloseShare}
+                                anchorEl={anchorRef.current}
+                                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                PaperProps={{
+                                    sx: {
+                                        // mt: 1.5,
+                                        // ml: 0.5,
+                                        // overflow: 'inherit',
+                                        // boxShadow: (theme) => theme.customShadows.z20,
+                                        // border: (theme) => `solid 1px ${alpha('#919EAB', 0.08)}`,
+                                        // width: 'auto',
+                                    }
+                                }}
+                            >
+                                <Stack direction="row" spacing={2} sx={{pt: 1.5, pl: 1, pr: 1, pb: 1}}>
+                                    <FacebookShareButton
+                                        url={shareUrl}
+                                        quote={shareTitle}
+                                        hashtag={"#"}
+                                        description={shareDesc}
+                                        onClick={handleCloseShare}
                                     >
-                                        Sell
-                                    </Button>
-                                    <Button
-                                        fullWidth
-                                        // sx={{ minWidth: 150 }}
-                                        variant='outlined'
-                                        startIcon={<SendIcon />}
-                                        onClick={handleTransfer}
-                                        color='info'
-                                        disabled={!accountLogin || burnt}
+                                        <FacebookIcon size={24} round />
+                                    </FacebookShareButton>
+                                    <TwitterShareButton
+                                        title={shareTitle}
+                                        url={shareUrl}
+                                        hashtag={"#"}
+                                        onClick={handleCloseShare}
                                     >
-                                        Transfer
-                                    </Button>
-                                    <BurnNFT nft={nft} onHandleBurn={onHandleBurn} />
-                                </Box>
-                            ) : (
-                                <Grid container>
-                                    <Grid item xs={12} sm={7}>
-                                        <Typography variant="s7">Current Price</Typography>
-                                        <Stack sx={{ mt: 0, mb: 2 }}>
-                                            {loading ? (
-                                                <PulseLoader color='#00AB55' size={10} />
-                                            ) : (
-                                                cost ? (
-                                                    cost.currency === "XRP" ?
-                                                        <Stack direction="row" spacing={0.5} alignItems="center">
-                                                            <Typography variant='s9' pt={0.8}><Icon icon={rippleSolid} width="24" height="24" /></Typography>
-                                                            <Typography variant='s9'>{fNumber(cost.amount)}</Typography>
-                                                        </Stack>
-                                                        :
-                                                        <Typography variant='s3'>{fNumber(cost.amount)} {cost.name}</Typography>
-
-                                                ) : (
-                                                    <Typography variant='s8'>- - -</Typography>
-                                                )
-                                            )}
-                                        </Stack>
-                                    </Grid>
-                                    <Grid item xs={12} sm={5}>
-                                        <Stack
-                                            direction={{ xs: 'row', sm: 'column' }}
-                                            spacing={{ xs: 1, sm: 2 }}
-                                        >
-                                            <Button
-                                                fullWidth
-                                                disabled={!cost || burnt}
-                                                variant='contained'
-                                                onClick={handleBuyNow}
-                                            >
-                                                Buy Now
-                                            </Button>
-                                            <Button
-                                                fullWidth
-                                                disabled={!accountLogin || burnt}
-                                                variant='outlined'
-                                                onClick={handleCreateBuyOffer}
-                                            >
-                                                Make Offer
-                                            </Button>
-                                        </Stack>
-                                    </Grid>
-                                </Grid>
-                            )
-                        )}
-                    </>
+                                        <TwitterIcon size={24} round />
+                                    </TwitterShareButton>
+                                </Stack>
+                            </Popover>
+                        </Stack>
+                    </Stack>
                 }
 
-            </Paper>
-            {/* /* Make offer end */}
-
-            <Stack direction="row" spacing={1} alignItems="center">
-                <Avatar alt="C" src={accountLogo} variant="square" style={{width: '32px', height: '32px'}} />
-                <Stack spacing={0}>
-                    <Typography variant="s7">Owner</Typography>
-                    <Link
-                        // color="inherit"
-                        // target="_blank"
-                        href={`/account/${account}`}
-                        // rel="noreferrer noopener nofollow"
-                    >
-                        <Typography variant='s15' noWrap> {truncate(account, 16)}</Typography>
-                    </Link>
+                <Stack spacing={2} sx={{ mt: 2 }}>
+                    {/* <Link underline='none' color={'text.primary'}>
+                        Name
+                    </Link> */}
+                    <Typography variant='h2a'>{nftName}</Typography>
                 </Stack>
 
-                {/*
-                <Tooltip title="Contact owner via XRPNFT chat">
-                    <IconButton size='small' sx={{ padding: 1 }}
-                        onClick={() => {
-                        }}
-                    >
-                        <MessageOutlinedIcon fontSize="small" />
-                    </IconButton>
-                    </Tooltip> */}
-            </Stack>
+                {/* {meta?.description &&
+                    <SeeMoreTypography variant="s7" text={meta.description} />
+                } */}
 
-            {isOwner &&
+                {self && rarity_rank > 0 &&
+                    <Stack direction="row" >
+                        <Tooltip title={`Rarity Rank #${fIntNumber(rarity_rank)} / ${fIntNumber(citems)}`}>
+                            <Stack direction="row" spacing={1} alignItems="center" >
+                                <LeaderboardOutlinedIcon sx={{width: '14px'}} width="auto" style={{color: '#B2B2B2'}}/>
+                                <Typography variant="s7"><Typography variant="s14">{fIntNumber(rarity_rank)}</Typography> / {fIntNumber(citems)}</Typography>
+                            </Stack>
+                        </Tooltip>
+                    </Stack>
+                }
+
+                <NFTPreview nft={nft} /> {/* NFTokenID={NFTokenID} meta={meta} dfile={dfile} */}
+
+                {/* Make offer start */}
+                <Paper
+                    sx={{
+                        padding: 2,
+                    }}
+                >
+                    {burnt ?
+                        <Typography variant="s5">This NFT is burnt.</Typography>
+                        :
+                        <>
+                            {destination && getMinterName(account) ? (
+                                <>
+                                    {destination === accountLogin ?
+                                        <Typography variant="s5">This NFT is being transferred to you. Click <CheckCircleOutlineIcon color='success' /> to accept it.</Typography>
+                                        :
+                                        <Typography variant="s5">This NFT is being transferred to &nbsp;
+                                            <Link
+                                                color="inherit"
+                                                target="_blank"
+                                                href={`https://bithomp.com/explorer/${destination}`}
+                                                rel="noreferrer noopener nofollow"
+                                            >
+                                                <Typography variant="s3" color="#33C2FF">{destination}</Typography>
+                                            </Link>.
+                                        </Typography>
+                                    }
+                                </>
+                            ) : (
+                                isOwner ? (
+                                    <Box sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-around',
+                                        gap: 1
+                                    }}>
+                                        <Button
+                                            fullWidth
+                                            // sx={{ minWidth: 150 }}
+                                            variant='outlined'
+                                            startIcon={<LocalOfferIcon />}
+                                            onClick={handleCreateSellOffer}
+                                            color='success'
+                                            disabled={!accountLogin || burnt}
+                                        >
+                                            Sell
+                                        </Button>
+                                        <Button
+                                            fullWidth
+                                            // sx={{ minWidth: 150 }}
+                                            variant='outlined'
+                                            startIcon={<SendIcon />}
+                                            onClick={handleTransfer}
+                                            color='info'
+                                            disabled={!accountLogin || burnt}
+                                        >
+                                            Transfer
+                                        </Button>
+                                        <BurnNFT nft={nft} onHandleBurn={onHandleBurn} />
+                                    </Box>
+                                ) : (
+                                    <Grid container>
+                                        <Grid item xs={12} sm={7}>
+                                            <Typography variant="s7">Current Price</Typography>
+                                            <Stack sx={{ mt: 0, mb: 2 }}>
+                                                {loading ? (
+                                                    <PulseLoader color='#00AB55' size={10} />
+                                                ) : (
+                                                    cost ? (
+                                                        cost.currency === "XRP" ?
+                                                            <Stack direction="row" spacing={0.5} alignItems="center">
+                                                                <Typography variant='s9' pt={0.8}><Icon icon={rippleSolid} width="24" height="24" /></Typography>
+                                                                <Typography variant='s9'>{fNumber(cost.amount)}</Typography>
+                                                            </Stack>
+                                                            :
+                                                            <Typography variant='s3'>{fNumber(cost.amount)} {cost.name}</Typography>
+
+                                                    ) : (
+                                                        <Typography variant='s8'>- - -</Typography>
+                                                    )
+                                                )}
+                                            </Stack>
+                                        </Grid>
+                                        <Grid item xs={12} sm={5}>
+                                            <Stack
+                                                direction={{ xs: 'row', sm: 'column' }}
+                                                spacing={{ xs: 1, sm: 2 }}
+                                            >
+                                                <Button
+                                                    fullWidth
+                                                    disabled={!cost || burnt}
+                                                    variant='contained'
+                                                    onClick={handleBuyNow}
+                                                >
+                                                    Buy Now
+                                                </Button>
+                                                <Button
+                                                    fullWidth
+                                                    disabled={!accountLogin || burnt}
+                                                    variant='outlined'
+                                                    onClick={handleCreateBuyOffer}
+                                                >
+                                                    Make Offer
+                                                </Button>
+                                            </Stack>
+                                        </Grid>
+                                    </Grid>
+                                )
+                            )}
+                        </>
+                    }
+
+                </Paper>
+                {/* /* Make offer end */}
+
+                <Stack direction="row" spacing={1} alignItems="center">
+                    <Avatar alt="C" src={accountLogo} variant="square" style={{width: '32px', height: '32px'}} />
+                    <Stack spacing={0}>
+                        <Typography variant="s7">Owner</Typography>
+                        <Link
+                            // color="inherit"
+                            // target="_blank"
+                            href={`/account/${account}`}
+                            // rel="noreferrer noopener nofollow"
+                        >
+                            <Typography variant='s15' noWrap> {truncate(account, 16)}</Typography>
+                        </Link>
+                    </Stack>
+
+                    {/*
+                    <Tooltip title="Contact owner via XRPNFT chat">
+                        <IconButton size='small' sx={{ padding: 1 }}
+                            onClick={() => {
+                            }}
+                        >
+                            <MessageOutlinedIcon fontSize="small" />
+                        </IconButton>
+                        </Tooltip> */}
+                </Stack>
+
+                {isOwner &&
+                    <Stack>
+                        <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls='panel3a-content'
+                                id='panel3a-header'
+                            >
+                                <Stack direction='row' spacing={2}>
+                                    <LocalOfferIcon />
+                                    <Typography variant='s16'>Sell Offers</Typography>
+                                </Stack>
+                            </AccordionSummary>
+                            <AccordionDetails sx={{ textAlign: 'center' }}>
+                                <OffersList
+                                    nft={nft}
+                                    offers={sellOffers}
+                                    handleAcceptOffer={handleAcceptOffer}
+                                    handleCancelOffer={handleCancelOffer}
+                                    isSell={true}
+                                />
+                            </AccordionDetails>
+                        </Accordion>
+                    </Stack>
+                }
+
                 <Stack>
-                    <Accordion defaultExpanded>
+                    <Accordion sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls='panel3a-content'
                             id='panel3a-header'
                         >
                             <Stack direction='row' spacing={2}>
-                                <LocalOfferIcon />
-                                <Typography variant='s16'>Sell Offers</Typography>
+                                <PanToolIcon />
+                                <Typography variant='s16'>Offers</Typography>
                             </Stack>
                         </AccordionSummary>
-                        <AccordionDetails sx={{ textAlign: 'center' }}>
+                        <AccordionDetails>
                             <OffersList
                                 nft={nft}
-                                offers={sellOffers}
+                                offers={buyOffers}
                                 handleAcceptOffer={handleAcceptOffer}
                                 handleCancelOffer={handleCancelOffer}
-                                isSell={true}
+                                isSell={false}
                             />
                         </AccordionDetails>
                     </Accordion>
                 </Stack>
-            }
 
-            <Stack>
-                {/* Buy Offers start */}
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls='panel3a-content'
-                        id='panel3a-header'
-                    >
-                        <Stack direction='row' spacing={2}>
-                            <PanToolIcon />
-                            <Typography variant='s16'>Offers</Typography>
-                        </Stack>
-                    </AccordionSummary>
-                    {/* <Divider /> */}
-                    <AccordionDetails>
-                        <OffersList
-                            nft={nft}
-                            offers={buyOffers}
-                            handleAcceptOffer={handleAcceptOffer}
-                            handleCancelOffer={handleCancelOffer}
-                            isSell={false}
-                        />
-                    </AccordionDetails>
-                </Accordion>
-                {/* Buy Offers end */}
-            </Stack>
-
-            <Stack>
-                {/* History Start */}
-                <Accordion >
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls='panel2a-content'
-                        id='panel2a-header'
-                    >
-                        <Stack direction='row' spacing={2}>
-                            <HistoryIcon />
-                            <Typography variant='s16'>History</Typography>
-                        </Stack>
-                    </AccordionSummary>
-                    <Divider />
-                    <AccordionDetails>
-                        <HistoryList
-                            nft={nft}
-                        />
-                    </AccordionDetails>
-                </Accordion>
-                {/* History end */}
-            </Stack>
-
-            <Stack>
-                <Accordion defaultExpanded>
-                    <AccordionSummary
-                        id="panel3bh-header"
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel3bh-content"
-                    >
-                        <Stack spacing={2} direction='row'>
-                            <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                            <Typography variant='s16'>Properties</Typography>
-                        </Stack>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        {properties && properties.length > 0 ?
-                            <Properties properties={properties} total={total} />
-                            :
-                            <Stack alignItems="center">
-                                <Typography>No Properties</Typography>
-                            </Stack>
-                        }
-                    </AccordionDetails>
-                </Accordion>
-            </Stack>
-            <Stack>
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1bh-content"
-                        id="panel1bh-header"
-                    >
-                        <Stack spacing={2} direction='row'>
-                            <ArticleIcon />
-                            <Typography variant='s16'>Details</Typography>
-                        </Stack>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <Stack direction="row" spacing={2} alignItems="center">
-                            <Typography variant="caption">Flags</Typography>
-                            <FlagsContainer Flags={flag}/>
-                            <Typography variant="s6">{strDateTime}</Typography>
-                        </Stack>
-                        {rarity_rank > 0 &&
-                            <Stack direction="row" spacing={2} sx={{mt: 2}}>
-                                <Typography variant="caption">Rarity Rank</Typography>
-                                <Typography variant="s6"># {rarity_rank}</Typography>
-                            </Stack>
-                        }
-                        <Stack direction="row" spacing={2} sx={{mt: 2}}>
-                            <Typography variant="caption">Taxon</Typography>
-                            <Typography variant="s6">{taxon}</Typography>
-                            <Typography variant="caption">Transfer Fee</Typography>
-                            <Typography variant="s6">{transferFee} %</Typography>
-                        </Stack>
-                        <Stack direction="row" spacing={2} sx={{mt: 2}}>
-                            <Typography variant='caption'>Collection</Typography>
-                            {cslug ? (
-                                <Link href={`/collection/${cslug}`} underline='none'>
-                                    <Typography sx={{pl:1}}>{collectionName}</Typography>
-                                </Link>
-                            ):(
-                                <Typography sx={{pl:1}}>{collectionName}</Typography>
-                            )}
-                        </Stack>
-                        <Stack direction="row" spacing={2} sx={{mt: 2}}>
-                            <Typography variant="caption">Volume</Typography>
-                            <Stack direction="row" spacing={0.5} alignItems='center'>
-                                <Icon icon={rippleSolid} />
-                                <Typography variant="s6">{fVolume(volume || 0)}</Typography>
-                                <Tooltip title={<Typography variant="body2">Traded volume on XRPL</Typography>}>
-                                    <Icon icon={infoFilled} />
-                                </Tooltip>
-                            </Stack>
-                        </Stack>
-                        <Divider sx={{mt:2, mb:2}}/>
-
-                        <Stack spacing={1}>
-                            <Typography variant="caption">Owner</Typography>
-                            <Stack direction="row" spacing={0.2} alignItems="center" sx={{display: 'inline-flex', overflowWrap: 'anywhere' }}>
-                                <Link
-                                    href={`/account/${account}`}
-                                    underline='hover'
-                                    // target="_blank"
-                                    variant='info'
-                                    // rel="noreferrer noopener nofollow"
-                                >
-                                    <Typography sx={{ml:1}}>{account}</Typography>
-                                </Link>
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    target="_blank"
-                                    href={`https://bithomp.com/explorer/${account}`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <Tooltip title="Check on Bithomp">
-                                        <IconButton edge="end" aria-label="bithomp" size="small">
-                                            <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
-                                        </IconButton>
-                                    </Tooltip>
-                                </Link>
-                                <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                    <Tooltip title='Click to copy'>
-                                        <IconButton size="small">
-                                            <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
-                                        </IconButton>
-                                    </Tooltip>
-                                </CopyToClipboard>
-                            </Stack>
-                        </Stack>
-                        <Divider sx={{mt:2, mb:2}}/>
-
-                        <Stack spacing={1}>
-                            <Typography variant="caption">Issuer</Typography>
-                            <Stack direction="row" spacing={0.2} alignItems="center" sx={{display: 'inline-flex', overflowWrap: 'anywhere' }}>
-                                <Link
-                                    href={`/account/${issuer}`}
-                                    underline='hover'
-                                    // target="_blank"
-                                    variant='info'
-                                    // rel="noreferrer noopener nofollow"
-                                >
-                                    <Typography sx={{ml:1}}>{issuer}</Typography>
-                                </Link>
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    target="_blank"
-                                    href={`https://bithomp.com/explorer/${issuer}`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <Tooltip title="Check on Bithomp">
-                                        <IconButton edge="end" aria-label="bithomp" size="small">
-                                            <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
-                                        </IconButton>
-                                    </Tooltip>
-                                </Link>
-                                <CopyToClipboard text={issuer} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                    <Tooltip title='Click to copy'>
-                                        <IconButton size="small">
-                                            <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
-                                        </IconButton>
-                                    </Tooltip>
-                                </CopyToClipboard>
-                            </Stack>
-                        </Stack>
-                        <Divider sx={{mt:2, mb:2}}/>
-
-                        <Stack spacing={1}>
-                            <Typography variant="caption">NFTokenID</Typography>
-                            <Link
-                                href={`https://bithomp.com/explorer/${NFTokenID}`}
-                                target='_blank'
-                                variant='info'
-                                rel="noreferrer noopener nofollow"
-                            >
-                                <Typography
-                                    sx={{ml:1}}
-                                    style={{ wordWrap: "break-word" }}
-                                >
-                                    {NFTokenID}
-                                </Typography>
-                            </Link>
-                        </Stack>
-
-                        <Stack spacing={1} mt={1}>
-                            <Typography variant='caption'>URI</Typography>
-                            <Typography sx={{ml:1}} style={{ wordWrap: "break-word" }}>{ParsedURI}</Typography>
-                        </Stack>
-                        <Divider sx={{mt:2, mb:2}}/>
-
-                        {
-                            meta?.external_link && (
-                                <>
-                                    <Stack spacing={1}>
-                                        <Typography variant='caption'>Link</Typography>
-                                        <Link
-                                            href={`${meta.external_link}`}
-                                            sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
-                                            underline='hover'
-                                            target="_blank"
-                                            variant='info'
-                                            rel="noreferrer noopener nofollow"
-                                        >
-                                            <Typography sx={{ml:1}}>{meta.external_link}</Typography>
-                                        </Link>
-                                    </Stack>
-                                    <Divider sx={{mt:2, mb:2}}/>
-                                </>
-                            )
-                        }
-
-                    </AccordionDetails>
-                </Accordion>
-            </Stack>
-            <Stack>
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel2bh-content"
-                        id="panel2bh-header"
-                    >
-                        <Stack spacing={2} direction='row' borderRadius={20}>
-                            <DescriptionIcon />
-                            <Typography variant='s16' >Description</Typography>
-                        </Stack>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        {meta?.description ?
-                            <Typography>{meta.description}</Typography>
-                            :
-                            <Typography sx={{ textAlign: 'center' }}>No description for this item</Typography>
-                        }
-                    </AccordionDetails>
-                </Accordion>
-
-
-                {/* NFT Leveled Properties start--- */}
-                {/* {
-                    levels &&
-                    <Accordion defaultExpanded>
+                <Stack>
+                    <Accordion sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
-                            aria-controls="panel4bh-content"
-                            id="panel4bh-header"
+                            aria-controls='panel2a-content'
+                            id='panel2a-header'
                         >
-                            <Stack spacing={2} direction='row'>
-                                <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
-                                <Typography variant='s16' >Level Properties</Typography>
+                            <Stack direction='row' spacing={2}>
+                                <HistoryIcon />
+                                <Typography variant='s16'>History</Typography>
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <Levels levels={data.description?.levels} />
+                            <HistoryList
+                                nft={nft}
+                            />
                         </AccordionDetails>
                     </Accordion>
-                } */}
-                {/* NFT Leveled Properties end--- */}
-            </Stack>
-        </Stack>
-    )
-}
+                </Stack>
 
+                <Stack>
+                    <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+                        <AccordionSummary
+                            id="panel3bh-header"
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel3bh-content"
+                        >
+                            <Stack spacing={2} direction='row'>
+                                <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
+                                <Typography variant='s16'>Properties</Typography>
+                            </Stack>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {properties && properties.length > 0 ?
+                                <Properties properties={properties} total={total} />
+                                :
+                                <Stack alignItems="center">
+                                    <Typography>No Properties</Typography>
+                                </Stack>
+                            }
+                        </AccordionDetails>
+                    </Accordion>
+                </Stack>
+                <Stack>
+                    <Accordion sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1bh-content"
+                            id="panel1bh-header"
+                        >
+                            <Stack spacing={2} direction='row'>
+                                <ArticleIcon />
+                                <Typography variant='s16'>Details</Typography>
+                            </Stack>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Stack direction="row" spacing={2} alignItems="center">
+                                <Typography variant="caption">Flags</Typography>
+                                <FlagsContainer Flags={flag}/>
+                                <Typography variant="s6">{strDateTime}</Typography>
+                            </Stack>
+                            {rarity_rank > 0 &&
+                                <Stack direction="row" spacing={2} sx={{mt: 2}}>
+                                    <Typography variant="caption">Rarity Rank</Typography>
+                                    <Typography variant="s6"># {rarity_rank}</Typography>
+                                </Stack>
+                            }
+                            <Stack direction="row" spacing={2} sx={{mt: 2}}>
+                                <Typography variant="caption">Taxon</Typography>
+                                <Typography variant="s6">{taxon}</Typography>
+                                <Typography variant="caption">Transfer Fee</Typography>
+                                <Typography variant="s6">{transferFee} %</Typography>
+                            </Stack>
+                            <Stack direction="row" spacing={2} sx={{mt: 2}}>
+                                <Typography variant='caption'>Collection</Typography>
+                                {cslug ? (
+                                    <Link href={`/collection/${cslug}`} underline='none'>
+                                        <Typography sx={{pl:1}}>{collectionName}</Typography>
+                                    </Link>
+                                ):(
+                                    <Typography sx={{pl:1}}>{collectionName}</Typography>
+                                )}
+                            </Stack>
+                            <Stack direction="row" spacing={2} sx={{mt: 2}}>
+                                <Typography variant="caption">Volume</Typography>
+                                <Stack direction="row" spacing={0.5} alignItems='center'>
+                                    <Icon icon={rippleSolid} />
+                                    <Typography variant="s6">{fVolume(volume || 0)}</Typography>
+                                    <Tooltip title={<Typography variant="body2">Traded volume on XRPL</Typography>}>
+                                        <Icon icon={infoFilled} />
+                                    </Tooltip>
+                                </Stack>
+                            </Stack>
+                            <Divider sx={{mt:2, mb:2}}/>
+
+                            <Stack spacing={1}>
+                                <Typography variant="caption">Owner</Typography>
+                                <Stack direction="row" spacing={0.2} alignItems="center" sx={{display: 'inline-flex', overflowWrap: 'anywhere' }}>
+                                    <Link
+                                        href={`/account/${account}`}
+                                        underline='hover'
+                                        // target="_blank"
+                                        variant='info'
+                                        // rel="noreferrer noopener nofollow"
+                                    >
+                                        <Typography sx={{ml:1}}>{account}</Typography>
+                                    </Link>
+                                    <Link
+                                        underline="none"
+                                        color="inherit"
+                                        target="_blank"
+                                        href={`https://bithomp.com/explorer/${account}`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Tooltip title="Check on Bithomp">
+                                            <IconButton edge="end" aria-label="bithomp" size="small">
+                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Link>
+                                    <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                        <Tooltip title='Click to copy'>
+                                            <IconButton size="small">
+                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    </CopyToClipboard>
+                                </Stack>
+                            </Stack>
+                            <Divider sx={{mt:2, mb:2}}/>
+
+                            <Stack spacing={1}>
+                                <Typography variant="caption">Issuer</Typography>
+                                <Stack direction="row" spacing={0.2} alignItems="center" sx={{display: 'inline-flex', overflowWrap: 'anywhere' }}>
+                                    <Link
+                                        href={`/account/${issuer}`}
+                                        underline='hover'
+                                        // target="_blank"
+                                        variant='info'
+                                        // rel="noreferrer noopener nofollow"
+                                    >
+                                        <Typography sx={{ml:1}}>{issuer}</Typography>
+                                    </Link>
+                                    <Link
+                                        underline="none"
+                                        color="inherit"
+                                        target="_blank"
+                                        href={`https://bithomp.com/explorer/${issuer}`}
+                                        rel="noreferrer noopener nofollow"
+                                    >
+                                        <Tooltip title="Check on Bithomp">
+                                            <IconButton edge="end" aria-label="bithomp" size="small">
+                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Link>
+                                    <CopyToClipboard text={issuer} onCopy={()=>openSnackbar('Copied!', 'success')}>
+                                        <Tooltip title='Click to copy'>
+                                            <IconButton size="small">
+                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    </CopyToClipboard>
+                                </Stack>
+                            </Stack>
+                            <Divider sx={{mt:2, mb:2}}/>
+
+                            <Stack spacing={1}>
+                                <Typography variant="caption">NFTokenID</Typography>
+                                <Link
+                                    href={`https://bithomp.com/explorer/${NFTokenID}`}
+                                    target='_blank'
+                                    variant='info'
+                                    rel="noreferrer noopener nofollow"
+                                >
+                                    <Typography
+                                        sx={{ml:1}}
+                                        style={{ wordWrap: "break-word" }}
+                                    >
+                                        {NFTokenID}
+                                    </Typography>
+                                </Link>
+                            </Stack>
+
+                            <Stack spacing={1} mt={1}>
+                                <Typography variant='caption'>URI</Typography>
+                                <Typography sx={{ml:1}} style={{ wordWrap: "break-word" }}>{ParsedURI}</Typography>
+                            </Stack>
+                            <Divider sx={{mt:2, mb:2}}/>
+
+                            {
+                                meta?.external_link && (
+                                    <>
+                                        <Stack spacing={1}>
+                                            <Typography variant='caption'>Link</Typography>
+                                            <Link
+                                                href={`${meta.external_link}`}
+                                                sx={{ mt: 1.5, display: 'inline-flex', overflowWrap: 'anywhere' }}
+                                                underline='hover'
+                                                target="_blank"
+                                                variant='info'
+                                                rel="noreferrer noopener nofollow"
+                                            >
+                                                <Typography sx={{ml:1}}>{meta.external_link}</Typography>
+                                            </Link>
+                                        </Stack>
+                                        <Divider sx={{mt:2, mb:2}}/>
+                                    </>
+                                )
+                            }
+
+                        </AccordionDetails>
+                    </Accordion>
+                </Stack>
+                <Stack>
+                    <Accordion sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel2bh-content"
+                            id="panel2bh-header"
+                        >
+                            <Stack spacing={2} direction='row' borderRadius={20}>
+                                <DescriptionIcon />
+                                <Typography variant='s16' >Description</Typography>
+                            </Stack>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            {meta?.description ?
+                                <Typography>{meta.description}</Typography>
+                                :
+                                <Typography sx={{ textAlign: 'center' }}>No description for this item</Typography>
+                            }
+                        </AccordionDetails>
+                    </Accordion>
+
+
+                    {/* NFT Leveled Properties start--- */}
+                    {/* {
+                        levels &&
+                        <Accordion defaultExpanded>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel4bh-content"
+                                id="panel4bh-header"
+                            >
+                                <Stack spacing={2} direction='row'>
+                                    <Icon icon='majesticons:checkbox-list-detail-line' fontSize={25} />
+                                    <Typography variant='s16' >Level Properties</Typography>
+                                </Stack>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <Levels levels={data.description?.levels} />
+                            </AccordionDetails>
+                        </Accordion>
+                    } */}
+                    {/* NFT Leveled Properties end--- */}
+                </Stack>
+            </Stack>
+        </GlassPanel>
+    );
+}

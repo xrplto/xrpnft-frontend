@@ -13,7 +13,7 @@ import {
     Box
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import VerifiedIcon from '@mui/icons-material/Verified';
+import CheckIcon from '@mui/icons-material/Check';
 
 // Utils
 import { fNumber, fIntNumber, fVolume } from 'src/utils/formatNumber';
@@ -99,6 +99,21 @@ const ImageBackdrop = styled('span')(({ theme }) => ({
     transition: theme.transitions.create('opacity')
 }));
 
+const VerificationBadge = styled('div')(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 16,
+  height: 16,
+  borderRadius: '50%',
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.common.white,
+  boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+  '& svg': {
+    fontSize: 12,
+  },
+}));
+
 export default function Row({ id, item, isMine, currency, convertToUsd, volumeType }) {
     const {
         uuid,
@@ -126,7 +141,6 @@ export default function Row({ id, item, isMine, currency, convertToUsd, volumeTy
     const floorPrice = floor?.amount || 0;
     const volumeToDisplay = volumeType === '24h' ? totalVol24h : totalVolume;
 
-    // Reintroduce this line to define logoImageUrl
     const logoImageUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
 
     const theme = useTheme();
@@ -213,10 +227,9 @@ export default function Row({ id, item, isMine, currency, convertToUsd, volumeTy
                                 </Typography>
                                 {verified === 'yes' && (
                                     <Tooltip title="Verified">
-                                        <VerifiedIcon
-                                            fontSize="small"
-                                            style={{ color: theme.palette.primary.main }}
-                                        />
+                                        <VerificationBadge>
+                                            <CheckIcon />
+                                        </VerificationBadge>
                                     </Tooltip>
                                 )}
                             </Stack>

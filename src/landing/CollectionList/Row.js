@@ -28,6 +28,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VerifiedIcon from '@mui/icons-material/Verified';
+import CheckIcon from '@mui/icons-material/Check';
 
 // Components
 
@@ -187,6 +188,21 @@ const TokenImage = styled(LazyLoadImage)(({ theme }) => ({
     overflow: 'hidden'
 }));
 
+const VerificationBadge = styled('div')(({ theme }) => ({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 16,
+  height: 16,
+  borderRadius: '50%',
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.common.white,
+  boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+  '& svg': {
+    fontSize: 12,
+  },
+}));
+
 function areEqual(prevProps, nextProps) {
     /*
     return true if passing nextProps to render would return
@@ -317,10 +333,9 @@ export default function Row({ id, item, volumeType, currency, convertToUsd }) {
                                 </Typography>
                                 {verified === 'yes' && (
                                     <Tooltip title="Verified">
-                                        <VerifiedIcon
-                                            fontSize="small"
-                                            style={{ color: theme.palette.primary.main }}
-                                        />
+                                        <VerificationBadge>
+                                            <CheckIcon />
+                                        </VerificationBadge>
                                     </Tooltip>
                                 )}
                             </Stack>
