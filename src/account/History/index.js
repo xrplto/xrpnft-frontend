@@ -15,7 +15,8 @@ import {
     TableRow,
     Typography,
     Chip,
-    Tooltip
+    Tooltip,
+    useMediaQuery
 } from '@mui/material';
 import { tableCellClasses } from '@mui/material/TableCell';
 
@@ -93,9 +94,8 @@ const NFTokenIDLink = ({ NFTokenID }) => (
             <Typography variant="s7">NFTokenID: </Typography>
             <Link
                 color="inherit"
-                target="_blank"
-                href={`https://bithomp.com/explorer/${NFTokenID}`}
-                rel="noreferrer noopener nofollow"
+                href={`/nft/${NFTokenID}`}
+                rel="noreferrer noopener"
             >
                 <Typography variant="s8">{NFTokenID}</Typography>
             </Link>
@@ -126,27 +126,17 @@ const NFTInfo = ({ data }) => (
         spacing={1}
         justifyContent="space-between"
         alignItems="center"
+        sx={{ fontSize: '0.75rem' }}
     >
         <Stack direction="row" spacing={1}>
             <Avatar
                 alt="NFT"
                 src={`https://gateway.xrpnft.com/ipfs/${data.meta?.image}`}
+                sx={{ width: 24, height: 24 }}
             />
             <Stack>
-                <Stack direction="row" spacing={1}>
-                    <Typography variant="s7">Name: </Typography>
-                    <Typography variant="s8">{data.name}</Typography>
-                </Stack>
-                <Stack direction="row" spacing={1}>
-                    <Typography variant="s7">Type: </Typography>
-                    <Typography variant="s8">{data.type}</Typography>
-                </Stack>
-                {data.uuid && (
-                    <Stack direction="row" spacing={1}>
-                        <Typography variant="s7">UUID: </Typography>
-                        <Typography variant="s8">{data.uuid}</Typography>
-                    </Stack>
-                )}
+                <Typography variant="caption">{data.name}</Typography>
+                <Typography variant="caption" color="text.secondary">{data.type}</Typography>
             </Stack>
         </Stack>
         {data.flag && <FlagsContainer Flags={data.flag} />}
@@ -154,13 +144,12 @@ const NFTInfo = ({ data }) => (
 );
 
 const CostDisplay = ({ cost }) => (
-    <Tooltip title={`${cost.amount} ${cost.currency}`}>
-        <Chip
-            label={`${Number(cost.amount).toLocaleString()} ${cost.currency}`}
-            color="primary"
-            size="small"
-        />
-    </Tooltip>
+    <Chip
+        label={`${Number(cost.amount).toLocaleString()} ${cost.currency}`}
+        color="primary"
+        size="small"
+        sx={{ height: 20, fontSize: '0.625rem' }}
+    />
 );
 
 const HashLink = ({ hash }) => (
@@ -179,6 +168,7 @@ const HashLink = ({ hash }) => (
 // Updated NFTDetails component
 const NFTDetails = ({ NFTokenID }) => {
     const [nftInfo, setNftInfo] = useState(null);
+    const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
     useEffect(() => {
         const fetchNFTInfo = async () => {
@@ -239,20 +229,20 @@ const NFTDetails = ({ NFTokenID }) => {
     const nftName = getNFTName(nftInfo);
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5, flexDirection: 'row' }}>
             <Avatar
                 alt={nftName}
                 src={imageUrl}
                 sx={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: '8px'
+                    width: 32,
+                    height: 32,
+                    borderRadius: '4px'
                 }}
                 variant="rounded"
             />
-            <Stack spacing={0.5} sx={{ flexGrow: 1, minWidth: 0 }}>
-                <Typography variant="subtitle2" noWrap>{nftName}</Typography>
-                <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap' }}>
+            <Stack spacing={0} sx={{ flexGrow: 1, minWidth: 0 }}>
+                <Typography variant="body2" noWrap>{nftName}</Typography>
+                <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
                     <Typography variant="caption" color="text.secondary" noWrap>
                         {nftInfo.collection}
                     </Typography>
@@ -261,19 +251,14 @@ const NFTDetails = ({ NFTokenID }) => {
                             Rank: {nftInfo.rarity_rank}/{nftInfo.total}
                         </Typography>
                     )}
-                    {nftInfo.royalty && (
-                        <Typography variant="caption" color="text.secondary" noWrap>
-                            Royalty: {nftInfo.royalty / 1000}%
-                        </Typography>
-                    )}
                 </Stack>
             </Stack>
             {nftInfo.cfloor && (
                 <Chip
-                    label={`Floor: ${nftInfo.cfloor.amount} ${nftInfo.cfloor.currency}`}
+                    label={`${nftInfo.cfloor.amount} ${nftInfo.cfloor.currency}`}
                     size="small"
                     color="primary"
-                    sx={{ height: 24 }}
+                    sx={{ height: 20, fontSize: '0.625rem' }}
                 />
             )}
         </Box>
@@ -301,27 +286,32 @@ const getBrokerName = (address) => {
 const activityComponents = {
     [Activity.LOGIN]: {
         strActivity: 'Login',
-        componentIcon: <LoginIcon />,
+        componentIcon: <LoginIcon color="info" />,
+        color: 'info.main',
         renderComponentActivity: () => null
     },
     [Activity.LOGOUT]: {
         strActivity: 'Logout',
-        componentIcon: <LogoutIcon />,
+        componentIcon: <LogoutIcon color="info" />,
+        color: 'info.main',
         renderComponentActivity: () => null
     },
     [Activity.UPDATE_PROFILE]: {
         strActivity: 'Update Profile',
-        componentIcon: <ManageAccountsIcon />,
+        componentIcon: <ManageAccountsIcon color="info" />,
+        color: 'info.main',
         renderComponentActivity: () => null
     },
     [Activity.CREATE_COLLECTION]: {
         strActivity: 'Create a Collection',
-        componentIcon: <GridOnIcon />,
+        componentIcon: <GridOnIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => <CollectionInfo data={data} />
     },
     [Activity.IMPORT_COLLECTION]: {
         strActivity: 'Import a Collection',
-        componentIcon: <ImportExportIcon />,
+        componentIcon: <ImportExportIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => (
             <Stack direction="row" spacing={1} alignItems="center">
                 <Avatar
@@ -336,12 +326,14 @@ const activityComponents = {
     },
     [Activity.UPDATE_COLLECTION]: {
         strActivity: 'Update Collection',
-        componentIcon: <Grid4x4Icon />,
+        componentIcon: <Grid4x4Icon color="info" />,
+        color: 'info.main',
         renderComponentActivity: (data) => <CollectionInfo data={data} />
     },
     [Activity.MINT_BULK]: {
         strActivity: 'Mint Bulk NFTs',
-        componentIcon: <CollectionsIcon />,
+        componentIcon: <CollectionsIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => (
             <Stack
                 direction="row"
@@ -375,7 +367,8 @@ const activityComponents = {
     },
     [Activity.BUY_MINT]: {
         strActivity: 'Buy Mint',
-        componentIcon: <ShoppingBagIcon />,
+        componentIcon: <ShoppingBagIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => (
             <Stack
                 direction="row"
@@ -416,22 +409,26 @@ const activityComponents = {
     },
     [Activity.BUY_RANDOM_NFT]: {
         strActivity: 'Buy Random NFT',
-        componentIcon: <CasinoIcon />,
+        componentIcon: <CasinoIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => <NFTInfo data={data} />
     },
     [Activity.BUY_SEQUENCE_NFT]: {
         strActivity: 'Buy Sequence NFT',
-        componentIcon: <AnimationIcon />,
+        componentIcon: <AnimationIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => <NFTInfo data={data} />
     },
     [Activity.BUY_BULK_NFT]: {
         strActivity: 'Buy Bulk NFT',
-        componentIcon: <TaskAltIcon />,
+        componentIcon: <TaskAltIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => <NFTInfo data={data} />
     },
     [Activity.CREATE_SELL_OFFER]: {
         strActivity: 'Create Sell Offer',
-        componentIcon: <LocalOfferIcon />,
+        componentIcon: <LocalOfferIcon color="warning" />,
+        color: 'warning.main',
         renderComponentActivity: (data) => (
             <Stack spacing={1}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
@@ -442,7 +439,8 @@ const activityComponents = {
     },
     [Activity.CREATE_BUY_OFFER]: {
         strActivity: 'Create Buy Offer',
-        componentIcon: <LocalOfferIcon />,
+        componentIcon: <LocalOfferIcon color="warning" />,
+        color: 'warning.main',
         renderComponentActivity: (data) => (
             <Stack spacing={1}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
@@ -453,7 +451,8 @@ const activityComponents = {
     },
     [Activity.CANCEL_SELL_OFFER]: {
         strActivity: 'Cancel Sell Offer',
-        componentIcon: <HighlightOffIcon />,
+        componentIcon: <HighlightOffIcon color="error" />,
+        color: 'error.main',
         renderComponentActivity: (data) => (
             <Stack spacing={1}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
@@ -464,7 +463,8 @@ const activityComponents = {
     },
     [Activity.CANCEL_BUY_OFFER]: {
         strActivity: 'Cancel Buy Offer',
-        componentIcon: <HighlightOffIcon />,
+        componentIcon: <HighlightOffIcon color="error" />,
+        color: 'error.main',
         renderComponentActivity: (data) => (
             <Stack spacing={1}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
@@ -475,7 +475,8 @@ const activityComponents = {
     },
     [Activity.ACCEPT_BUY_OFFER]: {
         strActivity: 'Accept Buy Offer',
-        componentIcon: <CheckCircleOutlineIcon />,
+        componentIcon: <CheckCircleOutlineIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => (
             <Stack spacing={1}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
@@ -486,7 +487,8 @@ const activityComponents = {
     },
     [Activity.ACCEPT_SELL_OFFER]: {
         strActivity: (data) => data.cost && data.cost.amount === 0 ? 'Transfer NFT' : 'Accept Sell Offer',
-        componentIcon: <CheckCircleOutlineIcon />,
+        componentIcon: <CheckCircleOutlineIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => (
             <Stack spacing={1}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
@@ -502,21 +504,24 @@ const activityComponents = {
     },
     [Activity.OWNER_ACCEPTED_YOUR_BUY_OFFER]: {
         strActivity: 'NFT Owner accepted your Buy Offer',
-        componentIcon: <HowToRegIcon />,
+        componentIcon: <HowToRegIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => (
             <NFTokenIDLink NFTokenID={data.NFTokenID} />
         )
     },
     [Activity.BUYER_ACCEPTED_YOUR_SELL_OFFER]: {
         strActivity: 'Buyer accepted your Sell Offer',
-        componentIcon: <HowToRegIcon />,
+        componentIcon: <HowToRegIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => (
             <NFTokenIDLink NFTokenID={data.NFTokenID} />
         )
     },
     [Activity.YOU_RECEIVED_A_NFT]: {
         strActivity: 'You received a NFT',
-        componentIcon: <SportsScoreIcon />,
+        componentIcon: <SportsScoreIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) =>
             data.NFTokenID ? (
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
@@ -526,21 +531,24 @@ const activityComponents = {
     },
     [Activity.MINT_NFT]: {
         strActivity: 'Minted a NFT',
-        componentIcon: <TokenIcon />,
+        componentIcon: <TokenIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => (
             <NFTokenIDLink NFTokenID={data.NFTokenID} />
         )
     },
     [Activity.BURN_NFT]: {
         strActivity: 'Burned a NFT',
-        componentIcon: <FireplaceIcon />,
+        componentIcon: <FireplaceIcon color="error" />,
+        color: 'error.main',
         renderComponentActivity: (data) => (
             <NFTokenIDLink NFTokenID={data.NFTokenID} />
         )
     },
     [Activity.SET_NFT_MINTER]: {
         strActivity: 'Set NFT Minter',
-        componentIcon: <ApprovalIcon />,
+        componentIcon: <ApprovalIcon color="info" />,
+        color: 'info.main',
         renderComponentActivity: (data) => (
             <Stack direction="row" spacing={1}>
                 <Typography variant="s7">Minter: </Typography>
@@ -550,7 +558,8 @@ const activityComponents = {
     },
     [Activity.REFUND_BUYER]: {
         strActivity: 'Refund Mint Amount to Buyer',
-        componentIcon: <PaymentIcon />,
+        componentIcon: <PaymentIcon color="warning" />,
+        color: 'warning.main',
         renderComponentActivity: (data) => {
             const amount = normalizeAmount(data.amount);
             return (
@@ -610,7 +619,8 @@ const activityComponents = {
     },
     [Activity.BROKER_ACCEPTED_YOUR_BUY_OFFER]: {
         strActivity: 'Broker accepted your Buy Offer',
-        componentIcon: <HowToRegIcon />,
+        componentIcon: <HowToRegIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => (
             <Stack spacing={1}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
@@ -629,7 +639,8 @@ const activityComponents = {
     },
     [Activity.BROKER_ACCEPTED_YOUR_SELL_OFFER]: {
         strActivity: 'Broker accepted your Sell Offer',
-        componentIcon: <HowToRegIcon />,
+        componentIcon: <HowToRegIcon color="success" />,
+        color: 'success.main',
         renderComponentActivity: (data) => (
             <Stack spacing={1}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
@@ -649,7 +660,8 @@ const activityComponents = {
     // Handle unknown activities
     default: {
         strActivity: (activity) => `Unknown Activity: ${activity}`,
-        componentIcon: <HelpOutlineIcon />,
+        componentIcon: <HelpOutlineIcon color="default" />,
+        color: 'text.secondary',
         renderComponentActivity: (data) => (
             <pre>{JSON.stringify(data, null, 2)}</pre>
         )
@@ -658,6 +670,7 @@ const activityComponents = {
 
 export default function ActivityList({ account }) {
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const BASE_URL = 'https://api.xrpnft.com/api';
 
     const [page, setPage] = useState(0);
@@ -709,18 +722,23 @@ export default function ActivityList({ account }) {
     }
 
     return (
-        <Container maxWidth={false} sx={{ pl: 0, pr: 0 }}>
+        <Container 
+            maxWidth={false} 
+            disableGutters
+            sx={{ 
+                pl: 0, 
+                pr: 0,
+                overflowX: 'hidden',
+            }}
+        >
             <Box
                 sx={{
                     display: 'flex',
-                    gap: 1,
-                    py: 1,
-                    overflow: 'auto',
+                    flexDirection: 'column',
+                    gap: 0.5,
+                    py: 0.5,
                     width: '100%',
-                    '& > *': {
-                        scrollSnapAlign: 'center'
-                    },
-                    '::-webkit-scrollbar': { display: 'none' }
+                    overflowX: 'hidden',
                 }}
             >
                 <Table
@@ -728,8 +746,12 @@ export default function ActivityList({ account }) {
                     sx={{
                         [`& .${tableCellClasses.root}`]: {
                             borderBottom: '1px solid',
-                            borderColor: theme.palette.divider
-                        }
+                            borderColor: theme.palette.divider,
+                            padding: isMobile ? '4px 8px' : '8px 16px',
+                            wordBreak: 'break-word',
+                        },
+                        tableLayout: 'fixed',
+                        width: '100%',
                     }}
                 >
                     <TableBody>
@@ -742,8 +764,8 @@ export default function ActivityList({ account }) {
                                 activityComponents.default;
                             const {
                                 strActivity,
-                                componentIcon,
-                                renderComponentActivity
+                                renderComponentActivity,
+                                color
                             } = activityComponent;
 
                             const activityTitle =
@@ -756,12 +778,13 @@ export default function ActivityList({ account }) {
 
                             return (
                                 <TableRow key={time}>
-                                    <TableCell align="left">
-                                        <Tooltip title={activityTitle}>
-                                            {componentIcon}
-                                        </Tooltip>
-                                    </TableCell>
-                                    <TableCell align="left">
+                                    <TableCell 
+                                        align="left"
+                                        sx={{
+                                            maxWidth: '100vw',
+                                            overflow: 'hidden',
+                                        }}
+                                    >
                                         <Stack spacing={0.5}>
                                             <Stack
                                                 direction="row"
@@ -769,16 +792,25 @@ export default function ActivityList({ account }) {
                                                 justifyContent="space-between"
                                                 alignItems="center"
                                             >
-                                                <Typography variant="subtitle2">
+                                                <Typography 
+                                                    variant={isMobile ? "body2" : "subtitle2"} 
+                                                    noWrap 
+                                                    sx={{ 
+                                                        maxWidth: '70%',
+                                                        color: color // Apply the color here
+                                                    }}
+                                                >
                                                     {activityTitle}
                                                 </Typography>
                                                 <Tooltip title={strDateTime}>
-                                                    <Typography variant="caption">
+                                                    <Typography variant="caption" color="text.secondary" noWrap>
                                                         {timeAgo}
                                                     </Typography>
                                                 </Tooltip>
                                             </Stack>
-                                            {componentActivity}
+                                            <Box sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}>
+                                                {componentActivity}
+                                            </Box>
                                         </Stack>
                                     </TableCell>
                                 </TableRow>
