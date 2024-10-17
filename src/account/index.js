@@ -160,7 +160,12 @@ const GlassBox = styled(Box)(({ theme }) => ({
     zIndex: 1,
     mx: { xs: -2, md: -4 }, // Add negative margins to extend to the sides
     px: { xs: 4, md: 6 },   // Increase padding to compensate for negative margins
-    py: 4                   // Add some vertical padding
+    py: 4,                   // Add some vertical padding
+    [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(2),
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
 }));
 
 function TabPanel(props) {
@@ -494,7 +499,7 @@ export default function Account({ profile, limit, tab, collection, type }) {
 
     return (
         <>
-            <Box sx={{ position: 'relative', mt: 7, mx: { xs: 2, md: 4 } }}>
+            <Box sx={{ position: 'relative', mt: { xs: 4, md: 7 }, mx: { xs: 2, md: 4 } }}>
                 <BackgroundImage
                     sx={{
                         backgroundImage: `url(${bannerImage})`
@@ -513,25 +518,14 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         zIndex: 0
                     }}
                 />
-                <GlassBox
-                    sx={{
-                        display: 'flex',
-                        flexDirection: { xs: 'column', md: 'row' },
-                        alignItems: { xs: 'center', md: 'flex-start' },
-                        position: 'relative',
-                        zIndex: 1,
-                        mx: { xs: -2, md: -4 }, // Add negative margins to extend to the sides
-                        px: { xs: 4, md: 6 },   // Increase padding to compensate for negative margins
-                        py: 4                   // Add some vertical padding
-                    }}
-                >
+                <GlassBox>
                     <Avatar
                         variant="square"
                         sx={{
-                            width: { xs: 150, md: 220 },
-                            height: { xs: 150, md: 220 },
+                            width: { xs: 100, sm: 150, md: 220 },
+                            height: { xs: 100, sm: 150, md: 220 },
                             mr: { md: 4 },
-                            mb: { xs: 4, md: 0 },
+                            mb: { xs: 2, md: 0 },
                             borderRadius: (theme) => `${theme.shape.borderRadius * 2}px`,
                             boxShadow: (theme) => `0 10px 30px ${alpha(theme.palette.primary.main, 0.3)}`,
                             position: 'relative',
@@ -584,13 +578,13 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         )}
                     </Avatar>
 
-                    <Box sx={{ flex: 1 }}>
+                    <Box sx={{ flex: 1, width: '100%' }}>
                         <Stack
                             direction={{ xs: 'column', md: 'row' }}
-                            spacing={2}
+                            spacing={{ xs: 1, md: 2 }}
                             justifyContent="space-between"
                             alignItems={{ xs: 'center', md: 'flex-start' }}
-                            sx={{ mb: 3 }}
+                            sx={{ mb: { xs: 1, md: 3 } }}
                         >
                             <Stack direction="row" spacing={1} alignItems="center">
                                 <Typography variant="h3" fontWeight="bold" color="primary.main">
@@ -632,7 +626,7 @@ export default function Account({ profile, limit, tab, collection, type }) {
                             )}
                         </Stack>
 
-                        <Box display="flex" alignItems="center" sx={{ mb: 2 }}>
+                        <Box display="flex" alignItems="center" sx={{ mb: { xs: 1, md: 2 } }}>
                             <Typography
                                 variant="body1"
                                 sx={{
@@ -668,14 +662,14 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         </Box>
 
                         <SeeMoreTypography
-                            variant="body1"
+                            variant="body2"
                             text={description}
-                            maxLines={3}
-                            sx={{ mb: 4 }}
+                            maxLines={2}
+                            sx={{ mb: { xs: 2, md: 4 }, display: { xs: 'none', sm: 'block' } }}
                         />
 
-                        {/* Add NFT statistics here */}
-                        <Grid container spacing={2} sx={{ mb: 3 }}>
+                        {/* NFT statistics grid */}
+                        <Grid container spacing={1} sx={{ mb: { xs: 2, md: 3 } }}>
                             {[
                                 { label: 'Collections', value: nftStats.collectionCount, icon: <CollectionsIcon /> },
                                 { label: 'Total NFTs', value: nftStats.totalCount, icon: <ImageIcon /> },
@@ -683,11 +677,11 @@ export default function Account({ profile, limit, tab, collection, type }) {
                                 { label: 'Created NFTs', value: nftStats.createdCount, icon: <BrushIcon /> },
                                 { label: 'XRP Available', value: availableBalance, icon: <AccountBalanceWalletIcon /> },
                             ].map((stat, index) => (
-                                <Grid item xs={6} sm={4} md={2.4} key={index}>
+                                <Grid item xs={4} sm={4} md={2.4} key={index}>
                                     <Paper
                                         elevation={3}
                                         sx={{
-                                            p: 2,
+                                            p: { xs: 1, md: 2 },
                                             height: '100%',
                                             display: 'flex',
                                             flexDirection: 'column',
@@ -702,12 +696,12 @@ export default function Account({ profile, limit, tab, collection, type }) {
                                         }}
                                     >
                                         <Tooltip title={stat.label}>
-                                            {stat.icon}
+                                            {React.cloneElement(stat.icon, { fontSize: 'small' })}
                                         </Tooltip>
-                                        <Typography variant="h6" sx={{ mt: 1, fontWeight: 'bold' }}>
+                                        <Typography variant="body2" sx={{ mt: 0.5, fontWeight: 'bold' }}>
                                             {stat.value || '0'}
                                         </Typography>
-                                        <Typography variant="body2" color="text.secondary">
+                                        <Typography variant="caption" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
                                             {stat.label}
                                         </Typography>
                                     </Paper>
