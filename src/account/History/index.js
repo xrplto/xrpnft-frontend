@@ -176,7 +176,7 @@ const HashLink = ({ hash }) => (
     </Link>
 );
 
-// Add this new component
+// Updated NFTDetails component
 const NFTDetails = ({ NFTokenID }) => {
     const [nftInfo, setNftInfo] = useState(null);
 
@@ -223,17 +223,30 @@ const NFTDetails = ({ NFTokenID }) => {
         return null;
     };
 
+    const getNFTName = (nft) => {
+        if (nft.name && nft.name !== "No Name") return nft.name;
+        if (nft.meta?.name) return nft.meta.name;
+        if (nft.collection) return `${nft.collection} #${nft.sequence}`;
+        return `NFT #${nft.sequence}`;
+    };
+
     const imageUrl = getImageUrl(nftInfo);
+    const nftName = getNFTName(nftInfo);
 
     return (
         <Stack direction="row" spacing={2} alignItems="center">
             <Avatar
-                alt={nftInfo.name}
+                alt={nftName}
                 src={imageUrl}
-                sx={{ width: 60, height: 60 }}
+                sx={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: '12px',
+                }}
+                variant="square"
             />
             <Stack>
-                <Typography variant="subtitle2">{nftInfo.name}</Typography>
+                <Typography variant="subtitle2">{nftName}</Typography>
                 <Typography variant="caption">Collection: {nftInfo.collection}</Typography>
                 {nftInfo.rarity_rank && nftInfo.total && (
                     <Typography variant="caption">Rarity Rank: {nftInfo.rarity_rank} / {nftInfo.total}</Typography>
@@ -245,7 +258,7 @@ const NFTDetails = ({ NFTokenID }) => {
                     <Typography variant="caption">Taxon: {nftInfo.taxon}</Typography>
                 )}
                 {nftInfo.royalty && (
-                    <Typography variant="caption">Royalty: {nftInfo.royalty / 100}%</Typography>
+                    <Typography variant="caption">Royalty: {nftInfo.royalty / 1000}%</Typography>
                 )}
                 {nftInfo.props && nftInfo.props.length > 0 && (
                     <Typography variant="caption">
@@ -260,6 +273,23 @@ const NFTDetails = ({ NFTokenID }) => {
             </Stack>
         </Stack>
     );
+};
+
+const getBrokerName = (address) => {
+    switch (address) {
+        case "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC":
+            return "xrp.cafe";
+        case "rDeizxSRo6JHjKnih9ivpPkyD2EgXQvhSB":
+            return "XPMarket";
+        case "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC":
+            return "BIDDS";
+        case "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv":
+            return "Art Dept Fun";
+        case "rJcCJyJkiTXGcxU4Lt4ZvKJz8YmorZXu8r":
+            return "OpulenceX";
+        default:
+            return address;
+    }
 };
 
 // Updated activityComponents to include cost display for ACCEPT_SELL_OFFER
@@ -581,7 +611,9 @@ const activityComponents = {
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
                 <Stack direction="row" spacing={1}>
                     <Typography variant="s7">Broker: </Typography>
-                    <Typography variant="s8">{data.broker}</Typography>
+                    <Typography variant="s8">
+                        {getBrokerName(data.broker)}
+                    </Typography>
                 </Stack>
                 <Stack direction="row" spacing={1}>
                     <Typography variant="s7">Cost: </Typography>
@@ -598,7 +630,9 @@ const activityComponents = {
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
                 <Stack direction="row" spacing={1}>
                     <Typography variant="s7">Broker: </Typography>
-                    <Typography variant="s8">{data.broker}</Typography>
+                    <Typography variant="s8">
+                        {getBrokerName(data.broker)}
+                    </Typography>
                 </Stack>
                 <Stack direction="row" spacing={1}>
                     <Typography variant="s7">Cost: </Typography>
