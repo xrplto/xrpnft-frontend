@@ -90,6 +90,7 @@ export default function Header() {
         'XRPNFT is a fee-free platform for trading XRPL NFTs on the XRP Ledger, connecting creators and collectors in a seamless NFT marketplace.';
 
     const handleOpenNavMenu = (event) => {
+        console.log("Menu opened");
         setAnchorElNav(event.currentTarget);
     };
 
@@ -102,6 +103,8 @@ export default function Header() {
     const handleFullSearch = (e) => {
         setFullSearch(true);
     };
+
+    console.log("anchorElNav:", anchorElNav); // Add this line for debugging
 
     return (
         <>
@@ -251,7 +254,7 @@ export default function Header() {
                             id="nav-menu-mobile"
                             sx={{
                                 flexGrow: 0,
-                                display: { sm: 'flex', md: 'none' }
+                                display: { xs: 'flex', sm: 'flex', md: 'none' }
                             }}
                         >
                             <IconButton
@@ -293,20 +296,46 @@ export default function Header() {
                                 sx={{
                                     display: { xs: 'block', md: 'none' },
                                     '& .MuiPaper-root': {
-                                        background: alpha(
-                                            theme.palette.background.paper,
-                                            0.9
-                                        ),
+                                        background: alpha(theme.palette.background.paper, 0.9),
                                         backdropFilter: 'blur(10px)',
-                                        boxShadow: `0 8px 32px 0 ${alpha(
-                                            theme.palette.primary.main,
-                                            0.1
-                                        )}`
+                                        boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
+                                        width: '200px',
+                                        maxHeight: '80vh', // Limit the height to 80% of the viewport height
+                                        overflowY: 'auto', // Add scroll if content exceeds maxHeight
                                     }
                                 }}
                             >
-                                {/* Menu items remain the same */}
-                                {/* ... */}
+                                {console.log("Rendering menu items")}
+                                {[
+                                    { text: 'Explore', icon: <ExploreOutlinedIcon />, href: '/explore' },
+                                    { text: 'Collections', icon: <CollectionsIcon />, href: '/collections' },
+                                    { text: 'Create', icon: <AddPhotoAlternateIcon />, href: '/create' },
+                                ].map((item) => (
+                                    <MenuItem key={item.text} onClick={handleCloseNavMenu} sx={{ py: 1 }}>
+                                        <Link
+                                            href={item.href}
+                                            underline="none"
+                                            color="inherit"
+                                            sx={{ display: 'flex', alignItems: 'center', width: '100%' }}
+                                        >
+                                            {item.icon}
+                                            <Typography sx={{ ml: 2 }}>{item.text}</Typography>
+                                        </Link>
+                                    </MenuItem>
+                                ))}
+                                <Divider sx={{ my: 1 }} />
+                                <MenuItem onClick={toggleTheme} sx={{ py: 1 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                        {darkMode ? (
+                                            <Icon icon={baselineBrightness4} width={24} height={24} />
+                                        ) : (
+                                            <Icon icon={baselineBrightnessHigh} width={24} height={24} />
+                                        )}
+                                        <Typography sx={{ ml: 2 }}>
+                                            {darkMode ? 'Light Mode' : 'Dark Mode'}
+                                        </Typography>
+                                    </Box>
+                                </MenuItem>
                             </Menu>
                         </Box>
                     )}
