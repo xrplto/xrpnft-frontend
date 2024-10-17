@@ -85,9 +85,11 @@ import CreateOfferXRPCafe from './CreateOfferXRPCafe';
 
 // Add these constants at the top of the file
 const BROKER_ADDRESSES = {
-  "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv": { fee: 0.0005, name: "Art Dept Fun" }, // 0.05%
+  "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv": { fee: 0.01, name: "Art Dept Fun" }, // 0.01%
   "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC": { fee: 0.01589, name: "XRP Cafe" }, // 1.589%
-  "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC": { fee: 0.015, name: "BIDDS" } // 1.5%
+  "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC": { fee: 0.015, name: "BIDDS" }, // 1.5%
+  "rDeizxSRo6JHjKnih9ivpPkyD2EgXQvhSB": { fee: 0.015, name: "XPMarket" }, // 1.5%
+  "rJcCJyJkiTXGcxU4Lt4ZvKJz8YmorZXu8r": { fee: 0.01, name: "OpulenceX" } // 1%
 };
 
 // Create a styled component for the glass effect
