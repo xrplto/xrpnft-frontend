@@ -255,9 +255,7 @@ const MarqueeBar = ({ isVisible = true }) => {
                                             color: theme.palette.success.main
                                         }}
                                     >
-                                        {`${Number(nft.cost.amount).toFixed(
-                                            2
-                                        )} XRP`}
+                                        {`${Math.round(Number(nft.cost.amount))} XRP`}
                                     </Typography>
                                 )}
                             </MarqueeItem>
