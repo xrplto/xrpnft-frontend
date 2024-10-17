@@ -41,6 +41,29 @@ import ExploreNFT from 'src/explore';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
 import Watch from 'src/components/Watch';
 
+// Add these imports at the top of the file
+import { Grid, Paper } from '@mui/material';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import PeopleIcon from '@mui/icons-material/People';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+
+// Add this new styled component for the stat cards
+const StatCard = styled(Paper)(({ theme }) => ({
+    padding: theme.spacing(1.5), // Reduced from 2
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    transition: 'all 0.3s',
+    '&:hover': {
+        transform: 'translateY(-5px)',
+        boxShadow: theme.shadows[6]
+    }
+}));
+
 const IconCover = styled('div')(({ theme }) => ({
     width: 220,
     height: 220,
@@ -49,8 +72,8 @@ const IconCover = styled('div')(({ theme }) => ({
     borderRadius: theme.shape.borderRadius * 2,
     boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
     [theme.breakpoints.down('sm')]: {
-        width: 150,
-        height: 150
+        width: 120, // Reduced from 150
+        height: 120 // Reduced from 150
     }
 }));
 
@@ -60,7 +83,6 @@ const IconImage = styled('img')({
     objectFit: 'cover',
     borderRadius: 'inherit'
 });
-
 
 const StatItem = styled(Box)(({ theme }) => ({
     display: 'flex',
@@ -126,18 +148,18 @@ import CheckIcon from '@mui/icons-material/Check';
 
 // Add this new styled component for the verification badge
 const VerificationBadge = styled('div')(({ theme }) => ({
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: 20,
-  height: 20,
-  borderRadius: '50%',
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.common.white,
-  boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-  '& svg': {
-    fontSize: 14,
-  },
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 20,
+    height: 20,
+    borderRadius: '50%',
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    '& svg': {
+        fontSize: 14
+    }
 }));
 
 export default function ViewNFT({ collection }) {
@@ -146,6 +168,7 @@ export default function ViewNFT({ collection }) {
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const { accountProfile } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const [openShare, setOpenShare] = useState(false);
 
@@ -182,9 +205,9 @@ export default function ViewNFT({ collection }) {
                 sx={{
                     position: 'relative',
                     overflow: 'hidden',
-                    mb: 6,
+                    mb: { xs: 3, md: 6 }, // Reduced vertical margin on mobile
                     mx: { xs: 2, md: 4 },
-                    mt: { xs: 10, md: 12 }
+                    mt: { xs: 6, md: 12 } // Reduced top margin on mobile
                 }}
             >
                 <BackgroundImage
@@ -211,15 +234,16 @@ export default function ViewNFT({ collection }) {
                         flexDirection: { xs: 'column', md: 'row' },
                         alignItems: { xs: 'center', md: 'flex-start' },
                         position: 'relative',
-                        zIndex: 1
+                        zIndex: 1,
+                        py: { xs: 2, md: 3 } // Reduced vertical padding on mobile
                     }}
                 >
                     <IconCover
                         sx={{
                             mr: { md: 4 },
-                            mb: { xs: 4, md: 0 },
-                            width: { xs: 150, md: 220 },
-                            height: { xs: 150, md: 220 },
+                            mb: { xs: 2, md: 0 }, // Reduced bottom margin on mobile
+                            width: { xs: 120, md: 220 }, // Adjusted width
+                            height: { xs: 120, md: 220 }, // Adjusted height
                             border: 'none',
                             boxShadow: (theme) =>
                                 `0 10px 30px ${alpha(
@@ -242,17 +266,21 @@ export default function ViewNFT({ collection }) {
                     <Box sx={{ flex: 1 }}>
                         <Stack
                             direction={fullScreen ? 'column' : 'row'}
-                            spacing={2}
+                            spacing={{ xs: 1, md: 2 }} // Reduced spacing on mobile
                             justifyContent="space-between"
                             alignItems={fullScreen ? 'center' : 'flex-start'}
-                            sx={{ mb: 3 }}
+                            sx={{ mb: { xs: 1, md: 3 } }} // Reduced margin on mobile
                         >
                             <Stack
                                 direction="row"
                                 spacing={1}
                                 alignItems="center"
                             >
-                                <Typography variant="h3" fontWeight="bold" color="primary.main">
+                                <Typography
+                                    variant="h3"
+                                    fontWeight="bold"
+                                    color="primary.main"
+                                >
                                     {name}
                                 </Typography>
                                 {verified === 'yes' && (
@@ -296,7 +324,10 @@ export default function ViewNFT({ collection }) {
                             </Stack>
                         </Stack>
 
-                        <Typography variant="body1" sx={{ mb: 2 }}>
+                        <Typography
+                            variant="body1"
+                            sx={{ mb: { xs: 1, md: 2 } }}
+                        >
                             By{' '}
                             <Link href={`/account/${account}`} color="primary">
                                 {accountName ||
@@ -307,111 +338,66 @@ export default function ViewNFT({ collection }) {
                             &nbsp;·&nbsp;Created {formatMonthYear(created)}
                         </Typography>
 
-                        <SeeMoreTypography
+                        <Typography
                             variant="body1"
-                            text={description}
-                            maxLines={3}
-                            sx={{ mb: 4 }}
-                        />
+                            sx={{ mb: { xs: 2, md: 4 } }}
+                        >
+                            {description}
+                        </Typography>
 
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', mb: 3 }}>
-                            <StatItem>
-                                <Typography variant="h6" fontWeight="bold" color="primary.main">
-                                    {items}
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                >
-                                    items
-                                </Typography>
-                            </StatItem>
-                            <StatItem>
-                                <Typography variant="h6" fontWeight="bold" color="primary.main">
-                                    {extra.owners}
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                >
-                                    owners
-                                </Typography>
-                            </StatItem>
-                            <StatItem>
-                                <Stack
-                                    direction="row"
-                                    spacing={0.5}
-                                    alignItems="center"
-                                >
-                                    <Icon
-                                        icon={rippleSolid}
-                                        width="20"
-                                        height="20"
-                                        color={theme.palette.primary.main}
-                                    />
-                                    <Typography
-                                        variant="h6"
-                                        fontWeight="bold"
-                                        noWrap
-                                        color="primary.main"
-                                    >
-                                        {volume2}
-                                    </Typography>
-                                    <Tooltip
-                                        title={
-                                            <Typography variant="body2">
-                                                Volume on XRPNFT: {volume1}
-                                            </Typography>
-                                        }
-                                    >
-                                        <Icon
-                                            icon={infoFilled}
-                                            style={{
-                                                cursor: 'pointer',
-                                                fontSize: '16px',
-                                                color: theme.palette.primary.main
-                                            }}
-                                        />
-                                    </Tooltip>
-                                </Stack>
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                    noWrap
-                                >
-                                    total volume
-                                </Typography>
-                            </StatItem>
-                            <StatItem>
-                                <Stack
-                                    direction="row"
-                                    spacing={0.5}
-                                    alignItems="center"
-                                >
-                                    <Icon
-                                        icon={rippleSolid}
-                                        width="20"
-                                        height="20"
-                                        color={theme.palette.primary.main}
-                                    />
-                                    <Typography
-                                        variant="h6"
-                                        fontWeight="bold"
-                                        noWrap
-                                        color="primary.main"
-                                    >
-                                        {fNumber(floorPrice)}
-                                    </Typography>
-                                </Stack>
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                    noWrap
-                                >
-                                    floor price
-                                </Typography>
-                            </StatItem>
-                        </Box>
+                        <Grid
+                            container
+                            spacing={{ xs: 1, md: 2 }}
+                            sx={{ mb: { xs: 2, md: 3 } }}
+                        >
+                            {[
+                                {
+                                    label: 'Items',
+                                    value: items,
+                                    icon: <CollectionsIcon />
+                                },
+                                {
+                                    label: 'Owners',
+                                    value: extra.owners,
+                                    icon: <PeopleIcon />
+                                },
+                                {
+                                    label: 'Total Volume',
+                                    value: volume2,
+                                    icon: <ShowChartIcon />
+                                },
+                                {
+                                    label: 'Floor Price',
+                                    value: fNumber(floorPrice),
+                                    icon: <LocalOfferIcon />
+                                }
+                            ].map((stat, index) => (
+                                <Grid item xs={6} sm={3} key={index}>
+                                    <StatCard elevation={3}>
+                                        <Tooltip title={stat.label}>
+                                            {React.cloneElement(stat.icon, {
+                                                fontSize: 'small',
+                                                color: 'primary'
+                                            })}
+                                        </Tooltip>
+                                        <Typography
+                                            variant="body1"
+                                            fontWeight="bold"
+                                            color="primary.main"
+                                            sx={{ mt: 0.5 }}
+                                        >
+                                            {stat.value}
+                                        </Typography>
+                                        <Typography
+                                            variant="caption"
+                                            color="text.secondary"
+                                        >
+                                            {stat.label}
+                                        </Typography>
+                                    </StatCard>
+                                </Grid>
+                            ))}
+                        </Grid>
                     </Box>
                 </GlassBox>
             </Box>
