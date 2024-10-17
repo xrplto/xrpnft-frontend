@@ -62,8 +62,8 @@ const GlassContent = styled(CardContent)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    height: '140px', // Decreased from 150px to 140px
-    padding: theme.spacing(1) // Further reduced padding
+    height: '130px', // Further decreased from 140px to 130px
+    padding: theme.spacing(0.75) // Even more reduced padding
 }));
 
 const ImageContainer = styled(Box)(({ theme }) => ({
@@ -135,7 +135,7 @@ export default function NFTCard({ nft, handleRemove }) {
         <Box
             sx={{
                 position: 'relative',
-                padding: '10px',
+                padding: { xs: '2px', sm: '5px', md: '10px' }, // Further reduced padding on mobile
                 '&:hover': {
                     zIndex: 1
                 }
@@ -146,7 +146,9 @@ export default function NFTCard({ nft, handleRemove }) {
                     sx={{
                         width: '100%',
                         maxWidth: { xs: '100%', sm: 290, md: 310, lg: 330 },
-                        height: '100%'
+                        height: '100%',
+                        // Further reduced margin bottom for mobile
+                        marginBottom: { xs: '5px', sm: '8px', md: 0 }
                     }}
                 >
                     {isAdmin && (
@@ -225,17 +227,15 @@ export default function NFTCard({ nft, handleRemove }) {
                                 WebkitLineClamp: 2,
                                 WebkitBoxOrient: 'vertical',
                                 lineHeight: 1.2,
-                                fontSize: '0.8rem', // Further reduced font size
+                                fontSize: { xs: '0.75rem', sm: '0.8rem' }, // Smaller font size on mobile
                                 color: theme.palette.text.primary,
-                                height: '2.4em'
+                                height: '2.2em' // Slightly reduced height
                             }}
                         >
                             {name}
                         </Typography>
 
-                        <Stack spacing={0.2}>
-                            {' '}
-                            {/* Further reduced spacing from 0.25 to 0.2 */}
+                        <Stack spacing={0.1}>
                             <Stack
                                 direction="row"
                                 alignItems="center"
@@ -272,17 +272,17 @@ export default function NFTCard({ nft, handleRemove }) {
             );
 
         return cost.currency === 'XRP' ? (
-            <Stack direction="row" spacing={0.5} alignItems="center">
+            <Stack direction="row" spacing={0.3} alignItems="center">
                 <Icon
                     icon={rippleSolid}
-                    width="18"
-                    height="18"
+                    width="16"
+                    height="16"
                     color={theme.palette.primary.main}
                 />
                 <Typography
                     variant="body2"
                     fontWeight="600"
-                    fontSize="0.85rem"
+                    fontSize={{ xs: '0.8rem', sm: '0.85rem' }} // Smaller on mobile
                     color="primary.main"
                 >
                     {fNumber(cost.amount)}
@@ -365,12 +365,12 @@ export default function NFTCard({ nft, handleRemove }) {
                 } // Changed color to primary.main
                 label={fIntNumber(rarity_rank)}
                 sx={{
-                    height: '22px',
+                    height: '20px', // Reduced from 22px
                     borderColor: theme.palette.primary.main,
                     color: theme.palette.primary.main,
                     '& .MuiChip-label': {
-                        px: 0.5,
-                        fontSize: '0.75rem',
+                        px: 0.4, // Reduced horizontal padding
+                        fontSize: { xs: '0.7rem', sm: '0.75rem' }, // Smaller on mobile
                         fontWeight: 600
                     }
                 }}
@@ -386,7 +386,7 @@ export default function NFTCard({ nft, handleRemove }) {
                 variant="caption"
                 color="text.secondary"
                 sx={{
-                    fontSize: '0.7rem',
+                    fontSize: { xs: '0.65rem', sm: '0.7rem' }, // Smaller on mobile
                     textAlign: 'right',
                     maxWidth: '50%'
                 }}
