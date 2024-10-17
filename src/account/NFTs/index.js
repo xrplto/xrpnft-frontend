@@ -17,7 +17,7 @@ export default function NFTs({ account, limit, collection, type }) {
 
     return (
         <Stack rowGap={2}>
-            <Paper sx={{ border: 'none' }}>
+            <Paper sx={{ border: 'none', backgroundColor: 'transparent', boxShadow: 'none' }}>
                 <Box m={2}>
                     <CollectedCreatedNFTs
                         type="collected"
@@ -28,7 +28,7 @@ export default function NFTs({ account, limit, collection, type }) {
                 </Box>
             </Paper>
 
-            <Paper sx={{ border: 'none' }}>
+            <Paper sx={{ border: 'none', backgroundColor: 'transparent', boxShadow: 'none' }}>
                 <Box m={2}>
                     <CollectedCreatedNFTs
                         type="created"
