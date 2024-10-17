@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
-import { useEffect } from 'react';
 import { Client } from 'xrpl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
@@ -295,109 +294,125 @@ export default function Account({ profile, limit, tab, collection, type }) {
         setIsSettingsModalOpen(false);
     };
 
+    const updateNotificationCount = useCallback((key, value) => {
+        setNotificationCounts(prev => {
+            const newCounts = { ...prev, [key]: value };
+            console.log('Updated notification counts:', newCounts);
+            return newCounts;
+        });
+    }, []);
+
+    const getOffersCount = useCallback(async () => {
+        if (!account) return;
+
+        try {
+            const response = await axios.post(
+                `${BASE_URL}/account/notification`,
+                { account }
+            );
+            if (response.status === 200) {
+                const data = response.data;
+                console.log('Notification data received:', data);
+                setNotificationCounts(prevCounts => ({
+                    acceptNfts: data.acceptNfts || prevCounts.acceptNfts,
+                    orphanedOffers: data.orphanedOffers || prevCounts.orphanedOffers,
+                    buyOffers: data.buyOffers || prevCounts.buyOffers,
+                    sellOffers: data.sellOffers || prevCounts.sellOffers,
+                    receivedOffers: data.receivedOffers || prevCounts.receivedOffers
+                }));
+            }
+        } catch (error) {
+            console.error('Error fetching notification counts:', error);
+        }
+    }, [account, BASE_URL]);
+
+    // Add this function inside the Account component, before the useEffect hooks
+
+    const fetchNFTStats = useCallback(async () => {
+        if (!account) return;
+
+        try {
+            const collectedResponse = await axios.post(
+                `${BASE_URL}/account/collectedCreated`,
+                { account, type: 'collected' }
+            );
+            const createdResponse = await axios.post(
+                `${BASE_URL}/account/collectedCreated`,
+                { account, type: 'created' }
+            );
+
+            if (collectedResponse.status === 200 && createdResponse.status === 200) {
+                const collectedData = collectedResponse.data;
+                const createdData = createdResponse.data;
+                console.log('API response for collected:', collectedData);
+                console.log('API response for created:', createdData);
+                
+                const totalCount = collectedData.nfts.reduce((sum, collection) => sum + collection.nftCount, 0);
+                const totalForSale = collectedData.nfts.reduce((sum, collection) => sum + collection.nftsForSale, 0);
+                const collectionCount = collectedData.nfts.length;
+                const createdCount = createdData.nfts.length;
+                
+                setNftStats({ 
+                    totalCount, 
+                    totalForSale, 
+                    collectionCount,
+                    createdCount
+                });
+                setCreatedNFTsCount(createdCount);
+            }
+        } catch (error) {
+            console.error('Error fetching NFT stats:', error);
+        }
+    }, [account, BASE_URL]);
+
+    // Also, add fetchXRPBalance function if it's not already defined
+    const fetchXRPBalance = useCallback(async () => {
+        if (!account) return;
+
+        const client = new Client('wss://s1.ripple.com');
+        try {
+            await client.connect();
+            const accountInfoResponse = await client.request({
+                command: 'account_info',
+                account: account,
+                ledger_index: 'validated'
+            });
+
+            if (accountInfoResponse.result && accountInfoResponse.result.account_data) {
+                const totalBalance = parseFloat(accountInfoResponse.result.account_data.Balance) / 1000000;
+                const ownerCount = parseInt(accountInfoResponse.result.account_data.OwnerCount);
+
+                // Fetch current reserve settings
+                const serverInfoResponse = await client.request({
+                    command: 'server_info'
+                });
+
+                if (serverInfoResponse.result && serverInfoResponse.result.info) {
+                    const baseReserve = parseFloat(serverInfoResponse.result.info.validated_ledger.reserve_base_xrp);
+                    const ownerReserve = parseFloat(serverInfoResponse.result.info.validated_ledger.reserve_inc_xrp);
+
+                    const totalReserve = baseReserve + (ownerCount * ownerReserve);
+                    const available = Math.max(totalBalance - totalReserve, 0);
+
+                    setXrpBalance(totalBalance.toFixed(2));
+                    setAvailableBalance(available.toFixed(2));
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching XRP balance:', error);
+        } finally {
+            client.disconnect();
+        }
+    }, [account]);
+
+    // Update the useEffect dependencies
     useEffect(() => {
-        async function getOffersCount() {
-            try {
-                const response = await axios.post(
-                    `${BASE_URL}/account/notification`,
-                    { account }
-                );
-                if (response.status === 200) {
-                    const data = response.data;
-                    console.log('Notification data received:', data);
-                    setNotificationCounts({
-                        acceptNfts: data.acceptNfts || 0,
-                        orphanedOffers: data.orphanedOffers || 0,
-                        buyOffers: data.buyOffers || 0,
-                        sellOffers: data.sellOffers || 0,
-                        receivedOffers: data.receivedOffers || 0
-                    });
-                }
-            } catch (error) {
-                console.error('Error fetching notification counts:', error);
-            }
-        }
-
-        async function fetchNFTStats() {
-            try {
-                const collectedResponse = await axios.post(
-                    `${BASE_URL}/account/collectedCreated`,
-                    { account, type: 'collected' }
-                );
-                const createdResponse = await axios.post(
-                    `${BASE_URL}/account/collectedCreated`,
-                    { account, type: 'created' }
-                );
-
-                if (collectedResponse.status === 200 && createdResponse.status === 200) {
-                    const collectedData = collectedResponse.data;
-                    const createdData = createdResponse.data;
-                    console.log('API response for collected:', collectedData);
-                    console.log('API response for created:', createdData);
-                    
-                    const totalCount = collectedData.nfts.reduce((sum, collection) => sum + collection.nftCount, 0);
-                    const totalForSale = collectedData.nfts.reduce((sum, collection) => sum + collection.nftsForSale, 0);
-                    const collectionCount = collectedData.nfts.length;
-                    const createdCount = createdData.nfts.length;
-                    
-                    setNftStats({ 
-                        totalCount, 
-                        totalForSale, 
-                        collectionCount,
-                        createdCount
-                    });
-                    setCreatedNFTsCount(createdCount);
-                }
-            } catch (error) {
-                console.error('Error fetching NFT stats:', error);
-            }
-        }
-
-        async function fetchXRPBalance() {
-            if (account) {
-                const client = new Client('wss://s1.ripple.com');
-                try {
-                    await client.connect();
-                    const accountInfoResponse = await client.request({
-                        command: 'account_info',
-                        account: account,
-                        ledger_index: 'validated'
-                    });
-
-                    if (accountInfoResponse.result && accountInfoResponse.result.account_data) {
-                        const totalBalance = parseFloat(accountInfoResponse.result.account_data.Balance) / 1000000;
-                        const ownerCount = parseInt(accountInfoResponse.result.account_data.OwnerCount);
-
-                        // Fetch current reserve settings
-                        const serverInfoResponse = await client.request({
-                            command: 'server_info'
-                        });
-
-                        if (serverInfoResponse.result && serverInfoResponse.result.info) {
-                            const baseReserve = parseFloat(serverInfoResponse.result.info.validated_ledger.reserve_base_xrp);
-                            const ownerReserve = parseFloat(serverInfoResponse.result.info.validated_ledger.reserve_inc_xrp);
-
-                            const totalReserve = baseReserve + (ownerCount * ownerReserve);
-                            const available = Math.max(totalBalance - totalReserve, 0);
-
-                            setXrpBalance(totalBalance.toFixed(2));
-                            setAvailableBalance(available.toFixed(2));
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error fetching XRP balance:', error);
-                } finally {
-                    client.disconnect();
-                }
-            }
-        }
-
         if (account) {
             getOffersCount();
             fetchNFTStats();
             fetchXRPBalance();
         }
-    }, [account, sync]);
+    }, [account, sync, getOffersCount, fetchNFTStats, fetchXRPBalance]);
 
     useEffect(() => {
         setNftStats(prevStats => ({
@@ -405,6 +420,10 @@ export default function Account({ profile, limit, tab, collection, type }) {
             createdCount: createdNFTsCount
         }));
     }, [createdNFTsCount]);
+
+    useEffect(() => {
+        console.log('Notification counts changed:', notificationCounts);
+    }, [notificationCounts]);
 
     const { account, name, logo, banner, description, minterWallet } = profile;
 
@@ -460,9 +479,9 @@ export default function Account({ profile, limit, tab, collection, type }) {
         }
     };
 
-    const totalNotifications = Object.values(notificationCounts).reduce(
-        (sum, count) => sum + count,
-        0
+    const totalNotifications = useMemo(() => 
+        Object.values(notificationCounts).reduce((sum, count) => sum + count, 0),
+        [notificationCounts]
     );
 
     console.log('Current notification counts:', notificationCounts);
@@ -754,36 +773,11 @@ export default function Account({ profile, limit, tab, collection, type }) {
                         <Offers
                             account={account}
                             {...notificationCounts}
-                            setAcceptNfts={(value) =>
-                                setNotificationCounts((prev) => ({
-                                    ...prev,
-                                    acceptNfts: value
-                                }))
-                            }
-                            setOrphanedOffers={(value) =>
-                                setNotificationCounts((prev) => ({
-                                    ...prev,
-                                    orphanedOffers: value
-                                }))
-                            }
-                            setBuyOffers={(value) =>
-                                setNotificationCounts((prev) => ({
-                                    ...prev,
-                                    buyOffers: value
-                                }))
-                            }
-                            setSellOffers={(value) =>
-                                setNotificationCounts((prev) => ({
-                                    ...prev,
-                                    sellOffers: value
-                                }))
-                            }
-                            setReceivedOffers={(value) =>
-                                setNotificationCounts((prev) => ({
-                                    ...prev,
-                                    receivedOffers: value
-                                }))
-                            }
+                            setAcceptNfts={(value) => updateNotificationCount('acceptNfts', value)}
+                            setOrphanedOffers={(value) => updateNotificationCount('orphanedOffers', value)}
+                            setBuyOffers={(value) => updateNotificationCount('buyOffers', value)}
+                            setSellOffers={(value) => updateNotificationCount('sellOffers', value)}
+                            setReceivedOffers={(value) => updateNotificationCount('receivedOffers', value)}
                         />
                     </Stack>
                 </TabPanel>

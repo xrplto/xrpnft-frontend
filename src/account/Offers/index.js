@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 // Material
 import { Box, Button, Paper, Stack } from '@mui/material';
@@ -8,7 +9,7 @@ import TransferredNFTs from './TransferredNFTs';
 import OffersList from './OffersList';
 import StyledBadge from '../StyledBadge';
 
-export default function Offers({ account, acceptNfts, setAcceptNfts, orphanedOffers, setOrphanedOffers, buyOffers, setBuyOffers, sellOffers, setSellOffers, receivedOffers, setReceivedOffers }) {
+export default function Offers({ account, acceptNfts, setAcceptNfts, orphanedOffers, setOrphanedOffers, buyOffers, setBuyOffers, sellOffers, setSellOffers, receivedOffers, setReceivedOffers, updateNotificationCount }) {
     const [openCollected, setOpenCollected] = useState(false);
     const [openSell, setOpenSell] = useState(false);
     const [openBuy, setOpenBuy] = useState(false);
@@ -34,6 +35,26 @@ export default function Offers({ account, acceptNfts, setAcceptNfts, orphanedOff
     const handleClickReceived = () => {
         setOpenReceived((state) => !state);
     };
+
+    useEffect(() => {
+        const fetchOffers = async () => {
+            try {
+                const response = await axios.post(`${BASE_URL}/account/offers`, { account });
+                if (response.status === 200) {
+                    const data = response.data;
+                    setAcceptNfts(data.acceptNfts?.length || 0);
+                    setOrphanedOffers(data.orphanedOffers?.length || 0);
+                    setBuyOffers(data.buyOffers?.length || 0);
+                    setSellOffers(data.sellOffers?.length || 0);
+                    setReceivedOffers(data.receivedOffers?.length || 0);
+                }
+            } catch (error) {
+                console.error('Error fetching offers:', error);
+            }
+        };
+
+        fetchOffers();
+    }, [account, updateNotificationCount]);
 
     return (
         <Stack rowGap={2}>
