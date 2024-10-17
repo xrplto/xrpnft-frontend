@@ -18,16 +18,24 @@ const ThemeProviderWrapper = (props) => {
             MuiContainer: {
                 styleOverrides: {
                     root: {
-                        maxWidth: '100% !important', // Updated to full width
-                        paddingLeft: '24px',
-                        paddingRight: '24px',
+                        maxWidth: '100% !important',
+                        paddingLeft: '0px', // No padding for mobile
+                        paddingRight: '0px', // No padding for mobile
                         [baseTheme.breakpoints.up('sm')]: {
-                            paddingLeft: '32px',
-                            paddingRight: '32px',
+                            paddingLeft: '4px',
+                            paddingRight: '4px',
                         },
                         [baseTheme.breakpoints.up('md')]: {
-                            paddingLeft: '48px',
-                            paddingRight: '48px',
+                            paddingLeft: '8px',
+                            paddingRight: '8px',
+                        },
+                        [baseTheme.breakpoints.up('lg')]: {
+                            paddingLeft: '16px',
+                            paddingRight: '16px',
+                        },
+                        [baseTheme.breakpoints.up('xl')]: {
+                            paddingLeft: '24px',
+                            paddingRight: '24px',
                         },
                     },
                 },
