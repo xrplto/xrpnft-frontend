@@ -97,8 +97,8 @@ const CardWrapper = styled('div')(
 
 const IconCover = styled('div')(
     ({ theme }) => `
-        width: 50px; // Reduced from 60px
-        height: 50px; // Reduced from 60px
+        width: 50px;
+        height: 50px;
         box-shadow: ${theme.shadows[4]};
         border: 1px solid ${theme.palette.divider};
         background-color: ${theme.palette.background.neutral};
@@ -118,8 +118,8 @@ const IconCover = styled('div')(
         }
 
         ${theme.breakpoints.down('sm')} {
-            width: 35px; // Reduced from 40px
-            height: 35px; // Reduced from 40px
+            width: 35px;
+            height: 35px;
             border-radius: ${theme.shape.borderRadius}px;
         }
     `
@@ -130,14 +130,14 @@ const IconWrapper = styled('div')(
         box-sizing: border-box;
         display: inline-block;
         position: relative;
-        width: 48px; // Reduced from 58px
-        height: 48px; // Reduced from 58px
-        border-radius: 10px; // Slightly reduced from 12px
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
 
         ${theme.breakpoints.down('sm')} {
-            width: 33px; // Reduced from 38px
-            height: 33px; // Reduced from 38px
-            border-radius: 7px; // Slightly reduced from 8px
+            width: 33px;
+            height: 33px;
+            border-radius: 7px;
         }
   `
 );
@@ -271,18 +271,18 @@ export default function Row({ id, item, volumeType, currency, convertToUsd }) {
             onClick={handleRowClick}
             style={{ cursor: 'pointer' }}
         >
-            <TableCell align="left" sx={{ py: 1.5, px: isMobile ? 0.5 : 2, border: 'none' }}>
+            <TableCell align="left" sx={{ py: 1.5, px: { xs: 0.5, sm: 2 }, border: 'none' }}>
                 <Stack
                     direction="row"
                     alignItems="center"
-                    spacing={isMobile ? 0.5 : 2}
+                    spacing={{ xs: 0.5, sm: 2 }}
                     sx={{ py: 0.5 }}
                 >
                     <Typography
-                        variant={isMobile ? 'body2' : 'body1'}
+                        variant={isMobile ? 'caption' : 'body2'}
                         sx={{
                             color: theme.palette.text.secondary,
-                            minWidth: isMobile ? '16px' : '32px',
+                            minWidth: isMobile ? '16px' : '24px',
                             fontWeight: 600
                         }}
                     >
@@ -304,10 +304,10 @@ export default function Row({ id, item, volumeType, currency, convertToUsd }) {
                         <Stack spacing={0.5}>
                             <Stack direction="row" spacing={0.5} alignItems="center">
                                 <Typography
-                                    variant={isMobile ? 'caption' : 'subtitle1'}
+                                    variant={isMobile ? 'body2' : 'subtitle2'}
                                     noWrap
                                     sx={{
-                                        maxWidth: isMobile ? '60px' : '150px',
+                                        maxWidth: isMobile ? '80px' : '150px',
                                         textOverflow: 'ellipsis',
                                         fontWeight: 600,
                                         color: theme.palette.text.primary
@@ -329,39 +329,50 @@ export default function Row({ id, item, volumeType, currency, convertToUsd }) {
                 </Stack>
             </TableCell>
 
-            <TableCell align="right" sx={{ py: 1.5, px: isMobile ? 0.5 : 2, border: 'none' }}>
-                <Typography
-                    variant={isMobile ? 'caption' : 'body1'}
-                    noWrap
-                    sx={{ fontWeight: 600, color: theme.palette.primary.main }}
-                >
-                    {formatFloorPrice(floorPrice)}
-                </Typography>
-            </TableCell>
-
-            <TableCell align="right" sx={{ py: 1.5, px: isMobile ? 0.5 : 2, border: 'none' }}>
-                <Typography
-                    variant={isMobile ? 'caption' : 'body1'}
-                    noWrap
-                    sx={{ fontWeight: 600, color: theme.palette.success.main }}
-                >
-                    {formatVolume(displayVolume)}
-                </Typography>
-            </TableCell>
-
-            {!isMobile && (
-                <>
-                    <TableCell
-                        align="right"
-                        sx={{
-                            py: 1.5,
-                            px: 2,
-                            border: 'none',
-                            display: { xs: 'none', sm: 'table-cell' }
-                        }}
-                    >
+            {isMobile ? (
+                <TableCell align="right" sx={{ py: 1.5, px: 0.5, border: 'none' }}>
+                    <Stack spacing={0.5}>
                         <Typography
-                            variant="body1"
+                            variant="caption"
+                            noWrap
+                            sx={{ fontWeight: 600, color: theme.palette.primary.main }}
+                        >
+                            Floor: {formatFloorPrice(floorPrice)}
+                        </Typography>
+                        <Typography
+                            variant="caption"
+                            noWrap
+                            sx={{ fontWeight: 600, color: theme.palette.success.main }}
+                        >
+                            Vol: {formatVolume(displayVolume)}
+                        </Typography>
+                    </Stack>
+                </TableCell>
+            ) : (
+                <>
+                    <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+                        <Typography
+                            variant="body2"
+                            noWrap
+                            sx={{ fontWeight: 600, color: theme.palette.primary.main }}
+                        >
+                            {formatFloorPrice(floorPrice)}
+                        </Typography>
+                    </TableCell>
+
+                    <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+                        <Typography
+                            variant="body2"
+                            noWrap
+                            sx={{ fontWeight: 600, color: theme.palette.success.main }}
+                        >
+                            {formatVolume(displayVolume)}
+                        </Typography>
+                    </TableCell>
+
+                    <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+                        <Typography
+                            variant="body2"
                             noWrap
                             sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
                         >
@@ -369,17 +380,9 @@ export default function Row({ id, item, volumeType, currency, convertToUsd }) {
                         </Typography>
                     </TableCell>
 
-                    <TableCell
-                        align="right"
-                        sx={{
-                            py: 1.5,
-                            px: 2,
-                            border: 'none',
-                            display: { xs: 'none', sm: 'table-cell' }
-                        }}
-                    >
+                    <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
                         <Typography
-                            variant="body1"
+                            variant="body2"
                             noWrap
                             sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
                         >

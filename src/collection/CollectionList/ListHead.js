@@ -22,6 +22,10 @@ const StyledTableHead = styled(TableHead)(({ theme }) => ({
     '& .MuiTableCell-root': {
         backgroundColor: 'transparent',
         borderBottom: `1px solid ${theme.palette.divider}`,
+        padding: theme.spacing(1, 0.5),
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(1.5, 2),
+        },
     },
 }));
 
@@ -29,28 +33,18 @@ const TABLE_HEAD = (isMobile, volumeType) => {
     if (isMobile) {
         return [
             {
-                no: 0,
                 id: 'name',
                 label: 'Collection',
                 align: 'left',
-                width: '40%',
+                width: '50%',
                 order: false
             },
             {
-                no: 1,
-                id: 'floor.amount',
-                label: 'Floor',
+                id: 'floorAndVolume',
+                label: 'Floor / Volume',
                 align: 'right',
-                width: '30%',
-                order: true
-            },
-            {
-                no: 2,
-                id: volumeType === '24h' ? 'totalVol24h' : 'totalVolume',
-                label: volumeType === '24h' ? '24h Vol' : 'Total Vol',
-                align: 'right',
-                width: '30%',
-                order: true
+                width: '50%',
+                order: false
             }
         ];
     }
@@ -127,7 +121,7 @@ export default function ListHead({ order, orderBy, onRequestSort, volumeType, cu
                             }
                         >
                             <Typography
-                                variant={isMobile ? "body2" : "body1"}
+                                variant={isMobile ? "caption" : "body2"}
                                 fontWeight="600"
                                 noWrap
                             >

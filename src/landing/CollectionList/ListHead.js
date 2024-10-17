@@ -23,22 +23,15 @@ const TABLE_HEAD = (isMobile, volumeType, currency) => {
                 id: 'name',
                 label: 'Collection',
                 align: 'left',
-                width: '50%',
+                width: '60%',
                 order: false
             },
             {
-                id: 'floor.amount',
-                label: `Floor`,
+                id: 'floorAndVolume',
+                label: 'Floor / Volume',
                 align: 'right',
-                width: '25%',
-                order: true
-            },
-            {
-                id: volumeType === '24h' ? 'totalVol24h' : 'totalVolume',
-                label: `${volumeType === '24h' ? '24h Vol' : 'Total Vol'}`,
-                align: 'right',
-                width: '25%',
-                order: true
+                width: '40%',
+                order: false
             }
         ];
     }
@@ -81,11 +74,15 @@ const TABLE_HEAD = (isMobile, volumeType, currency) => {
     ];
 };
 
-// Add this styled component
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
     backgroundColor: 'transparent',
     '& .MuiTableCell-root': {
         backgroundColor: 'transparent',
+        borderBottom: `1px solid ${theme.palette.divider}`,
+        padding: theme.spacing(1, 0.5),
+        [theme.breakpoints.up('sm')]: {
+            padding: theme.spacing(1.5, 2),
+        },
     },
 }));
 
@@ -106,7 +103,6 @@ export default function ListHead({ order, orderBy, onRequestSort, volumeType, cu
                         align={headCell.align}
                         sortDirection={orderBy === headCell.id ? order : false}
                         width={headCell.width}
-                        sx={{ py: 1, px: isMobile ? 0.5 : 2 }}
                     >
                         <TableSortLabel
                             hideSortIcon
@@ -115,7 +111,7 @@ export default function ListHead({ order, orderBy, onRequestSort, volumeType, cu
                             onClick={headCell.order ? createSortHandler(headCell.id) : undefined}
                         >
                             <Typography
-                                variant={isMobile ? "caption" : "body1"}
+                                variant={isMobile ? "caption" : "body2"}
                                 fontWeight="600"
                                 noWrap
                             >

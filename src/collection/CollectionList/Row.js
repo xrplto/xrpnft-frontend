@@ -9,7 +9,8 @@ import {
     Tooltip,
     Typography,
     useTheme,
-    useMediaQuery
+    useMediaQuery,
+    Box
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -147,18 +148,18 @@ export default function Row({ id, item, isMine, currency, convertToUsd, volumeTy
             onClick={handleRowClick}
             style={{ cursor: 'pointer' }}
         >
-            <TableCell align="left" sx={{ py: 1.5, px: 2, border: 'none' }}>
+            <TableCell align="left" sx={{ py: 1.5, px: { xs: 1, sm: 2 }, border: 'none' }}>
                 <Stack
                     direction="row"
                     alignItems="center"
-                    spacing={2}
+                    spacing={{ xs: 1, sm: 2 }}
                     sx={{ py: 0.5 }}
                 >
                     <Typography
-                        variant={isMobile ? 'body2' : 'body1'}
+                        variant={isMobile ? 'caption' : 'body2'}
                         sx={{
                             color: theme.palette.text.secondary,
-                            minWidth: isMobile ? '24px' : '32px',
+                            minWidth: isMobile ? '16px' : '24px',
                             fontWeight: 600
                         }}
                     >
@@ -199,10 +200,10 @@ export default function Row({ id, item, isMine, currency, convertToUsd, volumeTy
                         <Stack spacing={0.5}>
                             <Stack direction="row" spacing={0.5} alignItems="center">
                                 <Typography
-                                    variant={isMobile ? 'subtitle2' : 'subtitle1'}
+                                    variant={isMobile ? 'body2' : 'subtitle2'}
                                     noWrap
                                     sx={{
-                                        maxWidth: isMobile ? '100px' : '150px',
+                                        maxWidth: isMobile ? '80px' : '150px',
                                         textOverflow: 'ellipsis',
                                         fontWeight: 600,
                                         color: theme.palette.text.primary
@@ -213,7 +214,7 @@ export default function Row({ id, item, isMine, currency, convertToUsd, volumeTy
                                 {verified === 'yes' && (
                                     <Tooltip title="Verified">
                                         <VerifiedIcon
-                                            fontSize={isMobile ? 'small' : 'medium'}
+                                            fontSize="small"
                                             style={{ color: theme.palette.primary.main }}
                                         />
                                     </Tooltip>
@@ -224,31 +225,52 @@ export default function Row({ id, item, isMine, currency, convertToUsd, volumeTy
                 </Stack>
             </TableCell>
 
-            <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
-                <Typography
-                    variant={isMobile ? 'body2' : 'body1'}
-                    noWrap
-                    sx={{ fontWeight: 600, color: theme.palette.primary.main }}
-                >
-                    {formatPrice(floorPrice)}
-                </Typography>
-            </TableCell>
-
-            <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
-                <Typography
-                    variant={isMobile ? 'body2' : 'body1'}
-                    noWrap
-                    sx={{ fontWeight: 600, color: theme.palette.success.main }}
-                >
-                    {formatPrice(volumeToDisplay)}
-                </Typography>
-            </TableCell>
-
-            {!isMobile && (
+            {isMobile ? (
+                <TableCell align="right" sx={{ py: 1.5, px: 1, border: 'none' }}>
+                    <Box>
+                        <Typography
+                            variant="caption"
+                            noWrap
+                            sx={{ fontWeight: 600, color: theme.palette.primary.main }}
+                        >
+                            Floor: {formatPrice(floorPrice)}
+                        </Typography>
+                    </Box>
+                    <Box mt={0.5}>
+                        <Typography
+                            variant="caption"
+                            noWrap
+                            sx={{ fontWeight: 600, color: theme.palette.success.main }}
+                        >
+                            Vol: {formatPrice(volumeToDisplay)}
+                        </Typography>
+                    </Box>
+                </TableCell>
+            ) : (
                 <>
                     <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
                         <Typography
-                            variant="body1"
+                            variant="body2"
+                            noWrap
+                            sx={{ fontWeight: 600, color: theme.palette.primary.main }}
+                        >
+                            {formatPrice(floorPrice)}
+                        </Typography>
+                    </TableCell>
+
+                    <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+                        <Typography
+                            variant="body2"
+                            noWrap
+                            sx={{ fontWeight: 600, color: theme.palette.success.main }}
+                        >
+                            {formatPrice(volumeToDisplay)}
+                        </Typography>
+                    </TableCell>
+
+                    <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
+                        <Typography
+                            variant="body2"
                             noWrap
                             sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
                         >
@@ -258,7 +280,7 @@ export default function Row({ id, item, isMine, currency, convertToUsd, volumeTy
 
                     <TableCell align="right" sx={{ py: 1.5, px: 2, border: 'none' }}>
                         <Typography
-                            variant="body1"
+                            variant="body2"
                             noWrap
                             sx={{ fontWeight: 500, color: theme.palette.text.secondary }}
                         >
