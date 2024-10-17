@@ -185,19 +185,43 @@ export default function ViewNFT({ collection }) {
         created,
         volume,
         totalVolume,
-        floor
+        floor,
+        totalVol24h
     } = collection;
+
+    console.log('Collection data:', collection);
+    console.log('Account login:', accountLogin);
+    console.log('Is mobile:', isMobile);
 
     const floorPrice = floor?.amount || 0;
     let volume1 = fVolume(volume || 0);
     let volume2 = fVolume(totalVolume || 0);
+    let volume24h = fVolume(totalVol24h || 0);
+
+    // Calculate percentage listed
+    const totalNFTs = extra.onSaleCount + extra.notOnSaleCount;
+    const percentListed = ((extra.onSaleCount / totalNFTs) * 100).toFixed(2);
+
+    console.log('Floor price:', floorPrice);
+    console.log('Volume 1:', volume1);
+    console.log('Volume 2:', volume2);
+    console.log('24h Volume:', volume24h);
+    console.log('Percent Listed:', percentListed);
 
     const shareUrl = `https://xrpnft.com/collection/${slug}`;
     const shareTitle = name;
     const shareDesc = description || '';
 
-    const handleOpenShare = () => setOpenShare(true);
-    const handleCloseShare = () => setOpenShare(false);
+    const handleOpenShare = () => {
+        console.log('Opening share dialog');
+        setOpenShare(true);
+    };
+    const handleCloseShare = () => {
+        console.log('Closing share dialog');
+        setOpenShare(false);
+    };
+
+    console.log('Rendering ViewNFT component');
 
     return (
         <>
@@ -363,40 +387,53 @@ export default function ViewNFT({ collection }) {
                                 },
                                 {
                                     label: 'Total Volume',
-                                    value: volume2,
+                                    value: `Ͱ${volume2}`,
                                     icon: <ShowChartIcon />
                                 },
                                 {
                                     label: 'Floor Price',
-                                    value: fNumber(floorPrice),
+                                    value: `Ͱ${fNumber(floorPrice)}`,
+                                    icon: <LocalOfferIcon />
+                                },
+                                {
+                                    label: '24h Volume',
+                                    value: `Ͱ${volume24h}`,
+                                    icon: <ShowChartIcon />
+                                },
+                                {
+                                    label: '% Listed',
+                                    value: `${percentListed}%`,
                                     icon: <LocalOfferIcon />
                                 }
-                            ].map((stat, index) => (
-                                <Grid item xs={6} sm={3} key={index}>
-                                    <StatCard elevation={3}>
-                                        <Tooltip title={stat.label}>
-                                            {React.cloneElement(stat.icon, {
-                                                fontSize: 'small',
-                                                color: 'primary'
-                                            })}
-                                        </Tooltip>
-                                        <Typography
-                                            variant="body1"
-                                            fontWeight="bold"
-                                            color="primary.main"
-                                            sx={{ mt: 0.5 }}
-                                        >
-                                            {stat.value}
-                                        </Typography>
-                                        <Typography
-                                            variant="caption"
-                                            color="text.secondary"
-                                        >
-                                            {stat.label}
-                                        </Typography>
-                                    </StatCard>
-                                </Grid>
-                            ))}
+                            ].map((stat, index) => {
+                                console.log(`Rendering stat: ${stat.label}`, stat.value);
+                                return (
+                                    <Grid item xs={6} sm={4} md={2} key={index}>
+                                        <StatCard elevation={3}>
+                                            <Tooltip title={stat.label}>
+                                                {React.cloneElement(stat.icon, {
+                                                    fontSize: 'small',
+                                                    color: 'primary'
+                                                })}
+                                            </Tooltip>
+                                            <Typography
+                                                variant="body1"
+                                                fontWeight="bold"
+                                                color="primary.main"
+                                                sx={{ mt: 0.5 }}
+                                            >
+                                                {stat.value}
+                                            </Typography>
+                                            <Typography
+                                                variant="caption"
+                                                color="text.secondary"
+                                            >
+                                                {stat.label}
+                                            </Typography>
+                                        </StatCard>
+                                    </Grid>
+                                );
+                            })}
                         </Grid>
                     </Box>
                 </GlassBox>
