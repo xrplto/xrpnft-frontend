@@ -107,39 +107,31 @@ export default function OffersList({ account, type, setTotalOffers }) {
                         setTotal(ret.total);
                         if (typeof setTotalOffers === 'function') {
                             setTotalOffers(ret.total);
+                        } else {
+                            console.warn('setTotalOffers is not a function');
                         }
                         setOffers(ret.offers);
 
-                        // const newOffers = [{
-                        //     "_id": "637ddcf72430cc4537c4a8f5",
-                        //     "status": "created",
-                        //     "amount": "500000",
-                        //     "flags": 1,
-                        //     "NFTokenID": "0008000051A8DF348A9C2E8EF14AD99B699E4651C5BE0C0A535753250000001A",
-                        //     "owner": "r3S8px1Qx6ctoQGv8puFwahoLWGjVZksQv",
-                        //     "index": "84F0D691282969DB2ECA1DF333E563CBF5C9523AF3124A8A9743489F6267F842",
-                        //     "type": "NFTokenCreateOffer",
-                        //     "account": "r3S8px1Qx6ctoQGv8puFwahoLWGjVZksQv",
-                        //     "Account": "r3S8px1Qx6ctoQGv8puFwahoLWGjVZksQv",
-                        //     "hash": "C000D46D3230B777B6984AA5C92B9AB4405CD71C4AC0C1903CBFC57B146A24CC",
-                        //     "date": null,
-                        //     "ledger_index": 75946713,
-                        //     "orphaned": "yes"
-                        // }];
-                        // setTotal(1);
-                        // setOffers(newOffers);
+                        // Add console.log for debugging
+                        console.log('Offers data:', {
+                            total: ret.total,
+                            offers: ret.offers,
+                            account,
+                            type,
+                            page,
+                            rows
+                        });
                     }
                 })
                 .catch((err) => {
-                    console.log('Error on getting offers list!!!', err);
+                    console.error('Error on getting offers list!!!', err);
                 })
-                .then(function () {
-                    // always executed
+                .finally(() => {
                     setLoading(false);
                 });
         }
         getOffers();
-    }, [account, type, page, rows, hideOffers/*, sync*/]);
+    }, [account, type, page, rows, hideOffers]);
 
     useEffect(() => {
         var timer = null;
@@ -464,7 +456,7 @@ export default function OffersList({ account, type, setTotalOffers }) {
 }
 
 function OfferCard({ offer, isOwner, accountLogin, type, handleAcceptOffer, handleCancelOffer, handleHideOffer, isMobile }) {
-    const { price, isSell, NFTokenID, orphaned, meta, files, collection, slug, cslug, name, isVideo, imgUrl, expired, expire_string } = parseOfferData(offer);
+    const { price, isSell, NFTokenID, orphaned, meta, files, collection, slug, cslug, name, isVideo, imgUrl, expired, expire_string, owner } = parseOfferData(offer);
 
     return (
         <Card elevation={3}>
@@ -488,6 +480,9 @@ function OfferCard({ offer, isOwner, accountLogin, type, handleAcceptOffer, hand
                                     <Typography variant="subtitle2" noWrap>
                                         {name}
                                     </Typography>
+                                    <Typography variant="caption" color="text.secondary">
+                                        Owner: {truncate(owner, 10)}
+                                    </Typography>
                                 </Stack>
                             </Stack>
                         </Link>
@@ -501,6 +496,12 @@ function OfferCard({ offer, isOwner, accountLogin, type, handleAcceptOffer, hand
                                 Expires: {expire_string}
                             </Typography>
                         )}
+                        <Typography variant="caption" display="block" color="text.secondary">
+                            Offer ID: {truncate(offer.index, 10)}
+                        </Typography>
+                        <Typography variant="caption" display="block" color="text.secondary">
+                            Offer by: {truncate(offer.account, 10)}
+                        </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6} md={2}>
                         <Chip
@@ -508,6 +509,22 @@ function OfferCard({ offer, isOwner, accountLogin, type, handleAcceptOffer, hand
                             color={isSell ? 'primary' : 'secondary'}
                             size="small"
                         />
+                        {orphaned === "yes" && (
+                            <Chip
+                                label="Orphaned"
+                                color="warning"
+                                size="small"
+                                sx={{ mt: 1 }}
+                            />
+                        )}
+                        {expired && (
+                            <Chip
+                                label="Expired"
+                                color="error"
+                                size="small"
+                                sx={{ mt: 1 }}
+                            />
+                        )}
                     </Grid>
                     <Grid item xs={12} sm={6} md={3}>
                         <Stack direction="row" spacing={1} justifyContent={isMobile ? 'center' : 'flex-end'}>
@@ -521,7 +538,15 @@ function OfferCard({ offer, isOwner, accountLogin, type, handleAcceptOffer, hand
 }
 
 function renderActionButtons(offer, isOwner, accountLogin, type, handleAcceptOffer, handleCancelOffer, handleHideOffer) {
-    const { isSell, orphaned } = offer;
+    const { isSell, orphaned, offerAccount, destination, expired } = offer;
+
+    if (expired) {
+        return (
+            <Button variant="contained" size="small" color="error" onClick={() => handleCancelOffer(offer)}>
+                Remove
+            </Button>
+        );
+    }
 
     if (type === "received" && accountLogin) {
         return (
@@ -536,7 +561,7 @@ function renderActionButtons(offer, isOwner, accountLogin, type, handleAcceptOff
                         </Button>
                     </>
                 )}
-                {accountLogin === offer.owner && (
+                {accountLogin === offerAccount && (
                     <Button variant="contained" size="small" color="error" onClick={() => handleCancelOffer(offer)}>
                         Cancel
                     </Button>
@@ -546,13 +571,13 @@ function renderActionButtons(offer, isOwner, accountLogin, type, handleAcceptOff
     }
 
     if (isSell) {
-        if (isOwner || accountLogin === offer.owner) {
+        if (isOwner || accountLogin === offerAccount) {
             return (
                 <Button variant={type === "buys" && orphaned !== "yes" ? "outlined" : "contained"} size="small" color="error" onClick={() => handleCancelOffer(offer)}>
                     Cancel
                 </Button>
             );
-        } else if (orphaned !== 'yes' && offer.destination && accountLogin === offer.destination) {
+        } else if (orphaned !== 'yes' && destination && accountLogin === destination) {
             return (
                 <Button variant="contained" size="small" color="primary" onClick={() => handleAcceptOffer(offer)}>
                     Accept
@@ -560,13 +585,13 @@ function renderActionButtons(offer, isOwner, accountLogin, type, handleAcceptOff
             );
         }
     } else {
-        if (isOwner && accountLogin !== offer.owner) {
+        if (isOwner && accountLogin !== offerAccount) {
             return (
                 <Button variant="contained" size="small" color="primary" onClick={() => handleAcceptOffer(offer)}>
                     Accept
                 </Button>
             );
-        } else if (accountLogin === offer.owner) {
+        } else if (accountLogin === offerAccount) {
             return (
                 <Button variant={type === "buys" && orphaned !== "yes" ? "outlined" : "contained"} size="small" color="error" onClick={() => handleCancelOffer(offer)}>
                     Cancel
@@ -581,23 +606,38 @@ function renderActionButtons(offer, isOwner, accountLogin, type, handleAcceptOff
 function parseOfferData(offer) {
     const price = normalizeAmount(offer.amount);
     const isSell = offer.flags === 1;
-    const {NFTokenID, orphaned, meta, files, collection, slug, cslug } = offer;
+    const { NFTokenID, orphaned, meta, files, cslug, owner, account, destination, expiration, index } = offer;
 
-    const { flag, royalty, issuer, taxon, transferFee } =
-        parseNFTokenID(NFTokenID);
+    const { flag, royalty, issuer, taxon, transferFee } = parseNFTokenID(NFTokenID);
 
-    const name = offer.meta?.name || offer?.Name || 'No Name';
+    const name = meta?.name || offer?.Name || 'No Name';
+    const collection = offer.collecion || offer.collection || (meta?.collection?.name) || '';
 
-    const isVideo = /*meta?.video ? true : */false;
+    const isVideo = false; // Update this if you have a way to determine if it's a video
 
-    const imgUrl = getNftCoverUrl({files}, 'small'); // , 48
-    // const imgUrl = `https://gateway.xrpnft.com/ipfs/${meta['image'].split("ipfs://")[1]}`;
+    const imgUrl = getNftCoverUrl({files}, 'small');
 
-    // offer.expiration = 1669585409; // Delete this line.
-
-    const expired = checkExpiration(offer.expiration);
-    const expire = offer.expiration ? (offer.expiration > 946684800 ? offer.expiration: offer.expiration + 946684800) * 1000 : '';
+    const expired = checkExpiration(expiration);
+    const expire = expiration ? (expiration > 946684800 ? expiration : expiration + 946684800) * 1000 : '';
     const expire_string = expire ? new Date(expire).toLocaleString() : '';
 
-    return { price, isSell, NFTokenID, orphaned, meta, files, collection, slug, cslug, name, isVideo, imgUrl, expired, expire_string };
+    return { 
+        price, 
+        isSell, 
+        NFTokenID, 
+        orphaned, 
+        meta, 
+        files, 
+        collection, 
+        cslug, 
+        name, 
+        isVideo, 
+        imgUrl, 
+        expired, 
+        expire_string, 
+        owner,
+        offerAccount: account,
+        destination,
+        index
+    };
 }
