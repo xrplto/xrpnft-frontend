@@ -50,7 +50,7 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 
 // Add this new styled component for the stat cards
 const StatCard = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(1.5), // Reduced from 2
+    padding: theme.spacing(1), // Reduced from 1.5
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
@@ -61,6 +61,9 @@ const StatCard = styled(Paper)(({ theme }) => ({
     '&:hover': {
         transform: 'translateY(-5px)',
         boxShadow: theme.shadows[6]
+    },
+    [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(0.5), // Further reduced padding on mobile
     }
 }));
 
@@ -72,8 +75,8 @@ const IconCover = styled('div')(({ theme }) => ({
     borderRadius: theme.shape.borderRadius * 2,
     boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
     [theme.breakpoints.down('sm')]: {
-        width: 120, // Reduced from 150
-        height: 120 // Reduced from 150
+        width: 100, // Reduced from 120
+        height: 100 // Reduced from 120
     }
 }));
 
@@ -232,9 +235,9 @@ export default function ViewNFT({ collection }) {
                 sx={{
                     position: 'relative',
                     overflow: 'hidden',
-                    mb: { xs: 3, md: 6 }, // Reduced vertical margin on mobile
-                    mx: { xs: 2, md: 4 },
-                    mt: { xs: 6, md: 12 } // Reduced top margin on mobile
+                    mb: { xs: 2, md: 6 }, // Reduced vertical margin on mobile
+                    mx: { xs: 1, md: 4 }, // Reduced horizontal margin on mobile
+                    mt: { xs: 4, md: 12 } // Reduced top margin on mobile
                 }}
             >
                 <BackgroundImage
@@ -262,15 +265,16 @@ export default function ViewNFT({ collection }) {
                         alignItems: { xs: 'center', md: 'flex-start' },
                         position: 'relative',
                         zIndex: 1,
-                        py: { xs: 2, md: 3 } // Reduced vertical padding on mobile
+                        py: { xs: 1.5, md: 3 }, // Reduced vertical padding on mobile
+                        px: { xs: 1.5, md: 3 } // Added horizontal padding reduction on mobile
                     }}
                 >
                     <IconCover
                         sx={{
                             mr: { md: 4 },
-                            mb: { xs: 2, md: 0 }, // Reduced bottom margin on mobile
-                            width: { xs: 120, md: 220 }, // Adjusted width
-                            height: { xs: 120, md: 220 }, // Adjusted height
+                            mb: { xs: 1.5, md: 0 }, // Reduced bottom margin on mobile
+                            width: { xs: 100, md: 220 }, // Adjusted width
+                            height: { xs: 100, md: 220 }, // Adjusted height
                             border: 'none',
                             boxShadow: (theme) =>
                                 `0 10px 30px ${alpha(
@@ -293,10 +297,10 @@ export default function ViewNFT({ collection }) {
                     <Box sx={{ flex: 1 }}>
                         <Stack
                             direction={fullScreen ? 'column' : 'row'}
-                            spacing={{ xs: 1, md: 2 }} // Reduced spacing on mobile
+                            spacing={{ xs: 0.5, md: 2 }} // Reduced spacing on mobile
                             justifyContent="space-between"
                             alignItems={fullScreen ? 'center' : 'flex-start'}
-                            sx={{ mb: { xs: 1, md: 3 } }} // Reduced margin on mobile
+                            sx={{ mb: { xs: 0.5, md: 3 } }} // Reduced margin on mobile
                         >
                             <Stack
                                 direction="row"
@@ -352,8 +356,11 @@ export default function ViewNFT({ collection }) {
                         </Stack>
 
                         <Typography
-                            variant="body1"
-                            sx={{ mb: { xs: 1, md: 2 } }}
+                            variant="body2" // Changed from body1 to body2 for mobile
+                            sx={{ 
+                                mb: { xs: 0.5, md: 2 },
+                                fontSize: { xs: '0.8rem', md: '1rem' } // Reduced font size on mobile
+                            }}
                         >
                             By{' '}
                             <Link href={`/account/${account}`} color="primary">
@@ -366,16 +373,20 @@ export default function ViewNFT({ collection }) {
                         </Typography>
 
                         <Typography
-                            variant="body1"
-                            sx={{ mb: { xs: 2, md: 4 } }}
+                            variant="body2" // Changed from body1 to body2 for mobile
+                            sx={{ 
+                                mb: { xs: 1, md: 4 },
+                                fontSize: { xs: '0.8rem', md: '1rem' }, // Reduced font size on mobile
+                                display: { xs: 'none', md: 'block' } // Hide description on mobile
+                            }}
                         >
                             {description}
                         </Typography>
 
                         <Grid
                             container
-                            spacing={{ xs: 1, md: 2 }}
-                            sx={{ mb: { xs: 2, md: 3 } }}
+                            spacing={{ xs: 0.5, md: 2 }} // Reduced spacing on mobile
+                            sx={{ mb: { xs: 1, md: 3 } }} // Reduced margin on mobile
                         >
                             {[
                                 {
@@ -442,7 +453,7 @@ export default function ViewNFT({ collection }) {
                 </GlassBox>
             </Box>
 
-            <Box sx={{ mx: { xs: 2, md: 4 } }}>
+            <Box sx={{ mx: { xs: 1, md: 4 } }}> {/* Reduced horizontal margin on mobile */}
                 <ExploreNFT collection={collection} showBanner={false} />
             </Box>
 
