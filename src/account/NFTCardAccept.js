@@ -226,7 +226,7 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                             </Link>
                             <Typography variant="s8" style={{ textAlign: 'center' }}>Waiting to accept</Typography>
                             {accountLogin === profileAccount ? 
-                            (<Tooltip title="Accept NFT">
+                            (
                                 <Button 
                                     variant="outlined" 
                                     color="success" 
@@ -242,7 +242,7 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                                 >
                                     Accept
                                 </Button>
-                            </Tooltip>):(
+                            ):(
                                 <Typography variant="s8" style={{ textAlign: 'center' }}></Typography>
                             )}
                         </Stack>
@@ -352,23 +352,21 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                             <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mb:1, pl:0, pr:0}}>
                                 <Typography variant="s8" alignItems='center' justifyContent='space-evenly' sx={{mt:1}}>Waiting to accept</Typography>
                                 {accountLogin === profileAccount && 
-                                    <Tooltip title="Accept NFT">
-                                        <Button 
-                                            variant="outlined" 
-                                            size="small" 
-                                            color="success" 
-                                            onClick={() => handleApprove(nft)}
-                                            sx={{
-                                                borderColor: theme.palette.success.main,
-                                                color: theme.palette.success.main,
-                                                '&:hover': {
-                                                    backgroundColor: alpha(theme.palette.success.main, 0.1),
-                                                },
-                                            }}
-                                        >
-                                            Accept
-                                        </Button>
-                                    </Tooltip>
+                                    <Button 
+                                        variant="outlined" 
+                                        size="small" 
+                                        color="success" 
+                                        onClick={() => handleApprove(nft)}
+                                        sx={{
+                                            borderColor: theme.palette.success.main,
+                                            color: theme.palette.success.main,
+                                            '&:hover': {
+                                                backgroundColor: alpha(theme.palette.success.main, 0.1),
+                                            },
+                                        }}
+                                    >
+                                        Accept
+                                    </Button>
                                 }
                             </Stack>
                         </Box>

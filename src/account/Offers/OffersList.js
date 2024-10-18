@@ -711,10 +711,10 @@ function renderActionButtons(
                 <Button
                     variant="contained"
                     size="small"
-                    color="primary"
-                    onClick={() => handleAcceptOffer(offer)}
+                    color="error"
+                    onClick={() => handleCancelOffer(offer)}
                 >
-                    Accept
+                    Cancel
                 </Button>
             );
         }
@@ -724,10 +724,10 @@ function renderActionButtons(
                 <Button
                     variant="contained"
                     size="small"
-                    color="primary"
-                    onClick={() => handleAcceptOffer(offer)}
+                    color="error"
+                    onClick={() => handleCancelOffer(offer)}
                 >
-                    Accept
+                    Cancel
                 </Button>
             );
         } else if (accountLogin === offerAccount) {
