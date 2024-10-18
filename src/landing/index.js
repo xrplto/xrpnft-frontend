@@ -17,7 +17,6 @@ import {
     Tooltip,
     useTheme
 } from '@mui/material';
-import { keyframes } from '@mui/system';
 import VerifiedIcon from '@mui/icons-material/Verified';
 
 // Components
@@ -89,28 +88,6 @@ const HeroButton = styled(Button)(
     `
 );
 
-// Update the float keyframe
-const float = keyframes`
-  0% { transform: scale(0.8) translateY(0px); opacity: 0; }
-  50% { transform: scale(1.1) translateY(-10px); opacity: 1; }
-  100% { transform: scale(1) translateY(0px); opacity: 1; }
-`;
-
-// Update the ChatMessage styled component
-const ChatMessage = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(1, 2),
-    maxWidth: '200px',
-    borderRadius: 20,
-    display: 'flex',
-    alignItems: 'center',
-    position: 'absolute',
-    animation: `${float} 2s ease-in-out forwards`, // Reduced from 3s to 2s
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    opacity: 0,
-    zIndex: 10,
-    pointerEvents: 'none'
-}));
-
 // Add this new styled component for the animated text
 const AnimatedText = styled(Box)(({ theme }) => ({
     display: 'inline-block',
@@ -118,47 +95,6 @@ const AnimatedText = styled(Box)(({ theme }) => ({
     fontWeight: 'bold',
     color: theme.palette.primary.main
 }));
-
-// Update the useRandomMessages hook
-const useRandomMessages = (messages, minDelay = 2000, maxDelay = 4000) => {
-    const [visibleMessages, setVisibleMessages] = useState([]);
-
-    useEffect(() => {
-        const showNextMessage = () => {
-            const randomMessage =
-                messages[Math.floor(Math.random() * messages.length)];
-            const newMessage = {
-                ...randomMessage,
-                key: Date.now(),
-                position: {
-                    top: `${Math.random() * 80}%`,
-                    left: `${Math.random() * 80}%`
-                }
-            };
-
-            setVisibleMessages((prevMessages) => {
-                const updatedMessages = [...prevMessages, newMessage];
-                if (updatedMessages.length > 3) {
-                    updatedMessages.shift();
-                }
-                return updatedMessages;
-            });
-
-            const nextDelay =
-                Math.floor(Math.random() * (maxDelay - minDelay + 1)) +
-                minDelay;
-
-            setTimeout(showNextMessage, nextDelay);
-        };
-
-        const initialDelay = Math.floor(Math.random() * 2000) + 1000; // Reduced initial delay
-        const timer = setTimeout(showNextMessage, initialDelay);
-
-        return () => clearTimeout(timer);
-    }, [messages, minDelay, maxDelay]);
-
-    return visibleMessages;
-};
 
 // Add the new styled components from CollectionPreview
 const CustomImage = styled('img')(({ theme }) => ({
@@ -224,35 +160,7 @@ export default function Landing({ collections }) {
     const theme = useTheme();
     const { darkMode } = useContext(AppContext);
 
-    // Chat messages array
-    const chatMessages = [
-        {
-            user: 'Alice',
-            message: 'Just bought my first XRP NFT!',
-            avatar: '👩'
-        },
-        {
-            user: 'Bob',
-            message: "That's awesome! Which collection?",
-            avatar: '👨'
-        },
-        {
-            user: 'Charlie',
-            message: "I'm loving the variety here!",
-            avatar: '🧑'
-        },
-        { user: 'Diana', message: 'XRP NFTs are the future!', avatar: '👩‍🦰' },
-        {
-            user: 'Ethan',
-            message: "Can't wait to start creating!",
-            avatar: '👨‍🦱'
-        }
-    ];
-
-    // Use the updated hook with new min and max delay values
-    const visibleMessages = useRandomMessages(chatMessages, 2000, 4000);
-
-    // Add this new state and effect for text animation
+    // Add the new state and effect for text animation
     const [animatedText, setAnimatedText] = useState('with No Barriers');
     const phrases = ['with No Barriers', 'on Layer 1', 'with No Brokers'];
 
@@ -314,44 +222,6 @@ export default function Landing({ collections }) {
     return (
         <Container maxWidth="lg" sx={{ px: { xs: 0.5, sm: 2, md: 3 } }}>
             <Box sx={{ position: 'relative', minHeight: '100vh' }}>
-                {/* Chat message container */}
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: '100%',
-                        zIndex: 10,
-                        pointerEvents: 'none'
-                    }}
-                >
-                    {visibleMessages.map((message) => (
-                        <ChatMessage
-                            key={message.key}
-                            elevation={1}
-                            sx={{
-                                top: message.position.top,
-                                left: message.position.left
-                            }}
-                        >
-                            <Avatar
-                                sx={{
-                                    width: 24,
-                                    height: 24,
-                                    mr: 1,
-                                    fontSize: '0.8rem'
-                                }}
-                            >
-                                {message.avatar}
-                            </Avatar>
-                            <Typography variant="body2">
-                                {message.message}
-                            </Typography>
-                        </ChatMessage>
-                    ))}
-                </Box>
-
                 <Grid
                     container
                     spacing={0}
