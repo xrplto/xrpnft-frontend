@@ -10,7 +10,8 @@ import {
     Box,
     Grid,
     Stack,
-    Typography
+    Typography,
+    Button
 } from '@mui/material';
 
 // Context
@@ -49,6 +50,10 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
     const [loading2, setLoading2] = useState(false);
 
     const [acceptedNFTId, setAcceptedNFTId] = useState(null);
+
+    const [selectedNFTs, setSelectedNFTs] = useState([]);
+    const [isAcceptingAll, setIsAcceptingAll] = useState(false);
+    const [currentAcceptIndex, setCurrentAcceptIndex] = useState(0);
 
     // useEffect(() => {
     //     function getNfts() {
@@ -158,6 +163,32 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
         };
     }, [openScanQR, xummUuid, sync, acceptedNFTId]);
 
+    const handleSelectAll = () => {
+        const nftsToSelect = nfts.slice(0, 20);
+        setSelectedNFTs(nftsToSelect);
+        setIsAcceptingAll(true);
+        setCurrentAcceptIndex(0);
+        acceptNextNFT(nftsToSelect, 0);
+    };
+
+    const acceptNextNFT = async (nftsToAccept, index) => {
+        if (index >= nftsToAccept.length || index >= 20) {
+            setIsAcceptingAll(false);
+            setCurrentAcceptIndex(0);
+            return;
+        }
+
+        const nft = nftsToAccept[index];
+        await onAcceptNFT(nft);
+    };
+
+    useEffect(() => {
+        if (isAcceptingAll && !openScanQR && currentAcceptIndex < selectedNFTs.length) {
+            acceptNextNFT(selectedNFTs, currentAcceptIndex + 1);
+            setCurrentAcceptIndex(currentAcceptIndex + 1);
+        }
+    }, [openScanQR, isAcceptingAll, currentAcceptIndex]);
+
     const onAcceptNFT = async (nft) => {
         if (!accountLogin || !accountToken) {
             console.log('Accept NFT failed: User not logged in');
@@ -202,7 +233,9 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                 setQrUrl(qrlink);
                 setNextUrl(nextlink);
                 setAcceptedNFTId(NFTokenID);
-                setOpenScanQR(true);
+                if (!isAcceptingAll) {
+                    setOpenScanQR(true);
+                }
             }
         } catch (err) {
             console.error('Error accepting NFT:', err);
@@ -238,6 +271,16 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
 
     return (
         <>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSelectAll}
+                disabled={isAcceptingAll || nfts.length === 0}
+                sx={{ mb: 2 }}
+            >
+                Select all (limit 20)
+            </Button>
+
             {loading ? (
                 <Stack alignItems="center">
                     <PulseLoader color="#00AB55" size={10} />
@@ -254,7 +297,12 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
             <QRDialog
                 open={openScanQR}
                 type="NFTokenAcceptOffer"
-                onClose={handleScanQRClose}
+                onClose={() => {
+                    handleScanQRClose();
+                    if (isAcceptingAll) {
+                        acceptNextNFT(selectedNFTs, currentAcceptIndex);
+                    }
+                }}
                 qrUrl={qrUrl}
                 nextUrl={nextUrl}
             />
