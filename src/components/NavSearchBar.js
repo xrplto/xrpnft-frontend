@@ -37,6 +37,9 @@ import { useTheme, alpha } from '@mui/material/styles';
 
 // Add this helper function at the top of the file, outside of any component
 const formatNumber = (num) => {
+    if (num === undefined || num === null) {
+        return 'N/A';
+    }
     if (num >= 1000000) {
         return (num / 1000000).toFixed(1) + 'M';
     } else if (num >= 1000) {
@@ -164,7 +167,7 @@ const RenderOption = ({
                                 option_type === 'COLLECTIONS' &&
                                 <Stack direction="row" spacing={0.75} alignItems="center">
                                     {floor && <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Floor: <span style={{color: 'inherit', fontWeight: 'bold'}}>{floor.amount} {floor.currency}</span></Typography>}
-                                    <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Total Volume: <span style={{color: 'inherit', fontWeight: 'bold'}}>{formatNumber(totalVolume)} XRP</span></Typography>
+                                    <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Total Volume: <span style={{color: 'inherit', fontWeight: 'bold'}}>{formatNumber(totalVolume)} {totalVolume !== undefined && totalVolume !== null ? 'XRP' : ''}</span></Typography>
                                 </Stack>
                             }
                             {

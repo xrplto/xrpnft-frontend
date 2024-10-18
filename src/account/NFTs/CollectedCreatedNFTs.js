@@ -166,7 +166,7 @@ export default function CollectedCreatedNFTs({
                 setCreatedNFTsLoaded(true);
             }
             if (setCreatedNFTsCount) {
-                setCreatedNFTsCount(nfts.length); // Update created NFTs count
+                setCreatedNFTsCount(nfts.length);
             }
         }
     }, [
@@ -234,177 +234,178 @@ export default function CollectedCreatedNFTs({
         </Grid>
     ), [nfts, collection, type, account]);
 
+    // Render nothing if no NFTs are found
+    if (nfts.length === 0 && !loading) {
+        return null;
+    }
+
     return (
         <>
-            {(type !== 'created' || nfts.length > 0) && (
-                <>
-                    {/* Search and Filter Bar */}
-                    <GlassyBox
+            {/* Search and Filter Bar */}
+            <GlassyBox
+                sx={{
+                    mb: 2,
+                    p: 1,
+                    display: 'flex',
+                    alignItems: 'center'
+                }}
+            >
+                {collection && ( // Show filter button only for NFTs within a collection
+                    <IconButton
+                        aria-label="filter"
+                        onClick={handleShowFilter}
+                        sx={{ color: theme.palette.primary.main }}
+                    >
+                        <FilterListIcon fontSize="large" />
+                    </IconButton>
+                )}
+                <SearchTextField
+                    id="textFilter"
+                    fullWidth
+                    variant="outlined"
+                    placeholder="Search by name or attribute"
+                    margin="dense"
+                    onChange={handleChangeSearch}
+                    autoComplete="new-password"
+                    inputProps={{ autoComplete: 'off' }}
+                    value={search}
+                    onFocus={(event) => event.target.select()}
+                    sx={{ pl: 2, pr: 1, pt: 0, pb: 0, mt: 0 }}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment
+                                position="start"
+                                sx={{ mr: 0.7 }}
+                            >
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                {loading && (
+                                    <ClipLoader
+                                        color="#ff0000"
+                                        size={15}
+                                    />
+                                )}
+                            </InputAdornment>
+                        )
+                    }}
+                />
+            </GlassyBox>
+
+            {/* Back Button for Collection View */}
+            {collection && (
+                <Box display="flex" justifyContent="center" mb={2}>
+                    <IconButton
+                        onClick={handleBack}
                         sx={{
-                            mb: 2,
                             p: 1,
-                            display: 'flex',
-                            alignItems: 'center'
+                            '&:hover': {
+                                background:
+                                    theme.palette.mode === 'dark'
+                                        ? 'rgba(255, 255, 255, 0.1)'
+                                        : 'rgba(255, 255, 255, 0.8)'
+                            }
                         }}
                     >
-                        {collection && ( // Show filter button only for NFTs within a collection
-                            <IconButton
-                                aria-label="filter"
-                                onClick={handleShowFilter}
-                                sx={{ color: theme.palette.primary.main }}
-                            >
-                                <FilterListIcon fontSize="large" />
-                            </IconButton>
-                        )}
-                        <SearchTextField
-                            id="textFilter"
-                            fullWidth
-                            variant="outlined"
-                            placeholder="Search by name or attribute"
-                            margin="dense"
-                            onChange={handleChangeSearch}
-                            autoComplete="new-password"
-                            inputProps={{ autoComplete: 'off' }}
-                            value={search}
-                            onFocus={(event) => event.target.select()}
-                            sx={{ pl: 2, pr: 1, pt: 0, pb: 0, mt: 0 }}
-                            onKeyDown={(e) => e.stopPropagation()}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment
-                                        position="start"
-                                        sx={{ mr: 0.7 }}
-                                    >
-                                        <SearchIcon />
-                                    </InputAdornment>
-                                ),
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        {loading && (
-                                            <ClipLoader
-                                                color="#ff0000"
-                                                size={15}
-                                            />
-                                        )}
-                                    </InputAdornment>
-                                )
-                            }}
-                        />
-                    </GlassyBox>
-
-                    {/* Back Button for Collection View */}
-                    {collection && (
-                        <Box display="flex" justifyContent="center" mb={2}>
-                            <IconButton
-                                onClick={handleBack}
-                                sx={{
-                                    p: 1,
-                                    '&:hover': {
-                                        background:
-                                            theme.palette.mode === 'dark'
-                                                ? 'rgba(255, 255, 255, 0.1)'
-                                                : 'rgba(255, 255, 255, 0.8)'
-                                    }
-                                }}
-                            >
-                                <ArrowBackIcon fontSize="large" />
-                                <Typography
-                                    variant="body2"
-                                    fontSize="medium"
-                                    sx={{ ml: 1 }}
-                                >
-                                    Go back
-                                </Typography>
-                            </IconButton>
-                        </Box>
-                    )}
-
-                    {/* Main Content Grid */}
-                    <Grid container spacing={2} justifyContent="space-between">
-                        {/* Filter Sidebar */}
-                        {showFilter && collection && (
-                            <Grid item xs={12} md={3} xl={2}>
-                                <GlassyBox sx={{ p: 2 }}>
-                                    <FilterDetail
-                                        onSaleCount={onSaleCount}
-                                        filter={filter}
-                                        setFilter={setFilter}
-                                        subFilter={subFilter}
-                                        setSubFilter={setSubFilter}
-                                        setPage={setPage}
-                                    />
-                                </GlassyBox>
-                            </Grid>
-                        )}
-
-                        {/* NFTs Display Area */}
-                        <Grid
-                            item
-                            xs={12}
-                            md={showFilter && collection ? 9 : 12}
-                            xl={showFilter && collection ? 10 : 12}
+                        <ArrowBackIcon fontSize="large" />
+                        <Typography
+                            variant="body2"
+                            fontSize="medium"
+                            sx={{ ml: 1 }}
                         >
-                            {collection ? (
-                                <InfiniteScroll
-                                    dataLength={nfts.length}
-                                    next={() => {
-                                        setPage((prevPage) => prevPage + 1);
-                                        setSync((prevSync) => prevSync + 1);
-                                    }}
-                                    hasMore={hasMore}
-                                    loader={
-                                        <Box
-                                            display="flex"
-                                            justifyContent="center"
-                                            mt={2}
-                                        >
-                                            <ClipLoader
-                                                color="#ff0000"
-                                                size={35}
-                                            />
-                                        </Box>
-                                    }
-                                    endMessage={
-                                        <Typography
-                                            variant="body2"
-                                            align="center"
-                                            mt={2}
-                                        >
-                                            {nfts.length === 0
-                                                ? 'No NFTs found.'
-                                                : 'You have seen all NFTs.'}
-                                        </Typography>
-                                    }
-                                    scrollThreshold={0.6}
-                                >
-                                    {nftItems}
-                                </InfiniteScroll>
-                            ) : (
-                                // If not filtering by collection, display NFTs without infinite scroll
-                                <>
-                                    {nfts.length > 0 ? (
-                                        nftItems
-                                    ) : (
-                                        <Typography
-                                            variant="body2"
-                                            align="center"
-                                            mt={2}
-                                        >
-                                            No NFTs found.
-                                        </Typography>
-                                    )}
-                                </>
-                            )}
-                        </Grid>
-                    </Grid>
-                </>
+                            Go back
+                        </Typography>
+                    </IconButton>
+                </Box>
             )}
 
-            {/* Optional: Display message if type is 'created' but no NFTs are present */}
-            {type === 'created' && nfts.length === 0 && (
-                <Typography variant="body2" align="center" mt={4}>
-                    You haven't created any NFTs yet.
-                </Typography>
+            {/* Main Content Grid */}
+            <Grid container spacing={2} justifyContent="space-between">
+                {/* Filter Sidebar */}
+                {showFilter && collection && (
+                    <Grid item xs={12} md={3} xl={2}>
+                        <GlassyBox sx={{ p: 2 }}>
+                            <FilterDetail
+                                onSaleCount={onSaleCount}
+                                filter={filter}
+                                setFilter={setFilter}
+                                subFilter={subFilter}
+                                setSubFilter={setSubFilter}
+                                setPage={setPage}
+                            />
+                        </GlassyBox>
+                    </Grid>
+                )}
+
+                {/* NFTs Display Area */}
+                <Grid
+                    item
+                    xs={12}
+                    md={showFilter && collection ? 9 : 12}
+                    xl={showFilter && collection ? 10 : 12}
+                >
+                    {collection ? (
+                        <InfiniteScroll
+                            dataLength={nfts.length}
+                            next={() => {
+                                setPage((prevPage) => prevPage + 1);
+                                setSync((prevSync) => prevSync + 1);
+                            }}
+                            hasMore={hasMore}
+                            loader={
+                                <Box
+                                    display="flex"
+                                    justifyContent="center"
+                                    mt={2}
+                                >
+                                    <ClipLoader
+                                        color="#ff0000"
+                                        size={35}
+                                    />
+                                </Box>
+                            }
+                            endMessage={
+                                <Typography
+                                    variant="body2"
+                                    align="center"
+                                    mt={2}
+                                >
+                                    {nfts.length === 0
+                                        ? 'No NFTs found.'
+                                        : 'You have seen all NFTs.'}
+                                </Typography>
+                            }
+                            scrollThreshold={0.6}
+                        >
+                            {nftItems}
+                        </InfiniteScroll>
+                    ) : (
+                        // If not filtering by collection, display NFTs without infinite scroll
+                        <>
+                            {nfts.length > 0 ? (
+                                nftItems
+                            ) : (
+                                <Typography
+                                    variant="body2"
+                                    align="center"
+                                    mt={2}
+                                >
+                                    No NFTs found.
+                                </Typography>
+                            )}
+                        </>
+                    )}
+                </Grid>
+            </Grid>
+
+            {/* Loading indicator */}
+            {loading && (
+                <Box display="flex" justifyContent="center" mt={2}>
+                    <ClipLoader color="#ff0000" size={35} />
+                </Box>
             )}
         </>
     );
