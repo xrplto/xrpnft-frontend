@@ -200,16 +200,22 @@ function truncate(str, n) {
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-// Create a styled component for the glass effect
+// Update the GlassPanel component
 const GlassPanel = styled(Glass)(({ theme }) => ({
-    background: alpha(theme.palette.background.paper, 0.7),
-    backdropFilter: 'blur(10px)',
-    borderRadius: theme.shape.borderRadius * 2,
-    padding: theme.spacing(3),
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
-    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
-    maxWidth: '90%',
-    margin: '0 auto'
+  background: alpha(theme.palette.background.paper, 0.7),
+  borderRadius: theme.shape.borderRadius * 2,
+  padding: theme.spacing(3),
+  boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
+  border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+  maxWidth: '90%',
+  margin: '0 auto',
+  [theme.breakpoints.down('sm')]: {
+    background: theme.palette.background.paper,
+    backdropFilter: 'none',
+    boxShadow: 'none',
+    border: 'none',
+    padding: theme.spacing(2),
+  }
 }));
 
 // Add this new styled component for the verification badge
