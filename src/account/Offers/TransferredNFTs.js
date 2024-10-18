@@ -48,6 +48,8 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
     const [loading, setLoading] = useState(true);
     const [loading2, setLoading2] = useState(false);
 
+    const [acceptedNFTId, setAcceptedNFTId] = useState(null);
+
     // useEffect(() => {
     //     function getNfts() {
     //         setLoading(true);
@@ -70,19 +72,19 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
 
     const fetchNfts = () => {
         setLoading(true);
+        console.log('Fetching NFTs for account:', account, 'Page:', page);
 
         const limit = 20;
-
-        // const body = { page, limit, flag, cid: collection?.uuid, search, filter, subFilter };
-
         const body = { account, page, limit };
 
         axios
             .post(`${BASE_URL}/account/transferred`, body)
             .then((res) => {
+                console.log('API Response:', res.data);
                 const newNfts = res.data.nfts;
                 const length = newNfts.length;
                 const total = res.data.total;
+                console.log('Fetched NFTs:', length, 'Total:', total);
                 if (length < 20) {
                     setHasMore(false);
                 } else {
@@ -94,10 +96,9 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                 }
             })
             .catch((err) => {
-                console.log('Error on getting nfts!', err);
+                console.error('Error fetching NFTs:', err);
             })
-            .then(function () {
-                // always executed
+            .finally(() => {
                 setLoading(false);
             });
     };
@@ -130,17 +131,16 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                 const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
                     setOpenScanQR(false);
-                    //if (dispatched_result === 'tesSUCCESS') {  // webxtor: TODO: check if really right solution, for ex. in accept offer also no  dispatched_result
-                        // handleClose();
-                        setNfts([]);
-                        setPage(0);
-                        setHasMore(true);
-                        setSync(sync + 1); // Load NFTs again
-                        openSnackbar('Accepting NFT successful!', 'success');
-                    //} else openSnackbar('Accepting NFT failed!', 'error');
+                    setNfts(prevNfts => prevNfts.filter(nft => nft.NFTokenID !== acceptedNFTId));
+                    setTotalOffers(prevTotal => prevTotal - 1);
+                    setAcceptedNFTId(null);
+                    setSync(sync + 1); // Load NFTs again
+                    openSnackbar('Accepting NFT successful!', 'success');
                     return;
                 }
-            } catch (err) {}
+            } catch (err) {
+                console.error('Error checking payload:', err);
+            }
             isRunning = false;
             counter--;
             if (counter <= 0) {
@@ -156,21 +156,23 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                 clearInterval(timer);
             }
         };
-    }, [openScanQR, xummUuid, sync]);
+    }, [openScanQR, xummUuid, sync, acceptedNFTId]);
 
     const onAcceptNFT = async (nft) => {
         if (!accountLogin || !accountToken) {
+            console.log('Accept NFT failed: User not logged in');
             openSnackbar('Please login', 'error');
             return;
         }
         if (accountLogin !== account) {
+            console.log('Accept NFT failed: User is not the owner');
             openSnackbar('You are not the owner', 'error');
             return;
         }
         setLoading2(true);
+        console.log('Accepting NFT:', nft);
         try {
             const { uuid, NFTokenID, index } = nft;
-
             const user_token = accountProfile.user_token;
 
             const body = {
@@ -183,6 +185,7 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                 user_token
             };
 
+            console.log('Sending accept request:', body);
             const res = await axios.post(
                 `${BASE_URL}/offers/acceptcancel`,
                 body,
@@ -190,18 +193,19 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
             );
 
             if (res.status === 200) {
+                console.log('Accept request successful:', res.data);
                 const newUuid = res.data.data.uuid;
-                console.log(newUuid);
                 const qrlink = res.data.data.qrUrl;
                 const nextlink = res.data.data.next;
 
                 setXummUuid(newUuid);
                 setQrUrl(qrlink);
                 setNextUrl(nextlink);
+                setAcceptedNFTId(NFTokenID);
                 setOpenScanQR(true);
             }
         } catch (err) {
-            console.error(err);
+            console.error('Error accepting NFT:', err);
         }
         setLoading2(false);
     };
@@ -262,6 +266,7 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                     <InfiniteScroll
                         dataLength={nfts.length}
                         next={() => {
+                            console.log('Loading more NFTs, current page:', page);
                             setPage(page + 1);
                             setSync(sync + 1);
                         }}
@@ -275,19 +280,7 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                                 profileAccount={account}
                                 key={index}
                             />
-                        // <Grid container spacing={1}>
-                                // <Grid
-                                //     item
-                                //     xs={6}
-                                //     sm={3}
-                                //     md={2.4}
-                                //     lg={2}
-                                //     xl={1.2}
-                                //     key={nft.uuid}
-                                // >
-                                // </Grid>
-                                // </Grid>
-                                ))}
+                        ))}
                     </InfiniteScroll>
                 </Grid>
             </Grid>

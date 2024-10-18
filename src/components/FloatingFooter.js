@@ -3,12 +3,12 @@ import { Box, Link, Stack, IconButton, Tooltip, Container, Typography, Button } 
 import { alpha, styled } from '@mui/material/styles';
 
 // Icons
-import ExploreIcon from '@mui/icons-material/Explore';
-import CollectionsIcon from '@mui/icons-material/Collections';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import SpeedIcon from '@mui/icons-material/Speed';
-import ChatIcon from '@mui/icons-material/Chat';
+// import ExploreIcon from '@mui/icons-material/Explore';
+// import CollectionsIcon from '@mui/icons-material/Collections';
+// import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+// import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+// import SpeedIcon from '@mui/icons-material/Speed';
+// import ChatIcon from '@mui/icons-material/Chat';
 
 const GradientXRP = styled('span')(({ theme }) => ({
   background: 'linear-gradient(45deg, #00B4DB 30%, #0083B0 90%)',
@@ -103,23 +103,7 @@ const FloatingFooter = () => {
           alignItems="center" 
           justifyContent="space-between"
         >
-          <Stack direction="row" spacing={1}>
-            <Tooltip title="Explore">
-              <Link href="/explore" component={IconButton} color="inherit">
-                <ExploreIcon fontSize="small" />
-              </Link>
-            </Tooltip>
-            <Tooltip title="Collections">
-              <Link href="/collections" component={IconButton} color="inherit">
-                <CollectionsIcon fontSize="small" />
-              </Link>
-            </Tooltip>
-            <Tooltip title="Create">
-              <Link href="/create" component={IconButton} color="inherit">
-                <AddCircleOutlineIcon fontSize="small" />
-              </Link>
-            </Tooltip>
-          </Stack>
+          <Box /> {/* Empty Box to maintain layout */}
           <Stack direction="row" spacing={2} alignItems="center">
             {xrpPrice && (
               <Tooltip title="XRP Price">
@@ -132,14 +116,12 @@ const FloatingFooter = () => {
             {tps && (
               <Tooltip title="Transactions Per Second">
                 <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
-                  <SpeedIcon fontSize="small" sx={{ mr: 0.5 }} />
-                  {tps} TPS
+                  TPS: {tps}
                 </Typography>
               </Tooltip>
             )}
             <ChatButton
               variant="contained"
-              startIcon={<ChatIcon />}
               onClick={handleChatClick}
             >
               Chat
