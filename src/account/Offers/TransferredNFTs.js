@@ -56,6 +56,7 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
     const [isAcceptingAll, setIsAcceptingAll] = useState(false);
     const [currentAcceptIndex, setCurrentAcceptIndex] = useState(0);
     const [processedNFTs, setProcessedNFTs] = useState([]);
+    const [allProcessedNFTs, setAllProcessedNFTs] = useState([]);
 
     const [batchProgress, setBatchProgress] = useState({ current: 0, total: 0 });
 
@@ -144,6 +145,7 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                     if (isAcceptingAll) {
                         setBatchProgress(prev => ({ ...prev, current: prev.current + 1 }));
                         setProcessedNFTs(prev => [...prev, acceptedNFTId]);
+                        setAllProcessedNFTs(prev => [...prev, acceptedNFTId]);
                         setNfts(prevNfts => prevNfts.filter(nft => nft.NFTokenID !== acceptedNFTId));
                         setTotalOffers(prevTotal => prevTotal - 1);
                         
@@ -159,12 +161,14 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                             setIsAcceptingAll(false);
                             setOpenBatchDialog(false);
                             setCurrentNFT(null);
+                            setProcessedNFTs([]); // Reset processed NFTs for this batch
                             openSnackbar('Batch processing complete!', 'success');
                         }
                     } else {
                         setOpenScanQR(false);
                         setNfts(prevNfts => prevNfts.filter(nft => nft.NFTokenID !== acceptedNFTId));
                         setTotalOffers(prevTotal => prevTotal - 1);
+                        setAllProcessedNFTs(prev => [...prev, acceptedNFTId]);
                     }
                     setAcceptedNFTId(null);
                     setSync(sync + 1); // Load NFTs again
@@ -192,13 +196,23 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
     }, [openScanQR, xummUuid, sync, acceptedNFTId, isAcceptingAll, currentAcceptIndex]);
 
     const handleSelectAll = () => {
-        const nftsToSelect = nfts.slice(0, 20);
+        // Filter out all processed NFTs, including those from previous batches
+        const unprocessedNfts = nfts.filter(nft => !allProcessedNFTs.includes(nft.NFTokenID));
+        
+        // Select up to 20 unprocessed NFTs
+        const nftsToSelect = unprocessedNfts.slice(0, 20);
+        
+        if (nftsToSelect.length === 0) {
+            openSnackbar('No more NFTs to process', 'info');
+            return;
+        }
+
         setSelectedNFTs(nftsToSelect);
         setIsAcceptingAll(true);
         setCurrentAcceptIndex(0);
-        setProcessedNFTs([]);
         setBatchProgress({ current: 0, total: nftsToSelect.length });
         setOpenBatchDialog(true);
+        setProcessedNFTs([]); // Reset processed NFTs for this new batch
         const firstNFT = nftsToSelect[0];
         setCurrentNFT(firstNFT.NFTokenID);
         onAcceptNFT(firstNFT);
