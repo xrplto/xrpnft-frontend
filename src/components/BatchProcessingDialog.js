@@ -10,11 +10,11 @@ import {
     LinearProgress
 } from '@mui/material';
 
-export default function QRDialog({ open, onClose, qrUrl, nextUrl, type, batchProgress, isAcceptingAll }) {
+export default function BatchProcessingDialog({ open, onClose, qrUrl, nextUrl, batchProgress, currentNFT }) {
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>
-                {type === 'NFTokenAcceptOffer' ? 'Accept NFT Offer' : 'Sign Transaction'}
+                Batch Processing NFTs
             </DialogTitle>
             <DialogContent>
                 {qrUrl && (
@@ -23,23 +23,21 @@ export default function QRDialog({ open, onClose, qrUrl, nextUrl, type, batchPro
                     </Box>
                 )}
                 <Typography variant="body1" align="center" gutterBottom>
-                    Scan the QR code with your XUMM wallet to sign the transaction.
+                    Scan the QR code with your XUMM wallet to sign the transaction for NFT {currentNFT}.
                 </Typography>
-                {isAcceptingAll && (
-                    <Box mt={2}>
-                        <Typography variant="body2" align="center" gutterBottom>
-                            Progress: {batchProgress.current} / {batchProgress.total}
-                        </Typography>
-                        <LinearProgress
-                            variant="determinate"
-                            value={(batchProgress.current / batchProgress.total) * 100}
-                        />
-                    </Box>
-                )}
+                <Box mt={2}>
+                    <Typography variant="body2" align="center" gutterBottom>
+                        Progress: {batchProgress.current} / {batchProgress.total}
+                    </Typography>
+                    <LinearProgress
+                        variant="determinate"
+                        value={(batchProgress.current / batchProgress.total) * 100}
+                    />
+                </Box>
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose} color="primary">
-                    Close
+                    Cancel
                 </Button>
                 {nextUrl && (
                     <Button

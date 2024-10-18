@@ -24,6 +24,7 @@ import { ClipLoader, PulseLoader } from 'react-spinners';
 // Components
 import NFTCardAccept from '../NFTCardAccept';
 import QRDialog from 'src/components/QRDialog';
+import BatchProcessingDialog from 'src/components/BatchProcessingDialog';
 
 export default function TransferredNFTs({ account, setTotalOffers }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -54,6 +55,13 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
     const [selectedNFTs, setSelectedNFTs] = useState([]);
     const [isAcceptingAll, setIsAcceptingAll] = useState(false);
     const [currentAcceptIndex, setCurrentAcceptIndex] = useState(0);
+    const [processedNFTs, setProcessedNFTs] = useState([]);
+
+    const [batchProgress, setBatchProgress] = useState({ current: 0, total: 0 });
+
+    const [openBatchDialog, setOpenBatchDialog] = useState(false);
+
+    const [currentNFT, setCurrentNFT] = useState(null);
 
     // useEffect(() => {
     //     function getNfts() {
@@ -125,7 +133,6 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
         var isRunning = false;
         var counter = 150;
         async function getPayload() {
-            console.log(counter + ' ' + isRunning, xummUuid);
             if (isRunning) return;
             isRunning = true;
             try {
@@ -133,11 +140,32 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                     `${BASE_URL}/offers/acceptcancel/${xummUuid}`
                 );
                 const resolved_at = ret.data?.resolved_at;
-                const dispatched_result = ret.data?.dispatched_result;
                 if (resolved_at) {
-                    setOpenScanQR(false);
-                    setNfts(prevNfts => prevNfts.filter(nft => nft.NFTokenID !== acceptedNFTId));
-                    setTotalOffers(prevTotal => prevTotal - 1);
+                    if (isAcceptingAll) {
+                        setBatchProgress(prev => ({ ...prev, current: prev.current + 1 }));
+                        setProcessedNFTs(prev => [...prev, acceptedNFTId]);
+                        setNfts(prevNfts => prevNfts.filter(nft => nft.NFTokenID !== acceptedNFTId));
+                        setTotalOffers(prevTotal => prevTotal - 1);
+                        
+                        // Move to the next NFT in the batch
+                        const nextIndex = currentAcceptIndex + 1;
+                        if (nextIndex < selectedNFTs.length) {
+                            setCurrentAcceptIndex(nextIndex);
+                            const nextNFT = selectedNFTs[nextIndex];
+                            setCurrentNFT(nextNFT.NFTokenID);
+                            onAcceptNFT(nextNFT);
+                        } else {
+                            // Batch processing complete
+                            setIsAcceptingAll(false);
+                            setOpenBatchDialog(false);
+                            setCurrentNFT(null);
+                            openSnackbar('Batch processing complete!', 'success');
+                        }
+                    } else {
+                        setOpenScanQR(false);
+                        setNfts(prevNfts => prevNfts.filter(nft => nft.NFTokenID !== acceptedNFTId));
+                        setTotalOffers(prevTotal => prevTotal - 1);
+                    }
                     setAcceptedNFTId(null);
                     setSync(sync + 1); // Load NFTs again
                     openSnackbar('Accepting NFT successful!', 'success');
@@ -153,7 +181,7 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                 handleScanQRClose();
             }
         }
-        if (openScanQR) {
+        if (openScanQR || isAcceptingAll) {
             timer = setInterval(getPayload, 2000);
         }
         return () => {
@@ -161,33 +189,20 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                 clearInterval(timer);
             }
         };
-    }, [openScanQR, xummUuid, sync, acceptedNFTId]);
+    }, [openScanQR, xummUuid, sync, acceptedNFTId, isAcceptingAll, currentAcceptIndex]);
 
     const handleSelectAll = () => {
         const nftsToSelect = nfts.slice(0, 20);
         setSelectedNFTs(nftsToSelect);
         setIsAcceptingAll(true);
         setCurrentAcceptIndex(0);
-        acceptNextNFT(nftsToSelect, 0);
+        setProcessedNFTs([]);
+        setBatchProgress({ current: 0, total: nftsToSelect.length });
+        setOpenBatchDialog(true);
+        const firstNFT = nftsToSelect[0];
+        setCurrentNFT(firstNFT.NFTokenID);
+        onAcceptNFT(firstNFT);
     };
-
-    const acceptNextNFT = async (nftsToAccept, index) => {
-        if (index >= nftsToAccept.length || index >= 20) {
-            setIsAcceptingAll(false);
-            setCurrentAcceptIndex(0);
-            return;
-        }
-
-        const nft = nftsToAccept[index];
-        await onAcceptNFT(nft);
-    };
-
-    useEffect(() => {
-        if (isAcceptingAll && !openScanQR && currentAcceptIndex < selectedNFTs.length) {
-            acceptNextNFT(selectedNFTs, currentAcceptIndex + 1);
-            setCurrentAcceptIndex(currentAcceptIndex + 1);
-        }
-    }, [openScanQR, isAcceptingAll, currentAcceptIndex]);
 
     const onAcceptNFT = async (nft) => {
         if (!accountLogin || !accountToken) {
@@ -239,6 +254,22 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
             }
         } catch (err) {
             console.error('Error accepting NFT:', err);
+            if (isAcceptingAll) {
+                // Move to the next NFT in case of error
+                const nextIndex = currentAcceptIndex + 1;
+                if (nextIndex < selectedNFTs.length) {
+                    setCurrentAcceptIndex(nextIndex);
+                    const nextNFT = selectedNFTs[nextIndex];
+                    setCurrentNFT(nextNFT.NFTokenID);
+                    onAcceptNFT(nextNFT);
+                } else {
+                    // Batch processing complete
+                    setIsAcceptingAll(false);
+                    setOpenBatchDialog(false);
+                    setCurrentNFT(null);
+                    openSnackbar('Batch processing complete with errors!', 'warning');
+                }
+            }
         }
         setLoading2(false);
     };
@@ -278,7 +309,7 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                 disabled={isAcceptingAll || nfts.length === 0}
                 sx={{ mb: 2 }}
             >
-                Select all (limit 20)
+                {isAcceptingAll ? `Processing ${batchProgress.current + 1} of ${batchProgress.total}` : 'Select all (limit 20)'}
             </Button>
 
             {loading ? (
@@ -295,17 +326,28 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
             )}
 
             <QRDialog
-                open={openScanQR}
+                open={openScanQR && !isAcceptingAll}
                 type="NFTokenAcceptOffer"
-                onClose={() => {
-                    handleScanQRClose();
-                    if (isAcceptingAll) {
-                        acceptNextNFT(selectedNFTs, currentAcceptIndex);
-                    }
-                }}
+                onClose={handleScanQRClose}
                 qrUrl={qrUrl}
                 nextUrl={nextUrl}
             />
+
+            <BatchProcessingDialog
+                open={openBatchDialog}
+                onClose={() => {
+                    setOpenBatchDialog(false);
+                    setIsAcceptingAll(false);
+                    setCurrentAcceptIndex(0);
+                    setBatchProgress({ current: 0, total: 0 });
+                    setCurrentNFT(null);
+                }}
+                qrUrl={qrUrl}
+                nextUrl={nextUrl}
+                batchProgress={batchProgress}
+                currentNFT={currentNFT}
+            />
+
             <Backdrop sx={{ color: '#000', zIndex: 1303 }} open={loading2}>
                 <PulseLoader color={'#FF4842'} size={10} />
             </Backdrop>
@@ -327,6 +369,7 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                                 handleApprove={handleApprove}
                                 profileAccount={account}
                                 key={index}
+                                disabled={isAcceptingAll || processedNFTs.includes(nft.NFTokenID)}
                             />
                         ))}
                     </InfiniteScroll>
