@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { styled, alpha } from '@mui/material/styles';
 
@@ -70,7 +70,7 @@ export default function CollectedCreatedNFTs({
     collection,
     setHasCreatedNFTs,
     setCreatedNFTsLoaded,
-    setCreatedNFTsCount // Additional prop for created NFTs count
+    setCreatedNFTsCount
 }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -94,9 +94,9 @@ export default function CollectedCreatedNFTs({
     const [sync, setSync] = useState(0);
 
     /**
-     * Fetch NFTs from the API based on current state parameters.
+     * Memoize the fetchNfts function to prevent unnecessary re-creation
      */
-    const fetchNfts = () => {
+    const fetchNfts = useCallback(() => {
         setLoading(true);
 
         const body = {
@@ -113,15 +113,11 @@ export default function CollectedCreatedNFTs({
         axios
             .post(`${BASE_URL}/account/collectedCreated`, body)
             .then((res) => {
-                console.log('API response from xrpnft:', res.data); // Debugging log
+                console.log('API response from xrpnft:', res.data);
                 const newNfts = res.data.nfts;
                 const length = newNfts.length;
 
-                if (length < limit) {
-                    setHasMore(false);
-                } else {
-                    setHasMore(true);
-                }
+                setHasMore(length >= limit);
 
                 if (length > 0) {
                     setNfts((prevNfts) => [...prevNfts, ...newNfts]);
@@ -133,7 +129,7 @@ export default function CollectedCreatedNFTs({
             .finally(() => {
                 setLoading(false);
             });
-    };
+    }, [type, account, page, limit, search, filter, subFilter, collection]);
 
     /**
      * Reset NFT state when filters or search terms change.
@@ -149,11 +145,10 @@ export default function CollectedCreatedNFTs({
         resetNfts();
     }, [flag, search, filter, subFilter, collection]);
 
-    // Effect to fetch NFTs when dependencies change
+    // Use useEffect to fetch NFTs only when necessary
     useEffect(() => {
         fetchNfts();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sync, flag, search, filter, subFilter, collection]);
+    }, [fetchNfts, sync]);
 
     // Effect to handle responsiveness for filter visibility
     useEffect(() => {
@@ -206,9 +201,9 @@ export default function CollectedCreatedNFTs({
     };
 
     /**
-     * Render NFT Items as a grid.
+     * Memoize the nftItems to prevent unnecessary re-renders
      */
-    const nftItems = () => (
+    const nftItems = useMemo(() => (
         <Grid container spacing={1}>
             {nfts.map((nft, index) => (
                 <Grid
@@ -220,9 +215,9 @@ export default function CollectedCreatedNFTs({
                     xl={1.5}
                     key={nft.id || index}
                     sx={{
-                        py: { xs: 0.5, sm: 2 }, // Reduce vertical padding on mobile
-                        px: { xs: 0.5, sm: 1 }, // Reduce horizontal padding on mobile
-                        pr: { xs: 1.5, sm: 2 }  // Increase padding on the right a bit more
+                        py: { xs: 0.5, sm: 2 },
+                        px: { xs: 0.5, sm: 1 },
+                        pr: { xs: 1.5, sm: 2 }
                     }}
                 >
                     {collection ? (
@@ -237,7 +232,7 @@ export default function CollectedCreatedNFTs({
                 </Grid>
             ))}
         </Grid>
-    );
+    ), [nfts, collection, type, account]);
 
     return (
         <>
@@ -382,13 +377,13 @@ export default function CollectedCreatedNFTs({
                                     }
                                     scrollThreshold={0.6}
                                 >
-                                    {nftItems()}
+                                    {nftItems}
                                 </InfiniteScroll>
                             ) : (
                                 // If not filtering by collection, display NFTs without infinite scroll
                                 <>
                                     {nfts.length > 0 ? (
-                                        nftItems()
+                                        nftItems
                                     ) : (
                                         <Typography
                                             variant="body2"
