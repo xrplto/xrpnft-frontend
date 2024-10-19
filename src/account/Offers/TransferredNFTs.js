@@ -95,32 +95,22 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
             .post(`${BASE_URL}/account/transferred`, body)
             .then((res) => {
                 console.log('API Response:', res.data);
-                
-                if (res.data.result !== "success") {
-                    throw new Error("API request was not successful");
-                }
-
                 const newNfts = res.data.nfts;
                 const length = newNfts.length;
                 const total = res.data.total;
-                console.log(`Fetched ${length} NFTs. Total: ${total}`);
-                
-                if (length < limit) {
+                console.log('Fetched NFTs:', length, 'Total:', total);
+                if (length < 20) {
                     setHasMore(false);
                 } else {
                     setHasMore(true);
                 }
                 if (length > 0) {
-                    setNfts(prevNfts => [...prevNfts, ...newNfts]);
+                    setNfts([...nfts, ...newNfts]);
                     setTotalOffers(total);
                 }
             })
             .catch((err) => {
                 console.error('Error fetching NFTs:', err);
-                if (err.response) {
-                    console.error('Error response:', err.response.data);
-                }
-                openSnackbar('Failed to fetch NFTs. Please try again.', 'error');
             })
             .finally(() => {
                 setLoading(false);
@@ -376,24 +366,23 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                 <PulseLoader color={'#FF4842'} size={10} />
             </Backdrop>
             <Grid container spacing={1} justifyContent="space-between" mt={1}>
-                <Grid item xs={12}>
+                <Grid item xs={100}>
                     <InfiniteScroll
                         dataLength={nfts.length}
                         next={() => {
                             console.log('Loading more NFTs, current page:', page);
-                            setPage(prevPage => prevPage + 1);
-                            fetchNfts();
+                            setPage(page + 1);
+                            setSync(sync + 1);
                         }}
                         hasMore={hasMore}
-                        loader={<PulseLoader color="#00AB55" size={10} />}
-                        scrollThreshold={0.8}
+                        scrollThreshold={0.6}
                     >
                         {nfts.map((nft, index) => (
                             <NFTCardAccept
                                 nft={nft}
                                 handleApprove={handleApprove}
                                 profileAccount={account}
-                                key={nft.NFTokenID || index}
+                                key={index}
                                 disabled={isAcceptingAll || processedNFTs.includes(nft.NFTokenID)}
                             />
                         ))}
