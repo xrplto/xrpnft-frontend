@@ -178,21 +178,18 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
         // Filter out all processed NFTs, including those from previous batches
         const unprocessedNfts = nfts.filter(nft => !allProcessedNFTs.includes(nft.NFTokenID));
         
-        // Select up to 20 unprocessed NFTs
-        const nftsToSelect = unprocessedNfts.slice(0, 20);
-        
-        if (nftsToSelect.length === 0) {
+        if (unprocessedNfts.length === 0) {
             openSnackbar('No more NFTs to process', 'info');
             return;
         }
 
-        setSelectedNFTs(nftsToSelect);
+        setSelectedNFTs(unprocessedNfts);
         setIsAcceptingAll(true);
         setCurrentAcceptIndex(0);
-        setBatchProgress({ current: 0, total: nftsToSelect.length });
+        setBatchProgress({ current: 0, total: unprocessedNfts.length });
         setOpenBatchDialog(true);
         setProcessedNFTs([]); // Reset processed NFTs for this new batch
-        const firstNFT = nftsToSelect[0];
+        const firstNFT = unprocessedNfts[0];
         setCurrentNFT(firstNFT.NFTokenID);
         onAcceptNFT(firstNFT);
     };
@@ -302,7 +299,7 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
                 disabled={isAcceptingAll || nfts.length === 0}
                 sx={{ mb: 2 }}
             >
-                {isAcceptingAll ? `Processing ${batchProgress.current + 1} of ${batchProgress.total}` : 'Select all (limit 20)'}
+                {isAcceptingAll ? `Processing ${batchProgress.current + 1} of ${batchProgress.total}` : 'Select all'}
             </Button>
 
             {loading ? (
