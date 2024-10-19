@@ -64,69 +64,48 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
 
     const [currentNFT, setCurrentNFT] = useState(null);
 
-    // useEffect(() => {
-    //     function getNfts() {
-    //         setLoading(true);
-    //         axios.get(`${BASE_URL}/account/offered?account=${account}&page=${page}&limit=${rows}`)
-    //             .then(res => {
-    //                 let ret = res.status === 200 ? res.data : undefined;
-    //                 if (ret) {
-    //                     setTotal(ret.total);
-    //                     setNfts(ret.nfts);
-    //                 }
-    //             }).catch(err => {
-    //                 console.log("Error on getting nft!", err);
-    //             }).then(function () {
-    //                 // always executed
-    //                 setLoading(false);
-    //             });
-    //     }
-    //     getNfts();
-    // }, [account, page, rows, sync]);
-
-    const fetchNfts = () => {
+    const fetchAllNfts = async () => {
         setLoading(true);
-        console.log('Fetching NFTs for account:', account, 'Page:', page);
+        console.log('Fetching all NFTs for account:', account);
 
-        const limit = 20;
-        const body = { account, page, limit };
+        let allNfts = [];
+        let currentPage = 0;
+        let hasMorePages = true;
 
-        axios
-            .post(`${BASE_URL}/account/transferred`, body)
-            .then((res) => {
+        while (hasMorePages) {
+            try {
+                const body = { account, page: currentPage, limit: 20 };
+                console.log('Request body sent to API:', body);
+
+                const res = await axios.post(`${BASE_URL}/account/transferred`, body);
                 console.log('API Response:', res.data);
+
                 const newNfts = res.data.nfts;
-                const length = newNfts.length;
                 const total = res.data.total;
-                console.log('Fetched NFTs:', length, 'Total:', total);
-                if (length < 20) {
-                    setHasMore(false);
+
+                allNfts = [...allNfts, ...newNfts];
+                console.log(`Fetched ${newNfts.length} NFTs. Total so far: ${allNfts.length}`);
+
+                if (newNfts.length < 20) {
+                    hasMorePages = false;
                 } else {
-                    setHasMore(true);
+                    currentPage++;
                 }
-                if (length > 0) {
-                    setNfts([...nfts, ...newNfts]);
-                    setTotalOffers(total);
-                }
-            })
-            .catch((err) => {
+
+                setTotalOffers(total);
+            } catch (err) {
                 console.error('Error fetching NFTs:', err);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+                hasMorePages = false;
+            }
+        }
+
+        setNfts(allNfts);
+        setHasMore(false);
+        setLoading(false);
     };
 
     useEffect(() => {
-        setNfts([]);
-        setPage(0);
-        setHasMore(true);
-        setSync(sync + 1);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [flag]);
-
-    useEffect(() => {
-        fetchNfts();
+        fetchAllNfts();
     }, [sync]);
 
     useEffect(() => {
@@ -367,26 +346,15 @@ export default function TransferredNFTs({ account, setTotalOffers }) {
             </Backdrop>
             <Grid container spacing={1} justifyContent="space-between" mt={1}>
                 <Grid item xs={100}>
-                    <InfiniteScroll
-                        dataLength={nfts.length}
-                        next={() => {
-                            console.log('Loading more NFTs, current page:', page);
-                            setPage(page + 1);
-                            setSync(sync + 1);
-                        }}
-                        hasMore={hasMore}
-                        scrollThreshold={0.6}
-                    >
-                        {nfts.map((nft, index) => (
-                            <NFTCardAccept
-                                nft={nft}
-                                handleApprove={handleApprove}
-                                profileAccount={account}
-                                key={index}
-                                disabled={isAcceptingAll || processedNFTs.includes(nft.NFTokenID)}
-                            />
-                        ))}
-                    </InfiniteScroll>
+                    {nfts.map((nft, index) => (
+                        <NFTCardAccept
+                            nft={nft}
+                            handleApprove={handleApprove}
+                            profileAccount={account}
+                            key={index}
+                            disabled={isAcceptingAll || processedNFTs.includes(nft.NFTokenID)}
+                        />
+                    ))}
                 </Grid>
             </Grid>
         </>
