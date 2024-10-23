@@ -15,7 +15,7 @@ const StyledPre = styled('pre')(({ theme }) => ({
   transition: 'height 2s ease-in-out',
   borderRadius: theme.shape.borderRadius,
   '& .string': {
-    color: theme.palette.mode === 'light' ? 'green' : '#a5d6a7',
+    color: theme.palette.mode === 'light' ? '#546e7a' : '#b0bec5', // 'green' : '#a5d6a7',
   },
   '& .number': {
     color: theme.palette.mode === 'light' ? 'darkorange' : '#ffb74d',
