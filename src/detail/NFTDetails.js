@@ -31,6 +31,7 @@ import { AppContext } from 'src/AppContext';
 // Utils
 import { fVolume } from 'src/utils/formatNumber';
 import { convertHexToString, parseNFTokenID } from 'src/utils/parse';
+import { codeHighlight } from 'src/utils/codeHighlight';
 
 // Components
 import NFTPreview from './NFTPreview';
@@ -41,6 +42,7 @@ import Levels from 'src/minting/NFTLevels/Levels';
 // Add these imports at the top of the file
 import { alpha, styled } from '@mui/material/styles';
 import Glass from '@mui/material/Paper';
+import Box from '@mui/material/Box';
 
 // Create a styled component for the glass effect
 const GlassPanel = styled(Glass)(({ theme }) => ({
@@ -103,6 +105,7 @@ export default function NFTDetails({ nft }) {
 
     const {
         uuid,
+        hash,
         name,
         collection,
         account,
@@ -458,6 +461,25 @@ export default function NFTDetails({ nft }) {
                                 </Link>
                             </Stack>
                             <Divider sx={{ mt: 2, mb: 2 }} />
+                            <Stack spacing={1}>
+                                <Typography variant="caption">
+                                    Transaction
+                                </Typography>
+                                <Link
+                                    href={`https://bithomp.com/explorer/${hash}`}
+                                    target="_blank"
+                                    variant="info"
+                                    rel="noreferrer noopener nofollow"
+                                >
+                                    <Typography
+                                        sx={{ ml: 1 }}
+                                        style={{ wordWrap: 'break-word' }}
+                                    >
+                                        {hash}
+                                    </Typography>
+                                </Link>
+                            </Stack>
+                            <Divider sx={{ mt: 2, mb: 2 }} />
 
                             <Stack spacing={1} mt={1}>
                                 <Typography variant="caption">
@@ -477,6 +499,8 @@ export default function NFTDetails({ nft }) {
                                         cachedHref = `https://s2.xrpnft.com/d1/${file.dfile}`;
                                     }
 
+                                    let convertedHref = file.convertedFile ? `https://s2.xrpnft.com/d1/${file.convertedFile}` : null;
+                                    
                                     return (
                                         <Stack
                                             key={file.type}
@@ -530,39 +554,65 @@ export default function NFTDetails({ nft }) {
                                                         Cached
                                                     </Link>
                                                 )}
+                                                {convertedHref && (
+                                                    <Link
+                                                        href={convertedHref}
+                                                        sx={{
+                                                            display:
+                                                                'inline-flex',
+                                                            whiteSpace:
+                                                                'nowrap',
+                                                            ml: 1
+                                                        }}
+                                                        underline="hover"
+                                                        target="_blank"
+                                                        variant="body2"
+                                                        rel="noreferrer noopener nofollow"
+                                                    >
+                                                        Converted
+                                                    </Link>
+                                                )}
                                             </Typography>
                                         </Stack>
                                     );
                                 })}
                             </Stack>
 
-                            {/* Add image link here */}
-                            <Stack spacing={1} mt={2}>
-                                {files?.find((file) => file.type === 'image')
-                                    ?.convertedFile && (
-                                    <>
-                                        <Typography variant="caption">
-                                            Converted image:
-                                        </Typography>    
-                                        <Link
-                                            href={
-                                                'https://s2.xrpnft.com/d1/' + files.find(
-                                                    (file) => file.type === 'image'
-                                                ).convertedFile
-                                            }
-                                            underline="hover"
-                                            target="_blank"
-                                            variant="body2"
-                                            rel="noreferrer noopener nofollow"
-                                        >
-                                            {
-                                                'https://s2.xrpnft.com/d1/' + files.find(
-                                                    (file) => file.type === 'image'
-                                                ).convertedFile
-                                            }
-                                        </Link>
-                                    </>
-                                )}
+                            <Divider sx={{ mt: 2, mb: 2 }} />
+
+                            {/* New Raw Metadata section */}
+                            <Stack>
+                                <Accordion>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon color="primary" />}
+                                        aria-controls="panel-raw-metadata-content"
+                                        id="panel-raw-metadata-header"
+                                    >
+                                        <Stack spacing={2} direction="row">
+                                            <Icon
+                                                icon="mdi:code-json"
+                                                fontSize={25}
+                                                style={{
+                                                    color: theme.palette.primary.main
+                                                }}
+                                            />
+                                            <Typography variant="s16" color="primary.main">
+                                                Raw Metadata
+                                            </Typography>
+                                        </Stack>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {meta ? (
+                                            <Box sx={{ overflowX: 'auto' }}>
+                                                {codeHighlight(meta)}
+                                            </Box>
+                                        ) : (
+                                            <Typography sx={{ textAlign: 'center' }}>
+                                                No raw metadata available
+                                            </Typography>
+                                        )}
+                                    </AccordionDetails>
+                                </Accordion>
                             </Stack>
 
                             <Divider sx={{ mt: 2, mb: 2 }} />
