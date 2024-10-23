@@ -120,7 +120,8 @@ export default function NFTDetails({ nft }) {
         volume,
         rarity,
         rarity_rank,
-        files
+        files,
+        memo
     } = nft;
 
     const ParsedURI = convertHexToString(URI);
@@ -141,6 +142,60 @@ export default function NFTDetails({ nft }) {
 
     const properties = props || getProperties(meta);
     const hasProperties = properties && properties.length > 0;
+
+    // Function to check if input is valid JSON or a JavaScript object/array
+    const isValidJSONOrObject = (input) => {
+        // If it's already an object or array, it's valid
+        if (typeof input === 'object' && input !== null) {
+            return true;
+        }
+
+        // If it's a string, try to parse it
+        if (typeof input === 'string') {
+            try {
+                // First, try parsing as JSON
+                JSON.parse(input);
+                return true;
+            } catch (e) {
+                // If that fails, try evaluating as a JavaScript expression
+                try {
+                    // Use Function constructor to create a sandbox
+                    new Function('return ' + input)();
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+        }
+        
+        // If it's neither an object nor a string, it's not valid
+        return false;
+    };
+
+    // Function to safely parse and stringify the memo content
+    const parseMemo = (memo) => {
+        if (typeof memo === 'object' && memo !== null) {
+            return JSON.stringify(memo, null, 2);
+        }
+        
+        if (typeof memo === 'string') {
+            try {
+                const parsed = JSON.parse(memo);
+                return JSON.stringify(parsed, null, 2);
+            } catch (e) {
+                try {
+                    const obj = new Function('return ' + memo)();
+                    return JSON.stringify(obj, null, 2);
+                } catch (e) {
+                    // Ensure the string is safe for React rendering
+                    return memo.replace(/[<>]/g, (char) => char === '<' ? '&lt;' : '&gt;');
+                }
+            }
+        }
+        
+        // If memo is neither an object nor a string, convert to string
+        return String(memo);
+    };
 
     return (
         <GlassPanel elevation={0}>
@@ -480,6 +535,51 @@ export default function NFTDetails({ nft }) {
                                 </Link>
                             </Stack>
                             <Divider sx={{ mt: 2, mb: 2 }} />
+
+                            {memo && (
+                                <>
+                                    <Stack spacing={1}>
+                                        <Typography variant="caption">
+                                            Memo
+                                        </Typography>
+                                        {isValidJSONOrObject(memo) ? (
+                                            <Accordion>
+                                                <AccordionSummary
+                                                    expandIcon={<ExpandMoreIcon color="primary" />}
+                                                    aria-controls="panel-memo-content"
+                                                    id="panel-memo-header"
+                                                >
+                                                    <Stack spacing={2} direction="row">
+                                                        <Icon
+                                                            icon="mdi:code-json"
+                                                            fontSize={25}
+                                                            style={{
+                                                                color: theme.palette.primary.main
+                                                            }}
+                                                        />
+                                                        <Typography variant="s16" color="primary.main">
+                                                            Memo (JSON)
+                                                        </Typography>
+                                                    </Stack>
+                                                </AccordionSummary>
+                                                <AccordionDetails>
+                                                    <Box sx={{ overflowX: 'auto' }}>
+                                                        <CodeHighlight json={parseMemo(memo)} />
+                                                    </Box>
+                                                </AccordionDetails>
+                                            </Accordion>
+                                        ) : (
+                                            <Typography
+                                                sx={{ ml: 1 }}
+                                                style={{ wordWrap: 'break-word' }}
+                                            >
+                                                {memo}
+                                            </Typography>
+                                        )}
+                                    </Stack>
+                                    <Divider sx={{ mt: 2, mb: 2 }} />
+                                </>
+                            )}
 
                             <Stack spacing={1} mt={1}>
                                 <Typography variant="caption">
