@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material';
 
 const StyledPre = styled('pre')(({ theme }) => ({
   boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.15)',
@@ -54,10 +54,17 @@ const syntaxHighlight = (json) => {
   );
 };
 
-export const codeHighlight = (json) => {
+const CodeHighlight = ({ json }) => {
+
   if (typeof json === 'string') {
-    json = JSON.parse(json);
+    try {
+      json = JSON.parse(json);
+    } catch (e) {
+      json = 'Failed to parse JSON string';
+      console.error(json, e);
+    }
   }
+
   return (
     <StyledPre
       dangerouslySetInnerHTML={{
@@ -66,3 +73,5 @@ export const codeHighlight = (json) => {
     />
   );
 };
+
+export default CodeHighlight;

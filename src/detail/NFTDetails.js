@@ -31,13 +31,13 @@ import { AppContext } from 'src/AppContext';
 // Utils
 import { fVolume } from 'src/utils/formatNumber';
 import { convertHexToString, parseNFTokenID } from 'src/utils/parse';
-import { codeHighlight } from 'src/utils/codeHighlight';
 
 // Components
 import NFTPreview from './NFTPreview';
 import FlagsContainer from 'src/components/Flags';
 import Properties from './Properties';
 import Levels from 'src/minting/NFTLevels/Levels';
+import CodeHighlight from 'src/components/CodeHighlight';
 
 // Add these imports at the top of the file
 import { alpha, styled } from '@mui/material/styles';
@@ -604,7 +604,7 @@ export default function NFTDetails({ nft }) {
                                     <AccordionDetails>
                                         {meta ? (
                                             <Box sx={{ overflowX: 'auto' }}>
-                                                {codeHighlight(meta)}
+                                                <CodeHighlight json={meta} />
                                             </Box>
                                         ) : (
                                             <Typography sx={{ textAlign: 'center' }}>
