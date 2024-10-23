@@ -31,6 +31,13 @@ const StyledPre = styled('pre')(({ theme }) => ({
   },
 }));
 
+const MAX_STRING_LENGTH = 4000;
+
+const truncateString = (str) => {
+  if (str.length <= MAX_STRING_LENGTH) return str;
+  return str.substring(0, MAX_STRING_LENGTH) + '...';
+};
+
 const syntaxHighlight = (json) => {
   if (!json) return '';
   json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -41,8 +48,10 @@ const syntaxHighlight = (json) => {
       if (/^"/.test(match)) {
         if (/:$/.test(match)) {
           cls = 'key';
+          match = '"' + truncateString(match.slice(1, -2)) + '":';
         } else {
           cls = 'string';
+          match = '"' + truncateString(match.slice(1, -1)) + '"';
         }
       } else if (/true|false/.test(match)) {
         cls = 'boolean';
