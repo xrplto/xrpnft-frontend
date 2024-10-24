@@ -249,6 +249,24 @@ export default function FilterDetail({
                                             </Typography>
                                         }
                                     />
+                                   <FormControlLabel
+                                        value="mintedLatest"
+                                        control={<Radio color="primary" />}
+                                        label={
+                                            <Typography variant="s3">
+                                                Minted Latest
+                                            </Typography>
+                                        }
+                                    />
+                                    <FormControlLabel
+                                        value="mintedEarliest"
+                                        control={<Radio color="primary" />}
+                                        label={
+                                            <Typography variant="s3">
+                                                Minted Earliest
+                                            </Typography>
+                                        }
+                                    />
                                 </RadioGroup>
                             </FormControl>
                             {extra?.onSaleCount !== undefined && (
