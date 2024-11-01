@@ -47,7 +47,7 @@ export default function Footer() {
 
     return (
         <FooterWrapper>
-            <Container maxWidth="lg"> {/* Add Container component */}
+            <Container maxWidth="lg">
                 <Stack
                     direction={{ xs: 'column', sm: 'row' }}
                     justifyContent="space-between"
@@ -67,6 +67,9 @@ export default function Footer() {
                         </StyledLink>
                         <StyledLink href="/create" underline="hover">
                             <Typography variant="body2">Create</Typography>
+                        </StyledLink>
+                        <StyledLink href="/terms" underline="hover">
+                            <Typography variant="body2">Terms</Typography>
                         </StyledLink>
                     </Stack>
                     <Stack direction="row" spacing={1}>
