@@ -174,6 +174,62 @@ function truncate(str, n) {
     return str.length > n ? str.substr(0, n - 1) + ' ...' : str;
 }
 
+// Add this styled component near the top with other styled components
+const StyledAccordion = styled(Accordion)(({ theme }) => ({
+  backgroundColor: 'transparent',
+  boxShadow: 'none',
+  '&:before': {
+    display: 'none', // Removes the default divider
+  },
+  '& .MuiAccordionSummary-root': {
+    padding: theme.spacing(0, 1),
+    minHeight: 56,
+    '&.Mui-expanded': {
+      minHeight: 56,
+    }
+  },
+  '& .MuiAccordionSummary-content': {
+    margin: '12px 0',
+    '&.Mui-expanded': {
+      margin: '12px 0',
+    }
+  },
+  '& .MuiAccordionDetails-root': {
+    padding: theme.spacing(1),
+  }
+}));
+
+// Add this styled component for the badge
+const OffersBadge = styled('span')(({ theme }) => ({
+  backgroundColor: alpha(theme.palette.primary.main, 0.1),
+  color: theme.palette.primary.main,
+  borderRadius: theme.shape.borderRadius,
+  padding: '2px 8px',
+  fontSize: '0.75rem',
+  fontWeight: 'bold',
+  marginLeft: theme.spacing(1)
+}));
+
+// Add this styled component for the offer count badge
+const OfferCountBadge = styled('span')(({ theme }) => ({
+  backgroundColor: alpha(theme.palette.primary.main, 0.1),
+  color: theme.palette.primary.main,
+  borderRadius: theme.shape.borderRadius,
+  padding: '2px 8px',
+  fontSize: '0.75rem',
+  fontWeight: 'bold',
+  marginLeft: theme.spacing(1)
+}));
+
+// Add this helper function near the top with other utility functions
+const formatXRPAmount = (amount, includeSymbol = true) => {
+    const formattedAmount = parseFloat(amount).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 6
+    });
+    return includeSymbol ? `${formattedAmount} XRP` : formattedAmount;
+};
+
 export default function NFTActions({ nft }) {
     const anchorRef = useRef(null);
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -904,61 +960,233 @@ export default function NFTActions({ nft }) {
                 {/* Offers and History sections */}
                 <Stack spacing={2}>
                     {isOwner && (
-                        <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+                        <StyledAccordion defaultExpanded>
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon color="primary" />}
                             >
                                 <Stack
                                     direction="row"
-                                    spacing={2}
                                     alignItems="center"
+                                    spacing={2}
+                                    sx={{ width: '100%' }}
                                 >
-                                    <LocalOfferIcon color="primary" />
-                                    <Typography
-                                        variant="h6"
-                                        color="primary.main"
-                                    >
-                                        Sell Offers
-                                    </Typography>
+                                    <Stack direction="row" alignItems="center" spacing={2}>
+                                        <LocalOfferIcon color="primary" />
+                                        <Typography variant="h6" color="primary.main">
+                                            Sell Offers
+                                        </Typography>
+                                    </Stack>
+                                    {sellOffers.length > 0 && (
+                                        <OffersBadge>
+                                            {sellOffers.length} {sellOffers.length === 1 ? 'Offer' : 'Offers'}
+                                        </OffersBadge>
+                                    )}
                                 </Stack>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <OffersList
-                                    nft={nft}
-                                    offers={sellOffers}
-                                    handleAcceptOffer={handleAcceptOffer}
-                                    handleCancelOffer={handleCancelOffer}
-                                    isSell={true}
-                                />
+                                {loading ? (
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+                                        <PulseLoader color="#00AB55" size={10} />
+                                    </Box>
+                                ) : sellOffers.length > 0 ? (
+                                    <Stack spacing={2}>
+                                        {sellOffers.map((offer, index) => {
+                                            const amount = normalizeAmount(offer.amount);
+                                            return (
+                                                <Paper
+                                                    key={index}
+                                                    sx={{
+                                                        p: 2,
+                                                        backgroundColor: (theme) => alpha(theme.palette.background.default, 0.6)
+                                                    }}
+                                                >
+                                                    <Stack spacing={2}>
+                                                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                                <Icon icon={rippleSolid} width="20" height="20" />
+                                                                <Typography variant="h6" fontWeight="bold">
+                                                                    {formatXRPAmount(amount.amount)}
+                                                                </Typography>
+                                                            </Stack>
+                                                            <Button
+                                                                variant="outlined"
+                                                                size="small"
+                                                                color="error"
+                                                                onClick={() => handleCancelOffer(offer)}
+                                                                startIcon={<Icon icon={infoFilled} />}
+                                                            >
+                                                                Cancel
+                                                            </Button>
+                                                        </Stack>
+                                                        {offer.destination && (
+                                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                                <Typography variant="body2" color="text.secondary">
+                                                                    Broker:
+                                                                </Typography>
+                                                                <Typography variant="body2">
+                                                                    {BROKER_ADDRESSES[offer.destination]?.name || truncate(offer.destination, 16)}
+                                                                </Typography>
+                                                            </Stack>
+                                                        )}
+                                                    </Stack>
+                                                </Paper>
+                                            );
+                                        })}
+                                    </Stack>
+                                ) : (
+                                    <Box sx={{ 
+                                        py: 4, 
+                                        textAlign: 'center',
+                                        backgroundColor: (theme) => alpha(theme.palette.background.default, 0.6),
+                                        borderRadius: 1
+                                    }}>
+                                        <Typography color="text.secondary">
+                                            No sell offers available
+                                        </Typography>
+                                        <Button
+                                            variant="outlined"
+                                            size="small"
+                                            startIcon={<LocalOfferIcon />}
+                                            onClick={handleCreateSellOffer}
+                                            sx={{ mt: 2 }}
+                                        >
+                                            Create Sell Offer
+                                        </Button>
+                                    </Box>
+                                )}
                             </AccordionDetails>
-                        </Accordion>
+                        </StyledAccordion>
                     )}
 
-                    <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+                    <StyledAccordion defaultExpanded>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon color="primary" />}
                         >
                             <Stack
                                 direction="row"
-                                spacing={2}
                                 alignItems="center"
+                                spacing={2}
+                                sx={{ width: '100%' }}
                             >
-                                <PanToolIcon color="primary" />
-                                <Typography variant="h6" color="primary.main">
-                                    Offers
-                                </Typography>
+                                <Stack direction="row" alignItems="center" spacing={2}>
+                                    <PanToolIcon color="primary" />
+                                    <Typography variant="h6" color="primary.main">
+                                        Buy Offers
+                                    </Typography>
+                                </Stack>
+                                {buyOffers.length > 0 && (
+                                    <OfferCountBadge>
+                                        {buyOffers.length} {buyOffers.length === 1 ? 'Offer' : 'Offers'}
+                                    </OfferCountBadge>
+                                )}
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <OffersList
-                                nft={nft}
-                                offers={buyOffers}
-                                handleAcceptOffer={handleAcceptOffer}
-                                handleCancelOffer={handleCancelOffer}
-                                isSell={false}
-                            />
+                            {loading ? (
+                                <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+                                    <PulseLoader color="#00AB55" size={10} />
+                                </Box>
+                            ) : buyOffers.length > 0 ? (
+                                <Stack spacing={2}>
+                                    {buyOffers.map((offer, index) => {
+                                        const amount = normalizeAmount(offer.amount);
+                                        return (
+                                            <Paper
+                                                key={index}
+                                                sx={{
+                                                    p: 2,
+                                                    backgroundColor: (theme) => alpha(theme.palette.background.default, 0.6)
+                                                }}
+                                            >
+                                                <Stack spacing={2}>
+                                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                                        <Stack direction="row" spacing={1} alignItems="center">
+                                                            <Icon icon={rippleSolid} width="20" height="20" />
+                                                            <Typography variant="h6" fontWeight="bold">
+                                                                {formatXRPAmount(amount.amount)}
+                                                            </Typography>
+                                                        </Stack>
+                                                        <Stack direction="row" spacing={1}>
+                                                            {isOwner ? (
+                                                                <Button
+                                                                    variant="contained"
+                                                                    size="small"
+                                                                    color="primary"
+                                                                    onClick={() => handleAcceptOffer(offer)}
+                                                                    startIcon={<CheckIcon />}
+                                                                >
+                                                                    Accept
+                                                                </Button>
+                                                            ) : (
+                                                                accountLogin === offer.owner && (
+                                                                    <Button
+                                                                        variant="outlined"
+                                                                        size="small"
+                                                                        color="error"
+                                                                        onClick={() => handleCancelOffer(offer)}
+                                                                        startIcon={<Icon icon={infoFilled} />}
+                                                                    >
+                                                                        Cancel
+                                                                    </Button>
+                                                                )
+                                                            )}
+                                                        </Stack>
+                                                    </Stack>
+                                                    <Stack spacing={1}>
+                                                        <Stack direction="row" spacing={1} alignItems="center">
+                                                            <Typography variant="body2" color="text.secondary">
+                                                                From:
+                                                            </Typography>
+                                                            <Link 
+                                                                href={`/account/${offer.owner}`}
+                                                                underline="hover"
+                                                            >
+                                                                <Typography variant="body2">
+                                                                    {truncate(offer.owner, 16)}
+                                                                </Typography>
+                                                            </Link>
+                                                        </Stack>
+                                                        {offer.destination && (
+                                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                                <Typography variant="body2" color="text.secondary">
+                                                                    Broker:
+                                                                </Typography>
+                                                                <Typography variant="body2">
+                                                                    {BROKER_ADDRESSES[offer.destination]?.name || truncate(offer.destination, 16)}
+                                                                </Typography>
+                                                            </Stack>
+                                                        )}
+                                                    </Stack>
+                                                </Stack>
+                                            </Paper>
+                                        );
+                                    })}
+                                </Stack>
+                            ) : (
+                                <Box sx={{ 
+                                    py: 4, 
+                                    textAlign: 'center',
+                                    backgroundColor: (theme) => alpha(theme.palette.background.default, 0.6),
+                                    borderRadius: 1
+                                }}>
+                                    <Typography color="text.secondary">
+                                        No buy offers available
+                                    </Typography>
+                                    {!isOwner && (
+                                        <Button
+                                            variant="outlined"
+                                            size="small"
+                                            startIcon={<PanToolIcon />}
+                                            onClick={handleCreateBuyOffer}
+                                            sx={{ mt: 2 }}
+                                        >
+                                            Make Offer
+                                        </Button>
+                                    )}
+                                </Box>
+                            )}
                         </AccordionDetails>
-                    </Accordion>
+                    </StyledAccordion>
 
                     <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
                         <AccordionSummary
