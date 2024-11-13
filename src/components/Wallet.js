@@ -252,39 +252,37 @@ export default function Wallet() {
                     onClick={handleOpen}
                     startIcon={<Icon icon="mdi:wallet" />}
                     sx={{
-                        py: 0.5,  // Reduce vertical padding
-                        px: 2,    // Adjust horizontal padding as needed
+                        py: 0.5,
+                        px: 2,
                     }}
                 >
                     Connect
                 </Button>
             )}
 
-            <StyledModal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="wallet-modal-title"
-                aria-describedby="wallet-modal-description"
-            >
-                <StyledBox>
-                    {!accountLogin && (
-                        <>
-                            <Typography variant="h5" component="h2" gutterBottom color="primary" sx={{ mb: 3 }}>
-                                Connect Wallet
-                            </Typography>
-                            <StyledMenuItem
-                                key="xumm"
-                                onClick={handleLogin}
-                            >
-                                <Stack direction='row' spacing={2} alignItems='center'>
-                                    <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ width: 40, height: 40 }} />
-                                    <Typography variant='body1'>Connect with Xaman</Typography>
-                                </Stack>
-                            </StyledMenuItem>
-                        </>
-                    )}
-                </StyledBox>
-            </StyledModal>
+            {!accountLogin && (
+                <StyledModal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="wallet-modal-title"
+                    aria-describedby="wallet-modal-description"
+                >
+                    <StyledBox>
+                        <Typography variant="h5" component="h2" gutterBottom color="primary" sx={{ mb: 3 }}>
+                            Connect Wallet
+                        </Typography>
+                        <StyledMenuItem
+                            key="xumm"
+                            onClick={handleLogin}
+                        >
+                            <Stack direction='row' spacing={2} alignItems='center'>
+                                <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ width: 40, height: 40 }} />
+                                <Typography variant='body1'>Connect with Xaman</Typography>
+                            </Stack>
+                        </StyledMenuItem>
+                    </StyledBox>
+                </StyledModal>
+            )}
 
             <LoginDialog
                 open={openLogin}
