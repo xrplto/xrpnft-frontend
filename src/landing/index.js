@@ -18,6 +18,7 @@ import {
     useTheme
 } from '@mui/material';
 import VerifiedIcon from '@mui/icons-material/Verified';
+import CheckIcon from '@mui/icons-material/Check';
 
 // Components
 import CollectionList from './CollectionList';
@@ -55,12 +56,15 @@ const GradientTypography = styled(Typography)(
 
 const HeroButton = styled(Button)(
     ({ theme }) => `
-        padding: 12px 24px;
+        padding: 11px 24px;
         font-weight: 600;
         font-size: 1rem;
         text-transform: none;
         border-radius: 8px;
         transition: all 0.3s ease;
+        height: 46px;
+        box-sizing: border-box;
+        line-height: 1.2;
         
         &:hover {
             transform: translateY(-2px);
@@ -70,7 +74,8 @@ const HeroButton = styled(Button)(
         &.MuiButton-contained {
             background: linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main});
             color: ${theme.palette.common.white};
-            border: none;
+            border: 1px solid transparent;
+            padding: 12px 24px;
 
             &:hover {
                 background: linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark});
@@ -78,7 +83,7 @@ const HeroButton = styled(Button)(
         }
 
         &.MuiButton-outlined {
-            border: 2px solid ${theme.palette.primary.main};
+            border: 1px solid ${theme.palette.primary.main};
             color: ${theme.palette.primary.main};
 
             &:hover {
@@ -154,6 +159,21 @@ const GradientText = styled(Typography)(({ theme }) => ({
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     display: 'inline-block'
+}));
+
+// Add this new styled component near the other styled components
+const VerificationBadge = styled('div')(({ theme }) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 16,
+    height: 16,
+    borderRadius: '50%',
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+    '& svg': {
+        fontSize: 12,
+    },
 }));
 
 export default function Landing({ collections }) {
@@ -339,7 +359,7 @@ export default function Landing({ collections }) {
                                     sx={{ fontSize: '0.7rem' }}
                                 >
                                     Supported Marketplaces: xrp.cafe, bidds, Art
-                                    Dept
+                                    Dept, XPMarket, Opul
                                 </Typography>
                             </Box>
                         </AutoStack>
@@ -418,36 +438,30 @@ export default function Landing({ collections }) {
                                                     <GradientText
                                                         variant="subtitle1"
                                                         sx={{
-                                                            color: theme.palette
-                                                                .text.primary,
+                                                            color: theme.palette.text.primary,
                                                             fontWeight: 600,
                                                             textShadow: `0 1px 2px ${theme.palette.primary.main}80`,
                                                             textAlign: 'center',
                                                             flexGrow: 1,
                                                             overflow: 'hidden',
-                                                            textOverflow:
-                                                                'ellipsis',
-                                                            whiteSpace:
-                                                                'nowrap',
-                                                            fontSize: '1.5rem'
+                                                            textOverflow: 'ellipsis',
+                                                            whiteSpace: 'nowrap',
+                                                            fontSize: '1.5rem',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            gap: '8px'
                                                         }}
                                                     >
                                                         {name}
+                                                        {verified === 'yes' && (
+                                                            <Tooltip title="Verified">
+                                                                <VerificationBadge>
+                                                                    <CheckIcon />
+                                                                </VerificationBadge>
+                                                            </Tooltip>
+                                                        )}
                                                     </GradientText>
-                                                    {verified === 'yes' && (
-                                                        <Tooltip title="Verified">
-                                                            <VerifiedIcon
-                                                                fontSize="large"
-                                                                sx={{
-                                                                    color: theme
-                                                                        .palette
-                                                                        .primary
-                                                                        .main,
-                                                                    flexShrink: 0
-                                                                }}
-                                                            />
-                                                        </Tooltip>
-                                                    )}
                                                 </CollectionInfo>
                                             </Link>
                                         </CollectionCard>
@@ -465,7 +479,12 @@ export default function Landing({ collections }) {
                         mb: { xs: 3, md: 8 },
                         px: { xs: 0.5, sm: 2 },
                         width: '100%',
-                        maxWidth: { xs: '100%', sm: '100%', md: '95%', lg: '90%' },
+                        maxWidth: {
+                            xs: '100%',
+                            sm: '100%',
+                            md: '95%',
+                            lg: '90%'
+                        },
                         margin: '0 auto'
                     }}
                 >
