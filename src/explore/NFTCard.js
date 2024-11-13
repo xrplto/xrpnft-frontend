@@ -83,6 +83,19 @@ const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
     borderTopRightRadius: theme.shape.borderRadius * 2 // Add this line
 }));
 
+const SequenceOverlay = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    padding: '2px 6px',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    color: theme.palette.common.white,
+    fontSize: '0.75rem',
+    fontWeight: 'bold',
+    zIndex: 2,
+}));
+
 export default function NFTCard({ nft, handleRemove }) {
     const theme = useTheme();
 
@@ -103,7 +116,8 @@ export default function NFTCard({ nft, handleRemove }) {
         destination,
         rarity,
         rarity_rank,
-        updateEvent
+        updateEvent,
+        MasterSequence
     } = nft;
 
     const isSold = false;
@@ -156,7 +170,7 @@ export default function NFTCard({ nft, handleRemove }) {
                             sx={{
                                 position: 'absolute',
                                 top: 16,
-                                right: 16,
+                                left: 16, // Changed from 'right: 16' to 'left: 16'
                                 zIndex: 1500,
                                 color: theme.palette.primary.main
                             }}
@@ -202,6 +216,11 @@ export default function NFTCard({ nft, handleRemove }) {
                                     )
                                 }}
                             />
+                        )}
+                        {!loadingImg && MasterSequence && (
+                            <SequenceOverlay>
+                                #{MasterSequence}
+                            </SequenceOverlay>
                         )}
                     </ImageContainer>
                     <img

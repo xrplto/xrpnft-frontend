@@ -261,13 +261,14 @@ export default function NFTActions({ nft }) {
         // cost,
         destination,
         NFTokenID,
-        self
+        self,
+        MasterSequence
     } = nft;
 
     const collectionName =
-        collection || meta?.collection?.name || '[No Collection]';
+        collection || /*meta?.collection?.name ||*/ '[No Collection]';
 
-    const nftName = meta?.name || meta?.Name || '[No Name]';
+    const nftName = name || /*meta?.name || meta?.Name ||*/ '[No Name]';
 
     const floorPrice = cfloor?.amount || 0;
 
@@ -715,10 +716,22 @@ export default function NFTActions({ nft }) {
                                 spacing={1}
                                 alignItems="center"
                             >
-                                <Link
-                                    href={`/collection/${cslug}`}
-                                    underline="none"
-                                >
+                                {cslug ? (
+                                    <Link
+                                        href={`/collection/${cslug}`}
+                                        underline="none"
+                                    >
+                                        <Typography
+                                            variant="h6"
+                                            sx={{
+                                                fontWeight: 'bold',
+                                                color: 'primary.main'
+                                            }}
+                                        >
+                                            {collectionName}
+                                        </Typography>
+                                    </Link>
+                                ) : (
                                     <Typography
                                         variant="h6"
                                         sx={{
@@ -728,7 +741,7 @@ export default function NFTActions({ nft }) {
                                     >
                                         {collectionName}
                                     </Typography>
-                                </Link>
+                                )}
                                 {cverified === 'yes' && (
                                     <Tooltip title="Verified">
                                         <VerificationBadge>
@@ -779,7 +792,7 @@ export default function NFTActions({ nft }) {
                 <Typography variant="h4" fontWeight="bold">
                     {nftName}
                 </Typography>
-
+                
                 {self && rarity_rank > 0 && (
                     <Tooltip
                         title={`Rarity Rank #${fIntNumber(
@@ -797,6 +810,12 @@ export default function NFTActions({ nft }) {
                         </Stack>
                     </Tooltip>
                 )}
+
+                {MasterSequence && (
+                    <Typography variant="body2" color="text.secondary">
+                        #{MasterSequence}
+                    </Typography>
+                )}                
 
                 <Stack direction="row" spacing={2} alignItems="center">
                     <Avatar
