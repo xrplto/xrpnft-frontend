@@ -386,7 +386,7 @@ export default function NFTActions({ nft }) {
                         const amount = BigInt(offer.amount);
                         const isValidBroker = offer.destination && BROKER_ADDRESSES[offer.destination];
                         const isValidAmount = amount > BigInt(0);
-                        const isValidOwner = offer.owner === offer.account;
+                        const isValidOwner = offer.owner === nft.account;
                         
                         if (isValidBroker && isValidAmount && isValidOwner && amount < BigInt(min.amount)) {
                             return { amount, offer };
@@ -413,8 +413,7 @@ export default function NFTActions({ nft }) {
                         brokerName: brokerInfo ? brokerInfo.name : null,
                         offerIndex: lowestOffer.offer.nft_offer_index,
                         seller: lowestOffer.offer.owner,
-                        destination: brokerAddress,
-                        account: lowestOffer.offer.account
+                        destination: brokerAddress
                     });
                 } else {
                     setLowestSellOffer(null);
@@ -428,7 +427,7 @@ export default function NFTActions({ nft }) {
         }
 
         getLowestSellOffer();
-    }, [NFTokenID]);
+    }, [NFTokenID, nft.account]);
 
     const doProcessOffer = async (offer, isAcceptOrCancel) => {
         if (!accountLogin || !accountToken) {
