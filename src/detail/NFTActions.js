@@ -221,9 +221,9 @@ const OfferCountBadge = styled('span')(({ theme }) => ({
   marginLeft: theme.spacing(1)
 }));
 
-// Add this helper function near the top with other utility functions
+// Update this helper function to always show 6 decimal places
 const formatXRPAmount = (amount, includeSymbol = true) => {
-    // Ensure we only use 6 decimal places
+    // Force 6 decimal places using toFixed(6)
     const formattedAmount = parseFloat(amount).toFixed(6);
     return includeSymbol ? `${formattedAmount} XRP` : formattedAmount;
 };
