@@ -48,7 +48,6 @@ const CardWrapper = styled(Card)(({ theme }) => ({
     position: 'relative',
 
     '&:hover': {
-        transform: 'translateY(-4px) scale(1.02)',
         boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
         background: alpha(theme.palette.background.paper, 0.2),
         outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`,
