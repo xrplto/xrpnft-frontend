@@ -87,13 +87,16 @@ const SequenceOverlay = styled(Box)(({ theme }) => ({
     position: 'absolute',
     top: 8,
     right: 8,
-    padding: '2px 6px',
+    padding: '3px 8px',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    color: theme.palette.common.white,
+    backgroundColor: alpha(theme.palette.background.paper, 0.85),
+    backdropFilter: 'blur(8px)',
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+    color: theme.palette.primary.main,
     fontSize: '0.75rem',
-    fontWeight: 'bold',
+    fontWeight: 700,
     zIndex: 2,
+    boxShadow: `0 2px 8px 0 ${alpha(theme.palette.common.black, 0.25)}`,
 }));
 
 export default function NFTCard({ nft, handleRemove }) {
