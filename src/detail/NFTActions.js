@@ -223,10 +223,8 @@ const OfferCountBadge = styled('span')(({ theme }) => ({
 
 // Add this helper function near the top with other utility functions
 const formatXRPAmount = (amount, includeSymbol = true) => {
-    const formattedAmount = parseFloat(amount).toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 6
-    });
+    // Ensure we only use 6 decimal places
+    const formattedAmount = parseFloat(amount).toFixed(6);
     return includeSymbol ? `${formattedAmount} XRP` : formattedAmount;
 };
 
@@ -453,13 +451,17 @@ export default function NFTActions({ nft }) {
                 }
 
                 if (lowestOffer && lowestOffer.offer) {
-                    const baseAmount = parseFloat(dropsToXrp(lowestOffer.amount.toString()));
+                    // Parse the base amount and round to 6 decimal places
+                    const baseAmount = parseFloat(parseFloat(dropsToXrp(lowestOffer.amount.toString())).toFixed(6));
                     const brokerAddress = lowestOffer.offer.destination;
                     const hasBroker = brokerAddress in BROKER_ADDRESSES;
                     const brokerInfo = hasBroker ? BROKER_ADDRESSES[brokerAddress] : null;
                     const brokerFeePercentage = brokerInfo ? brokerInfo.fee : 0;
-                    const brokerFee = hasBroker ? baseAmount * brokerFeePercentage : 0;
-                    const totalAmount = baseAmount + brokerFee;
+                    
+                    // Calculate broker fee and round to 6 decimal places
+                    const brokerFee = hasBroker ? parseFloat((baseAmount * brokerFeePercentage).toFixed(6)) : 0;
+                    // Calculate total amount and round to 6 decimal places
+                    const totalAmount = parseFloat((baseAmount + brokerFee).toFixed(6));
 
                     setLowestSellOffer({
                         baseAmount,
@@ -895,7 +897,7 @@ export default function NFTActions({ nft }) {
                                             variant="h5"
                                             fontWeight="bold"
                                         >
-                                            {fNumber(lowestSellOffer.totalAmount)} XRP
+                                            {formatXRPAmount(lowestSellOffer.totalAmount)}
                                         </Typography>
                                     </Stack>
                                 ) : (
@@ -946,7 +948,7 @@ export default function NFTActions({ nft }) {
                             <Stack direction="row" spacing={1} alignItems="center">
                                 <Icon icon={rippleSolid} width="24" height="24" />
                                 <Typography variant="h5" fontWeight="bold">
-                                    {fNumber(lowestSellOffer.totalAmount)} XRP
+                                    {formatXRPAmount(lowestSellOffer.totalAmount)}
                                 </Typography>
                             </Stack>
                         </Stack>
@@ -957,7 +959,7 @@ export default function NFTActions({ nft }) {
                                         Base Price
                                     </Typography>
                                     <Typography variant="body2">
-                                        {fNumber(lowestSellOffer.baseAmount)} XRP
+                                        {formatXRPAmount(lowestSellOffer.baseAmount)}
                                     </Typography>
                                 </Stack>
                                 <Stack direction="row" justifyContent="space-between">
@@ -965,7 +967,7 @@ export default function NFTActions({ nft }) {
                                         Broker Fee ({(lowestSellOffer.brokerFeePercentage * 100).toFixed(3)}%)
                                     </Typography>
                                     <Typography variant="body2">
-                                        {fNumber(lowestSellOffer.brokerFee)} XRP
+                                        {formatXRPAmount(lowestSellOffer.brokerFee)}
                                     </Typography>
                                 </Stack>
                                 <Typography variant="body2" color="text.secondary">
