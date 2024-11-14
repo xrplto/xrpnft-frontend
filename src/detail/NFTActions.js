@@ -86,7 +86,7 @@ import CreateOfferXRPCafe from './CreateOfferXRPCafe';
 
 // Add these constants at the top of the file
 const BROKER_ADDRESSES = {
-  "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv": { fee: 0.01, name: "Art Dept Fun" },
+  "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv": { fee: 0.015, name: "Art Dept Fun" },
   "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC": { fee: 0.01589, name: "XRP Cafe" },
   "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC": { fee: 0.015, name: "BIDDS" },
   "rDeizxSRo6JHjKnih9ivpPkyD2EgXQvhSB": { fee: 0.015, name: "XPMarket" },
@@ -221,10 +221,26 @@ const OfferCountBadge = styled('span')(({ theme }) => ({
   marginLeft: theme.spacing(1)
 }));
 
-// Update this helper function to always show 6 decimal places
-const formatXRPAmount = (amount, includeSymbol = true) => {
-    // Force 6 decimal places using toFixed(6)
-    const formattedAmount = parseFloat(amount).toFixed(6);
+// Update helper function to handle different decimal places based on broker
+const formatXRPAmount = (amount, includeSymbol = true, brokerAddress = null) => {
+    let decimalPlaces = 6; // Default to 6 decimal places for XRP Cafe
+
+    if (brokerAddress) {
+        if (brokerAddress === "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv") { // Art Dept
+            decimalPlaces = 3;
+        } else if (brokerAddress === "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC") { // BIDDS
+            // Special handling for BIDDS
+            const num = parseFloat(amount);
+            const withTwoDecimals = num.toFixed(2);
+            // Remove trailing zero if it exists
+            const formatted = withTwoDecimals.endsWith('0') ? 
+                withTwoDecimals.replace(/\.?0+$/, '') : 
+                withTwoDecimals;
+            return includeSymbol ? `${formatted} XRP` : formatted;
+        }
+    }
+
+    const formattedAmount = parseFloat(amount).toFixed(decimalPlaces);
     return includeSymbol ? `${formattedAmount} XRP` : formattedAmount;
 };
 
@@ -897,7 +913,7 @@ export default function NFTActions({ nft }) {
                                             variant="h5"
                                             fontWeight="bold"
                                         >
-                                            {formatXRPAmount(lowestSellOffer.totalAmount)}
+                                            {formatXRPAmount(lowestSellOffer.totalAmount, true, lowestSellOffer.destination)}
                                         </Typography>
                                     </Stack>
                                 ) : (
@@ -948,7 +964,7 @@ export default function NFTActions({ nft }) {
                             <Stack direction="row" spacing={1} alignItems="center">
                                 <Icon icon={rippleSolid} width="24" height="24" />
                                 <Typography variant="h5" fontWeight="bold">
-                                    {formatXRPAmount(lowestSellOffer.totalAmount)}
+                                    {formatXRPAmount(lowestSellOffer.totalAmount, true, lowestSellOffer.destination)}
                                 </Typography>
                             </Stack>
                         </Stack>
@@ -959,7 +975,7 @@ export default function NFTActions({ nft }) {
                                         Base Price
                                     </Typography>
                                     <Typography variant="body2">
-                                        {formatXRPAmount(lowestSellOffer.baseAmount)}
+                                        {formatXRPAmount(lowestSellOffer.baseAmount, true, lowestSellOffer.destination)}
                                     </Typography>
                                 </Stack>
                                 <Stack direction="row" justifyContent="space-between">
@@ -967,7 +983,7 @@ export default function NFTActions({ nft }) {
                                         Broker Fee ({(lowestSellOffer.brokerFeePercentage * 100).toFixed(3)}%)
                                     </Typography>
                                     <Typography variant="body2">
-                                        {formatXRPAmount(lowestSellOffer.brokerFee)}
+                                        {formatXRPAmount(lowestSellOffer.brokerFee, true, lowestSellOffer.destination)}
                                     </Typography>
                                 </Stack>
                                 <Typography variant="body2" color="text.secondary">
@@ -1026,7 +1042,7 @@ export default function NFTActions({ nft }) {
                                                             <Stack direction="row" spacing={1} alignItems="center">
                                                                 <Icon icon={rippleSolid} width="20" height="20" />
                                                                 <Typography variant="h6" fontWeight="bold">
-                                                                    {formatXRPAmount(amount.amount)}
+                                                                    {formatXRPAmount(amount.amount, true, offer.destination)}
                                                                 </Typography>
                                                             </Stack>
                                                             <Button
@@ -1124,7 +1140,7 @@ export default function NFTActions({ nft }) {
                                                         <Stack direction="row" spacing={1} alignItems="center">
                                                             <Icon icon={rippleSolid} width="20" height="20" />
                                                             <Typography variant="h6" fontWeight="bold">
-                                                                {formatXRPAmount(amount.amount)}
+                                                                {formatXRPAmount(amount.amount, true, offer.destination)}
                                                             </Typography>
                                                         </Stack>
                                                         <Stack direction="row" spacing={1}>
