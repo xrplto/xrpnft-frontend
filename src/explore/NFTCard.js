@@ -42,16 +42,18 @@ const CardWrapper = styled(Card)(({ theme }) => ({
     padding: 0,
     cursor: 'pointer',
     transition: 'all 0.3s ease-in-out',
-    overflow: 'hidden', // Changed from 'visible' to 'hidden'
+    overflow: 'hidden',
     border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
     boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    position: 'relative',
 
     '&:hover': {
-        transform: 'translateY(-4px)',
+        transform: 'translateY(-4px) scale(1.02)',
         boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
         background: alpha(theme.palette.background.paper, 0.2),
         outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`,
-        outlineOffset: '2px'
+        outlineOffset: '2px',
+        zIndex: 2
     }
 }));
 
@@ -62,13 +64,13 @@ const GlassContent = styled(CardContent)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    height: '130px', // Further decreased from 140px to 130px
-    padding: theme.spacing(0.75) // Even more reduced padding
+    height: '130px',
+    padding: theme.spacing(0.75)
 }));
 
 const ImageContainer = styled(Box)(({ theme }) => ({
     position: 'relative',
-    paddingTop: '100%', // This creates a 1:1 aspect ratio
+    paddingTop: '100%',
     overflow: 'hidden'
 }));
 
@@ -79,8 +81,8 @@ const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    borderTopLeftRadius: theme.shape.borderRadius * 2, // Add this line
-    borderTopRightRadius: theme.shape.borderRadius * 2 // Add this line
+    borderTopLeftRadius: theme.shape.borderRadius * 2,
+    borderTopRightRadius: theme.shape.borderRadius * 2
 }));
 
 const SequenceOverlay = styled(Box)(({ theme }) => ({
@@ -152,10 +154,13 @@ export default function NFTCard({ nft, handleRemove }) {
         <Box
             sx={{
                 position: 'relative',
-                padding: { xs: '2px', sm: '5px', md: '10px' }, // Further reduced padding on mobile
+                padding: { xs: '2px', sm: '5px', md: '10px' },
                 '&:hover': {
                     zIndex: 1
-                }
+                },
+                isolation: 'isolate',
+                transform: 'translate3d(0, 0, 0)',
+                backfaceVisibility: 'hidden'
             }}
         >
             <Link href={`/nft/${NFTokenID}`} underline="none">
@@ -164,7 +169,6 @@ export default function NFTCard({ nft, handleRemove }) {
                         width: '100%',
                         maxWidth: { xs: '100%', sm: 290, md: 310, lg: 330 },
                         height: '100%',
-                        // Further reduced margin bottom for mobile
                         marginBottom: { xs: '5px', sm: '8px', md: 0 }
                     }}
                 >
@@ -173,7 +177,7 @@ export default function NFTCard({ nft, handleRemove }) {
                             sx={{
                                 position: 'absolute',
                                 top: 16,
-                                left: 16, // Changed from 'right: 16' to 'left: 16'
+                                left: 16,
                                 zIndex: 1500,
                                 color: theme.palette.primary.main
                             }}
@@ -249,9 +253,9 @@ export default function NFTCard({ nft, handleRemove }) {
                                 WebkitLineClamp: 2,
                                 WebkitBoxOrient: 'vertical',
                                 lineHeight: 1.2,
-                                fontSize: { xs: '0.75rem', sm: '0.8rem' }, // Smaller font size on mobile
+                                fontSize: { xs: '0.75rem', sm: '0.8rem' },
                                 color: theme.palette.text.primary,
-                                height: '2.2em' // Slightly reduced height
+                                height: '2.2em'
                             }}
                         >
                             {name}
@@ -304,7 +308,7 @@ export default function NFTCard({ nft, handleRemove }) {
                 <Typography
                     variant="body2"
                     fontWeight="600"
-                    fontSize={{ xs: '0.8rem', sm: '0.85rem' }} // Smaller on mobile
+                    fontSize={{ xs: '0.8rem', sm: '0.85rem' }}
                     color="primary.main"
                 >
                     {fNumber(cost.amount)}
@@ -324,7 +328,7 @@ export default function NFTCard({ nft, handleRemove }) {
     }
 
     function renderOffer() {
-        if (!costb) return <Box flexGrow={1} />; // Add this line to maintain layout when there's no offer
+        if (!costb) return <Box flexGrow={1} />;
 
         return (
             <Stack direction="row" spacing={0.5} alignItems="center">
@@ -384,15 +388,15 @@ export default function NFTCard({ nft, handleRemove }) {
                             color: theme.palette.primary.main
                         }}
                     />
-                } // Changed color to primary.main
+                }
                 label={fIntNumber(rarity_rank)}
                 sx={{
-                    height: '20px', // Reduced from 22px
+                    height: '20px',
                     borderColor: theme.palette.primary.main,
                     color: theme.palette.primary.main,
                     '& .MuiChip-label': {
-                        px: 0.4, // Reduced horizontal padding
-                        fontSize: { xs: '0.7rem', sm: '0.75rem' }, // Smaller on mobile
+                        px: 0.4,
+                        fontSize: { xs: '0.7rem', sm: '0.75rem' },
                         fontWeight: 600
                     }
                 }}
@@ -408,7 +412,7 @@ export default function NFTCard({ nft, handleRemove }) {
                 variant="caption"
                 color="text.secondary"
                 sx={{
-                    fontSize: { xs: '0.65rem', sm: '0.7rem' }, // Smaller on mobile
+                    fontSize: { xs: '0.65rem', sm: '0.7rem' },
                     textAlign: 'right',
                     maxWidth: '50%'
                 }}
