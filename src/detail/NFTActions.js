@@ -261,6 +261,13 @@ const MasterSequenceBadge = styled(Paper)(({ theme }) => ({
     flex: 1
 }));
 
+// Add this styled component near the top with other styled components
+const SquareAvatar = styled(Avatar)(({ theme }) => ({
+    borderRadius: theme.shape.borderRadius * 1.5, // Adjust the multiplier to control roundness
+    width: 48,
+    height: 48
+}));
+
 export default function NFTActions({ nft }) {
     const theme = useTheme();
     const anchorRef = useRef(null);
@@ -923,10 +930,9 @@ export default function NFTActions({ nft }) {
                 </Stack>
 
                 <Stack direction="row" spacing={2} alignItems="center">
-                    <Avatar
+                    <SquareAvatar
                         alt="C"
                         src={accountLogo}
-                        sx={{ width: 48, height: 48 }}
                     />
                     <Stack>
                         <Typography variant="body2" color="text.secondary">
