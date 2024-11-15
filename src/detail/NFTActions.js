@@ -22,7 +22,8 @@ import {
     Popover,
     Stack,
     Typography,
-    Tooltip
+    Tooltip,
+    Chip
 } from '@mui/material';
 import ListIcon from '@mui/icons-material/List';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
@@ -266,6 +267,35 @@ const SquareAvatar = styled(Avatar)(({ theme }) => ({
     borderRadius: theme.shape.borderRadius * 1.5, // Adjust the multiplier to control roundness
     width: 48,
     height: 48
+}));
+
+// Add this new styled component near the top with other styled components
+const OwnerCard = styled(Paper)(({ theme }) => ({
+    padding: theme.spacing(2),
+    backgroundColor: alpha(theme.palette.background.default, 0.6),
+    borderRadius: theme.shape.borderRadius * 2,
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(2),
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
+}));
+
+const OwnerInfo = styled('div')(({ theme }) => ({
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.5)
+}));
+
+const OwnerAddress = styled(Link)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    color: theme.palette.text.primary,
+    textDecoration: 'none',
+    '&:hover': {
+        color: theme.palette.primary.main
+    }
 }));
 
 export default function NFTActions({ nft }) {
@@ -929,22 +959,55 @@ export default function NFTActions({ nft }) {
                     )}
                 </Stack>
 
-                <Stack direction="row" spacing={2} alignItems="center">
-                    <SquareAvatar
-                        alt="C"
-                        src={accountLogo}
-                    />
-                    <Stack>
-                        <Typography variant="body2" color="text.secondary">
-                            Owner
-                        </Typography>
-                        <Link href={`/account/${account}`} underline="hover">
+                <OwnerCard elevation={0}>
+                    <SquareAvatar alt="C" src={accountLogo} />
+                    <OwnerInfo>
+                        <Stack direction="row" alignItems="center" spacing={1}>
+                            <Typography variant="body2" color="text.secondary">
+                                Owned by
+                            </Typography>
+                            {isOwner && (
+                                <Chip
+                                    label="You"
+                                    size="small"
+                                    color="primary"
+                                    variant="outlined"
+                                    sx={{ height: 20 }}
+                                />
+                            )}
+                        </Stack>
+                        <OwnerAddress href={`/account/${account}`}>
                             <Typography variant="subtitle1" fontWeight="medium">
                                 {truncate(account, 16)}
                             </Typography>
-                        </Link>
-                    </Stack>
-                </Stack>
+                            <Icon 
+                                icon="material-symbols:arrow-outward" 
+                                width={16} 
+                                height={16} 
+                                style={{ opacity: 0.7 }}
+                            />
+                        </OwnerAddress>
+                        {minter && minter === account && (
+                            <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 0.5 }}>
+                                <Typography 
+                                    variant="caption" 
+                                    sx={{ 
+                                        color: 'primary.main',
+                                        fontWeight: 'medium'
+                                    }}
+                                >
+                                    Original Creator
+                                </Typography>
+                                <VerifiedIcon 
+                                    sx={{ 
+                                        fontSize: 14,
+                                        color: 'primary.main' 
+                                    }} 
+                                />
+                            </Stack>
+                        )}
+                    </OwnerInfo>
+                </OwnerCard>
 
                 <Divider />
 
