@@ -223,28 +223,48 @@ const OfferCountBadge = styled('span')(({ theme }) => ({
 
 // Update helper function to handle different decimal places based on broker
 const formatXRPAmount = (amount, includeSymbol = true, brokerAddress = null) => {
-    let decimalPlaces = 6; // Default to 6 decimal places for XRP Cafe
-
+    // For sell offers, always use 2 decimal places
     if (brokerAddress) {
-        if (brokerAddress === "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv") { // Art Dept
-            decimalPlaces = 3;
-        } else if (brokerAddress === "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC") { // BIDDS
-            // Special handling for BIDDS
-            const num = parseFloat(amount);
-            const withTwoDecimals = num.toFixed(2);
-            // Remove trailing zero if it exists
-            const formatted = withTwoDecimals.endsWith('0') ? 
-                withTwoDecimals.replace(/\.?0+$/, '') : 
-                withTwoDecimals;
-            return includeSymbol ? `${formatted} XRP` : formatted;
-        }
+        const num = parseFloat(amount);
+        const withTwoDecimals = num.toFixed(2);
+        // Remove trailing zero if it exists
+        const formatted = withTwoDecimals.endsWith('0') ? 
+            withTwoDecimals.replace(/\.?0+$/, '') : 
+            withTwoDecimals;
+        return includeSymbol ? `${formatted} XRP` : formatted;
     }
 
-    const formattedAmount = parseFloat(amount).toFixed(decimalPlaces);
+    // For other cases (buy offers etc), keep 6 decimal places
+    const formattedAmount = parseFloat(amount).toFixed(6);
     return includeSymbol ? `${formattedAmount} XRP` : formattedAmount;
 };
 
+// Add this new styled component near the top with other styled components
+const RankingBadge = styled(Paper)(({ theme }) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: theme.spacing(0.75, 1.5),
+    borderRadius: theme.shape.borderRadius * 2,
+    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+    gap: theme.spacing(1),
+    flex: 1
+}));
+
+// Add this new styled component near the top with other styled components
+const MasterSequenceBadge = styled(Paper)(({ theme }) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: theme.spacing(0.75, 1.5),
+    borderRadius: theme.shape.borderRadius * 2,
+    backgroundColor: alpha(theme.palette.secondary.main, 0.1),
+    border: `1px solid ${alpha(theme.palette.secondary.main, 0.2)}`,
+    gap: theme.spacing(1),
+    flex: 1
+}));
+
 export default function NFTActions({ nft }) {
+    const theme = useTheme();
     const anchorRef = useRef(null);
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile, openSnackbar } = useContext(AppContext);
@@ -811,29 +831,61 @@ export default function NFTActions({ nft }) {
                     {nftName}
                 </Typography>
                 
-                {self && rarity_rank > 0 && (
-                    <Tooltip
-                        title={`Rarity Rank #${fIntNumber(
-                            rarity_rank
-                        )} / ${fIntNumber(citems)}`}
-                    >
-                        <Stack direction="row" spacing={1} alignItems="center">
-                            <LeaderboardOutlinedIcon
-                                sx={{ color: 'text.secondary' }}
+                <Stack direction="row" spacing={2} sx={{ mt: 1, mb: 2 }}>
+                    {self && rarity_rank > 0 && (
+                        <RankingBadge elevation={0}>
+                            <LeaderboardOutlinedIcon 
+                                sx={{ 
+                                    color: 'primary.main',
+                                    fontSize: 18
+                                }} 
                             />
-                            <Typography variant="body2" color="text.secondary">
-                                Rank: <strong>{fIntNumber(rarity_rank)}</strong>{' '}
-                                / {fIntNumber(citems)}
-                            </Typography>
-                        </Stack>
-                    </Tooltip>
-                )}
-
-                {MasterSequence && (
-                    <Typography variant="body2" color="text.secondary">
-                        #{MasterSequence}
-                    </Typography>
-                )}                
+                            <Stack>
+                                <Typography 
+                                    variant="caption"
+                                    color="primary.main"
+                                    fontWeight="medium"
+                                >
+                                    Rarity Rank
+                                </Typography>
+                                <Typography 
+                                    variant="body1"
+                                    color="primary.main"
+                                    fontWeight="bold"
+                                >
+                                    #{fIntNumber(rarity_rank)}
+                                </Typography>
+                            </Stack>
+                        </RankingBadge>
+                    )}
+                    
+                    {MasterSequence && (
+                        <MasterSequenceBadge elevation={0}>
+                            <Icon 
+                                icon={rippleSolid}
+                                width={18} 
+                                height={18}
+                                style={{ color: theme.palette.secondary.main }}
+                            />
+                            <Stack>
+                                <Typography 
+                                    variant="caption"
+                                    color="secondary.main"
+                                    fontWeight="medium"
+                                >
+                                    On-Chain Rank
+                                </Typography>
+                                <Typography 
+                                    variant="body1"
+                                    color="secondary.main"
+                                    fontWeight="bold"
+                                >
+                                    #{MasterSequence}
+                                </Typography>
+                            </Stack>
+                        </MasterSequenceBadge>
+                    )}
+                </Stack>
 
                 <Stack direction="row" spacing={2} alignItems="center">
                     <Avatar
@@ -1042,7 +1094,7 @@ export default function NFTActions({ nft }) {
                                                             <Stack direction="row" spacing={1} alignItems="center">
                                                                 <Icon icon={rippleSolid} width="20" height="20" />
                                                                 <Typography variant="h6" fontWeight="bold">
-                                                                    {formatXRPAmount(amount.amount, true, offer.destination)}
+                                                                    {formatXRPAmount(amount.amount, true, 'sell_offer')}
                                                                 </Typography>
                                                             </Stack>
                                                             <Button
