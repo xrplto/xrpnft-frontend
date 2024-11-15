@@ -1015,15 +1015,16 @@ export default function NFTActions({ nft }) {
                             </Stack>
                             {accountLogin ? (
                                 <>
-                                    <Button
-                                        fullWidth
-                                        disabled={!lowestSellOffer || burnt}
-                                        variant="contained"
-                                        size="large"
-                                        onClick={handleBuyNow}
-                                    >
-                                        Buy Now
-                                    </Button>
+                                    {lowestSellOffer && !burnt && (
+                                        <Button
+                                            fullWidth
+                                            variant="contained"
+                                            size="large"
+                                            onClick={handleBuyNow}
+                                        >
+                                            Buy Now
+                                        </Button>
+                                    )}
                                     <Button
                                         fullWidth
                                         disabled={burnt}
