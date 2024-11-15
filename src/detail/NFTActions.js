@@ -223,20 +223,14 @@ const OfferCountBadge = styled('span')(({ theme }) => ({
 
 // Update helper function to handle different decimal places based on broker
 const formatXRPAmount = (amount, includeSymbol = true, brokerAddress = null) => {
-    // For sell offers, always use 2 decimal places
-    if (brokerAddress) {
-        const num = parseFloat(amount);
-        const withTwoDecimals = num.toFixed(2);
-        // Remove trailing zero if it exists
-        const formatted = withTwoDecimals.endsWith('0') ? 
-            withTwoDecimals.replace(/\.?0+$/, '') : 
-            withTwoDecimals;
-        return includeSymbol ? `${formatted} XRP` : formatted;
-    }
-
-    // For other cases (buy offers etc), keep 6 decimal places
-    const formattedAmount = parseFloat(amount).toFixed(6);
-    return includeSymbol ? `${formattedAmount} XRP` : formattedAmount;
+    // Always use 2 decimal places for both buy and sell offers
+    const num = parseFloat(amount);
+    const withTwoDecimals = num.toFixed(2);
+    // Remove trailing zero if it exists
+    const formatted = withTwoDecimals.endsWith('0') ? 
+        withTwoDecimals.replace(/\.?0+$/, '') : 
+        withTwoDecimals;
+    return includeSymbol ? `${formatted} XRP` : formatted;
 };
 
 // Add this new styled component near the top with other styled components
