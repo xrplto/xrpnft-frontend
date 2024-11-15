@@ -107,7 +107,7 @@ function GetNum(amount) {
     return num;
 }
 
-export default function CreateOfferDialog({ open, setOpen, nft, isSellOffer }) {
+export default function CreateOfferDialog({ open, setOpen, onClose, nft, isSellOffer, onOfferCreated }) {
     // "costs": [
     //     {
     //         "md5": "0413ca7cfc258dfaf698c02fe304e607",
@@ -165,6 +165,9 @@ export default function CreateOfferDialog({ open, setOpen, nft, isSellOffer }) {
                 const dispatched_result = await getDispatchResult();
 
                 if (dispatched_result && dispatched_result === 'tesSUCCESS') {
+                    if (onOfferCreated) {
+                        onOfferCreated();
+                    }
                     setSync(sync + 1);
                     openSnackbar('Create Offer successful!', 'success');
                     stopInterval();

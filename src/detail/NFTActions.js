@@ -86,11 +86,11 @@ import CreateOfferXRPCafe from './CreateOfferXRPCafe';
 
 // Add these constants at the top of the file
 const BROKER_ADDRESSES = {
-  "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv": { fee: 0.015, name: "Art Dept Fun" },
-  "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC": { fee: 0.01589, name: "XRP Cafe" },
-  "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC": { fee: 0.015, name: "BIDDS" },
-  "rDeizxSRo6JHjKnih9ivpPkyD2EgXQvhSB": { fee: 0.015, name: "XPMarket" },
-  "rJcCJyJkiTXGcxU4Lt4ZvKJz8YmorZXu8r": { fee: 0.01, name: "OpulenceX" }
+    rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv: { fee: 0.015, name: 'Art Dept Fun' },
+    rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC: { fee: 0.01589, name: 'XRP Cafe' },
+    rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC: { fee: 0.015, name: 'BIDDS' },
+    rDeizxSRo6JHjKnih9ivpPkyD2EgXQvhSB: { fee: 0.015, name: 'XPMarket' },
+    rJcCJyJkiTXGcxU4Lt4ZvKJz8YmorZXu8r: { fee: 0.01, name: 'OpulenceX' }
 };
 
 // Create a styled component for the glass effect
@@ -107,18 +107,18 @@ const GlassPanel = styled(Glass)(({ theme }) => ({
 
 // Add this new styled component for the verification badge
 const VerificationBadge = styled('div')(({ theme }) => ({
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: 16,
-  height: 16,
-  borderRadius: '50%',
-  backgroundColor: theme.palette.primary.main,
-  color: theme.palette.common.white,
-  boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-  '& svg': {
-    fontSize: 12,
-  },
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 16,
+    height: 16,
+    borderRadius: '50%',
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    '& svg': {
+        fontSize: 12
+    }
 }));
 
 // const NFT_FLAGS = {
@@ -176,60 +176,64 @@ function truncate(str, n) {
 
 // Add this styled component near the top with other styled components
 const StyledAccordion = styled(Accordion)(({ theme }) => ({
-  backgroundColor: 'transparent',
-  boxShadow: 'none',
-  '&:before': {
-    display: 'none', // Removes the default divider
-  },
-  '& .MuiAccordionSummary-root': {
-    padding: theme.spacing(0, 1),
-    minHeight: 56,
-    '&.Mui-expanded': {
-      minHeight: 56,
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
+    '&:before': {
+        display: 'none' // Removes the default divider
+    },
+    '& .MuiAccordionSummary-root': {
+        padding: theme.spacing(0, 1),
+        minHeight: 56,
+        '&.Mui-expanded': {
+            minHeight: 56
+        }
+    },
+    '& .MuiAccordionSummary-content': {
+        margin: '12px 0',
+        '&.Mui-expanded': {
+            margin: '12px 0'
+        }
+    },
+    '& .MuiAccordionDetails-root': {
+        padding: theme.spacing(1)
     }
-  },
-  '& .MuiAccordionSummary-content': {
-    margin: '12px 0',
-    '&.Mui-expanded': {
-      margin: '12px 0',
-    }
-  },
-  '& .MuiAccordionDetails-root': {
-    padding: theme.spacing(1),
-  }
 }));
 
 // Add this styled component for the badge
 const OffersBadge = styled('span')(({ theme }) => ({
-  backgroundColor: alpha(theme.palette.primary.main, 0.1),
-  color: theme.palette.primary.main,
-  borderRadius: theme.shape.borderRadius,
-  padding: '2px 8px',
-  fontSize: '0.75rem',
-  fontWeight: 'bold',
-  marginLeft: theme.spacing(1)
+    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+    color: theme.palette.primary.main,
+    borderRadius: theme.shape.borderRadius,
+    padding: '2px 8px',
+    fontSize: '0.75rem',
+    fontWeight: 'bold',
+    marginLeft: theme.spacing(1)
 }));
 
 // Add this styled component for the offer count badge
 const OfferCountBadge = styled('span')(({ theme }) => ({
-  backgroundColor: alpha(theme.palette.primary.main, 0.1),
-  color: theme.palette.primary.main,
-  borderRadius: theme.shape.borderRadius,
-  padding: '2px 8px',
-  fontSize: '0.75rem',
-  fontWeight: 'bold',
-  marginLeft: theme.spacing(1)
+    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+    color: theme.palette.primary.main,
+    borderRadius: theme.shape.borderRadius,
+    padding: '2px 8px',
+    fontSize: '0.75rem',
+    fontWeight: 'bold',
+    marginLeft: theme.spacing(1)
 }));
 
 // Update helper function to handle different decimal places based on broker
-const formatXRPAmount = (amount, includeSymbol = true, brokerAddress = null) => {
+const formatXRPAmount = (
+    amount,
+    includeSymbol = true,
+    brokerAddress = null
+) => {
     // Always use 2 decimal places for both buy and sell offers
     const num = parseFloat(amount);
     const withTwoDecimals = num.toFixed(2);
     // Remove trailing zero if it exists
-    const formatted = withTwoDecimals.endsWith('0') ? 
-        withTwoDecimals.replace(/\.?0+$/, '') : 
-        withTwoDecimals;
+    const formatted = withTwoDecimals.endsWith('0')
+        ? withTwoDecimals.replace(/\.?0+$/, '')
+        : withTwoDecimals;
     return includeSymbol ? `${formatted} XRP` : formatted;
 };
 
@@ -340,6 +344,12 @@ export default function NFTActions({ nft }) {
     const [lowestSellOffer, setLowestSellOffer] = useState(null);
 
     const [openCreateOfferXRPCafe, setOpenCreateOfferXRPCafe] = useState(false);
+
+    // Add this callback function to handle successful offer creation
+    const handleOfferCreated = () => {
+        // Increment sync to trigger useEffect and refresh offers
+        setSync((prev) => prev + 1);
+    };
 
     useEffect(() => {
         function getOffers() {
@@ -458,40 +468,71 @@ export default function NFTActions({ nft }) {
 
                 const request = {
                     command: 'nft_sell_offers',
-                    nft_id: NFTokenID,
+                    nft_id: NFTokenID
                 };
 
                 const response = await client.request(request);
-                console.log('NFT Sell Offers:', JSON.stringify(response.result, null, 2));
+                console.log(
+                    'NFT Sell Offers:',
+                    JSON.stringify(response.result, null, 2)
+                );
 
                 // Find the lowest valid sell offer
                 let lowestOffer = null;
-                if (response.result.offers && response.result.offers.length > 0) {
-                    lowestOffer = response.result.offers.reduce((min, offer) => {
-                        const amount = BigInt(offer.amount);
-                        const isValidBroker = offer.destination && BROKER_ADDRESSES[offer.destination];
-                        const isValidAmount = amount > BigInt(0);
-                        const isValidOwner = offer.owner === nft.account;
-                        
-                        if (isValidBroker && isValidAmount && isValidOwner && amount < BigInt(min.amount)) {
-                            return { amount, offer };
+                if (
+                    response.result.offers &&
+                    response.result.offers.length > 0
+                ) {
+                    lowestOffer = response.result.offers.reduce(
+                        (min, offer) => {
+                            const amount = BigInt(offer.amount);
+                            const isValidBroker =
+                                offer.destination &&
+                                BROKER_ADDRESSES[offer.destination];
+                            const isValidAmount = amount > BigInt(0);
+                            const isValidOwner = offer.owner === nft.account;
+
+                            if (
+                                isValidBroker &&
+                                isValidAmount &&
+                                isValidOwner &&
+                                amount < BigInt(min.amount)
+                            ) {
+                                return { amount, offer };
+                            }
+                            return min;
+                        },
+                        {
+                            amount: BigInt(Number.MAX_SAFE_INTEGER).toString(),
+                            offer: null
                         }
-                        return min;
-                    }, { amount: BigInt(Number.MAX_SAFE_INTEGER).toString(), offer: null });
+                    );
                 }
 
                 if (lowestOffer && lowestOffer.offer) {
                     // Parse the base amount and round to 6 decimal places
-                    const baseAmount = parseFloat(parseFloat(dropsToXrp(lowestOffer.amount.toString())).toFixed(6));
+                    const baseAmount = parseFloat(
+                        parseFloat(
+                            dropsToXrp(lowestOffer.amount.toString())
+                        ).toFixed(6)
+                    );
                     const brokerAddress = lowestOffer.offer.destination;
                     const hasBroker = brokerAddress in BROKER_ADDRESSES;
-                    const brokerInfo = hasBroker ? BROKER_ADDRESSES[brokerAddress] : null;
+                    const brokerInfo = hasBroker
+                        ? BROKER_ADDRESSES[brokerAddress]
+                        : null;
                     const brokerFeePercentage = brokerInfo ? brokerInfo.fee : 0;
-                    
+
                     // Calculate broker fee and round to 6 decimal places
-                    const brokerFee = hasBroker ? parseFloat((baseAmount * brokerFeePercentage).toFixed(6)) : 0;
+                    const brokerFee = hasBroker
+                        ? parseFloat(
+                              (baseAmount * brokerFeePercentage).toFixed(6)
+                          )
+                        : 0;
                     // Calculate total amount and round to 6 decimal places
-                    const totalAmount = parseFloat((baseAmount + brokerFee).toFixed(6));
+                    const totalAmount = parseFloat(
+                        (baseAmount + brokerFee).toFixed(6)
+                    );
 
                     setLowestSellOffer({
                         baseAmount,
@@ -824,25 +865,25 @@ export default function NFTActions({ nft }) {
                 <Typography variant="h4" fontWeight="bold">
                     {nftName}
                 </Typography>
-                
+
                 <Stack direction="row" spacing={2} sx={{ mt: 1, mb: 2 }}>
                     {self && rarity_rank > 0 && (
                         <RankingBadge elevation={0}>
-                            <LeaderboardOutlinedIcon 
-                                sx={{ 
+                            <LeaderboardOutlinedIcon
+                                sx={{
                                     color: 'primary.main',
                                     fontSize: 18
-                                }} 
+                                }}
                             />
                             <Stack>
-                                <Typography 
+                                <Typography
                                     variant="caption"
                                     color="primary.main"
                                     fontWeight="medium"
                                 >
                                     Rarity Rank
                                 </Typography>
-                                <Typography 
+                                <Typography
                                     variant="body1"
                                     color="primary.main"
                                     fontWeight="bold"
@@ -852,24 +893,24 @@ export default function NFTActions({ nft }) {
                             </Stack>
                         </RankingBadge>
                     )}
-                    
+
                     {MasterSequence && (
                         <MasterSequenceBadge elevation={0}>
-                            <Icon 
+                            <Icon
                                 icon={rippleSolid}
-                                width={18} 
+                                width={18}
                                 height={18}
                                 style={{ color: theme.palette.secondary.main }}
                             />
                             <Stack>
-                                <Typography 
+                                <Typography
                                     variant="caption"
                                     color="secondary.main"
                                     fontWeight="medium"
                                 >
                                     On-Chain Rank
                                 </Typography>
-                                <Typography 
+                                <Typography
                                     variant="body1"
                                     color="secondary.main"
                                     fontWeight="bold"
@@ -959,7 +1000,11 @@ export default function NFTActions({ nft }) {
                                             variant="h5"
                                             fontWeight="bold"
                                         >
-                                            {formatXRPAmount(lowestSellOffer.totalAmount, true, lowestSellOffer.destination)}
+                                            {formatXRPAmount(
+                                                lowestSellOffer.totalAmount,
+                                                true,
+                                                lowestSellOffer.destination
+                                            )}
                                         </Typography>
                                     </Stack>
                                 ) : (
@@ -1007,33 +1052,74 @@ export default function NFTActions({ nft }) {
                             <Typography variant="body2" color="text.secondary">
                                 Lowest Sell Offer
                             </Typography>
-                            <Stack direction="row" spacing={1} alignItems="center">
-                                <Icon icon={rippleSolid} width="24" height="24" />
+                            <Stack
+                                direction="row"
+                                spacing={1}
+                                alignItems="center"
+                            >
+                                <Icon
+                                    icon={rippleSolid}
+                                    width="24"
+                                    height="24"
+                                />
                                 <Typography variant="h5" fontWeight="bold">
-                                    {formatXRPAmount(lowestSellOffer.totalAmount, true, lowestSellOffer.destination)}
+                                    {formatXRPAmount(
+                                        lowestSellOffer.totalAmount,
+                                        true,
+                                        lowestSellOffer.destination
+                                    )}
                                 </Typography>
                             </Stack>
                         </Stack>
                         {lowestSellOffer.hasBroker && (
                             <>
-                                <Stack direction="row" justifyContent="space-between">
-                                    <Typography variant="body2" color="text.secondary">
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                >
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                    >
                                         Base Price
                                     </Typography>
                                     <Typography variant="body2">
-                                        {formatXRPAmount(lowestSellOffer.baseAmount, true, lowestSellOffer.destination)}
+                                        {formatXRPAmount(
+                                            lowestSellOffer.baseAmount,
+                                            true,
+                                            lowestSellOffer.destination
+                                        )}
                                     </Typography>
                                 </Stack>
-                                <Stack direction="row" justifyContent="space-between">
-                                    <Typography variant="body2" color="text.secondary">
-                                        Broker Fee ({(lowestSellOffer.brokerFeePercentage * 100).toFixed(3)}%)
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                >
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                    >
+                                        Broker Fee (
+                                        {(
+                                            lowestSellOffer.brokerFeePercentage *
+                                            100
+                                        ).toFixed(3)}
+                                        %)
                                     </Typography>
                                     <Typography variant="body2">
-                                        {formatXRPAmount(lowestSellOffer.brokerFee, true, lowestSellOffer.destination)}
+                                        {formatXRPAmount(
+                                            lowestSellOffer.brokerFee,
+                                            true,
+                                            lowestSellOffer.destination
+                                        )}
                                     </Typography>
                                 </Stack>
-                                <Typography variant="body2" color="text.secondary">
-                                    Broker: {lowestSellOffer.brokerName} ({truncate(lowestSellOffer.destination, 16)})
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                >
+                                    Broker: {lowestSellOffer.brokerName} (
+                                    {truncate(lowestSellOffer.destination, 16)})
                                 </Typography>
                             </>
                         )}
@@ -1053,61 +1139,135 @@ export default function NFTActions({ nft }) {
                                     spacing={2}
                                     sx={{ width: '100%' }}
                                 >
-                                    <Stack direction="row" alignItems="center" spacing={2}>
+                                    <Stack
+                                        direction="row"
+                                        alignItems="center"
+                                        spacing={2}
+                                    >
                                         <LocalOfferIcon color="primary" />
-                                        <Typography variant="h6" color="primary.main">
+                                        <Typography
+                                            variant="h6"
+                                            color="primary.main"
+                                        >
                                             Sell Offers
                                         </Typography>
                                     </Stack>
                                     {sellOffers.length > 0 && (
                                         <OffersBadge>
-                                            {sellOffers.length} {sellOffers.length === 1 ? 'Offer' : 'Offers'}
+                                            {sellOffers.length}{' '}
+                                            {sellOffers.length === 1
+                                                ? 'Offer'
+                                                : 'Offers'}
                                         </OffersBadge>
                                     )}
                                 </Stack>
                             </AccordionSummary>
                             <AccordionDetails>
                                 {loading ? (
-                                    <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
-                                        <PulseLoader color="#00AB55" size={10} />
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            py: 3
+                                        }}
+                                    >
+                                        <PulseLoader
+                                            color="#00AB55"
+                                            size={10}
+                                        />
                                     </Box>
                                 ) : sellOffers.length > 0 ? (
                                     <Stack spacing={2}>
                                         {sellOffers.map((offer, index) => {
-                                            const amount = normalizeAmount(offer.amount);
+                                            const amount = normalizeAmount(
+                                                offer.amount
+                                            );
                                             return (
                                                 <Paper
                                                     key={index}
                                                     sx={{
                                                         p: 2,
-                                                        backgroundColor: (theme) => alpha(theme.palette.background.default, 0.6)
+                                                        backgroundColor: (
+                                                            theme
+                                                        ) =>
+                                                            alpha(
+                                                                theme.palette
+                                                                    .background
+                                                                    .default,
+                                                                0.6
+                                                            )
                                                     }}
                                                 >
                                                     <Stack spacing={2}>
-                                                        <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                                <Icon icon={rippleSolid} width="20" height="20" />
-                                                                <Typography variant="h6" fontWeight="bold">
-                                                                    {formatXRPAmount(amount.amount, true, 'sell_offer')}
+                                                        <Stack
+                                                            direction="row"
+                                                            justifyContent="space-between"
+                                                            alignItems="center"
+                                                        >
+                                                            <Stack
+                                                                direction="row"
+                                                                spacing={1}
+                                                                alignItems="center"
+                                                            >
+                                                                <Icon
+                                                                    icon={
+                                                                        rippleSolid
+                                                                    }
+                                                                    width="20"
+                                                                    height="20"
+                                                                />
+                                                                <Typography
+                                                                    variant="h6"
+                                                                    fontWeight="bold"
+                                                                >
+                                                                    {formatXRPAmount(
+                                                                        amount.amount,
+                                                                        true,
+                                                                        'sell_offer'
+                                                                    )}
                                                                 </Typography>
                                                             </Stack>
                                                             <Button
                                                                 variant="outlined"
                                                                 size="small"
                                                                 color="error"
-                                                                onClick={() => handleCancelOffer(offer)}
-                                                                startIcon={<Icon icon={infoFilled} />}
+                                                                onClick={() =>
+                                                                    handleCancelOffer(
+                                                                        offer
+                                                                    )
+                                                                }
+                                                                startIcon={
+                                                                    <Icon
+                                                                        icon={
+                                                                            infoFilled
+                                                                        }
+                                                                    />
+                                                                }
                                                             >
                                                                 Cancel
                                                             </Button>
                                                         </Stack>
                                                         {offer.destination && (
-                                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                                <Typography variant="body2" color="text.secondary">
+                                                            <Stack
+                                                                direction="row"
+                                                                spacing={1}
+                                                                alignItems="center"
+                                                            >
+                                                                <Typography
+                                                                    variant="body2"
+                                                                    color="text.secondary"
+                                                                >
                                                                     Broker:
                                                                 </Typography>
                                                                 <Typography variant="body2">
-                                                                    {BROKER_ADDRESSES[offer.destination]?.name || truncate(offer.destination, 16)}
+                                                                    {BROKER_ADDRESSES[
+                                                                        offer
+                                                                            .destination
+                                                                    ]?.name ||
+                                                                        truncate(
+                                                                            offer.destination,
+                                                                            16
+                                                                        )}
                                                                 </Typography>
                                                             </Stack>
                                                         )}
@@ -1117,12 +1277,19 @@ export default function NFTActions({ nft }) {
                                         })}
                                     </Stack>
                                 ) : (
-                                    <Box sx={{ 
-                                        py: 4, 
-                                        textAlign: 'center',
-                                        backgroundColor: (theme) => alpha(theme.palette.background.default, 0.6),
-                                        borderRadius: 1
-                                    }}>
+                                    <Box
+                                        sx={{
+                                            py: 4,
+                                            textAlign: 'center',
+                                            backgroundColor: (theme) =>
+                                                alpha(
+                                                    theme.palette.background
+                                                        .default,
+                                                    0.6
+                                                ),
+                                            borderRadius: 1
+                                        }}
+                                    >
                                         <Typography color="text.secondary">
                                             No sell offers available
                                         </Typography>
@@ -1151,63 +1318,128 @@ export default function NFTActions({ nft }) {
                                 spacing={2}
                                 sx={{ width: '100%' }}
                             >
-                                <Stack direction="row" alignItems="center" spacing={2}>
+                                <Stack
+                                    direction="row"
+                                    alignItems="center"
+                                    spacing={2}
+                                >
                                     <PanToolIcon color="primary" />
-                                    <Typography variant="h6" color="primary.main">
+                                    <Typography
+                                        variant="h6"
+                                        color="primary.main"
+                                    >
                                         Buy Offers
                                     </Typography>
                                 </Stack>
                                 {buyOffers.length > 0 && (
                                     <OfferCountBadge>
-                                        {buyOffers.length} {buyOffers.length === 1 ? 'Offer' : 'Offers'}
+                                        {buyOffers.length}{' '}
+                                        {buyOffers.length === 1
+                                            ? 'Offer'
+                                            : 'Offers'}
                                     </OfferCountBadge>
                                 )}
                             </Stack>
                         </AccordionSummary>
                         <AccordionDetails>
                             {loading ? (
-                                <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        py: 3
+                                    }}
+                                >
                                     <PulseLoader color="#00AB55" size={10} />
                                 </Box>
                             ) : buyOffers.length > 0 ? (
                                 <Stack spacing={2}>
                                     {buyOffers.map((offer, index) => {
-                                        const amount = normalizeAmount(offer.amount);
+                                        const amount = normalizeAmount(
+                                            offer.amount
+                                        );
                                         return (
                                             <Paper
                                                 key={index}
                                                 sx={{
                                                     p: 2,
-                                                    backgroundColor: (theme) => alpha(theme.palette.background.default, 0.6)
+                                                    backgroundColor: (theme) =>
+                                                        alpha(
+                                                            theme.palette
+                                                                .background
+                                                                .default,
+                                                            0.6
+                                                        )
                                                 }}
                                             >
                                                 <Stack spacing={2}>
-                                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                                        <Stack direction="row" spacing={1} alignItems="center">
-                                                            <Icon icon={rippleSolid} width="20" height="20" />
-                                                            <Typography variant="h6" fontWeight="bold">
-                                                                {formatXRPAmount(amount.amount, true, offer.destination)}
+                                                    <Stack
+                                                        direction="row"
+                                                        justifyContent="space-between"
+                                                        alignItems="center"
+                                                    >
+                                                        <Stack
+                                                            direction="row"
+                                                            spacing={1}
+                                                            alignItems="center"
+                                                        >
+                                                            <Icon
+                                                                icon={
+                                                                    rippleSolid
+                                                                }
+                                                                width="20"
+                                                                height="20"
+                                                            />
+                                                            <Typography
+                                                                variant="h6"
+                                                                fontWeight="bold"
+                                                            >
+                                                                {formatXRPAmount(
+                                                                    amount.amount,
+                                                                    true,
+                                                                    offer.destination
+                                                                )}
                                                             </Typography>
                                                         </Stack>
-                                                        <Stack direction="row" spacing={1}>
+                                                        <Stack
+                                                            direction="row"
+                                                            spacing={1}
+                                                        >
                                                             {isOwner ? (
                                                                 <Button
                                                                     variant="contained"
                                                                     size="small"
                                                                     color="primary"
-                                                                    onClick={() => handleAcceptOffer(offer)}
-                                                                    startIcon={<CheckIcon />}
+                                                                    onClick={() =>
+                                                                        handleAcceptOffer(
+                                                                            offer
+                                                                        )
+                                                                    }
+                                                                    startIcon={
+                                                                        <CheckIcon />
+                                                                    }
                                                                 >
                                                                     Accept
                                                                 </Button>
                                                             ) : (
-                                                                accountLogin === offer.owner && (
+                                                                accountLogin ===
+                                                                    offer.owner && (
                                                                     <Button
                                                                         variant="outlined"
                                                                         size="small"
                                                                         color="error"
-                                                                        onClick={() => handleCancelOffer(offer)}
-                                                                        startIcon={<Icon icon={infoFilled} />}
+                                                                        onClick={() =>
+                                                                            handleCancelOffer(
+                                                                                offer
+                                                                            )
+                                                                        }
+                                                                        startIcon={
+                                                                            <Icon
+                                                                                icon={
+                                                                                    infoFilled
+                                                                                }
+                                                                            />
+                                                                        }
                                                                     >
                                                                         Cancel
                                                                     </Button>
@@ -1216,26 +1448,50 @@ export default function NFTActions({ nft }) {
                                                         </Stack>
                                                     </Stack>
                                                     <Stack spacing={1}>
-                                                        <Stack direction="row" spacing={1} alignItems="center">
-                                                            <Typography variant="body2" color="text.secondary">
+                                                        <Stack
+                                                            direction="row"
+                                                            spacing={1}
+                                                            alignItems="center"
+                                                        >
+                                                            <Typography
+                                                                variant="body2"
+                                                                color="text.secondary"
+                                                            >
                                                                 From:
                                                             </Typography>
-                                                            <Link 
+                                                            <Link
                                                                 href={`/account/${offer.owner}`}
                                                                 underline="hover"
                                                             >
                                                                 <Typography variant="body2">
-                                                                    {truncate(offer.owner, 16)}
+                                                                    {truncate(
+                                                                        offer.owner,
+                                                                        16
+                                                                    )}
                                                                 </Typography>
                                                             </Link>
                                                         </Stack>
                                                         {offer.destination && (
-                                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                                <Typography variant="body2" color="text.secondary">
+                                                            <Stack
+                                                                direction="row"
+                                                                spacing={1}
+                                                                alignItems="center"
+                                                            >
+                                                                <Typography
+                                                                    variant="body2"
+                                                                    color="text.secondary"
+                                                                >
                                                                     Broker:
                                                                 </Typography>
                                                                 <Typography variant="body2">
-                                                                    {BROKER_ADDRESSES[offer.destination]?.name || truncate(offer.destination, 16)}
+                                                                    {BROKER_ADDRESSES[
+                                                                        offer
+                                                                            .destination
+                                                                    ]?.name ||
+                                                                        truncate(
+                                                                            offer.destination,
+                                                                            16
+                                                                        )}
                                                                 </Typography>
                                                             </Stack>
                                                         )}
@@ -1246,12 +1502,19 @@ export default function NFTActions({ nft }) {
                                     })}
                                 </Stack>
                             ) : (
-                                <Box sx={{ 
-                                    py: 4, 
-                                    textAlign: 'center',
-                                    backgroundColor: (theme) => alpha(theme.palette.background.default, 0.6),
-                                    borderRadius: 1
-                                }}>
+                                <Box
+                                    sx={{
+                                        py: 4,
+                                        textAlign: 'center',
+                                        backgroundColor: (theme) =>
+                                            alpha(
+                                                theme.palette.background
+                                                    .default,
+                                                0.6
+                                            ),
+                                        borderRadius: 1
+                                    }}
+                                >
                                     <Typography color="text.secondary">
                                         No buy offers available
                                     </Typography>
@@ -1271,7 +1534,13 @@ export default function NFTActions({ nft }) {
                         </AccordionDetails>
                     </StyledAccordion>
 
-                    <Accordion defaultExpanded sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+                    <Accordion
+                        defaultExpanded
+                        sx={{
+                            backgroundColor: 'transparent',
+                            boxShadow: 'none'
+                        }}
+                    >
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon color="primary" />}
                         >
@@ -1298,6 +1567,7 @@ export default function NFTActions({ nft }) {
                 onClose={handleCloseCreateOffer}
                 nft={nft}
                 isSellOffer={isSellOffer}
+                onOfferCreated={handleOfferCreated}
             />
             <TransferDialog
                 open={openTransfer}
@@ -1310,8 +1580,13 @@ export default function NFTActions({ nft }) {
                 setOpen={setOpenCreateOfferXRPCafe}
                 nft={nft}
                 isSellOffer={false}
-                initialAmount={lowestSellOffer ? lowestSellOffer.totalAmount : 0}
-                brokerFeePercentage={lowestSellOffer ? lowestSellOffer.brokerFeePercentage : 0}
+                initialAmount={
+                    lowestSellOffer ? lowestSellOffer.totalAmount : 0
+                }
+                brokerFeePercentage={
+                    lowestSellOffer ? lowestSellOffer.brokerFeePercentage : 0
+                }
+                onOfferCreated={handleOfferCreated}
             />
             <ConfirmAcceptOfferDialog
                 open={openConfirm}

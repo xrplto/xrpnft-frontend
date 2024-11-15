@@ -49,7 +49,8 @@ export default function CreateOfferXRPCafe({
     nft,
     isSellOffer,
     initialAmount,
-    brokerFeePercentage
+    brokerFeePercentage,
+    onOfferCreated
 }) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -96,6 +97,9 @@ export default function CreateOfferXRPCafe({
             dispatchTimer = setInterval(async () => {
                 const dispatched_result = await getDispatchResult();
                 if (dispatched_result && dispatched_result === 'tesSUCCESS') {
+                    if (onOfferCreated) {
+                        onOfferCreated();
+                    }
                     setSync(sync + 1);
                     openSnackbar('Create Offer successful!', 'success');
                     stopInterval();
