@@ -152,7 +152,7 @@ export default function CollectionActivity({ collection }) {
     });
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', mb: 6 }}>
             {loading ? (
                 <Stack alignItems="center">
                     <PulseLoader color="#00AB55" size={10} />
