@@ -23,7 +23,8 @@ import {
     Card,
     CardContent,
     Grid,
-    Chip
+    Chip,
+    Dialog
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -471,6 +472,8 @@ function OfferCard({
     handleHideOffer,
     isMobile
 }) {
+    const [openImageDialog, setOpenImageDialog] = useState(false);
+
     const {
         price,
         isSell,
@@ -489,140 +492,141 @@ function OfferCard({
         owner
     } = parseOfferData(offer);
 
+    const handleImageClick = (e) => {
+        e.preventDefault();
+        setOpenImageDialog(true);
+    };
+
     return (
-        <Card elevation={3}>
-            <CardContent sx={{ p: isMobile ? 1 : 2 }}>
-                <Grid container spacing={isMobile ? 1 : 2} alignItems="center">
-                    <Grid item xs={12} sm={6} md={4}>
-                        <Link href={`/nft/${NFTokenID}`} underline="none">
-                            <Stack
-                                direction="row"
-                                spacing={1}
-                                alignItems="center"
-                            >
-                                <CardMedia
-                                    component={isVideo ? 'video' : 'img'}
-                                    image={imgUrl}
-                                    alt={name}
-                                    sx={{
-                                        width: isMobile ? 48 : 64,
-                                        height: isMobile ? 36 : 48,
-                                        borderRadius: 1
-                                    }}
-                                />
-                                <Stack>
-                                    <Link
-                                        href={`/collection/${cslug}`}
-                                        underline="none"
-                                    >
-                                        <Typography
-                                            variant="caption"
-                                            color="text.secondary"
+        <>
+            <Card elevation={3}>
+                <CardContent sx={{ p: isMobile ? 1 : 2 }}>
+                    <Grid container spacing={isMobile ? 1 : 2} alignItems="center">
+                        <Grid item xs={12} sm={6} md={4}>
+                            <Link href={`/nft/${NFTokenID}`} underline="none">
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                    <CardMedia
+                                        component={isVideo ? 'video' : 'img'}
+                                        image={imgUrl}
+                                        alt={name}
+                                        sx={{
+                                            width: isMobile ? 48 : 64,
+                                            height: isMobile ? 36 : 48,
+                                            borderRadius: 1,
+                                            cursor: 'pointer'
+                                        }}
+                                        onClick={handleImageClick}
+                                    />
+                                    <Stack>
+                                        <Link
+                                            href={`/collection/${cslug}`}
+                                            underline="none"
                                         >
-                                            {collection || ''}
+                                            <Typography
+                                                variant="caption"
+                                                color="text.secondary"
+                                            >
+                                                {collection || ''}
+                                            </Typography>
+                                        </Link>
+                                        <Typography
+                                            variant={
+                                                isMobile ? 'body2' : 'subtitle2'
+                                            }
+                                            noWrap
+                                        >
+                                            {name}
                                         </Typography>
-                                    </Link>
-                                    <Typography
-                                        variant={
-                                            isMobile ? 'body2' : 'subtitle2'
-                                        }
-                                        noWrap
-                                    >
-                                        {name}
-                                    </Typography>
-                                    <Typography
-                                        variant="caption"
-                                        color="text.secondary"
-                                    >
-                                        Owner:{' '}
-                                        {truncate(owner, isMobile ? 8 : 10)}
-                                    </Typography>
+                                    </Stack>
                                 </Stack>
-                            </Stack>
-                        </Link>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <Typography
-                            variant={isMobile ? 'subtitle1' : 'h6'}
-                            component="div"
-                        >
-                            {price.amount} {price.name}
-                        </Typography>
-                        {expire_string && (
-                            <Typography
-                                variant="caption"
+                            </Link>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <Typography variant={isMobile ? 'subtitle1' : 'h6'} component="div">
+                                {price.amount} {price.name}
+                            </Typography>
+                            {expire_string && (
+                                <Typography variant="caption" color="text.secondary">
+                                    Expires: {expire_string}
+                                </Typography>
+                            )}
+                            <Link 
+                                href={`https://bithomp.com/explorer/${offer.index}`}
+                                target="_blank"
+                                underline="hover"
                                 color="text.secondary"
                             >
-                                Expires: {expire_string}
-                            </Typography>
-                        )}
-                        <Typography
-                            variant="caption"
-                            display="block"
-                            color="text.secondary"
-                        >
-                            Offer ID: {truncate(offer.index, isMobile ? 8 : 10)}
-                        </Typography>
-                        <Typography
-                            variant="caption"
-                            display="block"
-                            color="text.secondary"
-                        >
-                            Offer by:{' '}
-                            {truncate(offer.account, isMobile ? 8 : 10)}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={2}>
-                        <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                            <Chip
-                                label={
-                                    isSell
-                                        ? 'Sell offer'
-                                        : type === 'orphaned'
-                                        ? 'Orphaned offer'
-                                        : 'Buy offer'
-                                }
-                                color={isSell ? 'primary' : 'secondary'}
-                                size="small"
-                            />
-                            {orphaned === 'yes' && (
+                                <Typography variant="caption" display="block">
+                                    {truncate(offer.index, isMobile ? 8 : 10)}
+                                </Typography>
+                            </Link>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={2}>
+                            <Stack direction="row" spacing={0.5} flexWrap="wrap">
                                 <Chip
-                                    label="Orphaned"
-                                    color="warning"
+                                    label={
+                                        isSell
+                                            ? 'Sell offer'
+                                            : type === 'orphaned'
+                                            ? 'Orphaned offer'
+                                            : 'Buy offer'
+                                    }
+                                    color={isSell ? 'primary' : 'secondary'}
                                     size="small"
                                 />
-                            )}
-                            {expired && (
-                                <Chip
-                                    label="Expired"
-                                    color="error"
-                                    size="small"
-                                />
-                            )}
-                        </Stack>
+                                {orphaned === 'yes' && (
+                                    <Chip
+                                        label="Orphaned"
+                                        color="warning"
+                                        size="small"
+                                    />
+                                )}
+                                {expired && (
+                                    <Chip
+                                        label="Expired"
+                                        color="error"
+                                        size="small"
+                                    />
+                                )}
+                            </Stack>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <Stack direction="row" spacing={1} justifyContent={isMobile ? 'flex-start' : 'flex-end'}>
+                                {renderActionButtons(
+                                    offer,
+                                    isOwner,
+                                    accountLogin,
+                                    type,
+                                    handleAcceptOffer,
+                                    handleCancelOffer,
+                                    handleHideOffer
+                                )}
+                            </Stack>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <Stack
-                            direction="row"
-                            spacing={1}
-                            justifyContent={
-                                isMobile ? 'flex-start' : 'flex-end'
-                            }
-                        >
-                            {renderActionButtons(
-                                offer,
-                                isOwner,
-                                accountLogin,
-                                type,
-                                handleAcceptOffer,
-                                handleCancelOffer,
-                                handleHideOffer
-                            )}
-                        </Stack>
-                    </Grid>
-                </Grid>
-            </CardContent>
-        </Card>
+                </CardContent>
+            </Card>
+
+            <Dialog
+                open={openImageDialog}
+                onClose={() => setOpenImageDialog(false)}
+                maxWidth="md"
+                fullWidth
+            >
+                <CardMedia
+                    component={isVideo ? 'video' : 'img'}
+                    image={imgUrl}
+                    alt={name}
+                    sx={{
+                        width: '100%',
+                        height: 'auto',
+                        maxHeight: '80vh',
+                        objectFit: 'contain'
+                    }}
+                    controls={isVideo}
+                />
+            </Dialog>
+        </>
     );
 }
 
