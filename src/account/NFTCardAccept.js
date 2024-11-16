@@ -106,279 +106,119 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
     }
 
     return (
-        <CardWrapper
-            sx={{
-                marginLeft: 'auto',
-                marginRight: 'auto',
-                marginBottom: 1,
-                width: '100%',
-                // maxWidth: 200,
-                // height: 250,
-                // aspectRatio: '2 / 3'
-            }}
-        >
-            <Box
-                sx={{ 
-                    padding: 0,
-                    marginBottom: 0 
-                }}
-            >
-                <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'} px={isMobile ? 2 : 1}>
-                    {!isMobile && (
-                        <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{my:1, pl:0, pr:0}}>
-                            <Stack direction="row" alignItems='center' justifyContent='flex-start' sx={{mt:0, pl:0, pr:0}}>
-                                <Link href={`/nft/${NFTokenID}`} underline='none'>
-                                    <CardMedia
-                                        component={
-                                            loadingImg ? () =>
-                                                <Skeleton
-                                                    variant='rectangular'
-                                                    // animation='wave'
-                                                    sx={{
-                                                        width: isMobile ? 60 : 80,
-                                                        height: 60,
-                                                    }}
-                                                /> :
-                                                isVideo ? 'video' : 'img'}
-                                        image={imgUrl}
-                                        loading={loadingImg.toString()}
-                                        alt={'NFT' + uuid}
-                                        // controls={isVideo}
-                                        // autoPlay={isVideo}
-                                        // loop={isVideo}
-                                        sx={{
-                                            width: isMobile ? 60 : 80,
-                                            height: 60,
-                                            maxWidth: 280,
-                                            maxHeight: 250,
-                                            marginTop: 0,
-                                            borderRadius: 0.5,
-                                            // borderTopLeftRadius: 20,
-                                            // borderTopRightRadius: 20,
-                                            // borderBottomLeftRadius: 0,
-                                            // borderBottomRightRadius: 0,
-                                            objectFit: 'cover'
-                                        }}
-                                    />
-                                    <img src={imgUrl}
-                                        style={{ display: 'none' }}
-                                        onLoad={onImageLoaded} />
-                                    {
-                                        isVideo &&
-                                        <video src={imgUrl}
-                                            style={{ display: 'none' }}
-                                            onCanPlay={onImageLoaded}
-                                        />
-                                    }
-                                </Link>
-                                <Link href={`/nft/${NFTokenID}`} underline='none'>
-                                    <Stack direction="column" sx={{mt:isMobile?2:0, pl:isMobile?1:2, pr:0}}>
-                                        {amount.amount === 0 ?
-                                            <Link href={`/collection/${cslug}`} underline='none'><Typography variant="s8">{collection || ''}</Typography></Link>
-                                            :
-                                            <>
-                                            {amount.currency === "XRP" ?
-                                                <Stack direction="row" spacing={0.5} alignItems="center">
-                                                    <Icon icon={rippleSolid} width="14" height="14" />
-                                                    <Typography variant="s8">{fNumber(amount.amount)}</Typography>
-                                                </Stack>
-                                                :
-                                                <Typography variant="s8">{fNumber(amount.amount)} {normalizeCurrencyCodeXummImpl(amount.currency)}</Typography>
-                                            }
-                                            </>
-                                        }
-                                        <Stack direction="row" alignItems='center' sx={{mt:0, pl:0, pr:0}}>
-                                            <Tooltip title={`Transferred, Click Approve to accept`}>
-                                                <SportsScoreIcon fontSize="small" />
-                                            </Tooltip>
-                                            {name.length > 20 ?
-                                                <Box display='flex'>
-                                                    <Typography
-                                                        variant="s8"
-                                                        textOverflow='ellipsis'
-                                                        overflow='hidden'
-                                                        whiteSpace='nowrap'
-                                                        sx={{mt:0.5, mb:0.5}}
-                                                    >
-                                                        {name.slice(0, -5)}&nbsp;
-                                                    </Typography>
-                                                    <Typography
-                                                        variant="s8"
-                                                        sx={{mt:0.5, mb:0.5, width: 45}}
-                                                    >
-                                                        {name.slice(-5)}
-                                                    </Typography>
-                                                </Box>
-                                                :
-                                                <Typography
-                                                    variant="s8"
-                                                    sx={{mt:0, mb:0.5}}
-                                                >
-                                                    {name}
-                                                </Typography>
-                                            }
-                                        </Stack>
-                                    </Stack>
-                                </Link>
-                            </Stack>
-                            <Link href={`/account/${sender}`} underline='none'>
-                                {!isMobile && <Typography variant="s8">{sender}</Typography>}
-                            </Link>
-                            <Typography variant="s8" style={{ textAlign: 'center' }}>Waiting to accept</Typography>
-                            {accountLogin === profileAccount ? 
-                            (
-                                <Button 
-                                    variant="outlined" 
-                                    color="success" 
-                                    size="small" 
-                                    onClick={() => handleApprove(nft)}
-                                    sx={{
-                                        borderColor: theme.palette.success.main,
-                                        color: theme.palette.success.main,
-                                        '&:hover': {
-                                            backgroundColor: alpha(theme.palette.success.main, 0.1),
-                                        },
-                                    }}
-                                >
-                                    Accept
-                                </Button>
-                            ):(
-                                <Typography variant="s8" style={{ textAlign: 'center' }}></Typography>
-                            )}
-                        </Stack>
-                    )}
-                    {isMobile && (
-                        <Box display={'flex'} flexDirection='column' justifyContent={'space-evenly'}>
-                            <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mt:1, pl:0, pr:0}}>
-                                <Stack direction="row" alignItems='center' justifyContent='flex-start' sx={{mt:0, pl:0, pr:0}}>
-                                    <Link href={`/nft/${NFTokenID}`} underline='none'>
-                                        <CardMedia
-                                            component={
-                                                loadingImg ? () =>
-                                                    <Skeleton
-                                                        variant='rectangular'
-                                                        // animation='wave'
-                                                        sx={{
-                                                            width: 80,
-                                                            height: 60,
-                                                        }}
-                                                    /> :
-                                                    isVideo ? 'video' : 'img'}
-                                            image={imgUrl}
-                                            loading={loadingImg.toString()}
-                                            alt={'NFT' + uuid}
-                                            // controls={isVideo}
-                                            // autoPlay={isVideo}
-                                            // loop={isVideo}
-                                            sx={{
-                                                width: 80,
-                                                height: 60,
-                                                maxWidth: 280,
-                                                maxHeight: 250,
-                                                marginTop: 0,
-                                                borderRadius: 0.5,
-                                                // borderTopLeftRadius: 20,
-                                                // borderTopRightRadius: 20,
-                                                // borderBottomLeftRadius: 0,
-                                                // borderBottomRightRadius: 0,
-                                                objectFit: 'cover'
-                                            }}
-                                        />
-                                        <img src={imgUrl}
-                                            style={{ display: 'none' }}
-                                            onLoad={onImageLoaded} />
-                                        {
-                                            isVideo &&
-                                            <video src={imgUrl}
-                                                style={{ display: 'none' }}
-                                                onCanPlay={onImageLoaded}
-                                            />
-                                        }
-                                    </Link>
-                                    <Link href={`/nft/${NFTokenID}`} underline='none'>
-                                        <Stack direction="column" sx={{mt:0, pl:2, pr:0}}>
-                                            {amount.amount === 0 ?
-                                                <Link href={`/collection/${cslug}`} underline='none'><Typography variant="s8">{collection || ''}</Typography></Link>
-                                                :
-                                                <>
-                                                {amount.currency === "XRP" ?
-                                                    <Stack direction="row" spacing={0.5} alignItems="center">
-                                                        <Icon icon={rippleSolid} width="14" height="14" />
-                                                        <Typography variant="s8">{fNumber(amount.amount)}</Typography>
-                                                    </Stack>
-                                                    :
-                                                    <Typography variant="s8">{fNumber(amount.amount)} {normalizeCurrencyCodeXummImpl(amount.currency)}</Typography>
-                                                }
-                                                </>
-                                            }
-                                            <Stack direction="row" alignItems='center' sx={{mt:0, pl:0, pr:0}}>
-                                                <Tooltip title={`Transferred, Click Approve to accept`}>
-                                                    <SportsScoreIcon fontSize="small" />
-                                                </Tooltip>
-                                                {name.length > 20 ?
-                                                    <Box display='flex'>
-                                                        <Typography
-                                                            variant="s8"
-                                                            textOverflow='ellipsis'
-                                                            overflow='hidden'
-                                                            whiteSpace='nowrap'
-                                                            sx={{mt:0.5, mb:0.5}}
-                                                        >
-                                                            {name.slice(0, -5)}&nbsp;
-                                                        </Typography>
-                                                        <Typography
-                                                            variant="s8"
-                                                            sx={{mt:0.5, mb:0.5, width: 45}}
-                                                        >
-                                                            {name.slice(-5)}
-                                                        </Typography>
-                                                    </Box>
-                                                    :
-                                                    <Typography
-                                                        variant="s8"
-                                                        sx={{mt:0, mb:0.5}}
-                                                    >
-                                                        {name}
-                                                    </Typography>
-                                                }
-                                            </Stack>
-                                        </Stack>
-                                    </Link>
-                                </Stack>
-                                <Link href={`/account/${sender}`} underline='none'>
-                                    {!isMobile && <Typography variant="s8">{sender}</Typography>}
-                                </Link>
-                            </Stack>
-                            <Stack direction="row" alignItems='center' justifyContent='space-between' sx={{mb:1, pl:0, pr:0}}>
-                                <Typography variant="s8" alignItems='center' justifyContent='space-evenly' sx={{mt:1}}>Waiting to accept</Typography>
-                                {accountLogin === profileAccount && 
-                                    <Button 
-                                        variant="outlined" 
-                                        size="small" 
-                                        color="success" 
-                                        onClick={() => handleApprove(nft)}
-                                        sx={{
-                                            borderColor: theme.palette.success.main,
-                                            color: theme.palette.success.main,
-                                            '&:hover': {
-                                                backgroundColor: alpha(theme.palette.success.main, 0.1),
-                                            },
-                                        }}
-                                    >
-                                        Accept
-                                    </Button>
-                                }
-                            </Stack>
-                        </Box>
-                    )}
-                </Box>
-            </Box>
-            {/* <Divider sx={{mt:0.8, mb:0.3}}/>
-            <Stack direction="row" justifyContent='space-between' sx={{mt:1, pl:1, pr:1}}>
-                <FlagsContainer Flags={flag} />
-                <FavoriteIcon />
-            </Stack> */}
+        <Box sx={{ 
+            p: 1.5,
+            mb: 1,
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 1
+        }}>
+            <Stack direction="row" alignItems="center" spacing={2}>
+                {/* Left: NFT Image */}
+                <Link href={`/nft/${NFTokenID}`} underline='none'>
+                    <CardMedia
+                        component={loadingImg ? 
+                            () => <Skeleton variant='rectangular' sx={{width: 50, height: 50}}/> 
+                            : isVideo ? 'video' : 'img'
+                        }
+                        image={imgUrl}
+                        loading={loadingImg.toString()}
+                        alt={'NFT' + uuid}
+                        sx={{
+                            width: 50,
+                            height: 50,
+                            borderRadius: 0.5,
+                            objectFit: 'cover'
+                        }}
+                    />
+                    <img src={imgUrl} style={{ display: 'none' }} onLoad={onImageLoaded} />
+                    {isVideo && <video src={imgUrl} style={{ display: 'none' }} onCanPlay={onImageLoaded} />}
+                </Link>
 
-        </CardWrapper>
+                {/* Middle: NFT Info & Addresses */}
+                <Stack spacing={0.5} sx={{ flex: 1, minWidth: 0 }}>
+                    {/* NFT Name & Price */}
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                        <Tooltip title={`Transferred, Click Approve to accept`}>
+                            <SportsScoreIcon sx={{ fontSize: 16 }} />
+                        </Tooltip>
+                        <Typography variant="s8" noWrap>
+                            {name}
+                        </Typography>
+                        {amount.amount !== 0 && amount.currency === "XRP" && (
+                            <Stack direction="row" spacing={0.5} alignItems="center">
+                                <Icon icon={rippleSolid} width="12" height="12" />
+                                <Typography variant="s8">{fNumber(amount.amount)}</Typography>
+                            </Stack>
+                        )}
+                    </Stack>
+
+                    {/* Addresses */}
+                    <Box sx={{ 
+                        display: 'flex',
+                        alignItems: 'center',
+                        backgroundColor: alpha(theme.palette.background.paper, 0.04),
+                        borderRadius: 0.5,
+                        py: 0.5,
+                        px: 1,
+                        minWidth: 0
+                    }}>
+                        <Typography variant="caption" sx={{ 
+                            fontFamily: 'monospace',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            flex: 1,
+                            fontSize: '0.7rem'
+                        }}>
+                            {nft.owner}
+                        </Typography>
+                        <Icon 
+                            icon="material-symbols:arrow-right-alt-rounded" 
+                            width={16} 
+                            style={{ 
+                                color: theme.palette.text.secondary,
+                                margin: '0 4px'
+                            }}
+                        />
+                        <Typography variant="caption" sx={{ 
+                            fontFamily: 'monospace',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            flex: 1,
+                            fontSize: '0.7rem'
+                        }}>
+                            {nft.destination}
+                        </Typography>
+                    </Box>
+                </Stack>
+
+                {/* Right: Status & Action */}
+                <Stack alignItems="flex-end" spacing={1}>
+                    <Typography variant="caption" color="text.secondary">
+                        Waiting
+                    </Typography>
+                    {accountLogin === profileAccount && (
+                        <Button 
+                            variant="outlined" 
+                            color="success" 
+                            size="small" 
+                            onClick={() => handleApprove(nft)}
+                            sx={{
+                                minWidth: 'auto',
+                                px: 1.5,
+                                py: 0.5,
+                                borderColor: theme.palette.success.main,
+                                color: theme.palette.success.main,
+                                '&:hover': {
+                                    backgroundColor: alpha(theme.palette.success.main, 0.1),
+                                },
+                            }}
+                        >
+                            Accept
+                        </Button>
+                    )}
+                </Stack>
+            </Stack>
+        </Box>
     );
 };
