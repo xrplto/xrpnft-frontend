@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { styled } from '@mui/material/styles';
+import { alpha } from '@mui/material/styles';
 
 // Material UI Components
 import {
@@ -705,6 +707,36 @@ const activityComponents = {
     }
 };
 
+// Change the styled TableCell name to StyledTableCell
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  padding: theme.spacing(1.5),
+  '&:first-of-type': {
+    paddingLeft: theme.spacing(2)
+  },
+  '&:last-of-type': {
+    paddingRight: theme.spacing(2)
+  }
+}));
+
+// Add a new ActivityIcon component for consistent icon styling
+const ActivityIcon = ({ icon, color }) => (
+  <Box
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 32,
+      height: 32,
+      borderRadius: 1,
+      backgroundColor: (theme) => alpha(theme.palette[color].main, 0.12),
+      color: (theme) => theme.palette[color].main
+    }}
+  >
+    {icon}
+  </Box>
+);
+
 export default function ActivityList({ account }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -825,55 +857,63 @@ export default function ActivityList({ account }) {
                                         }
                                     }}
                                 >
-                                    <TableCell
-                                        align="left"
+                                    <StyledTableCell
+                                        align="left" 
                                         sx={{
                                             maxWidth: '100vw',
                                             overflow: 'hidden'
                                         }}
                                     >
-                                        <Stack spacing={0.25}>
-                                            <Stack
-                                                direction="row"
-                                                spacing={1}
-                                                justifyContent="space-between"
-                                                alignItems="center"
-                                            >
-                                                <Typography
-                                                    variant="caption" // smaller text
-                                                    noWrap
-                                                    sx={{
-                                                        maxWidth: '70%',
-                                                        color: color,
-                                                        fontWeight: 500 // slightly bolder
-                                                    }}
+                                        <Stack 
+                                            direction="row"
+                                            spacing={2}
+                                            alignItems="flex-start"
+                                        >
+                                            <ActivityIcon 
+                                                icon={activityComponents[activity].componentIcon}
+                                                color={activityComponents[activity].color.split('.')[0]}
+                                            />
+                                            
+                                            <Stack spacing={0.5} sx={{ flex: 1 }}>
+                                                <Stack
+                                                    direction="row"
+                                                    spacing={1}
+                                                    justifyContent="space-between"
+                                                    alignItems="center"
                                                 >
-                                                    {activityTitle}
-                                                </Typography>
-                                                <Tooltip title={strDateTime}>
                                                     <Typography
-                                                        variant="caption"
-                                                        color="text.secondary"
+                                                        variant="subtitle2"
                                                         noWrap
                                                         sx={{
-                                                            fontSize:
-                                                                '0.6875rem'
-                                                        }} // even smaller time
+                                                            maxWidth: '70%',
+                                                            color: color,
+                                                            fontWeight: 600
+                                                        }}
                                                     >
-                                                        {timeAgo}
+                                                        {activityTitle}
                                                     </Typography>
-                                                </Tooltip>
+                                                    
+                                                    <Tooltip title={strDateTime}>
+                                                        <Typography
+                                                            variant="caption"
+                                                            color="text.secondary"
+                                                            noWrap
+                                                            sx={{
+                                                                fontSize: '0.75rem',
+                                                                fontWeight: 500
+                                                            }}
+                                                        >
+                                                            {timeAgo}
+                                                        </Typography>
+                                                    </Tooltip>
+                                                </Stack>
+
+                                                <Box sx={{ fontSize: '0.875rem' }}>
+                                                    {componentActivity}
+                                                </Box>
                                             </Stack>
-                                            <Box
-                                                sx={{
-                                                    fontSize: '0.75rem',
-                                                    lineHeight: 1.2 // tighter line height
-                                                }}
-                                            >
-                                                {componentActivity}
-                                            </Box>
                                         </Stack>
-                                    </TableCell>
+                                    </StyledTableCell>
                                 </TableRow>
                             );
                         })}
