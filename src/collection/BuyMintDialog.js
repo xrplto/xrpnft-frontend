@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import Decimal from 'decimal.js';
+import { keyframes } from '@mui/system';
 
 // Material
 import { withStyles } from '@mui/styles';
@@ -23,10 +24,13 @@ import {
     Stack,
     Tooltip,
     Typography,
-    TextField
+    TextField,
+    Box
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 // Context
 import { useContext } from 'react';
@@ -42,24 +46,77 @@ import { PulseLoader } from "react-spinners";
 import { fNumber } from 'src/utils/formatNumber';
 
 // ----------------------------------------------------------------------
-const BuyDialog = styled(Dialog)(({ theme }) => ({
-    backdropFilter: 'blur(1px)',
-    WebkitBackdropFilter: 'blur(1px)', // Fix on Mobile
-    '& .MuiDialogContent-root': {
-        padding: theme.spacing(2),
+const glowAnimation = keyframes`
+  0% { box-shadow: 0 0 0 0 rgba(24, 144, 255, 0.2); }
+  70% { box-shadow: 0 0 0 10px rgba(24, 144, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(24, 144, 255, 0); }
+`;
+
+const StyledDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialog-paper': {
+        borderRadius: 16,
+        boxShadow: '0px 8px 40px rgba(0, 0, 0, 0.12)',
+        background: theme.palette.mode === 'dark' 
+            ? 'linear-gradient(145deg, #1a1c1e 0%, #2d2f31 100%)'
+            : 'linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)',
     },
-    '& .MuiDialogActions-root': {
-        padding: theme.spacing(1),
-    },
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)',
 }));
 
-const BuyDialogTitle = (props) => {
+const GradientButton = styled(Button)(({ theme }) => ({
+    background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+    transition: 'all 0.3s ease-in-out',
+    '&:hover': {
+        transform: 'translateY(-2px)',
+        boxShadow: `0 5px 15px ${alpha(theme.palette.primary.main, 0.4)}`,
+    },
+    '&:disabled': {
+        background: theme.palette.action.disabledBackground,
+    }
+}));
+
+const StyledQuantityField = styled(TextField)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        backgroundColor: alpha(theme.palette.primary.main, 0.04),
+        borderRadius: 8,
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': {
+            backgroundColor: alpha(theme.palette.primary.main, 0.08),
+        },
+        '&.Mui-focused': {
+            backgroundColor: alpha(theme.palette.primary.main, 0.12),
+            animation: `${glowAnimation} 2s infinite`,
+        }
+    }
+}));
+
+const CustomSelect = styled(Select)(({ theme }) => ({
+    '& .MuiOutlinedInput-notchedOutline': {
+        border: 'none',
+    },
+    backgroundColor: alpha(theme.palette.primary.main, 0.04),
+    borderRadius: 8,
+    transition: 'all 0.2s ease-in-out',
+    '&:hover': {
+        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+    },
+    '&.Mui-focused': {
+        backgroundColor: alpha(theme.palette.primary.main, 0.12),
+    },
+    minWidth: 180
+}));
+
+const BuyDialogTitle = styled((props) => {
     const { children, onClose, ...other } = props;
     const theme = useTheme();
 
     return (
-        <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
-            {children}
+        <DialogTitle sx={{ m: 0, p: 2, pb: 1 }} {...other}>
+            <Stack direction="row" alignItems="center" spacing={1}>
+                <LocalAtmIcon color="primary" />
+                {children}
+            </Stack>
             {onClose ? (
                 <IconButton
                     aria-label="close"
@@ -76,24 +133,8 @@ const BuyDialogTitle = (props) => {
             ) : null}
         </DialogTitle>
     );
-};
-
-const Label = withStyles({
-    root: {
-        color: alpha('#637381', 0.99)
-    }
-})(Typography);
-
-const CustomSelect = styled(Select)(({ theme }) => ({
-    '& .MuiOutlinedInput-notchedOutline': {
-        border: 'none'
-    },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-        borderColor: alpha(theme.palette.primary.main, 0.5),
-    },
-    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-        borderColor: theme.palette.primary.main,
-    }
+})(({ theme }) => ({
+    padding: theme.spacing(2),
 }));
 
 function GetNum(amount) {
@@ -317,7 +358,7 @@ export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints
                 <PulseLoader color={theme.palette.primary.main} size={10} />
             </Backdrop>
 
-            <BuyDialog
+            <StyledDialog
                 fullScreen={fullScreen}
                 onClose={handleClose}
                 open={open}
@@ -330,95 +371,85 @@ export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints
                     <Typography variant="p4" color="primary.main">Buy Mint</Typography>
                 </BuyDialogTitle>
 
-                <DialogContent>
-                    <Stack sx={{ pl: 1, pr: 1 }}>
-                        <Typography variant="body2" sx={{ mt: 0 }}>
-                            To power up the spinner, you need at least 1 or more Mints. This will enable you to purchase NFTs {type === "random" ? "randomly" : "sequentially"} selected from this collection.
-                        </Typography>
-                        <Typography variant="body2" sx={{ mt: 2 }}>
-                            Mints purchased for this collection cannot be used on other collections.
-                        </Typography>
+                <DialogContent sx={{ px: 3, pb: 4 }}>
+                    <Stack spacing={4}>
+                        {/* Info Section */}
+                        <Box sx={{ 
+                            backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.04),
+                            borderRadius: 2,
+                            p: 2
+                        }}>
+                            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                                To power up the spinner, you need at least 1 or more Mints. This will enable you to purchase NFTs {type === "random" ? "randomly" : "sequentially"} selected from this collection.
+                            </Typography>
+                            <Typography 
+                                variant="body2" 
+                                sx={{ 
+                                    mt: 2,
+                                    color: 'text.secondary',
+                                    fontStyle: 'italic'
+                                }}
+                            >
+                                Note: Mints purchased for this collection cannot be used on other collections.
+                            </Typography>
+                        </Box>
 
-                        <Stack spacing={2} sx={{ mt: 2 }}>
-                            <Stack direction="row" spacing={2} alignItems="center">
-                                <Typography variant="subtitle1">Cost</Typography>
-                                <CustomSelect
-                                    id='select_cost'
-                                    value={cost.md5}
-                                    onChange={handleChangeCost}
-                                >
-                                    {costs.map((cost, idx) => (
-                                        <MenuItem
-                                            key={cost.md5}
-                                            value={cost.md5}
-                                        >
-                                            <Stack direction='row' alignItems="center">
-                                                <Avatar alt={cost.name} src={`https://s1.xrpl.to/token/${cost.md5}`} sx={{ width: 28, height: 28, mr: 1 }} />
-                                                <Typography variant='body1' color="#EB5757">{cost.amount} {cost.name}</Typography>
-                                            </Stack>
-                                        </MenuItem>
-                                    ))}
-                                </CustomSelect>
-                                {cost.currency !== 'XRP' && (
-                                    <>
-                                        <Link
-                                            underline="none"
-                                            color="inherit"
-                                            target="_blank"
-                                            href={`https://bithomp.com/explorer/${cost.issuer}`}
-                                            rel="noreferrer noopener nofollow"
-                                        >
-                                            <Tooltip title='Check on Bithomp'>
-                                                <IconButton edge="end" aria-label="bithomp">
-                                                    <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 24, height: 24 }} />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </Link>
-                                        {/* 
-                                        <Link
-                                            underline="none"
-                                            color="inherit"
-                                            target="_blank"
-                                            href={`https://xrpl.to/trade/${cost.md5}`}
-                                            rel="noreferrer noopener nofollow"
-                                        >
-                                            <Tooltip title='Trade on XRPL.to'>
-                                                <IconButton edge="end" aria-label="trade">
-                                                    <ShoppingCartIcon fontSize="medium" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </Link>
-                                        */}
-                                    </>
-                                )}
-                            </Stack>
+                        {/* Cost Selector */}
+                        <Stack spacing={1}>
+                            <Typography variant="subtitle1" fontWeight={600}>Select Payment Method</Typography>
+                            <CustomSelect
+                                value={cost.md5}
+                                onChange={handleChangeCost}
+                            >
+                                {costs.map((cost) => (
+                                    <MenuItem key={cost.md5} value={cost.md5}>
+                                        <Stack direction='row' alignItems="center" spacing={2}>
+                                            <Avatar 
+                                                alt={cost.name} 
+                                                src={`https://s1.xrpl.to/token/${cost.md5}`} 
+                                                sx={{ 
+                                                    width: 32, 
+                                                    height: 32,
+                                                    border: '2px solid',
+                                                    borderColor: 'primary.main'
+                                                }} 
+                                            />
+                                            <Box>
+                                                <Typography variant='subtitle2'>{cost.name}</Typography>
+                                                <Typography variant='caption' color="text.secondary">
+                                                    {cost.amount} per mint
+                                                </Typography>
+                                            </Box>
+                                        </Stack>
+                                    </MenuItem>
+                                ))}
+                            </CustomSelect>
                         </Stack>
 
-                        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">Quantity <Typography variant='caption'>*</Typography></Typography>
-                            <TextField
-                                id="input-with-sx2"
-                                variant="standard"
+                        {/* Quantity Input */}
+                        <Stack spacing={1}>
+                            <Typography variant="subtitle1" fontWeight={600}>
+                                Quantity <Box component="span" color="error.main">*</Box>
+                            </Typography>
+                            <StyledQuantityField
                                 value={quantity}
-                                autoComplete='new-password'
-                                onFocus={event => event.target.select()}
                                 onChange={handleChangeQuantity}
-                                onKeyDown={(e) => e.stopPropagation()}
-                                margin='dense'
+                                type="number"
+                                size="small"
                                 inputProps={{
-                                    autoComplete: 'off',
-                                    style: { textAlign: 'center' },
+                                    min: 0,
+                                    style: { textAlign: 'center' }
                                 }}
                             />
+                            <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+                                Total Required: <Box component="span" color="primary.main" fontWeight={600}>
+                                    {fNumber(cost.amount * quantity)} {cost.name}
+                                </Box>
+                            </Typography>
                         </Stack>
 
-                        <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
-                            <Typography variant="subtitle2">Total {cost.name} Required</Typography>
-                            <Typography variant="subtitle2" color="primary.main">{fNumber(cost.amount * quantity)} {cost.name}</Typography>
-                        </Stack>
-
+                        {/* Disclaimer */}
                         <FormControlLabel 
-                            sx={{ mt: 3 }} 
                             control={
                                 <Checkbox 
                                     checked={disclaimer} 
@@ -427,25 +458,25 @@ export default function BuyMintDialog({open, setOpen, type, cid, costs, setMints
                                 />
                             }
                             label={
-                                <Typography variant="caption">
-                                    I understand that I will be purchasing <Typography variant="caption" color="primary.main">{quantity} Mints</Typography> with total <Typography variant="caption" color="primary.main">{fNumber(cost.amount * quantity)} {cost.name}</Typography>.  Each Mint will mint the NFT on XRPL and transfer it to my wallet address which is <Typography variant="caption" color="primary.main">{account}</Typography>
+                                <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                                    I understand that I will be purchasing <Box component="span" color="primary.main" fontWeight={600}>{quantity} Mints</Box> with total <Box component="span" color="primary.main" fontWeight={600}>{fNumber(cost.amount * quantity)} {cost.name}</Box>. Each Mint will mint the NFT on XRPL and transfer it to my wallet address which is <Box component="span" color="primary.main" fontWeight={600}>{account}</Box>
                                 </Typography>
                             }
                         />
 
-                        <Stack direction='row' spacing={2} justifyContent="center" sx={{ mt: 3, mb: 4 }}>
-                            <Button
-                                variant="contained"
-                                onClick={handleApprove}
-                                color='primary'
-                                disabled={!canApprove}
-                            >
-                                Approve in My Wallet
-                            </Button>
-                        </Stack>
+                        {/* Action Button */}
+                        <GradientButton
+                            onClick={handleApprove}
+                            disabled={!canApprove}
+                            size="large"
+                            startIcon={<AccountBalanceWalletIcon />}
+                            sx={{ py: 1.5 }}
+                        >
+                            Approve in My Wallet
+                        </GradientButton>
                     </Stack>
                 </DialogContent>
-            </BuyDialog>
+            </StyledDialog>
 
             <QRDialog
                 open={openScanQR}
