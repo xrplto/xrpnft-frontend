@@ -765,7 +765,8 @@ export default function ActivityList({ account }) {
             sx={{
                 pl: 0,
                 pr: 0,
-                overflowX: 'hidden'
+                overflowX: 'hidden',
+                mb: 8
             }}
         >
             <Box
