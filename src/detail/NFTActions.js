@@ -298,6 +298,61 @@ const OwnerAddress = styled(Link)(({ theme }) => ({
     }
 }));
 
+// Update the FloorPriceCard styling for a more prominent look
+const FloorPriceCard = styled(Paper)(({ theme }) => ({
+    padding: theme.spacing(1.5, 2),
+    backgroundColor: alpha(theme.palette.primary.main, 0.04),
+    borderRadius: theme.shape.borderRadius * 2,
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
+    width: 'fit-content',
+    transition: 'all 0.2s ease-in-out',
+    '&:hover': {
+        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+        border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`
+    }
+}));
+
+// Update the FloorPriceValue styling for better alignment
+const FloorPriceValue = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    '& .icon': {
+        color: theme.palette.primary.main,
+        width: 20,
+        height: 20
+    },
+    '& .amount': {
+        fontWeight: 700,
+        fontSize: '1.1rem',
+        color: theme.palette.primary.main,
+        letterSpacing: '0.02em'
+    }
+}));
+
+// Add this new styled component near the top with other styled components
+const CollectionHeader = styled('div')(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: theme.spacing(2)
+}));
+
+const CollectionInfo = styled('div')(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.5)
+}));
+
+const NFTTitle = styled(Typography)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    marginTop: theme.spacing(0.5),
+    color: theme.palette.text.primary,
+    fontWeight: 'bold'
+}));
+
 export default function NFTActions({ nft }) {
     const theme = useTheme();
     const anchorRef = useRef(null);
@@ -815,72 +870,88 @@ export default function NFTActions({ nft }) {
         <GlassPanel elevation={0}>
             <Stack spacing={3}>
                 {self && (
-                    <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        alignItems="center"
-                    >
-                        <Stack>
-                            <Stack
-                                direction="row"
-                                spacing={1}
-                                alignItems="center"
-                            >
-                                {cslug ? (
-                                    <Link
-                                        href={`/collection/${cslug}`}
-                                        underline="none"
-                                    >
+                    <CollectionHeader>
+                        <CollectionInfo>
+                            {cslug ? (
+                                <Link href={`/collection/${cslug}`} underline="none">
+                                    <Stack direction="row" spacing={1} alignItems="center">
                                         <Typography
-                                            variant="h6"
+                                            variant="body2"
                                             sx={{
-                                                fontWeight: 'bold',
-                                                color: 'primary.main'
+                                                color: 'text.secondary'
                                             }}
                                         >
                                             {collectionName}
                                         </Typography>
-                                    </Link>
-                                ) : (
+                                        {cverified === 'yes' && (
+                                            <Tooltip title="Verified">
+                                                <VerificationBadge>
+                                                    <CheckIcon />
+                                                </VerificationBadge>
+                                            </Tooltip>
+                                        )}
+                                    </Stack>
+                                </Link>
+                            ) : (
+                                <Stack direction="row" spacing={1} alignItems="center">
                                     <Typography
-                                        variant="h6"
+                                        variant="body2"
                                         sx={{
-                                            fontWeight: 'bold',
-                                            color: 'primary.main'
+                                            color: 'text.secondary'
                                         }}
                                     >
                                         {collectionName}
                                     </Typography>
-                                )}
-                                {cverified === 'yes' && (
-                                    <Tooltip title="Verified">
-                                        <VerificationBadge>
-                                            <CheckIcon />
-                                        </VerificationBadge>
-                                    </Tooltip>
-                                )}
-                            </Stack>
-                            <Stack
-                                direction="row"
-                                spacing={1}
-                                alignItems="center"
-                            >
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                >
-                                    Global Floor
-                                </Typography>
-                                <Icon
-                                    icon={rippleSolid}
-                                    width="16"
-                                    height="16"
-                                />
-                                <Typography variant="body2" fontWeight="bold">
-                                    {fNumber(floorPrice)}
-                                </Typography>
-                            </Stack>
-                        </Stack>
+                                    {cverified === 'yes' && (
+                                        <Tooltip title="Verified">
+                                            <VerificationBadge>
+                                                <CheckIcon />
+                                            </VerificationBadge>
+                                        </Tooltip>
+                                    )}
+                                </Stack>
+                            )}
+
+                            <NFTTitle variant="h5">
+                                {nftName}
+                            </NFTTitle>
+
+                            <FloorPriceCard elevation={0}>
+                                <Stack direction="row" spacing={2} alignItems="center">
+                                    <Stack direction="row" spacing={1} alignItems="center">
+                                        <Typography 
+                                            variant="body2" 
+                                            sx={{ 
+                                                color: 'primary.main',
+                                                fontWeight: 500,
+                                                letterSpacing: '0.02em'
+                                            }}
+                                        >
+                                            Global Floor
+                                        </Typography>
+                                        <Tooltip title="Collection-wide floor price">
+                                            <Icon 
+                                                icon="material-symbols:info-outline" 
+                                                width={16} 
+                                                height={16}
+                                                style={{ 
+                                                    color: theme.palette.primary.main,
+                                                    opacity: 0.7,
+                                                    cursor: 'help'
+                                                }} 
+                                            />
+                                        </Tooltip>
+                                    </Stack>
+                                    <FloorPriceValue>
+                                        <Icon icon={rippleSolid} className="icon" />
+                                        <Typography className="amount">
+                                            {floorPrice > 0 ? fNumber(floorPrice) : '- - -'}
+                                        </Typography>
+                                    </FloorPriceValue>
+                                </Stack>
+                            </FloorPriceCard>
+                        </CollectionInfo>
+
                         <IconButton
                             size="large"
                             sx={{
@@ -896,12 +967,8 @@ export default function NFTActions({ nft }) {
                         >
                             <ShareIcon />
                         </IconButton>
-                    </Stack>
+                    </CollectionHeader>
                 )}
-
-                <Typography variant="h4" fontWeight="bold">
-                    {nftName}
-                </Typography>
 
                 <Stack direction="row" spacing={2} sx={{ mt: 1, mb: 2 }}>
                     {self && rarity_rank > 0 && (
