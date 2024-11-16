@@ -296,6 +296,34 @@ const getBrokerName = (address) => {
     }
 };
 
+const BrokerDisplay = ({ broker, cost }) => (
+    <Stack spacing={1}>
+        <Stack 
+            direction="row" 
+            spacing={1} 
+            alignItems="center"
+        >
+            <Typography 
+                variant="caption" 
+                color="text.secondary"
+                sx={{ fontWeight: 500 }}
+            >
+                Broker:
+            </Typography>
+            <Typography 
+                variant="caption"
+                sx={{ 
+                    color: 'primary.main',
+                    fontWeight: 600
+                }}
+            >
+                {getBrokerName(broker)}
+            </Typography>
+        </Stack>
+        {cost && <CostDisplay cost={cost} />}
+    </Stack>
+);
+
 // Updated activityComponents to include cost display for ACCEPT_SELL_OFFER
 const activityComponents = {
     [Activity.LOGIN]: {
@@ -649,18 +677,9 @@ const activityComponents = {
         componentIcon: <HowToRegIcon color="success" />,
         color: 'success.main',
         renderComponentActivity: (data) => (
-            <Stack spacing={0.5}>
+            <Stack spacing={1}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
-                <Stack direction="row" spacing={1}>
-                    <Typography variant="s7">Broker: </Typography>
-                    <Typography variant="s8">
-                        {getBrokerName(data.broker)}
-                    </Typography>
-                </Stack>
-                <Stack direction="row" spacing={1}>
-                    <Typography variant="s7">Cost: </Typography>
-                    <Typography variant="s8">{`${data.cost.amount} ${data.cost.currency}`}</Typography>
-                </Stack>
+                <BrokerDisplay broker={data.broker} cost={data.cost} />
             </Stack>
         )
     },
@@ -669,18 +688,9 @@ const activityComponents = {
         componentIcon: <HowToRegIcon color="success" />,
         color: 'success.main',
         renderComponentActivity: (data) => (
-            <Stack spacing={0.5}>
+            <Stack spacing={1}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
-                <Stack direction="row" spacing={1}>
-                    <Typography variant="s7">Broker: </Typography>
-                    <Typography variant="s8">
-                        {getBrokerName(data.broker)}
-                    </Typography>
-                </Stack>
-                <Stack direction="row" spacing={1}>
-                    <Typography variant="s7">Cost: </Typography>
-                    <Typography variant="s8">{`${data.cost.amount} ${data.cost.currency}`}</Typography>
-                </Stack>
+                <BrokerDisplay broker={data.broker} cost={data.cost} />
             </Stack>
         )
     },
