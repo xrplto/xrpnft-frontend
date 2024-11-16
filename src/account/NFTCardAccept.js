@@ -65,7 +65,16 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
-    // const accountToken = accountProfile?.token;
+
+    // Enhanced console log with collection name
+    console.log('NFTCardAccept - NFT Data:', {
+        nft,
+        profileAccount,
+        accountLogin,
+        owner: nft.owner,
+        destination: nft.destination,
+        collectionName: nft.meta?.collection?.name || 'No Collection'
+    });
 
     const {
         uuid,
@@ -80,7 +89,16 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
         cslug
     } = nft;
 
-    const sender = owner == profileAccount && destination ? destination : owner; //const sender = account == profileAccount ? destination : account;
+    // Simplified sender logic - we just need the owner since this is a transfer card
+    const sender = owner;
+
+    console.log('Transfer details:', {
+        sender,
+        isOwner: owner === profileAccount,
+        isDestination: destination === profileAccount,
+        canAccept: accountLogin === destination,
+        collectionName: meta?.collection?.name || 'No Collection'
+    });
 
     const amount = normalizeAmount(nft.amount || '0');
 
@@ -142,9 +160,14 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                         <Tooltip title={`Transferred, Click Approve to accept`}>
                             <SportsScoreIcon sx={{ fontSize: 16 }} />
                         </Tooltip>
-                        <Typography variant="s8" noWrap>
-                            {name}
-                        </Typography>
+                        <Stack spacing={0.5}>
+                            <Typography variant="s8" noWrap>
+                                {name}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary" noWrap>
+                                {meta?.collection?.name || 'No Collection'}
+                            </Typography>
+                        </Stack>
                         {amount.amount !== 0 && amount.currency === "XRP" && (
                             <Stack direction="row" spacing={0.5} alignItems="center">
                                 <Icon icon={rippleSolid} width="12" height="12" />
