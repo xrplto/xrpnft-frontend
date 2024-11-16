@@ -42,22 +42,31 @@ import { normalizeAmount } from 'src/utils/normalizers';
 // Components
 // import FlagsContainer from 'src/components/Flags';
 
-const CardWrapper = styled(Card)(({ theme }) => ({
-    borderRadius: theme.shape.borderRadius * 2,
-    backdropFilter: 'blur(20px)',
-    background: alpha(theme.palette.background.paper, 0.15),
-    padding: 0,
-    cursor: 'pointer',
-    transition: 'all 0.3s ease-in-out',
-    overflow: 'hidden',
-    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
-    
-    '&:hover': {
-        transform: 'translateY(-4px)',
-        boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
-        background: alpha(theme.palette.background.paper, 0.2),
-    }
+const CardWrapper = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+  borderRadius: theme.shape.borderRadius * 2,
+  backdropFilter: 'blur(20px)',
+  background: alpha(theme.palette.background.paper, 0.15),
+  border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+  boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+  transition: 'all 0.3s ease-in-out',
+
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
+    background: alpha(theme.palette.background.paper, 0.2),
+  }
+}));
+
+const AddressBox = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  backgroundColor: alpha(theme.palette.background.paper, 0.08),
+  borderRadius: theme.shape.borderRadius,
+  padding: theme.spacing(1, 1.5),
+  minWidth: 0,
+  border: `1px solid ${alpha(theme.palette.divider, 0.1)}`
 }));
 
 export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
@@ -124,114 +133,116 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
     }
 
     return (
-        <Box sx={{ 
-            p: 1.5,
-            mb: 1,
-            border: '1px solid',
-            borderColor: 'divider',
-            borderRadius: 1
-        }}>
-            <Stack direction="row" alignItems="center" spacing={2}>
+        <CardWrapper>
+            <Stack direction="row" alignItems="center" spacing={3}>
                 {/* Left: NFT Image */}
                 <Link href={`/nft/${NFTokenID}`} underline='none'>
-                    <CardMedia
-                        component={loadingImg ? 
-                            () => <Skeleton variant='rectangular' sx={{width: 50, height: 50}}/> 
-                            : isVideo ? 'video' : 'img'
-                        }
-                        image={imgUrl}
-                        loading={loadingImg.toString()}
-                        alt={'NFT' + uuid}
+                    <Box
                         sx={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: 0.5,
-                            objectFit: 'cover'
+                            position: 'relative',
+                            width: 80,
+                            height: 80,
+                            borderRadius: 2,
+                            overflow: 'hidden'
                         }}
-                    />
-                    <img src={imgUrl} style={{ display: 'none' }} onLoad={onImageLoaded} />
-                    {isVideo && <video src={imgUrl} style={{ display: 'none' }} onCanPlay={onImageLoaded} />}
+                    >
+                        <CardMedia
+                            component={loadingImg ? 
+                                () => <Skeleton variant='rectangular' sx={{width: '100%', height: '100%'}}/> 
+                                : isVideo ? 'video' : 'img'
+                            }
+                            image={imgUrl}
+                            loading={loadingImg.toString()}
+                            alt={'NFT' + uuid}
+                            sx={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover'
+                            }}
+                        />
+                        <img src={imgUrl} style={{ display: 'none' }} onLoad={onImageLoaded} />
+                        {isVideo && <video src={imgUrl} style={{ display: 'none' }} onCanPlay={onImageLoaded} />}
+                    </Box>
                 </Link>
 
                 {/* Middle: NFT Info & Addresses */}
-                <Stack spacing={0.5} sx={{ flex: 1, minWidth: 0 }}>
+                <Stack spacing={1.5} sx={{ flex: 1, minWidth: 0 }}>
                     {/* NFT Name & Price */}
-                    <Stack direction="row" alignItems="center" spacing={1}>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between">
                         <Stack spacing={0.5}>
-                            <Typography variant="s8" noWrap>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                                 {name}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary" noWrap>
+                            <Typography variant="body2" color="text.secondary">
                                 {meta?.collection?.name || 'No Collection'}
                             </Typography>
                         </Stack>
                         {amount.amount !== 0 && amount.currency === "XRP" && (
-                            <Stack direction="row" spacing={0.5} alignItems="center">
-                                <Icon icon={rippleSolid} width="12" height="12" />
-                                <Typography variant="s8">{fNumber(amount.amount)}</Typography>
-                            </Stack>
+                            <Chip
+                                icon={<Icon icon={rippleSolid} width={16} height={16} />}
+                                label={fNumber(amount.amount)}
+                                size="small"
+                                sx={{
+                                    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                                    borderRadius: 1,
+                                    '& .MuiChip-label': {
+                                        px: 1,
+                                        fontSize: '0.875rem'
+                                    }
+                                }}
+                            />
                         )}
                     </Stack>
 
                     {/* Addresses */}
-                    <Box sx={{ 
-                        display: 'flex',
-                        alignItems: 'center',
-                        backgroundColor: alpha(theme.palette.background.paper, 0.04),
-                        borderRadius: 0.5,
-                        py: 0.5,
-                        px: 1,
-                        minWidth: 0
-                    }}>
+                    <AddressBox>
                         <Typography variant="caption" sx={{ 
                             fontFamily: 'monospace',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
                             flex: 1,
-                            fontSize: '0.7rem'
+                            fontSize: '0.75rem'
                         }}>
-                            {nft.owner}
+                            {truncateString(nft.owner, 20)}
                         </Typography>
                         <Icon 
                             icon="material-symbols:arrow-right-alt-rounded" 
-                            width={16} 
+                            width={20} 
                             style={{ 
                                 color: theme.palette.text.secondary,
-                                margin: '0 4px'
+                                margin: '0 8px'
                             }}
                         />
                         <Typography variant="caption" sx={{ 
                             fontFamily: 'monospace',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
                             flex: 1,
-                            fontSize: '0.7rem'
+                            fontSize: '0.75rem'
                         }}>
-                            {nft.destination}
+                            {truncateString(nft.destination, 20)}
                         </Typography>
-                    </Box>
+                    </AddressBox>
                 </Stack>
 
                 {/* Right: Status & Action */}
-                <Stack alignItems="flex-end" spacing={1}>
-                    <Typography variant="caption" color="text.secondary">
-                        Waiting
-                    </Typography>
+                <Stack alignItems="flex-end" spacing={1.5}>
+                    <Chip
+                        label="Pending"
+                        size="small"
+                        color="warning"
+                        variant="outlined"
+                        sx={{ borderRadius: 1 }}
+                    />
                     {accountLogin === profileAccount && (
                         <Button 
-                            variant="outlined" 
+                            variant="contained" 
                             color="success" 
-                            size="small" 
+                            size="small"
+                            startIcon={<CheckCircleOutlineIcon />}
                             onClick={() => handleApprove(nft)}
                             sx={{
-                                minWidth: 'auto',
-                                px: 1.5,
-                                py: 0.5,
-                                borderColor: theme.palette.success.main,
-                                color: theme.palette.success.main,
-                                '&:hover': {
-                                    backgroundColor: alpha(theme.palette.success.main, 0.1),
-                                },
+                                px: 2,
+                                py: 0.75,
+                                borderRadius: 1,
+                                textTransform: 'none',
+                                fontWeight: 600
                             }}
                         >
                             Accept
@@ -239,6 +250,6 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                     )}
                 </Stack>
             </Stack>
-        </Box>
+        </CardWrapper>
     );
 };
