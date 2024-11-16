@@ -502,239 +502,247 @@ export default function SpinNFT({ collection, setView }) {
 
     return (
         <>
-            <BuyMintDialog
-                open={openBuyMint}
-                setOpen={setOpenBuyMint}
-                type="random"
-                cid={uuid}
-                costs={costs}
-                setMints={setMints}
-                setXrpBalance={setXrpBalance}
-            />
+            <Box sx={{ 
+                mt: { 
+                    xs: 12,  // Increased from 6 to 12 (96px)
+                    sm: 15,  // Increased from 8 to 15 (120px)
+                    md: 20   // Increased from 10 to 20 (160px)
+                } 
+            }}>
+                <BuyMintDialog
+                    open={openBuyMint}
+                    setOpen={setOpenBuyMint}
+                    type="random"
+                    cid={uuid}
+                    costs={costs}
+                    setMints={setMints}
+                    setXrpBalance={setXrpBalance}
+                />
 
-            <Confetti
-                width={width}
-                height={height}
-                initialVelocityX={4}
-                initialVelocityY={100}
-                run={true}
-                recycle={congrats}
-                gravity={0.2}
-                numberOfPieces={width / 3}
-                tweenDuration={100}
-            />
-            <Stack alignItems="center" sx={{ mb: 8, mt: 2 }}>
-                <IconCover>
-                    <IconWrapper>
-                        <IconImage
-                            src={`https://s1.xrpnft.com/collection/${logoImage}`}
-                        />
-                        {account === collection.account && (
-                            <Link
-                                href={`/collection/${slug}/edit`}
-                                underline="none"
-                            >
-                                <CardOverlay>
-                                    <EditIcon
-                                        className="MuiIconEditButton-root"
-                                        fontSize="large"
-                                        sx={{ opacity: 0, zIndex: 1, color: theme.palette.primary.main }}
-                                    />
-                                </CardOverlay>
-                                <ImageBackdrop className="MuiImageBackdrop-root" />
-                            </Link>
-                        )}
-                    </IconWrapper>
-                </IconCover>
-                <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
-                    <Typography variant="h1a" color="primary.main">{name}</Typography>
-                    {verified === 'yes' && (
-                        <Tooltip title="Verified">
-                            <VerifiedIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
-                        </Tooltip>
-                    )}
-                </Stack>
-                {description && (
-                    <Typography 
-                        variant="d3" 
-                        maxWidth="600px" 
-                        color="text.secondary"
-                        align="center"
-                        sx={{ mb: 2 }}
-                    >
-                        {description}
-                    </Typography>
-                )}
-                <Link
-                    component="button"
-                    underline="always"
-                    variant="body2"
-                    color="primary.main"
-                    onClick={() => {
-                        setView('');
-                    }}
-                >
-                    <Typography sx={{ ml: 0 }}>View Minted Items</Typography>
-                </Link>
-            </Stack>
-
-            <Container maxWidth="lg" sx={{ pl: 0, pr: 0 }}>
-                <Grid
-                    container
-                    rowSpacing={2}
-                    alignItems="center"
-                    sx={{ mb: 10 }}
-                >
-                    <Grid
-                        container
-                        item
-                        xs={12}
-                        md={6}
-                        justifyContent="center"
-                        alignItems="center"
-                    >
-                        <CardWrapper>
-                            <img
-                                src={spinImgUrl}
-                                style={{
-                                    width: '100%',
-                                    // height: fullScreen?'360px':'200px',
-                                    // marginTop: 5,
-                                    // borderRadius: 20,
-                                    objectFit: 'cover',
-                                    display: spinning ? 'block' : 'none'
-                                }}
+                <Confetti
+                    width={width}
+                    height={height}
+                    initialVelocityX={4}
+                    initialVelocityY={100}
+                    run={true}
+                    recycle={congrats}
+                    gravity={0.2}
+                    numberOfPieces={width / 3}
+                    tweenDuration={100}
+                />
+                <Stack alignItems="center" sx={{ mb: 8, mt: 2 }}>
+                    <IconCover>
+                        <IconWrapper>
+                            <IconImage
+                                src={`https://s1.xrpnft.com/collection/${logoImage}`}
                             />
-                            {isVideo ? (
-                                <CardMedia
-                                    component="video"
-                                    image={nftImgUrl}
-                                    title="title"
-                                    controls
-                                    style={{
-                                        width: '100%',
-                                        // height: fullScreen?'360px':'200px',
-                                        // marginTop: 5,
-                                        // borderRadius: 20,
-                                        objectFit: 'cover',
-                                        display: spinning ? 'none' : 'block'
-                                    }}
-                                />
-                            ) : (
-                                <img
-                                    src={nftImgUrl}
-                                    style={{
-                                        width: '100%',
-                                        // height: fullScreen?'360px':'200px',
-                                        // marginTop: 5,
-                                        // borderRadius: 20,
-                                        objectFit: 'cover',
-                                        display: spinning ? 'none' : 'block'
-                                    }}
-                                />
-                            )}
-
-                            {/* <Stack alignItems="center" sx={{mt:1}}>
-                                <Typography variant='h2a'>{spinning?'Please Wait!':(nft?nft.name:'Spin to Mint')}</Typography>
-                            </Stack> */}
-                            <Divider sx={{ mt: 0.8, mb: 2 }} />
-                            <Stack alignItems="center">
-
-                            {/*
-                                <Button
-                                    variant="contained"
-                                    disabled={spinning}
-                                    onClick={() => getOneNFT()}
-                                    sx={{ mb: 2 }}
+                            {account === collection.account && (
+                                <Link
+                                    href={`/collection/${slug}/edit`}
+                                    underline="none"
                                 >
-                                    Mint
-                                </Button>
+                                    <CardOverlay>
+                                        <EditIcon
+                                            className="MuiIconEditButton-root"
+                                            fontSize="large"
+                                            sx={{ opacity: 0, zIndex: 1, color: theme.palette.primary.main }}
+                                        />
+                                    </CardOverlay>
+                                    <ImageBackdrop className="MuiImageBackdrop-root" />
+                                </Link>
+                            )}
+                        </IconWrapper>
+                    </IconCover>
+                    <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
+                        <Typography variant="h1a" color="primary.main">{name}</Typography>
+                        {verified === 'yes' && (
+                            <Tooltip title="Verified">
+                                <VerifiedIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
+                            </Tooltip>
+                        )}
+                    </Stack>
+                    {description && (
+                        <Typography 
+                            variant="d3" 
+                            maxWidth="600px" 
+                            color="text.secondary"
+                            align="center"
+                            sx={{ mb: 2 }}
+                        >
+                            {description}
+                        </Typography>
+                    )}
+                    <Link
+                        component="button"
+                        underline="always"
+                        variant="body2"
+                        color="primary.main"
+                        onClick={() => {
+                            setView('');
+                        }}
+                    >
+                        <Typography sx={{ ml: 0 }}>View Minted Items</Typography>
+                    </Link>
+                </Stack>
 
-                                */}
-
-                            </Stack>
-                        </CardWrapper>
-                    </Grid>
-
+                <Container maxWidth="lg" sx={{ pl: 0, pr: 0 }}>
                     <Grid
                         container
-                        item
-                        xs={12}
-                        md={6}
-                        justifyContent="flex-start"
-                        alignItems="flex-start"
+                        rowSpacing={2}
+                        alignItems="center"
+                        sx={{ mb: 10 }}
                     >
-                        <Stack 
-                            spacing={3} 
-                            sx={{ 
-                                mt: 3, 
-                                mb: 6,
-                                width: '100%',
-                                maxWidth: 480,
-                                p: 3,
-                                borderRadius: 2,
-                                bgcolor: (theme) => alpha(theme.palette.background.paper, 0.6)
-                            }}
+                        <Grid
+                            container
+                            item
+                            xs={12}
+                            md={6}
+                            justifyContent="center"
+                            alignItems="center"
                         >
-                            <Typography variant="h4" color="primary.main">
-                                Collection Stats
-                            </Typography>
-                            
-                            <Stack spacing={2}>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography variant="subtitle1">Your Mints</Typography>
-                                    <Typography variant="h5" color="#33C2FF">{mints}</Typography>
-                                </Box>
-                                
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography variant="subtitle1">Available XRP</Typography>
-                                    <Typography variant="h5" color="#33C2FF">{xrpBalance}</Typography>
-                                </Box>
-                                
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Typography variant="subtitle1">Remaining NFTs</Typography>
-                                    <Typography variant="h5" color={progressColor}>
-                                        {pendingNfts} / {items}
-                                    </Typography>
-                                </Box>
-                                
-                                <Box sx={{ width: '100%', mt: 2 }}>
-                                    <LinearProgressWithLabel
-                                        variant="determinate"
-                                        value={pendingProgress}
-                                        progressColor={progressColor}
+                            <CardWrapper>
+                                <img
+                                    src={spinImgUrl}
+                                    style={{
+                                        width: '100%',
+                                        // height: fullScreen?'360px':'200px',
+                                        // marginTop: 5,
+                                        // borderRadius: 20,
+                                        objectFit: 'cover',
+                                        display: spinning ? 'block' : 'none'
+                                    }}
+                                />
+                                {isVideo ? (
+                                    <CardMedia
+                                        component="video"
+                                        image={nftImgUrl}
+                                        title="title"
+                                        controls
+                                        style={{
+                                            width: '100%',
+                                            // height: fullScreen?'360px':'200px',
+                                            // marginTop: 5,
+                                            // borderRadius: 20,
+                                            objectFit: 'cover',
+                                            display: spinning ? 'none' : 'block'
+                                        }}
                                     />
-                                </Box>
-                            </Stack>
+                                ) : (
+                                    <img
+                                        src={nftImgUrl}
+                                        style={{
+                                            width: '100%',
+                                            // height: fullScreen?'360px':'200px',
+                                            // marginTop: 5,
+                                            // borderRadius: 20,
+                                            objectFit: 'cover',
+                                            display: spinning ? 'none' : 'block'
+                                        }}
+                                    />
+                                )}
 
-                            <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 4 }}>
-                                <Button
-                                    variant="contained"
-                                    size="large"
-                                    onClick={() => setOpenBuyMint(true)}
-                                    startIcon={<ShoppingCartIcon />}
-                                >
-                                    Buy Mints
-                                </Button>
+                                {/* <Stack alignItems="center" sx={{mt:1}}>
+                                    <Typography variant='h2a'>{spinning?'Please Wait!':(nft?nft.name:'Spin to Mint')}</Typography>
+                                </Stack> */}
+                                <Divider sx={{ mt: 0.8, mb: 2 }} />
+                                <Stack alignItems="center">
 
-                                <Button
-                                    variant="outlined"
-                                    size="large"
-                                    component={Link}
-                                    href="/buy-crypto"
-                                    target="_blank"
-                                    startIcon={<AccountBalanceWalletIcon />}
-                                >
-                                    Buy XRP
-                                </Button>
+                                {/*
+                                    <Button
+                                        variant="contained"
+                                        disabled={spinning}
+                                        onClick={() => getOneNFT()}
+                                        sx={{ mb: 2 }}
+                                    >
+                                        Mint
+                                    </Button>
+
+                                    */}
+
+                                </Stack>
+                            </CardWrapper>
+                        </Grid>
+
+                        <Grid
+                            container
+                            item
+                            xs={12}
+                            md={6}
+                            justifyContent="flex-start"
+                            alignItems="flex-start"
+                        >
+                            <Stack 
+                                spacing={3} 
+                                sx={{ 
+                                    mt: 3, 
+                                    mb: 6,
+                                    width: '100%',
+                                    maxWidth: 480,
+                                    p: 3,
+                                    borderRadius: 2,
+                                    bgcolor: (theme) => alpha(theme.palette.background.paper, 0.6)
+                                }}
+                            >
+                                <Typography variant="h4" color="primary.main">
+                                    Collection Stats
+                                </Typography>
+                                
+                                <Stack spacing={2}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Typography variant="subtitle1">Your Mints</Typography>
+                                        <Typography variant="h5" color="#33C2FF">{mints}</Typography>
+                                    </Box>
+                                    
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Typography variant="subtitle1">Available XRP</Typography>
+                                        <Typography variant="h5" color="#33C2FF">{xrpBalance}</Typography>
+                                    </Box>
+                                    
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Typography variant="subtitle1">Remaining NFTs</Typography>
+                                        <Typography variant="h5" color={progressColor}>
+                                            {pendingNfts} / {items}
+                                        </Typography>
+                                    </Box>
+                                    
+                                    <Box sx={{ width: '100%', mt: 2 }}>
+                                        <LinearProgressWithLabel
+                                            variant="determinate"
+                                            value={pendingProgress}
+                                            progressColor={progressColor}
+                                        />
+                                    </Box>
+                                </Stack>
+
+                                <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 4 }}>
+                                    <Button
+                                        variant="contained"
+                                        size="large"
+                                        onClick={() => setOpenBuyMint(true)}
+                                        startIcon={<ShoppingCartIcon />}
+                                    >
+                                        Buy Mints
+                                    </Button>
+
+                                    <Button
+                                        variant="outlined"
+                                        size="large"
+                                        component={Link}
+                                        href="/buy-crypto"
+                                        target="_blank"
+                                        startIcon={<AccountBalanceWalletIcon />}
+                                    >
+                                        Buy XRP
+                                    </Button>
+                                </Stack>
                             </Stack>
-                        </Stack>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Container>
+                </Container>
 
-            {/* <Stack sx={{mt:5, minHeight: '20vh'}}>
-            </Stack> */}
+                {/* <Stack sx={{mt:5, minHeight: '20vh'}}>
+                </Stack> */}
+            </Box>
         </>
     );
 }
