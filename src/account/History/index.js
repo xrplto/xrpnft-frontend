@@ -140,7 +140,15 @@ const CostDisplay = ({ cost }) => (
         label={`${Number(cost.amount).toLocaleString()} ${cost.currency}`}
         color="primary"
         size="small"
-        sx={{ height: 20, fontSize: '0.625rem' }}
+        sx={{
+            height: 24,
+            fontSize: '0.75rem',
+            fontWeight: 500,
+            '& .MuiChip-label': {
+                px: 1.5,
+                py: 0.5
+            }
+        }}
     />
 );
 
@@ -267,21 +275,6 @@ const NFTDetails = ({ NFTokenID, isLinkable = false }) => {
                     </Typography>
                 </Stack>
             </Stack>
-            {nftInfo?.cfloor && (
-                <Chip
-                    label={`${nftInfo.cfloor.amount} ${nftInfo.cfloor.currency}`}
-                    size="small"
-                    color="primary"
-                    sx={{
-                        height: 16,
-                        fontSize: '0.625rem',
-                        '& .MuiChip-label': {
-                            px: 1,
-                            py: 0
-                        }
-                    }}
-                />
-            )}
         </Box>
     );
 };
