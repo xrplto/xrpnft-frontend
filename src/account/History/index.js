@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { alpha } from '@mui/material/styles';
+import { Dialog } from '@mui/material';
 
 // Material UI Components
 import {
@@ -170,6 +171,7 @@ const HashLink = ({ hash }) => (
 // Updated NFTDetails component
 const NFTDetails = ({ NFTokenID, isLinkable = false }) => {
     const [nftInfo, setNftInfo] = useState(null);
+    const [openImageDialog, setOpenImageDialog] = useState(false);
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
     useEffect(() => {
@@ -234,7 +236,7 @@ const NFTDetails = ({ NFTokenID, isLinkable = false }) => {
         <Box
             sx={{
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'flex-start',
                 gap: 1,
                 py: 0.25
             }}
@@ -243,39 +245,75 @@ const NFTDetails = ({ NFTokenID, isLinkable = false }) => {
                 alt={nftName}
                 src={imageUrl}
                 sx={{
-                    width: 24,
-                    height: 24,
-                    borderRadius: '4px'
+                    width: 40,
+                    height: 40,
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    '&:hover': {
+                        opacity: 0.8
+                    }
                 }}
                 variant="rounded"
+                onClick={() => setOpenImageDialog(true)}
             />
-            <Stack spacing={0} sx={{ flexGrow: 1, minWidth: 0 }}>
-                {isLinkable ? (
-                    <Link
-                        href={`/nft/${NFTokenID}`}
-                        underline="hover"
-                        sx={{ color: 'inherit' }}
-                    >
-                        <Typography variant="caption" noWrap>
+            <Dialog
+                open={openImageDialog}
+                onClose={() => setOpenImageDialog(false)}
+                maxWidth="md"
+                onClick={() => setOpenImageDialog(false)}
+            >
+                <Box
+                    component="img"
+                    src={imageUrl}
+                    alt={nftName}
+                    sx={{
+                        maxWidth: '100%',
+                        maxHeight: '80vh',
+                        objectFit: 'contain'
+                    }}
+                />
+            </Dialog>
+            <Stack spacing={0.5} sx={{ flexGrow: 1, minWidth: 0 }}>
+                <Stack direction="row" spacing={1} alignItems="center">
+                    {isLinkable ? (
+                        <Link
+                            href={`/nft/${NFTokenID}`}
+                            underline="hover"
+                            sx={{ color: 'inherit', flexGrow: 1 }}
+                        >
+                            <Typography variant="caption" noWrap>
+                                {nftName}
+                            </Typography>
+                        </Link>
+                    ) : (
+                        <Typography variant="caption" noWrap sx={{ flexGrow: 1 }}>
                             {nftName}
                         </Typography>
-                    </Link>
-                ) : (
-                    <Typography variant="caption" noWrap>
-                        {nftName}
-                    </Typography>
-                )}
-                <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
-                    <Typography variant="caption" color="text.secondary" noWrap>
-                        {nftInfo?.collection}
-                        {nftInfo?.rarity_rank && nftInfo?.total && (
-                            <span>
-                                {' '}
-                                • Rank: {nftInfo.rarity_rank}/{nftInfo.total}
-                            </span>
-                        )}
-                    </Typography>
+                    )}
+                    {nftInfo?.rarity_rank && nftInfo?.total && (
+                        <Chip
+                            label={`Rank ${nftInfo.rarity_rank}/${nftInfo.total}`}
+                            size="small"
+                            color="primary"
+                            sx={{
+                                height: 20,
+                                '& .MuiChip-label': {
+                                    px: 1,
+                                    fontSize: '0.65rem',
+                                    fontWeight: 600
+                                }
+                            }}
+                        />
+                    )}
                 </Stack>
+                <Typography 
+                    variant="caption" 
+                    color="text.secondary" 
+                    noWrap
+                    sx={{ display: 'block' }}
+                >
+                    {nftInfo?.collection}
+                </Typography>
             </Stack>
         </Box>
     );
@@ -300,21 +338,17 @@ const getBrokerName = (address) => {
 
 const BrokerDisplay = ({ broker, cost }) => (
     <Stack spacing={1}>
-        <Stack 
-            direction="row" 
-            spacing={1} 
-            alignItems="center"
-        >
-            <Typography 
-                variant="caption" 
+        <Stack direction="row" spacing={1} alignItems="center">
+            <Typography
+                variant="caption"
                 color="text.secondary"
                 sx={{ fontWeight: 500 }}
             >
                 Broker:
             </Typography>
-            <Typography 
+            <Typography
                 variant="caption"
-                sx={{ 
+                sx={{
                     color: 'primary.main',
                     fontWeight: 600
                 }}
@@ -709,32 +743,32 @@ const activityComponents = {
 
 // Change the styled TableCell name to StyledTableCell
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  padding: theme.spacing(1.5),
-  '&:first-of-type': {
-    paddingLeft: theme.spacing(2)
-  },
-  '&:last-of-type': {
-    paddingRight: theme.spacing(2)
-  }
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    padding: theme.spacing(1.5),
+    '&:first-of-type': {
+        paddingLeft: theme.spacing(2)
+    },
+    '&:last-of-type': {
+        paddingRight: theme.spacing(2)
+    }
 }));
 
 // Add a new ActivityIcon component for consistent icon styling
 const ActivityIcon = ({ icon, color }) => (
-  <Box
-    sx={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: 32,
-      height: 32,
-      borderRadius: 1,
-      backgroundColor: (theme) => alpha(theme.palette[color].main, 0.12),
-      color: (theme) => theme.palette[color].main
-    }}
-  >
-    {icon}
-  </Box>
+    <Box
+        sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 32,
+            height: 32,
+            borderRadius: 1,
+            backgroundColor: (theme) => alpha(theme.palette[color].main, 0.12),
+            color: (theme) => theme.palette[color].main
+        }}
+    >
+        {icon}
+    </Box>
 );
 
 export default function ActivityList({ account }) {
@@ -858,23 +892,33 @@ export default function ActivityList({ account }) {
                                     }}
                                 >
                                     <StyledTableCell
-                                        align="left" 
+                                        align="left"
                                         sx={{
                                             maxWidth: '100vw',
                                             overflow: 'hidden'
                                         }}
                                     >
-                                        <Stack 
+                                        <Stack
                                             direction="row"
                                             spacing={2}
                                             alignItems="flex-start"
                                         >
-                                            <ActivityIcon 
-                                                icon={activityComponents[activity].componentIcon}
-                                                color={activityComponents[activity].color.split('.')[0]}
+                                            <ActivityIcon
+                                                icon={
+                                                    activityComponents[activity]
+                                                        .componentIcon
+                                                }
+                                                color={
+                                                    activityComponents[
+                                                        activity
+                                                    ].color.split('.')[0]
+                                                }
                                             />
-                                            
-                                            <Stack spacing={0.5} sx={{ flex: 1 }}>
+
+                                            <Stack
+                                                spacing={0.5}
+                                                sx={{ flex: 1 }}
+                                            >
                                                 <Stack
                                                     direction="row"
                                                     spacing={1}
@@ -892,14 +936,17 @@ export default function ActivityList({ account }) {
                                                     >
                                                         {activityTitle}
                                                     </Typography>
-                                                    
-                                                    <Tooltip title={strDateTime}>
+
+                                                    <Tooltip
+                                                        title={strDateTime}
+                                                    >
                                                         <Typography
                                                             variant="caption"
                                                             color="text.secondary"
                                                             noWrap
                                                             sx={{
-                                                                fontSize: '0.75rem',
+                                                                fontSize:
+                                                                    '0.75rem',
                                                                 fontWeight: 500
                                                             }}
                                                         >
@@ -908,7 +955,11 @@ export default function ActivityList({ account }) {
                                                     </Tooltip>
                                                 </Stack>
 
-                                                <Box sx={{ fontSize: '0.875rem' }}>
+                                                <Box
+                                                    sx={{
+                                                        fontSize: '0.875rem'
+                                                    }}
+                                                >
                                                     {componentActivity}
                                                 </Box>
                                             </Stack>
