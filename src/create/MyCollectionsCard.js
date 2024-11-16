@@ -43,7 +43,7 @@ export default function MyCollectionsCard({ collections }) {
     }, [collections]);
 
     const handleClick = () => {
-        router.push('/collections');
+        router.push('/my-collections');
     };
 
     if (collections.length === 0) {
