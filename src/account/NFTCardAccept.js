@@ -19,6 +19,8 @@ import {
     CardContent,
     useMediaQuery,
     alpha,
+    Dialog,
+    DialogContent,
 } from '@mui/material';
 // import FavoriteIcon from '@mui/icons-material/Favorite';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
@@ -132,17 +134,33 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
         }
     }
 
+    const [openImageDialog, setOpenImageDialog] = useState(false);
+
+    const handleOpenImage = () => {
+        setOpenImageDialog(true);
+    };
+
+    const handleCloseImage = () => {
+        setOpenImageDialog(false);
+    };
+
     return (
         <CardWrapper>
             <Stack direction="row" alignItems="center" spacing={3}>
                 {/* Left: NFT Image */}
                 <Box
+                    onClick={handleOpenImage}
                     sx={{
                         position: 'relative',
                         width: 80,
                         height: 80,
                         borderRadius: 2,
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        cursor: 'pointer',
+                        '&:hover': {
+                            opacity: 0.8,
+                            transition: 'opacity 0.3s'
+                        }
                     }}
                 >
                     <CardMedia
@@ -255,6 +273,27 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                     )}
                 </Stack>
             </Stack>
+            <Dialog
+                open={openImageDialog}
+                onClose={handleCloseImage}
+                maxWidth="md"
+                fullWidth
+            >
+                <DialogContent sx={{ p: 1 }}>
+                    <CardMedia
+                        component={isVideo ? 'video' : 'img'}
+                        image={imgUrl}
+                        controls={isVideo}
+                        alt={'NFT' + uuid}
+                        sx={{
+                            width: '100%',
+                            height: 'auto',
+                            maxHeight: '80vh',
+                            objectFit: 'contain'
+                        }}
+                    />
+                </DialogContent>
+            </Dialog>
         </CardWrapper>
     );
 };
