@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 // import ModalImage from "react-modal-image";
-import { Lightbox } from "react-modal-image";
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { Lightbox } from 'react-modal-image';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // Material
 import { withStyles } from '@mui/styles';
 import {
-    styled, useTheme,
+    styled,
+    useTheme,
     Avatar,
     Backdrop,
     Box,
@@ -29,7 +30,7 @@ import {
     Divider,
     Chip
 } from '@mui/material';
-import { tableCellClasses } from "@mui/material/TableCell";
+import { tableCellClasses } from '@mui/material/TableCell';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -63,10 +64,13 @@ import { AppContext } from 'src/AppContext';
 import { getNftCoverUrl } from 'src/utils/parse';
 import { formatDateTime } from 'src/utils/formatTime';
 import { Activity } from 'src/utils/constants';
-import { normalizeAmount, normalizeCurrencyCodeXummImpl } from 'src/utils/normalizers';
+import {
+    normalizeAmount,
+    normalizeCurrencyCodeXummImpl
+} from 'src/utils/normalizers';
 
 // Loader
-import { PulseLoader, ClockLoader } from "react-spinners";
+import { PulseLoader, ClockLoader } from 'react-spinners';
 import { RotatingSquare, Vortex } from 'react-loader-spinner';
 
 // Components
@@ -79,7 +83,13 @@ import FlagsContainer from 'src/components/Flags';
 import { alpha } from '@mui/material/styles';
 import { formatDistanceToNow } from 'date-fns';
 
-export default function CollectionActivity({collection}) {
+// Add this helper function at the top level
+const getAttributeValue = (attributes, traitType) => {
+    const attr = attributes?.find(a => a.trait_type === traitType);
+    return attr?.value || null;
+};
+
+export default function CollectionActivity({ collection }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -98,23 +108,34 @@ export default function CollectionActivity({collection}) {
 
     const closeLightbox = () => {
         setOpen(false);
-    }
+    };
 
     useEffect(() => {
         function getActivities() {
             setLoading(true);
 
+            console.log('Fetching activities from:', `${BASE_URL}/collectionhistory/?cid=${collection.uuid}&page=${page}&limit=${rows}`);
+
             axios.get(`${BASE_URL}/collectionhistory/?cid=${collection.uuid}&page=${page}&limit=${rows}`)
                 .then(res => {
+                    console.log('API Response:', res);
+                    console.log('Response Data:', res.data);
+                    
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
+                        console.log('Total activities:', ret.total);
+                        console.log('History items:', ret.hists);
                         setTotal(ret.total);
                         setHists(ret.hists);
                     }
                 }).catch(err => {
                     console.log("Error on getting collection history list!!!", err);
+                    console.log("Error details:", {
+                        message: err.message,
+                        response: err.response,
+                        status: err?.response?.status
+                    });
                 }).then(function () {
-                    // always executed
                     setLoading(false);
                 });
         }
@@ -126,43 +147,47 @@ export default function CollectionActivity({collection}) {
         color: theme.palette[color].dark,
         fontWeight: 'bold',
         '& .MuiChip-label': {
-            padding: '0 8px',
-        },
+            padding: '0 8px'
+        }
     });
 
     return (
         <Box sx={{ width: '100%' }}>
             {loading ? (
                 <Stack alignItems="center">
-                    <PulseLoader color='#00AB55' size={10} />
+                    <PulseLoader color="#00AB55" size={10} />
                 </Stack>
-            ):(
-                hists && hists.length === 0 &&
-                    <Stack alignItems="center" sx={{mt: 5}}>
+            ) : (
+                hists &&
+                hists.length === 0 && (
+                    <Stack alignItems="center" sx={{ mt: 5 }}>
                         <Typography variant="s7">No Activities</Typography>
                     </Stack>
-            )
-            }
+                )
+            )}
             <Box
                 sx={{
-                    display: "flex",
+                    display: 'flex',
                     gap: 1,
                     py: 1,
-                    overflow: "auto",
-                    width: "100%",
-                    "& > *": {
-                        scrollSnapAlign: "center",
+                    overflow: 'auto',
+                    width: '100%',
+                    '& > *': {
+                        scrollSnapAlign: 'center'
                     },
-                    "::-webkit-scrollbar": { display: "none" },
+                    '::-webkit-scrollbar': { display: 'none' }
                 }}
             >
-                <Table stickyHeader sx={{
-                    [`& .${tableCellClasses.root}`]: {
-                        borderBottom: "0px solid",
-                        borderColor: theme.palette.divider
-                    },
-                    width: '100%',
-                }}>
+                <Table
+                    stickyHeader
+                    sx={{
+                        [`& .${tableCellClasses.root}`]: {
+                            borderBottom: '0px solid',
+                            borderColor: theme.palette.divider
+                        },
+                        width: '100%'
+                    }}
+                >
                     <TableHead>
                         <TableRow>
                             <TableCell width="15%">Activity</TableCell>
@@ -173,200 +198,357 @@ export default function CollectionActivity({collection}) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                    {
-                        hists && hists.map((row, idx) => {
-                            const {
-                                type,
-                                uuid,
-                                NFTokenID,
-                                account,
-                                cid,
-                                name,
-                                meta,
-                                dfile,
-                                files,
-                                cost,
-                                quantity,
-                                time
-                            } = row;
+                        {hists &&
+                            hists.map((row, idx) => {
+                                const {
+                                    type,
+                                    uuid,
+                                    NFTokenID,
+                                    account,
+                                    cid,
+                                    name,
+                                    meta,
+                                    dfile,
+                                    files,
+                                    cost,
+                                    quantity,
+                                    time
+                                } = row;
 
-                            // type: BUY_MINT, MINTED, BURN, CREATE_SELL_OFFER, CREATE_BUY_OFFER, CANCEL_SELL_OFFER, CANCEL_BUY_OFFER, TRANSFER, SALE
+                                // type: BUY_MINT, MINTED, BURN, CREATE_SELL_OFFER, CREATE_BUY_OFFER, CANCEL_SELL_OFFER, CANCEL_BUY_OFFER, TRANSFER, SALE
 
-                            const isVideo = meta?.video?true:false;
+                                const isVideo = meta?.video ? true : false;
 
-                            const imgUrl = getNftCoverUrl({files}, 'small');
+                                const imgUrl = getNftCoverUrl(
+                                    { files },
+                                    'small'
+                                );
 
-                            const strDateTime = formatDistanceToNow(new Date(time), { addSuffix: true });
+                                const strDateTime = formatDistanceToNow(
+                                    new Date(time),
+                                    { addSuffix: true }
+                                );
 
-                            const amount = normalizeAmount(row.amount);
+                                const amount = normalizeAmount(row.amount);
 
-                            let strActivity = '';
-                            let chipColor = 'default';
-                            switch (type) {
-                                case 'BUY_MINT':
-                                    strActivity = 'Buy Mint';
-                                    chipColor = 'primary';
-                                    break;
-                                case 'MINTED':
-                                    strActivity = 'Mint';
-                                    chipColor = 'success';
-                                    break;
-                                case 'BURN':
-                                    strActivity = 'Burn';
-                                    chipColor = 'error';
-                                    break;
-                                case 'CREATE_SELL_OFFER':
-                                    strActivity = 'Sell Offer';
-                                    chipColor = 'info';
-                                    break;
-                                case 'CREATE_BUY_OFFER':
-                                    strActivity = 'Buy Offer';
-                                    chipColor = 'warning';
-                                    break;
-                                case 'CANCEL_SELL_OFFER':
-                                    strActivity = 'Cancel Sell';
-                                    chipColor = 'secondary';
-                                    break;
-                                case 'CANCEL_BUY_OFFER':
-                                    strActivity = 'Cancel Buy';
-                                    chipColor = 'secondary';
-                                    break;
-                                case 'TRANSFER':
-                                    strActivity = 'Transfer';
-                                    chipColor = 'default';
-                                    break;
-                                case 'SALE':
-                                    strActivity = 'Sale';
-                                    chipColor = 'success';
-                                    break;
-                                default:
-                                    strActivity = `Unknown: ${type}`;
-                                    chipColor = 'default';
-                                    break;
-                            }
+                                let strActivity = '';
+                                let chipColor = 'default';
+                                switch (type) {
+                                    case 'BUY_MINT':
+                                        strActivity = 'Buy Mint';
+                                        chipColor = 'primary';
+                                        break;
+                                    case 'MINTED':
+                                        strActivity = 'Mint';
+                                        chipColor = 'success';
+                                        break;
+                                    case 'BURN':
+                                        strActivity = 'Burn';
+                                        chipColor = 'error';
+                                        break;
+                                    case 'CREATE_SELL_OFFER':
+                                        strActivity = 'Sell Offer';
+                                        chipColor = 'info';
+                                        break;
+                                    case 'CREATE_BUY_OFFER':
+                                        strActivity = 'Buy Offer';
+                                        chipColor = 'warning';
+                                        break;
+                                    case 'CANCEL_SELL_OFFER':
+                                        strActivity = 'Cancel Sell';
+                                        chipColor = 'secondary';
+                                        break;
+                                    case 'CANCEL_BUY_OFFER':
+                                        strActivity = 'Cancel Buy';
+                                        chipColor = 'secondary';
+                                        break;
+                                    case 'TRANSFER':
+                                        strActivity = 'Transfer';
+                                        chipColor = 'default';
+                                        break;
+                                    case 'SALE':
+                                        strActivity = 'Sale';
+                                        chipColor = 'success';
+                                        break;
+                                    default:
+                                        strActivity = `Unknown: ${type}`;
+                                        chipColor = 'default';
+                                        break;
+                                }
 
-                            return (
-                                <TableRow
-                                    // hover
-                                    key={time + "" + idx}
-                                    sx={{
-                                        [`& .${tableCellClasses.root}`]: {
-                                            // color: (error ? '#B72136' : '#B72136')
-                                        }
-                                    }}
-                                >
-                                    <TableCell align="left" sx={{pt:1, pb:1}}>
-                                        <Chip 
-                                            label={strActivity} 
-                                            size="small" 
-                                            sx={getChipStyle(chipColor)}
-                                        />
-                                    </TableCell>
+                                return (
+                                    <TableRow
+                                        // hover
+                                        key={time + '' + idx}
+                                        sx={{
+                                            [`& .${tableCellClasses.root}`]: {
+                                                // color: (error ? '#B72136' : '#B72136')
+                                            }
+                                        }}
+                                    >
+                                        <TableCell
+                                            align="left"
+                                            sx={{ pt: 1, pb: 1 }}
+                                        >
+                                            <Chip
+                                                label={strActivity}
+                                                size="small"
+                                                sx={getChipStyle(chipColor)}
+                                            />
+                                        </TableCell>
 
-                                    <TableCell align="left" sx={{pt:1, pb:1}}>
-                                        {type === 'BUY_MINT' ?
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Avatar alt="C" src={`https://s1.xrpl.to/token/${cost?.md5}`} />
+                                        <TableCell
+                                            align="left"
+                                            sx={{ pt: 1, pb: 1 }}
+                                        >
+                                            {type === 'BUY_MINT' ? (
+                                                <Stack
+                                                    direction="row"
+                                                    spacing={1}
+                                                    alignItems="center"
+                                                >
+                                                    <Avatar
+                                                        alt="C"
+                                                        src={`https://s1.xrpl.to/token/${cost?.md5}`}
+                                                    />
 
-                                                <Stack>
-                                                    <Stack direction='row' spacing={0.8} alignItems="center">
-                                                        <Typography variant="s7">Price: </Typography>
-                                                        <Typography variant='s11'>{cost?.amount} {cost?.name}</Typography>
-                                                    </Stack>
-                                                    <Stack direction="row" spacing={1}>
-                                                        <Typography variant="s7">Quantity: </Typography>
-                                                        <Typography variant="s11">{quantity}</Typography>
+                                                    <Stack>
+                                                        <Stack
+                                                            direction="row"
+                                                            spacing={0.8}
+                                                            alignItems="center"
+                                                        >
+                                                            <Typography variant="s7">
+                                                                Price:{' '}
+                                                            </Typography>
+                                                            <Typography variant="s11">
+                                                                {cost?.amount}{' '}
+                                                                {cost?.name}
+                                                            </Typography>
+                                                        </Stack>
+                                                        <Stack
+                                                            direction="row"
+                                                            spacing={1}
+                                                        >
+                                                            <Typography variant="s7">
+                                                                Quantity:{' '}
+                                                            </Typography>
+                                                            <Typography variant="s11">
+                                                                {quantity}
+                                                            </Typography>
+                                                        </Stack>
                                                     </Stack>
                                                 </Stack>
-                                            </Stack>
-                                            :
-                                            <Stack direction="row" spacing={1} justifyContent="space-between" alignItems="center">
-                                                <Stack direction="row" spacing={1} alignItems="center">
-                                                    <Link
-                                                        component="button"
-                                                        underline="none"
-                                                        onClick={() => {
-                                                            if (!isVideo) {
-                                                                setLightBoxImgUrl(imgUrl);
-                                                                setOpen(true)
-                                                            }
-                                                        }}
-                                                    >
-                                                        <CardMedia
-                                                            component={isVideo?'video':'img'}
-                                                            image={imgUrl}
-                                                            alt={'NFT'}
-                                                            // controls={isVideo}
-                                                            autoPlay={isVideo}
-                                                            loop={isVideo}
-                                                            muted
-                                                            style={{
-                                                                width:'48px'
+                                            ) : (
+                                                <Stack direction="row" spacing={2} alignItems="center">
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <Link
+                                                            component="button"
+                                                            underline="none"
+                                                            onClick={() => {
+                                                                if (!isVideo) {
+                                                                    setLightBoxImgUrl(
+                                                                        imgUrl
+                                                                    );
+                                                                    setOpen(
+                                                                        true
+                                                                    );
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Box
+                                                                sx={{
+                                                                    position: 'relative',
+                                                                    width: 48,
+                                                                    height: 48,
+                                                                    borderRadius: 1,
+                                                                    overflow: 'hidden'
+                                                                }}
+                                                            >
+                                                                <CardMedia
+                                                                    component={isVideo ? 'video' : 'img'}
+                                                                    image={imgUrl}
+                                                                    alt={name}
+                                                                    autoPlay={isVideo}
+                                                                    loop={isVideo}
+                                                                    muted
+                                                                    sx={{
+                                                                        width: '100%',
+                                                                        height: '100%',
+                                                                        objectFit: 'cover'
+                                                                    }}
+                                                                />
+                                                            </Box>
+                                                        </Link>
+                                                        <Stack spacing={0.5}>
+                                                            <Link
+                                                                href={`/nft/${NFTokenID}`}
+                                                                sx={{
+                                                                    color: 'text.primary',
+                                                                    textDecoration: 'none',
+                                                                    '&:hover': {
+                                                                        textDecoration: 'underline'
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <Typography variant="subtitle2" noWrap>
+                                                                    {name}
+                                                                </Typography>
+                                                            </Link>
+                                                            {meta?.attributes && (
+                                                                <Stack direction="row" spacing={0.5}>
+                                                                    {getAttributeValue(meta.attributes, 'Background') && (
+                                                                        <Chip
+                                                                            label={getAttributeValue(meta.attributes, 'Background')}
+                                                                            size="small"
+                                                                            sx={{
+                                                                                height: 20,
+                                                                                fontSize: '0.65rem',
+                                                                                bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                                                                color: 'text.secondary'
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                                    {getAttributeValue(meta.attributes, 'Fur') && (
+                                                                        <Chip
+                                                                            label={getAttributeValue(meta.attributes, 'Fur')}
+                                                                            size="small"
+                                                                            sx={{
+                                                                                height: 20,
+                                                                                fontSize: '0.65rem',
+                                                                                bgcolor: alpha(theme.palette.secondary.main, 0.1),
+                                                                                color: 'text.secondary'
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                                </Stack>
+                                                            )}
+                                                        </Stack>
+                                                    </Stack>
+                                                    {meta?.collection?.name && (
+                                                        <Chip
+                                                            label={meta.collection.name}
+                                                            size="small"
+                                                            sx={{
+                                                                height: 24,
+                                                                bgcolor: alpha(theme.palette.info.main, 0.1),
+                                                                color: 'text.secondary'
                                                             }}
                                                         />
-                                                    </Link>
-                                                    <Link
-                                                        // color="inherit"
-                                                        // target="_blank"
-                                                        href={`/nft/${NFTokenID}`}
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        <Typography variant="s6" noWrap>{name}</Typography>
-                                                    </Link>
+                                                    )}
                                                 </Stack>
-                                                {/* <Stack direction="row" spacing={1} alignItems="center">
-                                                    <FlagsContainer Flags={flag}/>
-                                                </Stack> */}
-                                            </Stack>
-                                        }
-                                    </TableCell>
+                                            )}
+                                        </TableCell>
 
-                                    <TableCell align="left" width='15%' sx={{pt:0.5, pb:0.5}}>
-                                        {type === 'SALE' ?
-                                            <Typography variant='s11' noWrap>{cost.amount} {normalizeCurrencyCodeXummImpl(cost.currency)}</Typography>
-                                            :
-                                            <>
-                                                {type === 'CREATE_SELL_OFFER' || type === 'CREATE_BUY_OFFER' || type === 'CANCEL_SELL_OFFER' || type === 'CANCEL_BUY_OFFER' ?
-                                                    <Typography variant='s11' noWrap>{amount.amount} {normalizeCurrencyCodeXummImpl(amount.currency)}</Typography>
-                                                    :
-                                                    <Typography variant='s11' noWrap>- - -</Typography>
-                                                }
-                                            </>
-                                        }
+                                        <TableCell
+                                            align="left"
+                                            width="15%"
+                                            sx={{ pt: 0.5, pb: 0.5 }}
+                                        >
+                                            {type === 'SALE' ? (
+                                                <Typography
+                                                    variant="s11"
+                                                    noWrap
+                                                >
+                                                    {cost.amount}{' '}
+                                                    {normalizeCurrencyCodeXummImpl(
+                                                        cost.currency
+                                                    )}
+                                                </Typography>
+                                            ) : (
+                                                <>
+                                                    {type ===
+                                                        'CREATE_SELL_OFFER' ||
+                                                    type ===
+                                                        'CREATE_BUY_OFFER' ||
+                                                    type ===
+                                                        'CANCEL_SELL_OFFER' ||
+                                                    type ===
+                                                        'CANCEL_BUY_OFFER' ? (
+                                                        <Typography
+                                                            variant="s11"
+                                                            noWrap
+                                                        >
+                                                            {amount.amount}{' '}
+                                                            {normalizeCurrencyCodeXummImpl(
+                                                                amount.currency
+                                                            )}
+                                                        </Typography>
+                                                    ) : (
+                                                        <Typography
+                                                            variant="s11"
+                                                            noWrap
+                                                        >
+                                                            - - -
+                                                        </Typography>
+                                                    )}
+                                                </>
+                                            )}
+                                        </TableCell>
 
-                                    </TableCell>
-
-                                    <TableCell align="left" width='15%' sx={{pt:1, pb:1}}>
-                                        <Stack direction="row" spacing={0.2} alignItems="center">
-                                            <Link
-                                                // color="inherit"
-                                                // target="_blank"
-                                                href={`/account/${account}`}
-                                                // rel="noreferrer noopener nofollow"
+                                        <TableCell
+                                            align="left"
+                                            width="15%"
+                                            sx={{ pt: 1, pb: 1 }}
+                                        >
+                                            <Stack
+                                                direction="row"
+                                                spacing={0.2}
+                                                alignItems="center"
                                             >
-                                                <Typography variant='s11' noWrap> {account}</Typography>
-                                            </Link>
-                                            <CopyToClipboard text={account} onCopy={()=>openSnackbar('Copied!', 'success')}>
-                                                <Tooltip title='Click to copy'>
-                                                    <IconButton size="small">
-                                                        <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </CopyToClipboard>
-                                        </Stack>
-                                    </TableCell>
+                                                <Link
+                                                    href={`/account/${account}`}
+                                                    sx={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        color: 'primary.main',
+                                                        textDecoration: 'none',
+                                                        '&:hover': {
+                                                            textDecoration: 'underline'
+                                                        }
+                                                    }}
+                                                >
+                                                    <Avatar 
+                                                        sx={{ 
+                                                            width: 24, 
+                                                            height: 24, 
+                                                            mr: 1,
+                                                            fontSize: '0.75rem',
+                                                            bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                                            color: 'primary.main'
+                                                        }}
+                                                    >
+                                                        {account.substring(0, 2)}
+                                                    </Avatar>
+                                                    <Typography variant='body2' noWrap>
+                                                        {`${account.substring(0, 6)}...${account.substring(account.length - 4)}`}
+                                                    </Typography>
+                                                </Link>
+                                                <CopyToClipboard text={account} onCopy={()=>openSnackbar('Address copied to clipboard', 'success')}>
+                                                    <Tooltip title='Copy address'>
+                                                        <IconButton size="small" sx={{ ml: 0.5 }}>
+                                                            <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </CopyToClipboard>
+                                            </Stack>
+                                        </TableCell>
 
-                                    <TableCell align="left" sx={{pt:1, pb:1}}>
-                                        <Typography variant='s7' noWrap>{strDateTime}</Typography>
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })
-                    }
+                                        <TableCell
+                                            align="left"
+                                            sx={{ pt: 1, pb: 1 }}
+                                        >
+                                            <Typography variant="s7" noWrap>
+                                                {strDateTime}
+                                            </Typography>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
                     </TableBody>
                 </Table>
             </Box>
-            { total > 0 &&
+            {total > 0 && (
                 <ListToolbar
                     count={total}
                     rows={rows}
@@ -374,9 +556,9 @@ export default function CollectionActivity({collection}) {
                     page={page}
                     setPage={setPage}
                 />
-            }
+            )}
 
-            {open &&
+            {open && (
                 <Lightbox
                     small={lightBoxImgUrl}
                     large={lightBoxImgUrl}
@@ -384,7 +566,7 @@ export default function CollectionActivity({collection}) {
                     hideZoom
                     onClose={closeLightbox}
                 />
-            }
+            )}
         </Box>
     );
 }
