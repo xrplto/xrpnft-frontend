@@ -136,43 +136,48 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
         <CardWrapper>
             <Stack direction="row" alignItems="center" spacing={3}>
                 {/* Left: NFT Image */}
-                <Link href={`/nft/${NFTokenID}`} underline='none'>
-                    <Box
+                <Box
+                    sx={{
+                        position: 'relative',
+                        width: 80,
+                        height: 80,
+                        borderRadius: 2,
+                        overflow: 'hidden'
+                    }}
+                >
+                    <CardMedia
+                        component={loadingImg ? 
+                            () => <Skeleton variant='rectangular' sx={{width: '100%', height: '100%'}}/> 
+                            : isVideo ? 'video' : 'img'
+                        }
+                        image={imgUrl}
+                        loading={loadingImg.toString()}
+                        alt={'NFT' + uuid}
                         sx={{
-                            position: 'relative',
-                            width: 80,
-                            height: 80,
-                            borderRadius: 2,
-                            overflow: 'hidden'
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
                         }}
-                    >
-                        <CardMedia
-                            component={loadingImg ? 
-                                () => <Skeleton variant='rectangular' sx={{width: '100%', height: '100%'}}/> 
-                                : isVideo ? 'video' : 'img'
-                            }
-                            image={imgUrl}
-                            loading={loadingImg.toString()}
-                            alt={'NFT' + uuid}
-                            sx={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover'
-                            }}
-                        />
-                        <img src={imgUrl} style={{ display: 'none' }} onLoad={onImageLoaded} />
-                        {isVideo && <video src={imgUrl} style={{ display: 'none' }} onCanPlay={onImageLoaded} />}
-                    </Box>
-                </Link>
+                    />
+                    <img src={imgUrl} style={{ display: 'none' }} onLoad={onImageLoaded} />
+                    {isVideo && <video src={imgUrl} style={{ display: 'none' }} onCanPlay={onImageLoaded} />}
+                </Box>
 
                 {/* Middle: NFT Info & Addresses */}
                 <Stack spacing={1.5} sx={{ flex: 1, minWidth: 0 }}>
                     {/* NFT Name & Price */}
                     <Stack direction="row" alignItems="center" justifyContent="space-between">
                         <Stack spacing={0.5}>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                                {name}
-                            </Typography>
+                            <Link href={`/nft/${NFTokenID}`} underline='none'>
+                                <Typography variant="subtitle1" sx={{ 
+                                    fontWeight: 600,
+                                    '&:hover': {
+                                        color: 'primary.main'
+                                    }
+                                }}>
+                                    {name}
+                                </Typography>
+                            </Link>
                             <Typography variant="body2" color="text.secondary">
                                 {meta?.collection?.name || 'No Collection'}
                             </Typography>
