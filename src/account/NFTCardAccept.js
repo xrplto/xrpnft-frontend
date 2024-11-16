@@ -157,9 +157,6 @@ export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
                 <Stack spacing={0.5} sx={{ flex: 1, minWidth: 0 }}>
                     {/* NFT Name & Price */}
                     <Stack direction="row" alignItems="center" spacing={1}>
-                        <Tooltip title={`Transferred, Click Approve to accept`}>
-                            <SportsScoreIcon sx={{ fontSize: 16 }} />
-                        </Tooltip>
                         <Stack spacing={0.5}>
                             <Typography variant="s8" noWrap>
                                 {name}
