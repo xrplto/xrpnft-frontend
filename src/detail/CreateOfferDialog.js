@@ -138,11 +138,10 @@ export default function CreateOfferDialog({ open, setOpen, onClose, nft, isSellO
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        var timer = null;
-        var isRunning = false;
-        var counter = 150;
-
-        var dispatchTimer = null;
+        let timer = null;
+        let dispatchTimer = null;
+        let counter = 150;
+        let isRunning = false;
 
         async function getDispatchResult() {
             try {
@@ -150,91 +149,75 @@ export default function CreateOfferDialog({ open, setOpen, onClose, nft, isSellO
                     `${BASE_URL}/offers/create/${uuid}?account=${account}`,
                     { headers: { 'x-access-token': accountToken } }
                 );
-                const res = ret.data.data.response;
-                // const account = res.account;
-                const dispatched_result = res.dispatched_result;
-
-                return dispatched_result;
-            } catch (err) {}
+                return ret.data?.data?.response?.dispatched_result;
+            } catch (err) {
+                console.error('Error getting dispatch result:', err);
+                return null;
+            }
         }
 
         const startInterval = () => {
-            let times = 0;
+            let attempts = 0;
+            const MAX_ATTEMPTS = 10;
 
             dispatchTimer = setInterval(async () => {
-                const dispatched_result = await getDispatchResult();
-
-                if (dispatched_result && dispatched_result === 'tesSUCCESS') {
-                    if (onOfferCreated) {
-                        onOfferCreated();
-                    }
+                const result = await getDispatchResult();
+                
+                if (result === 'tesSUCCESS') {
+                    if (onOfferCreated) onOfferCreated();
                     setSync(sync + 1);
                     openSnackbar('Create Offer successful!', 'success');
                     stopInterval();
                     return;
                 }
 
-                times++;
-
-                if (times >= 10) {
+                attempts++;
+                if (attempts >= MAX_ATTEMPTS) {
                     openSnackbar('Create Offer rejected!', 'error');
                     stopInterval();
-                    return;
                 }
             }, 1000);
         };
 
-        // Stop the interval
         const stopInterval = () => {
-            clearInterval(dispatchTimer);
+            if (dispatchTimer) clearInterval(dispatchTimer);
+            if (timer) clearInterval(timer);
             setOpenScanQR(false);
             handleClose();
         };
 
-        async function getPayload() {
-            console.log(counter + ' ' + isRunning, uuid);
-            if (isRunning) return;
+        async function pollPayload() {
+            if (isRunning || !uuid) return;
+            
             isRunning = true;
             try {
                 const ret = await axios.get(
                     `${BASE_URL}/offers/create/${uuid}?account=${account}`,
                     { headers: { 'x-access-token': accountToken } }
                 );
-                const resolved_at = ret.data?.resolved_at;
-                const dispatched_result = ret.data?.dispatched_result;
-                if (resolved_at) {
+                
+                if (ret.data?.resolved_at) {
                     startInterval();
                     return;
-                    // setOpenScanQR(false);
-                    // if (dispatched_result === 'tesSUCCESS') {
-                    //     // const newMints = ret.data.mints;
-                    //     handleClose();
-                    //     setSync(sync + 1);
-                    //     openSnackbar('Create Offer successful!', 'success');
-                    // }
-                    // else
-                    //     openSnackbar('Create Offer rejected!', 'error');
-
-                    // return;
                 }
             } catch (err) {
-                console.log(err);
-            }
-            isRunning = false;
-            counter--;
-            if (counter <= 0) {
-                openSnackbar('Create Offer timeout!', 'error');
-                handleScanQRClose();
+                console.error('Error polling payload:', err);
+            } finally {
+                isRunning = false;
+                counter--;
+                
+                if (counter <= 0) {
+                    openSnackbar('Create Offer timeout!', 'error');
+                    handleScanQRClose();
+                }
             }
         }
-        if (openScanQR) {
-            timer = setInterval(getPayload, 2000);
+
+        if (openScanQR && uuid) {
+            timer = setInterval(pollPayload, 2000);
         }
-        return () => {
-            if (timer) {
-                clearInterval(timer);
-            }
-        };
+
+        return () => stopInterval();
     }, [openScanQR, uuid, sync]);
 
     const onCreateOfferXumm = async () => {
@@ -245,49 +228,40 @@ export default function CreateOfferDialog({ open, setOpen, onClose, nft, isSellO
 
         setLoading(true);
         try {
-            const user_token = accountProfile?.user_token;
-            const issuer = token.issuer;
-            const currency = token.currency;
-
-            const owner = nft.account;
-            const NFTokenID = nft.NFTokenID;
-
             const body = {
                 account,
-                issuer,
-                currency,
+                issuer: token.issuer,
+                currency: token.currency,
                 amount,
                 isSellOffer,
-                NFTokenID,
-                owner,
-                user_token
+                NFTokenID: nft.NFTokenID,
+                owner: nft.account,
+                user_token: accountProfile?.user_token
             };
 
-            // Log the request body
             console.log('Create Offer request body:', body);
 
             const res = await axios.post(`${BASE_URL}/offers/create`, body, {
                 headers: { 'x-access-token': accountToken }
             });
 
-            // Existing console.log for the response
             console.log('Response from /offers/create:', res.data);
 
-            if (res.status === 200) {
-                const uuid = res.data.data.uuid;
-                const qrlink = res.data.data.qrUrl;
-                const nextlink = res.data.data.next;
-
+            if (res.status === 200 && res.data?.data) {
+                const { uuid, qrUrl, next } = res.data.data;
                 setUuid(uuid);
-                setQrUrl(qrlink);
-                setNextUrl(nextlink);
+                setQrUrl(qrUrl);
+                setNextUrl(next);
                 setOpenScanQR(true);
+            } else {
+                throw new Error('Invalid response format');
             }
         } catch (err) {
-            console.error(err);
-            openSnackbar('Network error!', 'error');
+            console.error('Create offer error:', err);
+            openSnackbar(err.response?.data?.message || 'Network error!', 'error');
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const onDisconnectXumm = async (uuid) => {
