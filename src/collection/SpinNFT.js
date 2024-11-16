@@ -27,6 +27,8 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import { linearProgressClasses } from '@mui/material/LinearProgress';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 // Context
 import { useContext } from 'react';
@@ -42,16 +44,20 @@ import { useRouter } from 'next/router';
 const CardWrapper = styled(Paper)(({ theme }) => ({
     maxWidth: 420,
     width: '100%',
-    padding: theme.spacing(1),
+    padding: theme.spacing(2),
     textAlign: 'center',
     objectFit: 'cover',
-    transition: 'width 1s ease-in-out, height .5s ease-in-out !important',
+    transition: 'all 0.3s ease-in-out',
     WebkitTapHighlightColor: 'transparent',
     background: alpha(theme.palette.background.paper, 0.8),
     backdropFilter: 'blur(8px)',
     borderRadius: theme.shape.borderRadius * 2,
-    border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.12)}`,
+    '&:hover': {
+        transform: 'translateY(-4px)',
+        boxShadow: `0 12px 40px 0 ${alpha(theme.palette.primary.main, 0.16)}`,
+    }
 }));
 
 const IconCover = styled('div')(({ theme }) => ({
@@ -299,6 +305,22 @@ function FacebookCircularProgress(props) {
     );
 }
 
+const NFTImageContainer = styled(Box)(({ theme }) => ({
+    width: '100%',
+    borderRadius: theme.shape.borderRadius,
+    overflow: 'hidden',
+    marginBottom: theme.spacing(2),
+    '& img, & video': {
+        width: '100%',
+        height: 'auto',
+        display: 'block',
+        transition: 'transform 0.3s ease-in-out',
+    },
+    '&:hover img, &:hover video': {
+        transform: 'scale(1.02)',
+    }
+}));
+
 export default function SpinNFT({ collection, setView }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -501,7 +523,7 @@ export default function SpinNFT({ collection, setView }) {
                 numberOfPieces={width / 3}
                 tweenDuration={100}
             />
-            <Stack alignItems="center" sx={{ mb: 5 }}>
+            <Stack alignItems="center" sx={{ mb: 8, mt: 2 }}>
                 <IconCover>
                     <IconWrapper>
                         <IconImage
@@ -524,16 +546,22 @@ export default function SpinNFT({ collection, setView }) {
                         )}
                     </IconWrapper>
                 </IconCover>
-                <Stack direction="row" spacing={1}>
+                <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 2 }}>
                     <Typography variant="h1a" color="primary.main">{name}</Typography>
                     {verified === 'yes' && (
                         <Tooltip title="Verified">
-                            <VerifiedIcon sx={{ color: theme.palette.primary.main }} />
+                            <VerifiedIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
                         </Tooltip>
                     )}
                 </Stack>
                 {description && (
-                    <Typography variant="d3" maxWidth="600px" color="text.secondary">
+                    <Typography 
+                        variant="d3" 
+                        maxWidth="600px" 
+                        color="text.secondary"
+                        align="center"
+                        sx={{ mb: 2 }}
+                    >
                         {description}
                     </Typography>
                 )}
@@ -636,103 +664,69 @@ export default function SpinNFT({ collection, setView }) {
                         justifyContent="flex-start"
                         alignItems="flex-start"
                     >
-                        <Stack spacing={2} sx={{ mt: 3, mb: 6 }}>
-                            <Typography variant="p5">
-                                Get a {type} NFT from the{' '}
-                                <Typography variant="s5" color="#57CA22">
-                                    {name}
-                                </Typography>
+                        <Stack 
+                            spacing={3} 
+                            sx={{ 
+                                mt: 3, 
+                                mb: 6,
+                                width: '100%',
+                                maxWidth: 480,
+                                p: 3,
+                                borderRadius: 2,
+                                bgcolor: (theme) => alpha(theme.palette.background.paper, 0.6)
+                            }}
+                        >
+                            <Typography variant="h4" color="primary.main">
+                                Collection Stats
                             </Typography>
-                            <ul>
-                                <li>
-                                    <Typography variant="p5" sx={{ mt: 0 }}>
-                                        Buy Mints to participate
+                            
+                            <Stack spacing={2}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="subtitle1">Your Mints</Typography>
+                                    <Typography variant="h5" color="#33C2FF">{mints}</Typography>
+                                </Box>
+                                
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="subtitle1">Available XRP</Typography>
+                                    <Typography variant="h5" color="#33C2FF">{xrpBalance}</Typography>
+                                </Box>
+                                
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="subtitle1">Remaining NFTs</Typography>
+                                    <Typography variant="h5" color={progressColor}>
+                                        {pendingNfts} / {items}
                                     </Typography>
-                                </li>
-                                <li>
-                                    <Typography variant="p5" sx={{ mt: 1 }}>
-                                        Your Mints:{' '}
-                                        <Typography
-                                            variant="s5"
-                                            color="#33C2FF"
-                                        >
-                                            {mints}
-                                        </Typography>
-                                    </Typography>
-                                </li>
-                                <li>
-                                    <Typography variant="p5" sx={{ mt: 1 }}>
-                                        Available XRP:{' '}
-                                        <Typography
-                                            variant="s5"
-                                            color="#33C2FF"
-                                        >
-                                            {xrpBalance}
-                                        </Typography>
-                                    </Typography>
-                                </li>
-                                <li>
-                                    <Typography variant="p5" sx={{ mt: 1 }}>
-                                        Remaining NFTs:{' '}
-                                        <Typography
-                                            variant="s5"
-                                            color={progressColor}
-                                        >
-                                            {pendingNfts}
-                                        </Typography>{' '}
-                                        /{' '}
-                                        <Typography
-                                            variant="s4"
-                                            color="#33C2FF"
-                                        >
-                                            {items}
-                                        </Typography>
-                                    </Typography>
-                                </li>
-                                <Box sx={{ width: '100%', mt: 1, mb: 3 }}>
+                                </Box>
+                                
+                                <Box sx={{ width: '100%', mt: 2 }}>
                                     <LinearProgressWithLabel
                                         variant="determinate"
                                         value={pendingProgress}
                                         progressColor={progressColor}
                                     />
                                 </Box>
+                            </Stack>
 
-                                {/* <CircularProgressWithLabel value={pendingProgress} color="success" /> */}
-                                {/* <FacebookCircularProgress value={pendingProgress} color="success"/> */}
-                            </ul>
-
-                            {/* <Stack alignItems="center" sx={{pb: 3}}>
-                                <FacebookCircularProgress value={pendingProgress} color="success"/>
-                            </Stack> */}
-
-                            <Stack
-                                direction="row"
-                                spacing={2}
-                                justifyContent="center"
-                            >
+                            <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 4 }}>
                                 <Button
                                     variant="contained"
+                                    size="large"
                                     onClick={() => setOpenBuyMint(true)}
+                                    startIcon={<ShoppingCartIcon />}
                                 >
                                     Buy Mints
                                 </Button>
 
-                                <Link
-                                    underline="none"
-                                    color="inherit"
+                                <Button
+                                    variant="outlined"
+                                    size="large"
+                                    component={Link}
+                                    href="/buy-crypto"
                                     target="_blank"
-                                    href={`/buy-crypto`}
-                                    rel="noreferrer noopener nofollow"
+                                    startIcon={<AccountBalanceWalletIcon />}
                                 >
-                                    <Stack>
-                                        <Button
-                                            variant="outlined"
-                                            onClick={() => {}}
-                                        >
-                                            Buy XRP
-                                        </Button>
-                                    </Stack>
-                                </Link>
+                                    Buy XRP
+                                </Button>
                             </Stack>
                         </Stack>
                     </Grid>
