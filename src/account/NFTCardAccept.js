@@ -71,229 +71,90 @@ const AddressBox = styled(Box)(({ theme }) => ({
   border: `1px solid ${alpha(theme.palette.divider, 0.1)}`
 }));
 
-export default function NFTCardAccept({ nft, handleApprove, profileAccount }) {
+export default function NFTCardAccept({ nft, handleApprove, profileAccount, disabled }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const { accountProfile, openSnackbar, sync, setSync } = useContext(AppContext);
-    const accountLogin = accountProfile?.account;
 
-    // Enhanced console log with collection name
-    console.log('NFTCardAccept - NFT Data:', {
-        nft,
-        profileAccount,
-        accountLogin,
-        owner: nft.owner,
-        destination: nft.destination,
-        collectionName: nft.meta?.collection?.name || 'No Collection'
-    });
-
-    const {
-        uuid,
-        account,
-        owner,
-        destination,
-        meta,
-        dfile,
-        files,
-        NFTokenID,
-        collection,
-        cslug
-    } = nft;
-
-    // Simplified sender logic - we just need the owner since this is a transfer card
-    const sender = owner;
-
-    console.log('Transfer details:', {
-        sender,
-        isOwner: owner === profileAccount,
-        isDestination: destination === profileAccount,
-        canAccept: accountLogin === destination,
-        collectionName: meta?.collection?.name || 'No Collection'
-    });
-
-    const amount = normalizeAmount(nft.amount || '0');
-
-    const imgUrl = getNftCoverUrl(nft, 'small'); // `https://gateway.xrpnft.com/ipfs/${meta.image||meta.video}`;
-
-    const isVideo = meta?.video ? true : false;
-
-    const [loadingImg, setLoadingImg] = useState(true)
-
-    const name = nft.meta?.name || meta?.Name || 'No Name';
-
-    const onImageLoaded = () => {
-        setLoadingImg(false)
-    }
-
-    const truncateString = (str, maxLength) => {
-        if (str.length <= maxLength) {
-            return str;
-        } else {
-            var truncated = str.substr(0, Math.floor(maxLength / 2)) + "..." + str.substr(-Math.floor(maxLength / 2));
-            return truncated;
-        }
-    }
-
-    const [openImageDialog, setOpenImageDialog] = useState(false);
-
-    const handleOpenImage = () => {
-        setOpenImageDialog(true);
-    };
-
-    const handleCloseImage = () => {
-        setOpenImageDialog(false);
-    };
+    const { meta, files, collection } = nft;
+    const name = meta?.name || nft?.Name || 'No Name';
+    const collectionName = collection || meta?.collection?.name || '';
+    const imgUrl = getNftCoverUrl({ files }, 'small');
+    const isVideo = false; // Update if you have video detection logic
 
     return (
-        <CardWrapper>
-            <Stack direction="row" alignItems="center" spacing={3}>
-                {/* Left: NFT Image */}
-                <Box
-                    onClick={handleOpenImage}
-                    sx={{
-                        position: 'relative',
-                        width: 80,
-                        height: 80,
-                        borderRadius: 2,
-                        overflow: 'hidden',
-                        cursor: 'pointer',
-                        '&:hover': {
-                            opacity: 0.8,
-                            transition: 'opacity 0.3s'
-                        }
-                    }}
-                >
-                    <CardMedia
-                        component={loadingImg ? 
-                            () => <Skeleton variant='rectangular' sx={{width: '100%', height: '100%'}}/> 
-                            : isVideo ? 'video' : 'img'
-                        }
-                        image={imgUrl}
-                        loading={loadingImg.toString()}
-                        alt={'NFT' + uuid}
-                        sx={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover'
-                        }}
-                    />
-                    <img src={imgUrl} style={{ display: 'none' }} onLoad={onImageLoaded} />
-                    {isVideo && <video src={imgUrl} style={{ display: 'none' }} onCanPlay={onImageLoaded} />}
-                </Box>
-
-                {/* Middle: NFT Info & Addresses */}
-                <Stack spacing={1.5} sx={{ flex: 1, minWidth: 0 }}>
-                    {/* NFT Name & Price */}
-                    <Stack direction="row" alignItems="center" justifyContent="space-between">
-                        <Stack spacing={0.5}>
-                            <Link href={`/nft/${NFTokenID}`} underline='none'>
-                                <Typography variant="subtitle1" sx={{ 
-                                    fontWeight: 600,
-                                    '&:hover': {
-                                        color: 'primary.main'
-                                    }
-                                }}>
-                                    {name}
-                                </Typography>
-                            </Link>
-                            <Typography variant="body2" color="text.secondary">
-                                {meta?.collection?.name || 'No Collection'}
-                            </Typography>
-                        </Stack>
-                        {amount.amount !== 0 && amount.currency === "XRP" && (
-                            <Chip
-                                icon={<Icon icon={rippleSolid} width={16} height={16} />}
-                                label={fNumber(amount.amount)}
-                                size="small"
-                                sx={{
-                                    backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                                    borderRadius: 1,
-                                    '& .MuiChip-label': {
-                                        px: 1,
-                                        fontSize: '0.875rem'
-                                    }
-                                }}
-                            />
-                        )}
-                    </Stack>
-
-                    {/* Addresses */}
-                    <AddressBox>
-                        <Typography variant="caption" sx={{ 
-                            fontFamily: 'monospace',
-                            flex: 1,
-                            fontSize: '0.75rem'
-                        }}>
-                            {truncateString(nft.owner, 20)}
-                        </Typography>
-                        <Icon 
-                            icon="material-symbols:arrow-right-alt-rounded" 
-                            width={20} 
-                            style={{ 
-                                color: theme.palette.text.secondary,
-                                margin: '0 8px'
-                            }}
-                        />
-                        <Typography variant="caption" sx={{ 
-                            fontFamily: 'monospace',
-                            flex: 1,
-                            fontSize: '0.75rem'
-                        }}>
-                            {truncateString(nft.destination, 20)}
-                        </Typography>
-                    </AddressBox>
-                </Stack>
-
-                {/* Right: Status & Action */}
-                <Stack alignItems="flex-end" spacing={1.5}>
-                    <Chip
-                        label="Pending"
-                        size="small"
-                        color="warning"
-                        variant="outlined"
-                        sx={{ borderRadius: 1 }}
-                    />
-                    {accountLogin === profileAccount && (
-                        <Button 
-                            variant="contained" 
-                            color="success" 
-                            size="small"
-                            startIcon={<CheckCircleOutlineIcon />}
-                            onClick={() => handleApprove(nft)}
-                            sx={{
-                                px: 2,
-                                py: 0.75,
-                                borderRadius: 1,
-                                textTransform: 'none',
-                                fontWeight: 600
-                            }}
+        <Card elevation={3} sx={{ mb: 2 }}>
+            <CardContent sx={{ p: isMobile ? 1 : 2 }}>
+                <Grid container spacing={isMobile ? 1 : 2} alignItems="center">
+                    <Grid item xs={12} sm={6} md={4}>
+                        <Link href={`/nft/${nft.NFTokenID}`} underline="none">
+                            <Stack direction="row" spacing={1} alignItems="center">
+                                <CardMedia
+                                    component={isVideo ? 'video' : 'img'}
+                                    image={imgUrl}
+                                    alt={name}
+                                    sx={{
+                                        width: isMobile ? 48 : 64,
+                                        height: isMobile ? 36 : 48,
+                                        borderRadius: 1,
+                                        cursor: 'pointer'
+                                    }}
+                                />
+                                <Stack>
+                                    {collectionName && (
+                                        <Link
+                                            href={`/collection/${nft.cslug}`}
+                                            underline="none"
+                                        >
+                                            <Typography
+                                                variant="caption"
+                                                color="text.secondary"
+                                            >
+                                                {collectionName}
+                                            </Typography>
+                                        </Link>
+                                    )}
+                                    <Typography
+                                        variant={isMobile ? 'body2' : 'subtitle2'}
+                                        noWrap
+                                    >
+                                        {name}
+                                    </Typography>
+                                </Stack>
+                            </Stack>
+                        </Link>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4}>
+                        <Link 
+                            href={`https://bithomp.com/explorer/${nft.NFTokenID}`}
+                            target="_blank"
+                            underline="hover"
+                            color="text.secondary"
                         >
-                            Accept
-                        </Button>
-                    )}
-                </Stack>
-            </Stack>
-            <Dialog
-                open={openImageDialog}
-                onClose={handleCloseImage}
-                maxWidth="md"
-                fullWidth
-            >
-                <DialogContent sx={{ p: 1 }}>
-                    <CardMedia
-                        component={isVideo ? 'video' : 'img'}
-                        image={imgUrl}
-                        controls={isVideo}
-                        alt={'NFT' + uuid}
-                        sx={{
-                            width: '100%',
-                            height: 'auto',
-                            maxHeight: '80vh',
-                            objectFit: 'contain'
-                        }}
-                    />
-                </DialogContent>
-            </Dialog>
-        </CardWrapper>
+                            <Typography variant="caption" display="block">
+                                {truncate(nft.NFTokenID, isMobile ? 8 : 10)}
+                            </Typography>
+                        </Link>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={4}>
+                        <Stack direction="row" spacing={1} justifyContent={isMobile ? 'flex-start' : 'flex-end'}>
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => handleApprove(nft)}
+                                disabled={disabled}
+                            >
+                                Accept
+                            </Button>
+                        </Stack>
+                    </Grid>
+                </Grid>
+            </CardContent>
+        </Card>
     );
-};
+}
+
+// Helper function to truncate text
+function truncate(str, n) {
+    if (!str) return '';
+    return str.length > n ? str.substr(0, n - 1) + ' ...' : str;
+}
