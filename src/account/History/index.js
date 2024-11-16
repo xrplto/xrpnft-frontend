@@ -89,18 +89,8 @@ import ListToolbar from '../ListToolbar';
 
 // Helper Components
 const NFTokenIDLink = ({ NFTokenID }) => (
-    <Stack spacing={1}>
-        <Stack direction="row" spacing={1}>
-            <Typography variant="s7">NFTokenID: </Typography>
-            <Link
-                color="inherit"
-                href={`/nft/${NFTokenID}`}
-                rel="noreferrer noopener"
-            >
-                <Typography variant="s8">{NFTokenID}</Typography>
-            </Link>
-        </Stack>
-        <NFTDetails NFTokenID={NFTokenID} />
+    <Stack spacing={0.5}>
+        <NFTDetails NFTokenID={NFTokenID} isLinkable={true} />
     </Stack>
 );
 
@@ -136,7 +126,9 @@ const NFTInfo = ({ data }) => (
             />
             <Stack>
                 <Typography variant="caption">{data.name}</Typography>
-                <Typography variant="caption" color="text.secondary">{data.type}</Typography>
+                <Typography variant="caption" color="text.secondary">
+                    {data.type}
+                </Typography>
             </Stack>
         </Stack>
         {data.flag && <FlagsContainer Flags={data.flag} />}
@@ -166,7 +158,7 @@ const HashLink = ({ hash }) => (
 );
 
 // Updated NFTDetails component
-const NFTDetails = ({ NFTokenID }) => {
+const NFTDetails = ({ NFTokenID, isLinkable = false }) => {
     const [nftInfo, setNftInfo] = useState(null);
     const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
 
@@ -229,36 +221,65 @@ const NFTDetails = ({ NFTokenID }) => {
     const nftName = getNFTName(nftInfo);
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, py: 0.5, flexDirection: 'row' }}>
+        <Box
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                py: 0.25
+            }}
+        >
             <Avatar
                 alt={nftName}
                 src={imageUrl}
                 sx={{
-                    width: 32,
-                    height: 32,
+                    width: 24,
+                    height: 24,
                     borderRadius: '4px'
                 }}
                 variant="rounded"
             />
             <Stack spacing={0} sx={{ flexGrow: 1, minWidth: 0 }}>
-                <Typography variant="body2" noWrap>{nftName}</Typography>
+                {isLinkable ? (
+                    <Link
+                        href={`/nft/${NFTokenID}`}
+                        underline="hover"
+                        sx={{ color: 'inherit' }}
+                    >
+                        <Typography variant="caption" noWrap>
+                            {nftName}
+                        </Typography>
+                    </Link>
+                ) : (
+                    <Typography variant="caption" noWrap>
+                        {nftName}
+                    </Typography>
+                )}
                 <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }}>
                     <Typography variant="caption" color="text.secondary" noWrap>
-                        {nftInfo.collection}
+                        {nftInfo?.collection}
+                        {nftInfo?.rarity_rank && nftInfo?.total && (
+                            <span>
+                                {' '}
+                                • Rank: {nftInfo.rarity_rank}/{nftInfo.total}
+                            </span>
+                        )}
                     </Typography>
-                    {nftInfo.rarity_rank && nftInfo.total && (
-                        <Typography variant="caption" color="text.secondary" noWrap>
-                            Rank: {nftInfo.rarity_rank}/{nftInfo.total}
-                        </Typography>
-                    )}
                 </Stack>
             </Stack>
-            {nftInfo.cfloor && (
+            {nftInfo?.cfloor && (
                 <Chip
                     label={`${nftInfo.cfloor.amount} ${nftInfo.cfloor.currency}`}
                     size="small"
                     color="primary"
-                    sx={{ height: 20, fontSize: '0.625rem' }}
+                    sx={{
+                        height: 16,
+                        fontSize: '0.625rem',
+                        '& .MuiChip-label': {
+                            px: 1,
+                            py: 0
+                        }
+                    }}
                 />
             )}
         </Box>
@@ -267,16 +288,16 @@ const NFTDetails = ({ NFTokenID }) => {
 
 const getBrokerName = (address) => {
     switch (address) {
-        case "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC":
-            return "xrp.cafe";
-        case "rDeizxSRo6JHjKnih9ivpPkyD2EgXQvhSB":
-            return "XPMarket";
-        case "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC":
-            return "BIDDS";
-        case "rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv":
-            return "Art Dept Fun";
-        case "rJcCJyJkiTXGcxU4Lt4ZvKJz8YmorZXu8r":
-            return "OpulenceX";
+        case 'rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC':
+            return 'xrp.cafe';
+        case 'rDeizxSRo6JHjKnih9ivpPkyD2EgXQvhSB':
+            return 'XPMarket';
+        case 'rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC':
+            return 'BIDDS';
+        case 'rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv':
+            return 'Art Dept Fun';
+        case 'rJcCJyJkiTXGcxU4Lt4ZvKJz8YmorZXu8r':
+            return 'OpulenceX';
         default:
             return address;
     }
@@ -430,7 +451,7 @@ const activityComponents = {
         componentIcon: <LocalOfferIcon color="warning" />,
         color: 'warning.main',
         renderComponentActivity: (data) => (
-            <Stack spacing={1}>
+            <Stack spacing={0.5}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
                 {data.cost && <CostDisplay cost={data.cost} />}
                 {data.hash && <HashLink hash={data.hash} />}
@@ -442,7 +463,7 @@ const activityComponents = {
         componentIcon: <LocalOfferIcon color="warning" />,
         color: 'warning.main',
         renderComponentActivity: (data) => (
-            <Stack spacing={1}>
+            <Stack spacing={0.5}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
                 {data.cost && <CostDisplay cost={data.cost} />}
                 {data.hash && <HashLink hash={data.hash} />}
@@ -454,7 +475,7 @@ const activityComponents = {
         componentIcon: <HighlightOffIcon color="error" />,
         color: 'error.main',
         renderComponentActivity: (data) => (
-            <Stack spacing={1}>
+            <Stack spacing={0.5}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
                 {data.cost && <CostDisplay cost={data.cost} />}
                 {data.hash && <HashLink hash={data.hash} />}
@@ -466,7 +487,7 @@ const activityComponents = {
         componentIcon: <HighlightOffIcon color="error" />,
         color: 'error.main',
         renderComponentActivity: (data) => (
-            <Stack spacing={1}>
+            <Stack spacing={0.5}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
                 {data.cost && <CostDisplay cost={data.cost} />}
                 {data.hash && <HashLink hash={data.hash} />}
@@ -478,7 +499,7 @@ const activityComponents = {
         componentIcon: <CheckCircleOutlineIcon color="success" />,
         color: 'success.main',
         renderComponentActivity: (data) => (
-            <Stack spacing={1}>
+            <Stack spacing={0.5}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
                 {data.cost && <CostDisplay cost={data.cost} />}
                 {data.hash && <HashLink hash={data.hash} />}
@@ -486,13 +507,18 @@ const activityComponents = {
         )
     },
     [Activity.ACCEPT_SELL_OFFER]: {
-        strActivity: (data) => data.cost && data.cost.amount === 0 ? 'Transfer NFT' : 'Accept Sell Offer',
+        strActivity: (data) =>
+            data.cost && data.cost.amount === 0
+                ? 'Transfer NFT'
+                : 'Accept Sell Offer',
         componentIcon: <CheckCircleOutlineIcon color="success" />,
         color: 'success.main',
         renderComponentActivity: (data) => (
-            <Stack spacing={1}>
+            <Stack spacing={0.5}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
-                {data.cost && data.cost.amount !== 0 && <CostDisplay cost={data.cost} />}
+                {data.cost && data.cost.amount !== 0 && (
+                    <CostDisplay cost={data.cost} />
+                )}
                 {data.hash && <HashLink hash={data.hash} />}
                 {data.cost && data.cost.amount === 0 && (
                     <Typography variant="caption" color="text.secondary">
@@ -576,8 +602,12 @@ const activityComponents = {
                         />
                         <Stack>
                             <Stack direction="row" spacing={1}>
-                                <Typography variant="s7">Collection: </Typography>
-                                <Typography variant="s8">{data.cname}</Typography>
+                                <Typography variant="s7">
+                                    Collection:{' '}
+                                </Typography>
+                                <Typography variant="s8">
+                                    {data.cname}
+                                </Typography>
                             </Stack>
                             <Stack
                                 direction="row"
@@ -600,14 +630,18 @@ const activityComponents = {
                             </Stack>
                             <Stack direction="row" spacing={1}>
                                 <Typography variant="s7">To: </Typography>
-                                <Typography variant="s8">{data.dest}</Typography>
+                                <Typography variant="s8">
+                                    {data.dest}
+                                </Typography>
                             </Stack>
                         </Stack>
                     </Stack>
                     <Stack direction="row" spacing={1} alignItems="center">
                         <Stack direction="row" spacing={1}>
                             <Typography variant="s7">Amount: </Typography>
-                            <Typography variant="s8">{amount.amount}</Typography>
+                            <Typography variant="s8">
+                                {amount.amount}
+                            </Typography>
                             <Typography variant="s8">
                                 {data.cost?.name}
                             </Typography>
@@ -622,7 +656,7 @@ const activityComponents = {
         componentIcon: <HowToRegIcon color="success" />,
         color: 'success.main',
         renderComponentActivity: (data) => (
-            <Stack spacing={1}>
+            <Stack spacing={0.5}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
                 <Stack direction="row" spacing={1}>
                     <Typography variant="s7">Broker: </Typography>
@@ -642,7 +676,7 @@ const activityComponents = {
         componentIcon: <HowToRegIcon color="success" />,
         color: 'success.main',
         renderComponentActivity: (data) => (
-            <Stack spacing={1}>
+            <Stack spacing={0.5}>
                 <NFTokenIDLink NFTokenID={data.NFTokenID} />
                 <Stack direction="row" spacing={1}>
                     <Typography variant="s7">Broker: </Typography>
@@ -722,23 +756,21 @@ export default function ActivityList({ account }) {
     }
 
     return (
-        <Container 
-            maxWidth={false} 
+        <Container
+            maxWidth={false}
             disableGutters
-            sx={{ 
-                pl: 0, 
+            sx={{
+                pl: 0,
                 pr: 0,
-                overflowX: 'hidden',
+                overflowX: 'hidden'
             }}
         >
             <Box
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: 0.5,
-                    py: 0.5,
                     width: '100%',
-                    overflowX: 'hidden',
+                    overflowX: 'hidden'
                 }}
             >
                 <Table
@@ -747,18 +779,21 @@ export default function ActivityList({ account }) {
                         [`& .${tableCellClasses.root}`]: {
                             borderBottom: '1px solid',
                             borderColor: theme.palette.divider,
-                            padding: isMobile ? '4px 8px' : '8px 16px',
-                            wordBreak: 'break-word',
+                            padding: isMobile ? '4px 8px' : '6px 12px', // reduced padding
+                            wordBreak: 'break-word'
                         },
                         tableLayout: 'fixed',
-                        width: '100%',
+                        width: '100%'
                     }}
                 >
                     <TableBody>
                         {acts.map((row) => {
                             const { activity, data, time } = row;
                             const strDateTime = formatDateTime(time);
-                            const timeAgo = formatDistanceToNow(new Date(time), { addSuffix: true });
+                            const timeAgo = formatDistanceToNow(
+                                new Date(time),
+                                { addSuffix: true }
+                            );
                             const activityComponent =
                                 activityComponents[activity] ||
                                 activityComponents.default;
@@ -777,38 +812,60 @@ export default function ActivityList({ account }) {
                                 renderComponentActivity(data);
 
                             return (
-                                <TableRow key={time}>
-                                    <TableCell 
+                                <TableRow
+                                    key={time}
+                                    sx={{
+                                        '&:hover': {
+                                            backgroundColor:
+                                                theme.palette.action.hover
+                                        }
+                                    }}
+                                >
+                                    <TableCell
                                         align="left"
                                         sx={{
                                             maxWidth: '100vw',
-                                            overflow: 'hidden',
+                                            overflow: 'hidden'
                                         }}
                                     >
-                                        <Stack spacing={0.5}>
+                                        <Stack spacing={0.25}>
                                             <Stack
                                                 direction="row"
                                                 spacing={1}
                                                 justifyContent="space-between"
                                                 alignItems="center"
                                             >
-                                                <Typography 
-                                                    variant={isMobile ? "body2" : "subtitle2"} 
-                                                    noWrap 
-                                                    sx={{ 
+                                                <Typography
+                                                    variant="caption" // smaller text
+                                                    noWrap
+                                                    sx={{
                                                         maxWidth: '70%',
-                                                        color: color // Apply the color here
+                                                        color: color,
+                                                        fontWeight: 500 // slightly bolder
                                                     }}
                                                 >
                                                     {activityTitle}
                                                 </Typography>
                                                 <Tooltip title={strDateTime}>
-                                                    <Typography variant="caption" color="text.secondary" noWrap>
+                                                    <Typography
+                                                        variant="caption"
+                                                        color="text.secondary"
+                                                        noWrap
+                                                        sx={{
+                                                            fontSize:
+                                                                '0.6875rem'
+                                                        }} // even smaller time
+                                                    >
                                                         {timeAgo}
                                                     </Typography>
                                                 </Tooltip>
                                             </Stack>
-                                            <Box sx={{ fontSize: isMobile ? '0.75rem' : '0.875rem' }}>
+                                            <Box
+                                                sx={{
+                                                    fontSize: '0.75rem',
+                                                    lineHeight: 1.2 // tighter line height
+                                                }}
+                                            >
                                                 {componentActivity}
                                             </Box>
                                         </Stack>
