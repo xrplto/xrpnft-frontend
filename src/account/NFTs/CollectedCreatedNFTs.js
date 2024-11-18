@@ -204,7 +204,7 @@ export default function CollectedCreatedNFTs({
      * Memoize the nftItems to prevent unnecessary re-renders
      */
     const nftItems = useMemo(() => (
-        <Grid container spacing={1}>
+        <Grid container spacing={0.5}>
             {nfts.map((nft, index) => (
                 <Grid
                     item
@@ -215,9 +215,11 @@ export default function CollectedCreatedNFTs({
                     xl={1.5}
                     key={nft.id || index}
                     sx={{
-                        py: { xs: 0.5, sm: 2 },
-                        px: { xs: 0.5, sm: 1 },
-                        pr: { xs: 1.5, sm: 2 }
+                        padding: { 
+                            xs: '1px', 
+                            sm: '2px', 
+                            md: '4px'
+                        }
                     }}
                 >
                     {collection ? (
