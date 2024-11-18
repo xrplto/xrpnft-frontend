@@ -139,7 +139,8 @@ function getCostFromOffers(nftOwner, offers, isSellOffer) {
 
         let validOffer = true;
 
-        //if (destination) validOffer = false; // disable destination (broker) filter
+        // Remove destination check to allow offers without brokers
+        // if (destination) validOffer = false;
 
         if (isSellOffer && nftOwner !== owner) validOffer = false;
 
@@ -568,71 +569,41 @@ export default function NFTActions({ nft }) {
                 };
 
                 const response = await client.request(request);
-                console.log(
-                    'NFT Sell Offers:',
-                    JSON.stringify(response.result, null, 2)
-                );
+                console.log('NFT Sell Offers:', JSON.stringify(response.result, null, 2));
 
                 // Find the lowest valid sell offer
                 let lowestOffer = null;
-                if (
-                    response.result.offers &&
-                    response.result.offers.length > 0
-                ) {
-                    lowestOffer = response.result.offers.reduce(
-                        (min, offer) => {
-                            const amount = BigInt(offer.amount);
-                            const isValidBroker =
-                                offer.destination &&
-                                BROKER_ADDRESSES[offer.destination];
-                            const isValidAmount = amount > BigInt(0);
-                            const isValidOwner = offer.owner === nft.account;
+                if (response.result.offers && response.result.offers.length > 0) {
+                    lowestOffer = response.result.offers.reduce((min, offer) => {
+                        const amount = BigInt(offer.amount);
+                        // Remove broker validation to allow direct offers
+                        const isValidAmount = amount > BigInt(0);
+                        const isValidOwner = offer.owner === nft.account;
 
-                            if (
-                                isValidBroker &&
-                                isValidAmount &&
-                                isValidOwner &&
-                                amount < BigInt(min.amount)
-                            ) {
-                                return { amount, offer };
-                            }
-                            return min;
-                        },
-                        {
-                            amount: BigInt(Number.MAX_SAFE_INTEGER).toString(),
-                            offer: null
+                        if (isValidAmount && isValidOwner && (!min.amount || amount < BigInt(min.amount))) {
+                            return { amount, offer };
                         }
-                    );
+                        return min;
+                    }, { amount: null, offer: null });
                 }
 
                 if (lowestOffer && lowestOffer.offer) {
                     // Parse the base amount and round to 6 decimal places
                     const baseAmount = parseFloat(
-                        parseFloat(
-                            dropsToXrp(lowestOffer.amount.toString())
-                        ).toFixed(6)
+                        parseFloat(dropsToXrp(lowestOffer.amount.toString())).toFixed(6)
                     );
                     const brokerAddress = lowestOffer.offer.destination;
-                    const hasBroker = brokerAddress in BROKER_ADDRESSES;
-                    const brokerInfo = hasBroker
-                        ? BROKER_ADDRESSES[brokerAddress]
-                        : null;
+                    const hasBroker = brokerAddress && BROKER_ADDRESSES[brokerAddress];
+                    const brokerInfo = hasBroker ? BROKER_ADDRESSES[brokerAddress] : null;
                     const brokerFeePercentage = brokerInfo ? brokerInfo.fee : 0;
 
-                    // Calculate broker fee and round to 6 decimal places
-                    const brokerFee = hasBroker
-                        ? parseFloat(
-                              (baseAmount * brokerFeePercentage).toFixed(6)
-                          )
-                        : 0;
-                    // Calculate total amount and round to 6 decimal places
-                    const totalAmount = parseFloat(
-                        (baseAmount + brokerFee).toFixed(6)
-                    );
+                    // Calculate broker fee and total amount only if there's a broker
+                    const brokerFee = hasBroker ? parseFloat((baseAmount * brokerFeePercentage).toFixed(6)) : 0;
+                    const totalAmount = parseFloat((baseAmount + brokerFee).toFixed(6));
 
                     setLowestSellOffer({
                         baseAmount,
-                        totalAmount,
+                        totalAmount: hasBroker ? totalAmount : baseAmount, // Use baseAmount for direct offers
                         brokerFee,
                         brokerFeePercentage,
                         hasBroker,
@@ -763,30 +734,16 @@ export default function NFTActions({ nft }) {
                     }
                 } else {
                     // I am not the Owner of NFT
-                    if (accountLogin === offer.owner) {
+                    // Remove the owner check to display all valid sell offers
+                    if (nft.account === offer.owner) {
                         newOffers.push(offer);
-                    } else {
-                        if (
-                            nft.account ===
-                            offer.owner /* && (!offer.destination || accountLogin === offer.destination)*/
-                        ) {
-                            // disable destination (broker) and owner (?) filter
-                            newOffers.push(offer);
-                        }
                     }
                 }
             } else {
+                // Buy Offers
                 if (nft.account === offer.owner) continue; // orphaned
 
-                // Buy Offers
-                if (isOwner) {
-                    // I am the Owner of NFT
-                } else {
-                    // I am not the Owner of NFT
-                }
-
-                //if (!offer.destination || accountLogin === offer.destination) // disable destination (broker) filter
-                // if ((!offer.destination || accountLogin === offer.destination) && offer.)
+                // Buy Offers - keep existing logic
                 newOffers.push(offer);
             }
         }
