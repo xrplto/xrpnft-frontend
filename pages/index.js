@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { performance } from 'perf_hooks';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
 // Material
 import {
@@ -77,6 +78,29 @@ export default function Overview({data}) {
 
     return (
         <OverviewWrapper>
+            <Head>
+                {/* Basic meta tags */}
+                <title>XRPNFT - Your Premier XRP NFT Platform</title>
+                <meta name="description" content="Discover, buy, and sell unique NFTs on the XRP Ledger. XRPNFT is your gateway to digital collectibles on XRP." />
+                
+                {/* Open Graph tags */}
+                <meta property="og:title" content="XRPNFT - Your Premier XRP NFT Platform" />
+                <meta property="og:description" content="Discover, buy, and sell unique NFTs on the XRP Ledger" />
+                <meta property="og:image" content="https://xrpnft.com/logo/xrpnft-logo-black.svg" />
+                <meta property="og:url" content="https://xrpnft.com" />
+                
+                {/* Twitter Card tags */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="XRPNFT - Your Premier XRP NFT Platform" />
+                <meta name="twitter:description" content="Discover, buy, and sell unique NFTs on the XRP Ledger" />
+                <meta name="twitter:image" content="https://xrpnft.com/logo/xrpnft-logo-black.svg" />
+                
+                {/* Additional SEO meta tags */}
+                <meta name="keywords" content="XRP, NFT, XRPL, digital collectibles, blockchain, cryptocurrency" />
+                <meta name="robots" content="index, follow" />
+                <link rel="canonical" href="https://xrpnft.com" />
+            </Head>
+
             <Toolbar id="back-to-top-anchor" />
 
             <BackgroundWrapper

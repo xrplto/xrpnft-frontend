@@ -1,8 +1,22 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /_next/static/
 
-# User-Agent: YandexBot
-# Disallow: /assets
+# Block specific bots from heavy crawling
+User-agent: YandexBot
+Disallow: /assets
+Crawl-delay: 2
 
+User-agent: Baiduspider
+Crawl-delay: 2
+
+# Allow Google bots full access
+User-agent: Googlebot
+Allow: /
+User-agent: Googlebot-Image
+Allow: /
+
+# Sitemaps
 Sitemap: https://xrpnft.com/sitemap.xml
