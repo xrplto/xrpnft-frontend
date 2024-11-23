@@ -204,7 +204,15 @@ export default function CollectedCreatedNFTs({
      * Memoize the nftItems to prevent unnecessary re-renders
      */
     const nftItems = useMemo(() => (
-        <Grid container spacing={0.5}>
+        <Grid 
+            container 
+            spacing={0}
+            sx={{
+                width: '100%',
+                margin: 0,
+                padding: 1
+            }}
+        >
             {nfts.map((nft, index) => (
                 <Grid
                     item
@@ -216,9 +224,9 @@ export default function CollectedCreatedNFTs({
                     key={nft.id || index}
                     sx={{
                         padding: { 
-                            xs: '1px', 
-                            sm: '2px', 
-                            md: '4px'
+                            xs: '4px',
+                            sm: '6px',
+                            md: '8px'
                         }
                     }}
                 >
@@ -381,6 +389,7 @@ export default function CollectedCreatedNFTs({
                                 </Typography>
                             }
                             scrollThreshold={0.6}
+                            style={{ overflow: 'hidden' }}
                         >
                             {nftItems}
                         </InfiniteScroll>
