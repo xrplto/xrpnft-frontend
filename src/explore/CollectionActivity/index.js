@@ -89,21 +89,17 @@ const getAttributeValue = (attributes, traitType) => {
     return attr?.value || null;
 };
 
-export default function CollectionActivity({ collection }) {
+export default function CollectionActivity({ collection, hideInExplore = false }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
-
     const { openSnackbar } = useContext(AppContext);
 
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState(10);
     const [total, setTotal] = useState(0);
     const [hists, setHists] = useState([]);
-
     const [loading, setLoading] = useState(true);
-
     const [open, setOpen] = useState(false);
-
     const [lightBoxImgUrl, setLightBoxImgUrl] = useState('');
 
     const closeLightbox = () => {
@@ -111,45 +107,45 @@ export default function CollectionActivity({ collection }) {
     };
 
     useEffect(() => {
+        if (!collection?.uuid) return;
+
         function getActivities() {
             setLoading(true);
-
+            
             console.log('Fetching activities from:', `${BASE_URL}/collectionhistory/?cid=${collection.uuid}&page=${page}&limit=${rows}`);
 
             axios.get(`${BASE_URL}/collectionhistory/?cid=${collection.uuid}&page=${page}&limit=${rows}`)
                 .then(res => {
-                    console.log('API Response:', res);
-                    console.log('Response Data:', res.data);
-                    
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
-                        console.log('Total activities:', ret.total);
-                        console.log('History items:', ret.hists);
                         setTotal(ret.total);
                         setHists(ret.hists);
                     }
-                }).catch(err => {
+                })
+                .catch(err => {
                     console.log("Error on getting collection history list!!!", err);
-                    console.log("Error details:", {
-                        message: err.message,
-                        response: err.response,
-                        status: err?.response?.status
-                    });
-                }).then(function () {
+                })
+                .finally(() => {
                     setLoading(false);
                 });
         }
         getActivities();
-    }, [page, rows]);
+    }, [collection?.uuid, page, rows]);
 
     const getChipStyle = (color) => ({
-        backgroundColor: alpha(theme.palette[color].main, 0.1),
-        color: theme.palette[color].dark,
+        backgroundColor: theme.palette[color]?.main 
+            ? alpha(theme.palette[color].main, 0.1)
+            : alpha(theme.palette.primary.main, 0.1),
+        color: theme.palette[color]?.dark || theme.palette.primary.dark,
         fontWeight: 'bold',
         '& .MuiChip-label': {
             padding: '0 8px'
         }
     });
+
+    if (hideInExplore || !collection) {
+        return null;
+    }
 
     return (
         <Box sx={{ width: '100%', mb: 6 }}>

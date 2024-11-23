@@ -73,6 +73,8 @@ export default function ExploreNFT({ collection, topMargin = 4, showBanner = tru
             });
     };
 
+    const isExplore = window.location.pathname.includes('/explore');
+
     return (
         <>
             {showBanner && (
@@ -98,7 +100,7 @@ export default function ExploreNFT({ collection, topMargin = 4, showBanner = tru
                                 variant={isMobile ? "fullWidth" : "standard"}
                             >
                                 <Tab label="NFTs" value="tab-nfts" />
-                                <Tab label="Activities" value="tab-activities" />
+                                {!isExplore && <Tab label="Activities" value="tab-activities" />}
                             </TabList>
                             
                             {isAdmin && (
@@ -121,9 +123,11 @@ export default function ExploreNFT({ collection, topMargin = 4, showBanner = tru
                         <TabPanel value="tab-nfts" sx={{p: 0}}>
                             <NFTs collection={collection} />
                         </TabPanel>
-                        <TabPanel value="tab-activities" sx={{p: 0}}>
-                            <CollectionActivity collection={collection} />
-                        </TabPanel>
+                        {!isExplore && (
+                            <TabPanel value="tab-activities" sx={{p: 0}}>
+                                <CollectionActivity collection={collection} hideInExplore={isExplore} />
+                            </TabPanel>
+                        )}
                     </TabContext>
                 </Box>
             </Container>
