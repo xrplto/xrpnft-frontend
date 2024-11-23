@@ -25,17 +25,21 @@ const NFTCardView = ({ collections, isMine, currency, convertToUsd, volumeType }
     };
 
     return (
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
             {collections.map((item, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={item.uuid}>
+                <Grid item xs={12} sm={6} md={3} lg={12/7} key={item.uuid}>
                     <Card
                         sx={{
                             height: '100%',
                             display: 'flex',
                             flexDirection: 'column',
-                            transition: 'transform 0.3s',
+                            transition: 'all 0.3s ease-in-out',
+                            border: `1px solid ${theme.palette.divider}`,
+                            borderRadius: 2,
+                            boxShadow: theme.shadows[2],
                             '&:hover': {
-                                transform: 'translateY(-5px)',
+                                transform: 'translateY(-8px)',
+                                boxShadow: theme.shadows[8],
                             },
                         }}
                     >
@@ -48,31 +52,75 @@ const NFTCardView = ({ collections, isMine, currency, convertToUsd, volumeType }
                                 height="200"
                                 image={`https://s1.xrpnft.com/collection/${item.logoImage}`}
                                 alt={item.name}
+                                sx={{
+                                    objectFit: 'cover',
+                                }}
+                                loading="lazy"
                             />
                         </Link>
-                        <CardContent sx={{ flexGrow: 1 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                <Typography variant="h6" component="div" noWrap sx={{ flexGrow: 1 }}>
+                        <CardContent sx={{ flexGrow: 1, p: 2 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
+                                <Typography 
+                                    variant="h6" 
+                                    component="div" 
+                                    noWrap 
+                                    sx={{ 
+                                        flexGrow: 1,
+                                        fontWeight: 600,
+                                        fontSize: isMobile ? '1rem' : '1.125rem'
+                                    }}
+                                >
                                     {item.name}
                                 </Typography>
                                 {item.verified === 'yes' && (
                                     <Tooltip title="Verified">
                                         <VerifiedIcon
                                             fontSize={isMobile ? 'small' : 'medium'}
-                                            style={{ color: theme.palette.primary.main }}
+                                            sx={{ 
+                                                color: theme.palette.primary.main,
+                                                ml: 1
+                                            }}
                                         />
                                     </Tooltip>
                                 )}
                             </Box>
-                            <Typography variant="body2" color="text.secondary" gutterBottom>
-                                Floor: {formatPrice(item.floor?.amount || 0)}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" gutterBottom>
-                                Volume: {formatPrice(volumeType === '24h' ? item.totalVol24h : item.totalVolume, true)}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                Items: {fIntNumber(item.items)}
-                            </Typography>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
+                                <Typography 
+                                    variant="body2" 
+                                    sx={{ 
+                                        color: theme.palette.text.secondary,
+                                        display: 'flex',
+                                        justifyContent: 'space-between'
+                                    }}
+                                >
+                                    <span>Floor</span>
+                                    <span style={{ fontWeight: 600 }}>{formatPrice(item.floor?.amount || 0)}</span>
+                                </Typography>
+                                <Typography 
+                                    variant="body2" 
+                                    sx={{ 
+                                        color: theme.palette.text.secondary,
+                                        display: 'flex',
+                                        justifyContent: 'space-between'
+                                    }}
+                                >
+                                    <span>Volume</span>
+                                    <span style={{ fontWeight: 600 }}>
+                                        {formatPrice(volumeType === '24h' ? item.totalVol24h : item.totalVolume, true)}
+                                    </span>
+                                </Typography>
+                                <Typography 
+                                    variant="body2" 
+                                    sx={{ 
+                                        color: theme.palette.text.secondary,
+                                        display: 'flex',
+                                        justifyContent: 'space-between'
+                                    }}
+                                >
+                                    <span>Items</span>
+                                    <span style={{ fontWeight: 600 }}>{fIntNumber(item.items)}</span>
+                                </Typography>
+                            </Box>
                         </CardContent>
                     </Card>
                 </Grid>
