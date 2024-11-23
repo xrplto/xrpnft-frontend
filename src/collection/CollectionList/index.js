@@ -154,7 +154,8 @@ export default function CollectionList({ type, category }) {
 
     // Add these new state variables
     const [currency, setCurrency] = useState('XRP');
-    const xrpToUsdRate = 1.8828845971187824; // 1 USD = 1.88 XRP (you may want to fetch this dynamically)
+    const [xrpToUsdRate, setXrpToUsdRate] = useState(null);
+    const [isLoadingRate, setIsLoadingRate] = useState(true);
 
     // Add this state variable
     const [volumeType, setVolumeType] = useState('24h');
@@ -171,9 +172,37 @@ export default function CollectionList({ type, category }) {
         }
     };
 
-    // Add this function to convert XRP to USD
+    // Update the fetchExchangeRate function to use XRPL.to API
+    useEffect(() => {
+        const fetchExchangeRate = async () => {
+            try {
+                const response = await axios.get('https://api.xrpl.to/api/tokens');
+                if (response.data?.exch?.USD) {
+                    const rate = response.data.exch.USD;
+                    console.log(`Exchange rate: 1 USD = ${rate} XRP`);
+                    setXrpToUsdRate(rate);
+                }
+            } catch (error) {
+                console.error('Failed to fetch XRP/USD rate:', error);
+                openSnackbar('Failed to load exchange rate', 'error');
+            } finally {
+                setIsLoadingRate(false);
+            }
+        };
+
+        fetchExchangeRate();
+        // Set up an interval to refresh the rate periodically (e.g., every 5 minutes)
+        const interval = setInterval(fetchExchangeRate, 5 * 60 * 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // Update the convertToUsd function to correctly convert XRP to USD
     const convertToUsd = (xrpValue) => {
-        return Math.floor(xrpValue / xrpToUsdRate);
+        if (!xrpToUsdRate || !xrpValue) return null;
+        // Since rate is 0.64 XRP = 1 USD
+        // We need to divide XRP value by the rate to get USD
+        return Number((xrpValue / xrpToUsdRate).toFixed(2));
     };
 
     // Add this function to handle volume type change
@@ -323,6 +352,23 @@ export default function CollectionList({ type, category }) {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
+
+    // Update the currency toggle button to show loading state
+    const CurrencyToggleButtons = (
+        <ToggleButtonGroup
+            value={currency}
+            exclusive
+            onChange={handleCurrencyChange}
+            size="small"
+            sx={{ mr: 2 }}
+            disabled={isLoadingRate} // Disable while loading
+        >
+            <ToggleButton value="XRP">XRP</ToggleButton>
+            <ToggleButton value="USD">
+                {isLoadingRate ? 'Loading...' : 'USD'}
+            </ToggleButton>
+        </ToggleButtonGroup>
+    );
 
     return (
         <Container maxWidth="xl">
@@ -477,16 +523,7 @@ export default function CollectionList({ type, category }) {
                                 </Box>
 
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: { xs: 2, md: 0 } }}>
-                                    <ToggleButtonGroup
-                                        value={currency}
-                                        exclusive
-                                        onChange={handleCurrencyChange}
-                                        size="small"
-                                        sx={{ mr: 2 }}
-                                    >
-                                        <ToggleButton value="XRP">XRP</ToggleButton>
-                                        <ToggleButton value="USD">USD</ToggleButton>
-                                    </ToggleButtonGroup>
+                                    {CurrencyToggleButtons}
 
                                     <ToggleButtonGroup
                                         value={viewMode}
