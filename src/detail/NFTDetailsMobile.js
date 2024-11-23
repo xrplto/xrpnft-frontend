@@ -45,6 +45,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Icon } from '@iconify/react';
 import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
 import infoFilled from '@iconify/icons-ep/info-filled';
+import xIcon from '@iconify/icons-bi/x';
 
 // Loader
 import { PuffLoader, PulseLoader } from "react-spinners";
@@ -759,37 +760,79 @@ export default function NFTDetailsMobile({ nft }) {
                                 open={openShare}
                                 onClose={handleCloseShare}
                                 anchorEl={anchorRef.current}
-                                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'right'
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right'
+                                }}
                                 PaperProps={{
                                     sx: {
-                                        // mt: 1.5,
-                                        // ml: 0.5,
-                                        // overflow: 'inherit',
-                                        // boxShadow: (theme) => theme.customShadows.z20,
-                                        // border: (theme) => `solid 1px ${alpha('#919EAB', 0.08)}`,
-                                        // width: 'auto',
+                                        p: 1,
+                                        width: 200,
+                                        '& .MuiMenuItem-root': {
+                                            px: 1,
+                                            typography: 'body2',
+                                            borderRadius: 0.75
+                                        }
                                     }
                                 }}
                             >
-                                <Stack direction="row" spacing={2} sx={{pt: 1.5, pl: 1, pr: 1, pb: 1}}>
-                                    <FacebookShareButton
-                                        url={shareUrl}
-                                        quote={shareTitle}
-                                        hashtag={"#"}
-                                        description={shareDesc}
-                                        onClick={handleCloseShare}
-                                    >
-                                        <FacebookIcon size={24} round />
-                                    </FacebookShareButton>
+                                <Stack spacing={2} sx={{ p: 1 }}>
                                     <TwitterShareButton
-                                        title={shareTitle}
                                         url={shareUrl}
-                                        hashtag={"#"}
-                                        onClick={handleCloseShare}
+                                        title={shareTitle}
+                                        via="xrpnft"
+                                        hashtags={['XRPL', 'NFT', 'XRP']}
                                     >
-                                        <TwitterIcon size={24} round />
+                                        <Button
+                                            fullWidth
+                                            variant="outlined"
+                                            startIcon={
+                                                <Icon
+                                                    icon={xIcon}
+                                                    width={24}
+                                                    height={24}
+                                                    style={{ 
+                                                        borderRadius: '50%',
+                                                        padding: 4,
+                                                        backgroundColor: 'black',
+                                                        color: 'white'
+                                                    }}
+                                                />
+                                            }
+                                            sx={{ justifyContent: 'flex-start' }}
+                                        >
+                                            Share on X
+                                        </Button>
                                     </TwitterShareButton>
+
+                                    <FacebookShareButton url={shareUrl} quote={shareTitle}>
+                                        <Button
+                                            fullWidth
+                                            variant="outlined"
+                                            startIcon={<FacebookIcon size={32} round />}
+                                            sx={{ justifyContent: 'flex-start' }}
+                                        >
+                                            Share on Facebook
+                                        </Button>
+                                    </FacebookShareButton>
+
+                                    <Button
+                                        fullWidth
+                                        variant="outlined"
+                                        startIcon={<ContentCopyIcon />}
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(shareUrl);
+                                            openSnackbar('Link copied to clipboard!', 'success');
+                                            handleCloseShare();
+                                        }}
+                                        sx={{ justifyContent: 'flex-start' }}
+                                    >
+                                        Copy Link
+                                    </Button>
                                 </Stack>
                             </Popover>
                         </Stack>
