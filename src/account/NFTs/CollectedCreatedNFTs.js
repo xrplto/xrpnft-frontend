@@ -210,7 +210,7 @@ export default function CollectedCreatedNFTs({
             sx={{
                 width: '100%',
                 margin: 0,
-                padding: 1
+                padding: 0.2
             }}
         >
             {nfts.map((nft, index) => (
@@ -224,9 +224,9 @@ export default function CollectedCreatedNFTs({
                     key={nft.id || index}
                     sx={{
                         padding: { 
-                            xs: '4px',
-                            sm: '6px',
-                            md: '8px'
+                            xs: '1.5px',
+                            sm: '2.5px',
+                            md: '3.5px'
                         }
                     }}
                 >
