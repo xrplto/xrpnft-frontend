@@ -18,9 +18,10 @@ const NFTCardView = ({ collections, isMine, currency, convertToUsd, volumeType }
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const formatPrice = (price) => {
+    const formatPrice = (price, isVolume = false) => {
         const value = currency === 'USD' ? convertToUsd(price) : price;
-        return `${currency === 'USD' ? '$' : '✕'} ${fNumber(value)}`;
+        const formattedValue = isVolume ? fIntNumber(value) : fNumber(value);
+        return `${currency === 'USD' ? '$' : '✕'} ${formattedValue}`;
     };
 
     return (
@@ -67,7 +68,7 @@ const NFTCardView = ({ collections, isMine, currency, convertToUsd, volumeType }
                                 Floor: {formatPrice(item.floor?.amount || 0)}
                             </Typography>
                             <Typography variant="body2" color="text.secondary" gutterBottom>
-                                Volume: {formatPrice(volumeType === '24h' ? item.totalVol24h : item.totalVolume)}
+                                Volume: {formatPrice(volumeType === '24h' ? item.totalVol24h : item.totalVolume, true)}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                                 Items: {fIntNumber(item.items)}

@@ -150,9 +150,10 @@ export default function Row({ id, item, isMine, currency, convertToUsd, volumeTy
         document.location = `/collection/${slug}`;
     };
 
-    const formatPrice = (price) => {
+    const formatPrice = (price, isVolume = false) => {
         const value = currency === 'USD' ? convertToUsd(price) : price;
-        return `${currency === 'USD' ? '$' : '✕'} ${fNumber(value)}`;
+        const formattedValue = isVolume ? fIntNumber(value) : fNumber(value);
+        return `${currency === 'USD' ? '$' : '✕'} ${formattedValue}`;
     };
 
     return (
@@ -255,7 +256,7 @@ export default function Row({ id, item, isMine, currency, convertToUsd, volumeTy
                             noWrap
                             sx={{ fontWeight: 600, color: theme.palette.success.main }}
                         >
-                            Vol: {formatPrice(volumeToDisplay)}
+                            Vol: {formatPrice(volumeToDisplay, true)}
                         </Typography>
                     </Box>
                 </TableCell>
@@ -277,7 +278,7 @@ export default function Row({ id, item, isMine, currency, convertToUsd, volumeTy
                             noWrap
                             sx={{ fontWeight: 600, color: theme.palette.success.main }}
                         >
-                            {formatPrice(volumeToDisplay)}
+                            {formatPrice(volumeToDisplay, true)}
                         </Typography>
                     </TableCell>
 
