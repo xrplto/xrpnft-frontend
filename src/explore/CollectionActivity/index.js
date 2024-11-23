@@ -151,7 +151,7 @@ export default function CollectionActivity({ collection, hideInExplore = false }
         <Box sx={{ width: '100%', mb: 6 }}>
             {loading ? (
                 <Stack alignItems="center">
-                    <PulseLoader color="#00AB55" size={10} />
+                    <PulseLoader color="#1890FF" size={10} />
                 </Stack>
             ) : (
                 hists &&
