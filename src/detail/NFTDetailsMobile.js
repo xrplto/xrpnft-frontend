@@ -234,6 +234,18 @@ const VerificationBadge = styled('div')(({ theme }) => ({
   },
 }));
 
+// Add this styled component near other styled components
+const MasterSequenceBadge = styled(Paper)(({ theme }) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: theme.spacing(0.75, 1.5),
+    borderRadius: theme.shape.borderRadius * 2,
+    backgroundColor: alpha(theme.palette.secondary.main, 0.1),
+    border: `1px solid ${alpha(theme.palette.secondary.main, 0.2)}`,
+    gap: theme.spacing(1),
+    flex: 1
+}));
+
 export default function NFTDetailsMobile({ nft }) {
     const anchorRef = useRef(null);
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -241,7 +253,7 @@ export default function NFTDetailsMobile({ nft }) {
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
 
-    // const theme = useTheme();
+    const theme = useTheme();
     // const largescreen = useMediaQuery(theme => theme.breakpoints.up('md'));
 
     const {
@@ -267,7 +279,8 @@ export default function NFTDetailsMobile({ nft }) {
         self,
         props,
         total,
-        volume
+        volume,
+        MasterSequence
     } = nft;
 
     const collectionName = collection || meta?.collection?.name || '[No Collection]';
@@ -794,16 +807,62 @@ export default function NFTDetailsMobile({ nft }) {
                     <SeeMoreTypography variant="s7" text={meta.description} />
                 } */}
 
-                {self && rarity_rank > 0 &&
-                    <Stack direction="row" >
-                        <Tooltip title={`Rarity Rank #${fIntNumber(rarity_rank)} / ${fIntNumber(citems)}`}>
-                            <Stack direction="row" spacing={1} alignItems="center" >
-                                <LeaderboardOutlinedIcon sx={{width: '14px'}} width="auto" style={{color: '#B2B2B2'}}/>
-                                <Typography variant="s7"><Typography variant="s14">{fIntNumber(rarity_rank)}</Typography> / {fIntNumber(citems)}</Typography>
+                <Stack direction="row" spacing={2} sx={{ mt: 1, mb: 2 }}>
+                    {self && rarity_rank > 0 && (
+                        <RankingBadge elevation={0}>
+                            <LeaderboardOutlinedIcon
+                                sx={{
+                                    color: 'primary.main',
+                                    fontSize: 18
+                                }}
+                            />
+                            <Stack>
+                                <Typography
+                                    variant="caption"
+                                    color="primary.main"
+                                    fontWeight="medium"
+                                >
+                                    Rarity Rank
+                                </Typography>
+                                <Typography
+                                    variant="body1"
+                                    color="primary.main"
+                                    fontWeight="bold"
+                                >
+                                    #{fIntNumber(rarity_rank)}
+                                </Typography>
                             </Stack>
-                        </Tooltip>
-                    </Stack>
-                }
+                        </RankingBadge>
+                    )}
+
+                    {/* Add this new section for MasterSequence */}
+                    {MasterSequence && (
+                        <MasterSequenceBadge elevation={0}>
+                            <Icon
+                                icon={rippleSolid}
+                                width={18}
+                                height={18}
+                                style={{ color: theme.palette.secondary.main }}
+                            />
+                            <Stack>
+                                <Typography
+                                    variant="caption"
+                                    color="secondary.main"
+                                    fontWeight="medium"
+                                >
+                                    On-Chain Rank
+                                </Typography>
+                                <Typography
+                                    variant="body1"
+                                    color="secondary.main"
+                                    fontWeight="bold"
+                                >
+                                    #{MasterSequence}
+                                </Typography>
+                            </Stack>
+                        </MasterSequenceBadge>
+                    )}
+                </Stack>
 
                 <NFTPreview nft={nft} /> {/* NFTokenID={NFTokenID} meta={meta} dfile={dfile} */}
 
