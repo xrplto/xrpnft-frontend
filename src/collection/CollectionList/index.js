@@ -99,11 +99,14 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
     minWidth: 120,
     marginLeft: theme.spacing(2),
     '& .MuiInputBase-root': {
-        height: '40px' // Adjust this value to match your SearchBar height
+        height: '32px'
     },
     '& .MuiSelect-select': {
-        paddingTop: '8px',
-        paddingBottom: '8px'
+        paddingTop: '4px',
+        paddingBottom: '4px'
+    },
+    '& .MuiOutlinedInput-notchedOutline': {
+        borderRadius: '4px'
     }
 }));
 
@@ -360,8 +363,14 @@ export default function CollectionList({ type, category }) {
             exclusive
             onChange={handleCurrencyChange}
             size="small"
-            sx={{ mr: 2 }}
-            disabled={isLoadingRate} // Disable while loading
+            sx={{ 
+                mr: 2,
+                '& .MuiToggleButton-root': {
+                    padding: '4px 12px',  // Reduce padding
+                    height: '32px'        // Set specific height
+                }
+            }}
+            disabled={isLoadingRate}
         >
             <ToggleButton value="XRP">XRP</ToggleButton>
             <ToggleButton value="USD">
@@ -420,7 +429,12 @@ export default function CollectionList({ type, category }) {
                                                 value={choice}
                                                 exclusive
                                                 onChange={handleChangeChoice}
-                                                fullWidth
+                                                sx={{
+                                                    '& .MuiToggleButton-root': {
+                                                        padding: '4px 12px',
+                                                        height: '32px'
+                                                    }
+                                                }}
                                             >
                                                 <StyledToggleButton value="all">All</StyledToggleButton>
                                                 <StyledToggleButton value="verified">Verified</StyledToggleButton>
@@ -429,7 +443,11 @@ export default function CollectionList({ type, category }) {
                                         <SearchBar
                                             value={searchTerm}
                                             onChange={handleSearch}
-                                            fullWidth
+                                            sx={{
+                                                '& .MuiInputBase-root': {
+                                                    height: '32px'
+                                                }
+                                            }}
                                         />
                                         <FormControl fullWidth sx={{ mt: 2 }}>
                                             <InputLabel id="sort-select-label">Sort</InputLabel>
@@ -452,7 +470,14 @@ export default function CollectionList({ type, category }) {
                                                 value={volumeType}
                                                 exclusive
                                                 onChange={handleVolumeTypeChange}
-                                                fullWidth
+                                                size="small"
+                                                sx={{ 
+                                                    ml: 2,
+                                                    '& .MuiToggleButton-root': {
+                                                        padding: '4px 12px',
+                                                        height: '32px'
+                                                    }
+                                                }}
                                             >
                                                 <ToggleButton value="24h">24h</ToggleButton>
                                                 <ToggleButton value="all">All</ToggleButton>
@@ -467,12 +492,18 @@ export default function CollectionList({ type, category }) {
                         ) : (
                             // Existing desktop layout
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                     <ToggleButtonGroup
                                         color="primary"
                                         value={choice}
                                         exclusive
                                         onChange={handleChangeChoice}
+                                        sx={{
+                                            '& .MuiToggleButton-root': {
+                                                padding: '4px 12px',
+                                                height: '32px'
+                                            }
+                                        }}
                                     >
                                         <StyledToggleButton value="all">
                                             All
@@ -484,6 +515,11 @@ export default function CollectionList({ type, category }) {
                                     <SearchBar
                                         value={searchTerm}
                                         onChange={handleSearch}
+                                        sx={{
+                                            '& .MuiInputBase-root': {
+                                                height: '32px'
+                                            }
+                                        }}
                                     />
                                     <StyledFormControl size="small">
                                         {' '}
@@ -515,14 +551,24 @@ export default function CollectionList({ type, category }) {
                                         exclusive
                                         onChange={handleVolumeTypeChange}
                                         size="small"
-                                        sx={{ ml: 2 }}
+                                        sx={{ 
+                                            '& .MuiToggleButton-root': {
+                                                padding: '4px 12px',
+                                                height: '32px'
+                                            }
+                                        }}
                                     >
                                         <ToggleButton value="24h">24h</ToggleButton>
                                         <ToggleButton value="all">All</ToggleButton>
                                     </ToggleButtonGroup>
                                 </Box>
 
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: { xs: 2, md: 0 } }}>
+                                <Box sx={{ 
+                                    display: 'flex', 
+                                    justifyContent: 'space-between', 
+                                    mt: { xs: 2, md: 0 },
+                                    ml: 3  // Add left margin to create space
+                                }}>
                                     {CurrencyToggleButtons}
 
                                     <ToggleButtonGroup
@@ -530,6 +576,12 @@ export default function CollectionList({ type, category }) {
                                         exclusive
                                         onChange={handleViewModeChange}
                                         aria-label="view mode"
+                                        sx={{
+                                            '& .MuiToggleButton-root': {
+                                                padding: '4px 12px',
+                                                height: '32px'
+                                            }
+                                        }}
                                     >
                                         <ToggleButton value="card" aria-label="card view">
                                             <ViewModule />
