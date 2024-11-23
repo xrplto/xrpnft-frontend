@@ -247,6 +247,18 @@ const MasterSequenceBadge = styled(Paper)(({ theme }) => ({
     flex: 1
 }));
 
+// Add this with the other styled components (around line 320)
+const RankingBadge = styled(Paper)(({ theme }) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: theme.spacing(0.75, 1.5),
+    borderRadius: theme.shape.borderRadius * 2,
+    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+    gap: theme.spacing(1),
+    flex: 1
+}));
+
 export default function NFTDetailsMobile({ nft }) {
     const anchorRef = useRef(null);
     const BASE_URL = 'https://api.xrpnft.com/api';
