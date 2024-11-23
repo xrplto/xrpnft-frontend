@@ -257,7 +257,7 @@ export default function Row({ id, item, volumeType, currency, convertToUsd }) {
 
     const formatVolume = (volume) => {
         const value = currency === 'USD' ? convertToUsd(volume) : volume;
-        return `${fVolume(value)} ${currency}`;
+        return `${fIntNumber(value)} ${currency}`;
     };
 
     const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;

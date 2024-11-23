@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Table,
     TableBody,
@@ -23,9 +23,32 @@ export default function CollectionList({ collections }) {
     const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('totalVol24h');
     const [currency, setCurrency] = useState('XRP');
-    const xrpToUsdRate = 1.8828845971187824; // 1 USD = 1.88 XRP
+    const [xrpToUsdRate, setXrpToUsdRate] = useState(0);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    useEffect(() => {
+        const fetchXRPRate = async () => {
+            try {
+                const response = await fetch('https://api.xrpl.to/api/tokens?start=0&limit=0&sortBy=vol24hxrp&sortType=desc&filter=');
+                const data = await response.json();
+                if (data.exch && data.exch.USD) {
+                    setXrpToUsdRate(data.exch.USD);
+                }
+            } catch (error) {
+                console.error('Error fetching XRP rate:', error);
+                // Fallback to a default rate if API fails
+                setXrpToUsdRate(0.64);
+            }
+        };
+
+        fetchXRPRate();
+        
+        // Refresh rate every 5 minutes
+        const intervalId = setInterval(fetchXRPRate, 5 * 60 * 1000);
+        
+        return () => clearInterval(intervalId);
+    }, []);
 
     const handleViewMore = () => {
         if (visibleRows + 10 >= collections.length) {
