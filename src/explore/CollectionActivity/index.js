@@ -132,16 +132,62 @@ export default function CollectionActivity({ collection, hideInExplore = false }
         getActivities();
     }, [collection?.uuid, page, rows]);
 
-    const getChipStyle = (color) => ({
-        backgroundColor: theme.palette[color]?.main 
-            ? alpha(theme.palette[color].main, 0.1)
-            : alpha(theme.palette.primary.main, 0.1),
-        color: theme.palette[color]?.dark || theme.palette.primary.dark,
-        fontWeight: 'bold',
-        '& .MuiChip-label': {
-            padding: '0 8px'
+    const getChipStyle = (color) => {
+        let backgroundColor;
+        let textColor;
+
+        switch (color) {
+            case 'primary':
+                backgroundColor = alpha(theme.palette.primary.main, 0.1);
+                textColor = theme.palette.primary.main;
+                break;
+            case 'success':
+                backgroundColor = alpha(theme.palette.success.main, 0.1);
+                textColor = theme.palette.success.main;
+                break;
+            case 'error':
+                backgroundColor = alpha(theme.palette.error.main, 0.1);
+                textColor = theme.palette.error.main;
+                break;
+            default:
+                backgroundColor = alpha(theme.palette.grey[500], 0.1);
+                textColor = theme.palette.grey[700];
         }
-    });
+
+        return {
+            backgroundColor,
+            color: textColor,
+            fontWeight: 500,
+            '& .MuiChip-label': {
+                padding: '0 8px'
+            }
+        };
+    };
+
+    const getActivityConfig = (type) => {
+        switch (type) {
+            case 'BUY_MINT':
+                return { label: 'Buy Mint', color: 'primary' };
+            case 'MINTED':
+                return { label: 'Mint', color: 'success' };
+            case 'BURN':
+                return { label: 'Burn', color: 'error' };
+            case 'CREATE_SELL_OFFER':
+                return { label: 'Sell Offer', color: 'primary' };
+            case 'CREATE_BUY_OFFER':
+                return { label: 'Buy Offer', color: 'primary' };
+            case 'CANCEL_SELL_OFFER':
+                return { label: 'Cancel Sell', color: 'error' };
+            case 'CANCEL_BUY_OFFER':
+                return { label: 'Cancel Buy', color: 'error' };
+            case 'TRANSFER':
+                return { label: 'Transfer', color: 'primary' };
+            case 'SALE':
+                return { label: 'Sale', color: 'success' };
+            default:
+                return { label: `Unknown: ${type}`, color: 'primary' };
+        }
+    };
 
     if (hideInExplore || !collection) {
         return null;
@@ -227,50 +273,7 @@ export default function CollectionActivity({ collection, hideInExplore = false }
 
                                 const amount = normalizeAmount(row.amount);
 
-                                let strActivity = '';
-                                let chipColor = 'default';
-                                switch (type) {
-                                    case 'BUY_MINT':
-                                        strActivity = 'Buy Mint';
-                                        chipColor = 'primary';
-                                        break;
-                                    case 'MINTED':
-                                        strActivity = 'Mint';
-                                        chipColor = 'success';
-                                        break;
-                                    case 'BURN':
-                                        strActivity = 'Burn';
-                                        chipColor = 'error';
-                                        break;
-                                    case 'CREATE_SELL_OFFER':
-                                        strActivity = 'Sell Offer';
-                                        chipColor = 'info';
-                                        break;
-                                    case 'CREATE_BUY_OFFER':
-                                        strActivity = 'Buy Offer';
-                                        chipColor = 'warning';
-                                        break;
-                                    case 'CANCEL_SELL_OFFER':
-                                        strActivity = 'Cancel Sell';
-                                        chipColor = 'secondary';
-                                        break;
-                                    case 'CANCEL_BUY_OFFER':
-                                        strActivity = 'Cancel Buy';
-                                        chipColor = 'secondary';
-                                        break;
-                                    case 'TRANSFER':
-                                        strActivity = 'Transfer';
-                                        chipColor = 'default';
-                                        break;
-                                    case 'SALE':
-                                        strActivity = 'Sale';
-                                        chipColor = 'success';
-                                        break;
-                                    default:
-                                        strActivity = `Unknown: ${type}`;
-                                        chipColor = 'default';
-                                        break;
-                                }
+                                const activityConfig = getActivityConfig(type);
 
                                 return (
                                     <TableRow
@@ -287,9 +290,9 @@ export default function CollectionActivity({ collection, hideInExplore = false }
                                             sx={{ pt: 1, pb: 1 }}
                                         >
                                             <Chip
-                                                label={strActivity}
+                                                label={activityConfig.label}
                                                 size="small"
-                                                sx={getChipStyle(chipColor)}
+                                                sx={getChipStyle(activityConfig.color)}
                                             />
                                         </TableCell>
 
