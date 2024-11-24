@@ -89,6 +89,32 @@ const getAttributeValue = (attributes, traitType) => {
     return attr?.value || null;
 };
 
+// Add this helper function to handle responsive styling
+const getResponsiveTableStyles = (theme) => ({
+    [theme.breakpoints.down('sm')]: {
+        '& thead': {
+            display: 'none', // Hide header on mobile
+        },
+        '& tbody tr': {
+            display: 'flex',
+            flexDirection: 'column',
+            padding: theme.spacing(2),
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            '& td': {
+                width: '100% !important', // Override fixed widths
+                padding: theme.spacing(0.5),
+                border: 'none',
+                '&:before': {
+                    content: 'attr(data-label)',
+                    fontWeight: 600,
+                    marginRight: theme.spacing(1),
+                    color: theme.palette.text.secondary,
+                }
+            }
+        }
+    }
+});
+
 export default function CollectionActivity({ collection, hideInExplore = false }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
@@ -227,7 +253,8 @@ export default function CollectionActivity({ collection, hideInExplore = false }
                             borderBottom: '0px solid',
                             borderColor: theme.palette.divider
                         },
-                        width: '100%'
+                        width: '100%',
+                        ...getResponsiveTableStyles(theme)
                     }}
                 >
                     <TableHead>
@@ -288,6 +315,7 @@ export default function CollectionActivity({ collection, hideInExplore = false }
                                         <TableCell
                                             align="left"
                                             sx={{ pt: 1, pb: 1 }}
+                                            data-label="Activity"
                                         >
                                             <Chip
                                                 label={activityConfig.label}
@@ -299,6 +327,7 @@ export default function CollectionActivity({ collection, hideInExplore = false }
                                         <TableCell
                                             align="left"
                                             sx={{ pt: 1, pb: 1 }}
+                                            data-label="Details"
                                         >
                                             {type === 'BUY_MINT' ? (
                                                 <Stack
@@ -441,8 +470,8 @@ export default function CollectionActivity({ collection, hideInExplore = false }
 
                                         <TableCell
                                             align="left"
-                                            width="15%"
                                             sx={{ pt: 0.5, pb: 0.5 }}
+                                            data-label="Price"
                                         >
                                             {type === 'SALE' ? (
                                                 <Typography
@@ -487,13 +516,13 @@ export default function CollectionActivity({ collection, hideInExplore = false }
 
                                         <TableCell
                                             align="left"
-                                            width="15%"
                                             sx={{ pt: 1, pb: 1 }}
+                                            data-label="Account"
                                         >
                                             <Stack
-                                                direction="row"
+                                                direction={{ xs: 'column', sm: 'row' }}
                                                 spacing={0.2}
-                                                alignItems="center"
+                                                alignItems={{ xs: 'flex-start', sm: 'center' }}
                                             >
                                                 <Link
                                                     href={`/account/${account}`}
@@ -536,6 +565,7 @@ export default function CollectionActivity({ collection, hideInExplore = false }
                                         <TableCell
                                             align="left"
                                             sx={{ pt: 1, pb: 1 }}
+                                            data-label="Time"
                                         >
                                             <Typography variant="s7" noWrap>
                                                 {strDateTime}
