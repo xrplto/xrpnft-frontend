@@ -36,6 +36,7 @@ import { AppContext } from 'src/AppContext';
 
 // Utils
 import { getNftCoverUrl } from 'src/utils/parse';
+import { generateCoinbaseUrl } from 'src/utils/coinbase';
 
 // Components
 import BuyMintDialog from './BuyMintDialog';
@@ -500,6 +501,21 @@ export default function SpinNFT({ collection, setView }) {
             });
     };
 
+    const handleBuyXRP = () => {
+        if (!account) {
+            openSnackbar('Please login first', 'error');
+            return;
+        }
+
+        const coinbaseUrl = generateCoinbaseUrl({
+            address: account,
+            presetCryptoAmount: 25, // Optional preset amount
+            redirectUrl: window.location.href
+        });
+
+        window.open(coinbaseUrl, '_blank');
+    };
+
     return (
         <>
             <Box sx={{ 
@@ -728,8 +744,7 @@ export default function SpinNFT({ collection, setView }) {
                                         variant="outlined"
                                         size="large"
                                         component={Link}
-                                        href="/buy-crypto"
-                                        target="_blank"
+                                        onClick={handleBuyXRP}
                                         startIcon={<AccountBalanceWalletIcon />}
                                     >
                                         Buy XRP
