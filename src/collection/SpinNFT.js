@@ -5,6 +5,7 @@ import Decimal from 'decimal.js';
 import PropTypes from 'prop-types';
 import Confetti from 'react-confetti';
 import useWindowSize from 'react-use/lib/useWindowSize';
+import Image from 'next/image';
 
 // Material
 import { useTheme, alpha } from '@mui/material/styles';
@@ -28,7 +29,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import { linearProgressClasses } from '@mui/material/LinearProgress';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 // Context
 import { useContext } from 'react';
@@ -320,6 +320,15 @@ const NFTImageContainer = styled(Box)(({ theme }) => ({
     '&:hover img, &:hover video': {
         transform: 'scale(1.02)',
     }
+}));
+
+const CoinbaseLogo = styled('img')(({ theme }) => ({
+    width: 24,
+    height: 24,
+    objectFit: 'contain',
+    marginRight: theme.spacing(1),
+    backgroundColor: 'transparent',
+    borderRadius: '50%'
 }));
 
 export default function SpinNFT({ collection, setView }) {
@@ -745,8 +754,12 @@ export default function SpinNFT({ collection, setView }) {
                                         size="large"
                                         component={Link}
                                         onClick={handleBuyXRP}
-                                        startIcon={<AccountBalanceWalletIcon />}
+                                        sx={{ display: 'flex', alignItems: 'center' }}
                                     >
+                                        <CoinbaseLogo
+                                            src="/logo/coinbase-logo.png"
+                                            alt="Coinbase"
+                                        />
                                         Buy XRP
                                     </Button>
                                 </Stack>
