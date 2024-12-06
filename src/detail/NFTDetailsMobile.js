@@ -203,13 +203,15 @@ function truncate(str, n) {
 
 // Update the GlassPanel component
 const GlassPanel = styled(Glass)(({ theme }) => ({
-  background: alpha(theme.palette.background.paper, 0.7),
+  background: theme.palette.background.paper,
   borderRadius: theme.shape.borderRadius * 2,
   padding: theme.spacing(3),
   boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
   border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
   maxWidth: '90%',
   margin: '0 auto',
+  position: 'relative',
+  zIndex: 1,
   [theme.breakpoints.down('sm')]: {
     background: theme.palette.background.paper,
     backdropFilter: 'none',
