@@ -576,7 +576,6 @@ export default function NFTActions({ nft }) {
                 if (response.result.offers && response.result.offers.length > 0) {
                     lowestOffer = response.result.offers.reduce((min, offer) => {
                         const amount = BigInt(offer.amount);
-                        // Remove broker validation to allow direct offers
                         const isValidAmount = amount > BigInt(0);
                         const isValidOwner = offer.owner === nft.account;
 
@@ -588,7 +587,6 @@ export default function NFTActions({ nft }) {
                 }
 
                 if (lowestOffer && lowestOffer.offer) {
-                    // Parse the base amount and round to 6 decimal places
                     const baseAmount = parseFloat(
                         parseFloat(dropsToXrp(lowestOffer.amount.toString())).toFixed(6)
                     );
@@ -597,20 +595,20 @@ export default function NFTActions({ nft }) {
                     const brokerInfo = hasBroker ? BROKER_ADDRESSES[brokerAddress] : null;
                     const brokerFeePercentage = brokerInfo ? brokerInfo.fee : 0;
 
-                    // Calculate broker fee and total amount only if there's a broker
                     const brokerFee = hasBroker ? parseFloat((baseAmount * brokerFeePercentage).toFixed(6)) : 0;
                     const totalAmount = parseFloat((baseAmount + brokerFee).toFixed(6));
 
                     setLowestSellOffer({
                         baseAmount,
-                        totalAmount: hasBroker ? totalAmount : baseAmount, // Use baseAmount for direct offers
+                        totalAmount: hasBroker ? totalAmount : baseAmount,
                         brokerFee,
                         brokerFeePercentage,
                         hasBroker,
                         brokerName: brokerInfo ? brokerInfo.name : null,
                         offerIndex: lowestOffer.offer.nft_offer_index,
                         seller: lowestOffer.offer.owner,
-                        destination: brokerAddress
+                        destination: brokerAddress,
+                        offer: lowestOffer.offer
                     });
                 } else {
                     setLowestSellOffer(null);
@@ -803,10 +801,17 @@ export default function NFTActions({ nft }) {
     };
 
     const handleBuyNow = async () => {
-        if (lowestSellOffer && lowestSellOffer.hasBroker) {
+        if (!lowestSellOffer) {
+            openSnackbar('No valid sell offer available', 'error');
+            return;
+        }
+
+        if (lowestSellOffer.hasBroker) {
+            // Handle broker-mediated offers through XRP Cafe
             setOpenCreateOfferXRPCafe(true);
         } else {
-            openSnackbar('Invalid offer or no broker available', 'error');
+            // Handle direct offers through normal accept offer flow
+            handleAcceptOffer(lowestSellOffer.offer);
         }
     };
 
