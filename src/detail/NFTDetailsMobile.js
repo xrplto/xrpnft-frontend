@@ -237,19 +237,7 @@ const VerificationBadge = styled('div')(({ theme }) => ({
   },
 }));
 
-// Add this styled component near other styled components
-const MasterSequenceBadge = styled(Paper)(({ theme }) => ({
-    display: 'inline-flex',
-    alignItems: 'center',
-    padding: theme.spacing(0.75, 1.5),
-    borderRadius: theme.shape.borderRadius * 2,
-    backgroundColor: alpha(theme.palette.secondary.main, 0.1),
-    border: `1px solid ${alpha(theme.palette.secondary.main, 0.2)}`,
-    gap: theme.spacing(1),
-    flex: 1
-}));
-
-// Add this with the other styled components (around line 320)
+// Update the RankingBadge and MasterSequenceBadge styled components
 const RankingBadge = styled(Paper)(({ theme }) => ({
     display: 'inline-flex',
     alignItems: 'center',
@@ -257,7 +245,18 @@ const RankingBadge = styled(Paper)(({ theme }) => ({
     borderRadius: theme.shape.borderRadius * 2,
     backgroundColor: alpha(theme.palette.primary.main, 0.1),
     border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-    gap: theme.spacing(1),
+    gap: theme.spacing(0.5),
+    flex: 1
+}));
+
+const MasterSequenceBadge = styled(Paper)(({ theme }) => ({
+    display: 'inline-flex',
+    alignItems: 'center', 
+    padding: theme.spacing(0.75, 1.5),
+    borderRadius: theme.shape.borderRadius * 2,
+    backgroundColor: alpha(theme.palette.secondary.main, 0.1),
+    border: `1px solid ${alpha(theme.palette.secondary.main, 0.2)}`,
+    gap: theme.spacing(0.5),
     flex: 1
 }));
 
@@ -870,19 +869,19 @@ export default function NFTDetailsMobile({ nft }) {
                             <LeaderboardOutlinedIcon
                                 sx={{
                                     color: 'primary.main',
-                                    fontSize: 18
+                                    fontSize: 16
                                 }}
                             />
-                            <Stack>
+                            <Stack spacing={0}>
                                 <Typography
                                     variant="caption"
                                     color="primary.main"
-                                    fontWeight="medium"
+                                    sx={{ lineHeight: 1 }}
                                 >
-                                    Rarity Rank
+                                    Rank
                                 </Typography>
                                 <Typography
-                                    variant="body1"
+                                    variant="body2"
                                     color="primary.main"
                                     fontWeight="bold"
                                 >
@@ -892,29 +891,28 @@ export default function NFTDetailsMobile({ nft }) {
                         </RankingBadge>
                     )}
 
-                    {/* Add this new section for MasterSequence */}
                     {MasterSequence && (
                         <MasterSequenceBadge elevation={0}>
                             <Icon
                                 icon={rippleSolid}
-                                width={18}
-                                height={18}
+                                width={16}
+                                height={16}
                                 style={{ color: theme.palette.secondary.main }}
                             />
-                            <Stack>
+                            <Stack spacing={0}>
                                 <Typography
                                     variant="caption"
                                     color="secondary.main"
-                                    fontWeight="medium"
+                                    sx={{ lineHeight: 1 }}
                                 >
-                                    On-Chain Rank
+                                    Chain #
                                 </Typography>
                                 <Typography
-                                    variant="body1"
+                                    variant="body2"
                                     color="secondary.main"
                                     fontWeight="bold"
                                 >
-                                    #{MasterSequence}
+                                    {MasterSequence}
                                 </Typography>
                             </Stack>
                         </MasterSequenceBadge>
@@ -982,44 +980,46 @@ export default function NFTDetailsMobile({ nft }) {
                                         <BurnNFT nft={nft} onHandleBurn={onHandleBurn} />
                                     </Box>
                                 ) : (
-                                    <Grid container>
-                                        <Grid item xs={12} sm={7}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12}>
                                             <Typography variant="s7">Current Price</Typography>
-                                            <Stack sx={{ mt: 0, mb: 2 }}>
+                                            <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 0.5, mb: 2 }}>
                                                 {loading ? (
                                                     <PulseLoader color='#00AB55' size={10} />
                                                 ) : (
                                                     cost ? (
                                                         cost.currency === "XRP" ?
-                                                            <Stack direction="row" spacing={0.5} alignItems="center">
-                                                                <Typography variant='s9' pt={0.8}><Icon icon={rippleSolid} width="24" height="24" /></Typography>
+                                                            <>
+                                                                <Icon icon={rippleSolid} width="24" height="24" />
                                                                 <Typography variant='s9'>{fNumber(cost.amount)}</Typography>
-                                                            </Stack>
+                                                            </>
                                                             :
                                                             <Typography variant='s3'>{fNumber(cost.amount)} {cost.name}</Typography>
-
                                                     ) : (
-                                                        <Typography variant='s8'>- - -</Typography>
+                                                        <Typography variant='s8'>Not Listed</Typography>
                                                     )
                                                 )}
                                             </Stack>
                                         </Grid>
-                                        <Grid item xs={12} sm={5}>
-                                            <Stack
-                                                direction={{ xs: 'row', sm: 'column' }}
-                                                spacing={{ xs: 1, sm: 2 }}
+                                        <Grid item xs={12}>
+                                            <Stack 
+                                                direction="row" 
+                                                spacing={2}
+                                                sx={{
+                                                    '& .MuiButton-root': {
+                                                        minHeight: 44,
+                                                        flex: 1
+                                                    }
+                                                }}
                                             >
                                                 <Button
-                                                    fullWidth
                                                     disabled={!lowestSellOffer || burnt}
                                                     variant="contained"
-                                                    size="large"
                                                     onClick={handleBuyNow}
                                                 >
                                                     Buy Now
                                                 </Button>
                                                 <Button
-                                                    fullWidth
                                                     disabled={!accountLogin || burnt}
                                                     variant='outlined'
                                                     onClick={handleCreateBuyOffer}
