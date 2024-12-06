@@ -216,6 +216,8 @@ const GlassPanel = styled(Glass)(({ theme }) => ({
     boxShadow: 'none',
     border: 'none',
     padding: theme.spacing(2),
+    maxWidth: '100%',
+    borderRadius: 0,
   }
 }));
 
