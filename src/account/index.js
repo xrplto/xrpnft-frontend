@@ -4,6 +4,7 @@ import { Client } from 'xrpl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { generateCoinbaseUrl } from 'src/utils/coinbase';
 
 // Material
 import {
@@ -166,6 +167,15 @@ const GlassBox = styled(Box)(({ theme }) => ({
         flexDirection: 'column',
         alignItems: 'center',
     },
+}));
+
+const CoinbaseLogo = styled('img')(({ theme }) => ({
+    width: 24,
+    height: 24,
+    objectFit: 'contain',
+    marginRight: theme.spacing(1),
+    backgroundColor: 'transparent',
+    borderRadius: '50%'
 }));
 
 function TabPanel(props) {
@@ -497,6 +507,21 @@ export default function Account({ profile, limit, tab, collection, type }) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+    const handleBuyXRP = () => {
+        if (!account) {
+            openSnackbar('Please login first', 'error');
+            return;
+        }
+
+        const coinbaseUrl = generateCoinbaseUrl({
+            address: account,
+            presetCryptoAmount: 25, // Optional preset amount
+            redirectUrl: window.location.href
+        });
+
+        window.open(coinbaseUrl, '_blank');
+    };
+
     return (
         <>
             <Box sx={{ position: 'relative', mt: { xs: 4, md: 7 }, mx: { xs: 0, md: 4 } }}>
@@ -621,6 +646,26 @@ export default function Account({ profile, limit, tab, collection, type }) {
                                         }}
                                     >
                                         Logout
+                                    </Button>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={handleBuyXRP}
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            borderColor: 'primary.main',
+                                            color: 'primary.main',
+                                            '&:hover': {
+                                                borderColor: 'primary.dark',
+                                                backgroundColor: 'primary.lighter'
+                                            }
+                                        }}
+                                    >
+                                        <CoinbaseLogo
+                                            src="/logo/coinbase-logo.png"
+                                            alt="Coinbase"
+                                        />
+                                        Buy XRP
                                     </Button>
                                 </Stack>
                             )}
