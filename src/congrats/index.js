@@ -1,6 +1,4 @@
-import Confetti from 'react-confetti';
 import { ColorExtractor } from 'react-color-extractor';
-import useWindowSize from 'react-use/lib/useWindowSize';
 import React, { useEffect, useState } from 'react';
 import { FacebookShareButton, TwitterShareButton } from 'react-share';
 import { useRouter } from 'next/router';
@@ -197,7 +195,6 @@ export default function Congrats() {
     const router = useRouter();
     const { nfTokenID } = router.query;
     const theme = useTheme();
-    const { width, height } = useWindowSize();
     const fullScreen = useMediaQuery(theme.breakpoints.up('md'));
 
     const [nft, setNft] = useState(null);
@@ -238,18 +235,6 @@ export default function Congrats() {
         setColors((prevColors) => [...prevColors, ...colors]);
     };
 
-    const drawTriskelion = (ctx) => {
-        const size = 15;
-        ctx.beginPath();
-        for (let i = 0; i < 3; i++) {
-            ctx.moveTo(0, 0);
-            ctx.lineTo(0, -size);
-            ctx.arc(0, -size * 2, size, Math.PI / 2, 3 * Math.PI / 2);
-            ctx.lineTo(0, -size * 3);
-            ctx.rotate((2 * Math.PI) / 3);
-        }
-        ctx.fill();
-    };
 
     const cardVariants = {
         hidden: { opacity: 0, y: 50 },
@@ -298,26 +283,6 @@ export default function Congrats() {
             <Header />
 
             <Container maxWidth="lg">
-                <Confetti
-                    width={width}
-                    height={height}
-                    initialVelocityX={4}
-                    initialVelocityY={100}
-                    run={true}
-                    recycle={congrats}
-                    gravity={0.2}
-                    numberOfPieces={width / 8}
-                    tweenDuration={100}
-                    colors={[
-                        theme.palette.primary.main,
-                        theme.palette.primary.light,
-                        theme.palette.primary.dark,
-                        '#4a90e2',
-                        '#5ca0ea',
-                        '#6eb0f2'
-                    ]}
-                    drawShape={drawTriskelion}
-                />
                 <Fade in={true} timeout={1000}>
                     <Stack
                         spacing={6}

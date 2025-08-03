@@ -3,8 +3,6 @@ import axios from 'axios';
 import useSound from 'use-sound';
 import Decimal from 'decimal.js';
 import PropTypes from 'prop-types';
-import Confetti from 'react-confetti';
-import useWindowSize from 'react-use/lib/useWindowSize';
 import Image from 'next/image';
 
 // Material
@@ -334,7 +332,6 @@ const CoinbaseLogo = styled('img')(({ theme }) => ({
 export default function SpinNFT({ collection, setView }) {
     const theme = useTheme();
     const BASE_URL = 'https://api.xrpnft.com/api';
-    const { width, height } = useWindowSize();
     const [play, { stop }] = useSound(
         '/static/sounds/mixkit-fireworks-bang-in-sky-2989.wav'
     );
@@ -544,17 +541,6 @@ export default function SpinNFT({ collection, setView }) {
                     setXrpBalance={setXrpBalance}
                 />
 
-                <Confetti
-                    width={width}
-                    height={height}
-                    initialVelocityX={4}
-                    initialVelocityY={100}
-                    run={true}
-                    recycle={congrats}
-                    gravity={0.2}
-                    numberOfPieces={width / 3}
-                    tweenDuration={100}
-                />
                 <Stack alignItems="center" sx={{ mb: 8, mt: 2 }}>
                     <IconCover>
                         <IconWrapper>
