@@ -9,6 +9,7 @@
     "@emotion/cache": "11.9.3",
     "@emotion/react": "11.9.3",
     "@emotion/server": "11.4.0",
+    "react-confetti": "^6.1.0",
     "@emotion/styled": "11.9.3",
     "@iconify/icons-akar-icons": "^1.2.3",
     "@iconify/icons-ant-design": "^1.1.0",
