@@ -22,7 +22,9 @@ export default function AllNFT() {
             taxon,
             filterAttrs,
             rawFilterAttrs: filterAttrs,
-            parsedFilterAttrs: filterAttrs ? JSON.parse(filterAttrs) : null
+            parsedFilterAttrs: filterAttrs ? JSON.parse(filterAttrs) : null,
+            rawURL: window.location.search,
+            decodedFilterAttrs: filterAttrs ? decodeURIComponent(filterAttrs) : null
         });
 
         setUrlParams({

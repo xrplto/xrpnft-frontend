@@ -1151,7 +1151,6 @@ export function NFTs({ collection, urlParams = {} }) {
     // Initialize filterAttrs from URL params
     useEffect(() => {
         if (urlParams.filterAttrs) {
-            console.log('Setting filterAttrs from URL:', urlParams.filterAttrs);
             setFilterAttrs(urlParams.filterAttrs);
         }
     }, [urlParams.filterAttrs]);
@@ -1159,11 +1158,12 @@ export function NFTs({ collection, urlParams = {} }) {
     const fetchNfts = useCallback(async () => {
         if (loading) return;
         
-        // Don't fetch if we're on explore page and URL params haven't been loaded yet
+        // Don't fetch if we're on explore page or collection with filters and URL params haven't been loaded yet
         const pathname = window.location.pathname;
         const isExplore = pathname === '/explore' || pathname.includes('/explore');
-        if (isExplore && !collection && Object.keys(urlParams).length === 0) {
-            console.log('Waiting for URL parameters to load...');
+        const isCollectionWithFilters = pathname.includes('/collection/') && window.location.search.includes('filterAttrs');
+        
+        if ((isExplore || isCollectionWithFilters) && Object.keys(urlParams).length === 0) {
             return;
         }
         
@@ -1184,13 +1184,6 @@ export function NFTs({ collection, urlParams = {} }) {
         if (issuer) params.append('issuer', issuer);
         if (taxon && taxon !== '') params.append('taxon', taxon);
         
-        console.log('Using parameters:', { 
-            issuer, 
-            taxon, 
-            urlParams,
-            filterAttrs,
-            collection 
-        });
         
         // Add optional parameters
         if (search) params.append('search', search);
@@ -1215,29 +1208,26 @@ export function NFTs({ collection, urlParams = {} }) {
         // Add attribute filters if any
         if (filterAttrs && filterAttrs.length > 0) {
             const validAttrs = filterAttrs.filter(attr => attr.value && attr.value.length > 0);
-            console.log('FilterAttrs processing:', {
-                original: filterAttrs,
-                valid: validAttrs,
-                stringified: JSON.stringify(validAttrs)
-            });
             if (validAttrs.length > 0) {
                 params.append('filterAttrs', JSON.stringify(validAttrs));
             }
         }
         
         const apiUrl = `${BASE_URL}/nfts?${params.toString()}`;
-        console.log('XRPNFT API Request URL:', apiUrl);
-        console.log('Filter value:', filter);
+        
+        // Log individual parameters for clarity
         
         axios
             .get(apiUrl)
             .then((res) => {
-                console.log('XRPNFT API Response /nfts:', res.data);
                 if (res.data.result === 'success') {
                     let newNfts = res.data.nfts.map((nft) => ({
                         ...nft,
                         cost: nft.cost && Number(nft.cost.amount) === 0 ? null : nft.cost
                     }));
+                    
+                    // Log the traits of the first few NFTs for debugging
+                    
                     const length = newNfts.length;
                     setHasMore(length === limit);
                     
@@ -1257,7 +1247,6 @@ export function NFTs({ collection, urlParams = {} }) {
                 }
             })
             .catch((err) => {
-                console.log('Error on getting nfts!', err);
             })
             .finally(() => {
                 setLoading(false);
@@ -1277,12 +1266,13 @@ export function NFTs({ collection, urlParams = {} }) {
         fetchNfts();
     }, [fetchNfts]);
 
-    // Effect to refetch when URL params change on explore page
+    // Effect to refetch when URL params change on explore page or collection page with filters
     useEffect(() => {
         const pathname = window.location.pathname;
         const isExplore = pathname === '/explore' || pathname.includes('/explore');
-        if (isExplore && !collection && Object.keys(urlParams).length > 0) {
-            console.log('URL params loaded, fetching NFTs...');
+        const isCollectionWithFilters = pathname.includes('/collection/') && urlParams.filterAttrs;
+        
+        if ((isExplore || isCollectionWithFilters) && !collection && Object.keys(urlParams).length > 0) {
             setPage(0);
             setNfts([]);
             setHasMore(true);
@@ -1311,7 +1301,6 @@ export function NFTs({ collection, urlParams = {} }) {
                 location.reload();
             })
             .catch((err) => {
-                console.log('Error on removing nfts!', err);
             })
             .finally(() => {
                 setLoading(false);
@@ -1550,7 +1539,6 @@ export function CollectionActivity({ collection, hideInExplore = false }) {
             if (collection?.account) historyParams.append('issuer', collection.account);
             if (collection?.taxon) historyParams.append('taxon', collection.taxon);
             
-            console.log('Fetching activities from:', `${BASE_URL}/collectionhistory/?${historyParams.toString()}`);
             axios.get(`${BASE_URL}/collectionhistory/?${historyParams.toString()}`)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
@@ -1560,7 +1548,6 @@ export function CollectionActivity({ collection, hideInExplore = false }) {
                     }
                 })
                 .catch(err => {
-                    console.log("Error on getting collection history list!!!", err);
                 })
                 .finally(() => {
                     setLoading(false);
@@ -2040,7 +2027,6 @@ export default function ExploreNFT({ collection, topMargin = 4, showBanner = tru
                 location.reload();
             })
             .catch((err) => {
-                console.log('Error on removing nfts!', err);
             });
     };
 

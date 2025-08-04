@@ -69,13 +69,19 @@ const gridItem = {
 };
 
 // https://stackoverflow.com/questions/50743402/material-ui-grid-item-height
-export default function Properties({ properties, total }) {
+export default function Properties({ properties, total, issuer, taxon, cslug }) {
     return (
         <Grid container spacing={1}>
         {
             properties.map((item, idx) => (
                 <Grid item key={"Properties" + idx} xs={6} sm={4} md={3}>
-                    <Trait prop={item} total={total || 0} />
+                    <Trait 
+                        prop={item} 
+                        total={total || 0} 
+                        issuer={issuer}
+                        taxon={taxon}
+                        cslug={cslug}
+                    />
                 </Grid>
             ))
         }

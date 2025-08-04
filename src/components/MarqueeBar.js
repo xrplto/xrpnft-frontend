@@ -22,7 +22,9 @@ const MarqueeContainer = styled(Box)(({ theme }) => ({
     borderBottom: `1px solid ${theme.palette.divider}`
 }));
 
-const MarqueeContent = styled(Box)(({ theme, animationDuration }) => ({
+const MarqueeContent = styled(Box, {
+    shouldForwardProp: (prop) => prop !== 'animationDuration'
+})(({ theme, animationDuration }) => ({
     display: 'inline-flex',
     animation: `${marqueeAnimation} ${animationDuration}s linear infinite`,
     animationPlayState: 'running',
@@ -91,7 +93,6 @@ const MarqueeBar = ({ isVisible = true }) => {
                 };
 
                 const response = await axios.post(`${BASE_URL}/nfts`, body);
-                console.log('API response:', response.data);
 
                 let newNfts = response.data.nfts.map((nft) => ({
                     ...nft,
@@ -117,7 +118,6 @@ const MarqueeBar = ({ isVisible = true }) => {
                 if (JSON.stringify(newNfts) !== JSON.stringify(nfts)) {
                     setNfts(newNfts);
                 }
-                console.log('Sorted NFTs:', newNfts);
             } catch (error) {
                 console.error('Error fetching recent NFTs:', error);
             }
@@ -152,8 +152,6 @@ const MarqueeBar = ({ isVisible = true }) => {
         window.addEventListener('resize', calculateAnimationDuration);
         return () => window.removeEventListener('resize', calculateAnimationDuration);
     }, [nfts]);
-
-    console.log('Rendering MarqueeBar with', nfts.length, 'NFTs');
 
     const getEventText = (updateEvent) => {
         switch (updateEvent) {

@@ -55,9 +55,7 @@ export default function Footer() {
                     spacing={2}
                     sx={{ width: '100%' }}
                 >
-                    <Link href="/" underline="none">
-                        <Logo />
-                    </Link>
+                    <Logo />
                     <Stack direction="row" spacing={2}>
                         <StyledLink href="/explore" underline="hover">
                             <Typography variant="body2">Explore</Typography>

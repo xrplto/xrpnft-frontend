@@ -8,7 +8,7 @@ import {
     useTheme,
 } from '@mui/material';
 
-export default function Trait({ prop, total }) {
+export default function Trait({ prop, total, issuer, taxon, cslug }) {
     const theme = useTheme();
     const primaryColor = theme.palette.primary.main;
     
@@ -22,9 +22,31 @@ export default function Trait({ prop, total }) {
 
     const tooltipTitle = total > 0 ? `${count} out of ${total} have this trait` : 'Rarity data not available';
 
+    const handleClick = () => {
+        const filterAttrs = [{
+            trait_type: type,
+            value: [value]
+        }];
+        
+        // Create URL with proper encoding
+        const params = new URLSearchParams();
+        if (issuer) params.set('issuer', issuer);
+        if (taxon) params.set('taxon', taxon);
+        params.set('filterAttrs', JSON.stringify(filterAttrs));
+        
+        console.log('Trait clicked:', { type, value, filterAttrs });
+        
+        if (cslug) {
+            window.location.href = `/collection/${cslug}?${params.toString()}`;
+        } else {
+            window.location.href = `/explore?${params.toString()}`;
+        }
+    };
+
     return (
         <Tooltip title={tooltipTitle} arrow>
             <Paper
+                onClick={handleClick}
                 sx={{
                     width: '100%',
                     height: "100%",
@@ -34,6 +56,7 @@ export default function Trait({ prop, total }) {
                     textAlign: 'center',
                     background: `linear-gradient(145deg, ${primaryColor}10, ${primaryColor}20)`,
                     transition: 'all 0.3s ease',
+                    cursor: 'pointer',
                     '&:hover': {
                         transform: 'translateY(-2px)',
                         boxShadow: `0 4px 12px ${primaryColor}4D`,

@@ -176,7 +176,8 @@ export default function ViewNFT({ collection }) {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const [openShare, setOpenShare] = useState(false);
-    const [urlParams, setUrlParams] = useState({});
+    const [urlParams, setUrlParams] = useState(null); // Start with null to indicate not loaded
+    const [urlParamsReady, setUrlParamsReady] = useState(false);
 
     useEffect(() => {
         // Parse URL parameters
@@ -185,18 +186,17 @@ export default function ViewNFT({ collection }) {
         const taxon = params.get('taxon');
         const filterAttrs = params.get('filterAttrs');
 
-        console.log('ViewNFT URL Parameters:', {
-            issuer,
-            taxon,
-            filterAttrs,
-            parsedFilterAttrs: filterAttrs ? JSON.parse(filterAttrs) : null
-        });
-
-        setUrlParams({
-            issuer,
-            taxon,
-            filterAttrs: filterAttrs ? JSON.parse(filterAttrs) : null
-        });
+        // Only set URL params if there are actual filter parameters
+        if (issuer || taxon || filterAttrs) {
+            setUrlParams({
+                issuer,
+                taxon,
+                filterAttrs: filterAttrs ? JSON.parse(filterAttrs) : null
+            });
+        } else {
+            setUrlParams({});
+        }
+        setUrlParamsReady(true);
     }, [router.asPath]);
 
     const {
@@ -216,12 +216,6 @@ export default function ViewNFT({ collection }) {
         totalVol24h
     } = collection;
 
-    // Add this line to log the API URL
-    console.log('API URL for Collection data:', `https://api.xrpnft.com/collection/${slug}`);
-
-    console.log('Collection data:', collection);
-    console.log('Account login:', accountLogin);
-    console.log('Is mobile:', isMobile);
 
     const floorPrice = floor?.amount || 0;
     let volume1 = fVolume(volume || 0);
@@ -232,26 +226,18 @@ export default function ViewNFT({ collection }) {
     const totalNFTs = extra.onSaleCount + extra.notOnSaleCount;
     const percentListed = ((extra.onSaleCount / totalNFTs) * 100).toFixed(2);
 
-    console.log('Floor price:', floorPrice);
-    console.log('Volume 1:', volume1);
-    console.log('Volume 2:', volume2);
-    console.log('24h Volume:', volume24h);
-    console.log('Percent Listed:', percentListed);
 
     const shareUrl = `https://xrpnft.com/collection/${slug}`;
     const shareTitle = name;
     const shareDesc = description || '';
 
     const handleOpenShare = () => {
-        console.log('Opening share dialog');
         setOpenShare(true);
     };
     const handleCloseShare = () => {
-        console.log('Closing share dialog');
         setOpenShare(false);
     };
 
-    console.log('Rendering ViewNFT component');
 
     return (
         <>
@@ -444,7 +430,6 @@ export default function ViewNFT({ collection }) {
                                     icon: <LocalOfferIcon />
                                 }
                             ].map((stat, index) => {
-                                console.log(`Rendering stat: ${stat.label}`, stat.value);
                                 return (
                                     <Grid item xs={6} sm={4} md={2} key={index}>
                                         <StatCard elevation={3}>
@@ -478,7 +463,9 @@ export default function ViewNFT({ collection }) {
             </Box>
 
             <Box sx={{ mx: { xs: 1, md: 4 } }}> {/* Reduced horizontal margin on mobile */}
-                <ExploreNFT collection={collection} showBanner={false} urlParams={urlParams} />
+                {urlParamsReady && (
+                    <ExploreNFT collection={collection} showBanner={false} urlParams={urlParams || {}} />
+                )}
             </Box>
 
             <Popover
