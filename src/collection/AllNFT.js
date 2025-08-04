@@ -17,14 +17,17 @@ export default function AllNFT() {
         const taxon = params.get('taxon');
         const filterAttrs = params.get('filterAttrs');
 
-        console.log('AllNFT URL Parameters:', {
+        console.log('[AllNFT] URL Parameters:', {
             issuer,
             taxon,
             filterAttrs,
             rawFilterAttrs: filterAttrs,
             parsedFilterAttrs: filterAttrs ? JSON.parse(filterAttrs) : null,
             rawURL: window.location.search,
-            decodedFilterAttrs: filterAttrs ? decodeURIComponent(filterAttrs) : null
+            decodedFilterAttrs: filterAttrs ? decodeURIComponent(filterAttrs) : null,
+            timestamp: new Date().toISOString(),
+            routerReady: router.isReady,
+            routerAsPath: router.asPath
         });
 
         setUrlParams({

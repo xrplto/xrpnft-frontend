@@ -1147,11 +1147,20 @@ export function NFTs({ collection, urlParams = {} }) {
     const [filter, setFilter] = useState(0);
     const [subFilter, setSubFilter] = useState('cost:asc');
     const [filterAttrs, setFilterAttrs] = useState([]);
+    const [isInitialMount, setIsInitialMount] = useState(true);
 
     // Initialize filterAttrs from URL params
     useEffect(() => {
+        console.log('[NFTs] URL params effect - current filterAttrs:', filterAttrs);
+        console.log('[NFTs] URL params received:', {
+            urlParams,
+            filterAttrs: urlParams.filterAttrs,
+            hasFilterAttrs: !!urlParams.filterAttrs,
+            timestamp: new Date().toISOString()
+        });
         if (urlParams.filterAttrs) {
             setFilterAttrs(urlParams.filterAttrs);
+            console.log('[NFTs] Setting filterAttrs from URL params:', urlParams.filterAttrs);
         }
     }, [urlParams.filterAttrs]);
 
@@ -1163,7 +1172,19 @@ export function NFTs({ collection, urlParams = {} }) {
         const isExplore = pathname === '/explore' || pathname.includes('/explore');
         const isCollectionWithFilters = pathname.includes('/collection/') && window.location.search.includes('filterAttrs');
         
+        console.log('[NFTs] fetchNfts called:', {
+            pathname,
+            isExplore,
+            isCollectionWithFilters,
+            urlParamsLength: Object.keys(urlParams).length,
+            urlParams,
+            loading,
+            filterAttrs,
+            timestamp: new Date().toISOString()
+        });
+        
         if ((isExplore || isCollectionWithFilters) && Object.keys(urlParams).length === 0) {
+            console.log('[NFTs] Skipping fetch - waiting for URL params');
             return;
         }
         
@@ -1206,8 +1227,23 @@ export function NFTs({ collection, urlParams = {} }) {
         }
         
         // Add attribute filters if any
-        if (filterAttrs && filterAttrs.length > 0) {
-            const validAttrs = filterAttrs.filter(attr => attr.value && attr.value.length > 0);
+        // Check both filterAttrs state and urlParams.filterAttrs to handle race conditions
+        const attrsToUse = filterAttrs.length > 0 ? filterAttrs : (urlParams.filterAttrs || []);
+        console.log('[NFTs] Checking attributes:', {
+            filterAttrsState: filterAttrs,
+            urlParamsFilterAttrs: urlParams.filterAttrs,
+            attrsToUse,
+            timestamp: new Date().toISOString()
+        });
+        
+        if (attrsToUse && attrsToUse.length > 0) {
+            const validAttrs = attrsToUse.filter(attr => attr.value && attr.value.length > 0);
+            console.log('[NFTs] Processing filterAttrs:', {
+                attrsToUse,
+                validAttrs,
+                validAttrsLength: validAttrs.length,
+                timestamp: new Date().toISOString()
+            });
             if (validAttrs.length > 0) {
                 params.append('filterAttrs', JSON.stringify(validAttrs));
             }
@@ -1215,7 +1251,14 @@ export function NFTs({ collection, urlParams = {} }) {
         
         const apiUrl = `${BASE_URL}/nfts?${params.toString()}`;
         
-        // Log individual parameters for clarity
+        console.log('[NFTs] API Request:', {
+            url: apiUrl,
+            params: Object.fromEntries(params),
+            page,
+            hasFilterAttrs: attrsToUse && attrsToUse.length > 0,
+            filterAttrs: attrsToUse,
+            timestamp: new Date().toISOString()
+        });
         
         axios
             .get(apiUrl)
@@ -1227,6 +1270,13 @@ export function NFTs({ collection, urlParams = {} }) {
                     }));
                     
                     // Log the traits of the first few NFTs for debugging
+                    console.log('[NFTs] API Response:', {
+                        success: true,
+                        nftsCount: newNfts.length,
+                        firstNftAttributes: newNfts[0]?.meta?.attributes,
+                        availableAttributes: res.data.availableAttributes,
+                        timestamp: new Date().toISOString()
+                    });
                     
                     const length = newNfts.length;
                     setHasMore(length === limit);
@@ -1247,6 +1297,12 @@ export function NFTs({ collection, urlParams = {} }) {
                 }
             })
             .catch((err) => {
+                console.error('[NFTs] API Error:', {
+                    error: err.message,
+                    status: err.response?.status,
+                    data: err.response?.data,
+                    timestamp: new Date().toISOString()
+                });
             })
             .finally(() => {
                 setLoading(false);
@@ -1255,11 +1311,16 @@ export function NFTs({ collection, urlParams = {} }) {
 
     // Effect for subFilter changes - reset to page 0
     useEffect(() => {
+        if (isInitialMount) {
+            setIsInitialMount(false);
+            return;
+        }
+        console.log('[NFTs] SubFilter changed, resetting page');
         setPage(0);
         setNfts([]);
         setDeletingNfts([]);
         setHasMore(true);
-    }, [subFilter, setDeletingNfts]);
+    }, [subFilter, setDeletingNfts, isInitialMount]);
 
     // Effect for fetching data
     useEffect(() => {
@@ -1272,7 +1333,19 @@ export function NFTs({ collection, urlParams = {} }) {
         const isExplore = pathname === '/explore' || pathname.includes('/explore');
         const isCollectionWithFilters = pathname.includes('/collection/') && urlParams.filterAttrs;
         
+        console.log('[NFTs] URL params change effect:', {
+            pathname,
+            isExplore,
+            isCollectionWithFilters,
+            hasCollection: !!collection,
+            urlParamsLength: Object.keys(urlParams).length,
+            urlParams,
+            shouldReset: (isExplore || isCollectionWithFilters) && !collection && Object.keys(urlParams).length > 0,
+            timestamp: new Date().toISOString()
+        });
+        
         if ((isExplore || isCollectionWithFilters) && !collection && Object.keys(urlParams).length > 0) {
+            console.log('[NFTs] Resetting NFTs due to URL param change');
             setPage(0);
             setNfts([]);
             setHasMore(true);

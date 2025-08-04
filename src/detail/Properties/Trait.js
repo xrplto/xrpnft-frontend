@@ -34,7 +34,16 @@ export default function Trait({ prop, total, issuer, taxon, cslug }) {
         if (taxon) params.set('taxon', taxon);
         params.set('filterAttrs', JSON.stringify(filterAttrs));
         
-        console.log('Trait clicked:', { type, value, filterAttrs });
+        console.log('[Trait] Property clicked:', { 
+            type, 
+            value, 
+            filterAttrs,
+            issuer,
+            taxon,
+            cslug,
+            url: cslug ? `/collection/${cslug}?${params.toString()}` : `/explore?${params.toString()}`,
+            timestamp: new Date().toISOString()
+        });
         
         if (cslug) {
             window.location.href = `/collection/${cslug}?${params.toString()}`;
