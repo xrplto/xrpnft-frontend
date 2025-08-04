@@ -1,39 +1,2126 @@
-import axios from 'axios';
-import { useContext, useState } from 'react';
+// Combined src/explore module
 
-// Material
+import axios from 'axios';
+import React, { useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import { useTheme, useMediaQuery } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
 import {
     Box,
     Button,
     Tab,
     Typography,
-    useTheme,
-    useMediaQuery
+    Container,
+    Stack,
+    TextField,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Checkbox,
+    FormControlLabel,
+    FormGroup,
+    CardMedia,
+    Chip,
+    Link,
+    Skeleton,
+    Card,
+    CardContent,
+    FormControl,
+    Radio,
+    RadioGroup,
+    Tooltip,
+    Divider,
+    Grid,
+    IconButton,
+    InputAdornment,
+    Avatar,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    MenuItem,
+    Pagination,
+    Select,
+    Toolbar
 } from "@mui/material";
-
 import {
     TabContext,
     TabList,
     TabPanel
 } from "@mui/lab";
 
-import { Container } from "@mui/material";
+// Icons
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SearchIcon from '@mui/icons-material/Search';
+import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
+import CloseIcon from '@mui/icons-material/Close';
+import FactCheckIcon from '@mui/icons-material/FactCheck';
+import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-// Components
-import NFTs from './NFTs';
-import CollectionActivity from './CollectionActivity';
-import ExploreBanner from './ExploreBanner';
+// External libraries
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import debounce from 'lodash.debounce';
+import { isEqual } from 'lodash';
+import { Lightbox } from 'react-modal-image';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { formatDistanceToNow } from 'date-fns';
+import { ClipLoader, PulseLoader } from 'react-spinners';
+import PropTypes from 'prop-types';
+
+// Iconify
+import { Icon } from '@iconify/react';
+import infoFilled from '@iconify/icons-ep/info-filled';
+import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
+
+// Utils and context
 import { AppContext } from 'src/AppContext';
+import { fIntNumber, fNumber } from 'src/utils/formatNumber';
+import { normalizeCurrencyCodeXummImpl, normalizeAmount } from 'src/utils/normalizers';
+import { getNftCoverUrl } from 'src/utils/parse';
+import { tableCellClasses } from '@mui/material/TableCell';
 
+// ========== Styled Components ==========
+const CardWrapper = styled(Card)(({ theme }) => ({
+    borderRadius: theme.shape.borderRadius * 2,
+    backdropFilter: 'blur(20px)',
+    background: alpha(theme.palette.background.paper, 0.15),
+    padding: 0,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease-in-out',
+    overflow: 'visible',
+    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    marginTop: theme.spacing(3),
+    
+    '&:hover': {
+        transform: 'translateY(-4px)',
+        boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
+        background: alpha(theme.palette.background.paper, 0.2),
+        outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`,
+        outlineOffset: '2px',
+    }
+}));
+
+const GlassContent = styled(CardContent)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.1),
+    backdropFilter: 'blur(10px)',
+    borderTop: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+}));
+
+const CardWrapper2 = styled(Card)(({ theme }) => ({
+    borderRadius: theme.shape.borderRadius * 2,
+    backdropFilter: 'blur(20px)',
+    background: alpha(theme.palette.background.paper, 0.15),
+    padding: 0,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease-in-out',
+    overflow: 'hidden',
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    position: 'relative',
+
+    '&:hover': {
+        boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
+        background: alpha(theme.palette.background.paper, 0.2),
+        outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`,
+        outlineOffset: '2px',
+        zIndex: 2
+    }
+}));
+
+const GlassContent2 = styled(CardContent)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.1),
+    backdropFilter: 'blur(10px)',
+    borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    height: '130px',
+    padding: theme.spacing(0.75)
+}));
+
+const ImageContainer = styled(Box)(({ theme }) => ({
+    position: 'relative',
+    paddingTop: '100%',
+    overflow: 'hidden'
+}));
+
+const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    borderTopLeftRadius: theme.shape.borderRadius * 2,
+    borderTopRightRadius: theme.shape.borderRadius * 2
+}));
+
+const SequenceOverlay = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    padding: '3px 8px',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.background.paper, 0.85),
+    backdropFilter: 'blur(8px)',
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+    color: theme.palette.primary.main,
+    fontSize: '0.75rem',
+    fontWeight: 700,
+    zIndex: 2,
+    boxShadow: `0 2px 8px 0 ${alpha(theme.palette.common.black, 0.25)}`,
+}));
+
+const GlassyBox = styled(Box)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.15),
+    backdropFilter: 'blur(20px)',
+    borderRadius: theme.shape.borderRadius * 2,
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`
+}));
+
+const SearchTextField = styled(TextField)(({ theme }) => ({
+    '& .MuiOutlinedInput-root': {
+        '& fieldset': {
+            borderColor: 'transparent'
+        },
+        '&:hover fieldset': {
+            borderColor: alpha(theme.palette.primary.main, 0.3)
+        },
+        '&.Mui-focused fieldset': {
+            borderColor: theme.palette.primary.main
+        }
+    },
+    '& .MuiInputBase-input': {
+        color: theme.palette.text.primary
+    },
+    '& .MuiInputAdornment-root .MuiSvgIcon-root': {
+        color: theme.palette.primary.main
+    }
+}));
+
+const RootStyle = styled('span')(({ theme, ownerState }) => {
+  const { color, variant } = ownerState;
+
+  const styleFilled = (color) => ({
+    color: theme.palette[color].contrastText,
+    backgroundColor: theme.palette[color].main
+  });
+
+  const styleOutlined = (color) => ({
+    color: theme.palette[color].main,
+    backgroundColor: 'transparent',
+    border: `1px solid ${theme.palette[color].main}`
+  });
+
+  const styleGhost = (color) => ({
+    color: theme.palette[color].dark,
+    backgroundColor: alpha(theme.palette[color].main, 0.16)
+  });
+
+  return {
+    height: 22,
+    minWidth: 22,
+    lineHeight: 0,
+    borderRadius: 8,
+    cursor: 'default',
+    alignItems: 'center',
+    whiteSpace: 'nowrap',
+    display: 'inline-flex',
+    justifyContent: 'center',
+    padding: theme.spacing(0, 1),
+    color: theme.palette.grey[800],
+    fontSize: theme.typography.pxToRem(12),
+    fontFamily: theme.typography.fontFamily,
+    backgroundColor: theme.palette.grey[300],
+    fontWeight: theme.typography.fontWeightBold,
+
+    ...(color !== 'default'
+      ? {
+          ...(variant === 'filled' && { ...styleFilled(color) }),
+          ...(variant === 'outlined' && { ...styleOutlined(color) }),
+          ...(variant === 'ghost' && { ...styleGhost(color) })
+        }
+      : {
+          ...(variant === 'outlined' && {
+            backgroundColor: 'transparent',
+            color: theme.palette.text.primary,
+            border: `1px solid ${theme.palette.grey[500_32]}`
+          }),
+          ...(variant === 'ghost' && {
+            color: theme.palette.text.secondary,
+            backgroundColor: theme.palette.grey[500_16]
+          })
+        })
+  };
+});
+
+const ToolbarRoot = styled(Toolbar)(({ theme }) => ({
+    height: 64,
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: theme.spacing(0, 1, 0, 3)
+}));
+
+const CustomSelect = styled(Select)(({ theme }) => ({
+    '& .MuiOutlinedInput-notchedOutline': {
+        border: 'none'
+    },
+    '& .MuiSelect-select': {
+        paddingRight: theme.spacing(1),
+        paddingLeft: theme.spacing(1)
+    }
+}));
+
+// ========== Helper Functions ==========
+const sortNFTs = (nfts, sortOption) => {
+    switch (sortOption) {
+        case 'pricexrpasc':
+            return nfts.sort((a, b) => {
+                const aAmount =
+                    a.cost && a.cost.currency === 'XRP'
+                        ? Number(a.cost.amount)
+                        : Infinity;
+                const bAmount =
+                    b.cost && b.cost.currency === 'XRP'
+                        ? Number(b.cost.amount)
+                        : Infinity;
+                return aAmount - bAmount;
+            });
+        case 'pricexrpdesc':
+            return nfts.sort((a, b) => {
+                const aAmount =
+                    a.cost && a.cost.currency === 'XRP'
+                        ? Number(a.cost.amount)
+                        : -Infinity;
+                const bAmount =
+                    b.cost && b.cost.currency === 'XRP'
+                        ? Number(b.cost.amount)
+                        : -Infinity;
+                return bAmount - aAmount;
+            });
+        case 'pricenoxrp':
+            return nfts.sort((a, b) => {
+                const aIsXRP = a.cost && a.cost.currency === 'XRP';
+                const bIsXRP = b.cost && b.cost.currency === 'XRP';
+                if (aIsXRP === bIsXRP) return 0;
+                return aIsXRP ? 1 : -1;
+            });
+        default:
+            return nfts;
+    }
+};
+
+const getAttributeValue = (attributes, traitType) => {
+    const attr = attributes?.find(a => a.trait_type === traitType);
+    return attr?.value || null;
+};
+
+const getResponsiveTableStyles = (theme) => ({
+    [theme.breakpoints.down('sm')]: {
+        '& thead': {
+            display: 'none',
+        },
+        '& tbody tr': {
+            display: 'flex',
+            flexDirection: 'column',
+            padding: theme.spacing(2),
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            '& td': {
+                width: '100% !important',
+                padding: theme.spacing(0.5),
+                border: 'none',
+                '&:before': {
+                    content: 'attr(data-label)',
+                    fontWeight: 600,
+                    marginRight: theme.spacing(1),
+                    color: theme.palette.text.secondary,
+                }
+            }
+        }
+    }
+});
+
+// ========== Components ==========
+
+// Label Component
+export function Label({ color = 'default', variant = 'ghost', children, ...other }) {
+    return (
+        <RootStyle ownerState={{ color, variant }} {...other}>
+            {children}
+        </RootStyle>
+    );
+}
+
+Label.propTypes = {
+    children: PropTypes.node,
+    color: PropTypes.oneOf([
+        'default',
+        'primary',
+        'secondary',
+        'info',
+        'success',
+        'warning',
+        'error'
+    ]),
+    variant: PropTypes.oneOf(['filled', 'outlined', 'ghost'])
+};
+
+// AttributeFilter Component
+export function AttributeFilter({ attrs, setFilterAttrs }) {
+    const [attrFilter, setAttrFilter] = useState([])
+    const [searchTerm, setSearchTerm] = useState('')
+
+    useEffect(() => {
+        const tempAttrs = attrs.map(attr => ({
+            trait_type: attr.title,
+            value: []
+        }))
+        setAttrFilter(tempAttrs)
+    }, [attrs])
+
+    const handleAttrChange = (title, key) => {
+        setAttrFilter(prevAttrs => {
+            const updatedAttrs = prevAttrs.map(attr => {
+                if (attr.trait_type === title) {
+                    const values = attr.value.includes(key)
+                        ? attr.value.filter(v => v !== key)
+                        : [...attr.value, key]
+                    return { ...attr, value: values }
+                }
+                return attr
+            })
+            setFilterAttrs(updatedAttrs)
+            return updatedAttrs
+        })
+    }
+
+    const handleClearAll = (title) => {
+        setAttrFilter(prevAttrs => {
+            const updatedAttrs = prevAttrs.map(attr => 
+                attr.trait_type === title ? { ...attr, value: [] } : attr
+            )
+            setFilterAttrs(updatedAttrs)
+            return updatedAttrs
+        })
+    }
+
+    const filteredAttrs = attrs.map(attr => ({
+        ...attr,
+        items: Object.fromEntries(
+            Object.entries(attr.items).filter(([key]) => 
+                key.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+        )
+    }))
+
+    return (
+        <Stack sx={{ mt: 0, pr: 0 }}>
+            <TextField
+                fullWidth
+                variant="outlined"
+                placeholder="Search attributes"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                    startAdornment: <SearchIcon color="action" />,
+                }}
+                sx={{ mb: 2 }}
+            />
+            {filteredAttrs.map((attr, idx) => {
+                const title = attr.title;
+                const items = attr.items;
+                const count = Object.keys(items).length;
+
+                return (
+                    <Accordion
+                        key={title}
+                        disableGutters
+                        sx={{
+                            boxShadow: 'none',
+                            '&:before': {
+                                display: 'none',
+                            },
+                            '&.Mui-expanded': {
+                                margin: 0,
+                            },
+                        }}
+                    >
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            sx={{
+                                backgroundColor: 'background.paper',
+                                '&.Mui-expanded': {
+                                    minHeight: 48,
+                                },
+                            }}
+                        >
+                            <Stack direction="row" justifyContent="space-between" alignItems="center" width='100%' pr={1}>
+                                <Typography variant='subtitle1'>{title}</Typography>
+                                <Typography variant='caption' color="text.secondary">{count}</Typography>
+                            </Stack>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ pt: 0 }}>
+                            <FormGroup sx={{ flexDirection: 'column' }}>
+                                {Object.entries(items).map(([key, data]) => {
+                                    const isChecked = attrFilter.find(elem => elem.trait_type === title)?.value?.includes(key) === true;
+                                    return (
+                                        <Stack key={title + key} direction="row" justifyContent="space-between" alignItems="center" width='100%' pr={1}>
+                                            <FormControlLabel
+                                                label={
+                                                    <Typography variant="body2">{key}</Typography>
+                                                }
+                                                control={
+                                                    <Checkbox
+                                                        checked={isChecked ?? false}
+                                                        onChange={() => handleAttrChange(title, key)}
+                                                        size="small"
+                                                    />
+                                                }
+                                                sx={{ '& .MuiFormControlLabel-label': { flex: 1 } }}
+                                            />
+                                            <Typography variant='caption' color="text.secondary">{fIntNumber(data.count)}</Typography>
+                                        </Stack>
+                                    )
+                                })}
+                            </FormGroup>
+                            <Button
+                                variant="text"
+                                size="small"
+                                onClick={() => handleClearAll(title)}
+                                sx={{ mt: 1 }}
+                            >
+                                Clear All
+                            </Button>
+                        </AccordionDetails>
+                    </Accordion>
+                )
+            })}
+        </Stack>
+    );
+}
+
+// CollectionCard Component
+export function CollectionCard({ collectionData, type, account, handleRemove }) {
+    const theme = useTheme();
+    const { accountProfile } = useContext(AppContext);
+    const isAdmin = accountProfile?.admin;
+    const [loadingImg, setLoadingImg] = useState(true);
+
+    const collection = collectionData.collection;
+    const name = collection.name || 'No Name';
+    const imgUrl = `https://s1.xrpnft.com/collection/${collection.logoImage}`;
+    const collectionType = type.charAt(0).toUpperCase() + type.slice(1);
+
+    const onImageLoaded = () => {
+        setLoadingImg(false);
+    };
+
+    const handleRemoveCollection = (e) => {
+        e.preventDefault();
+        if (!isAdmin) return;
+        if (!confirm(`Are you sure you want to remove "${name}"?`)) {
+            return;
+        }
+        handleRemove(collection.id);
+    };
+
+    return (
+        <Link href={`/account/${account}/collection${collectionType}/${collection.id}`} underline='none' sx={{ position: 'relative' }}>
+            <CardWrapper
+                sx={{
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    width: '100%',
+                    maxWidth: 280,
+                    aspectRatio: '9 / 14',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    ml: 1,
+                    overflow: 'hidden',
+                    '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: -4,
+                        left: -4,
+                        right: -4,
+                        bottom: -4,
+                        background: 'inherit',
+                        borderRadius: 'inherit',
+                        zIndex: -1,
+                        filter: 'blur(8px)',
+                    },
+                }}
+            >
+                {isAdmin &&
+                    <CloseIcon
+                        sx={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            zIndex: 1500
+                        }}
+                        onClick={(e) => handleRemoveCollection(e)}
+                    />
+                }
+                <CardMedia
+                    component={loadingImg ? 'div' : 'img'}
+                    image={imgUrl}
+                    loading={loadingImg.toString()}
+                    alt={name}
+                    sx={{
+                        width: '100%',
+                        flexGrow: 1,
+                        objectFit: 'cover',
+                        borderTopLeftRadius: theme.shape.borderRadius * 2,
+                        borderTopRightRadius: theme.shape.borderRadius * 2,
+                    }}
+                />
+                {loadingImg && (
+                    <Skeleton
+                        variant='rectangular'
+                        sx={{
+                            width: '100%',
+                            flexGrow: 1,
+                            borderTopLeftRadius: theme.shape.borderRadius * 2,
+                            borderTopRightRadius: theme.shape.borderRadius * 2,
+                        }}
+                    />
+                )}
+                <img src={imgUrl} style={{ display: 'none' }} onLoad={onImageLoaded} />
+                <GlassContent sx={{ padding: '12px', display: 'flex', flexDirection: 'column', flexShrink: 0, height: '100px' }}>
+                    <Typography
+                        variant="subtitle2"
+                        sx={{
+                            fontWeight: 600,
+                            mb: 0.5,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            lineHeight: 1.2,
+                            fontSize: '0.8rem',
+                        }}
+                    >
+                        {name}
+                    </Typography>
+                    
+                    <Stack spacing={0.5} mt="auto">
+                        <Stack direction="row" alignItems='center' justifyContent='space-between'>
+                            <Typography variant='body2' color="text.secondary" fontSize="0.75rem">
+                                {collectionData.nftCount} item{collectionData.nftCount !== 1 && 's'}
+                            </Typography>
+                            {collection.rarity_rank > 0 && (
+                                <Chip
+                                    variant="outlined"
+                                    size="small"
+                                    icon={<LeaderboardOutlinedIcon sx={{width: '10px'}} />}
+                                    label={fIntNumber(collection.rarity_rank)}
+                                    sx={{
+                                        height: '18px',
+                                        '& .MuiChip-label': {
+                                            px: 0.5,
+                                            fontSize: '0.6rem',
+                                            fontWeight: 600,
+                                        }
+                                    }}
+                                />
+                            )}
+                        </Stack>
+                        <Typography variant='body2' color="text.secondary" fontSize="0.75rem">
+                            {collectionData.nftsForSale} listed
+                        </Typography>
+                    </Stack>
+                </GlassContent>
+            </CardWrapper>
+        </Link>
+    );
+}
+
+// ExploreBanner Component
+export function ExploreBanner({ collection }) {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isLightMode = theme.palette.mode === 'light';
+
+    const title = useMemo(() => {
+        return collection?.name || 'Explore NFTs';
+    }, [collection]);
+
+    const subTitle = useMemo(() => {
+        if (collection?.description) {
+            return collection.description;
+        }
+        return 'Discover unique digital assets on the XRP Ledger. Experience real-time NFT events including minting, trading, and transfers as they happen.';
+    }, [collection]);
+
+    return (
+        <Box
+            sx={{
+                px: { xs: 2, sm: 4 },
+                py: { xs: 6, sm: 8 },
+                background: `linear-gradient(135deg, ${
+                    theme.palette.primary.main
+                }, ${alpha(theme.palette.primary.main, 0.8)})`,
+                color: isLightMode
+                    ? 'black'
+                    : theme.palette.primary.contrastText,
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='${encodeURIComponent(
+                        theme.palette.primary.contrastText
+                    )}' fill-opacity='0.05' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E")`,
+                    backgroundSize: '20px 20px',
+                    zIndex: 1
+                }
+            }}
+        >
+            <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
+                <Typography
+                    variant={isMobile ? 'h3' : 'h1'}
+                    sx={{
+                        my: 2,
+                        fontWeight: 800,
+                        textShadow: isLightMode
+                            ? 'none'
+                            : '2px 2px 4px rgba(0,0,0,0.2)',
+                        letterSpacing: '-0.5px',
+                        color: isLightMode
+                            ? 'black'
+                            : theme.palette.primary.contrastText
+                    }}
+                >
+                    {title}
+                </Typography>
+                <Typography
+                    variant={'h6'}
+                    sx={{
+                        opacity: 0.9,
+                        maxWidth: '800px',
+                        lineHeight: 1.6,
+                        fontWeight: 300,
+                        letterSpacing: '0.5px',
+                        textShadow: isLightMode
+                            ? 'none'
+                            : '1px 1px 2px rgba(0,0,0,0.1)',
+                        color: isLightMode
+                            ? 'black'
+                            : theme.palette.primary.contrastText
+                    }}
+                >
+                    {subTitle}
+                </Typography>
+            </Container>
+        </Box>
+    );
+}
+
+// FilterDetail Component
+export function FilterDetail({
+    collection,
+    filter,
+    setFilter,
+    subFilter,
+    setSubFilter,
+    setFilterAttrs,
+    setPage
+}) {
+    const theme = useTheme();
+    const type = collection?.type;
+    const extra = collection?.extra;
+    const attrs = collection?.attrs || [];
+
+    const handleFlagChange = (e) => {
+        const value = parseInt(e.target.value);
+        let newFilter = filter ^ value;
+        setFilter(newFilter);
+        setPage(0);
+    };
+
+    const handleSortChange = (event) => {
+        const value = event.target.value;
+        setSubFilter(value);
+        setPage(0);
+    };
+
+    return (
+        <>
+            <Stack sx={{ pr: 0 }}>
+                <Accordion defaultExpanded>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon color="primary" />}
+                        aria-controls="panel2bh-content"
+                        id="panel2bh-header"
+                    >
+                        <Stack spacing={2} direction="row" alignItems="center">
+                            <FactCheckIcon color="primary" />
+                            <Typography variant="s3" color="primary.main">
+                                Status & Sorting
+                            </Typography>
+                        </Stack>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <FormGroup sx={{ flexDirection: 'col' }}>
+                            {type === 'bulk' && (
+                                <FormControlLabel
+                                    label={
+                                        <Stack
+                                            direction="row"
+                                            spacing={0.5}
+                                            alignItems="center"
+                                        >
+                                            <Typography variant="s3">
+                                                Buy with Mints{' '}
+                                                <Typography
+                                                    component="span"
+                                                    variant="s3"
+                                                    color="text.secondary"
+                                                >
+                                                    ({extra?.buyWithMints})
+                                                </Typography>
+                                            </Typography>
+                                            <Tooltip title="Disabled on Spinning collections, only enabled on Bulk collections.">
+                                                <Icon
+                                                    icon={infoFilled}
+                                                    color={
+                                                        theme.palette.primary
+                                                            .main
+                                                    }
+                                                />
+                                            </Tooltip>
+                                        </Stack>
+                                    }
+                                    value="1"
+                                    control={
+                                        <Checkbox
+                                            checked={(filter & 1) !== 0}
+                                            onChange={handleFlagChange}
+                                            color="primary"
+                                        />
+                                    }
+                                />
+                            )}
+                            {type !== 'normal' && (
+                                <FormControlLabel
+                                    label={
+                                        <Stack
+                                            direction="row"
+                                            spacing={0.5}
+                                            alignItems="center"
+                                        >
+                                            <Typography variant="s3">
+                                                Recently Minted{' '}
+                                                <Typography
+                                                    component="span"
+                                                    variant="s3"
+                                                    color="text.secondary"
+                                                >
+                                                    ({extra?.boughtWithMints})
+                                                </Typography>
+                                            </Typography>
+                                            <Tooltip title="Display recently Minted NFTs and being transferred to users. Or NFTs that pending to be accepted by users.">
+                                                <Icon
+                                                    icon={infoFilled}
+                                                    color={
+                                                        theme.palette.primary
+                                                            .main
+                                                    }
+                                                />
+                                            </Tooltip>
+                                        </Stack>
+                                    }
+                                    value="2"
+                                    control={
+                                        <Checkbox
+                                            checked={(filter & 2) !== 0}
+                                            onChange={handleFlagChange}
+                                            color="primary"
+                                        />
+                                    }
+                                />
+                            )}
+                            <FormControlLabel
+                                label={
+                                    <Typography variant="s3">
+                                        Unlisted{' '}
+                                        <Typography
+                                            component="span"
+                                            variant="s3"
+                                            color="text.secondary"
+                                        >
+                                            ({extra?.notOnSaleCount})
+                                        </Typography>
+                                    </Typography>
+                                }
+                                value="8"
+                                control={
+                                    <Checkbox
+                                        checked={(filter & 8) !== 0}
+                                        onChange={handleFlagChange}
+                                        color="primary"
+                                    />
+                                }
+                            />
+                            <FormControlLabel
+                                label={
+                                    <Stack
+                                        direction="row"
+                                        spacing={0.5}
+                                        alignItems="center"
+                                    >
+                                        <Typography variant="s3">
+                                            Rarity
+                                        </Typography>
+                                        <Tooltip title="Sort NFTs with rarity">
+                                            <Icon
+                                                icon={infoFilled}
+                                                color={
+                                                    theme.palette.primary.main
+                                                }
+                                            />
+                                        </Tooltip>
+                                    </Stack>
+                                }
+                                value="16"
+                                control={
+                                    <Checkbox
+                                        checked={(filter & 16) !== 0}
+                                        onChange={handleFlagChange}
+                                        color="primary"
+                                    />
+                                }
+                            />
+                            <FormControl component="fieldset">
+                                <Typography
+                                    variant="s3"
+                                    color="text.secondary"
+                                    sx={{ mt: 2, mb: 1 }}
+                                >
+                                    Sort by:
+                                </Typography>
+                                <RadioGroup
+                                    aria-label="sorting"
+                                    name="sorting"
+                                    value={subFilter}
+                                    onChange={handleSortChange}
+                                >
+                                    <FormControlLabel
+                                        value="latestActivity"
+                                        control={<Radio color="primary" />}
+                                        label={
+                                            <Typography variant="s3">
+                                                Latest Activity
+                                            </Typography>
+                                        }
+                                    />
+                                    <FormControlLabel
+                                        value="pricenoxrp"
+                                        control={<Radio color="primary" />}
+                                        label={
+                                            <Typography variant="s3">
+                                                Listed (non-XRP)
+                                            </Typography>
+                                        }
+                                    />
+                                    <FormControlLabel
+                                        value="pricexrpasc"
+                                        control={<Radio color="primary" />}
+                                        label={
+                                            <Typography variant="s3">
+                                                XRP Price: Low to High
+                                            </Typography>
+                                        }
+                                    />
+                                    <FormControlLabel
+                                        value="pricexrpdesc"
+                                        control={<Radio color="primary" />}
+                                        label={
+                                            <Typography variant="s3">
+                                                XRP Price: High to Low
+                                            </Typography>
+                                        }
+                                    />
+                                   <FormControlLabel
+                                        value="mintedLatest"
+                                        control={<Radio color="primary" />}
+                                        label={
+                                            <Typography variant="s3">
+                                                Minted Latest
+                                            </Typography>
+                                        }
+                                    />
+                                    <FormControlLabel
+                                        value="mintedEarliest"
+                                        control={<Radio color="primary" />}
+                                        label={
+                                            <Typography variant="s3">
+                                                Minted Earliest
+                                            </Typography>
+                                        }
+                                    />
+                                </RadioGroup>
+                            </FormControl>
+                            {extra?.onSaleCount !== undefined && (
+                                <Typography variant="s3" color="text.secondary" sx={{ mt: 2 }}>
+                                    Total NFTs for sale: {extra.onSaleCount}
+                                </Typography>
+                            )}
+                        </FormGroup>
+                    </AccordionDetails>
+                </Accordion>
+            </Stack>
+            {attrs && attrs.length > 0 && (
+                <Stack sx={{ pr: 0, mt: 1 }}>
+                    <Accordion defaultExpanded style={{ margin: 0 }}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon color="primary" />}
+                            aria-controls="panel2bh-content"
+                            id="panel2bh-header2"
+                        >
+                            <Stack
+                                spacing={2}
+                                direction="row"
+                                alignItems="center"
+                            >
+                                <BookmarkAddedIcon color="primary" />
+                                <Typography variant="s3" color="primary.main">
+                                    Attributes
+                                </Typography>
+                            </Stack>
+                        </AccordionSummary>
+                        <AccordionDetails style={{ padding: 0 }}>
+                            <AttributeFilter
+                                setFilterAttrs={setFilterAttrs}
+                                attrs={attrs}
+                            />
+                        </AccordionDetails>
+                    </Accordion>
+                </Stack>
+            )}
+        </>
+    );
+}
+
+// NFTCard Component
+export function NFTCard({ nft, handleRemove }) {
+    const theme = useTheme();
+    const { accountProfile } = useContext(AppContext);
+    const isAdmin = accountProfile?.admin;
+    const [colors, setColors] = useState([]);
+    const [loadingImg, setLoadingImg] = useState(true);
+
+    const {
+        uuid,
+        account,
+        cost,
+        costb,
+        meta,
+        dfile,
+        NFTokenID,
+        destination,
+        rarity,
+        rarity_rank,
+        updateEvent,
+        MasterSequence
+    } = nft;
+
+    const isSold = false;
+    const imgUrl = getNftCoverUrl(nft, 'small');
+    const isVideo = false;
+    const name = nft.meta?.name || meta?.Name || 'No Name';
+
+    const getColors = (colors) => {
+        setColors((c) => [...c, ...colors]);
+    };
+
+    const onImageLoaded = () => {
+        setLoadingImg(false);
+    };
+
+    const handleRemoveNft = (e) => {
+        e.preventDefault();
+        if (!isAdmin) return;
+        if (!confirm(`Are you sure you want to remove "${name}"?`)) {
+            return;
+        }
+        handleRemove(NFTokenID);
+    };
+
+    function renderPrice() {
+        if (!cost)
+            return (
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    fontSize="0.85rem"
+                >
+                    Unlisted
+                </Typography>
+            );
+
+        return cost.currency === 'XRP' ? (
+            <Stack direction="row" spacing={0.3} alignItems="center">
+                <Icon
+                    icon={rippleSolid}
+                    width="16"
+                    height="16"
+                    color={theme.palette.primary.main}
+                />
+                <Typography
+                    variant="body2"
+                    fontWeight="600"
+                    fontSize={{ xs: '0.8rem', sm: '0.85rem' }}
+                    color="primary.main"
+                >
+                    {fNumber(cost.amount)}
+                </Typography>
+            </Stack>
+        ) : (
+            <Typography
+                variant="body2"
+                fontWeight="600"
+                fontSize="0.85rem"
+                color="primary.main"
+            >
+                {fNumber(cost.amount)}{' '}
+                {normalizeCurrencyCodeXummImpl(cost.currency)}
+            </Typography>
+        );
+    }
+
+    function renderOffer() {
+        if (!costb) return <Box flexGrow={1} />;
+
+        return (
+            <Stack direction="row" spacing={0.5} alignItems="center">
+                <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    fontSize="0.75rem"
+                    noWrap
+                >
+                    Offer:
+                </Typography>
+                {costb.currency === 'XRP' ? (
+                    <>
+                        <Icon
+                            icon={rippleSolid}
+                            color={theme.palette.success.main}
+                            width="14"
+                            height="14"
+                        />
+                        <Typography
+                            variant="caption"
+                            color="success.main"
+                            fontWeight="600"
+                            fontSize="0.75rem"
+                            noWrap
+                        >
+                            {fNumber(costb.amount)}
+                        </Typography>
+                    </>
+                ) : (
+                    <Typography
+                        variant="caption"
+                        color="success.main"
+                        fontWeight="600"
+                        fontSize="0.75rem"
+                        noWrap
+                    >
+                        {fNumber(costb.amount)}{' '}
+                        {normalizeCurrencyCodeXummImpl(costb.currency)}
+                    </Typography>
+                )}
+            </Stack>
+        );
+    }
+
+    function renderRarityRank() {
+        if (rarity_rank <= 0) return null;
+
+        return (
+            <Chip
+                variant="outlined"
+                size="small"
+                icon={
+                    <LeaderboardOutlinedIcon
+                        sx={{
+                            width: '14px',
+                            color: theme.palette.primary.main
+                        }}
+                    />
+                }
+                label={fIntNumber(rarity_rank)}
+                sx={{
+                    height: '20px',
+                    borderColor: theme.palette.primary.main,
+                    color: theme.palette.primary.main,
+                    '& .MuiChip-label': {
+                        px: 0.4,
+                        fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                        fontWeight: 600
+                    }
+                }}
+            />
+        );
+    }
+
+    function renderEvent() {
+        if (!updateEvent) return null;
+
+        return (
+            <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{
+                    fontSize: { xs: '0.65rem', sm: '0.7rem' },
+                    textAlign: 'right',
+                    maxWidth: '50%'
+                }}
+                noWrap
+            >
+                Updated: {updateEvent}
+            </Typography>
+        );
+    }
+
+    return (
+        <Box
+            sx={{
+                position: 'relative',
+                padding: { xs: '2px', sm: '5px', md: '10px' },
+                '&:hover': {
+                    zIndex: 1
+                },
+                isolation: 'isolate',
+                transform: 'translate3d(0, 0, 0)',
+                backfaceVisibility: 'hidden'
+            }}
+        >
+            <Link href={`/nft/${NFTokenID}`} underline="none">
+                <CardWrapper2
+                    sx={{
+                        width: '100%',
+                        maxWidth: { xs: '100%', sm: 290, md: 310, lg: 330 },
+                        height: '100%',
+                        marginBottom: { xs: '5px', sm: '8px', md: 0 }
+                    }}
+                >
+                    {isAdmin && (
+                        <CloseIcon
+                            sx={{
+                                position: 'absolute',
+                                top: 16,
+                                left: 16,
+                                zIndex: 1500,
+                                color: theme.palette.primary.main
+                            }}
+                            onClick={(e) => handleRemoveNft(e)}
+                        />
+                    )}
+                    {isSold && (
+                        <Label
+                            variant="filled"
+                            color={(isSold && 'error') || 'info'}
+                            sx={{
+                                zIndex: 9,
+                                top: 24,
+                                right: 24,
+                                position: 'absolute',
+                                textTransform: 'uppercase'
+                            }}
+                        >
+                            SOLD
+                        </Label>
+                    )}
+                    <ImageContainer>
+                        <StyledCardMedia
+                            component={
+                                loadingImg ? 'div' : isVideo ? 'video' : 'img'
+                            }
+                            image={imgUrl}
+                            loading={loadingImg.toString()}
+                            alt={'NFT' + uuid}
+                        />
+                        {loadingImg && (
+                            <Skeleton
+                                variant="rectangular"
+                                sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    height: '100%',
+                                    bgcolor: alpha(
+                                        theme.palette.primary.main,
+                                        0.1
+                                    )
+                                }}
+                            />
+                        )}
+                        {!loadingImg && MasterSequence && (
+                            <SequenceOverlay>
+                                #{MasterSequence}
+                            </SequenceOverlay>
+                        )}
+                    </ImageContainer>
+                    <img
+                        src={imgUrl}
+                        style={{ display: 'none' }}
+                        onLoad={onImageLoaded}
+                    />
+                    {isVideo && (
+                        <video
+                            src={imgUrl}
+                            style={{ display: 'none' }}
+                            onCanPlay={onImageLoaded}
+                        />
+                    )}
+                    <GlassContent2>
+                        <Typography
+                            variant="subtitle2"
+                            sx={{
+                                fontWeight: 600,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                                lineHeight: 1.2,
+                                fontSize: { xs: '0.75rem', sm: '0.8rem' },
+                                color: theme.palette.text.primary,
+                                height: '2.2em'
+                            }}
+                        >
+                            {name}
+                        </Typography>
+
+                        <Stack spacing={0.1}>
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                justifyContent="space-between"
+                            >
+                                {renderPrice()}
+                                {renderRarityRank()}
+                            </Stack>
+                            <Stack
+                                direction="row"
+                                justifyContent="space-between"
+                                alignItems="flex-start"
+                            >
+                                {renderOffer()}
+                                {renderEvent()}
+                            </Stack>
+                        </Stack>
+                    </GlassContent2>
+                </CardWrapper2>
+            </Link>
+        </Box>
+    );
+}
+
+// NFTs Component
+export function NFTs({ collection }) {
+    const BASE_URL = 'https://api.xrpnft.com/api';
+    const theme = useTheme();
+    const { setDeletingNfts } = useContext(AppContext);
+    const [nfts, setNfts] = useState([]);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [flag, setFlag] = useState(0);
+    const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [showFilter, setShowFilter] = useState(false);
+    const [filter, setFilter] = useState(0);
+    const [subFilter, setSubFilter] = useState('latestActivity');
+    const [filterAttrs, setFilterAttrs] = useState([]);
+
+    const fetchNfts = useCallback(() => {
+        if (loading) return;
+        setLoading(true);
+        const limit = 32;
+        const body = {
+            page,
+            limit,
+            flag,
+            cid: collection?.uuid,
+            search,
+            filter,
+            subFilter: subFilter === 'latestActivity' ? '' : subFilter,
+            filterAttrs
+        };
+        console.log('XRPNFT API Request:', body);
+        axios
+            .post(`${BASE_URL}/nfts`, body)
+            .then((res) => {
+                console.log('XRPNFT API Response /collection:', res.data);
+                let newNfts = res.data.nfts.map((nft) => ({
+                    ...nft,
+                    cost: nft.cost && Number(nft.cost.amount) === 0 ? null : nft.cost
+                }));
+                if (subFilter !== 'latestActivity') {
+                    newNfts = sortNFTs(newNfts, subFilter);
+                }
+                const length = newNfts.length;
+                setHasMore(length === limit);
+                setNfts((prevNfts) => (page === 0 ? newNfts : [...prevNfts, ...newNfts]));
+                setDeletingNfts((prevNfts) => (page === 0 ? newNfts : [...prevNfts, ...newNfts]));
+            })
+            .catch((err) => {
+                console.log('Error on getting nfts!', err);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [page, flag, search, filter, subFilter, filterAttrs, collection?.uuid, setDeletingNfts]);
+
+    useEffect(() => {
+        setNfts([]);
+        setDeletingNfts([]);
+        setPage(0);
+        setHasMore(true);
+    }, [flag, search, filter, subFilter, filterAttrs, setDeletingNfts]);
+
+    useEffect(() => {
+        fetchNfts();
+    }, [fetchNfts]);
+
+    const handleChangeSearch = debounce((e) => {
+        setSearch(e.target.value);
+    }, 300);
+
+    const handleShowFilter = () => {
+        setShowFilter((prevShow) => !prevShow);
+    };
+
+    const handleRemove = (NFTokenID) => {
+        setLoading(true);
+        axios
+            .delete(`${BASE_URL}/nfts`, {
+                data: {
+                    issuer: collection?.account,
+                    taxon: collection?.taxon,
+                    cid: collection?.uuid,
+                    idsToDelete: NFTokenID
+                }
+            })
+            .then((res) => {
+                location.reload();
+            })
+            .catch((err) => {
+                console.log('Error on removing nfts!', err);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
+
+    const handleSortChange = (newSubFilter) => {
+        let subFilterValue = '';
+        switch (newSubFilter) {
+            case 'Listed (non-XRP)':
+                subFilterValue = 'pricenoxrp';
+                break;
+            case 'XRP Price: Low to High':
+                subFilterValue = 'pricexrpasc';
+                break;
+            case 'XRP Price: High to Low':
+                subFilterValue = 'pricexrpdesc';
+                break;
+            case 'Latest Activity':
+                subFilterValue = 'latestActivity';
+                break;
+            default:
+                subFilterValue = newSubFilter;
+        }
+        setSubFilter(subFilterValue);
+        setPage(0);
+        setNfts([]);
+        setDeletingNfts([]);
+        setHasMore(true);
+        let newFilter = filter;
+        if (subFilterValue !== 'latestActivity') {
+            newFilter |= 4;
+        } else {
+            newFilter &= ~4;
+        }
+        setFilter(newFilter);
+    };
+
+    const loadMore = useCallback(() => {
+        if (!loading && hasMore) {
+            setPage((prevPage) => prevPage + 1);
+        }
+    }, [loading, hasMore]);
+
+    return (
+        <Box sx={{ width: '100%' }}>
+            <GlassyBox sx={{ mb: 2, p: 1, display: 'flex', alignItems: 'center' }}>
+                <IconButton
+                    aria-label="filter"
+                    onClick={handleShowFilter}
+                    sx={{
+                        color: 'primary.main',
+                        '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.1) }
+                    }}
+                >
+                    <FilterListIcon fontSize="large" />
+                </IconButton>
+                <SearchTextField
+                    id="textFilter"
+                    fullWidth
+                    variant="outlined"
+                    placeholder="Search by name or attribute"
+                    margin="dense"
+                    onChange={handleChangeSearch}
+                    autoComplete="new-password"
+                    inputProps={{ autoComplete: 'off' }}
+                    onFocus={(event) => event.target.select()}
+                    sx={{ pl: 2, pr: 0, pt: 0, pb: 0, mt: 0 }}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start" sx={{ mr: 0.7 }}>
+                                <SearchIcon color="primary" />
+                            </InputAdornment>
+                        ),
+                        endAdornment: (
+                            <InputAdornment position="start">
+                                {loading && <ClipLoader color={theme.palette.primary.main} size={15} />}
+                            </InputAdornment>
+                        )
+                    }}
+                />
+            </GlassyBox>
+            <Grid container spacing={1} justifyContent="space-between" mt={1}>
+                {showFilter && (
+                    <Grid item xs={12} md={3} xl={2} pt={0.5}>
+                        <GlassyBox sx={{ p: 2 }}>
+                            <FilterDetail
+                                collection={collection}
+                                filter={filter}
+                                setFilter={setFilter}
+                                subFilter={subFilter}
+                                setSubFilter={handleSortChange}
+                                setFilterAttrs={setFilterAttrs}
+                                setPage={setPage}
+                            />
+                        </GlassyBox>
+                    </Grid>
+                )}
+                <Grid item xs={12} md={showFilter ? 9 : 12} xl={showFilter ? 10 : 12}>
+                    <InfiniteScroll
+                        dataLength={nfts.length}
+                        next={loadMore}
+                        hasMore={hasMore}
+                        loader={
+                            <Box sx={{ display: 'flex', justifyContent: 'center', my: 2 }}>
+                                <ClipLoader color={theme.palette.primary.main} size={30} />
+                            </Box>
+                        }
+                        scrollThreshold={0.9}
+                    >
+                        <Grid container spacing={0.5}>
+                            {nfts.map((nft, index) => (
+                                <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.NFTokenID || index}>
+                                    <NFTCard
+                                        nft={nft}
+                                        handleRemove={handleRemove}
+                                        imageComponent={
+                                            <LazyLoadImage
+                                                src={nft.imageUrl}
+                                                alt={nft.name}
+                                                effect="blur"
+                                                wrapperProps={{
+                                                    style: {
+                                                        display: 'block',
+                                                        height: '100%',
+                                                        width: '100%',
+                                                        borderRadius: theme.shape.borderRadius,
+                                                        overflow: 'hidden'
+                                                    }
+                                                }}
+                                            />
+                                        }
+                                    />
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </InfiniteScroll>
+                </Grid>
+            </Grid>
+        </Box>
+    );
+}
+
+// ListToolbar Component
+export function ListToolbar({ count, rows, setRows, page, setPage }) {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+    const num = count / rows;
+    let page_count = Math.floor(num)
+    if (num % 1 !== 0) page_count++;
+
+    const start = page * rows + 1;
+    let end = start + rows - 1;
+    if (end > count) end = count;
+
+    const handleChangeRows = (event) => {
+        setRows(parseInt(event.target.value, 10));
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage - 1);
+        gotoTop(event);
+    };
+
+    const gotoTop = (event) => {
+        const anchor = (event.target.ownerDocument || document).querySelector(
+            '#back-to-top-tab-anchor',
+        );
+
+        if (anchor) {
+            anchor.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            });
+        }
+    };
+
+    return (
+        <Grid container spacing={2} alignItems="center" sx={{ mt: 2, px: 2 }}>
+            <Grid item xs={12} md={4} order={{ xs: 3, md: 1 }}>
+                <Typography variant="body2" color="text.secondary">
+                    Showing {start} - {end} out of {count}
+                </Typography>
+            </Grid>
+
+            <Grid item xs={12} md={4} order={{ xs: 1, md: 2 }}>
+                <Stack alignItems='center'>
+                    <Pagination 
+                        page={page + 1} 
+                        onChange={handleChangePage} 
+                        count={page_count}
+                        size={isMobile ? "small" : "medium"}
+                    />
+                </Stack>
+            </Grid>
+
+            <Grid item xs={12} md={4} order={{ xs: 2, md: 3 }}>
+                <Stack direction='row' alignItems='center' justifyContent="flex-end">
+                    <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
+                        Show Rows:
+                    </Typography>
+                    <CustomSelect
+                        value={rows}
+                        onChange={handleChangeRows}
+                        size="small"
+                    >
+                        <MenuItem value={20}>20</MenuItem>
+                        <MenuItem value={10}>10</MenuItem>
+                        <MenuItem value={5}>5</MenuItem>
+                    </CustomSelect>
+                </Stack>
+            </Grid>
+        </Grid>
+    );
+}
+
+// CollectionActivity Component
+export function CollectionActivity({ collection, hideInExplore = false }) {
+    const theme = useTheme();
+    const BASE_URL = 'https://api.xrpnft.com/api';
+    const { openSnackbar } = useContext(AppContext);
+    const [page, setPage] = useState(0);
+    const [rows, setRows] = useState(10);
+    const [total, setTotal] = useState(0);
+    const [hists, setHists] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [open, setOpen] = useState(false);
+    const [lightBoxImgUrl, setLightBoxImgUrl] = useState('');
+
+    const closeLightbox = () => {
+        setOpen(false);
+    };
+
+    useEffect(() => {
+        if (!collection?.uuid) return;
+
+        function getActivities() {
+            setLoading(true);
+            console.log('Fetching activities from:', `${BASE_URL}/collectionhistory/?cid=${collection.uuid}&page=${page}&limit=${rows}`);
+            axios.get(`${BASE_URL}/collectionhistory/?cid=${collection.uuid}&page=${page}&limit=${rows}`)
+                .then(res => {
+                    let ret = res.status === 200 ? res.data : undefined;
+                    if (ret) {
+                        setTotal(ret.total);
+                        setHists(ret.hists);
+                    }
+                })
+                .catch(err => {
+                    console.log("Error on getting collection history list!!!", err);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }
+        getActivities();
+    }, [collection?.uuid, page, rows]);
+
+    const getChipStyle = (color) => {
+        let backgroundColor;
+        let textColor;
+
+        switch (color) {
+            case 'primary':
+                backgroundColor = alpha(theme.palette.primary.main, 0.1);
+                textColor = theme.palette.primary.main;
+                break;
+            case 'success':
+                backgroundColor = alpha(theme.palette.success.main, 0.1);
+                textColor = theme.palette.success.main;
+                break;
+            case 'error':
+                backgroundColor = alpha(theme.palette.error.main, 0.1);
+                textColor = theme.palette.error.main;
+                break;
+            default:
+                backgroundColor = alpha(theme.palette.grey[500], 0.1);
+                textColor = theme.palette.grey[700];
+        }
+
+        return {
+            backgroundColor,
+            color: textColor,
+            fontWeight: 500,
+            '& .MuiChip-label': {
+                padding: '0 8px'
+            }
+        };
+    };
+
+    const getActivityConfig = (type) => {
+        switch (type) {
+            case 'BUY_MINT':
+                return { label: 'Buy Mint', color: 'primary' };
+            case 'MINTED':
+                return { label: 'Mint', color: 'success' };
+            case 'BURN':
+                return { label: 'Burn', color: 'error' };
+            case 'CREATE_SELL_OFFER':
+                return { label: 'Sell Offer', color: 'primary' };
+            case 'CREATE_BUY_OFFER':
+                return { label: 'Buy Offer', color: 'primary' };
+            case 'CANCEL_SELL_OFFER':
+                return { label: 'Cancel Sell', color: 'error' };
+            case 'CANCEL_BUY_OFFER':
+                return { label: 'Cancel Buy', color: 'error' };
+            case 'TRANSFER':
+                return { label: 'Transfer', color: 'primary' };
+            case 'SALE':
+                return { label: 'Sale', color: 'success' };
+            default:
+                return { label: `Unknown: ${type}`, color: 'primary' };
+        }
+    };
+
+    if (hideInExplore || !collection) {
+        return null;
+    }
+
+    return (
+        <Box sx={{ width: '100%', mb: 6 }}>
+            {loading ? (
+                <Stack alignItems="center">
+                    <PulseLoader color="#1890FF" size={10} />
+                </Stack>
+            ) : (
+                hists &&
+                hists.length === 0 && (
+                    <Stack alignItems="center" sx={{ mt: 5 }}>
+                        <Typography variant="s7">No Activities</Typography>
+                    </Stack>
+                )
+            )}
+            <Box
+                sx={{
+                    display: 'flex',
+                    gap: 1,
+                    py: 1,
+                    overflow: 'auto',
+                    width: '100%',
+                    '& > *': {
+                        scrollSnapAlign: 'center'
+                    },
+                    '::-webkit-scrollbar': { display: 'none' }
+                }}
+            >
+                <Table
+                    stickyHeader
+                    sx={{
+                        [`& .${tableCellClasses.root}`]: {
+                            borderBottom: '0px solid',
+                            borderColor: theme.palette.divider
+                        },
+                        width: '100%',
+                        ...getResponsiveTableStyles(theme)
+                    }}
+                >
+                    <TableHead>
+                        <TableRow>
+                            <TableCell width="15%">Activity</TableCell>
+                            <TableCell width="30%">Details</TableCell>
+                            <TableCell width="15%">Price</TableCell>
+                            <TableCell width="25%">Account</TableCell>
+                            <TableCell width="15%">Time</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {hists &&
+                            hists.map((row, idx) => {
+                                const {
+                                    type,
+                                    uuid,
+                                    NFTokenID,
+                                    account,
+                                    cid,
+                                    name,
+                                    meta,
+                                    dfile,
+                                    files,
+                                    cost,
+                                    quantity,
+                                    time
+                                } = row;
+
+                                const isVideo = meta?.video ? true : false;
+                                const imgUrl = getNftCoverUrl(
+                                    { files },
+                                    'small'
+                                );
+                                const strDateTime = formatDistanceToNow(
+                                    new Date(time),
+                                    { addSuffix: true }
+                                );
+                                const amount = normalizeAmount(row.amount);
+                                const activityConfig = getActivityConfig(type);
+
+                                return (
+                                    <TableRow
+                                        key={time + '' + idx}
+                                        sx={{
+                                            [`& .${tableCellClasses.root}`]: {}
+                                        }}
+                                    >
+                                        <TableCell
+                                            align="left"
+                                            sx={{ pt: 1, pb: 1 }}
+                                            data-label="Activity"
+                                        >
+                                            <Chip
+                                                label={activityConfig.label}
+                                                size="small"
+                                                sx={getChipStyle(activityConfig.color)}
+                                            />
+                                        </TableCell>
+
+                                        <TableCell
+                                            align="left"
+                                            sx={{ pt: 1, pb: 1 }}
+                                            data-label="Details"
+                                        >
+                                            {type === 'BUY_MINT' ? (
+                                                <Stack
+                                                    direction="row"
+                                                    spacing={1}
+                                                    alignItems="center"
+                                                >
+                                                    <Avatar
+                                                        alt="C"
+                                                        src={`https://s1.xrpl.to/token/${cost?.md5}`}
+                                                    />
+
+                                                    <Stack>
+                                                        <Stack
+                                                            direction="row"
+                                                            spacing={0.8}
+                                                            alignItems="center"
+                                                        >
+                                                            <Typography variant="s7">
+                                                                Price:{' '}
+                                                            </Typography>
+                                                            <Typography variant="s11">
+                                                                {cost?.amount}{' '}
+                                                                {cost?.name}
+                                                            </Typography>
+                                                        </Stack>
+                                                        <Stack
+                                                            direction="row"
+                                                            spacing={1}
+                                                        >
+                                                            <Typography variant="s7">
+                                                                Quantity:{' '}
+                                                            </Typography>
+                                                            <Typography variant="s11">
+                                                                {quantity}
+                                                            </Typography>
+                                                        </Stack>
+                                                    </Stack>
+                                                </Stack>
+                                            ) : (
+                                                <Stack direction="row" spacing={2} alignItems="center">
+                                                    <Stack direction="row" spacing={1} alignItems="center">
+                                                        <Link
+                                                            component="button"
+                                                            underline="none"
+                                                            onClick={() => {
+                                                                if (!isVideo) {
+                                                                    setLightBoxImgUrl(
+                                                                        imgUrl
+                                                                    );
+                                                                    setOpen(
+                                                                        true
+                                                                    );
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Box
+                                                                sx={{
+                                                                    position: 'relative',
+                                                                    width: 48,
+                                                                    height: 48,
+                                                                    borderRadius: 1,
+                                                                    overflow: 'hidden'
+                                                                }}
+                                                            >
+                                                                <CardMedia
+                                                                    component={isVideo ? 'video' : 'img'}
+                                                                    image={imgUrl}
+                                                                    alt={name}
+                                                                    autoPlay={isVideo}
+                                                                    loop={isVideo}
+                                                                    muted
+                                                                    sx={{
+                                                                        width: '100%',
+                                                                        height: '100%',
+                                                                        objectFit: 'cover'
+                                                                    }}
+                                                                />
+                                                            </Box>
+                                                        </Link>
+                                                        <Stack spacing={0.5}>
+                                                            <Link
+                                                                href={`/nft/${NFTokenID}`}
+                                                                sx={{
+                                                                    color: 'text.primary',
+                                                                    textDecoration: 'none',
+                                                                    '&:hover': {
+                                                                        textDecoration: 'underline'
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <Typography variant="subtitle2" noWrap>
+                                                                    {name}
+                                                                </Typography>
+                                                            </Link>
+                                                            {meta?.attributes && (
+                                                                <Stack direction="row" spacing={0.5}>
+                                                                    {getAttributeValue(meta.attributes, 'Background') && (
+                                                                        <Chip
+                                                                            label={getAttributeValue(meta.attributes, 'Background')}
+                                                                            size="small"
+                                                                            sx={{
+                                                                                height: 20,
+                                                                                fontSize: '0.65rem',
+                                                                                bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                                                                color: 'text.secondary'
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                                    {getAttributeValue(meta.attributes, 'Fur') && (
+                                                                        <Chip
+                                                                            label={getAttributeValue(meta.attributes, 'Fur')}
+                                                                            size="small"
+                                                                            sx={{
+                                                                                height: 20,
+                                                                                fontSize: '0.65rem',
+                                                                                bgcolor: alpha(theme.palette.secondary.main, 0.1),
+                                                                                color: 'text.secondary'
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                                </Stack>
+                                                            )}
+                                                        </Stack>
+                                                    </Stack>
+                                                    {meta?.collection?.name && (
+                                                        <Chip
+                                                            label={meta.collection.name}
+                                                            size="small"
+                                                            sx={{
+                                                                height: 24,
+                                                                bgcolor: alpha(theme.palette.info.main, 0.1),
+                                                                color: 'text.secondary'
+                                                            }}
+                                                        />
+                                                    )}
+                                                </Stack>
+                                            )}
+                                        </TableCell>
+
+                                        <TableCell
+                                            align="left"
+                                            sx={{ pt: 0.5, pb: 0.5 }}
+                                            data-label="Price"
+                                        >
+                                            {type === 'SALE' ? (
+                                                <Typography
+                                                    variant="s11"
+                                                    noWrap
+                                                >
+                                                    {cost.amount}{' '}
+                                                    {normalizeCurrencyCodeXummImpl(
+                                                        cost.currency
+                                                    )}
+                                                </Typography>
+                                            ) : (
+                                                <>
+                                                    {type ===
+                                                        'CREATE_SELL_OFFER' ||
+                                                    type ===
+                                                        'CREATE_BUY_OFFER' ||
+                                                    type ===
+                                                        'CANCEL_SELL_OFFER' ||
+                                                    type ===
+                                                        'CANCEL_BUY_OFFER' ? (
+                                                        <Typography
+                                                            variant="s11"
+                                                            noWrap
+                                                        >
+                                                            {amount.amount}{' '}
+                                                            {normalizeCurrencyCodeXummImpl(
+                                                                amount.currency
+                                                            )}
+                                                        </Typography>
+                                                    ) : (
+                                                        <Typography
+                                                            variant="s11"
+                                                            noWrap
+                                                        >
+                                                            - - -
+                                                        </Typography>
+                                                    )}
+                                                </>
+                                            )}
+                                        </TableCell>
+
+                                        <TableCell
+                                            align="left"
+                                            sx={{ pt: 1, pb: 1 }}
+                                            data-label="Account"
+                                        >
+                                            <Stack
+                                                direction={{ xs: 'column', sm: 'row' }}
+                                                spacing={0.2}
+                                                alignItems={{ xs: 'flex-start', sm: 'center' }}
+                                            >
+                                                <Link
+                                                    href={`/account/${account}`}
+                                                    sx={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        color: 'primary.main',
+                                                        textDecoration: 'none',
+                                                        '&:hover': {
+                                                            textDecoration: 'underline'
+                                                        }
+                                                    }}
+                                                >
+                                                    <Avatar 
+                                                        sx={{ 
+                                                            width: 24, 
+                                                            height: 24, 
+                                                            mr: 1,
+                                                            fontSize: '0.75rem',
+                                                            bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                                            color: 'primary.main'
+                                                        }}
+                                                    >
+                                                        {account.substring(0, 2)}
+                                                    </Avatar>
+                                                    <Typography variant='body2' noWrap>
+                                                        {`${account.substring(0, 6)}...${account.substring(account.length - 4)}`}
+                                                    </Typography>
+                                                </Link>
+                                                <CopyToClipboard text={account} onCopy={()=>openSnackbar('Address copied to clipboard', 'success')}>
+                                                    <Tooltip title='Copy address'>
+                                                        <IconButton size="small" sx={{ ml: 0.5 }}>
+                                                            <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </CopyToClipboard>
+                                            </Stack>
+                                        </TableCell>
+
+                                        <TableCell
+                                            align="left"
+                                            sx={{ pt: 1, pb: 1 }}
+                                            data-label="Time"
+                                        >
+                                            <Typography variant="s7" noWrap>
+                                                {strDateTime}
+                                            </Typography>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                    </TableBody>
+                </Table>
+            </Box>
+            {total > 0 && (
+                <ListToolbar
+                    count={total}
+                    rows={rows}
+                    setRows={setRows}
+                    page={page}
+                    setPage={setPage}
+                />
+            )}
+
+            {open && (
+                <Lightbox
+                    small={lightBoxImgUrl}
+                    large={lightBoxImgUrl}
+                    hideDownload
+                    hideZoom
+                    onClose={closeLightbox}
+                />
+            )}
+        </Box>
+    );
+}
+
+// Main ExploreNFT Component (default export)
 export default function ExploreNFT({ collection, topMargin = 4, showBanner = true }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
-
     const { deletingNfts, accountProfile } = useContext(AppContext);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    
     const isAdmin = accountProfile?.admin;
-
     const [value, setValue] = useState('tab-nfts');
 
     const handleChange = (event, newValue) => {
@@ -42,7 +2129,6 @@ export default function ExploreNFT({ collection, topMargin = 4, showBanner = tru
 
     const handleRemoveAll = () => {
         if (deletingNfts.length === 0 || !isAdmin) return;
-
         const nftNames = deletingNfts
             ?.map(
                 (nft) =>
@@ -52,10 +2138,8 @@ export default function ExploreNFT({ collection, topMargin = 4, showBanner = tru
             )
             ?.join(', ');
         const idsToDelete = deletingNfts?.map((nft) => nft._id);
-
         if (!confirm(`You're about to delete the following NFTs ${nftNames}?`))
             return;
-
         axios
             .delete(`${BASE_URL}/nfts`, {
                 data: {
