@@ -1352,32 +1352,56 @@ export function NFTs({ collection }) {
         if (loading) return;
         setLoading(true);
         const limit = 32;
-        const body = {
-            page,
-            limit,
-            flag,
-            cid: collection?.uuid,
-            search,
-            filter,
-            subFilter: subFilter === 'latestActivity' ? '' : subFilter,
-            filterAttrs
-        };
-        console.log('XRPNFT API Request:', body);
+        
+        // Build query parameters
+        const params = new URLSearchParams({
+            page: page,
+            limit: limit
+        });
+        
+        // Add collection-specific parameters
+        if (collection?.uuid) params.append('cid', collection.uuid);
+        if (collection?.account) params.append('issuer', collection.account);
+        params.append('taxon', collection?.taxon || '1');
+        
+        // Add optional parameters
+        if (search) params.append('search', search);
+        if (filter) params.append('filter', filter);
+        if (subFilter && subFilter !== 'latestActivity') params.append('sort', subFilter);
+        
+        // Add attribute filters if any
+        if (filterAttrs && filterAttrs.length > 0) {
+            const validAttrs = filterAttrs.filter(attr => attr.value && attr.value.length > 0);
+            if (validAttrs.length > 0) {
+                params.append('filterAttrs', JSON.stringify(validAttrs));
+            }
+        }
+        
+        const apiUrl = `${BASE_URL}/nfts?${params.toString()}`;
+        console.log('XRPNFT API Request URL:', apiUrl);
+        
         axios
-            .post(`${BASE_URL}/nfts`, body)
+            .get(apiUrl)
             .then((res) => {
-                console.log('XRPNFT API Response /collection:', res.data);
-                let newNfts = res.data.nfts.map((nft) => ({
-                    ...nft,
-                    cost: nft.cost && Number(nft.cost.amount) === 0 ? null : nft.cost
-                }));
-                if (subFilter !== 'latestActivity') {
-                    newNfts = sortNFTs(newNfts, subFilter);
+                console.log('XRPNFT API Response /nfts:', res.data);
+                if (res.data.result === 'success') {
+                    let newNfts = res.data.nfts.map((nft) => ({
+                        ...nft,
+                        cost: nft.cost && Number(nft.cost.amount) === 0 ? null : nft.cost
+                    }));
+                    if (subFilter !== 'latestActivity') {
+                        newNfts = sortNFTs(newNfts, subFilter);
+                    }
+                    const length = newNfts.length;
+                    setHasMore(length === limit);
+                    setNfts((prevNfts) => (page === 0 ? newNfts : [...prevNfts, ...newNfts]));
+                    setDeletingNfts((prevNfts) => (page === 0 ? newNfts : [...prevNfts, ...newNfts]));
+                    
+                    // Store available attributes if provided
+                    if (res.data.availableAttributes && collection) {
+                        collection.attrs = res.data.availableAttributes;
+                    }
                 }
-                const length = newNfts.length;
-                setHasMore(length === limit);
-                setNfts((prevNfts) => (page === 0 ? newNfts : [...prevNfts, ...newNfts]));
-                setDeletingNfts((prevNfts) => (page === 0 ? newNfts : [...prevNfts, ...newNfts]));
             })
             .catch((err) => {
                 console.log('Error on getting nfts!', err);
@@ -1385,7 +1409,7 @@ export function NFTs({ collection }) {
             .finally(() => {
                 setLoading(false);
             });
-    }, [page, flag, search, filter, subFilter, filterAttrs, collection?.uuid, setDeletingNfts]);
+    }, [page, flag, search, filter, subFilter, filterAttrs, collection?.uuid, collection?.taxon, setDeletingNfts]);
 
     useEffect(() => {
         setNfts([]);
