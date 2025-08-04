@@ -1133,7 +1133,7 @@ export function NFTCard({ nft, handleRemove }) {
 }
 
 // NFTs Component
-export function NFTs({ collection }) {
+export function NFTs({ collection, urlParams = {} }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const theme = useTheme();
     const { setDeletingNfts } = useContext(AppContext);
@@ -1148,8 +1148,25 @@ export function NFTs({ collection }) {
     const [subFilter, setSubFilter] = useState('cost:asc');
     const [filterAttrs, setFilterAttrs] = useState([]);
 
+    // Initialize filterAttrs from URL params
+    useEffect(() => {
+        if (urlParams.filterAttrs) {
+            console.log('Setting filterAttrs from URL:', urlParams.filterAttrs);
+            setFilterAttrs(urlParams.filterAttrs);
+        }
+    }, [urlParams.filterAttrs]);
+
     const fetchNfts = useCallback(async () => {
         if (loading) return;
+        
+        // Don't fetch if we're on explore page and URL params haven't been loaded yet
+        const pathname = window.location.pathname;
+        const isExplore = pathname === '/explore' || pathname.includes('/explore');
+        if (isExplore && !collection && Object.keys(urlParams).length === 0) {
+            console.log('Waiting for URL parameters to load...');
+            return;
+        }
+        
         setLoading(true);
         const limit = 32;
         
@@ -1159,10 +1176,21 @@ export function NFTs({ collection }) {
             limit: limit
         });
         
-        // Add collection-specific parameters
-        // Don't hardcode cid - let it be determined by other parameters
-        if (collection?.account) params.append('issuer', collection.account);
-        params.append('taxon', collection?.taxon || '1');
+        // Add collection-specific parameters or URL parameters
+        // Prioritize URL parameters over collection parameters
+        const issuer = urlParams.issuer || collection?.account;
+        const taxon = urlParams.taxon || collection?.taxon;
+        
+        if (issuer) params.append('issuer', issuer);
+        if (taxon && taxon !== '') params.append('taxon', taxon);
+        
+        console.log('Using parameters:', { 
+            issuer, 
+            taxon, 
+            urlParams,
+            filterAttrs,
+            collection 
+        });
         
         // Add optional parameters
         if (search) params.append('search', search);
@@ -1187,6 +1215,11 @@ export function NFTs({ collection }) {
         // Add attribute filters if any
         if (filterAttrs && filterAttrs.length > 0) {
             const validAttrs = filterAttrs.filter(attr => attr.value && attr.value.length > 0);
+            console.log('FilterAttrs processing:', {
+                original: filterAttrs,
+                valid: validAttrs,
+                stringified: JSON.stringify(validAttrs)
+            });
             if (validAttrs.length > 0) {
                 params.append('filterAttrs', JSON.stringify(validAttrs));
             }
@@ -1229,7 +1262,7 @@ export function NFTs({ collection }) {
             .finally(() => {
                 setLoading(false);
             });
-    }, [page, subFilter, filterAttrs, collection?.account, collection?.taxon, search, setDeletingNfts]);
+    }, [page, subFilter, filterAttrs, collection?.account, collection?.taxon, search, setDeletingNfts, urlParams]);
 
     // Effect for subFilter changes - reset to page 0
     useEffect(() => {
@@ -1243,6 +1276,18 @@ export function NFTs({ collection }) {
     useEffect(() => {
         fetchNfts();
     }, [fetchNfts]);
+
+    // Effect to refetch when URL params change on explore page
+    useEffect(() => {
+        const pathname = window.location.pathname;
+        const isExplore = pathname === '/explore' || pathname.includes('/explore');
+        if (isExplore && !collection && Object.keys(urlParams).length > 0) {
+            console.log('URL params loaded, fetching NFTs...');
+            setPage(0);
+            setNfts([]);
+            setHasMore(true);
+        }
+    }, [urlParams, collection]);
 
     const handleChangeSearch = debounce((e) => {
         setSearch(e.target.value);
@@ -1958,7 +2003,7 @@ export function CollectionActivity({ collection, hideInExplore = false }) {
 }
 
 // Main ExploreNFT Component (default export)
-export default function ExploreNFT({ collection, topMargin = 4, showBanner = true }) {
+export default function ExploreNFT({ collection, topMargin = 4, showBanner = true, urlParams = {} }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { deletingNfts, accountProfile } = useContext(AppContext);
     const theme = useTheme();
@@ -2047,7 +2092,7 @@ export default function ExploreNFT({ collection, topMargin = 4, showBanner = tru
                             )}
                         </Box>
                         <TabPanel value="tab-nfts" sx={{p: 0}}>
-                            <NFTs collection={collection} />
+                            <NFTs collection={collection} urlParams={urlParams} />
                         </TabPanel>
                         {!isExplore && (
                             <TabPanel value="tab-activities" sx={{p: 0}}>

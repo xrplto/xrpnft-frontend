@@ -1,6 +1,7 @@
-import React, { useRef, useState, useContext } from 'react';
+import React, { useRef, useState, useContext, useEffect } from 'react';
 import { FacebookShareButton, TwitterShareButton } from 'react-share';
 import { FacebookIcon, TwitterIcon } from 'react-share';
+import { useRouter } from 'next/router';
 
 // Material
 import { useTheme, alpha } from '@mui/material/styles';
@@ -166,6 +167,7 @@ const VerificationBadge = styled('div')(({ theme }) => ({
 }));
 
 export default function ViewNFT({ collection }) {
+    const router = useRouter();
     const anchorRef = useRef(null);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -174,6 +176,28 @@ export default function ViewNFT({ collection }) {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const [openShare, setOpenShare] = useState(false);
+    const [urlParams, setUrlParams] = useState({});
+
+    useEffect(() => {
+        // Parse URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const issuer = params.get('issuer');
+        const taxon = params.get('taxon');
+        const filterAttrs = params.get('filterAttrs');
+
+        console.log('ViewNFT URL Parameters:', {
+            issuer,
+            taxon,
+            filterAttrs,
+            parsedFilterAttrs: filterAttrs ? JSON.parse(filterAttrs) : null
+        });
+
+        setUrlParams({
+            issuer,
+            taxon,
+            filterAttrs: filterAttrs ? JSON.parse(filterAttrs) : null
+        });
+    }, [router.asPath]);
 
     const {
         account,
@@ -454,7 +478,7 @@ export default function ViewNFT({ collection }) {
             </Box>
 
             <Box sx={{ mx: { xs: 1, md: 4 } }}> {/* Reduced horizontal margin on mobile */}
-                <ExploreNFT collection={collection} showBanner={false} />
+                <ExploreNFT collection={collection} showBanner={false} urlParams={urlParams} />
             </Box>
 
             <Popover

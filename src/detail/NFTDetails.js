@@ -12,12 +12,14 @@ import {
     Stack,
     Tooltip,
     Typography,
-    useTheme // Add this import
+    useTheme, // Add this import
+    Button
 } from '@mui/material';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ArticleIcon from '@mui/icons-material/Article';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import SearchIcon from '@mui/icons-material/Search';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -499,6 +501,62 @@ export default function NFTDetails({ nft }) {
                                 </Stack>
                             </Stack>
                             <Divider sx={{ mt: 2, mb: 2 }} />
+
+                            {/* Explore Similar NFTs Button */}
+                            {hasProperties && (
+                                <>
+                                    <Stack spacing={2} alignItems="center">
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            startIcon={<SearchIcon />}
+                                            fullWidth
+                                            onClick={() => {
+                                                // Build the filterAttrs array
+                                                const filterAttrs = properties.map(prop => ({
+                                                    trait_type: prop.type,
+                                                    value: [prop.value]
+                                                }));
+                                                
+                                                // Build the query parameters
+                                                const params = new URLSearchParams();
+                                                params.set('issuer', issuer);
+                                                params.set('taxon', taxon || '');
+                                                params.set('filterAttrs', JSON.stringify(filterAttrs));
+                                                
+                                                // Log for debugging
+                                                console.log('Explore Similar NFTs params:', {
+                                                    issuer,
+                                                    taxon,
+                                                    filterAttrs,
+                                                    cslug,
+                                                    collection: collectionName
+                                                });
+                                                
+                                                // Navigate to collection page with filters if collection exists
+                                                if (cslug) {
+                                                    // Go to specific collection with filters
+                                                    window.location.href = `/collection/${cslug}?${params.toString()}`;
+                                                } else {
+                                                    // Go to explore page if no collection
+                                                    window.location.href = `/explore?${params.toString()}`;
+                                                }
+                                            }}
+                                            sx={{
+                                                borderRadius: 2,
+                                                textTransform: 'none',
+                                                py: 1.5
+                                            }}
+                                        >
+                                            Explore Similar NFTs
+                                        </Button>
+                                        <Typography variant="caption" color="text.secondary" textAlign="center">
+                                            Find NFTs with the same issuer, taxon, and properties
+                                        </Typography>
+                                    </Stack>
+                                    <Divider sx={{ mt: 2, mb: 2 }} />
+                                </>
+                            )}
 
                             <Stack spacing={1}>
                                 <Typography variant="caption">
