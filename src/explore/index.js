@@ -41,7 +41,8 @@ import {
     MenuItem,
     Pagination,
     Select,
-    Toolbar
+    Toolbar,
+    Paper
 } from "@mui/material";
 import {
     TabContext,
@@ -738,278 +739,77 @@ export function FilterDetail({
     setPage
 }) {
     const theme = useTheme();
-    const type = collection?.type;
-    const extra = collection?.extra;
     const attrs = collection?.attrs || [];
 
-    const handleFlagChange = (e) => {
-        const value = parseInt(e.target.value);
-        let newFilter = filter ^ value;
-        setFilter(newFilter);
+    // Status filter options
+    const statusFilters = [
+        { value: 4, label: 'On Sale', count: collection?.extra?.onSaleCount },
+        { value: 8, label: 'Unlisted', count: collection?.extra?.notOnSaleCount },
+        { value: 32, label: 'Transfers (Free)', count: null }
+    ];
+
+    // Sort options
+    const sortOptions = [
+        { value: 'time:desc', label: 'Latest Activity' },
+        { value: 'time:asc', label: 'Oldest Activity' },
+        { value: 'volume:desc', label: 'Volume (High to Low)' },
+        { value: 'volume:asc', label: 'Volume (Low to High)' },
+        { value: 'MasterSequence:desc', label: 'Newest Minted' },
+        { value: 'MasterSequence:asc', label: 'Oldest Minted' },
+        { value: 'rarity_rank:asc', label: 'Rarity (Most Rare)' },
+        { value: 'rarity_rank:desc', label: 'Rarity (Least Rare)' },
+        { value: 'cost:asc', label: 'Price (Low to High)' },
+        { value: 'cost:desc', label: 'Price (High to Low)' },
+        { value: 'cost_all:asc', label: 'Price All (Low to High)' },
+        { value: 'cost_all:desc', label: 'Price All (High to Low)' },
+        { value: 'transfers', label: 'Transfers (Free)' },
+        // Legacy subFilter options
+        { value: 'pricenoxrp', label: 'Non-XRP Only' },
+        { value: 'pricexrpasc', label: 'XRP Price Ascending' },
+        { value: 'pricexrpdesc', label: 'XRP Price Descending' },
+        { value: 'mintedLatest', label: 'Minted Latest' },
+        { value: 'mintedEarliest', label: 'Minted Earliest' }
+    ];
+
+    const handleStatusToggle = (value) => {
+        setFilter(prev => prev ^ value);
         setPage(0);
     };
 
-    const handleSortChange = (event) => {
-        const value = event.target.value;
+    const handleSortChange = (value) => {
         setSubFilter(value);
         setPage(0);
     };
 
     return (
-        <>
-            <Stack sx={{ pr: 0 }}>
-                <Accordion defaultExpanded>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon color="primary" />}
-                        aria-controls="panel2bh-content"
-                        id="panel2bh-header"
-                    >
-                        <Stack spacing={2} direction="row" alignItems="center">
-                            <FactCheckIcon color="primary" />
-                            <Typography variant="s3" color="primary.main">
-                                Status & Sorting
-                            </Typography>
-                        </Stack>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <FormGroup sx={{ flexDirection: 'col' }}>
-                            {type === 'bulk' && (
-                                <FormControlLabel
-                                    label={
-                                        <Stack
-                                            direction="row"
-                                            spacing={0.5}
-                                            alignItems="center"
-                                        >
-                                            <Typography variant="s3">
-                                                Buy with Mints{' '}
-                                                <Typography
-                                                    component="span"
-                                                    variant="s3"
-                                                    color="text.secondary"
-                                                >
-                                                    ({extra?.buyWithMints})
-                                                </Typography>
-                                            </Typography>
-                                            <Tooltip title="Disabled on Spinning collections, only enabled on Bulk collections.">
-                                                <Icon
-                                                    icon={infoFilled}
-                                                    color={
-                                                        theme.palette.primary
-                                                            .main
-                                                    }
-                                                />
-                                            </Tooltip>
-                                        </Stack>
-                                    }
-                                    value="1"
-                                    control={
-                                        <Checkbox
-                                            checked={(filter & 1) !== 0}
-                                            onChange={handleFlagChange}
-                                            color="primary"
-                                        />
-                                    }
-                                />
-                            )}
-                            {type !== 'normal' && (
-                                <FormControlLabel
-                                    label={
-                                        <Stack
-                                            direction="row"
-                                            spacing={0.5}
-                                            alignItems="center"
-                                        >
-                                            <Typography variant="s3">
-                                                Recently Minted{' '}
-                                                <Typography
-                                                    component="span"
-                                                    variant="s3"
-                                                    color="text.secondary"
-                                                >
-                                                    ({extra?.boughtWithMints})
-                                                </Typography>
-                                            </Typography>
-                                            <Tooltip title="Display recently Minted NFTs and being transferred to users. Or NFTs that pending to be accepted by users.">
-                                                <Icon
-                                                    icon={infoFilled}
-                                                    color={
-                                                        theme.palette.primary
-                                                            .main
-                                                    }
-                                                />
-                                            </Tooltip>
-                                        </Stack>
-                                    }
-                                    value="2"
-                                    control={
-                                        <Checkbox
-                                            checked={(filter & 2) !== 0}
-                                            onChange={handleFlagChange}
-                                            color="primary"
-                                        />
-                                    }
-                                />
-                            )}
-                            <FormControlLabel
-                                label={
-                                    <Typography variant="s3">
-                                        Unlisted{' '}
-                                        <Typography
-                                            component="span"
-                                            variant="s3"
-                                            color="text.secondary"
-                                        >
-                                            ({extra?.notOnSaleCount})
-                                        </Typography>
-                                    </Typography>
-                                }
-                                value="8"
-                                control={
-                                    <Checkbox
-                                        checked={(filter & 8) !== 0}
-                                        onChange={handleFlagChange}
-                                        color="primary"
-                                    />
-                                }
-                            />
-                            <FormControlLabel
-                                label={
-                                    <Stack
-                                        direction="row"
-                                        spacing={0.5}
-                                        alignItems="center"
-                                    >
-                                        <Typography variant="s3">
-                                            Rarity
-                                        </Typography>
-                                        <Tooltip title="Sort NFTs with rarity">
-                                            <Icon
-                                                icon={infoFilled}
-                                                color={
-                                                    theme.palette.primary.main
-                                                }
-                                            />
-                                        </Tooltip>
-                                    </Stack>
-                                }
-                                value="16"
-                                control={
-                                    <Checkbox
-                                        checked={(filter & 16) !== 0}
-                                        onChange={handleFlagChange}
-                                        color="primary"
-                                    />
-                                }
-                            />
-                            <FormControl component="fieldset">
-                                <Typography
-                                    variant="s3"
-                                    color="text.secondary"
-                                    sx={{ mt: 2, mb: 1 }}
-                                >
-                                    Sort by:
-                                </Typography>
-                                <RadioGroup
-                                    aria-label="sorting"
-                                    name="sorting"
-                                    value={subFilter}
-                                    onChange={handleSortChange}
-                                >
-                                    <FormControlLabel
-                                        value="latestActivity"
-                                        control={<Radio color="primary" />}
-                                        label={
-                                            <Typography variant="s3">
-                                                Latest Activity
-                                            </Typography>
-                                        }
-                                    />
-                                    <FormControlLabel
-                                        value="pricenoxrp"
-                                        control={<Radio color="primary" />}
-                                        label={
-                                            <Typography variant="s3">
-                                                Listed (non-XRP)
-                                            </Typography>
-                                        }
-                                    />
-                                    <FormControlLabel
-                                        value="pricexrpasc"
-                                        control={<Radio color="primary" />}
-                                        label={
-                                            <Typography variant="s3">
-                                                XRP Price: Low to High
-                                            </Typography>
-                                        }
-                                    />
-                                    <FormControlLabel
-                                        value="pricexrpdesc"
-                                        control={<Radio color="primary" />}
-                                        label={
-                                            <Typography variant="s3">
-                                                XRP Price: High to Low
-                                            </Typography>
-                                        }
-                                    />
-                                   <FormControlLabel
-                                        value="mintedLatest"
-                                        control={<Radio color="primary" />}
-                                        label={
-                                            <Typography variant="s3">
-                                                Minted Latest
-                                            </Typography>
-                                        }
-                                    />
-                                    <FormControlLabel
-                                        value="mintedEarliest"
-                                        control={<Radio color="primary" />}
-                                        label={
-                                            <Typography variant="s3">
-                                                Minted Earliest
-                                            </Typography>
-                                        }
-                                    />
-                                </RadioGroup>
-                            </FormControl>
-                            {extra?.onSaleCount !== undefined && (
-                                <Typography variant="s3" color="text.secondary" sx={{ mt: 2 }}>
-                                    Total NFTs for sale: {extra.onSaleCount}
-                                </Typography>
-                            )}
-                        </FormGroup>
-                    </AccordionDetails>
-                </Accordion>
-            </Stack>
-            {attrs && attrs.length > 0 && (
-                <Stack sx={{ pr: 0, mt: 1 }}>
-                    <Accordion defaultExpanded style={{ margin: 0 }}>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon color="primary" />}
-                            aria-controls="panel2bh-content"
-                            id="panel2bh-header2"
-                        >
-                            <Stack
-                                spacing={2}
-                                direction="row"
-                                alignItems="center"
-                            >
-                                <BookmarkAddedIcon color="primary" />
-                                <Typography variant="s3" color="primary.main">
-                                    Attributes
-                                </Typography>
-                            </Stack>
-                        </AccordionSummary>
-                        <AccordionDetails style={{ padding: 0 }}>
-                            <AttributeFilter
-                                setFilterAttrs={setFilterAttrs}
-                                attrs={attrs}
-                            />
-                        </AccordionDetails>
-                    </Accordion>
-                </Stack>
+        <Stack spacing={2}>
+            {/* Sort Options */}
+            <Paper sx={{ p: 2 }}>
+                <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                    Sort By
+                </Typography>
+                <RadioGroup value={subFilter} onChange={(e) => handleSortChange(e.target.value)}>
+                    {sortOptions.map(option => (
+                        <FormControlLabel
+                            key={option.value}
+                            value={option.value}
+                            control={<Radio size="small" />}
+                            label={<Typography variant="body2">{option.label}</Typography>}
+                        />
+                    ))}
+                </RadioGroup>
+            </Paper>
+
+            {/* Attributes */}
+            {attrs.length > 0 && (
+                <Paper sx={{ p: 2 }}>
+                    <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                        Attributes
+                    </Typography>
+                    <AttributeFilter setFilterAttrs={setFilterAttrs} attrs={attrs} />
+                </Paper>
             )}
-        </>
+        </Stack>
     );
 }
 
@@ -1345,10 +1145,10 @@ export function NFTs({ collection }) {
     const [loading, setLoading] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
     const [filter, setFilter] = useState(0);
-    const [subFilter, setSubFilter] = useState('latestActivity');
+    const [subFilter, setSubFilter] = useState('cost:asc');
     const [filterAttrs, setFilterAttrs] = useState([]);
 
-    const fetchNfts = useCallback(() => {
+    const fetchNfts = useCallback(async () => {
         if (loading) return;
         setLoading(true);
         const limit = 32;
@@ -1366,8 +1166,23 @@ export function NFTs({ collection }) {
         
         // Add optional parameters
         if (search) params.append('search', search);
-        if (filter) params.append('filter', filter);
-        if (subFilter && subFilter !== 'latestActivity') params.append('sort', subFilter);
+        // Don't send filter parameter
+        
+        // Handle sorting
+        if (subFilter && subFilter !== '') {
+            if (subFilter === 'transfers') {
+                // Special case for transfers - set filter=32
+                params.set('filter', '32');
+            } else if (subFilter.includes(':')) {
+                // New format: sort:order
+                const [sort, order] = subFilter.split(':');
+                params.append('sort', sort);
+                params.append('order', order);
+            } else {
+                // Legacy format: subFilter
+                params.append('subFilter', subFilter);
+            }
+        }
         
         // Add attribute filters if any
         if (filterAttrs && filterAttrs.length > 0) {
@@ -1379,6 +1194,7 @@ export function NFTs({ collection }) {
         
         const apiUrl = `${BASE_URL}/nfts?${params.toString()}`;
         console.log('XRPNFT API Request URL:', apiUrl);
+        console.log('Filter value:', filter);
         
         axios
             .get(apiUrl)
@@ -1389,13 +1205,17 @@ export function NFTs({ collection }) {
                         ...nft,
                         cost: nft.cost && Number(nft.cost.amount) === 0 ? null : nft.cost
                     }));
-                    if (subFilter !== 'latestActivity') {
-                        newNfts = sortNFTs(newNfts, subFilter);
-                    }
                     const length = newNfts.length;
                     setHasMore(length === limit);
-                    setNfts((prevNfts) => (page === 0 ? newNfts : [...prevNfts, ...newNfts]));
-                    setDeletingNfts((prevNfts) => (page === 0 ? newNfts : [...prevNfts, ...newNfts]));
+                    
+                    // Replace NFTs when on page 0, append when scrolling
+                    if (page === 0) {
+                        setNfts(newNfts);
+                        setDeletingNfts(newNfts);
+                    } else {
+                        setNfts(prevNfts => [...prevNfts, ...newNfts]);
+                        setDeletingNfts(prevNfts => [...prevNfts, ...newNfts]);
+                    }
                     
                     // Store available attributes if provided
                     if (res.data.availableAttributes && collection) {
@@ -1409,15 +1229,17 @@ export function NFTs({ collection }) {
             .finally(() => {
                 setLoading(false);
             });
-    }, [page, flag, search, filter, subFilter, filterAttrs, collection?.uuid, collection?.taxon, setDeletingNfts]);
+    }, [page, subFilter, filterAttrs, collection?.uuid, collection?.account, collection?.taxon, search, setDeletingNfts]);
 
+    // Effect for subFilter changes - reset to page 0
     useEffect(() => {
+        setPage(0);
         setNfts([]);
         setDeletingNfts([]);
-        setPage(0);
         setHasMore(true);
-    }, [flag, search, filter, subFilter, filterAttrs, setDeletingNfts]);
+    }, [subFilter, setDeletingNfts]);
 
+    // Effect for fetching data
     useEffect(() => {
         fetchNfts();
     }, [fetchNfts]);
@@ -1470,18 +1292,9 @@ export function NFTs({ collection }) {
             default:
                 subFilterValue = newSubFilter;
         }
+        
+        // Just update subFilter - let useEffect handle the reset
         setSubFilter(subFilterValue);
-        setPage(0);
-        setNfts([]);
-        setDeletingNfts([]);
-        setHasMore(true);
-        let newFilter = filter;
-        if (subFilterValue !== 'latestActivity') {
-            newFilter |= 4;
-        } else {
-            newFilter &= ~4;
-        }
-        setFilter(newFilter);
     };
 
     const loadMore = useCallback(() => {
