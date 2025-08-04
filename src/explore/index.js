@@ -1160,7 +1160,7 @@ export function NFTs({ collection }) {
         });
         
         // Add collection-specific parameters
-        if (collection?.uuid) params.append('cid', collection.uuid);
+        // Don't hardcode cid - let it be determined by other parameters
         if (collection?.account) params.append('issuer', collection.account);
         params.append('taxon', collection?.taxon || '1');
         
@@ -1229,7 +1229,7 @@ export function NFTs({ collection }) {
             .finally(() => {
                 setLoading(false);
             });
-    }, [page, subFilter, filterAttrs, collection?.uuid, collection?.account, collection?.taxon, search, setDeletingNfts]);
+    }, [page, subFilter, filterAttrs, collection?.account, collection?.taxon, search, setDeletingNfts]);
 
     // Effect for subFilter changes - reset to page 0
     useEffect(() => {
@@ -1259,7 +1259,6 @@ export function NFTs({ collection }) {
                 data: {
                     issuer: collection?.account,
                     taxon: collection?.taxon,
-                    cid: collection?.uuid,
                     idsToDelete: NFTokenID
                 }
             })
@@ -1495,12 +1494,19 @@ export function CollectionActivity({ collection, hideInExplore = false }) {
     };
 
     useEffect(() => {
-        if (!collection?.uuid) return;
+        if (!collection) return;
 
         function getActivities() {
             setLoading(true);
-            console.log('Fetching activities from:', `${BASE_URL}/collectionhistory/?cid=${collection.uuid}&page=${page}&limit=${rows}`);
-            axios.get(`${BASE_URL}/collectionhistory/?cid=${collection.uuid}&page=${page}&limit=${rows}`)
+            const historyParams = new URLSearchParams({
+                page: page,
+                limit: rows
+            });
+            if (collection?.account) historyParams.append('issuer', collection.account);
+            if (collection?.taxon) historyParams.append('taxon', collection.taxon);
+            
+            console.log('Fetching activities from:', `${BASE_URL}/collectionhistory/?${historyParams.toString()}`);
+            axios.get(`${BASE_URL}/collectionhistory/?${historyParams.toString()}`)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
                     if (ret) {
@@ -1516,7 +1522,7 @@ export function CollectionActivity({ collection, hideInExplore = false }) {
                 });
         }
         getActivities();
-    }, [collection?.uuid, page, rows]);
+    }, [collection?.account, collection?.taxon, page, rows]);
 
     const getChipStyle = (color) => {
         let backgroundColor;
@@ -1982,7 +1988,6 @@ export default function ExploreNFT({ collection, topMargin = 4, showBanner = tru
                 data: {
                     issuer: collection?.account,
                     taxon: collection?.taxon,
-                    cid: collection?.uuid,
                     idsToDelete
                 }
             })

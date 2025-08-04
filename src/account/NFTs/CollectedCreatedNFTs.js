@@ -22,8 +22,8 @@ import ArrowBackIcon from '@mui/icons-material/KeyboardBackspace';
 import { ClipLoader } from 'react-spinners';
 
 // Custom Components
-import NFTCard from 'src/explore/NFTCard';
-import CollectionCard from 'src/explore/CollectionCard';
+import NFTCard from 'src/create/NFTCard';
+import CollectionCard from 'src/account/CollectionCard';
 import FilterDetail from '../FilterDetail';
 
 // Styled Components
