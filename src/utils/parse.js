@@ -206,14 +206,10 @@ export function cipheredTaxon(tokenSeq, taxon) {
 export function parseNFTokenID(NFTokenID) {
     //   A   B                      C                        D        E
     // 0008 1388 2177B00DF84CA4B8DD59778594F472EF0F56E435 99AE2184 00000DEA
-    if (!NFTokenID || NFTokenID.length !== 64) return { flag: 0, royalty: 0, issuer: '', taxon: 0 };
+    if (!NFTokenID || NFTokenID.length !== 64) return { flag: 0, royalty: 0, issuer: '' };
     const flag = new Decimal('0x' + NFTokenID.slice(0, 4)).toNumber();
     const royalty = new Decimal('0x' + NFTokenID.slice(4, 8)).toNumber();
     const issuer = encodeAccountID(Buffer.from(NFTokenID.slice(8, 48), "hex"));
-    const scrambledTaxon = new Decimal('0x' + NFTokenID.slice(48, 56)).toNumber();
-    const tokenSeq = new Decimal('0x' + NFTokenID.slice(56, 64)).toNumber();
-
-    const taxon = cipheredTaxon(tokenSeq, scrambledTaxon);
 
     let transferFee = 0;
     try {
@@ -221,7 +217,7 @@ export function parseNFTokenID(NFTokenID) {
             transferFee = Decimal.div(royalty, '1000').toDP(3, Decimal.ROUND_DOWN).toNumber();
     } catch (e) { }
 
-    return { flag, royalty, issuer, taxon, transferFee };
+    return { flag, royalty, issuer, transferFee };
 }
 
 export function parseNftFlag(flags_number) {

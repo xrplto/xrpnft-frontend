@@ -121,13 +121,16 @@ export default function NFTDetails({ nft }) {
         rarity,
         rarity_rank,
         files,
-        memo
+        memo,
+        taxon: apiTaxon
     } = nft;
 
     const ParsedURI = convertHexToString(URI);
 
-    const { flag, royalty, issuer, taxon, transferFee } =
+    const { flag, royalty, issuer, transferFee } =
         parseNFTokenID(NFTokenID);
+    
+    const taxon = apiTaxon;
 
     let strDateTime = '';
     if (date) {
