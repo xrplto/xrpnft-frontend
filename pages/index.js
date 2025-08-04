@@ -57,24 +57,15 @@ export default function Overview({data}) {
     const collections = data.landings;
 
     let collection = {};
-    let nft = {};
 
     if (collections && collections.length > 0) {
         collection = collections[0];
-        nft = collection.nft;
     }
 
-    const {
-        NFTokenID,
-        meta,
-        dfile
-    } = nft || {};
-
-    let imgUrl = getImgUrl(NFTokenID, meta, dfile, 300);
-
-    if (!imgUrl || meta?.video) {
-        imgUrl = `https://s1.xrpnft.com/collection/${collection?.logoImage}`;
-    }
+    // Use collection logo image directly for background
+    const imgUrl = collection?.logoImage 
+        ? `https://s1.xrpnft.com/collection/${collection.logoImage}`
+        : null;
 
     return (
         <OverviewWrapper>
@@ -128,22 +119,37 @@ export default function Overview({data}) {
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps() {
-    const BASE_URL = 'http://65.109.54.46/api';
+    const API_URL = 'https://api.xrpnft.com/api/collections';
 
     let data = null;
     try {
         var t1 = performance.now();
 
-        const res = await axios.get(`${BASE_URL}/collection/landing`);
+        // Fetch collections from the API with required parameters
+        const res = await axios.get(API_URL, {
+            params: {
+                orderBy: 'totalVol24h',
+                order: 'desc',
+                compact: true,
+                limit: 10
+            }
+        });
 
-        data = res.data;
+        // Transform API response to match expected format
+        data = {
+            landings: res.data.collections || []
+        };
 
         var t2 = performance.now();
         var dt = (t2 - t1).toFixed(2);
 
-        // console.log(`2. getStaticProps collections: ${data.collections.length} took: ${dt}ms`);
+        // console.log(`2. getStaticProps collections: ${data.landings.length} took: ${dt}ms`);
     } catch (e) {
-        console.log(e);
+        console.log('Error fetching collections:', e);
+        // Fallback to empty data
+        data = {
+            landings: []
+        };
     }
 
     let ret = {};

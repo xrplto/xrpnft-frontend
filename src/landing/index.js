@@ -875,12 +875,15 @@ function CollectionList({ collections }) {
 }
 
 // Main Landing Component
-export default function Landing({ collections }) {
+export default function Landing({ collections = [] }) {
     const theme = useTheme();
     const { darkMode } = useContext(AppContext);
 
     const [animatedText, setAnimatedText] = useState('with No Barriers');
     const phrases = ['with No Barriers', 'on Layer 1', 'with No Brokers'];
+
+    // Ensure collections is always an array
+    const safeCollections = Array.isArray(collections) ? collections : [];
 
     useEffect(() => {
         let currentIndex = 0;
@@ -1071,99 +1074,66 @@ export default function Landing({ collections }) {
                                 px: { xs: 1, sm: 0 }
                             }}
                         >
-                            <CustomCarousel
-                                interval={4000}
-                                transitionTime={2000}
-                                showArrows={false}
-                                showStatus={false}
-                                showIndicators={false}
-                                infiniteLoop={true}
-                                showThumbs={false}
-                                useKeyboardArrows={true}
-                                autoPlay={true}
-                                stopOnHover={false}
-                                swipeable={false}
-                                animationHandler={fadeAnimationHandler}
-                                emulateTouch={true}
-                            >
-                                {collections.slice(0, 1).map((item, idx) => {
-                                    const {
-                                        uuid,
-                                        name,
-                                        slug,
-                                        logoImage,
-                                        verified,
-                                        nft
-                                    } = item;
-
-                                    let imgUrl = getNftCoverUrl(nft ? nft : {});
-
-                                    if (!imgUrl || nft?.meta?.video) {
-                                        imgUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
-                                    }
-
-                                    return (
-                                        <CollectionCard key={idx} elevation={0}>
-                                            <Link
-                                                underline="none"
-                                                color="inherit"
-                                                href={`/collection/${slug}`}
+                            {safeCollections.length > 0 ? (
+                                <CollectionCard elevation={0}>
+                                    <Link
+                                        underline="none"
+                                        color="inherit"
+                                        href={`/collection/${safeCollections[0].slug}`}
+                                        sx={{
+                                            display: 'block',
+                                            width: '100%',
+                                            height: '100%'
+                                        }}
+                                    >
+                                        <CustomImage
+                                            src={`https://s1.xrpnft.com/collection/${safeCollections[0].logoImage}`}
+                                            alt={safeCollections[0].name}
+                                        />
+                                        <CollectionInfo
+                                            direction="row"
+                                            spacing={1}
+                                            alignItems="center"
+                                            justifyContent="center"
+                                            sx={{
+                                                position: 'absolute',
+                                                bottom: 0,
+                                                left: 0,
+                                                right: 0,
+                                                padding: 2
+                                            }}
+                                        >
+                                            <GradientText
+                                                variant="subtitle1"
                                                 sx={{
-                                                    display: 'block',
-                                                    width: '100%',
-                                                    height: '100%'
+                                                    color: theme.palette.text.primary,
+                                                    fontWeight: 600,
+                                                    textShadow: `0 1px 2px ${theme.palette.primary.main}80`,
+                                                    textAlign: 'center',
+                                                    flexGrow: 1,
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    whiteSpace: 'nowrap',
+                                                    fontSize: '1.5rem',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    gap: '8px'
                                                 }}
                                             >
-                                                <CustomImage
-                                                    src={imgUrl}
-                                                    alt={name}
-                                                />
-                                                <CollectionInfo
-                                                    direction="row"
-                                                    spacing={1}
-                                                    alignItems="center"
-                                                    justifyContent="center"
-                                                    sx={{
-                                                        position: 'absolute',
-                                                        bottom: 0,
-                                                        left: 0,
-                                                        right: 0,
-                                                        padding: 2
-                                                    }}
-                                                >
-                                                    <GradientText
-                                                        variant="subtitle1"
-                                                        sx={{
-                                                            color: theme.palette.text.primary,
-                                                            fontWeight: 600,
-                                                            textShadow: `0 1px 2px ${theme.palette.primary.main}80`,
-                                                            textAlign: 'center',
-                                                            flexGrow: 1,
-                                                            overflow: 'hidden',
-                                                            textOverflow: 'ellipsis',
-                                                            whiteSpace: 'nowrap',
-                                                            fontSize: '1.5rem',
-                                                            display: 'flex',
-                                                            alignItems: 'center',
-                                                            justifyContent: 'center',
-                                                            gap: '8px'
-                                                        }}
-                                                    >
-                                                        {name}
-                                                        {verified === 'yes' && (
-                                                            <Tooltip title="Verified">
-                                                                <VerificationBadge>
-                                                                    <CheckIcon />
-                                                                </VerificationBadge>
-                                                            </Tooltip>
-                                                        )}
-                                                    </GradientText>
-                                                </CollectionInfo>
-                                            </Link>
-                                        </CollectionCard>
-                                    );
-                                })}
-                            </CustomCarousel>
+                                                {safeCollections[0].name}
+                                                {safeCollections[0].verified === 'yes' && (
+                                                    <Tooltip title="Verified">
+                                                        <VerificationBadge>
+                                                            <CheckIcon />
+                                                        </VerificationBadge>
+                                                    </Tooltip>
+                                                )}
+                                            </GradientText>
+                                        </CollectionInfo>
+                                    </Link>
+                                </CollectionCard>
+                            ) : null}
                         </Box>
                     </Grid>
                 </Grid>
@@ -1183,7 +1153,7 @@ export default function Landing({ collections }) {
                         margin: '0 auto'
                     }}
                 >
-                    <CollectionList collections={collections} />
+                    <CollectionList collections={safeCollections} />
                 </Box>
 
                 <Box sx={{ height: { xs: 24, md: 48 } }} />
