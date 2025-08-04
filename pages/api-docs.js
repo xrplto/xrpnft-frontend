@@ -1,15 +1,86 @@
-import React from 'react';
-import { Container, Typography, Paper, Box, Divider, useTheme, Card, CardContent, Chip } from '@mui/material';
+import React, { useState } from 'react';
+import { Container, Typography, Paper, Box, Divider, useTheme, Card, CardContent, Chip, TextField, Button, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, DialogContent, CircularProgress } from '@mui/material';
 import Layout from '../src/components/Layout';
 import CodeHighlight from '../src/components/CodeHighlight';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import CloseIcon from '@mui/icons-material/Close';
 import { IconButton, Tooltip } from '@mui/material';
 
 const ApiDocs = () => {
   const theme = useTheme();
+  const [queryParams, setQueryParams] = useState({
+    orderBy: 'volume',
+    order: 'desc',
+    limit: '20',
+    page: '0',
+    filter: '',
+    category: '',
+    choice: ''
+  });
+  const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
+  };
+
+  const buildQueryUrl = () => {
+    const params = new URLSearchParams();
+    Object.entries(queryParams).forEach(([key, value]) => {
+      if (value) params.append(key, value);
+    });
+    return `https://api.xrpnft.com/api/collections${params.toString() ? '?' + params.toString() : ''}`;
+  };
+
+  const executeQuery = async () => {
+    console.log('=== Execute Query Debug ===');
+    console.log('Query Parameters:', queryParams);
+    
+    setLoading(true);
+    try {
+      const url = buildQueryUrl();
+      console.log('Request URL:', url);
+      console.log('Fetching with CORS mode...');
+      
+      const res = await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      
+      console.log('Response status:', res.status);
+      console.log('Response headers:', res.headers);
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      console.log('Response data:', data);
+      console.log('First collection:', data.collections?.[0]);
+      console.log('Setting response and opening modal...');
+      
+      setResponse(data);
+      setModalOpen(true);
+      console.log('Modal open state:', true);
+      console.log('Response state:', data);
+    } catch (error) {
+      console.error('Error occurred:', error);
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+      
+      setResponse({ 
+        error: error.message,
+        note: 'If you see a CORS error, try using a browser extension like "CORS Unblock" or "Allow CORS" to test the API.'
+      });
+      setModalOpen(true);
+    }
+    setLoading(false);
+    console.log('=== End Execute Query Debug ===');
   };
 
   const queryExamples = [
@@ -185,6 +256,107 @@ curl https://api.xrpnft.com/api/collections?category=gaming`
           XRPNFT API Documentation
         </Typography>
         
+        <Typography variant="h5" component="h2" sx={{ mt: 3, mb: 2 }}>
+          Try API Live
+        </Typography>
+        
+        <Card elevation={1} sx={{ mb: 4, border: `1px solid ${theme.palette.divider}` }}>
+          <CardContent>
+            <Typography variant="h6" sx={{ mb: 3 }}>Query Builder</Typography>
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 2, mb: 3 }}>
+              <FormControl fullWidth>
+                <InputLabel>Order By</InputLabel>
+                <Select
+                  value={queryParams.orderBy}
+                  label="Order By"
+                  onChange={(e) => setQueryParams({...queryParams, orderBy: e.target.value})}
+                >
+                  <MenuItem value="volume">Volume</MenuItem>
+                  <MenuItem value="totalVolume">Total Volume</MenuItem>
+                  <MenuItem value="totalVol24h">24h Volume</MenuItem>
+                  <MenuItem value="floor">Floor Price</MenuItem>
+                  <MenuItem value="items">Items</MenuItem>
+                  <MenuItem value="owners">Owners</MenuItem>
+                  <MenuItem value="created">Created</MenuItem>
+                  <MenuItem value="name">Name</MenuItem>
+                </Select>
+              </FormControl>
+              
+              <FormControl fullWidth>
+                <InputLabel>Order</InputLabel>
+                <Select
+                  value={queryParams.order}
+                  label="Order"
+                  onChange={(e) => setQueryParams({...queryParams, order: e.target.value})}
+                >
+                  <MenuItem value="desc">Descending</MenuItem>
+                  <MenuItem value="asc">Ascending</MenuItem>
+                </Select>
+              </FormControl>
+              
+              <TextField
+                label="Limit"
+                type="number"
+                value={queryParams.limit}
+                onChange={(e) => setQueryParams({...queryParams, limit: e.target.value})}
+              />
+              
+              <TextField
+                label="Page"
+                type="number"
+                value={queryParams.page}
+                onChange={(e) => setQueryParams({...queryParams, page: e.target.value})}
+              />
+              
+              <TextField
+                label="Filter (search)"
+                value={queryParams.filter}
+                onChange={(e) => setQueryParams({...queryParams, filter: e.target.value})}
+              />
+              
+              <TextField
+                label="Category"
+                value={queryParams.category}
+                onChange={(e) => setQueryParams({...queryParams, category: e.target.value})}
+              />
+              
+              <FormControl fullWidth>
+                <InputLabel>Choice</InputLabel>
+                <Select
+                  value={queryParams.choice}
+                  label="Choice"
+                  onChange={(e) => setQueryParams({...queryParams, choice: e.target.value})}
+                >
+                  <MenuItem value="">All</MenuItem>
+                  <MenuItem value="verified">Verified Only</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            
+            <Box sx={{ 
+              p: 2, 
+              bgcolor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f5f5f5',
+              borderRadius: 1,
+              mb: 2,
+              wordBreak: 'break-all'
+            }}>
+              <Typography variant="body2" sx={{ fontFamily: 'monospace', color: theme.palette.mode === 'dark' ? '#4fc3f7' : '#1976d2' }}>
+                {buildQueryUrl()}
+              </Typography>
+            </Box>
+            
+            <Button
+              variant="contained"
+              startIcon={loading ? <CircularProgress size={20} /> : <PlayArrowIcon />}
+              onClick={executeQuery}
+              disabled={loading}
+              fullWidth
+            >
+              Execute Query
+            </Button>
+          </CardContent>
+        </Card>
+
         <Typography variant="h5" component="h2" sx={{ mt: 3, mb: 2 }}>
           Collections API Query Examples
         </Typography>
@@ -384,10 +556,72 @@ curl https://api.xrpnft.com/api/collections?category=gaming`
                 maxHeight: '600px'
               }}
             >
-              <CodeHighlight code={JSON.stringify(sampleResponse, null, 2)} language="json" />
+              <CodeHighlight json={sampleResponse} />
             </Box>
           </CardContent>
         </Card>
+        
+        <Dialog
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          maxWidth="lg"
+          fullWidth
+        >
+          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            API Response
+            <Box>
+              {response && !response.error && (
+                <Tooltip title="Copy response">
+                  <IconButton 
+                    onClick={() => {
+                      copyToClipboard(JSON.stringify(response, null, 2));
+                      console.log('Response copied to clipboard');
+                    }}
+                    sx={{ mr: 1 }}
+                  >
+                    <ContentCopyIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <IconButton onClick={() => setModalOpen(false)}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </DialogTitle>
+          <DialogContent>
+            <Box sx={{ 
+              bgcolor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f5f5f5',
+              p: 2,
+              borderRadius: 1,
+              overflow: 'auto',
+              maxHeight: '70vh'
+            }}>
+              {response ? (
+                response.error ? (
+                  <Box>
+                    <Typography color="error" sx={{ mb: 2 }}>
+                      Error: {response.error}
+                    </Typography>
+                    {response.note && (
+                      <Typography variant="body2" sx={{ color: 'warning.main' }}>
+                        {response.note}
+                      </Typography>
+                    )}
+                  </Box>
+                ) : (
+                  <Box>
+                    <Typography variant="body2" sx={{ mb: 2, color: 'success.main' }}>
+                      Success! Found {response.count} collections
+                    </Typography>
+                    <CodeHighlight json={response} />
+                  </Box>
+                )
+              ) : (
+                <Typography>Loading...</Typography>
+              )}
+            </Box>
+          </DialogContent>
+        </Dialog>
       </Container>
     </Layout>
   );
