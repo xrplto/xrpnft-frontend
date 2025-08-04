@@ -21,6 +21,10 @@ const ApiDocs = () => {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [nftTokenId, setNftTokenId] = useState('00080BB86C429EE66CE731CAA492445DFF564F9CB8A46A301FEE968805A83EEE');
+  const [nftResponse, setNftResponse] = useState(null);
+  const [nftLoading, setNftLoading] = useState(false);
+  const [nftModalOpen, setNftModalOpen] = useState(false);
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
@@ -81,6 +85,47 @@ const ApiDocs = () => {
     }
     setLoading(false);
     console.log('=== End Execute Query Debug ===');
+  };
+
+  const executeNftQuery = async () => {
+    console.log('=== Execute NFT Query Debug ===');
+    console.log('NFTokenID:', nftTokenId);
+    
+    setNftLoading(true);
+    try {
+      const url = `https://api.xrpnft.com/api/nft/${nftTokenId}`;
+      console.log('Request URL:', url);
+      
+      const res = await fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      
+      console.log('Response status:', res.status);
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      console.log('NFT Response data:', data);
+      
+      setNftResponse(data);
+      setNftModalOpen(true);
+    } catch (error) {
+      console.error('Error occurred:', error);
+      
+      setNftResponse({ 
+        error: error.message,
+        note: 'If you see a CORS error, try using a browser extension like "CORS Unblock" or "Allow CORS" to test the API.'
+      });
+      setNftModalOpen(true);
+    }
+    setNftLoading(false);
+    console.log('=== End NFT Query Debug ===');
   };
 
   const queryExamples = [
@@ -454,6 +499,94 @@ curl https://api.xrpnft.com/api/collections?category=gaming`
 
         <Divider sx={{ my: 4 }} />
 
+        <Typography variant="h5" component="h2" sx={{ mt: 4, mb: 2 }}>
+          NFT API Endpoint
+        </Typography>
+        
+        <Card elevation={1} sx={{ mb: 4, border: `1px solid ${theme.palette.divider}` }}>
+          <CardContent>
+            <Typography variant="h6" sx={{ mb: 3 }}>Get NFT Details</Typography>
+            <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary' }}>
+              Retrieves detailed information about a specific NFT by its token ID.
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 2 }}>
+              <strong>Endpoint:</strong> GET /api/nft/:NFTokenID
+            </Typography>
+            
+            <Box sx={{ mb: 3 }}>
+              <TextField
+                fullWidth
+                label="NFTokenID"
+                placeholder="00080BB86C429EE66CE731CAA492445DFF564F9CB8A46A301FEE968805A83EEE"
+                value={nftTokenId}
+                onChange={(e) => setNftTokenId(e.target.value)}
+                sx={{ mb: 2 }}
+                helperText="Example: 00080BB86C429EE66CE731CAA492445DFF564F9CB8A46A301FEE968805A83EEE"
+              />
+              
+              <Box sx={{ 
+                p: 2, 
+                bgcolor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f5f5f5',
+                borderRadius: 1,
+                mb: 2,
+                wordBreak: 'break-all'
+              }}>
+                <Typography variant="body2" sx={{ fontFamily: 'monospace', color: theme.palette.mode === 'dark' ? '#4fc3f7' : '#1976d2' }}>
+                  GET https://api.xrpnft.com/api/nft/{nftTokenId || '{NFTokenID}'}
+                </Typography>
+              </Box>
+              
+              <Button
+                variant="contained"
+                startIcon={nftLoading ? <CircularProgress size={20} /> : <PlayArrowIcon />}
+                onClick={executeNftQuery}
+                disabled={nftLoading || !nftTokenId}
+                fullWidth
+              >
+                Execute NFT Query
+              </Button>
+            </Box>
+            
+            <Divider sx={{ my: 3 }} />
+            
+            <Typography variant="body1" sx={{ mb: 2, fontWeight: 500 }}>
+              Response Structure:
+            </Typography>
+            <Box sx={{ 
+              bgcolor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f5f5f5',
+              border: `1px solid ${theme.palette.mode === 'dark' ? '#333' : '#ddd'}`,
+              borderRadius: 1,
+              p: 2,
+              overflow: 'auto'
+            }}>
+              <CodeHighlight json={{
+                res: "success",
+                took: "12.34",
+                nft: {
+                  cid: "collection_id",
+                  self: true,
+                  status: 1,
+                  cslug: "collection-slug",
+                  collection: "Collection Name",
+                  cverified: "yes",
+                  cfloor: { currency: "XRP", amount: 10 },
+                  citems: 100,
+                  costs: "{ /* collection costs object */ }"
+                }
+              }} />
+            </Box>
+            
+            <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
+              <strong>Notes:</strong><br />
+              • Collection data is only appended if nft.self is true<br />
+              • Bulk mint costs are included when NFT status equals NFToken.SELL_WITH_MINT_BULK<br />
+              • Response includes performance metric (took) in milliseconds
+            </Typography>
+          </CardContent>
+        </Card>
+
+        <Divider sx={{ my: 4 }} />
+
         <Typography variant="h6" component="h3" sx={{ mt: 3, mb: 2, fontWeight: 'bold' }}>
           Available orderBy Fields
         </Typography>
@@ -614,6 +747,70 @@ curl https://api.xrpnft.com/api/collections?category=gaming`
                       Success! Found {response.count} collections
                     </Typography>
                     <CodeHighlight json={response} />
+                  </Box>
+                )
+              ) : (
+                <Typography>Loading...</Typography>
+              )}
+            </Box>
+          </DialogContent>
+        </Dialog>
+        
+        <Dialog
+          open={nftModalOpen}
+          onClose={() => setNftModalOpen(false)}
+          maxWidth="lg"
+          fullWidth
+        >
+          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            NFT API Response
+            <Box>
+              {nftResponse && !nftResponse.error && (
+                <Tooltip title="Copy response">
+                  <IconButton 
+                    onClick={() => {
+                      copyToClipboard(JSON.stringify(nftResponse, null, 2));
+                      console.log('NFT Response copied to clipboard');
+                    }}
+                    sx={{ mr: 1 }}
+                  >
+                    <ContentCopyIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <IconButton onClick={() => setNftModalOpen(false)}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </DialogTitle>
+          <DialogContent>
+            <Box sx={{ 
+              bgcolor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f5f5f5',
+              p: 2,
+              borderRadius: 1,
+              overflow: 'auto',
+              maxHeight: '70vh'
+            }}>
+              {nftResponse ? (
+                nftResponse.error ? (
+                  <Box>
+                    <Typography color="error" sx={{ mb: 2 }}>
+                      Error: {nftResponse.error}
+                    </Typography>
+                    {nftResponse.note && (
+                      <Typography variant="body2" sx={{ color: 'warning.main' }}>
+                        {nftResponse.note}
+                      </Typography>
+                    )}
+                  </Box>
+                ) : (
+                  <Box>
+                    {nftResponse.res === 'success' && (
+                      <Typography variant="body2" sx={{ mb: 2, color: 'success.main' }}>
+                        Success! Found NFT details
+                      </Typography>
+                    )}
+                    <CodeHighlight json={nftResponse} />
                   </Box>
                 )
               ) : (
