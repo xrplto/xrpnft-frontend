@@ -297,13 +297,25 @@ curl https://api.xrpnft.com/api/collections?category=gaming`
   return (
     <Layout>
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
+        <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold', mb: 4 }}>
           XRPNFT API Documentation
         </Typography>
         
-        <Typography variant="h5" component="h2" sx={{ mt: 3, mb: 2 }}>
-          Try API Live
-        </Typography>
+        <Box sx={{ 
+          bgcolor: theme.palette.mode === 'dark' ? 'primary.dark' : 'primary.main', 
+          color: 'white',
+          p: 3,
+          borderRadius: 2,
+          mb: 4
+        }}>
+          <Typography variant="h4" component="h2" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+            <Box component="span" sx={{ mr: 2 }}>📚</Box>
+            /api/collections
+          </Typography>
+          <Typography variant="body1" sx={{ mt: 1 }}>
+            Query and filter NFT collections
+          </Typography>
+        </Box>
         
         <Card elevation={1} sx={{ mb: 4, border: `1px solid ${theme.palette.divider}` }}>
           <CardContent>
@@ -402,8 +414,8 @@ curl https://api.xrpnft.com/api/collections?category=gaming`
           </CardContent>
         </Card>
 
-        <Typography variant="h5" component="h2" sx={{ mt: 3, mb: 2 }}>
-          Collections API Query Examples
+        <Typography variant="h6" component="h3" sx={{ mt: 3, mb: 2, fontWeight: 'bold' }}>
+          Query Examples
         </Typography>
 
         {queryExamples.map((section, sectionIndex) => (
@@ -497,20 +509,28 @@ curl https://api.xrpnft.com/api/collections?category=gaming`
           </Box>
         ))}
 
-        <Divider sx={{ my: 4 }} />
-
-        <Typography variant="h5" component="h2" sx={{ mt: 4, mb: 2 }}>
-          NFT API Endpoint
-        </Typography>
+        <Box sx={{ 
+          bgcolor: theme.palette.mode === 'dark' ? 'secondary.dark' : 'secondary.main', 
+          color: 'white',
+          p: 3,
+          borderRadius: 2,
+          mb: 4,
+          mt: 6
+        }}>
+          <Typography variant="h4" component="h2" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+            <Box component="span" sx={{ mr: 2 }}>🖼️</Box>
+            /api/nft
+          </Typography>
+          <Typography variant="body1" sx={{ mt: 1 }}>
+            Get detailed information about a specific NFT
+          </Typography>
+        </Box>
         
         <Card elevation={1} sx={{ mb: 4, border: `1px solid ${theme.palette.divider}` }}>
           <CardContent>
-            <Typography variant="h6" sx={{ mb: 3 }}>Get NFT Details</Typography>
+            <Typography variant="h6" sx={{ mb: 3 }}>Query Builder</Typography>
             <Typography variant="body2" sx={{ mb: 3, color: 'text.secondary' }}>
               Retrieves detailed information about a specific NFT by its token ID.
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 2 }}>
-              <strong>Endpoint:</strong> GET /api/nft/:NFTokenID
             </Typography>
             
             <Box sx={{ mb: 3 }}>
@@ -585,12 +605,11 @@ curl https://api.xrpnft.com/api/collections?category=gaming`
           </CardContent>
         </Card>
 
-        <Divider sx={{ my: 4 }} />
-
-        <Typography variant="h6" component="h3" sx={{ mt: 3, mb: 2, fontWeight: 'bold' }}>
-          Available orderBy Fields
-        </Typography>
-        <Card elevation={1} sx={{ border: `1px solid ${theme.palette.divider}` }}>
+        <Box sx={{ mt: 4, mb: 4 }}>
+          <Typography variant="h6" component="h3" sx={{ mb: 2, fontWeight: 'bold' }}>
+            Available orderBy Fields for Collections
+          </Typography>
+          <Card elevation={1} sx={{ border: `1px solid ${theme.palette.divider}` }}>
           <CardContent>
             {availableFields.map((field, index) => (
               <Box 
@@ -622,10 +641,9 @@ curl https://api.xrpnft.com/api/collections?category=gaming`
             ))}
           </CardContent>
         </Card>
+        </Box>
 
-        <Divider sx={{ my: 4 }} />
-
-        <Typography variant="h6" component="h3" sx={{ mt: 3, mb: 2, fontWeight: 'bold' }}>
+        <Typography variant="h6" component="h3" sx={{ mt: 4, mb: 2, fontWeight: 'bold' }}>
           Sample Query & Response
         </Typography>
         <Card elevation={1} sx={{ mb: 2, border: `1px solid ${theme.palette.divider}` }}>
