@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Typography, Paper, Box, Divider, useTheme, Card, CardContent, Chip, TextField, Button, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, DialogContent, CircularProgress } from '@mui/material';
+import { Container, Typography, Paper, Box, Divider, useTheme, Card, CardContent, Chip, TextField, Button, Select, MenuItem, FormControl, InputLabel, Dialog, DialogTitle, DialogContent, CircularProgress, FormControlLabel, Checkbox } from '@mui/material';
 import Layout from '../src/components/Layout';
 import CodeHighlight from '../src/components/CodeHighlight';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -16,7 +16,8 @@ const ApiDocs = () => {
     page: '0',
     filter: '',
     category: '',
-    choice: ''
+    choice: '',
+    compact: false
   });
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -33,7 +34,8 @@ const ApiDocs = () => {
   const buildQueryUrl = () => {
     const params = new URLSearchParams();
     Object.entries(queryParams).forEach(([key, value]) => {
-      if (value) params.append(key, value);
+      if (value && key !== 'compact') params.append(key, value);
+      if (key === 'compact' && value === true) params.append(key, 'true');
     });
     return `https://api.xrpnft.com/api/collections${params.toString() ? '?' + params.toString() : ''}`;
   };
@@ -199,6 +201,11 @@ curl https://api.xrpnft.com/api/collections?category=gaming`
         {
           description: 'Choice filter (verified collections only)',
           code: 'curl https://api.xrpnft.com/api/collections?choice=verified'
+        },
+        {
+          description: 'Compact mode (exclude metadata fields)',
+          code: 'curl https://api.xrpnft.com/api/collections?limit=20&compact=true',
+          note: 'Excludes: featuredImage, bannerImage, spinnerImage, minterName, costs, description, attrs, nometa, rarity, category, type'
         }
       ]
     },
@@ -390,6 +397,25 @@ curl https://api.xrpnft.com/api/collections?category=gaming`
               </FormControl>
             </Box>
             
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={queryParams.compact}
+                  onChange={(e) => setQueryParams({...queryParams, compact: e.target.checked})}
+                  color="primary"
+                />
+              }
+              label={
+                <Box>
+                  <Typography variant="body1">Compact Mode</Typography>
+                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                    Exclude metadata fields for improved performance
+                  </Typography>
+                </Box>
+              }
+              sx={{ mb: 2 }}
+            />
+            
             <Box sx={{ 
               p: 2, 
               bgcolor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#f5f5f5',
@@ -413,6 +439,20 @@ curl https://api.xrpnft.com/api/collections?category=gaming`
             </Button>
           </CardContent>
         </Card>
+
+        <Box sx={{ 
+          bgcolor: theme.palette.mode === 'dark' ? 'warning.dark' : 'warning.light',
+          p: 2,
+          borderRadius: 1,
+          mb: 3
+        }}>
+          <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>
+            💡 Performance Tip: Compact Mode
+          </Typography>
+          <Typography variant="body2">
+            Add <code style={{ backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#f5f5f5', padding: '2px 6px', borderRadius: '4px' }}>?compact=true</code> to exclude metadata fields and improve response time when displaying table data.
+          </Typography>
+        </Box>
 
         <Typography variant="h6" component="h3" sx={{ mt: 3, mb: 2, fontWeight: 'bold' }}>
           Query Examples
