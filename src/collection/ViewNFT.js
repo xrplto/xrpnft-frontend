@@ -246,7 +246,7 @@ export default function ViewNFT({ collection }) {
                     position: 'relative',
                     overflow: 'hidden',
                     mb: { xs: 2, md: 6 }, // Reduced vertical margin on mobile
-                    mt: { xs: 4, md: 12 } // Reduced top margin on mobile
+                    mt: 0 // Removed top margin
                 }}
             >
                 <BackgroundImage
@@ -271,11 +271,12 @@ export default function ViewNFT({ collection }) {
                     sx={{
                         display: 'flex',
                         flexDirection: { xs: 'column', md: 'row' },
-                        alignItems: { xs: 'center', md: 'flex-start' },
+                        alignItems: { xs: 'center', md: 'center' }, // Changed to center vertically
                         position: 'relative',
                         zIndex: 1,
                         py: { xs: 1.5, md: 3 }, // Reduced vertical padding on mobile
-                        px: { xs: 1.5, md: 3 } // Added horizontal padding reduction on mobile
+                        px: { xs: 1.5, md: 3 }, // Added horizontal padding reduction on mobile
+                        height: { xs: 'auto', md: 'auto' } // Let content determine height
                     }}
                 >
                     <IconCover
@@ -303,7 +304,14 @@ export default function ViewNFT({ collection }) {
                         />
                     </IconCover>
 
-                    <Box sx={{ flex: 1 }}>
+                    <Box sx={{ 
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        height: '100%',
+                        overflow: 'visible'
+                    }}>
                         <Stack
                             direction={fullScreen ? 'column' : 'row'}
                             spacing={{ xs: 0.5, md: 2 }} // Reduced spacing on mobile
