@@ -176,24 +176,27 @@ const PremiumButton = styled(Button)(({ theme }) => ({
 const ProfileButton = styled(IconButton)(({ theme, hasNotifications }) => ({
   position: 'relative',
   padding: 0,
-  width: 44,
-  height: 44,
+  width: 32,
+  height: 32,
+  borderRadius: 8,
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  boxShadow: `0 0 20px ${alpha(theme.palette.primary.main, 0.4)}`,
   '&:hover': {
     transform: 'scale(1.05)',
+    boxShadow: `0 0 30px ${alpha(theme.palette.primary.main, 0.6)}`,
   },
   '&::before': {
     content: '""',
     position: 'absolute',
     inset: -2,
-    borderRadius: '50%',
+    borderRadius: 10,
     padding: 2,
     background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
     mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
     maskComposite: 'xor',
     WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
     WebkitMaskComposite: 'xor',
-    opacity: hasNotifications ? 1 : 0.7,
+    opacity: 1,
     animation: hasNotifications ? `${pulse} 2s infinite` : 'none',
   },
 }));
@@ -406,14 +409,14 @@ export default function Wallet() {
                             invisible={acceptNfts + orphanedOffers === 0}
                         >
                             <Avatar
-                                variant="circular"
+                                variant="rounded"
                                 alt="user"
                                 src={logoImageUrl || getHashIcon(accountLogin)}
                                 sx={{ 
-                                    width: 40, 
-                                    height: 40,
+                                    width: 28, 
+                                    height: 28,
                                     border: `2px solid ${theme.palette.background.paper}`,
-                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                                    borderRadius: 1.5,
                                 }}
                             />
                         </StyledBadge>
