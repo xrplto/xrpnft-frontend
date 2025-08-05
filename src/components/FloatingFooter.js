@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Link, Stack, IconButton, Tooltip, Container, Typography, Button } from '@mui/material';
+import { Box, Link, Stack, IconButton, Tooltip, Typography, Button } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 
 // Icons
@@ -96,14 +96,13 @@ const FloatingFooter = () => {
 
   return (
     <FloatingFooterWrapper>
-      <Container maxWidth="lg">
+      <Box sx={{ px: { xs: 2, sm: 3, md: 4, lg: 5, xl: 6 } }}>
         <Stack 
           direction="row" 
           spacing={1} 
           alignItems="center" 
-          justifyContent="space-between"
+          justifyContent="flex-end"
         >
-          <Box /> {/* Empty Box to maintain layout */}
           <Stack direction="row" spacing={2} alignItems="center">
             {xrpPrice && (
               <Tooltip title="XRP Price">
@@ -128,7 +127,7 @@ const FloatingFooter = () => {
             </ChatButton>
           </Stack>
         </Stack>
-      </Container>
+      </Box>
     </FloatingFooterWrapper>
   );
 };
