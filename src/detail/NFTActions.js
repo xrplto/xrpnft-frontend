@@ -303,7 +303,7 @@ const OwnerAddress = styled(Link)(({ theme }) => ({
 
 // Update the FloorPriceCard styling for a more prominent look
 const FloorPriceCard = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(1.5, 2),
+    padding: theme.spacing(0.75, 1.5),
     backgroundColor: alpha(theme.palette.primary.main, 0.04),
     borderRadius: theme.shape.borderRadius * 2,
     border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
@@ -319,17 +319,16 @@ const FloorPriceCard = styled(Paper)(({ theme }) => ({
 const FloorPriceValue = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
-    gap: theme.spacing(1),
+    gap: theme.spacing(0.75),
     '& .icon': {
         color: theme.palette.primary.main,
-        width: 20,
-        height: 20
+        width: 18,
+        height: 18
     },
     '& .amount': {
-        fontWeight: 700,
-        fontSize: '1.1rem',
-        color: theme.palette.primary.main,
-        letterSpacing: '0.02em'
+        fontWeight: 600,
+        fontSize: '0.95rem',
+        color: theme.palette.primary.main
     }
 }));
 
@@ -891,44 +890,30 @@ export default function NFTActions({ nft }) {
                                     </Stack>
                                 )}
 
-                                <NFTTitle variant="h5">
-                                    {nftName}
-                                </NFTTitle>
-
-                                <FloorPriceCard elevation={0}>
-                                    <Stack direction="row" spacing={2} alignItems="center">
+                                <Stack direction="row" spacing={2} alignItems="center">
+                                    <NFTTitle variant="h5">
+                                        {nftName}
+                                    </NFTTitle>
+                                    <FloorPriceCard elevation={0}>
                                         <Stack direction="row" spacing={1} alignItems="center">
                                             <Typography 
-                                                variant="body2" 
+                                                variant="caption" 
                                                 sx={{ 
-                                                    color: 'primary.main',
-                                                    fontWeight: 500,
-                                                    letterSpacing: '0.02em'
+                                                    color: 'text.secondary',
+                                                    fontWeight: 500
                                                 }}
                                             >
-                                                Global Floor
+                                                Global Floor:
                                             </Typography>
-                                            <Tooltip title="Collection-wide floor price">
-                                                <Icon 
-                                                    icon="material-symbols:info-outline" 
-                                                    width={16} 
-                                                    height={16}
-                                                    style={{ 
-                                                        color: theme.palette.primary.main,
-                                                        opacity: 0.7,
-                                                        cursor: 'help'
-                                                    }} 
-                                                />
-                                            </Tooltip>
+                                            <FloorPriceValue>
+                                                <Icon icon={rippleSolid} className="icon" />
+                                                <Typography className="amount">
+                                                    {floorPrice > 0 ? fNumber(floorPrice) : '- - -'}
+                                                </Typography>
+                                            </FloorPriceValue>
                                         </Stack>
-                                        <FloorPriceValue>
-                                            <Icon icon={rippleSolid} className="icon" />
-                                            <Typography className="amount">
-                                                {floorPrice > 0 ? fNumber(floorPrice) : '- - -'}
-                                            </Typography>
-                                        </FloorPriceValue>
-                                    </Stack>
-                                </FloorPriceCard>
+                                    </FloorPriceCard>
+                                </Stack>
                             </CollectionInfo>
 
                             <IconButton
@@ -1432,28 +1417,26 @@ export default function NFTActions({ nft }) {
                                 <Stack
                                     direction="row"
                                     alignItems="center"
-                                    spacing={2}
+                                    spacing={1.5}
                                     sx={{ width: '100%' }}
                                 >
                                     <Stack
                                         direction="row"
                                         alignItems="center"
-                                        spacing={2}
+                                        spacing={1}
                                     >
-                                        <PanToolIcon color="primary" />
+                                        <PanToolIcon color="primary" sx={{ fontSize: 20 }} />
                                         <Typography
-                                            variant="h6"
+                                            variant="subtitle1"
                                             color="primary.main"
+                                            fontWeight="medium"
                                         >
                                             Buy Offers
                                         </Typography>
                                     </Stack>
                                     {buyOffers.length > 0 && (
                                         <OfferCountBadge>
-                                            {buyOffers.length}{' '}
-                                            {buyOffers.length === 1
-                                                ? 'Offer'
-                                                : 'Offers'}
+                                            {buyOffers.length}
                                         </OfferCountBadge>
                                     )}
                                 </Stack>
@@ -1479,7 +1462,7 @@ export default function NFTActions({ nft }) {
                                                 <Paper
                                                     key={index}
                                                     sx={{
-                                                        p: 2,
+                                                        p: 1.5,
                                                         backgroundColor: (theme) =>
                                                             alpha(
                                                                 theme.palette
@@ -1489,7 +1472,7 @@ export default function NFTActions({ nft }) {
                                                             )
                                                     }}
                                                 >
-                                                    <Stack spacing={2}>
+                                                    <Stack spacing={1}>
                                                         <Stack
                                                             direction="row"
                                                             justifyContent="space-between"
@@ -1497,18 +1480,18 @@ export default function NFTActions({ nft }) {
                                                         >
                                                             <Stack
                                                                 direction="row"
-                                                                spacing={1}
+                                                                spacing={0.75}
                                                                 alignItems="center"
                                                             >
                                                                 <Icon
                                                                     icon={
                                                                         rippleSolid
                                                                     }
-                                                                    width="20"
-                                                                    height="20"
+                                                                    width="18"
+                                                                    height="18"
                                                                 />
                                                                 <Typography
-                                                                    variant="h6"
+                                                                    variant="body1"
                                                                     fontWeight="bold"
                                                                 >
                                                                     {formatXRPAmount(
@@ -1564,53 +1547,20 @@ export default function NFTActions({ nft }) {
                                                                 )}
                                                             </Stack>
                                                         </Stack>
-                                                        <Stack spacing={1}>
-                                                            <Stack
-                                                                direction="row"
-                                                                spacing={1}
-                                                                alignItems="center"
+                                                        <Stack direction="row" spacing={2} alignItems="center">
+                                                            <Typography
+                                                                variant="caption"
+                                                                color="text.secondary"
                                                             >
+                                                                From: {truncate(offer.owner, 12)}
+                                                            </Typography>
+                                                            {offer.destination && (
                                                                 <Typography
-                                                                    variant="body2"
+                                                                    variant="caption"
                                                                     color="text.secondary"
                                                                 >
-                                                                    From:
+                                                                    via {BROKER_ADDRESSES[offer.destination]?.name || 'Broker'}
                                                                 </Typography>
-                                                                <Link
-                                                                    href={`/account/${offer.owner}`}
-                                                                    underline="hover"
-                                                                >
-                                                                    <Typography variant="body2">
-                                                                        {truncate(
-                                                                            offer.owner,
-                                                                            16
-                                                                        )}
-                                                                    </Typography>
-                                                                </Link>
-                                                            </Stack>
-                                                            {offer.destination && (
-                                                                <Stack
-                                                                    direction="row"
-                                                                    spacing={1}
-                                                                    alignItems="center"
-                                                                >
-                                                                    <Typography
-                                                                        variant="body2"
-                                                                        color="text.secondary"
-                                                                    >
-                                                                        Broker:
-                                                                    </Typography>
-                                                                    <Typography variant="body2">
-                                                                        {BROKER_ADDRESSES[
-                                                                            offer
-                                                                                .destination
-                                                                        ]?.name ||
-                                                                            truncate(
-                                                                                offer.destination,
-                                                                                16
-                                                                            )}
-                                                                    </Typography>
-                                                                </Stack>
                                                             )}
                                                         </Stack>
                                                     </Stack>
@@ -1621,7 +1571,7 @@ export default function NFTActions({ nft }) {
                                 ) : (
                                     <Box
                                         sx={{
-                                            py: 4,
+                                            py: 2,
                                             textAlign: 'center',
                                             backgroundColor: (theme) =>
                                                 alpha(
@@ -1632,16 +1582,16 @@ export default function NFTActions({ nft }) {
                                             borderRadius: 1
                                         }}
                                     >
-                                        <Typography color="text.secondary">
+                                        <Typography variant="body2" color="text.secondary">
                                             No buy offers available
                                         </Typography>
                                         {!isOwner && (
                                             <Button
                                                 variant="outlined"
                                                 size="small"
-                                                startIcon={<PanToolIcon />}
+                                                startIcon={<PanToolIcon sx={{ fontSize: 18 }} />}
                                                 onClick={handleCreateBuyOffer}
-                                                sx={{ mt: 2 }}
+                                                sx={{ mt: 1 }}
                                             >
                                                 Make Offer
                                             </Button>

@@ -84,11 +84,11 @@ export default function Trait({ prop, total, issuer, taxon, cslug }) {
                     }}>
                         {type}
                     </Typography>
-                    <Typography sx={{ fontWeight: 600, color: '#333', fontSize: 14 }}>
+                    <Typography sx={{ fontWeight: 600, color: theme.palette.text.primary, fontSize: 14 }}>
                         {value}
                     </Typography>
                     {total > 0 && (
-                        <Typography sx={{ fontSize: 10, color: '#666' }}>
+                        <Typography sx={{ fontSize: 10, color: theme.palette.text.secondary }}>
                             {rarity}%
                         </Typography>
                     )}
