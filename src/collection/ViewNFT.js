@@ -72,15 +72,15 @@ const StatCard = styled(Box)(({ theme }) => ({
 }));
 
 const IconCover = styled('div')(({ theme }) => ({
-    width: 180,
-    height: 180,
+    width: 240,
+    height: 240,
     position: 'relative',
     overflow: 'hidden',
     borderRadius: theme.shape.borderRadius * 2,
     boxShadow: theme.shadows[8],
     [theme.breakpoints.down('sm')]: {
-        width: 120,
-        height: 120
+        width: 160,
+        height: 160
     }
 }));
 
@@ -117,14 +117,22 @@ const VerificationBadge = styled('div')(({ theme }) => ({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 24,
-    height: 24,
+    width: 28,
+    height: 28,
     borderRadius: '50%',
-    backgroundColor: theme.palette.primary.main,
+    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
     color: theme.palette.common.white,
-    marginLeft: theme.spacing(1),
+    marginLeft: theme.spacing(1.5),
+    boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.3)}`,
+    border: `2px solid ${alpha(theme.palette.common.white, 0.2)}`,
+    transition: 'all 0.3s ease',
+    '&:hover': {
+        transform: 'scale(1.1)',
+        boxShadow: `0 4px 16px ${alpha(theme.palette.primary.main, 0.4)}`,
+    },
     '& svg': {
-        fontSize: 16
+        fontSize: 14,
+        fontWeight: 'bold'
     }
 }));
 
@@ -262,7 +270,7 @@ export default function ViewNFT({ collection }) {
                                             {name}
                                         </Typography>
                                         {verified === 'yes' && (
-                                            <Tooltip title="Verified Collection">
+                                            <Tooltip title="Verified Collection" placement="top" arrow>
                                                 <VerificationBadge>
                                                     <CheckIcon />
                                                 </VerificationBadge>

@@ -108,12 +108,20 @@ const VerificationBadge = styled('div')(({ theme }) => ({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 14,
-    height: 14,
+    width: 20,
+    height: 20,
     borderRadius: '50%',
-    backgroundColor: theme.palette.primary.main,
+    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
     color: theme.palette.common.white,
-    '& svg': { fontSize: 10 }
+    marginLeft: theme.spacing(0.5),
+    boxShadow: `0 2px 6px ${alpha(theme.palette.primary.main, 0.3)}`,
+    border: `1.5px solid ${alpha(theme.palette.common.white, 0.2)}`,
+    transition: 'all 0.3s ease',
+    '&:hover': {
+        transform: 'scale(1.1)',
+        boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.4)}`,
+    },
+    '& svg': { fontSize: 12, fontWeight: 'bold' }
 }));
 
 // const NFT_FLAGS = {
