@@ -992,7 +992,7 @@ export default function NFTActions({ nft }) {
                                         color="secondary.main"
                                         fontWeight="medium"
                                     >
-                                        On-Chain Rank
+                                        XRPL Rank
                                     </Typography>
                                     <Typography
                                         variant="body1"
