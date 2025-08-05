@@ -16,7 +16,10 @@ import {
     Box,
     Stack,
     Typography,
-    Tooltip
+    Tooltip,
+    Fade,
+    Zoom,
+    keyframes
 } from '@mui/material';
 import GridOnIcon from '@mui/icons-material/GridOn';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
@@ -42,31 +45,200 @@ import { getHashIcon } from 'src/utils/parse';
 // Components
 import LoginDialog from './LoginDialog';
 
-// New styled components
+// Custom animations
+const pulse = keyframes`
+  0% {
+    box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(74, 144, 226, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(74, 144, 226, 0);
+  }
+`;
+
+const glow = keyframes`
+  0% {
+    box-shadow: 0 0 20px rgba(74, 144, 226, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(74, 144, 226, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(74, 144, 226, 0.5);
+  }
+`;
+
+const shimmer = keyframes`
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+`;
+
+// Premium styled components
 const StyledModal = styled(Modal)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  backdropFilter: 'blur(10px)',
+  background: 'rgba(0, 0, 0, 0.2)',
 }));
 
 const StyledBox = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius * 2,
-  boxShadow: theme.shadows[10],
+  position: 'relative',
+  backgroundColor: alpha(theme.palette.background.paper, 0.95),
+  borderRadius: 24,
+  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
   padding: theme.spacing(4),
-  width: 380,
+  width: 360,
   maxWidth: '90vw',
   maxHeight: '90vh',
   overflowY: 'auto',
+  backdropFilter: 'blur(20px)',
+  background: theme.palette.mode === 'dark'
+    ? 'linear-gradient(135deg, rgba(18, 22, 25, 0.95) 0%, rgba(30, 35, 40, 0.95) 100%)'
+    : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.95) 100%)',
+  border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    inset: 0,
+    borderRadius: 24,
+    padding: 1,
+    background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.4)}, ${alpha(theme.palette.secondary.main, 0.4)})`,
+    mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+    maskComposite: 'xor',
+    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+    WebkitMaskComposite: 'xor',
+  },
 }));
 
 const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
-  borderRadius: theme.shape.borderRadius,
+  borderRadius: 16,
   margin: theme.spacing(1, 0),
-  padding: theme.spacing(1.5, 2),
+  padding: theme.spacing(2, 2.5),
+  background: theme.palette.mode === 'dark'
+    ? alpha(theme.palette.background.paper, 0.6)
+    : alpha(theme.palette.background.paper, 0.8),
+  backdropFilter: 'blur(10px)',
+  border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   '&:hover': {
-    backgroundColor: alpha(theme.palette.primary.main, 0.08),
+    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+    transform: 'translateY(-2px)',
+    boxShadow: '0 10px 20px -5px rgba(0, 0, 0, 0.1)',
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
   },
+  '&:active': {
+    transform: 'translateY(0)',
+  },
+}));
+
+const PremiumButton = styled(Button)(({ theme }) => ({
+  position: 'relative',
+  overflow: 'hidden',
+  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+  color: theme.palette.common.white,
+  fontSize: '0.875rem',
+  fontWeight: 600,
+  letterSpacing: '0.3px',
+  padding: '8px 20px',
+  borderRadius: 10,
+  textTransform: 'none',
+  boxShadow: '0 4px 15px rgba(74, 144, 226, 0.3)',
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: '-100%',
+    width: '100%',
+    height: '100%',
+    background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
+    transition: 'left 0.5s',
+  },
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 6px 20px rgba(74, 144, 226, 0.4)',
+    '&::before': {
+      left: '100%',
+    },
+  },
+  '&:active': {
+    transform: 'translateY(0)',
+  },
+}));
+
+const ProfileButton = styled(IconButton)(({ theme, hasNotifications }) => ({
+  position: 'relative',
+  padding: 0,
+  width: 44,
+  height: 44,
+  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  '&:hover': {
+    transform: 'scale(1.05)',
+  },
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    inset: -2,
+    borderRadius: '50%',
+    padding: 2,
+    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+    mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+    maskComposite: 'xor',
+    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+    WebkitMaskComposite: 'xor',
+    opacity: hasNotifications ? 1 : 0.7,
+    animation: hasNotifications ? `${pulse} 2s infinite` : 'none',
+  },
+}));
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    background: 'linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)',
+    color: theme.palette.common.white,
+    fontWeight: 700,
+    fontSize: '0.7rem',
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    boxShadow: '0 2px 8px rgba(255, 82, 82, 0.5)',
+    animation: `${glow} 2s ease-in-out infinite`,
+  },
+}));
+
+const WalletTitle = styled(Typography)(({ theme }) => ({
+  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+  backgroundClip: 'text',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  fontWeight: 700,
+  fontSize: '1.5rem',
+  marginBottom: theme.spacing(0.5),
+}));
+
+const WalletSubtitle = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  fontSize: '0.8rem',
+  marginBottom: theme.spacing(3),
+  fontWeight: 400,
+}));
+
+const ConnectIcon = styled(Box)(({ theme }) => ({
+  width: 48,
+  height: 48,
+  borderRadius: 12,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: alpha(theme.palette.primary.main, 0.1),
+  color: theme.palette.primary.main,
+  marginRight: theme.spacing(2),
 }));
 
 export default function Wallet() {
@@ -223,41 +395,37 @@ export default function Wallet() {
     return (
         <>
             {accountLogin ? (
-                <Tooltip title="Account">
-                    <IconButton
+                <Zoom in={true} timeout={300}>
+                    <ProfileButton
                         ref={anchorRef}
                         onClick={() => { window.location.href = `/account/${accountLogin}`; }}
-                        sx={{
-                            padding: 0.5,
-                            border: `2px solid ${theme.palette.primary.main}`,
-                            '&:hover': {
-                                backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                            },
-                        }}
+                        hasNotifications={acceptNfts + orphanedOffers > 0}
                     >
-                        <Badge color="primary" badgeContent={acceptNfts + orphanedOffers}>
+                        <StyledBadge 
+                            badgeContent={acceptNfts + orphanedOffers}
+                            invisible={acceptNfts + orphanedOffers === 0}
+                        >
                             <Avatar
-                                variant={accountLogo ? "circular" : "rounded"}
+                                variant="circular"
                                 alt="user"
                                 src={logoImageUrl || getHashIcon(accountLogin)}
-                                sx={{ width: 32, height: 32 }}
+                                sx={{ 
+                                    width: 40, 
+                                    height: 40,
+                                    border: `2px solid ${theme.palette.background.paper}`,
+                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                                }}
                             />
-                        </Badge>
-                    </IconButton>
-                </Tooltip>
+                        </StyledBadge>
+                    </ProfileButton>
+                </Zoom>
             ) : (
-                <Button
-                    variant="contained"
-                    color="primary"
+                <PremiumButton
                     onClick={handleOpen}
-                    startIcon={<Icon icon="mdi:wallet" />}
-                    sx={{
-                        py: 0.5,
-                        px: 2,
-                    }}
+                    startIcon={<Icon icon="mdi:wallet" width={18} height={18} />}
                 >
                     Connect
-                </Button>
+                </PremiumButton>
             )}
 
             {!accountLogin && (
@@ -266,21 +434,62 @@ export default function Wallet() {
                     onClose={handleClose}
                     aria-labelledby="wallet-modal-title"
                     aria-describedby="wallet-modal-description"
+                    closeAfterTransition
                 >
-                    <StyledBox>
-                        <Typography variant="h5" component="h2" gutterBottom color="primary" sx={{ mb: 3 }}>
-                            Connect Wallet
-                        </Typography>
-                        <StyledMenuItem
-                            key="xumm"
-                            onClick={handleLogin}
-                        >
-                            <Stack direction='row' spacing={2} alignItems='center'>
-                                <Avatar alt="xumm" src="/static/xumm.jpg" sx={{ width: 40, height: 40 }} />
-                                <Typography variant='body1'>Connect with Xaman</Typography>
-                            </Stack>
-                        </StyledMenuItem>
-                    </StyledBox>
+                    <Fade in={open} timeout={400}>
+                        <StyledBox>
+                            <Box sx={{ textAlign: 'center', mb: 4 }}>
+                                <Icon 
+                                    icon="mdi:wallet-outline" 
+                                    width={48} 
+                                    height={48} 
+                                    style={{ 
+                                        color: theme.palette.primary.main,
+                                        marginBottom: 16,
+                                    }} 
+                                />
+                                <WalletTitle variant="h4" component="h2">
+                                    Connect Wallet
+                                </WalletTitle>
+                                <WalletSubtitle>
+                                    Choose your wallet
+                                </WalletSubtitle>
+                            </Box>
+                            
+                            <StyledMenuItem
+                                key="xumm"
+                                onClick={handleLogin}
+                                disableRipple
+                            >
+                                <Stack direction='row' alignItems='center' sx={{ width: '100%' }}>
+                                    <ConnectIcon>
+                                        <Avatar 
+                                            alt="xumm" 
+                                            src="/static/xumm.jpg" 
+                                            sx={{ width: 32, height: 32 }} 
+                                        />
+                                    </ConnectIcon>
+                                    <Box sx={{ flex: 1 }}>
+                                        <Typography 
+                                            variant='subtitle1' 
+                                            sx={{ 
+                                                fontWeight: 600,
+                                                color: theme.palette.text.primary,
+                                            }}
+                                        >
+                                            Xaman
+                                        </Typography>
+                                    </Box>
+                                    <Icon 
+                                        icon="mdi:chevron-right" 
+                                        width={24} 
+                                        height={24}
+                                        style={{ color: theme.palette.text.secondary }}
+                                    />
+                                </Stack>
+                            </StyledMenuItem>
+                        </StyledBox>
+                    </Fade>
                 </StyledModal>
             )}
 

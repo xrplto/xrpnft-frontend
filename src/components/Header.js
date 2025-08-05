@@ -109,7 +109,6 @@ export default function Header() {
         setFullSearch(true);
     };
 
-    console.log("anchorElNav:", anchorElNav); // Add this line for debugging
 
     return (
         <>
@@ -310,7 +309,6 @@ export default function Header() {
                                     }
                                 }}
                             >
-                                {console.log("Rendering menu items")}
                                 {[
                                     { text: 'Explore', icon: <ExploreOutlinedIcon />, href: '/explore' },
                                     { text: 'Collections', icon: <CollectionsIcon />, href: '/collections' },
