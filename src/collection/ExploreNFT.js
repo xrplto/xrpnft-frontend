@@ -831,7 +831,7 @@ export function NFTCard({ nft, handleRemove }) {
     } = nft;
 
     const isSold = false;
-    const imgUrl = getNftCoverUrl(nft, 'small');
+    const imgUrl = getNftCoverUrl(nft, 'big');
     const isVideo = false;
     const name = nft.meta?.name || meta?.Name || 'No Name';
 
