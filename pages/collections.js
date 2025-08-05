@@ -19,7 +19,7 @@ const OverviewWrapper = styled(Box)(
 export default function CollectionsPage() {
     return (
         <Layout>
-            <OverviewWrapper>
+            <OverviewWrapper className="collections-page-main">
                 <AllCollections />
                 <ScrollToTop />
             </OverviewWrapper>

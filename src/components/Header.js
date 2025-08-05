@@ -57,13 +57,18 @@ const HeaderWrapper = styled(AppBar)(({ theme }) => ({
 // Update the StyledToolbar component
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
     width: '100%',
-    margin: '0 auto',
     padding: theme.spacing(0, 2),
     [theme.breakpoints.up('sm')]: {
         padding: theme.spacing(0, 3),
     },
     [theme.breakpoints.up('md')]: {
         padding: theme.spacing(0, 4),
+    },
+    [theme.breakpoints.up('lg')]: {
+        padding: theme.spacing(0, 5),
+    },
+    [theme.breakpoints.up('xl')]: {
+        padding: theme.spacing(0, 6),
     },
 }));
 

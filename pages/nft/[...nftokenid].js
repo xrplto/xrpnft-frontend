@@ -35,7 +35,7 @@ export default function Overview({ data }) {
 
             <MainContent>
                 <Toolbar id="back-to-top-anchor" />
-                <Container maxWidth="xl" sx={{ maxWidth: '1600px' }}>
+                <Container maxWidth="xl">
                     <TokenDetail nft={data.nft} />
                 </Container>
                 <ScrollToTop />

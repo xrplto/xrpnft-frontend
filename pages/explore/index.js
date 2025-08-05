@@ -1,7 +1,6 @@
 // Material
 import {
     Box,
-    Container,
     styled,
     Toolbar
 } from '@mui/material';
@@ -21,14 +20,14 @@ const OverviewWrapper = styled(Box)(
 
 export default function Overview({}) {
     return (
-        <OverviewWrapper>
+        <OverviewWrapper className="explore-page-main">
             <Toolbar id="back-to-top-anchor" />
 
             <Header />
 
-            <Container maxWidth="xxl">
+            <Box sx={{ width: '100%' }}>
                 <AllNFT />
-            </Container>
+            </Box>
 
             <ScrollToTop />
 

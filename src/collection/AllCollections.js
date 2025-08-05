@@ -5,7 +5,6 @@ import { alpha } from '@mui/material/styles';
 import {
     Stack,
     Typography,
-    Container,
     Box,
     useTheme,
     useMediaQuery
@@ -47,7 +46,7 @@ export default function Collections() {
                     }
                 }}
             >
-                <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
+                <Box sx={{ position: 'relative', zIndex: 2, px: { xs: 2, sm: 4 }, maxWidth: '1200px', mr: 'auto' }}>
                     <Typography
                         variant={isMobile ? 'h3' : 'h1'}
                         sx={{
@@ -74,14 +73,14 @@ export default function Collections() {
                     >
                         Discover the leading NFT collections on XRPNFT, ranked by metrics such as volume, floor price, and other key stats.
                     </Typography>
-                </Container>
+                </Box>
             </Box>
 
-            <Container maxWidth="xl">
-                <Stack sx={{mt: 5, minHeight: '50vh'}}>
+            <Box sx={{ width: '100%' }}>
+                <Stack sx={{mt: 5, minHeight: '50vh', px: { xs: 2, sm: 3, md: 4 }}}>
                     <CollectionList type={CollectionListType.ALL}/>
                 </Stack>
-            </Container>
+            </Box>
         </>
     );
 }

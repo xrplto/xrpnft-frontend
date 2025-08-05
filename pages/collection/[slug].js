@@ -4,7 +4,6 @@ import { performance } from 'perf_hooks';
 // Material
 import {
     Box,
-    Container,
     styled,
     Toolbar
 } from '@mui/material';
@@ -28,14 +27,14 @@ const OverviewWrapper = styled(Box)(
 
 export default function Overview({data}) {
     return (
-        <OverviewWrapper>
+        <OverviewWrapper className="collection-page-main">
             <Toolbar id="back-to-top-anchor" />
 
             <Header />
 
-            <Container maxWidth="xxl">
+            <Box sx={{ width: '100%' }}>
                 <Collection data={data}/>
-            </Container>
+            </Box>
 
             <ScrollToTop />
 

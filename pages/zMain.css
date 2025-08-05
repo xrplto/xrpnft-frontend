@@ -1,4 +1,73 @@
 
+/* Global layout constraints */
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+main {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (min-width: 600px) {
+  main {
+    padding: 0 24px;
+  }
+}
+
+@media (min-width: 900px) {
+  main {
+    padding: 0 32px;
+  }
+}
+
+@media (min-width: 1200px) {
+  main {
+    max-width: 1400px;
+    padding: 0 40px;
+  }
+}
+
+@media (min-width: 1536px) {
+  main {
+    max-width: 1536px;
+    padding: 0 48px;
+  }
+}
+
+/* Ensure all direct children of body respect max width */
+body > div {
+  max-width: 100%;
+}
+
+/* Full width for collections page */
+main:has(.collections-page-main) {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+/* Full width for explore page */
+main:has(.explore-page-main) {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+/* Full width for individual collection page */
+main:has(.collection-page-main) {
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+/* Fallback for browsers that don't support :has() */
+.collections-page-main,
+.explore-page-main,
+.collection-page-main {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+}
+
 .nftpreview1 {
   width: 128px;
   height: 128px;

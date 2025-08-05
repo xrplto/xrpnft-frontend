@@ -44,14 +44,38 @@ import { alpha, styled } from '@mui/material/styles';
 import Glass from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 
-// Create a styled component for the glass effect
+// Create styled components for better UI
 const GlassPanel = styled(Glass)(({ theme }) => ({
     background: alpha(theme.palette.background.paper, 0.7),
     backdropFilter: 'blur(10px)',
     borderRadius: theme.shape.borderRadius * 2,
-    padding: theme.spacing(3),
+    padding: theme.spacing(2),
     boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
     border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`
+}));
+
+const InfoRow = styled(Stack)(({ theme }) => ({
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing(1.5),
+    padding: theme.spacing(0.5, 0),
+    '& .label': {
+        minWidth: '100px',
+        color: theme.palette.text.secondary,
+        fontSize: '0.8125rem',
+        fontWeight: 500
+    },
+    '& .value': {
+        flex: 1,
+        color: theme.palette.text.primary,
+        wordBreak: 'break-word',
+        fontSize: '0.8125rem'
+    }
+}));
+
+const SectionDivider = styled(Divider)(({ theme }) => ({
+    margin: theme.spacing(1.5, 0),
+    borderColor: alpha(theme.palette.divider, 0.3)
 }));
 
 function getProperties(meta) {
@@ -202,31 +226,28 @@ export default function NFTDetails({ nft }) {
 
     return (
         <GlassPanel elevation={0}>
-            <Stack spacing={2} sx={{ mt: 2 }}>
+            <Stack spacing={1.5}>
                 <NFTPreview nft={nft} />
                 <Stack>
                     <Accordion defaultExpanded={!hasProperties}>
                         <AccordionSummary
-                            expandIcon={<ExpandMoreIcon color="primary" />}
+                            expandIcon={<ExpandMoreIcon color="primary" sx={{ fontSize: 20 }} />}
                             aria-controls="panel2bh-content"
                             id="panel2bh-header"
+                            sx={{ minHeight: 48, '&.Mui-expanded': { minHeight: 48 } }}
                         >
-                            <Stack
-                                spacing={2}
-                                direction="row"
-                                borderRadius={20}
-                            >
-                                <DescriptionIcon color="primary" />
-                                <Typography variant="s16" color="primary.main">
+                            <Stack spacing={1} direction="row" alignItems="center">
+                                <DescriptionIcon color="primary" sx={{ fontSize: 20 }} />
+                                <Typography variant="body2" color="primary.main" fontWeight={500}>
                                     Description
                                 </Typography>
                             </Stack>
                         </AccordionSummary>
-                        <AccordionDetails>
+                        <AccordionDetails sx={{ py: 1.5 }}>
                             {meta?.description ? (
-                                <Typography>{meta.description}</Typography>
+                                <Typography variant="body2" sx={{ fontSize: '0.8125rem' }}>{meta.description}</Typography>
                             ) : (
-                                <Typography sx={{ textAlign: 'center' }}>
+                                <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary', fontSize: '0.8125rem' }}>
                                     No description for this item
                                 </Typography>
                             )}
@@ -237,23 +258,22 @@ export default function NFTDetails({ nft }) {
                     <Accordion defaultExpanded={hasProperties}>
                         <AccordionSummary
                             id="panel3bh-header"
-                            expandIcon={<ExpandMoreIcon color="primary" />}
+                            expandIcon={<ExpandMoreIcon color="primary" sx={{ fontSize: 20 }} />}
                             aria-controls="panel3bh-content"
+                            sx={{ minHeight: 48, '&.Mui-expanded': { minHeight: 48 } }}
                         >
-                            <Stack spacing={2} direction="row">
+                            <Stack spacing={1} direction="row" alignItems="center">
                                 <Icon
                                     icon="majesticons:checkbox-list-detail-line"
-                                    fontSize={25}
-                                    style={{
-                                        color: theme.palette.primary.main
-                                    }}
+                                    fontSize={20}
+                                    style={{ color: theme.palette.primary.main }}
                                 />
-                                <Typography variant="s16" color="primary.main">
+                                <Typography variant="body2" color="primary.main" fontWeight={500}>
                                     Properties
                                 </Typography>
                             </Stack>
                         </AccordionSummary>
-                        <AccordionDetails>
+                        <AccordionDetails sx={{ py: 1.5 }}>
                             {hasProperties ? (
                                 <Properties
                                     properties={properties}
@@ -264,7 +284,7 @@ export default function NFTDetails({ nft }) {
                                 />
                             ) : (
                                 <Stack alignItems="center">
-                                    <Typography>No Properties</Typography>
+                                    <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '0.8125rem' }}>No Properties</Typography>
                                 </Stack>
                             )}
                         </AccordionDetails>
@@ -273,455 +293,322 @@ export default function NFTDetails({ nft }) {
                 <Stack>
                     <Accordion>
                         <AccordionSummary
-                            expandIcon={<ExpandMoreIcon color="primary" />}
+                            expandIcon={<ExpandMoreIcon color="primary" sx={{ fontSize: 20 }} />}
                             aria-controls="panel1bh-content"
                             id="panel1bh-header"
+                            sx={{ minHeight: 48, '&.Mui-expanded': { minHeight: 48 } }}
                         >
-                            <Stack spacing={2} direction="row">
-                                <ArticleIcon color="primary" />
-                                <Typography variant="s16" color="primary.main">
+                            <Stack spacing={1} direction="row" alignItems="center">
+                                <ArticleIcon color="primary" sx={{ fontSize: 20 }} />
+                                <Typography variant="body2" color="primary.main" fontWeight={500}>
                                     Details
                                 </Typography>
                             </Stack>
                         </AccordionSummary>
-                        <AccordionDetails>
-                            <Stack
-                                direction="row"
-                                spacing={2}
-                                alignItems="center"
-                            >
-                                <Typography variant="caption">Flags</Typography>
-                                <FlagsContainer Flags={flag} />
-                                <Typography variant="s6">
-                                    {strDateTime}
+                        <AccordionDetails sx={{ py: 1.5 }}>
+                            <Box sx={{ px: 0 }}>
+                                {/* Token Information */}
+                                <Typography variant="subtitle2" color="primary" sx={{ mb: 1, fontWeight: 600, fontSize: '0.875rem' }}>
+                                    Token Information
                                 </Typography>
-                            </Stack>
-                            {rarity_rank > 0 && (
-                                <Stack
-                                    direction="row"
-                                    spacing={2}
-                                    sx={{ mt: 2 }}
-                                >
-                                    <Typography variant="caption">
-                                        Rarity Rank
-                                    </Typography>
-                                    <Typography variant="s6">
-                                        # {rarity_rank}
-                                    </Typography>
-                                </Stack>
-                            )}
-                            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                                <Typography variant="caption">Taxon</Typography>
-                                <Typography variant="s6">{taxon}</Typography>
-                                <Typography variant="caption">
-                                    Transfer Fee
-                                </Typography>
-                                <Typography variant="s6">
-                                    {transferFee} %
-                                </Typography>
-                            </Stack>
-                            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                                <Typography variant="caption">
-                                    Collection
-                                </Typography>
-                                {cslug ? (
-                                    <Link
-                                        href={`/collection/${cslug}`}
-                                        underline="none"
-                                    >
-                                        <Typography sx={{ pl: 1 }}>
-                                            {collectionName}
+                                
+                                <InfoRow>
+                                    <Typography className="label">Created</Typography>
+                                    <Typography className="value">{strDateTime}</Typography>
+                                </InfoRow>
+                                
+                                <InfoRow>
+                                    <Typography className="label">Flags</Typography>
+                                    <Box className="value">
+                                        <FlagsContainer Flags={flag} />
+                                    </Box>
+                                </InfoRow>
+                                
+                                {rarity_rank > 0 && (
+                                    <InfoRow>
+                                        <Typography className="label">Rarity Rank</Typography>
+                                        <Typography className="value" sx={{ fontWeight: 600, color: 'primary.main' }}>
+                                            #{rarity_rank}
                                         </Typography>
-                                    </Link>
-                                ) : (
-                                    <Typography sx={{ pl: 1 }}>
-                                        {collectionName}
-                                    </Typography>
+                                    </InfoRow>
                                 )}
-                            </Stack>
-                            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                                <Typography variant="caption">
-                                    Volume
-                                </Typography>
-                                <Stack
-                                    direction="row"
-                                    spacing={0.5}
-                                    alignItems="center"
-                                >
-                                    <Icon icon={rippleSolid} />
-                                    <Typography variant="s6">
-                                        {fVolume(volume || 0)}
-                                    </Typography>
-                                    <Tooltip
-                                        title={
-                                            <Typography variant="body2">
-                                                Traded volume on XRPL
-                                            </Typography>
-                                        }
-                                    >
-                                        <Icon icon={infoFilled} />
-                                    </Tooltip>
-                                </Stack>
-                            </Stack>
-                            <Divider sx={{ mt: 2, mb: 2 }} />
+                                
+                                <InfoRow>
+                                    <Typography className="label">Taxon</Typography>
+                                    <Typography className="value">{taxon}</Typography>
+                                </InfoRow>
+                                
+                                <InfoRow>
+                                    <Typography className="label">Transfer Fee</Typography>
+                                    <Typography className="value">{transferFee}%</Typography>
+                                </InfoRow>
+                                
+                                <InfoRow>
+                                    <Typography className="label">Collection</Typography>
+                                    <Box className="value">
+                                        {cslug ? (
+                                            <Link href={`/collection/${cslug}`} underline="hover" color="primary">
+                                                {collectionName}
+                                            </Link>
+                                        ) : (
+                                            <Typography component="span">{collectionName}</Typography>
+                                        )}
+                                    </Box>
+                                </InfoRow>
+                                
+                                <InfoRow>
+                                    <Typography className="label">Volume</Typography>
+                                    <Stack className="value" direction="row" spacing={0.5} alignItems="center">
+                                        <Icon icon={rippleSolid} />
+                                        <Typography>{fVolume(volume || 0)}</Typography>
+                                        <Tooltip title="Traded volume on XRPL">
+                                            <Icon icon={infoFilled} fontSize={16} />
+                                        </Tooltip>
+                                    </Stack>
+                                </InfoRow>
+                                
+                                <SectionDivider />
 
-                            <Stack spacing={1}>
-                                <Typography variant="caption">Owner</Typography>
-                                <Stack
-                                    direction="row"
-                                    spacing={0.2}
-                                    alignItems="center"
-                                    sx={{
-                                        display: 'inline-flex',
-                                        overflowWrap: 'anywhere'
-                                    }}
-                                >
-                                    <Link
-                                        href={`/account/${account}`}
-                                        underline="hover"
-                                        // target="_blank"
-                                        variant="info"
-                                        // rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography sx={{ ml: 1 }}>
-                                            {account}
-                                        </Typography>
-                                    </Link>
-                                    <Link
-                                        underline="none"
-                                        color="inherit"
-                                        target="_blank"
-                                        href={`https://bithomp.com/explorer/${account}`}
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Tooltip title="Check on Bithomp">
+                                {/* Ownership */}
+                                <Typography variant="subtitle2" color="primary" sx={{ mb: 1, fontWeight: 600, fontSize: '0.875rem' }}>
+                                    Ownership
+                                </Typography>
+                                
+                                <InfoRow>
+                                    <Typography className="label">Owner</Typography>
+                                    <Stack className="value" direction="row" spacing={0.5} alignItems="center">
+                                        <Link href={`/account/${account}`} underline="hover" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+                                            {account.substring(0, 8)}...{account.substring(account.length - 6)}
+                                        </Link>
+                                        <Tooltip title="View on Bithomp">
                                             <IconButton
-                                                edge="end"
-                                                aria-label="bithomp"
                                                 size="small"
+                                                href={`https://bithomp.com/explorer/${account}`}
+                                                target="_blank"
+                                                rel="noreferrer noopener nofollow"
+                                                sx={{ padding: 0.25 }}
                                             >
-                                                <Avatar
-                                                    alt="bithomp"
-                                                    src="/static/bithomp.ico"
-                                                    sx={{
-                                                        width: 16,
-                                                        height: 16
-                                                    }}
-                                                />
+                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
                                             </IconButton>
                                         </Tooltip>
-                                    </Link>
-                                    <CopyToClipboard
-                                        text={account}
-                                        onCopy={() =>
-                                            openSnackbar('Copied!', 'success')
-                                        }
-                                    >
-                                        <Tooltip title="Click to copy">
-                                            <IconButton size="small">
-                                                <ContentCopyIcon
-                                                    fontSize="small"
-                                                    sx={{
-                                                        width: 16,
-                                                        height: 16
-                                                    }}
-                                                />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </CopyToClipboard>
-                                </Stack>
-                            </Stack>
-                            <Divider sx={{ mt: 2, mb: 2 }} />
-
-                            <Stack spacing={1}>
-                                <Typography variant="caption">
-                                    Issuer
-                                </Typography>
-                                <Stack
-                                    direction="row"
-                                    spacing={0.2}
-                                    alignItems="center"
-                                    sx={{
-                                        display: 'inline-flex',
-                                        overflowWrap: 'anywhere'
-                                    }}
-                                >
-                                    <Link
-                                        href={`/account/${issuer}`}
-                                        underline="hover"
-                                        // target="_blank"
-                                        variant="info"
-                                        // rel="noreferrer noopener nofollow"
-                                    >
-                                        <Typography sx={{ ml: 1 }}>
-                                            {issuer}
-                                        </Typography>
-                                    </Link>
-                                    <Link
-                                        underline="none"
-                                        color="inherit"
-                                        target="_blank"
-                                        href={`https://bithomp.com/explorer/${issuer}`}
-                                        rel="noreferrer noopener nofollow"
-                                    >
-                                        <Tooltip title="Check on Bithomp">
+                                        <CopyToClipboard text={account} onCopy={() => openSnackbar('Copied!', 'success')}>
+                                            <Tooltip title="Copy full address">
+                                                <IconButton size="small" sx={{ padding: 0.25 }}>
+                                                    <ContentCopyIcon sx={{ fontSize: 16 }} />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </CopyToClipboard>
+                                    </Stack>
+                                </InfoRow>
+                                
+                                <InfoRow>
+                                    <Typography className="label">Issuer</Typography>
+                                    <Stack className="value" direction="row" spacing={0.5} alignItems="center">
+                                        <Link href={`/account/${issuer}`} underline="hover" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+                                            {issuer.substring(0, 8)}...{issuer.substring(issuer.length - 6)}
+                                        </Link>
+                                        <Tooltip title="View on Bithomp">
                                             <IconButton
-                                                edge="end"
-                                                aria-label="bithomp"
                                                 size="small"
+                                                href={`https://bithomp.com/explorer/${issuer}`}
+                                                target="_blank"
+                                                rel="noreferrer noopener nofollow"
+                                                sx={{ padding: 0.25 }}
                                             >
-                                                <Avatar
-                                                    alt="bithomp"
-                                                    src="/static/bithomp.ico"
-                                                    sx={{
-                                                        width: 16,
-                                                        height: 16
-                                                    }}
-                                                />
+                                                <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
                                             </IconButton>
                                         </Tooltip>
-                                    </Link>
-                                    <CopyToClipboard
-                                        text={issuer}
-                                        onCopy={() =>
-                                            openSnackbar('Copied!', 'success')
-                                        }
-                                    >
-                                        <Tooltip title="Click to copy">
-                                            <IconButton size="small">
-                                                <ContentCopyIcon
-                                                    fontSize="small"
-                                                    sx={{
-                                                        width: 16,
-                                                        height: 16
-                                                    }}
-                                                />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </CopyToClipboard>
-                                </Stack>
-                            </Stack>
-                            <Divider sx={{ mt: 2, mb: 2 }} />
+                                        <CopyToClipboard text={issuer} onCopy={() => openSnackbar('Copied!', 'success')}>
+                                            <Tooltip title="Copy full address">
+                                                <IconButton size="small" sx={{ padding: 0.25 }}>
+                                                    <ContentCopyIcon sx={{ fontSize: 16 }} />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </CopyToClipboard>
+                                    </Stack>
+                                </InfoRow>
+                                
+                                <SectionDivider />
 
-                            <Stack spacing={1}>
-                                <Typography variant="caption">
-                                    NFTokenID
+                                {/* Technical Details */}
+                                <Typography variant="subtitle2" color="primary" sx={{ mb: 1, fontWeight: 600, fontSize: '0.875rem' }}>
+                                    Technical Details
                                 </Typography>
-                                <Link
-                                    href={`https://bithomp.com/explorer/${NFTokenID}`}
-                                    target="_blank"
-                                    variant="info"
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <Typography
-                                        sx={{ ml: 1 }}
-                                        style={{ wordWrap: 'break-word' }}
-                                    >
-                                        {NFTokenID}
-                                    </Typography>
-                                </Link>
-                            </Stack>
-                            <Divider sx={{ mt: 2, mb: 2 }} />
-                            <Stack spacing={1}>
-                                <Typography variant="caption">
-                                    Transaction
-                                </Typography>
-                                <Link
-                                    href={`https://bithomp.com/explorer/${hash}`}
-                                    target="_blank"
-                                    variant="info"
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <Typography
-                                        sx={{ ml: 1 }}
-                                        style={{ wordWrap: 'break-word' }}
-                                    >
-                                        {hash}
-                                    </Typography>
-                                </Link>
-                            </Stack>
-                            <Divider sx={{ mt: 2, mb: 2 }} />
+                                
+                                <InfoRow>
+                                    <Typography className="label">NFTokenID</Typography>
+                                    <Stack className="value" direction="row" spacing={0.5} alignItems="center">
+                                        <Link
+                                            href={`https://bithomp.com/explorer/${NFTokenID}`}
+                                            target="_blank"
+                                            rel="noreferrer noopener nofollow"
+                                            underline="hover"
+                                            sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}
+                                        >
+                                            {NFTokenID.substring(0, 12)}...{NFTokenID.substring(NFTokenID.length - 8)}
+                                        </Link>
+                                        <CopyToClipboard text={NFTokenID} onCopy={() => openSnackbar('Copied!', 'success')}>
+                                            <Tooltip title="Copy full ID">
+                                                <IconButton size="small" sx={{ padding: 0.25 }}>
+                                                    <ContentCopyIcon sx={{ fontSize: 14 }} />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </CopyToClipboard>
+                                    </Stack>
+                                </InfoRow>
+                                
+                                <InfoRow>
+                                    <Typography className="label">Transaction</Typography>
+                                    <Stack className="value" direction="row" spacing={0.5} alignItems="center">
+                                        <Link
+                                            href={`https://bithomp.com/explorer/${hash}`}
+                                            target="_blank"
+                                            rel="noreferrer noopener nofollow"
+                                            underline="hover"
+                                            sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}
+                                        >
+                                            {hash.substring(0, 12)}...{hash.substring(hash.length - 8)}
+                                        </Link>
+                                        <CopyToClipboard text={hash} onCopy={() => openSnackbar('Copied!', 'success')}>
+                                            <Tooltip title="Copy full hash">
+                                                <IconButton size="small" sx={{ padding: 0.25 }}>
+                                                    <ContentCopyIcon sx={{ fontSize: 14 }} />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </CopyToClipboard>
+                                    </Stack>
+                                </InfoRow>
+                                
+                                <SectionDivider />
 
-                            {memo && (
-                                <>
-                                    <Stack spacing={1}>
-                                        <Typography variant="caption">
+                                {memo && (
+                                    <>
+                                        <Typography variant="subtitle2" color="primary" sx={{ mb: 1, fontWeight: 600, fontSize: '0.875rem' }}>
                                             Memo
                                         </Typography>
                                         {isValidJSONOrObject(memo) ? (
-                                            <Accordion>
-                                                <AccordionSummary
-                                                    expandIcon={<ExpandMoreIcon color="primary" />}
-                                                    aria-controls="panel-memo-content"
-                                                    id="panel-memo-header"
-                                                >
-                                                    <Stack spacing={2} direction="row">
-                                                        <Icon
-                                                            icon="mdi:code-json"
-                                                            fontSize={25}
-                                                            style={{
-                                                                color: theme.palette.primary.main
-                                                            }}
-                                                        />
-                                                        <Typography variant="s16" color="primary.main">
-                                                            Memo (JSON)
-                                                        </Typography>
-                                                    </Stack>
-                                                </AccordionSummary>
-                                                <AccordionDetails>
-                                                    <Box sx={{ overflowX: 'auto' }}>
-                                                        <CodeHighlight json={parseMemo(memo)} />
-                                                    </Box>
-                                                </AccordionDetails>
-                                            </Accordion>
+                                            <Box sx={{ mb: 1 }}>
+                                                <Accordion sx={{ boxShadow: 'none', border: 1, borderColor: 'divider' }}>
+                                                    <AccordionSummary
+                                                        expandIcon={<ExpandMoreIcon sx={{ fontSize: 18 }} />}
+                                                        sx={{ minHeight: 40, '&.Mui-expanded': { minHeight: 40 } }}
+                                                    >
+                                                        <Stack spacing={0.5} direction="row" alignItems="center">
+                                                            <Icon icon="mdi:code-json" fontSize={16} />
+                                                            <Typography variant="caption">View JSON</Typography>
+                                                        </Stack>
+                                                    </AccordionSummary>
+                                                    <AccordionDetails>
+                                                        <Box sx={{ overflowX: 'auto' }}>
+                                                            <CodeHighlight json={parseMemo(memo)} />
+                                                        </Box>
+                                                    </AccordionDetails>
+                                                </Accordion>
+                                            </Box>
                                         ) : (
-                                            <Typography
-                                                sx={{ ml: 1 }}
-                                                style={{ wordWrap: 'break-word' }}
-                                            >
+                                            <Typography variant="body2" sx={{ mb: 2, wordBreak: 'break-word' }}>
                                                 {memo}
                                             </Typography>
                                         )}
-                                    </Stack>
-                                    <Divider sx={{ mt: 2, mb: 2 }} />
-                                </>
-                            )}
+                                        <SectionDivider />
+                                    </>
+                                )}
 
-                            <Stack spacing={1} mt={1}>
-                                <Typography variant="caption">
-                                    {`Parsed media files${
-                                        files?.filter((file) => file.isIPFS)
-                                            .length
-                                            ? ' (IPFS):'
-                                            : ':'
-                                    }`}
-                                </Typography>
-                                {files?.map((file, index) => {
-                                    // Determine the href for the "Cached" link
-                                    let cachedHref;
-                                    if (file.isIPFS && file.IPFSPinned) {
-                                        cachedHref = `https://gateway.xrpnft.com/ipfs/${file.IPFSPath}`;
-                                    } else if (!file.isIPFS && file.dfile) {
-                                        cachedHref = `https://s2.xrpnft.com/d1/${file.dfile}`;
-                                    }
+                                {/* Media Files */}
+                                {files && files.length > 0 && (
+                                    <>
+                                        <Typography variant="subtitle2" color="primary" sx={{ mb: 1, fontWeight: 600, fontSize: '0.875rem' }}>
+                                            Media Files {files.some(f => f.isIPFS) && '(IPFS)'}
+                                        </Typography>
+                                        <Stack spacing={1}>
+                                            {files.map((file) => {
+                                                let cachedHref;
+                                                if (file.isIPFS && file.IPFSPinned) {
+                                                    cachedHref = `https://gateway.xrpnft.com/ipfs/${file.IPFSPath}`;
+                                                } else if (!file.isIPFS && file.dfile) {
+                                                    cachedHref = `https://s2.xrpnft.com/d1/${file.dfile}`;
+                                                }
+                                                let convertedHref = file.convertedFile ? `https://s2.xrpnft.com/d1/${file.convertedFile}` : null;
+                                                
+                                                return (
+                                                    <InfoRow key={file.type}>
+                                                        <Typography className="label">{file.type}</Typography>
+                                                        <Stack className="value" spacing={0.5}>
+                                                            {/^https?:\/\//.test(file.parsedUrl) ? (
+                                                                <Link
+                                                                    href={file.parsedUrl}
+                                                                    target="_blank"
+                                                                    rel="noreferrer noopener nofollow"
+                                                                    underline="hover"
+                                                                    sx={{ fontSize: '0.75rem', wordBreak: 'break-all' }}
+                                                                >
+                                                                    {file.parsedUrl.length > 60 ? 
+                                                                        `${file.parsedUrl.substring(0, 40)}...${file.parsedUrl.substring(file.parsedUrl.length - 15)}` : 
+                                                                        file.parsedUrl
+                                                                    }
+                                                                </Link>
+                                                            ) : (
+                                                                <Typography variant="caption">{file.parsedUrl}</Typography>
+                                                            )}
+                                                            <Stack direction="row" spacing={0.5}>
+                                                                {cachedHref && (
+                                                                    <Link
+                                                                        href={cachedHref}
+                                                                        target="_blank"
+                                                                        rel="noreferrer noopener nofollow"
+                                                                        underline="hover"
+                                                                        sx={{ fontSize: '0.7rem' }}
+                                                                    >
+                                                                        [Cached]
+                                                                    </Link>
+                                                                )}
+                                                                {convertedHref && (
+                                                                    <Link
+                                                                        href={convertedHref}
+                                                                        target="_blank"
+                                                                        rel="noreferrer noopener nofollow"
+                                                                        underline="hover"
+                                                                        sx={{ fontSize: '0.7rem' }}
+                                                                    >
+                                                                        [Converted]
+                                                                    </Link>
+                                                                )}
+                                                            </Stack>
+                                                        </Stack>
+                                                    </InfoRow>
+                                                );
+                                            })}
+                                        </Stack>
+                                        <SectionDivider />
+                                    </>
+                                )}
 
-                                    let convertedHref = file.convertedFile ? `https://s2.xrpnft.com/d1/${file.convertedFile}` : null;
-                                    
-                                    return (
-                                        <Stack
-                                            key={file.type}
-                                            spacing={1}
-                                            alignItems="flex-start"
+                                {/* Raw Metadata */}
+                                <Box>
+                                    <Accordion sx={{ boxShadow: 'none', border: 1, borderColor: 'divider' }}>
+                                        <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon sx={{ fontSize: 18 }} />}
+                                            sx={{ minHeight: 40, '&.Mui-expanded': { minHeight: 40 } }}
                                         >
-                                            <Typography variant="caption">{`${file.type}:`}</Typography>
-                                            <Typography
-                                                variant="body2"
-                                                sx={{
-                                                    display: 'inline-flex',
-                                                    overflowWrap: 'anywhere'
-                                                }}
-                                            >
-                                                {/^https?:\/\//.test(
-                                                    file.parsedUrl
-                                                ) ? (
-                                                    <Link
-                                                        href={file.parsedUrl}
-                                                        sx={{
-                                                            display:
-                                                                'inline-flex',
-                                                            overflowWrap:
-                                                                'anywhere'
-                                                        }}
-                                                        underline="hover"
-                                                        target="_blank"
-                                                        variant="body2"
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        {file.parsedUrl}
-                                                    </Link>
-                                                ) : (
-                                                    file.parsedUrl
-                                                )}
-                                                {cachedHref && (
-                                                    <Link
-                                                        href={cachedHref}
-                                                        sx={{
-                                                            display:
-                                                                'inline-flex',
-                                                            whiteSpace:
-                                                                'nowrap',
-                                                            ml: 1
-                                                        }}
-                                                        underline="hover"
-                                                        target="_blank"
-                                                        variant="body2"
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        Cached
-                                                    </Link>
-                                                )}
-                                                {convertedHref && (
-                                                    <Link
-                                                        href={convertedHref}
-                                                        sx={{
-                                                            display:
-                                                                'inline-flex',
-                                                            whiteSpace:
-                                                                'nowrap',
-                                                            ml: 1
-                                                        }}
-                                                        underline="hover"
-                                                        target="_blank"
-                                                        variant="body2"
-                                                        rel="noreferrer noopener nofollow"
-                                                    >
-                                                        Converted
-                                                    </Link>
-                                                )}
-                                            </Typography>
-                                        </Stack>
-                                    );
-                                })}
-                            </Stack>
-
-                            <Divider sx={{ mt: 2, mb: 2 }} />
-
-                            {/* New Raw Metadata section */}
-                            <Stack>
-                                <Accordion>
-                                    <AccordionSummary
-                                        expandIcon={<ExpandMoreIcon color="primary" />}
-                                        aria-controls="panel-raw-metadata-content"
-                                        id="panel-raw-metadata-header"
-                                    >
-                                        <Stack spacing={2} direction="row">
-                                            <Icon
-                                                icon="mdi:code-json"
-                                                fontSize={25}
-                                                style={{
-                                                    color: theme.palette.primary.main
-                                                }}
-                                            />
-                                            <Typography variant="s16" color="primary.main">
-                                                Raw Metadata
-                                            </Typography>
-                                        </Stack>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        {meta ? (
-                                            <Box sx={{ overflowX: 'auto' }}>
-                                                <CodeHighlight json={meta} />
-                                            </Box>
-                                        ) : (
-                                            <Typography sx={{ textAlign: 'center' }}>
-                                                No raw metadata available
-                                            </Typography>
-                                        )}
-                                    </AccordionDetails>
-                                </Accordion>
-                            </Stack>
-
-                            <Divider sx={{ mt: 2, mb: 2 }} />
+                                            <Stack spacing={0.5} direction="row" alignItems="center">
+                                                <Icon icon="mdi:code-json" fontSize={16} />
+                                                <Typography variant="caption">Raw Metadata</Typography>
+                                            </Stack>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            {meta ? (
+                                                <Box sx={{ overflowX: 'auto' }}>
+                                                    <CodeHighlight json={meta} />
+                                                </Box>
+                                            ) : (
+                                                <Typography sx={{ textAlign: 'center' }}>
+                                                    No raw metadata available
+                                                </Typography>
+                                            )}
+                                        </AccordionDetails>
+                                    </Accordion>
+                                </Box>
+                            </Box>
                         </AccordionDetails>
                     </Accordion>
                 </Stack>

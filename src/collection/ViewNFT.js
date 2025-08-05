@@ -246,7 +246,6 @@ export default function ViewNFT({ collection }) {
                     position: 'relative',
                     overflow: 'hidden',
                     mb: { xs: 2, md: 6 }, // Reduced vertical margin on mobile
-                    mx: { xs: 1, md: 4 }, // Reduced horizontal margin on mobile
                     mt: { xs: 4, md: 12 } // Reduced top margin on mobile
                 }}
             >
@@ -462,7 +461,7 @@ export default function ViewNFT({ collection }) {
                 </GlassBox>
             </Box>
 
-            <Box sx={{ mx: { xs: 1, md: 4 } }}> {/* Reduced horizontal margin on mobile */}
+            <Box sx={{ width: '100%' }}>
                 {urlParamsReady && (
                     <ExploreNFT collection={collection} showBanner={false} urlParams={urlParams || {}} />
                 )}

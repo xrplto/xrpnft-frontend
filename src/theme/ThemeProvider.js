@@ -12,30 +12,33 @@ const ThemeProviderWrapper = (props) => {
     
     let baseTheme = themeCreator(darkMode);
 
-    // Create the main theme with full width for containers
+    // Create the main theme with wider constrained width for containers
     let mainTheme = createTheme(baseTheme, {
         components: {
             MuiContainer: {
                 styleOverrides: {
                     root: {
-                        maxWidth: '100% !important',
-                        paddingLeft: '0px', // No padding for mobile
-                        paddingRight: '0px', // No padding for mobile
+                        maxWidth: '1600px !important',
+                        margin: '0 auto',
+                        paddingLeft: '16px',
+                        paddingRight: '16px',
                         [baseTheme.breakpoints.up('sm')]: {
-                            paddingLeft: '4px',
-                            paddingRight: '4px',
-                        },
-                        [baseTheme.breakpoints.up('md')]: {
-                            paddingLeft: '8px',
-                            paddingRight: '8px',
-                        },
-                        [baseTheme.breakpoints.up('lg')]: {
-                            paddingLeft: '16px',
-                            paddingRight: '16px',
-                        },
-                        [baseTheme.breakpoints.up('xl')]: {
                             paddingLeft: '24px',
                             paddingRight: '24px',
+                        },
+                        [baseTheme.breakpoints.up('md')]: {
+                            paddingLeft: '32px',
+                            paddingRight: '32px',
+                        },
+                        [baseTheme.breakpoints.up('lg')]: {
+                            paddingLeft: '40px',
+                            paddingRight: '40px',
+                            maxWidth: '1400px !important',
+                        },
+                        [baseTheme.breakpoints.up('xl')]: {
+                            paddingLeft: '48px',
+                            paddingRight: '48px',
+                            maxWidth: '1536px !important',
                         },
                     },
                 },

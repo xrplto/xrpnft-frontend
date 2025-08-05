@@ -688,7 +688,7 @@ export function ExploreBanner({ collection }) {
                 }
             }}
         >
-            <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
+            <Box sx={{ position: 'relative', zIndex: 2, px: { xs: 2, sm: 4 }, maxWidth: '1200px', mr: 'auto' }}>
                 <Typography
                     variant={isMobile ? 'h3' : 'h1'}
                     sx={{
@@ -723,7 +723,7 @@ export function ExploreBanner({ collection }) {
                 >
                     {subTitle}
                 </Typography>
-            </Container>
+            </Box>
         </Box>
     );
 }
@@ -2112,7 +2112,7 @@ export default function ExploreNFT({ collection, topMargin = 4, showBanner = tru
                     <ExploreBanner collection={collection} />
                 </Box>
             )}
-            <Container maxWidth={false} disableGutters sx={{ mt: topMargin }}>
+            <Box sx={{ mt: topMargin, width: '100%' }}>
                 <Box sx={{ width: '100%', typography: 'body1' }}>
                     <TabContext value={value}>
                         <Box sx={{ 
@@ -2160,7 +2160,7 @@ export default function ExploreNFT({ collection, topMargin = 4, showBanner = tru
                         )}
                     </TabContext>
                 </Box>
-            </Container>
+            </Box>
         </>
     );
 }

@@ -13,7 +13,6 @@ import {
     useMediaQuery,
     useTheme,
     styled,
-    Container,
     Typography,
     Select,
     MenuItem,
@@ -380,7 +379,7 @@ export default function CollectionList({ type, category }) {
     );
 
     return (
-        <Container maxWidth="xl">
+        <Box sx={{ width: '100%' }}>
             <Box sx={{ mt: { xs: 4, md: 6 }, mb: { xs: 4, md: 6 } }}>
                 <GradientTypography
                     variant="h2"
@@ -644,6 +643,6 @@ export default function CollectionList({ type, category }) {
                     total={total}
                 />
             </Box>
-        </Container>
+        </Box>
     );
 }
