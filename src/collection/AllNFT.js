@@ -3,14 +3,17 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 // Components
-import ExploreNFT from 'src/explore';
+import ExploreNFT from './ExploreNFT';
 
 export default function AllNFT() {
     const router = useRouter();
-    const [urlParams, setUrlParams] = useState(null); // Start with null to indicate loading
+    const [urlParams, setUrlParams] = useState({}); // Start with empty object
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
+        // Wait for router to be ready
+        if (!router.isReady) return;
+        
         // Parse URL parameters
         const params = new URLSearchParams(window.location.search);
         const issuer = params.get('issuer');
@@ -30,22 +33,19 @@ export default function AllNFT() {
             routerAsPath: router.asPath
         });
 
-        setUrlParams({
-            issuer,
-            taxon,
-            filterAttrs: filterAttrs ? JSON.parse(filterAttrs) : null
-        });
+        const newUrlParams = {};
+        if (issuer) newUrlParams.issuer = issuer;
+        if (taxon) newUrlParams.taxon = taxon;
+        if (filterAttrs) newUrlParams.filterAttrs = JSON.parse(filterAttrs);
+        
+        setUrlParams(newUrlParams);
         setIsReady(true);
-    }, [router.asPath]);
+    }, [router.isReady, router.asPath]);
 
-    // Don't render until URL params are parsed
-    if (!isReady) {
-        return null;
-    }
-
+    // Always render, even without URL params
     return (
         <>
-            <ExploreNFT collection={null} urlParams={urlParams || {}} />
+            <ExploreNFT collection={null} urlParams={urlParams} />
         </>
     );
 }

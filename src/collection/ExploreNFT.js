@@ -1167,26 +1167,14 @@ export function NFTs({ collection, urlParams = {} }) {
     const fetchNfts = useCallback(async () => {
         if (loading) return;
         
-        // Don't fetch if we're on explore page or collection with filters and URL params haven't been loaded yet
-        const pathname = window.location.pathname;
-        const isExplore = pathname === '/explore' || pathname.includes('/explore');
-        const isCollectionWithFilters = pathname.includes('/collection/') && window.location.search.includes('filterAttrs');
-        
         console.log('[NFTs] fetchNfts called:', {
-            pathname,
-            isExplore,
-            isCollectionWithFilters,
+            pathname: window.location.pathname,
             urlParamsLength: Object.keys(urlParams).length,
             urlParams,
             loading,
             filterAttrs,
             timestamp: new Date().toISOString()
         });
-        
-        if ((isExplore || isCollectionWithFilters) && Object.keys(urlParams).length === 0) {
-            console.log('[NFTs] Skipping fetch - waiting for URL params');
-            return;
-        }
         
         setLoading(true);
         const limit = 32;
@@ -1340,11 +1328,11 @@ export function NFTs({ collection, urlParams = {} }) {
             hasCollection: !!collection,
             urlParamsLength: Object.keys(urlParams).length,
             urlParams,
-            shouldReset: (isExplore || isCollectionWithFilters) && !collection && Object.keys(urlParams).length > 0,
             timestamp: new Date().toISOString()
         });
         
-        if ((isExplore || isCollectionWithFilters) && !collection && Object.keys(urlParams).length > 0) {
+        // Reset when URL params change
+        if ((isExplore || isCollectionWithFilters) && !collection) {
             console.log('[NFTs] Resetting NFTs due to URL param change');
             setPage(0);
             setNfts([]);

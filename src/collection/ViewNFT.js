@@ -38,7 +38,7 @@ import { fNumber, fVolume } from 'src/utils/formatNumber';
 import { AppContext } from 'src/AppContext';
 
 // Components
-import ExploreNFT from 'src/explore';
+import ExploreNFT from './ExploreNFT';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
 import Watch from 'src/components/Watch';
 
