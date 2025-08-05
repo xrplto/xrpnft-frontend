@@ -18,7 +18,7 @@ export default function Detail({ nft }) {
             <Box py={2}>
                 <Grid
                     container
-                    spacing={3} // Changed back to 3 for better spacing in the wider layout
+                    spacing={2} // Reduced spacing for closer components
                     justifyContent="center"
                     alignItems="flex-start"
                 >
@@ -26,15 +26,11 @@ export default function Detail({ nft }) {
                         <NFTDetails nft={nft} />
                     </Grid>
                     <Grid item xs={12} md={7}> {/* Changed from md={6} to md={7} */}
-                        <Box mt={isMobile ? 4 : 0}>
-                            {' '}
-                            {/* Add top margin on mobile */}
-                            {status === NFToken.SELL_WITH_MINT_BULK ? (
-                                <NFTActionsBulk nft={nft} />
-                            ) : (
-                                <NFTActions nft={nft} />
-                            )}
-                        </Box>
+                        {status === NFToken.SELL_WITH_MINT_BULK ? (
+                            <NFTActionsBulk nft={nft} />
+                        ) : (
+                            <NFTActions nft={nft} />
+                        )}
                     </Grid>
                 </Grid>
             </Box>
