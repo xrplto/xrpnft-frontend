@@ -15,9 +15,7 @@ export default function Detail({ nft }) {
 
     return (
         <Container maxWidth="xl"> {/* Changed from "lg" to "xl" for a wider layout */}
-            <Box py={8}>
-                {' '}
-                {/* Increased vertical padding */}
+            <Box py={2}>
                 <Grid
                     container
                     spacing={3} // Changed back to 3 for better spacing in the wider layout
