@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Material
-import { Box, Link, Stack, Typography, IconButton, Container } from '@mui/material';
+import { Box, Link, Stack, Typography, IconButton } from '@mui/material';
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import Glass from '@mui/material/Paper';
 
@@ -47,7 +47,7 @@ export default function Footer() {
 
     return (
         <FooterWrapper>
-            <Container maxWidth="lg">
+            <Box sx={{ px: { xs: 2, sm: 3, md: 4, lg: 5, xl: 6 } }}>
                 <Stack
                     direction={{ xs: 'column', sm: 'row' }}
                     justifyContent="space-between"
@@ -105,7 +105,7 @@ export default function Footer() {
                         </SocialIcon>
                     </Stack>
                 </Stack>
-            </Container>
+            </Box>
         </FooterWrapper>
     );
 }
