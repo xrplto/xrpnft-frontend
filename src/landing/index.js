@@ -744,7 +744,7 @@ function CollectionList({ collections }) {
         <TableContainer
             sx={{
                 width: '100%',
-                maxWidth: { xs: '100%', sm: '100%', md: '95%', lg: '90%' },
+                maxWidth: { xs: '100%', sm: '100%', md: '100%', lg: '100%' },
                 margin: '0 auto',
                 borderRadius: { xs: 0, sm: theme.shape.borderRadius * 0.1 },
                 overflow: 'hidden',
@@ -940,7 +940,7 @@ export default function Landing({ collections = [] }) {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ px: { xs: 0.5, sm: 2, md: 3 } }}>
+        <Container maxWidth="xl" sx={{ px: { xs: 0.5, sm: 2, md: 3 } }}>
             <Box sx={{ position: 'relative', minHeight: '100vh' }}>
                 <Grid
                     container
@@ -1147,8 +1147,8 @@ export default function Landing({ collections = [] }) {
                         maxWidth: {
                             xs: '100%',
                             sm: '100%',
-                            md: '95%',
-                            lg: '90%'
+                            md: '100%',
+                            lg: '100%'
                         },
                         margin: '0 auto'
                     }}
