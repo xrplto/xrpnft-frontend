@@ -56,68 +56,21 @@ import { Icon } from '@iconify/react';
 import arrowsExchange from '@iconify/icons-gg/arrows-exchange';
 
 // Styled Components
-const AutoStack = styled(Stack)(
-    ({ theme }) => `
-        align-items: center;
-        @media (min-width: ${theme.breakpoints.values.md}px) {
-            align-items: flex-start;
-        }
-    `
-);
+const HeroButton = styled(Button)(({ theme }) => ({
+    padding: '10px 20px',
+    fontWeight: 500,
+    fontSize: '0.9375rem',
+    textTransform: 'none',
+    borderRadius: theme.shape.borderRadius,
+    transition: 'all 0.2s ease',
+    '&:hover': {
+        transform: 'translateY(-1px)'
+    }
+}));
 
-const GradientTypography = styled(Typography)(
-    ({ theme }) => `
-        background: linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main});
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
-    `
-);
-
-const HeroButton = styled(Button)(
-    ({ theme }) => `
-        padding: 11px 24px;
-        font-weight: 600;
-        font-size: 1rem;
-        text-transform: none;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        height: 46px;
-        box-sizing: border-box;
-        line-height: 1.2;
-        
-        &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        &.MuiButton-contained {
-            background: linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main});
-            color: ${theme.palette.common.white};
-            border: 1px solid transparent;
-            padding: 12px 24px;
-
-            &:hover {
-                background: linear-gradient(45deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark});
-            }
-        }
-
-        &.MuiButton-outlined {
-            border: 1px solid ${theme.palette.primary.main};
-            color: ${theme.palette.primary.main};
-
-            &:hover {
-                background: rgba(${theme.palette.primary.main}, 0.05);
-            }
-        }
-    `
-);
-
-const AnimatedText = styled(Box)(({ theme }) => ({
-    display: 'inline-block',
-    minWidth: '200px',
-    fontWeight: 'bold',
-    color: theme.palette.primary.main
+const AnimatedText = styled('span')(({ theme }) => ({
+    color: theme.palette.primary.main,
+    fontWeight: 500
 }));
 
 const CustomImage = styled('img')(({ theme }) => ({
@@ -140,69 +93,40 @@ const CustomCarousel = styled(Carousel)(({ theme }) => ({
     }
 }));
 
-const CollectionCard = styled(Paper)(({ theme }) => ({
+const FeaturedCard = styled(Box)(({ theme }) => ({
     position: 'relative',
     overflow: 'hidden',
-    transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+    borderRadius: theme.shape.borderRadius * 2,
+    background: theme.palette.background.paper,
+    transition: 'transform 0.2s ease',
     '&:hover': {
-        transform: 'translateY(-5px)',
-        boxShadow: `0 8px 16px ${theme.palette.primary.main}20`
-    },
-    '&::after': {
-        content: '""',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: `linear-gradient(to bottom, ${theme.palette.background.default}00 70%, ${theme.palette.background.default}B3 100%)`,
-        pointerEvents: 'none'
-    },
-    width: '100%',
-    height: '100%',
-    margin: '0 auto',
-    display: 'flex',
-    flexDirection: 'column',
-    background: theme.palette.background.paper
+        transform: 'scale(1.02)'
+    }
 }));
 
-const CollectionInfo = styled(Stack)(({ theme }) => ({
-    position: 'relative',
-    padding: theme.spacing(1),
-    zIndex: 1
-}));
 
-const GradientText = styled(Typography)(({ theme }) => ({
-    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    display: 'inline-block'
-}));
-
-const VerificationBadge = styled('div')(({ theme }) => ({
+const VerificationBadge = styled('span')(({ theme }) => ({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 16,
-    height: 16,
+    width: 14,
+    height: 14,
     borderRadius: '50%',
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.common.white,
-    '& svg': {
-        fontSize: 12,
-    },
+    marginLeft: theme.spacing(0.5),
+    '& svg': { fontSize: 10 }
 }));
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
-    backgroundColor: 'transparent',
     '& .MuiTableCell-root': {
-        backgroundColor: 'transparent',
-        borderBottom: `1px solid ${theme.palette.divider}`,
-        padding: theme.spacing(1, 0.5),
-        [theme.breakpoints.up('sm')]: {
-            padding: theme.spacing(1.5, 2),
-        },
-    },
+        borderBottom: 'none',
+        padding: theme.spacing(1, 1),
+        fontSize: '0.8125rem',
+        fontWeight: 500,
+        color: alpha(theme.palette.text.secondary, 0.6),
+        backgroundColor: 'transparent'
+    }
 }));
 
 const StickyTableCell = withStyles((theme) => ({
@@ -228,119 +152,16 @@ const TransitionTypo = styled(Typography)(
     `
 );
 
-const CardOverlay = styled('div')(
-    ({ theme }) => `
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    background: ${theme.palette.primary.main};
-    inset: 0;
-    opacity: 0;
-    z-index: 1;
-    transition: opacity 0.5s;
-    &:hover {
-        opacity: 0.3;
+
+const CollectionIcon = styled('img')(({ theme }) => ({
+    width: 40,
+    height: 40,
+    borderRadius: theme.shape.borderRadius,
+    objectFit: 'cover',
+    [theme.breakpoints.down('sm')]: {
+        width: 32,
+        height: 32
     }
-`
-);
-
-const CardWrapper = styled('div')(
-    ({ theme }) => `
-        box-shadow: 0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)};
-        border-radius: ${theme.shape.borderRadius * 2}px;
-        backdrop-filter: blur(50px);
-        background: ${alpha(theme.palette.background.paper, 0.9)};
-        padding: ${theme.spacing(1)};
-        text-align: center;
-        object-fit: cover;
-        cursor: pointer;
-        overflow: hidden;
-        transition: all 0.3s ease-in-out;
-        &:hover {
-            box-shadow: 0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.2)};
-            background: ${alpha(theme.palette.background.paper, 0.95)};
-        }
-  `
-);
-
-const IconCover = styled('div')(
-    ({ theme }) => `
-        width: 50px;
-        height: 50px;
-        box-shadow: ${theme.shadows[4]};
-        border: 1px solid ${theme.palette.divider};
-        background-color: ${theme.palette.background.neutral};
-        position: relative;
-        overflow: hidden;
-        transition: width 1s ease-in-out, height .5s ease-in-out !important;
-        -webkit-tap-highlight-color: transparent;
-        border-radius: ${theme.shape.borderRadius * 1.5}px;
-        &:hover, &.Mui-focusVisible {
-            z-index: 1;
-            & .MuiImageBackdrop-root {
-                opacity: 0.1;
-            }
-            & .MuiIconEditButton-root {
-                opacity: 1;
-            }
-        }
-
-        ${theme.breakpoints.down('sm')} {
-            width: 35px;
-            height: 35px;
-            border-radius: ${theme.shape.borderRadius}px;
-        }
-    `
-);
-
-const IconWrapper = styled('div')(
-    ({ theme }) => `
-        box-sizing: border-box;
-        display: inline-block;
-        position: relative;
-        width: 48px;
-        height: 48px;
-        border-radius: 10px;
-
-        ${theme.breakpoints.down('sm')} {
-            width: 33px;
-            height: 33px;
-            border-radius: 7px;
-        }
-  `
-);
-
-const IconImage = styled('img')(
-    ({ theme }) => `
-    position: absolute;
-    inset: 0px;
-    box-sizing: border-box;
-    padding: 0px;
-    border: none;
-    margin: auto;
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 12px;
-
-    ${theme.breakpoints.down('sm')} {
-        border-radius: 8px;
-    }
-  `
-);
-
-const ImageBackdrop = styled('span')(({ theme }) => ({
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    backgroundColor: theme.palette.common.black,
-    opacity: 0,
-    transition: theme.transitions.create('opacity')
 }));
 
 const AdminImage = styled(LazyLoadImage)(({ theme }) => ({
@@ -529,7 +350,14 @@ function Row({ id, item, volumeType, currency, convertToUsd }) {
             hover
             key={uuid}
             onClick={handleRowClick}
-            style={{ cursor: 'pointer' }}
+            sx={{ 
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                '&:hover': {
+                    backgroundColor: alpha(theme.palette.action.hover, 0.02),
+                    transform: 'translateX(2px)'
+                }
+            }}
         >
             <TableCell align="left" sx={{ py: 1.5, px: { xs: 0.5, sm: 2 }, border: 'none' }}>
                 <Stack
@@ -548,17 +376,10 @@ function Row({ id, item, volumeType, currency, convertToUsd }) {
                     >
                         {id}
                     </Typography>
-                    <Link href={`/collection/${slug}`} underline="none">
-                        <IconCover>
-                            <IconWrapper>
-                                <IconImage
-                                    src={logoImageUrl}
-                                    alt={`${name} logo`}
-                                />
-                            </IconWrapper>
-                            <ImageBackdrop className="MuiImageBackdrop-root" />
-                        </IconCover>
-                    </Link>
+                    <CollectionIcon
+                        src={logoImageUrl}
+                        alt={`${name} logo`}
+                    />
 
                     <Link underline="none" href={`/collection/${slug}`}>
                         <Stack spacing={0.5}>
@@ -567,7 +388,7 @@ function Row({ id, item, volumeType, currency, convertToUsd }) {
                                     variant={isMobile ? 'body2' : 'subtitle2'}
                                     noWrap
                                     sx={{
-                                        maxWidth: isMobile ? '80px' : '150px',
+                                        maxWidth: isMobile ? '120px' : '200px',
                                         textOverflow: 'ellipsis',
                                         fontWeight: 600,
                                         color: theme.palette.text.primary
@@ -657,12 +478,11 @@ function Row({ id, item, volumeType, currency, convertToUsd }) {
 // CollectionList Component
 function CollectionList({ collections }) {
     const [visibleRows, setVisibleRows] = useState(10);
-    const [allVisible, setAllVisible] = useState(false);
     const [volumeType, setVolumeType] = useState('24h');
     const [order, setOrder] = useState('desc');
     const [orderBy, setOrderBy] = useState('totalVol24h');
     const [currency, setCurrency] = useState('XRP');
-    const [xrpToUsdRate, setXrpToUsdRate] = useState(0);
+    const [xrpToUsdRate, setXrpToUsdRate] = useState(0.64);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -688,16 +508,7 @@ function CollectionList({ collections }) {
     }, []);
 
     const handleViewMore = () => {
-        if (visibleRows + 10 >= collections.length) {
-            setVisibleRows(collections.length);
-            setAllVisible(true);
-        } else {
-            setVisibleRows((prevVisibleRows) => prevVisibleRows + 10);
-        }
-    };
-
-    const handleViewAll = () => {
-        window.location.href = '/collections';
+        setVisibleRows(prev => Math.min(prev + 10, collections.length));
     };
 
     const handleVolumeTypeChange = (event, newVolumeType) => {
@@ -741,44 +552,30 @@ function CollectionList({ collections }) {
     }, [collections, order, orderBy]);
 
     return (
-        <TableContainer
+        <Box
             sx={{
-                width: '100%',
-                maxWidth: { xs: '100%', sm: '100%', md: '100%', lg: '100%' },
-                margin: '0 auto',
-                borderRadius: { xs: 0, sm: theme.shape.borderRadius * 0.1 },
+                backgroundColor: alpha(theme.palette.background.paper, 0.2),
+                backdropFilter: 'blur(6px)',
+                borderRadius: theme.shape.borderRadius / 4,
                 overflow: 'hidden',
-                backdropFilter: 'blur(20px)',
-                background: alpha(theme.palette.background.paper, 0.15),
-                border: { xs: 'none', sm: `1px solid ${alpha(theme.palette.primary.main, 0.18)}` },
-                boxShadow: { xs: 'none', sm: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}` },
-                transition: 'all 0.3s ease-in-out',
-                '&:hover': {
-                    boxShadow: { xs: 'none', sm: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}` },
-                    background: alpha(theme.palette.background.paper, 0.2),
-                    outline: { xs: 'none', sm: `2px solid ${alpha(theme.palette.primary.main, 0.5)}` },
-                    outlineOffset: '2px'
-                },
-                padding: 0
+                border: `1px solid ${alpha(theme.palette.divider, 0.02)}`,
+                boxShadow: 'none'
             }}
         >
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    pr: { xs: 0.5, sm: 2 },
-                    pl: { xs: 0.5, sm: 2 },
-                    pt: 1,
-                    pb: 1
-                }}
-            >
-                <Box sx={{ display: 'flex', gap: 2 }}>
+            <Box sx={{ 
+                p: 1.5, 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center',
+                borderBottom: `1px solid ${alpha(theme.palette.divider, 0.02)}`
+            }}>
+                <Stack direction="row" spacing={1}>
                     <ToggleButtonGroup
                         value={volumeType}
                         exclusive
                         onChange={handleVolumeTypeChange}
                         size="small"
+                        sx={{ '& .MuiToggleButton-root': { py: 0.5, px: 1.5, fontSize: '0.8125rem' } }}
                     >
                         <ToggleButton value="24h">24h</ToggleButton>
                         <ToggleButton value="all">All</ToggleButton>
@@ -788,26 +585,14 @@ function CollectionList({ collections }) {
                         exclusive
                         onChange={handleCurrencyChange}
                         size="small"
+                        sx={{ '& .MuiToggleButton-root': { py: 0.5, px: 1.5, fontSize: '0.8125rem' } }}
                     >
                         <ToggleButton value="XRP">XRP</ToggleButton>
                         <ToggleButton value="USD">USD</ToggleButton>
                     </ToggleButtonGroup>
-                </Box>
-                <Link href="/collections" underline="none">
-                    <Typography
-                        variant="button"
-                        color="primary"
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            cursor: 'pointer',
-                            '&:hover': {
-                                textDecoration: 'underline'
-                            }
-                        }}
-                    >
-                        See All <span style={{ marginLeft: '4px' }}>&gt;</span>
-                    </Typography>
+                </Stack>
+                <Link href="/collections" underline="hover" sx={{ fontSize: '0.875rem' }}>
+                    View All →
                 </Link>
             </Box>
             <Table
@@ -841,48 +626,26 @@ function CollectionList({ collections }) {
                         ))}
                 </TableBody>
             </Table>
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    py: 0.5
-                }}
-            >
-                {allVisible ? (
-                    <Button
-                        onClick={handleViewAll}
-                        variant="outlined"
-                        color="primary"
-                        size="small"
-                        sx={{ minHeight: '24px', py: 0.5 }}
-                    >
-                        View All Collections
-                    </Button>
-                ) : visibleRows < collections.length ? (
+            {visibleRows < collections.length && (
+                <Box sx={{ p: 2, textAlign: 'center' }}>
                     <Button
                         onClick={handleViewMore}
-                        variant="outlined"
-                        color="primary"
+                        variant="text"
                         size="small"
-                        sx={{ minHeight: '24px', py: 0.5 }}
                     >
-                        View More
+                        Load More
                     </Button>
-                ) : null}
-            </Box>
-        </TableContainer>
+                </Box>
+            )}
+        </Box>
     );
 }
 
 // Main Landing Component
 export default function Landing({ collections = [] }) {
     const theme = useTheme();
-    const { darkMode } = useContext(AppContext);
-
     const [animatedText, setAnimatedText] = useState('with No Barriers');
     const phrases = ['with No Barriers', 'on Layer 1', 'with No Brokers'];
-
-    // Ensure collections is always an array
     const safeCollections = Array.isArray(collections) ? collections : [];
 
     useEffect(() => {
@@ -891,266 +654,107 @@ export default function Landing({ collections = [] }) {
             currentIndex = (currentIndex + 1) % phrases.length;
             setAnimatedText(phrases[currentIndex]);
         }, 3000);
-
         return () => clearInterval(intervalId);
     }, []);
 
-    const fadeAnimationHandler = (props, state) => {
-        const transitionTime = props.transitionTime + 'ms';
-        const transitionTimingFunction = 'ease-in-out';
-
-        let slideStyle = {
-            position: 'absolute',
-            display: 'block',
-            zIndex: -2,
-            minHeight: '100%',
-            opacity: 0,
-            top: 0,
-            right: 0,
-            left: 0,
-            bottom: 0,
-            transitionTimingFunction: transitionTimingFunction,
-            msTransitionTimingFunction: transitionTimingFunction,
-            MozTransitionTimingFunction: transitionTimingFunction,
-            WebkitTransitionTimingFunction: transitionTimingFunction,
-            OTransitionTimingFunction: transitionTimingFunction
-        };
-
-        if (!state.swiping) {
-            slideStyle = {
-                ...slideStyle,
-                WebkitTransitionDuration: transitionTime,
-                MozTransitionDuration: transitionTime,
-                OTransitionDuration: transitionTime,
-                transitionDuration: transitionTime,
-                msTransitionDuration: transitionTime
-            };
-        }
-
-        return {
-            slideStyle,
-            selectedStyle: {
-                ...slideStyle,
-                opacity: 1,
-                zIndex: 2,
-                position: 'relative'
-            },
-            prevStyle: { ...slideStyle }
-        };
-    };
 
     return (
-        <Container maxWidth="xl" sx={{ px: { xs: 0.5, sm: 2, md: 3 } }}>
-            <Box sx={{ position: 'relative', minHeight: '100vh' }}>
-                <Grid
-                    container
-                    spacing={0}
-                    sx={{
-                        mt: { xs: 0, sm: 0, md: 1 },
-                        mb: { xs: 2, md: 6 },
-                        position: 'relative',
-                        zIndex: 1
-                    }}
-                >
-                    <Grid
-                        item
-                        xs={12}
-                        md={7}
-                        lg={7}
-                        sx={{
-                            display: 'flex',
-                            justifyContent: { xs: 'center', md: 'flex-start' },
-                            pl: { xs: 0, md: 2 }
-                        }}
-                    >
-                        <AutoStack
-                            spacing={3}
+        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
+            <Grid container spacing={4} alignItems="center">
+                <Grid item xs={12} md={6}>
+                    <Stack spacing={3} alignItems={{ xs: 'center', md: 'flex-start' }}>
+                        <Typography
+                            variant="h2"
+                            fontWeight={600}
                             sx={{
-                                maxWidth: { xs: '100%', sm: '100%', md: '90%' },
-                                px: { xs: 0.5, sm: 0 }
+                                fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                                textAlign: { xs: 'center', md: 'left' }
                             }}
                         >
-                            <GradientTypography
-                                variant="h1"
-                                fontWeight="bold"
-                                sx={{
-                                    fontSize: {
-                                        xs: '2rem',
-                                        sm: '2.5rem',
-                                        md: '3rem',
-                                        lg: '3.5rem'
-                                    },
-                                    textAlign: { xs: 'center', md: 'left' },
-                                    whiteSpace: 'nowrap'
-                                }}
-                            >
-                                XRP NFT Marketplace
-                            </GradientTypography>
+                            XRP NFT Marketplace
+                        </Typography>
 
-                            <Typography
-                                variant="h5"
-                                color="text.secondary"
-                                sx={{
-                                    fontSize: {
-                                        xs: '1.25rem',
-                                        sm: '1.5rem',
-                                        md: '1.75rem'
-                                    },
-                                    textAlign: { xs: 'center', md: 'left' }
-                                }}
-                            >
-                                Trade XRP NFTs{' '}
-                                <AnimatedText component="span">
-                                    {animatedText}
-                                </AnimatedText>
-                            </Typography>
-
-                            <Stack
-                                direction={{ xs: 'column', sm: 'row' }}
-                                spacing={3}
-                                sx={{ mt: 4, width: '100%' }}
-                            >
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/collections`}
-                                    rel="noreferrer noopener nofollow"
-                                    sx={{ width: { xs: '100%', sm: 'auto' } }}
-                                >
-                                    <HeroButton variant="contained" fullWidth>
-                                        Explore Collections
-                                    </HeroButton>
-                                </Link>
-
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/create`}
-                                    rel="noreferrer noopener nofollow"
-                                    sx={{ width: { xs: '100%', sm: 'auto' } }}
-                                >
-                                    <HeroButton variant="outlined" fullWidth>
-                                        Create NFT
-                                    </HeroButton>
-                                </Link>
-                            </Stack>
-
-                            <Box
-                                sx={{
-                                    mt: 2,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: {
-                                        xs: 'center',
-                                        md: 'flex-start'
-                                    }
-                                }}
-                            >
-                                <Typography
-                                    variant="caption"
-                                    color="text.secondary"
-                                    sx={{ fontSize: '0.7rem' }}
-                                >
-                                    Supported Marketplaces: xrp.cafe, bidds, Art
-                                    Dept, XPMarket, Opul
-                                </Typography>
-                            </Box>
-                        </AutoStack>
-                    </Grid>
-                    <Grid item xs={12} md={5} lg={5}>
-                        <Box
+                        <Typography
+                            variant="h6"
+                            color="text.secondary"
                             sx={{
-                                position: 'relative',
-                                width: '100%',
-                                maxWidth: { xs: '100%', sm: '500px' },
-                                aspectRatio: '1 / 1',
-                                mx: 'auto',
-                                px: { xs: 1, sm: 0 }
+                                fontSize: { xs: '1.125rem', md: '1.25rem' },
+                                textAlign: { xs: 'center', md: 'left' }
                             }}
                         >
-                            {safeCollections.length > 0 ? (
-                                <CollectionCard elevation={0}>
-                                    <Link
-                                        underline="none"
-                                        color="inherit"
-                                        href={`/collection/${safeCollections[0].slug}`}
-                                        sx={{
-                                            display: 'block',
+                            Trade XRP NFTs <AnimatedText>{animatedText}</AnimatedText>
+                        </Typography>
+
+                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 2 }}>
+                            <HeroButton variant="contained" href="/collections">
+                                Explore Collections
+                            </HeroButton>
+                            <HeroButton variant="outlined" href="/create">
+                                Create NFT
+                            </HeroButton>
+                        </Stack>
+
+                        <Typography variant="caption" color="text.secondary">
+                            Works with: xrp.cafe • bidds • Art Dept • XPMarket • Opul
+                        </Typography>
+                    </Stack>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    {safeCollections.length > 0 && (
+                        <FeaturedCard>
+                            <Link
+                                href={`/collection/${safeCollections[0].slug}`}
+                                sx={{ display: 'block', position: 'relative' }}
+                            >
+                                <Box sx={{ aspectRatio: '1', overflow: 'hidden' }}>
+                                    <img
+                                        src={`https://s1.xrpnft.com/collection/${safeCollections[0].logoImage}`}
+                                        alt={safeCollections[0].name}
+                                        style={{
                                             width: '100%',
-                                            height: '100%'
+                                            height: '100%',
+                                            objectFit: 'cover'
+                                        }}
+                                    />
+                                </Box>
+                                <Box
+                                    sx={{
+                                        position: 'absolute',
+                                        bottom: 0,
+                                        left: 0,
+                                        right: 0,
+                                        p: 2,
+                                        background: 'linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0))'
+                                    }}
+                                >
+                                    <Typography
+                                        variant="h6"
+                                        sx={{
+                                            color: 'white',
+                                            fontWeight: 600,
+                                            display: 'flex',
+                                            alignItems: 'center'
                                         }}
                                     >
-                                        <CustomImage
-                                            src={`https://s1.xrpnft.com/collection/${safeCollections[0].logoImage}`}
-                                            alt={safeCollections[0].name}
-                                        />
-                                        <CollectionInfo
-                                            direction="row"
-                                            spacing={1}
-                                            alignItems="center"
-                                            justifyContent="center"
-                                            sx={{
-                                                position: 'absolute',
-                                                bottom: 0,
-                                                left: 0,
-                                                right: 0,
-                                                padding: 2
-                                            }}
-                                        >
-                                            <GradientText
-                                                variant="subtitle1"
-                                                sx={{
-                                                    color: theme.palette.text.primary,
-                                                    fontWeight: 600,
-                                                    textShadow: `0 1px 2px ${theme.palette.primary.main}80`,
-                                                    textAlign: 'center',
-                                                    flexGrow: 1,
-                                                    overflow: 'hidden',
-                                                    textOverflow: 'ellipsis',
-                                                    whiteSpace: 'nowrap',
-                                                    fontSize: '1.5rem',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    gap: '8px'
-                                                }}
-                                            >
-                                                {safeCollections[0].name}
-                                                {safeCollections[0].verified === 'yes' && (
-                                                    <Tooltip title="Verified">
-                                                        <VerificationBadge>
-                                                            <CheckIcon />
-                                                        </VerificationBadge>
-                                                    </Tooltip>
-                                                )}
-                                            </GradientText>
-                                        </CollectionInfo>
-                                    </Link>
-                                </CollectionCard>
-                            ) : null}
-                        </Box>
-                    </Grid>
+                                        {safeCollections[0].name}
+                                        {safeCollections[0].verified === 'yes' && (
+                                            <VerificationBadge>
+                                                <CheckIcon />
+                                            </VerificationBadge>
+                                        )}
+                                    </Typography>
+                                </Box>
+                            </Link>
+                        </FeaturedCard>
+                    )}
                 </Grid>
+            </Grid>
 
-                <Box
-                    sx={{
-                        mt: { xs: 3, md: 8 },
-                        mb: { xs: 3, md: 8 },
-                        px: { xs: 0.5, sm: 2 },
-                        width: '100%',
-                        maxWidth: {
-                            xs: '100%',
-                            sm: '100%',
-                            md: '100%',
-                            lg: '100%'
-                        },
-                        margin: '0 auto'
-                    }}
-                >
-                    <CollectionList collections={safeCollections} />
-                </Box>
-
-                <Box sx={{ height: { xs: 24, md: 48 } }} />
+            <Box sx={{ mt: { xs: 6, md: 10 } }}>
+                <Typography variant="h5" fontWeight={600} sx={{ mb: 3 }}>
+                    Top Collections
+                </Typography>
+                <CollectionList collections={safeCollections} />
             </Box>
         </Container>
     );
