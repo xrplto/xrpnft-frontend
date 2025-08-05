@@ -955,18 +955,12 @@ export default function Landing({ collections = [] }) {
                     <Grid
                         item
                         xs={12}
-                        md={1}
-                        sx={{ display: { xs: 'none', md: 'block' } }}
-                    />
-                    <Grid
-                        item
-                        xs={12}
-                        md={6}
-                        lg={6}
+                        md={7}
+                        lg={7}
                         sx={{
                             display: 'flex',
                             justifyContent: { xs: 'center', md: 'flex-start' },
-                            pl: { xs: 0, md: 4 }
+                            pl: { xs: 0, md: 2 }
                         }}
                     >
                         <AutoStack
