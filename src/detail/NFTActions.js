@@ -911,7 +911,7 @@ export default function NFTActions({ nft }) {
                     {!isOwner && lowestSellOffer && lowestSellOffer.hasBroker && (
                         <Box sx={{ p: 1.5, background: alpha(theme.palette.warning.main, 0.08), borderRadius: 1 }}>
                             <Typography variant="caption" color="text.secondary">
-                                Includes {(lowestSellOffer.brokerFeePercentage * 100).toFixed(1)}% broker fee • {lowestSellOffer.brokerName}
+                                Includes {(lowestSellOffer.brokerFeePercentage * 100).toFixed(3)}% broker fee • {lowestSellOffer.brokerName}
                             </Typography>
                         </Box>
                     )}
