@@ -50,34 +50,37 @@ import ShowChartIcon from '@mui/icons-material/ShowChart';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 
 // Add this new styled component for the stat cards
-const StatCard = styled(Paper)(({ theme }) => ({
-    padding: theme.spacing(1), // Reduced from 1.5
+const StatCard = styled(Box)(({ theme }) => ({
+    padding: theme.spacing(2),
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    textAlign: 'center',
-    transition: 'all 0.3s',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.background.paper, 0.6),
+    backdropFilter: 'blur(8px)',
+    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+    transition: 'all 0.2s ease-in-out',
     '&:hover': {
-        transform: 'translateY(-5px)',
-        boxShadow: theme.shadows[6]
+        backgroundColor: alpha(theme.palette.background.paper, 0.8),
+        borderColor: alpha(theme.palette.primary.main, 0.2)
     },
     [theme.breakpoints.down('sm')]: {
-        padding: theme.spacing(0.5), // Further reduced padding on mobile
+        padding: theme.spacing(1.5),
     }
 }));
 
 const IconCover = styled('div')(({ theme }) => ({
-    width: 220,
-    height: 220,
+    width: 180,
+    height: 180,
     position: 'relative',
     overflow: 'hidden',
     borderRadius: theme.shape.borderRadius * 2,
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    boxShadow: theme.shadows[8],
     [theme.breakpoints.down('sm')]: {
-        width: 100, // Reduced from 120
-        height: 100 // Reduced from 120
+        width: 120,
+        height: 120
     }
 }));
 
@@ -88,66 +91,25 @@ const IconImage = styled('img')({
     borderRadius: 'inherit'
 });
 
-const StatItem = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginRight: theme.spacing(3),
-    marginBottom: theme.spacing(2)
-}));
 
-const GlassBox = styled(Box)(({ theme }) => ({
-    background: alpha(theme.palette.background.paper, 0.1),
-    backdropFilter: 'blur(10px)',
-    borderRadius: theme.shape.borderRadius * 2,
-    padding: theme.spacing(3),
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
-    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
-    '&:hover': {
-        background: alpha(theme.palette.background.paper, 0.15),
-        boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.3)}`
+const HeaderContainer = styled(Box)(({ theme }) => ({
+    position: 'relative',
+    background: alpha(theme.palette.background.default, 0.9),
+    backdropFilter: 'blur(20px)',
+    borderRadius: 0,
+    padding: theme.spacing(4, 0),
+    overflow: 'hidden',
+    width: '100%',
+    marginBottom: theme.spacing(4),
+    [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(2, 0),
+        marginBottom: theme.spacing(2),
     }
 }));
 
-const StyledDivider = styled(Divider)(({ theme }) => ({
-    margin: theme.spacing(4, 0),
-    background: `linear-gradient(90deg, ${alpha(
-        theme.palette.primary.main,
-        0
-    )} 0%, ${alpha(theme.palette.primary.main, 0.5)} 50%, ${alpha(
-        theme.palette.primary.main,
-        0
-    )} 100%)`
-}));
 
-const BackgroundImage = styled('div')(({ theme }) => ({
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    filter: 'blur(20px)',
-    opacity: 0.3,
-    zIndex: -1
-}));
 
-const BackgroundBlur = styled('div')(({ theme }) => ({
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    filter: 'blur(20px)',
-    opacity: 0.3,
-    zIndex: -1
-}));
 
-// Add this import
 import CheckIcon from '@mui/icons-material/Check';
 
 // Add this new styled component for the verification badge
@@ -155,14 +117,14 @@ const VerificationBadge = styled('div')(({ theme }) => ({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
     borderRadius: '50%',
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.common.white,
-    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    marginLeft: theme.spacing(1),
     '& svg': {
-        fontSize: 14
+        fontSize: 16
     }
 }));
 
@@ -241,19 +203,7 @@ export default function ViewNFT({ collection }) {
 
     return (
         <>
-            <Box
-                sx={{
-                    position: 'relative',
-                    overflow: 'hidden',
-                    mb: { xs: 2, md: 6 }, // Reduced vertical margin on mobile
-                    mt: 0 // Removed top margin
-                }}
-            >
-                <BackgroundImage
-                    sx={{
-                        backgroundImage: `url(https://s1.xrpnft.com/collection/${logoImage})`
-                    }}
-                />
+            <HeaderContainer>
                 <Box
                     sx={{
                         position: 'absolute',
@@ -261,213 +211,208 @@ export default function ViewNFT({ collection }) {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        bgcolor: (theme) =>
-                            alpha(theme.palette.background.default, 0.8),
-                        backdropFilter: 'blur(15px)',
+                        backgroundImage: `url(https://s1.xrpnft.com/collection/${logoImage})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        filter: 'blur(50px)',
+                        opacity: 0.2,
                         zIndex: 0
                     }}
                 />
-                <GlassBox
+                <Box
                     sx={{
-                        display: 'flex',
-                        flexDirection: { xs: 'column', md: 'row' },
-                        alignItems: { xs: 'center', md: 'center' }, // Changed to center vertically
+                        px: { xs: 2, sm: 3, md: 4 },
                         position: 'relative',
-                        zIndex: 1,
-                        py: { xs: 1.5, md: 3 }, // Reduced vertical padding on mobile
-                        px: { xs: 1.5, md: 3 }, // Added horizontal padding reduction on mobile
-                        height: { xs: 'auto', md: 'auto' } // Let content determine height
+                        zIndex: 1
                     }}
                 >
-                    <IconCover
+                    <Box
                         sx={{
-                            mr: { md: 4 },
-                            mb: { xs: 1.5, md: 0 }, // Reduced bottom margin on mobile
-                            width: { xs: 100, md: 220 }, // Adjusted width
-                            height: { xs: 100, md: 220 }, // Adjusted height
-                            border: 'none',
-                            boxShadow: (theme) =>
-                                `0 10px 30px ${alpha(
-                                    theme.palette.primary.main,
-                                    0.3
-                                )}`
+                            display: 'flex',
+                            flexDirection: { xs: 'column', md: 'row' },
+                            alignItems: { xs: 'center', md: 'flex-start' },
+                            gap: { xs: 3, md: 4 }
                         }}
                     >
-                        <BackgroundBlur
-                            sx={{
-                                backgroundImage: `url(https://s1.xrpnft.com/collection/${logoImage})`
-                            }}
-                        />
-                        <IconImage
-                            src={`https://s1.xrpnft.com/collection/${logoImage}`}
-                            alt={name}
-                        />
-                    </IconCover>
+                        <IconCover>
+                            <IconImage
+                                src={`https://s1.xrpnft.com/collection/${logoImage}`}
+                                alt={name}
+                            />
+                        </IconCover>
 
-                    <Box sx={{ 
-                        flex: 1,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        height: '100%',
-                        overflow: 'visible'
-                    }}>
-                        <Stack
-                            direction={fullScreen ? 'column' : 'row'}
-                            spacing={{ xs: 0.5, md: 2 }} // Reduced spacing on mobile
-                            justifyContent="space-between"
-                            alignItems={fullScreen ? 'center' : 'flex-start'}
-                            sx={{ mb: { xs: 0.5, md: 3 } }} // Reduced margin on mobile
-                        >
+                        <Box sx={{ flex: 1, width: '100%' }}>
                             <Stack
                                 direction="row"
-                                spacing={1}
-                                alignItems="center"
+                                justifyContent="space-between"
+                                alignItems="flex-start"
+                                sx={{ mb: 2 }}
                             >
-                                <Typography
-                                    variant="h3"
-                                    fontWeight="bold"
-                                    color="primary.main"
+                                <Box>
+                                    <Stack
+                                        direction="row"
+                                        alignItems="center"
+                                        sx={{ mb: 1 }}
+                                    >
+                                        <Typography
+                                            variant={isMobile ? 'h4' : 'h3'}
+                                            fontWeight="600"
+                                            sx={{ lineHeight: 1.2 }}
+                                        >
+                                            {name}
+                                        </Typography>
+                                        {verified === 'yes' && (
+                                            <Tooltip title="Verified Collection">
+                                                <VerificationBadge>
+                                                    <CheckIcon />
+                                                </VerificationBadge>
+                                            </Tooltip>
+                                        )}
+                                    </Stack>
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                        sx={{ mb: 2 }}
+                                    >
+                                        By{' '}
+                                        <Link 
+                                            href={`/account/${account}`} 
+                                            sx={{ 
+                                                color: 'text.primary',
+                                                textDecoration: 'none',
+                                                '&:hover': {
+                                                    textDecoration: 'underline'
+                                                }
+                                            }}
+                                        >
+                                            {accountName || `${account.slice(0, 4)}...${account.slice(-4)}`}
+                                        </Link>
+                                    </Typography>
+                                </Box>
+
+                                <Stack
+                                    direction="row"
+                                    spacing={1}
+                                    sx={{ 
+                                        display: { xs: 'none', sm: 'flex' }
+                                    }}
                                 >
-                                    {name}
-                                </Typography>
-                                {verified === 'yes' && (
-                                    <Tooltip title="Verified">
-                                        <VerificationBadge>
-                                            <CheckIcon />
-                                        </VerificationBadge>
-                                    </Tooltip>
-                                )}
-                            </Stack>
-
-                            <Stack
-                                direction="row"
-                                alignItems="center"
-                                spacing={1}
-                            >
-                                {accountLogin === collection.account && (
-                                    <Tooltip title="Edit your collection">
+                                    {accountLogin === collection.account && (
                                         <IconButton
                                             component={Link}
                                             href={`/collection/${slug}/edit`}
-                                            color="primary"
+                                            size="small"
+                                            sx={{
+                                                border: 1,
+                                                borderColor: 'divider',
+                                                '&:hover': {
+                                                    borderColor: 'primary.main',
+                                                    backgroundColor: alpha(theme.palette.primary.main, 0.04)
+                                                }
+                                            }}
                                         >
-                                            <EditIcon />
+                                            <EditIcon fontSize="small" />
                                         </IconButton>
-                                    </Tooltip>
-                                )}
-                                <Watch collection={collection} />
-                                <Tooltip title="Share">
+                                    )}
+                                    <Watch collection={collection} />
                                     <IconButton
                                         ref={anchorRef}
                                         onClick={handleOpenShare}
-                                        color="primary"
+                                        size="small"
+                                        sx={{
+                                            border: 1,
+                                            borderColor: 'divider',
+                                            '&:hover': {
+                                                borderColor: 'primary.main',
+                                                backgroundColor: alpha(theme.palette.primary.main, 0.04)
+                                            }
+                                        }}
                                     >
-                                        <ShareIcon />
+                                        <ShareIcon fontSize="small" />
                                     </IconButton>
-                                </Tooltip>
-                                <IconButton color="primary">
-                                    <MoreHorizIcon />
-                                </IconButton>
+                                </Stack>
                             </Stack>
-                        </Stack>
 
-                        <Typography
-                            variant="body2" // Changed from body1 to body2 for mobile
-                            sx={{ 
-                                mb: { xs: 0.5, md: 2 },
-                                fontSize: { xs: '0.8rem', md: '1rem' } // Reduced font size on mobile
-                            }}
-                        >
-                            By{' '}
-                            <Link href={`/account/${account}`} color="primary">
-                                {accountName ||
-                                    account.slice(0, 4) +
-                                        '...' +
-                                        account.slice(-4)}
-                            </Link>
-                            &nbsp;·&nbsp;Created {formatMonthYear(created)}
-                        </Typography>
+                            {description && (
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{ 
+                                        mb: 3,
+                                        maxWidth: 600,
+                                        display: { xs: 'none', sm: 'block' }
+                                    }}
+                                >
+                                    {description}
+                                </Typography>
+                            )}
 
-                        <Typography
-                            variant="body2" // Changed from body1 to body2 for mobile
-                            sx={{ 
-                                mb: { xs: 1, md: 4 },
-                                fontSize: { xs: '0.8rem', md: '1rem' }, // Reduced font size on mobile
-                                display: { xs: 'none', md: 'block' } // Hide description on mobile
-                            }}
-                        >
-                            {description}
-                        </Typography>
-
-                        <Grid
-                            container
-                            spacing={{ xs: 0.5, md: 2 }} // Reduced spacing on mobile
-                            sx={{ mb: { xs: 1, md: 3 } }} // Reduced margin on mobile
-                        >
-                            {[
-                                {
-                                    label: 'Floor Price',
-                                    value: `${fNumber(floorPrice)} XRP`,
-                                    icon: <LocalOfferIcon />
-                                },
-                                {
-                                    label: '24h Volume',
-                                    value: `${volume24h} XRP`,
-                                    icon: <ShowChartIcon />
-                                },
-                                {
-                                    label: 'Total Volume',
-                                    value: `${volume2} XRP`,
-                                    icon: <ShowChartIcon />
-                                },
-                                {
-                                    label: 'Items',
-                                    value: items,
-                                    icon: <CollectionsIcon />
-                                },
-                                {
-                                    label: 'Owners',
-                                    value: extra.owners,
-                                    icon: <PeopleIcon />
-                                },
-                                {
-                                    label: '% Listed',
-                                    value: `${percentListed}%`,
-                                    icon: <LocalOfferIcon />
-                                }
-                            ].map((stat, index) => {
-                                return (
-                                    <Grid item xs={6} sm={4} md={2} key={index}>
-                                        <StatCard elevation={3}>
-                                            <Tooltip title={stat.label}>
-                                                {React.cloneElement(stat.icon, {
-                                                    fontSize: 'small',
-                                                    color: 'primary'
-                                                })}
-                                            </Tooltip>
-                                            <Typography
-                                                variant="body1"
-                                                fontWeight="bold"
-                                                color="primary.main"
-                                                sx={{ mt: 0.5 }}
-                                            >
-                                                {stat.value}
-                                            </Typography>
-                                            <Typography
-                                                variant="caption"
-                                                color="text.secondary"
-                                            >
-                                                {stat.label}
-                                            </Typography>
-                                        </StatCard>
-                                    </Grid>
-                                );
-                            })}
-                        </Grid>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6} sm={4} lg={2}>
+                                    <StatCard>
+                                        <Typography variant="caption" color="text.secondary">
+                                            Floor Price
+                                        </Typography>
+                                        <Typography variant="h6" fontWeight="600">
+                                            {fNumber(floorPrice)} XRP
+                                        </Typography>
+                                    </StatCard>
+                                </Grid>
+                                <Grid item xs={6} sm={4} lg={2}>
+                                    <StatCard>
+                                        <Typography variant="caption" color="text.secondary">
+                                            24h Volume
+                                        </Typography>
+                                        <Typography variant="h6" fontWeight="600">
+                                            {volume24h} XRP
+                                        </Typography>
+                                    </StatCard>
+                                </Grid>
+                                <Grid item xs={6} sm={4} lg={2}>
+                                    <StatCard>
+                                        <Typography variant="caption" color="text.secondary">
+                                            Total Volume
+                                        </Typography>
+                                        <Typography variant="h6" fontWeight="600">
+                                            {volume2} XRP
+                                        </Typography>
+                                    </StatCard>
+                                </Grid>
+                                <Grid item xs={6} sm={4} lg={2}>
+                                    <StatCard>
+                                        <Typography variant="caption" color="text.secondary">
+                                            Items
+                                        </Typography>
+                                        <Typography variant="h6" fontWeight="600">
+                                            {fNumber(items)}
+                                        </Typography>
+                                    </StatCard>
+                                </Grid>
+                                <Grid item xs={6} sm={4} lg={2}>
+                                    <StatCard>
+                                        <Typography variant="caption" color="text.secondary">
+                                            Owners
+                                        </Typography>
+                                        <Typography variant="h6" fontWeight="600">
+                                            {fNumber(extra.owners)}
+                                        </Typography>
+                                    </StatCard>
+                                </Grid>
+                                <Grid item xs={6} sm={4} lg={2}>
+                                    <StatCard>
+                                        <Typography variant="caption" color="text.secondary">
+                                            Listed
+                                        </Typography>
+                                        <Typography variant="h6" fontWeight="600">
+                                            {percentListed}%
+                                        </Typography>
+                                    </StatCard>
+                                </Grid>
+                            </Grid>
+                        </Box>
                     </Box>
-                </GlassBox>
-            </Box>
+                </Box>
+            </HeaderContainer>
 
             <Box sx={{ width: '100%' }}>
                 {urlParamsReady && (
