@@ -112,35 +112,30 @@ const GlassContent = styled(CardContent)(({ theme }) => ({
 }));
 
 const CardWrapper2 = styled(Card)(({ theme }) => ({
-    borderRadius: theme.shape.borderRadius * 2,
-    backdropFilter: 'blur(20px)',
-    background: alpha(theme.palette.background.paper, 0.15),
+    borderRadius: theme.shape.borderRadius,
+    background: theme.palette.background.paper,
     padding: 0,
     cursor: 'pointer',
-    transition: 'all 0.3s ease-in-out',
+    transition: 'all 0.2s ease-in-out',
     overflow: 'hidden',
-    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    border: `1px solid ${alpha(theme.palette.divider, 0.12)}`,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
     position: 'relative',
 
     '&:hover': {
-        boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
-        background: alpha(theme.palette.background.paper, 0.2),
-        outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`,
-        outlineOffset: '2px',
-        zIndex: 2
+        transform: 'translateY(-2px)',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+        borderColor: alpha(theme.palette.primary.main, 0.4),
     }
 }));
 
 const GlassContent2 = styled(CardContent)(({ theme }) => ({
-    background: alpha(theme.palette.background.paper, 0.1),
-    backdropFilter: 'blur(10px)',
-    borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    height: '130px',
-    padding: theme.spacing(0.75)
+    height: '120px',
+    padding: theme.spacing(2),
+    gap: theme.spacing(1)
 }));
 
 const ImageContainer = styled(Box)(({ theme }) => ({
@@ -156,32 +151,31 @@ const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    borderTopLeftRadius: theme.shape.borderRadius * 2,
-    borderTopRightRadius: theme.shape.borderRadius * 2
+    transition: 'transform 0.3s ease',
+    '&:hover': {
+        transform: 'scale(1.05)'
+    }
 }));
 
 const SequenceOverlay = styled(Box)(({ theme }) => ({
     position: 'absolute',
-    top: 8,
-    right: 8,
-    padding: '3px 8px',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.background.paper, 0.85),
-    backdropFilter: 'blur(8px)',
-    border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-    color: theme.palette.primary.main,
+    top: 12,
+    right: 12,
+    padding: '4px 10px',
+    borderRadius: '6px',
+    backgroundColor: alpha(theme.palette.background.paper, 0.95),
+    color: theme.palette.text.secondary,
     fontSize: '0.75rem',
-    fontWeight: 700,
+    fontWeight: 600,
     zIndex: 2,
-    boxShadow: `0 2px 8px 0 ${alpha(theme.palette.common.black, 0.25)}`,
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
 }));
 
 const GlassyBox = styled(Box)(({ theme }) => ({
-    background: alpha(theme.palette.background.paper, 0.15),
-    backdropFilter: 'blur(20px)',
-    borderRadius: theme.shape.borderRadius * 2,
-    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`
+    background: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius,
+    border: `1px solid ${theme.palette.divider}`,
+    boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
 }));
 
 const SearchTextField = styled(TextField)(({ theme }) => ({
@@ -864,35 +858,35 @@ export function NFTCard({ nft, handleRemove }) {
                 <Typography
                     variant="body2"
                     color="text.secondary"
-                    fontSize="0.85rem"
+                    fontSize="0.875rem"
                 >
                     Unlisted
                 </Typography>
             );
 
         return cost.currency === 'XRP' ? (
-            <Stack direction="row" spacing={0.3} alignItems="center">
+            <Stack direction="row" spacing={0.5} alignItems="center">
                 <Icon
                     icon={rippleSolid}
-                    width="16"
-                    height="16"
+                    width="18"
+                    height="18"
                     color={theme.palette.primary.main}
                 />
                 <Typography
-                    variant="body2"
+                    variant="body1"
                     fontWeight="600"
-                    fontSize={{ xs: '0.8rem', sm: '0.85rem' }}
-                    color="primary.main"
+                    fontSize={{ xs: '0.9375rem', sm: '1rem' }}
+                    color="text.primary"
                 >
                     {fNumber(cost.amount)}
                 </Typography>
             </Stack>
         ) : (
             <Typography
-                variant="body2"
+                variant="body1"
                 fontWeight="600"
-                fontSize="0.85rem"
-                color="primary.main"
+                fontSize="0.9375rem"
+                color="text.primary"
             >
                 {fNumber(cost.amount)}{' '}
                 {normalizeCurrencyCodeXummImpl(cost.currency)}
@@ -951,34 +945,28 @@ export function NFTCard({ nft, handleRemove }) {
         if (rarity_rank <= 0) return null;
 
         return (
-            <Chip
-                variant="outlined"
-                size="small"
-                icon={
-                    <LeaderboardOutlinedIcon
-                        sx={{
-                            width: '14px',
-                            color: theme.palette.primary.main
-                        }}
-                    />
-                }
-                label={fIntNumber(rarity_rank)}
+            <Box
                 sx={{
-                    height: '20px',
-                    borderColor: theme.palette.primary.main,
-                    color: theme.palette.primary.main,
-                    '& .MuiChip-label': {
-                        px: 0.4,
-                        fontSize: { xs: '0.7rem', sm: '0.75rem' },
-                        fontWeight: 600
-                    }
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.5,
+                    px: 1,
+                    py: 0.25,
+                    borderRadius: '4px',
+                    backgroundColor: alpha(theme.palette.warning.main, 0.08),
+                    color: theme.palette.warning.dark,
+                    fontSize: '0.75rem',
+                    fontWeight: 600
                 }}
-            />
+            >
+                <LeaderboardOutlinedIcon sx={{ fontSize: 14 }} />
+                #{fIntNumber(rarity_rank)}
+            </Box>
         );
     }
 
     function renderEvent() {
-        if (!updateEvent) return null;
+        if (!updateEvent) return <Box flexGrow={1} />;
 
         return (
             <Typography
@@ -1000,22 +988,16 @@ export function NFTCard({ nft, handleRemove }) {
         <Box
             sx={{
                 position: 'relative',
-                padding: { xs: '2px', sm: '5px', md: '10px' },
                 '&:hover': {
                     zIndex: 1
                 },
-                isolation: 'isolate',
-                transform: 'translate3d(0, 0, 0)',
-                backfaceVisibility: 'hidden'
             }}
         >
             <Link href={`/nft/${NFTokenID}`} underline="none">
                 <CardWrapper2
                     sx={{
                         width: '100%',
-                        maxWidth: { xs: '100%', sm: 290, md: 310, lg: 330 },
                         height: '100%',
-                        marginBottom: { xs: '5px', sm: '8px', md: 0 }
                     }}
                 >
                     {isAdmin && (
@@ -1092,39 +1074,39 @@ export function NFTCard({ nft, handleRemove }) {
                         <Typography
                             variant="subtitle2"
                             sx={{
-                                fontWeight: 600,
+                                fontWeight: 500,
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: 'vertical',
-                                lineHeight: 1.2,
-                                fontSize: { xs: '0.75rem', sm: '0.8rem' },
+                                whiteSpace: 'nowrap',
+                                fontSize: { xs: '0.875rem', sm: '0.9375rem' },
                                 color: theme.palette.text.primary,
-                                height: '2.2em'
                             }}
                         >
                             {name}
                         </Typography>
 
-                        <Stack spacing={0.1}>
+                        <Box sx={{ mt: 'auto' }}>
                             <Stack
                                 direction="row"
                                 alignItems="center"
                                 justifyContent="space-between"
+                                sx={{ mb: 0.5 }}
                             >
                                 {renderPrice()}
                                 {renderRarityRank()}
                             </Stack>
-                            <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                                alignItems="flex-start"
-                            >
-                                {renderOffer()}
-                                {renderEvent()}
-                            </Stack>
-                        </Stack>
+                            {(costb || updateEvent) && (
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    alignItems="center"
+                                    sx={{ minHeight: '20px' }}
+                                >
+                                    {renderOffer()}
+                                    {renderEvent()}
+                                </Stack>
+                            )}
+                        </Box>
                     </GlassContent2>
                 </CardWrapper2>
             </Link>
@@ -1464,9 +1446,9 @@ export function NFTs({ collection, urlParams = {} }) {
                         }
                         scrollThreshold={0.9}
                     >
-                        <Grid container spacing={0.5}>
+                        <Grid container spacing={{ xs: 1, sm: 2, md: 3 }}>
                             {nfts.map((nft, index) => (
-                                <Grid item xs={6} sm={4} md={3} lg={2.4} xl={1.5} key={nft.NFTokenID || index}>
+                                <Grid item xs={6} sm={4} md={3} lg={12/7} xl={12/7} key={nft.NFTokenID || index}>
                                     <NFTCard
                                         nft={nft}
                                         handleRemove={handleRemove}

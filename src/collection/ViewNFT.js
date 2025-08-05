@@ -274,7 +274,6 @@ export default function ViewNFT({ collection }) {
                                         color="text.secondary"
                                         sx={{ mb: 2 }}
                                     >
-                                        By{' '}
                                         <Link 
                                             href={`/account/${account}`} 
                                             sx={{ 
@@ -285,7 +284,7 @@ export default function ViewNFT({ collection }) {
                                                 }
                                             }}
                                         >
-                                            {accountName || `${account.slice(0, 4)}...${account.slice(-4)}`}
+                                            {accountName || (isMobile ? `${account.slice(0, 4)}...${account.slice(-4)}` : account)}
                                         </Link>
                                     </Typography>
                                 </Box>
