@@ -45,7 +45,7 @@ export default function Overview({ data }) {
             <Header />
 
             <MainContent>
-                <Container maxWidth="xxl">
+                <Box sx={{ width: '100%' }}>
                     <Account
                         profile={profile}
                         tab={data.tab}
@@ -53,7 +53,7 @@ export default function Overview({ data }) {
                         collection={data.collection}
                         type={data.type}
                     />
-                </Container>
+                </Box>
 
                 <ScrollToTop />
             </MainContent>
