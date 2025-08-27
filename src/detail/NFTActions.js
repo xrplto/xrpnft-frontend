@@ -1,17 +1,14 @@
 import axios from 'axios';
 import { useRef, useState, useEffect } from 'react';
-import { FacebookShareButton, TwitterShareButton } from 'react-share';
-import { FacebookIcon } from 'react-share';
+import { TwitterShareButton } from 'react-share';
 
 // Material
 import {
     useTheme,
-    useMediaQuery,
     Accordion,
     AccordionDetails,
     AccordionSummary,
     Avatar,
-    Backdrop,
     Box,
     Button,
     Divider,
@@ -25,38 +22,24 @@ import {
     Tooltip,
     Chip
 } from '@mui/material';
-import ListIcon from '@mui/icons-material/List';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import TimelineIcon from '@mui/icons-material/Timeline';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import PanToolIcon from '@mui/icons-material/PanTool';
-import SendIcon from '@mui/icons-material/Send';
-import HistoryIcon from '@mui/icons-material/History';
 import ShareIcon from '@mui/icons-material/Share';
-import VerifiedIcon from '@mui/icons-material/Verified';
-import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
-import MessageIcon from '@mui/icons-material/Message';
-import MessageOutlinedIcon from '@mui/icons-material/MessageOutlined';
 import CheckIcon from '@mui/icons-material/Check';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 // Iconify
 import { Icon } from '@iconify/react';
 import rippleSolid from '@iconify/icons-teenyicons/ripple-solid';
-import infoFilled from '@iconify/icons-ep/info-filled';
-import xIcon from '@iconify/icons-bi/x';
 
 // Loader
-import { PuffLoader, PulseLoader } from 'react-spinners';
-import { ProgressBar, Discuss } from 'react-loader-spinner';
+import { PulseLoader } from 'react-spinners';
 
 // Context
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Utils
-import { NFToken, getMinterName } from 'src/utils/constants';
+import { NFToken } from 'src/utils/constants';
 import { normalizeAmount } from 'src/utils/normalizers';
 import { fNumber, fIntNumber } from 'src/utils/formatNumber';
 import { getHashIcon } from 'src/utils/parse';
@@ -65,40 +48,34 @@ import { getHashIcon } from 'src/utils/parse';
 import CreateOfferDialog from './CreateOfferDialog';
 import QRDialog from 'src/components/QRDialog';
 import ConfirmAcceptOfferDialog from './ConfirmAcceptOfferDialog';
-// import TimePeriods from './TimePeriodsDropdown';
-import OffersList from './OffersList';
-import SelectPriceDialog from './SelectPriceDialog';
-
 import BurnNFT from './BurnNFT';
 import TransferDialog from './TransferDialog';
 import HistoryList from './HistoryList';
 
-// Add these imports
+// Styled components
 import { alpha, styled } from '@mui/material/styles';
-import Glass from '@mui/material/Paper';
 
-// Add this import at the top of the file
+// Wallet component
 import Wallet from 'src/components/Wallet';
 
-// Add these imports at the top of the file
+// XRPL
 import { Client } from 'xrpl';
-import { xrpToDrops, dropsToXrp } from 'xrpl';
+import { dropsToXrp } from 'xrpl';
 
-// Add this import at the top of the file
+// XRP Cafe dialog
 import CreateOfferXRPCafe from './CreateOfferXRPCafe';
 
-// Import NFTDetails components
+// Additional components
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { convertHexToString, parseNFTokenID } from 'src/utils/parse';
+import { parseNFTokenID } from 'src/utils/parse';
 import NFTPreview from './NFTPreview';
-import FlagsContainer from 'src/components/Flags';
 import Properties from './Properties';
 import CodeHighlight from 'src/components/CodeHighlight';
 import { fVolume } from 'src/utils/formatNumber';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Collapse from '@mui/material/Collapse';
 
-// Add these constants at the top of the file
+// Broker addresses configuration
 const BROKER_ADDRESSES = {
     rnPNSonfEN1TWkPH4Kwvkk3693sCT4tsZv: { fee: 0.015, name: 'Art Dept Fun' },
     rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC: { fee: 0.01589, name: 'XRP Cafe' },
@@ -279,13 +256,6 @@ const VerificationBadge = styled('div')(({ theme }) => ({
     '& svg': { fontSize: 14, fontWeight: 'bold' }
 }));
 
-// const NFT_FLAGS = {
-//     0x00000001: 'lsfBurnable',
-//     0x00000002: 'lsfOnlyXRP',
-//     0x00000004: 'lsfTrustLine',
-//     0x00000008: 'lsfTransferable',
-// }
-
 function getCostFromOffers(nftOwner, offers, isSellOffer) {
     let xrpCost = null;
     let noXrpCost = null;
@@ -294,8 +264,6 @@ function getCostFromOffers(nftOwner, offers, isSellOffer) {
 
         let validOffer = true;
 
-        // Remove destination check to allow offers without brokers
-        // if (destination) validOffer = false;
 
         if (isSellOffer && nftOwner !== owner) validOffer = false;
 
@@ -327,11 +295,6 @@ function getCostFromOffers(nftOwner, offers, isSellOffer) {
     return xrpCost || noXrpCost;
 }
 
-function truncate(str, n) {
-    if (!str) return '';
-    //return (str.length > n) ? str.substr(0, n-1) + '&hellip;' : str;
-    return str.length > n ? str.substr(0, n - 1) + ' ...' : str;
-}
 
 const SimpleAccordion = styled(Accordion)(({ theme }) => ({
     backgroundColor: alpha(theme.palette.background.default, 0.3),
@@ -487,6 +450,22 @@ function getProperties(meta) {
     return properties;
 }
 
+// Helper function to render flags
+function renderFlags(flags) {
+    const flagList = [];
+    
+    if ((flags & 0x00000001) !== 0) flagList.push('Burnable');
+    if ((flags & 0x00000002) !== 0) flagList.push('OnlyXRP');
+    if ((flags & 0x00000004) !== 0) flagList.push('TrustLine');
+    if ((flags & 0x00000008) !== 0) flagList.push('Transferable');
+    
+    if (flagList.length === 0) {
+        return 'None';
+    }
+    
+    return flagList.join(', ');
+}
+
 export default function NFTActions({ nft }) {
     const theme = useTheme();
     const anchorRef = useRef(null);
@@ -494,9 +473,6 @@ export default function NFTActions({ nft }) {
     const { accountProfile, openSnackbar } = useContext(AppContext);
     const accountLogin = accountProfile?.account;
     const accountToken = accountProfile?.token;
-
-    // const theme = useTheme();
-    // const largescreen = useMediaQuery(theme => theme.breakpoints.up('md'));
 
     const {
         uuid,
@@ -513,10 +489,10 @@ export default function NFTActions({ nft }) {
         minter,
         issuer,
         date,
+        created,
         meta,
         URI,
         status,
-        // cost,
         destination,
         NFTokenID,
         self,
@@ -533,7 +509,7 @@ export default function NFTActions({ nft }) {
     // NFTDetails data
     const { flag: parsedFlag, issuer: parsedIssuer, transferFee } = parseNFTokenID(NFTokenID);
     const taxon = apiTaxon;
-    const strDateTime = date ? new Date(date).toLocaleString() : '';
+    const strDateTime = created ? new Date(created).toLocaleString() : (date ? new Date(date).toLocaleString() : '');
     const properties = props || getProperties(meta);
     const hasProperties = properties && properties.length > 0;
     const formatAddress = (addr, length = 'short') => {
@@ -544,10 +520,8 @@ export default function NFTActions({ nft }) {
         return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
     };
 
-    const collectionName =
-        collection || /*meta?.collection?.name ||*/ '[No Collection]';
-
-    const nftName = name || /*meta?.name || meta?.Name ||*/ '[No Name]';
+    const collectionName = collection || '[No Collection]';
+    const nftName = name || '[No Name]';
 
     const floorPrice = cfloor?.amount || 0;
 
@@ -555,10 +529,8 @@ export default function NFTActions({ nft }) {
 
     const shareUrl = `https://xrpnft.com/nft/${NFTokenID}`;
     const shareTitle = nftName;
-    const shareDesc = meta?.description || '';
 
     const isOwner = accountLogin === account;
-    const isBurnable = (flag & 0x00000001) > 0;
 
     const [openShare, setOpenShare] = useState(false);
 
@@ -576,7 +548,6 @@ export default function NFTActions({ nft }) {
 
     const [acceptOffer, setAcceptOffer] = useState(null);
     const [openConfirm, setOpenConfirm] = useState(false);
-    const [openSelectPrice, setOpenSelectPrice] = useState(false);
 
     const [openScanQR, setOpenScanQR] = useState(false);
     const [xummUuid, setXummUuid] = useState(null);
@@ -667,7 +638,6 @@ export default function NFTActions({ nft }) {
                     `${BASE_URL}/offers/acceptcancel/${xummUuid}`
                 );
                 const res = ret.data.data.response;
-                // const account = res.account;
                 const dispatched_result = res.dispatched_result;
 
                 return dispatched_result;
@@ -884,9 +854,6 @@ export default function NFTActions({ nft }) {
             const res = await axios.delete(
                 `${BASE_URL}/offers/acceptcancel/${xummUuid}`
             );
-            // if (res.status === 200) {
-            //     setXummUuid(null);
-            // }
         } catch (err) {
             console.error(err);
         }
@@ -948,26 +915,6 @@ export default function NFTActions({ nft }) {
     };
 
     const handleCancelOffer = async (offer) => {
-        // Sell Offer
-        /*
-        {
-            "amount": {
-                "currency": "534F4C4F00000000000000000000000000000000",
-                "issuer": "rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz",
-                "value": "10"
-            },
-            "flags": 1,
-            "nft_offer_index": "2212BFA0AAF995E9F9E9B6553DC97A1C37FB97334BBE8C5856CF7C7B1016D20E",
-            "owner": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n"
-        },
-        {
-            "amount": "10000000",
-            "flags": 1,
-            "nft_offer_index": "DF13A4FE5F44FF804015ED5C827F753BB7A1379651D88473CB50454EB0B89F17",
-            "owner": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n"
-        }
-        */
-
         doProcessOffer(offer, false);
     };
 
@@ -995,15 +942,6 @@ export default function NFTActions({ nft }) {
         }
     };
 
-    const handleOpenShare = () => {
-        setAnchorEl(anchorRef.current);
-        setOpenShare(true);
-    };
-
-    const handleCloseShare = () => {
-        setAnchorEl(null);
-        setOpenShare(false);
-    };
 
     const handleCloseCreateOffer = () => {
         setOpenCreateOffer(false);
@@ -1150,7 +1088,7 @@ export default function NFTActions({ nft }) {
                                     <InfoItem>
                                         <span className="label">Flags</span>
                                         <span className="value">
-                                            <FlagsContainer Flags={parsedFlag} />
+                                            {renderFlags(parsedFlag)}
                                         </span>
                                     </InfoItem>
 
