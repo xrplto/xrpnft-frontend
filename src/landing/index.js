@@ -659,99 +659,49 @@ export default function Landing({ collections = [] }) {
 
 
     return (
-        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
-            <Grid container spacing={4} alignItems="center">
-                <Grid item xs={12} md={6}>
-                    <Stack spacing={3} alignItems={{ xs: 'center', md: 'flex-start' }}>
-                        <Typography
-                            variant="h2"
-                            fontWeight={600}
-                            sx={{
-                                fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-                                textAlign: { xs: 'center', md: 'left' }
-                            }}
-                        >
-                            XRP NFT Marketplace
-                        </Typography>
+        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
+            <Box sx={{ mb: { xs: 4, md: 6 } }}>
+                <Typography
+                    variant="h2"
+                    fontWeight={700}
+                    sx={{
+                        fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                        lineHeight: 1.2,
+                        letterSpacing: '-0.02em',
+                        mb: 2
+                    }}
+                >
+                    XRP NFT Marketplace
+                </Typography>
 
-                        <Typography
-                            variant="h6"
-                            color="text.secondary"
-                            sx={{
-                                fontSize: { xs: '1.125rem', md: '1.25rem' },
-                                textAlign: { xs: 'center', md: 'left' }
-                            }}
-                        >
-                            Trade XRP NFTs <AnimatedText>{animatedText}</AnimatedText>
-                        </Typography>
+                <Typography
+                    variant="h6"
+                    color="text.secondary"
+                    sx={{
+                        fontSize: { xs: '1rem', md: '1.25rem' },
+                        fontWeight: 400,
+                        mb: 3
+                    }}
+                >
+                    Trade XRP NFTs <AnimatedText>{animatedText}</AnimatedText>
+                </Typography>
 
-                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mt: 2 }}>
-                            <HeroButton variant="contained" href="/collections">
-                                Explore Collections
-                            </HeroButton>
-                            <HeroButton variant="outlined" href="/create">
-                                Create NFT
-                            </HeroButton>
-                        </Stack>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 2 }}>
+                    <HeroButton variant="contained" href="/collections">
+                        Explore Collections
+                    </HeroButton>
+                    <HeroButton variant="outlined" href="/create">
+                        Create NFT
+                    </HeroButton>
+                </Stack>
 
-                        <Typography variant="caption" color="text.secondary">
-                            Works with: xrp.cafe • bidds • Art Dept • XPMarket • Opul
-                        </Typography>
-                    </Stack>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    {safeCollections.length > 0 && (
-                        <FeaturedCard>
-                            <Link
-                                href={`/collection/${safeCollections[0].slug}`}
-                                sx={{ display: 'block', position: 'relative' }}
-                            >
-                                <Box sx={{ aspectRatio: '1', overflow: 'hidden' }}>
-                                    <img
-                                        src={`https://s1.xrpnft.com/collection/${safeCollections[0].logoImage}`}
-                                        alt={safeCollections[0].name}
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            objectFit: 'cover'
-                                        }}
-                                    />
-                                </Box>
-                                <Box
-                                    sx={{
-                                        position: 'absolute',
-                                        bottom: 0,
-                                        left: 0,
-                                        right: 0,
-                                        p: 2,
-                                        background: 'linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0))'
-                                    }}
-                                >
-                                    <Typography
-                                        variant="h6"
-                                        sx={{
-                                            color: 'white',
-                                            fontWeight: 600,
-                                            display: 'flex',
-                                            alignItems: 'center'
-                                        }}
-                                    >
-                                        {safeCollections[0].name}
-                                        {safeCollections[0].verified === 'yes' && (
-                                            <VerificationBadge>
-                                                <CheckIcon />
-                                            </VerificationBadge>
-                                        )}
-                                    </Typography>
-                                </Box>
-                            </Link>
-                        </FeaturedCard>
-                    )}
-                </Grid>
-            </Grid>
+                <Typography variant="caption" color="text.secondary">
+                    Works with: xrp.cafe • bidds • Art Dept • XPMarket • Opul
+                </Typography>
+            </Box>
 
-            <Box sx={{ mt: { xs: 6, md: 10 } }}>
-                <Typography variant="h5" fontWeight={600} sx={{ mb: 3 }}>
+            <Box sx={{ mt: { xs: 4, md: 6 } }}>
+                <Typography variant="h4" fontWeight={600} sx={{ mb: 3 }}>
                     Top Collections
                 </Typography>
                 <CollectionList collections={safeCollections} />
