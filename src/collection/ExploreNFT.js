@@ -375,8 +375,10 @@ Label.propTypes = {
 
 // AttributeFilter Component
 export function AttributeFilter({ attrs, setFilterAttrs }) {
+    const theme = useTheme();
     const [attrFilter, setAttrFilter] = useState([])
     const [searchTerm, setSearchTerm] = useState('')
+    const [expandedPanels, setExpandedPanels] = useState({})
 
     useEffect(() => {
         const tempAttrs = attrs.map(attr => ({
@@ -385,6 +387,13 @@ export function AttributeFilter({ attrs, setFilterAttrs }) {
         }))
         setAttrFilter(tempAttrs)
     }, [attrs])
+
+    const handlePanelToggle = (title) => {
+        setExpandedPanels(prev => ({
+            ...prev,
+            [title]: !prev[title]
+        }))
+    }
 
     const handleAttrChange = (title, key) => {
         setAttrFilter(prevAttrs => {
@@ -422,85 +431,175 @@ export function AttributeFilter({ attrs, setFilterAttrs }) {
     }))
 
     return (
-        <Stack sx={{ mt: 0, pr: 0 }}>
+        <Stack spacing={1}>
             <TextField
                 fullWidth
+                size="small"
                 variant="outlined"
                 placeholder="Search attributes"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 InputProps={{
-                    startAdornment: <SearchIcon color="action" />,
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <SearchIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                        </InputAdornment>
+                    ),
+                    style: { padding: '4px 8px' }
                 }}
-                sx={{ mb: 2 }}
+                sx={{ 
+                    mb: 1,
+                    '& .MuiOutlinedInput-root': {
+                        fontSize: '0.875rem',
+                    }
+                }}
             />
             {filteredAttrs.map((attr, idx) => {
                 const title = attr.title;
                 const items = attr.items;
                 const count = Object.keys(items).length;
+                const selectedCount = attrFilter.find(a => a.trait_type === title)?.value?.length || 0;
+                const isExpanded = expandedPanels[title] || false;
 
                 return (
-                    <Accordion
+                    <Box
                         key={title}
-                        disableGutters
                         sx={{
-                            boxShadow: 'none',
-                            '&:before': {
-                                display: 'none',
-                            },
-                            '&.Mui-expanded': {
-                                margin: 0,
-                            },
+                            border: 1,
+                            borderColor: 'divider',
+                            borderRadius: 1,
+                            overflow: 'hidden',
+                            backgroundColor: 'background.paper'
                         }}
                     >
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
+                        <Box
+                            onClick={() => handlePanelToggle(title)}
                             sx={{
-                                backgroundColor: 'background.paper',
-                                '&.Mui-expanded': {
-                                    minHeight: 48,
-                                },
+                                p: 1.5,
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                '&:hover': {
+                                    backgroundColor: alpha(theme.palette.action.hover, 0.04)
+                                }
                             }}
                         >
-                            <Stack direction="row" justifyContent="space-between" alignItems="center" width='100%' pr={1}>
-                                <Typography variant='subtitle1'>{title}</Typography>
-                                <Typography variant='caption' color="text.secondary">{count}</Typography>
+                            <Stack direction="row" spacing={1} alignItems="center" flex={1}>
+                                <Typography variant="body2" fontWeight={500}>
+                                    {title}
+                                </Typography>
+                                {selectedCount > 0 && (
+                                    <Chip 
+                                        label={selectedCount} 
+                                        size="small"
+                                        color="primary"
+                                        sx={{ 
+                                            height: 18,
+                                            '& .MuiChip-label': {
+                                                px: 0.75,
+                                                fontSize: '0.7rem'
+                                            }
+                                        }}
+                                    />
+                                )}
                             </Stack>
-                        </AccordionSummary>
-                        <AccordionDetails sx={{ pt: 0 }}>
-                            <FormGroup sx={{ flexDirection: 'column' }}>
-                                {Object.entries(items).map(([key, data]) => {
-                                    const isChecked = attrFilter.find(elem => elem.trait_type === title)?.value?.includes(key) === true;
-                                    return (
-                                        <Stack key={title + key} direction="row" justifyContent="space-between" alignItems="center" width='100%' pr={1}>
-                                            <FormControlLabel
-                                                label={
-                                                    <Typography variant="body2">{key}</Typography>
-                                                }
-                                                control={
+                            <Stack direction="row" spacing={0.5} alignItems="center">
+                                <Typography variant='caption' color="text.secondary">
+                                    {count}
+                                </Typography>
+                                <ExpandMoreIcon 
+                                    sx={{ 
+                                        fontSize: 18,
+                                        transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                                        transition: 'transform 0.2s'
+                                    }}
+                                />
+                            </Stack>
+                        </Box>
+                        
+                        {isExpanded && (
+                            <Box sx={{ 
+                                borderTop: 1, 
+                                borderColor: 'divider',
+                                maxHeight: 200,
+                                overflowY: 'auto',
+                                '&::-webkit-scrollbar': {
+                                    width: '6px',
+                                },
+                                '&::-webkit-scrollbar-thumb': {
+                                    backgroundColor: 'rgba(0,0,0,0.2)',
+                                    borderRadius: '3px',
+                                }
+                            }}>
+                                <Stack sx={{ p: 1 }}>
+                                    {Object.entries(items).map(([key, data]) => {
+                                        const isChecked = attrFilter.find(elem => elem.trait_type === title)?.value?.includes(key) === true;
+                                        return (
+                                            <Box 
+                                                key={title + key}
+                                                onClick={() => handleAttrChange(title, key)}
+                                                sx={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'space-between',
+                                                    py: 0.5,
+                                                    px: 1,
+                                                    borderRadius: 0.5,
+                                                    cursor: 'pointer',
+                                                    '&:hover': {
+                                                        backgroundColor: alpha(theme.palette.action.hover, 0.08)
+                                                    }
+                                                }}
+                                            >
+                                                <Stack direction="row" spacing={1} alignItems="center" flex={1}>
                                                     <Checkbox
                                                         checked={isChecked ?? false}
-                                                        onChange={() => handleAttrChange(title, key)}
                                                         size="small"
+                                                        sx={{ p: 0.5 }}
+                                                        onClick={(e) => e.stopPropagation()}
                                                     />
-                                                }
-                                                sx={{ '& .MuiFormControlLabel-label': { flex: 1 } }}
-                                            />
-                                            <Typography variant='caption' color="text.secondary">{fIntNumber(data.count)}</Typography>
-                                        </Stack>
-                                    )
-                                })}
-                            </FormGroup>
-                            <Button
-                                variant="text"
-                                size="small"
-                                onClick={() => handleClearAll(title)}
-                                sx={{ mt: 1 }}
-                            >
-                                Clear All
-                            </Button>
-                        </AccordionDetails>
-                    </Accordion>
+                                                    <Typography 
+                                                        variant="body2" 
+                                                        sx={{ 
+                                                            fontSize: '0.8rem',
+                                                            userSelect: 'none'
+                                                        }}
+                                                    >
+                                                        {key}
+                                                    </Typography>
+                                                </Stack>
+                                                <Typography 
+                                                    variant='caption' 
+                                                    color="text.secondary"
+                                                    sx={{ fontSize: '0.7rem' }}
+                                                >
+                                                    {fIntNumber(data.count)}
+                                                </Typography>
+                                            </Box>
+                                        )
+                                    })}
+                                    {Object.keys(items).length > 0 && (
+                                        <Button
+                                            variant="text"
+                                            size="small"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleClearAll(title);
+                                            }}
+                                            sx={{ 
+                                                mt: 0.5,
+                                                fontSize: '0.75rem',
+                                                py: 0.25
+                                            }}
+                                        >
+                                            Clear All
+                                        </Button>
+                                    )}
+                                </Stack>
+                            </Box>
+                        )}
+                    </Box>
                 )
             })}
         </Stack>
@@ -1502,38 +1601,43 @@ export function NFTs({ collection, urlParams = {} }) {
 
     return (
         <Box sx={{ width: '100%' }}>
-            <GlassyBox sx={{ mb: 2, p: 1, display: 'flex', alignItems: 'center' }}>
+            <GlassyBox sx={{ mb: 1.5, p: 0.5, display: 'flex', alignItems: 'center' }}>
                 <IconButton
                     aria-label="filter"
                     onClick={handleShowFilter}
+                    size="small"
                     sx={{
                         color: 'primary.main',
+                        p: 0.75,
                         '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.1) }
                     }}
                 >
-                    <FilterListIcon fontSize="large" />
+                    <FilterListIcon fontSize="medium" />
                 </IconButton>
                 <SearchTextField
                     id="textFilter"
                     fullWidth
                     variant="outlined"
                     placeholder="Search by name or attribute"
-                    margin="dense"
+                    size="small"
                     onChange={handleChangeSearch}
                     autoComplete="new-password"
-                    inputProps={{ autoComplete: 'off' }}
+                    inputProps={{ 
+                        autoComplete: 'off',
+                        style: { padding: '6px 8px' }
+                    }}
                     onFocus={(event) => event.target.select()}
-                    sx={{ pl: 2, pr: 0, pt: 0, pb: 0, mt: 0 }}
+                    sx={{ pl: 1, pr: 0.5 }}
                     onKeyDown={(e) => e.stopPropagation()}
                     InputProps={{
                         startAdornment: (
-                            <InputAdornment position="start" sx={{ mr: 0.7 }}>
-                                <SearchIcon color="primary" />
+                            <InputAdornment position="start" sx={{ mr: 0.5 }}>
+                                <SearchIcon sx={{ fontSize: 20 }} color="primary" />
                             </InputAdornment>
                         ),
                         endAdornment: (
                             <InputAdornment position="start">
-                                {loading && <ClipLoader color={theme.palette.primary.main} size={15} />}
+                                {loading && <ClipLoader color={theme.palette.primary.main} size={12} />}
                             </InputAdornment>
                         )
                     }}
