@@ -6,6 +6,7 @@ import {
     useTheme,
     Avatar,
     Box,
+    Chip,
     Container,
     Link,
     Stack,
@@ -48,7 +49,38 @@ import { PulseLoader } from 'react-spinners';
 
 // Components
 import ListToolbar from './ListToolbar';
-import FlagsContainer from 'src/components/Flags';
+
+// ----------------------------------------------------------------------
+// Inline FlagsContainer component
+const FlagsContainer = ({ Flags }) => {
+    if (!Flags && Flags !== 0) return null;
+    
+    const flagList = [];
+    const flagNumber = typeof Flags === 'string' ? parseInt(Flags, 10) : Flags;
+    
+    // Check each flag bit
+    if ((flagNumber & 0x00000001) !== 0) flagList.push('Burnable');
+    if ((flagNumber & 0x00000002) !== 0) flagList.push('OnlyXRP');
+    if ((flagNumber & 0x00000004) !== 0) flagList.push('TrustLine');
+    if ((flagNumber & 0x00000008) !== 0) flagList.push('Transferable');
+    
+    if (flagList.length === 0) return null;
+    
+    return (
+        <Stack direction="row" spacing={0.5}>
+            {flagList.map((flag) => (
+                <Chip
+                    key={flag}
+                    label={flag}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                />
+            ))}
+        </Stack>
+    );
+};
+
 // ----------------------------------------------------------------------
 export default function ActivityList({ account }) {
     const theme = useTheme();

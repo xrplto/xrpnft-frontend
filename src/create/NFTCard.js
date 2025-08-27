@@ -1,13 +1,12 @@
 import axios from 'axios';
 import { useRouter } from 'next/router';
-
-// Context
-import { useContext, useEffect, useState } from 'react';
+import { memo, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { AppContext } from 'src/AppContext';
 
 // Material
-import { styled, Card, Stack, Typography, Button, Box } from '@mui/material';
+import { styled, Card, Stack, Typography, Button, Box, IconButton } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
+import CloseIcon from '@mui/icons-material/Close';
 
 const IconCover = styled('div')(
     ({ theme }) => `
@@ -58,8 +57,9 @@ const IconImage = styled('img')(
   `
 );
 
-export default function NFTCard({ onCreate }) {
+const NFTCard = memo(function NFTCard({ onCreate }) {
     const router = useRouter();
+    const cardRef = useRef(null);
     const { accountProfile, openSnackbar } = useContext(AppContext);
     const account = accountProfile?.account;
     const accountToken = accountProfile?.token;
@@ -68,7 +68,7 @@ export default function NFTCard({ onCreate }) {
     const [expanded, setExpanded] = useState(false);
     const [hasBulkCollections, setHasBulkCollections] = useState(false);
 
-    const handleExpand = async () => {
+    const handleExpand = useCallback(async () => {
         if (expanded === false && collections.length === 0) {
             openSnackbar(
                 'You must first create a collection for NFTs.',
@@ -77,9 +77,9 @@ export default function NFTCard({ onCreate }) {
             return;
         }
         setExpanded(!expanded);
-    };
+    }, [expanded, collections, openSnackbar]);
 
-    const loadCollections = () => {
+    const loadCollections = useCallback(() => {
         if (!account || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
@@ -112,14 +112,31 @@ export default function NFTCard({ onCreate }) {
             .catch((err) => {
                 console.error('Error fetching collections:', err);
             });
-    };
+    }, [account, accountToken, openSnackbar]);
 
     useEffect(() => {
         loadCollections();
     }, [account]);
 
+    // Handle click outside to close expanded view
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (cardRef.current && !cardRef.current.contains(event.target) && expanded) {
+                setExpanded(false);
+            }
+        };
+
+        if (expanded) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => {
+                document.removeEventListener('mousedown', handleClickOutside);
+            };
+        }
+    }, [expanded]);
+
     return (
         <Card
+            ref={cardRef}
             sx={{
                 p: 4,
                 width: 1,
@@ -150,9 +167,8 @@ export default function NFTCard({ onCreate }) {
                 },
             }}
             onClick={(e) => {
-                if (!expanded) {
-                    handleExpand();
-                }
+                // Toggle expansion on click
+                handleExpand();
             }}
         >
             <Stack
@@ -195,26 +211,28 @@ export default function NFTCard({ onCreate }) {
                     mt: 3, 
                     pt: 3, 
                     borderTop: (theme) => `1px solid ${theme.palette.divider}`,
-                    maxHeight: '300px',
-                    overflowY: 'auto',
-                    '&::-webkit-scrollbar': {
-                        width: '6px',
-                    },
-                    '&::-webkit-scrollbar-track': {
-                        background: 'transparent',
-                    },
-                    '&::-webkit-scrollbar-thumb': {
-                        background: (theme) => theme.palette.grey[400],
-                        borderRadius: '3px',
-                    },
                 }}>
-                    <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 500, color: 'text.secondary' }}>
-                        Choose Collection:
-                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 500, color: 'text.secondary' }}>
+                            Choose Collection:
+                        </Typography>
+                        <IconButton 
+                            size="small" 
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setExpanded(false);
+                            }}
+                            sx={{ color: 'text.secondary' }}
+                            aria-label="Close collection selection"
+                        >
+                            <CloseIcon fontSize="small" />
+                        </IconButton>
+                    </Box>
                     {collections.map(({ name, logoImage }, index) => (
                         <Box
                             key={index}
                             component="button"
+                            aria-label={`Select ${name} collection`}
                             sx={{
                                 display: 'flex',
                                 flexDirection: 'row',
@@ -247,6 +265,8 @@ export default function NFTCard({ onCreate }) {
                                 <IconWrapper>
                                     <IconImage
                                         src={`https://s1.xrpnft.com/collection/${logoImage}`}
+                                        alt={`${name} collection`}
+                                        loading="lazy"
                                     />
                                 </IconWrapper>
                             </IconCover>
@@ -259,4 +279,6 @@ export default function NFTCard({ onCreate }) {
             )}
         </Card>
     );
-}
+});
+
+export default NFTCard;

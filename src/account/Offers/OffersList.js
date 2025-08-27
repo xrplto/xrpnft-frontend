@@ -49,10 +49,39 @@ import { AppContext } from 'src/AppContext';
 
 // Components
 import QRDialog from 'src/components/QRDialog';
-import FlagsContainer from 'src/components/Flags';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
 import ConfirmAcceptOfferDialog from '../ConfirmAcceptOfferDialog';
 import ListToolbar from '../ListToolbar';
+
+// Inline FlagsContainer component
+const FlagsContainer = ({ Flags }) => {
+    if (!Flags && Flags !== 0) return null;
+    
+    const flagList = [];
+    const flagNumber = typeof Flags === 'string' ? parseInt(Flags, 10) : Flags;
+    
+    // Check each flag bit
+    if ((flagNumber & 0x00000001) !== 0) flagList.push('Burnable');
+    if ((flagNumber & 0x00000002) !== 0) flagList.push('OnlyXRP');
+    if ((flagNumber & 0x00000004) !== 0) flagList.push('TrustLine');
+    if ((flagNumber & 0x00000008) !== 0) flagList.push('Transferable');
+    
+    if (flagList.length === 0) return null;
+    
+    return (
+        <Stack direction="row" spacing={0.5}>
+            {flagList.map((flag) => (
+                <Chip
+                    key={flag}
+                    label={flag}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                />
+            ))}
+        </Stack>
+    );
+};
 
 function truncate(str, n) {
     if (!str) return '';

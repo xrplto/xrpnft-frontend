@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
 import { AppContext } from 'src/AppContext';
 
@@ -66,32 +66,15 @@ export default function Create() {
         }
     }, [accountProfile]);
     
-    // Define the callback function separately to ensure proper reference
-    const handleNFTCreate = (selectedCollectionName) => {
-        console.log('=== CREATE.JS handleNFTCreate CALLBACK ===');
-        console.log('Received collection name:', selectedCollectionName);
-        console.log('Current state before update:', state);
-        console.log('Current collectionName before update:', collectionName);
-        
-        try {
-            console.log('Setting collectionName to:', selectedCollectionName);
-            setCollectionName(selectedCollectionName);
-            
-            console.log('Setting state to: nft');
-            setState('nft');
-            
-            console.log('Both state updates called successfully');
-            
-        } catch (error) {
-            console.error('Error in handleNFTCreate:', error);
-            console.error('Stack:', error.stack);
-        }
-        console.log('=== END CREATE.JS handleNFTCreate CALLBACK ===');
-    };
+    const handleNFTCreate = useCallback((selectedCollectionName) => {
+        setCollectionName(selectedCollectionName);
+        setState('nft');
+    }, []);
 
-    const handleBack = () => {
+    const handleBack = useCallback(() => {
         setState('');
-    };
+        setCollectionName(null);
+    }, []);
 
     return (
         <CreateWrapper>
@@ -148,23 +131,17 @@ export default function Create() {
 // It may be called again, on a serverless function, if
 // revalidation is enabled and a new request comes in
 export async function getStaticProps() {
-    let ret = {};
-
-    const ogp = {};
-    ogp.canonical = 'https://xrpnft.com/create';
-    ogp.title = 'Create';
-    ogp.url = 'https://xrpnft.com/create';
-    ogp.imgUrl = 'https://xrpnft.com/static/ogp.png';
-    ogp.desc =
-        "XRPL's largest NFT marketplace: Buy, sell, mint with ease. Experience exclusive NFT creation and trade.";
-
-    ret = { ogp };
+    const ogp = {
+        canonical: 'https://xrpnft.com/create',
+        title: 'Create NFTs & Collections | XRPNFT Marketplace',
+        url: 'https://xrpnft.com/create',
+        imgUrl: 'https://xrpnft.com/static/ogp.png',
+        desc: "Create, mint, and manage NFT collections on XRPL's largest marketplace. Easy NFT creation with bulk minting options.",
+        keywords: 'XRP NFT, create NFT, mint NFT, XRPL marketplace, NFT collection, bulk mint'
+    };
 
     return {
-        props: ret // will be passed to the page component as props
-        // Next.js will attempt to re-generate the page:
-        // - When a request comes in
-        // - At most once every 10 seconds
-        // revalidate: 10, // In seconds
+        props: { ogp },
+        revalidate: 3600, // Cache for 1 hour
     };
 }
