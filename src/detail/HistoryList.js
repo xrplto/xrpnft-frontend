@@ -27,6 +27,9 @@ import { AppContext } from 'src/AppContext';
 // Utils
 import { normalizeCurrencyCodeXummImpl } from "src/utils/normalizers";
 
+// Components
+import HistoryChart from './HistoryChart';
+
 function truncate(str, n) {
     if (!str) return '';
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
@@ -214,11 +217,96 @@ export default function HistoryList({ nft }) {
     const CLIO_URL = 'wss://s1.ripple.com:51233';
     const { accountProfile, sync } = useContext(AppContext);
     const [hists, setHists] = useState([]);
+    const [allHistory, setAllHistory] = useState([]); // Store complete history for chart
     const [loading, setLoading] = useState(false);
     const [loadingMore, setLoadingMore] = useState(false);
     const [marker, setMarker] = useState(null);
     const [hasMore, setHasMore] = useState(true);
+    const [loadingChart, setLoadingChart] = useState(false);
     const containerRef = useRef(null);
+
+    // Fetch all history for chart visualization
+    const fetchAllHistory = async () => {
+        setLoadingChart(true);
+        let allTransactions = [];
+        let currentMarker = null;
+        let hasMoreData = true;
+        
+        try {
+            while (hasMoreData) {
+                const ws = new WebSocket(CLIO_URL);
+                
+                await new Promise((resolve) => {
+                    ws.onopen = resolve;
+                });
+
+                const request = {
+                    id: 1,
+                    command: "nft_history",
+                    nft_id: nft.NFTokenID,
+                    limit: 400 // Fetch more at once for chart
+                };
+                
+                if (currentMarker) {
+                    request.marker = currentMarker;
+                }
+
+                ws.send(JSON.stringify(request));
+
+                const response = await new Promise((resolve, reject) => {
+                    ws.onmessage = (event) => {
+                        const data = JSON.parse(event.data);
+                        if (data.status === 'error') {
+                            reject(new Error(data.error_message || 'Failed to fetch history'));
+                        } else {
+                            resolve(data);
+                        }
+                        ws.close();
+                    };
+                    ws.onerror = reject;
+                });
+
+                if (response.result && response.result.transactions) {
+                    const transactions = response.result.transactions.map(t => {
+                        const details = getTransactionDetails(t.tx, t.meta);
+                        const info = getTransactionInfo(t.tx, details.amount, details.to);
+                        return {
+                            type: info.type,
+                            marketplace: info.marketplace,
+                            from: details.from,
+                            to: details.to,
+                            amount: details.amount,
+                            hash: t.tx.hash,
+                            date: t.date || t.tx.date,
+                            ledger: t.ledger_index
+                        };
+                    });
+                    
+                    allTransactions = [...allTransactions, ...transactions];
+                    
+                    // Check if there's more data
+                    if (response.result.marker) {
+                        currentMarker = response.result.marker;
+                    } else {
+                        hasMoreData = false;
+                    }
+                    
+                    // Limit to prevent infinite loops (max 2000 transactions)
+                    if (allTransactions.length >= 2000) {
+                        hasMoreData = false;
+                    }
+                }
+            }
+            
+            setAllHistory(allTransactions);
+        } catch (err) {
+            console.error("Error fetching complete NFT history:", err);
+            // Fall back to using partial history
+            setAllHistory(hists);
+        } finally {
+            setLoadingChart(false);
+        }
+    };
 
     const fetchHistory = async (isLoadMore = false) => {
         if (isLoadMore) {
@@ -305,6 +393,7 @@ export default function HistoryList({ nft }) {
     useEffect(() => {
         if (nft.NFTokenID) {
             fetchHistory(false);
+            fetchAllHistory(); // Fetch complete history for chart
         }
     }, [nft.NFTokenID, sync]);
 
@@ -338,7 +427,37 @@ export default function HistoryList({ nft }) {
                     <PulseLoader color='#00AB55' size={10} />
                 </Stack>
             ) : (
-                <Stack mt={1}>
+                <Stack mt={1} spacing={2}>
+                    {/* Chart visualization */}
+                    {loadingChart ? (
+                        <Box sx={{ 
+                            textAlign: 'center', 
+                            py: 4,
+                            backgroundColor: theme.palette.action.hover,
+                            borderRadius: 2,
+                            border: `1px solid ${theme.palette.divider}`
+                        }}>
+                            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+                                Loading complete history for charts...
+                            </Typography>
+                            <PulseLoader color='#00AB55' size={8} />
+                        </Box>
+                    ) : (allHistory.length > 0 && (
+                        <Box>
+                            <HistoryChart history={allHistory} />
+                            {allHistory.length > hists.length && (
+                                <Typography 
+                                    variant="caption" 
+                                    color="text.secondary" 
+                                    sx={{ mt: 1, display: 'block', textAlign: 'center' }}
+                                >
+                                    Chart shows all {allHistory.length} transactions • Table shows {hists.length}
+                                </Typography>
+                            )}
+                        </Box>
+                    ))}
+                    
+                    {/* History table */}
                     <Box
                         ref={containerRef}
                         sx={{
