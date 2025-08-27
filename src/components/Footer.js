@@ -21,9 +21,13 @@ const FooterWrapper = styled(Box)(({ theme }) => ({
     backdropFilter: 'blur(10px)',
     borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
     boxShadow: `0 -8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
-    padding: theme.spacing(3, 0), // Remove horizontal padding
-    paddingBottom: theme.spacing(8), // Keep extra padding at the bottom
-    marginTop: 'auto' // This will push the footer to the bottom
+    padding: theme.spacing(3, 0),
+    paddingBottom: theme.spacing(8),
+    marginTop: 'auto',
+    position: 'relative',
+    bottom: 0,
+    left: 0,
+    right: 0
 }));
 
 const SocialIcon = styled(IconButton)(({ theme }) => ({

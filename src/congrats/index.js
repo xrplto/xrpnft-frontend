@@ -28,7 +28,8 @@ import ScrollToTop from 'src/components/ScrollToTop';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
-        flex: 1;
+        display: flex;
+        flex-direction: column;
         background: linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.primary.lighter} 100%);
         min-height: 100vh;
 `
@@ -36,17 +37,17 @@ const OverviewWrapper = styled(Box)(
 
 const CardWrapper = styled(motion.div)(
     ({ theme }) => `
-        width: 300px;
-        height: 300px;
+        width: 250px;
+        height: 250px;
         @media (min-width: ${theme.breakpoints.values.md}px) {
-            width: 500px;
-            height: 500px;
+            width: 350px;
+            height: 350px;
         }
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         border-radius: 20px;
         backdrop-filter: blur(20px);
         background: rgba(255, 255, 255, 0.1);
-        padding: 20px;
+        padding: 15px;
         text-align: center;
         transition: all 0.3s ease-in-out;
         display: flex;
@@ -62,30 +63,31 @@ const CardWrapper = styled(motion.div)(
 
 const ShareButton = styled(Button)(({ theme }) => ({
     minWidth: 'auto',
-    padding: theme.spacing(1.5),
+    padding: theme.spacing(1),
     borderRadius: '50%',
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.primary,
-    boxShadow: '0 4px 14px 0 rgba(0,0,0,0.1)',
+    backgroundColor: 'transparent',
+    color: theme.palette.text.secondary,
+    border: `1px solid ${theme.palette.divider}`,
     '&:hover': {
-        backgroundColor: theme.palette.background.default,
-        transform: 'translateY(-2px)',
-        boxShadow: '0 6px 20px 0 rgba(0,0,0,0.15)'
+        backgroundColor: theme.palette.action.hover,
+        transform: 'translateY(-1px)',
+        boxShadow: '0 2px 8px 0 rgba(0,0,0,0.1)'
     }
 }));
 
 const ActionButton = styled(Button)(
     ({ theme }) => `
-    padding: 12px 24px;
+    padding: 10px 20px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.9rem;
     text-transform: none;
-    border-radius: 12px;
+    border-radius: 8px;
     transition: all 0.3s ease;
+    flex: 1;
     
     &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     &.MuiButton-contained {
@@ -282,46 +284,34 @@ export default function Congrats() {
 
             <Header />
 
-            <Container maxWidth="lg">
-                <Fade in={true} timeout={1000}>
-                    <Stack
-                        spacing={6}
-                        sx={{ mt: 12, mb: 12, alignItems: 'center' }}
-                    >
+            <Box sx={{ flex: '1 0 auto' }}>
+                <Container maxWidth="md">
+                    <Fade in={true} timeout={1000}>
+                        <Stack
+                            spacing={3}
+                            sx={{ mt: 8, mb: 8, alignItems: 'center' }}
+                        >
                         <motion.div
                             initial="hidden"
                             animate="visible"
                             variants={textVariants}
                         >
-                            <Stack direction="row" spacing={2} alignItems="center">
-                                <GradientTypography
-                                    variants={textVariants}
-                                    component={Typography}
-                                    variant="h2"
-                                    fontWeight="bold"
-                                    sx={{
-                                        fontSize: {
-                                            xs: '2rem',
-                                            sm: '2.5rem',
-                                            md: '3rem',
-                                            lg: '3.5rem'
-                                        },
-                                        textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
-                                    }}
-                                >
-                                    Congratulations!
-                                </GradientTypography>
-                                <motion.img
-                                    src="/static/party-popper.png"
-                                    alt="Party popper"
-                                    style={{
-                                        width: 56,
-                                        height: 56
-                                    }}
-                                    animate={{ rotate: [0, 10, -10, 0] }}
-                                    transition={{ repeat: Infinity, duration: 1.5 }}
-                                />
-                            </Stack>
+                            <GradientTypography
+                                variants={textVariants}
+                                component={Typography}
+                                variant="h3"
+                                fontWeight="bold"
+                                sx={{
+                                    fontSize: {
+                                        xs: '1.75rem',
+                                        sm: '2.25rem',
+                                        md: '2.5rem'
+                                    },
+                                    textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+                                }}
+                            >
+                                Congratulations!
+                            </GradientTypography>
                         </motion.div>
 
                         <motion.div
@@ -330,14 +320,12 @@ export default function Congrats() {
                             variants={textVariants}
                         >
                             <Typography
-                                variant="h5"
+                                variant="body1"
                                 textAlign="center"
                                 color="text.secondary"
-                                sx={{ maxWidth: '600px' }}
+                                sx={{ maxWidth: '500px', px: 2 }}
                             >
-                                Your NFT has been successfully minted on the XRP
-                                Ledger. You're now part of an exclusive digital art
-                                community.
+                                Your NFT has been successfully minted on the XRP Ledger.
                             </Typography>
                         </motion.div>
 
@@ -366,28 +354,36 @@ export default function Congrats() {
                             animate="visible"
                             variants={textVariants}
                         >
-                            <GradientTypography
-                                component={Typography}
-                                variant="h3"
-                                fontWeight="medium"
-                                sx={{ textShadow: '1px 1px 3px rgba(0,0,0,0.1)' }}
-                            >
-                                {title}
-                            </GradientTypography>
+                            <Stack spacing={1} alignItems="center">
+                                <Typography
+                                    variant="h5"
+                                    fontWeight="600"
+                                    sx={{ 
+                                        color: theme.palette.text.primary,
+                                        fontSize: { xs: '1.25rem', md: '1.5rem' }
+                                    }}
+                                >
+                                    {title}
+                                </Typography>
+                                {collection && cslug && (
+                                    <Link
+                                        variant="body2"
+                                        href={`/collection/${cslug}`}
+                                        underline="hover"
+                                        sx={{ 
+                                            color: theme.palette.primary.main,
+                                            fontWeight: 500
+                                        }}
+                                    >
+                                        {collection}
+                                    </Link>
+                                )}
+                            </Stack>
                         </motion.div>
-                        {collection && cslug && (
-                            <CollectionTypography
-                                variant="h6"
-                                href={`/collection/${cslug}`}
-                                underline="none"
-                            >
-                                Collection: {collection}
-                            </CollectionTypography>
-                        )}
 
                         <Stack
                             direction="row"
-                            spacing={3}
+                            spacing={2}
                             justifyContent="center"
                         >
                             <ShareButton
@@ -395,10 +391,11 @@ export default function Congrats() {
                                 title={generateShareMessage()}
                                 url={url}
                                 hashtags={['XRPNFT', 'NFT']}
+                                sx={{ p: 1 }}
                             >
                                 <XIcon
-                                    color={theme.palette.primary.contrastText}
-                                    size={24}
+                                    color={theme.palette.text.secondary}
+                                    size={20}
                                 />
                             </ShareButton>
                             <ShareButton
@@ -406,27 +403,29 @@ export default function Congrats() {
                                 url={url}
                                 quote={generateShareMessage()}
                                 hashtag="#XRPNFT"
+                                sx={{ p: 1 }}
                             >
                                 <FacebookIcon
-                                    color={theme.palette.primary.contrastText}
-                                    size={24}
+                                    color={theme.palette.text.secondary}
+                                    size={20}
                                 />
                             </ShareButton>
                         </Stack>
 
                         <Stack
                             direction={{ xs: 'column', sm: 'row' }}
-                            spacing={3}
-                            sx={{ flexWrap: 'wrap', justifyContent: 'center' }}
+                            spacing={2}
+                            sx={{ width: '100%', maxWidth: '400px' }}
                         >
                             <Link
                                 underline="none"
                                 color="inherit"
                                 href={`/nft/${NFTokenID}`}
                                 rel="noreferrer noopener nofollow"
+                                sx={{ flex: 1 }}
                             >
-                                <ActionButton variant="contained" size="large">
-                                    View NFT Details
+                                <ActionButton variant="contained" fullWidth>
+                                    View NFT
                                 </ActionButton>
                             </Link>
 
@@ -435,15 +434,17 @@ export default function Congrats() {
                                 color="inherit"
                                 href={`/create`}
                                 rel="noreferrer noopener nofollow"
+                                sx={{ flex: 1 }}
                             >
-                                <ActionButton variant="outlined" size="large">
-                                    Create Another NFT
+                                <ActionButton variant="outlined" fullWidth>
+                                    Create Another
                                 </ActionButton>
                             </Link>
                         </Stack>
                     </Stack>
                 </Fade>
             </Container>
+            </Box>
 
             <ScrollToTop />
 
