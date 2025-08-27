@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
 import axios from 'axios';
 import FormData from 'form-data';
-import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import Decimal from 'decimal.js';
 import { Client } from 'xrpl';
+import useDebounce from 'src/hooks/useDebounce';
 
 // Material
 import {
@@ -82,7 +82,7 @@ const CustomSelect = styled(Select)(({ theme }) => ({
     }
 }));
 
-export default function Minting({ showHeader = true, defaultValues }) {
+function Minting({ showHeader = true, defaultValues }) {
     const fileRef = useRef();
     const BASE_URL = 'https://api.xrpnft.com/api';
 
@@ -123,11 +123,12 @@ export default function Minting({ showHeader = true, defaultValues }) {
     // Collection related
     const [collections, setCollections] = useState([]);
     const [filter, setFilter] = useState('');
+    const debouncedFilter = useDebounce(filter, 300);
 
     const validAccount = account && accountToken && user_token;
     const canCreate = validAccount && file && nftName && collectionName; //  && passphrase && validPassword;
 
-    const loadCollections = () => {
+    const loadCollections = useCallback(() => {
         if (!account || !accountToken) {
             openSnackbar('Please login', 'error');
             return;
@@ -136,7 +137,7 @@ export default function Minting({ showHeader = true, defaultValues }) {
         // https://api.xrpnft.com/api/collection/query?filter=
         axios
             .get(
-                `${BASE_URL}/collection/query?account=${account}&filter=${filter}`,
+                `${BASE_URL}/collection/query?account=${account}&filter=${debouncedFilter}`,
                 { headers: { 'x-access-token': accountToken } }
             )
             .then((res) => {
@@ -152,15 +153,14 @@ export default function Minting({ showHeader = true, defaultValues }) {
             })
             .catch((err) => {
                 console.log('err->>', err);
-            })
-            .then(function () {
-                // Always executed
             });
-    };
+    }, [account, accountToken, debouncedFilter, openSnackbar]);
 
     useEffect(() => {
-        loadCollections();
-    }, [filter, account]);
+        if (account && accountToken) {
+            loadCollections();
+        }
+    }, [debouncedFilter, account, accountToken, loadCollections]);
 
     useEffect(() => {
         var timer = null;
@@ -443,54 +443,52 @@ export default function Minting({ showHeader = true, defaultValues }) {
         fileRef.current.value = null;
     };
 
-    const handleFlagChange = (e) => {
+    const handleFlagChange = useCallback((e) => {
         const value = parseInt(e.target.value, 10);
-        setFlag(flag ^ value);
-    };
+        setFlag(prev => prev ^ value);
+    }, []);
 
-    const handleCollectionQuery = (e) => {
+    const handleCollectionQuery = useCallback((e) => {
         setCollectionName('');
         setFilter(e.target.value);
-    };
+    }, []);
 
     const handleScanQRClose = () => {
         setOpenScanQR(false);
         onDisconnectXumm(uuid, uuidNft);
     };
 
-    const handleChangeCollection = (event) => {
-        // const idx = parseInt(event.target.value, 10);
+    const handleChangeCollection = useCallback((event) => {
         const value = event.target.value;
         setCollectionName(value);
         setFilter('');
-    };
+    }, []);
 
-    const handleChangeRoyalty = (e) => {
+    const handleChangeRoyalty = useCallback((e) => {
         const value = e.target.value;
         try {
             const val = value ? value.replace(/[^0-9.]/g, '') : '';
             setRoyalty(val);
         } catch (e) {}
-    };
+    }, []);
 
-    const onAddTrait = (trait) => {
+    const onAddTrait = useCallback((trait) => {
         const { type, value } = trait;
-        for (const t of traits) {
-            if (t.type === type) {
-                t.value = value;
-                return;
+        setTraits(prevTraits => {
+            const newTraits = [...prevTraits];
+            const existingIndex = newTraits.findIndex(t => t.type === type);
+            if (existingIndex !== -1) {
+                newTraits[existingIndex] = trait;
+            } else {
+                newTraits.push(trait);
             }
-        }
-        traits.push(trait);
-    };
+            return newTraits;
+        });
+    }, []);
 
-    const handleRemoveTrait = (type) => {
-        const newTraits = [];
-        for (const t of traits) {
-            if (t.type !== type) newTraits.push(t);
-        }
-        setTraits(newTraits);
-    };
+    const handleRemoveTrait = useCallback((type) => {
+        setTraits(prevTraits => prevTraits.filter(t => t.type !== type));
+    }, []);
 
     const getTransactionInfo = async (txid) => {
         const client = new Client('wss://s1.ripple.com');
@@ -557,13 +555,11 @@ export default function Minting({ showHeader = true, defaultValues }) {
                     <input
                         ref={fileRef}
                         style={{ display: 'none' }}
-                        // accept='image/*,video/*,audio/*,webgl/*,.glb,.gltf'
-                        // accept='image/*'
                         accept=".png, .jpg, .gif, .mp4"
                         id="contained-button-file"
-                        // multiple
                         type="file"
                         onChange={handleFileSelect}
+                        aria-label="Upload NFT file"
                     />
                     <Card
                         sx={{
@@ -598,8 +594,9 @@ export default function Minting({ showHeader = true, defaultValues }) {
                         <CardMedia
                             component={isVideo ? 'video' : 'img'}
                             image={fileUrl}
-                            alt={'NFT'}
+                            alt="NFT preview"
                             controls={isVideo}
+                            loading="lazy"
                             style={
                                 fileUrl
                                     ? {
@@ -636,6 +633,10 @@ export default function Minting({ showHeader = true, defaultValues }) {
                         setNftName(e.target.value);
                     }}
                     value={nftName}
+                    inputProps={{
+                        'aria-label': 'NFT name',
+                        'aria-required': true
+                    }}
                     sx={{
                         '&.MuiTextField-root': {
                             marginTop: 1
@@ -855,6 +856,9 @@ export default function Minting({ showHeader = true, defaultValues }) {
                                     onChange={handleFlagChange}
                                     value={f.value}
                                     size="small"
+                                    inputProps={{
+                                        'aria-label': `${f.label} flag`
+                                    }}
                                 />
                             }
                             label={
@@ -931,6 +935,7 @@ export default function Minting({ showHeader = true, defaultValues }) {
                     loadingPosition="start"
                     startIcon={<SendIcon />}
                     onClick={onCreateNft}
+                    aria-label="Create NFT"
                     sx={{ mt: 5, mb: 6 }}
                 >
                     Create
@@ -947,3 +952,5 @@ export default function Minting({ showHeader = true, defaultValues }) {
         </>
     );
 }
+
+export default memo(Minting);
