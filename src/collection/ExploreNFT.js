@@ -861,6 +861,34 @@ export function NFTCard({ nft, handleRemove }) {
     };
     
     const name = simplifyName(rawName);
+    
+    // Function to get rarity color and tier based on rank
+    const getRarityInfo = (rank) => {
+        // Assuming total collection size for percentage calculation
+        // You may need to pass actual collection size as a prop
+        const maxRank = nft.collection_size || 10000; // Default to 10000 if not provided
+        const percentage = (rank / maxRank) * 100;
+        
+        if (percentage <= 1) {
+            // Mythic: Top 1% - Purple
+            return { color: '#9333ea', bg: '#9333ea', tier: 'Mythic', desc: 'Top 1% - Extremely Rare' };
+        } else if (percentage <= 5) {
+            // Legendary: Top 5% - Pink/Red
+            return { color: '#ef4444', bg: '#ef4444', tier: 'Legendary', desc: 'Top 5% - Very Rare' };
+        } else if (percentage <= 15) {
+            // Epic: Top 15% - Orange
+            return { color: '#f97316', bg: '#f97316', tier: 'Epic', desc: 'Top 15% - Highly Rare' };
+        } else if (percentage <= 35) {
+            // Rare: Top 35% - Yellow
+            return { color: '#eab308', bg: '#eab308', tier: 'Rare', desc: 'Top 35% - Rare' };
+        } else if (percentage <= 60) {
+            // Uncommon: Top 60% - Blue
+            return { color: '#3b82f6', bg: '#3b82f6', tier: 'Uncommon', desc: 'Top 60% - Uncommon' };
+        } else {
+            // Common: Rest - Gray
+            return { color: '#64748b', bg: '#64748b', tier: 'Common', desc: 'Common' };
+        }
+    };
 
     const getColors = (colors) => {
         setColors((c) => [...c, ...colors]);
@@ -1113,25 +1141,51 @@ export function NFTCard({ nft, handleRemove }) {
                             >
                                 {name}
                             </Typography>
-                            {rarity_rank > 0 && (
-                                <Stack direction="row" spacing={0.25} alignItems="center">
-                                    <DiamondIcon 
-                                        sx={{ 
-                                            fontSize: { xs: 10, sm: 12 },
-                                            color: theme.palette.warning.main
-                                        }} 
-                                    />
-                                    <Typography
-                                        sx={{
-                                            fontSize: { xs: '0.65rem', sm: '0.7rem' },
-                                            fontWeight: 600,
-                                            color: theme.palette.warning.dark
-                                        }}
+                            {rarity_rank > 0 && (() => {
+                                const rarityInfo = getRarityInfo(rarity_rank);
+                                return (
+                                    <Tooltip 
+                                        title={
+                                            <Box sx={{ textAlign: 'center' }}>
+                                                <Typography variant="caption" sx={{ fontWeight: 700 }}>
+                                                    {rarityInfo.tier}
+                                                </Typography>
+                                                <Typography variant="caption" display="block">
+                                                    Rank #{rarity_rank}
+                                                </Typography>
+                                                <Typography variant="caption" display="block">
+                                                    {rarityInfo.desc}
+                                                </Typography>
+                                            </Box>
+                                        }
+                                        arrow
+                                        placement="top"
                                     >
-                                        {fIntNumber(rarity_rank)}
-                                    </Typography>
-                                </Stack>
-                            )}
+                                        <Stack direction="row" spacing={0.25} alignItems="center">
+                                            <DiamondIcon 
+                                                sx={{ 
+                                                    fontSize: { xs: 10, sm: 12 },
+                                                    color: rarityInfo.color
+                                                }} 
+                                            />
+                                            <Typography
+                                                sx={{
+                                                    fontSize: { xs: '0.65rem', sm: '0.7rem' },
+                                                    fontWeight: 600,
+                                                    color: rarityInfo.color,
+                                                    backgroundColor: alpha(rarityInfo.bg, 0.15),
+                                                    px: 0.5,
+                                                    py: 0.1,
+                                                    borderRadius: '4px',
+                                                    cursor: 'help'
+                                                }}
+                                            >
+                                                {fIntNumber(rarity_rank)}
+                                            </Typography>
+                                        </Stack>
+                                    </Tooltip>
+                                );
+                            })()}
                         </Stack>
                         
                         <Stack
