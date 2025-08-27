@@ -884,7 +884,7 @@ export function NFTCard({ nft, handleRemove }) {
             return (
                 <Typography
                     color="text.secondary"
-                    sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                    sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, fontWeight: 600 }}
                 >
                     Unlisted
                 </Typography>
@@ -894,14 +894,14 @@ export function NFTCard({ nft, handleRemove }) {
             <Stack direction="row" spacing={0.25} alignItems="center">
                 <Icon
                     icon={rippleSolid}
-                    width="14"
-                    height="14"
+                    width="18"
+                    height="18"
                     color={theme.palette.primary.main}
                 />
                 <Typography
                     variant="body2"
-                    fontWeight="600"
-                    fontSize={{ xs: '0.75rem', sm: '0.8125rem' }}
+                    fontWeight="700"
+                    fontSize={{ xs: '0.9rem', sm: '1rem' }}
                     color="text.primary"
                 >
                     {fNumber(cost.amount)}
