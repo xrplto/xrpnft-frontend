@@ -167,16 +167,16 @@ const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
 
 const SequenceOverlay = styled(Box)(({ theme }) => ({
     position: 'absolute',
-    top: 12,
-    right: 12,
-    padding: '4px 10px',
-    borderRadius: '6px',
-    backgroundColor: alpha(theme.palette.background.paper, 0.95),
-    color: theme.palette.text.secondary,
-    fontSize: '0.75rem',
+    bottom: 8,
+    left: 8,
+    padding: '2px 8px',
+    borderRadius: '4px',
+    backgroundColor: alpha('#000000', 0.7),
+    color: '#ffffff',
+    fontSize: '0.65rem',
     fontWeight: 600,
     zIndex: 2,
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+    backdropFilter: 'blur(4px)',
 }));
 
 const GlassyBox = styled(Box)(({ theme }) => ({
