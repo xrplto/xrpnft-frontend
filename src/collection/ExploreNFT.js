@@ -114,7 +114,7 @@ const GlassContent = styled(CardContent)(({ theme }) => ({
 
 const CardWrapper2 = styled(Card)(({ theme }) => ({
     borderRadius: theme.shape.borderRadius,
-    background: '#000000',
+    background: '#111314',
     padding: 0,
     cursor: 'pointer',
     transition: 'all 0.2s ease-in-out',
@@ -141,7 +141,7 @@ const GlassContent2 = styled(CardContent)(({ theme }) => ({
     padding: theme.spacing(1),
     gap: theme.spacing(0.25),
     flex: '0 0 auto',
-    background: '#000000',
+    background: '#111314',
     color: '#ffffff'
 }));
 
