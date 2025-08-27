@@ -1262,102 +1262,159 @@ export default function NFTActions({ nft }) {
                 <Stack spacing={2}>
                     {self && (
                         <HeaderSection>
-                            <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-                                <Box sx={{ flex: 1 }}>
-                                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                                        {cslug ? (
-                                            <Link 
-                                                href={`/collection/${cslug}`} 
-                                                underline="none" 
-                                                sx={{ 
-                                                    fontSize: '0.875rem', 
-                                                    color: 'text.secondary',
-                                                    fontWeight: 500,
-                                                    transition: 'all 0.2s',
-                                                    '&:hover': {
-                                                        color: 'primary.main',
-                                                        textDecoration: 'underline'
-                                                    }
-                                                }}
-                                            >
-                                                {collectionName}
-                                            </Link>
-                                        ) : (
-                                            <Typography 
-                                                variant="body2" 
-                                                sx={{ 
-                                                    color: 'text.secondary',
-                                                    fontSize: '0.875rem',
-                                                    fontWeight: 500
-                                                }}
-                                            >
-                                                {collectionName}
-                                            </Typography>
-                                        )}
-                                        {cverified === 'yes' && (
-                                            <Tooltip title="Verified Collection" arrow placement="top">
-                                                <VerificationBadge>
-                                                    <CheckIcon />
-                                                </VerificationBadge>
-                                            </Tooltip>
-                                        )}
-                                    </Stack>
-                                    
-                                    <Typography 
-                                        variant="h5" 
-                                        sx={{ 
-                                            fontWeight: 700,
-                                            mb: 1.5,
-                                            background: `linear-gradient(135deg, ${theme.palette.text.primary}, ${alpha(theme.palette.text.primary, 0.7)})`,
-                                            WebkitBackgroundClip: 'text',
-                                            WebkitTextFillColor: 'transparent',
-                                            display: 'inline-block'
-                                        }}
-                                    >
-                                        {nftName}
-                                    </Typography>
-                                    
-                                    {floorPrice > 0 && (
-                                        <Box 
-                                            sx={{ 
-                                                display: 'inline-flex',
-                                                alignItems: 'center',
-                                                gap: 0.75,
-                                                px: 1.5,
-                                                py: 0.75,
-                                                borderRadius: 2,
-                                                background: alpha(theme.palette.primary.main, 0.08),
-                                                border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-                                            }}
-                                        >
-                                            <Typography 
-                                                variant="caption" 
-                                                sx={{ 
-                                                    color: 'text.secondary',
-                                                    fontSize: '0.75rem',
-                                                    fontWeight: 500,
-                                                    textTransform: 'uppercase',
-                                                    letterSpacing: 0.5
-                                                }}
-                                            >
-                                                Floor Price
-                                            </Typography>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                                <Icon icon={rippleSolid} style={{ fontSize: 16, color: theme.palette.primary.main }} />
-                                                <Typography 
+                            <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                <Stack direction="row" spacing={3} alignItems="center">
+                                    {/* Left side - Collection and Name */}
+                                    <Box>
+                                        <Stack direction="row" spacing={0.75} alignItems="center">
+                                            {cslug ? (
+                                                <Link 
+                                                    href={`/collection/${cslug}`} 
+                                                    underline="none" 
                                                     sx={{ 
-                                                        fontSize: '0.9375rem',
-                                                        fontWeight: 700,
-                                                        color: theme.palette.primary.main
+                                                        fontSize: '0.75rem', 
+                                                        color: 'text.secondary',
+                                                        fontWeight: 600,
+                                                        letterSpacing: 0.5,
+                                                        textTransform: 'uppercase',
+                                                        transition: 'all 0.2s',
+                                                        '&:hover': {
+                                                            color: 'primary.main',
+                                                            textDecoration: 'underline'
+                                                        }
                                                     }}
                                                 >
-                                                    {fNumber(floorPrice)}
+                                                    {collectionName}
+                                                </Link>
+                                            ) : (
+                                                <Typography 
+                                                    sx={{ 
+                                                        color: 'text.secondary',
+                                                        fontSize: '0.75rem',
+                                                        fontWeight: 600,
+                                                        letterSpacing: 0.5,
+                                                        textTransform: 'uppercase'
+                                                    }}
+                                                >
+                                                    {collectionName}
+                                                </Typography>
+                                            )}
+                                            {cverified === 'yes' && (
+                                                <Tooltip title="Verified Collection" arrow placement="top">
+                                                    <VerificationBadge>
+                                                        <CheckIcon />
+                                                    </VerificationBadge>
+                                                </Tooltip>
+                                            )}
+                                        </Stack>
+                                        
+                                        <Typography 
+                                            variant="h5" 
+                                            sx={{ 
+                                                fontWeight: 800,
+                                                background: `linear-gradient(135deg, ${theme.palette.text.primary}, ${alpha(theme.palette.text.primary, 0.7)})`,
+                                                WebkitBackgroundClip: 'text',
+                                                WebkitTextFillColor: 'transparent',
+                                                display: 'inline-block',
+                                                lineHeight: 1.2
+                                            }}
+                                        >
+                                            {nftName}
+                                        </Typography>
+                                    </Box>
+
+                                    {/* Divider */}
+                                    <Divider orientation="vertical" flexItem sx={{ 
+                                        height: 40, 
+                                        borderColor: alpha(theme.palette.divider, 0.2)
+                                    }} />
+                                    
+                                    {/* Stats - All in one row */}
+                                    <Stack direction="row" spacing={2.5} alignItems="center">
+                                        {floorPrice > 0 && (
+                                            <Box>
+                                                <Typography 
+                                                    sx={{ 
+                                                        fontSize: '0.625rem',
+                                                        color: alpha(theme.palette.text.secondary, 0.6),
+                                                        fontWeight: 600,
+                                                        textTransform: 'uppercase',
+                                                        letterSpacing: 0.5,
+                                                        mb: 0.25
+                                                    }}
+                                                >
+                                                    Floor
+                                                </Typography>
+                                                <Stack direction="row" alignItems="center" spacing={0.5}>
+                                                    <Icon icon={rippleSolid} style={{ fontSize: 16, color: theme.palette.primary.main }} />
+                                                    <Typography 
+                                                        sx={{ 
+                                                            fontSize: '1rem',
+                                                            fontWeight: 700,
+                                                            color: theme.palette.text.primary
+                                                        }}
+                                                    >
+                                                        {fNumber(floorPrice)}
+                                                    </Typography>
+                                                </Stack>
+                                            </Box>
+                                        )}
+                                        
+                                        {rarity_rank > 0 && (
+                                            <Box>
+                                                <Typography 
+                                                    sx={{ 
+                                                        fontSize: '0.625rem',
+                                                        color: alpha(theme.palette.text.secondary, 0.6),
+                                                        fontWeight: 600,
+                                                        textTransform: 'uppercase',
+                                                        letterSpacing: 0.5,
+                                                        mb: 0.25
+                                                    }}
+                                                >
+                                                    Rank
+                                                </Typography>
+                                                <Typography 
+                                                    sx={{ 
+                                                        fontSize: '1rem',
+                                                        fontWeight: 700,
+                                                        color: theme.palette.warning.main
+                                                    }}
+                                                >
+                                                    #{fIntNumber(rarity_rank)}
                                                 </Typography>
                                             </Box>
-                                        </Box>
-                                    )}
-                                </Box>
+                                        )}
+                                        
+                                        {MasterSequence && (
+                                            <Box>
+                                                <Typography 
+                                                    sx={{ 
+                                                        fontSize: '0.625rem',
+                                                        color: alpha(theme.palette.text.secondary, 0.6),
+                                                        fontWeight: 600,
+                                                        textTransform: 'uppercase',
+                                                        letterSpacing: 0.5,
+                                                        mb: 0.25
+                                                    }}
+                                                >
+                                                    SEQ
+                                                </Typography>
+                                                <Typography 
+                                                    sx={{ 
+                                                        fontSize: '1rem',
+                                                        fontWeight: 600,
+                                                        color: theme.palette.text.secondary
+                                                    }}
+                                                >
+                                                    #{MasterSequence}
+                                                </Typography>
+                                            </Box>
+                                        )}
+                                    </Stack>
+                                </Stack>
                                 
+                                {/* Share button */}
                                 <Tooltip title="Share" arrow placement="left">
                                     <IconButton 
                                         onClick={handleShareClick} 
@@ -1377,23 +1434,6 @@ export default function NFTActions({ nft }) {
                                 </Tooltip>
                             </Stack>
                         </HeaderSection>
-                    )}
-
-                    {(rarity_rank > 0 || MasterSequence) && (
-                        <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-                            {rarity_rank > 0 && (
-                                <InfoChip>
-                                    <Typography variant="caption" color="text.secondary">Rank</Typography>
-                                    <Typography variant="caption" fontWeight={600}>#{fIntNumber(rarity_rank)}</Typography>
-                                </InfoChip>
-                            )}
-                            {MasterSequence && (
-                                <InfoChip>
-                                    <Icon icon={rippleSolid} fontSize={14} />
-                                    <Typography variant="caption" fontWeight={600}>#{MasterSequence}</Typography>
-                                </InfoChip>
-                            )}
-                        </Stack>
                     )}
 
                     <OwnerSection>
