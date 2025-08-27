@@ -1434,7 +1434,30 @@ export function NFTs({ collection, urlParams = {} }) {
                         </GlassyBox>
                     </Grid>
                 )}
-                <Grid item xs={12} md={showFilter ? 9 : 12} lg={showFilter ? 9.5 : 12} xl={showFilter ? 10 : 12}>
+                <Grid item xs={12} md={showFilter ? 9 : 12} lg={showFilter ? 9.5 : 12} xl={showFilter ? 10 : 12}
+                    sx={{
+                        '& ::-webkit-scrollbar': {
+                            width: '2px',
+                            height: '2px',
+                        },
+                        '& ::-webkit-scrollbar-track': {
+                            background: 'transparent',
+                            borderRadius: '10px',
+                        },
+                        '& ::-webkit-scrollbar-thumb': {
+                            background: theme => alpha(theme.palette.primary.main, 0.2),
+                            borderRadius: '10px',
+                            '&:hover': {
+                                background: theme => alpha(theme.palette.primary.main, 0.3),
+                            }
+                        },
+                        '& ::-webkit-scrollbar-corner': {
+                            background: 'transparent',
+                        },
+                        // Firefox
+                        scrollbarWidth: 'thin',
+                        scrollbarColor: theme => `${alpha(theme.palette.primary.main, 0.2)} transparent`,
+                    }}>
                     <InfiniteScroll
                         dataLength={nfts.length}
                         next={loadMore}
