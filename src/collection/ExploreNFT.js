@@ -1473,6 +1473,7 @@ export function NFTs({ collection, urlParams = {} }) {
                             display: 'flex', 
                             flexWrap: 'wrap', 
                             justifyContent: 'space-between',
+                            px: { xs: 0.75, sm: 1, md: 1.25 },
                             '&::after': {
                                 content: '""',
                                 flex: 'auto'
