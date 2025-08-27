@@ -61,16 +61,17 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DiamondIcon from '@mui/icons-material/Diamond';
 
-// External libraries
+// External libraries - Dynamic imports for code splitting
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 import debounce from 'lodash.debounce';
-import { isEqual } from 'lodash';
-import { Lightbox } from 'react-modal-image';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { formatDistanceToNow } from 'date-fns';
 import { ClipLoader, PulseLoader } from 'react-spinners';
 import PropTypes from 'prop-types';
+import { lazy, Suspense } from 'react';
+
+// Lazy load heavy components
+const Lightbox = lazy(() => import('react-modal-image').then(module => ({ default: module.Lightbox })));
+const CopyToClipboard = lazy(() => import('react-copy-to-clipboard').then(module => ({ default: module.CopyToClipboard })));
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -374,7 +375,7 @@ Label.propTypes = {
 };
 
 // AttributeFilter Component
-export function AttributeFilter({ attrs, setFilterAttrs }) {
+export const AttributeFilter = React.memo(({ attrs, setFilterAttrs }) => {
     const theme = useTheme();
     const [attrFilter, setAttrFilter] = useState([])
     const [searchTerm, setSearchTerm] = useState('')
@@ -388,14 +389,14 @@ export function AttributeFilter({ attrs, setFilterAttrs }) {
         setAttrFilter(tempAttrs)
     }, [attrs])
 
-    const handlePanelToggle = (title) => {
+    const handlePanelToggle = useCallback((title) => {
         setExpandedPanels(prev => ({
             ...prev,
             [title]: !prev[title]
         }))
-    }
+    }, [])
 
-    const handleAttrChange = (title, key) => {
+    const handleAttrChange = useCallback((title, key) => {
         setAttrFilter(prevAttrs => {
             const updatedAttrs = prevAttrs.map(attr => {
                 if (attr.trait_type === title) {
@@ -409,9 +410,9 @@ export function AttributeFilter({ attrs, setFilterAttrs }) {
             setFilterAttrs(updatedAttrs)
             return updatedAttrs
         })
-    }
+    }, [setFilterAttrs])
 
-    const handleClearAll = (title) => {
+    const handleClearAll = useCallback((title) => {
         setAttrFilter(prevAttrs => {
             const updatedAttrs = prevAttrs.map(attr => 
                 attr.trait_type === title ? { ...attr, value: [] } : attr
@@ -419,16 +420,16 @@ export function AttributeFilter({ attrs, setFilterAttrs }) {
             setFilterAttrs(updatedAttrs)
             return updatedAttrs
         })
-    }
+    }, [setFilterAttrs])
 
-    const filteredAttrs = attrs.map(attr => ({
+    const filteredAttrs = useMemo(() => attrs.map(attr => ({
         ...attr,
         items: Object.fromEntries(
             Object.entries(attr.items).filter(([key]) => 
                 key.toLowerCase().includes(searchTerm.toLowerCase())
             )
         )
-    }))
+    })), [attrs, searchTerm])
 
     return (
         <Stack spacing={1}>
@@ -604,7 +605,7 @@ export function AttributeFilter({ attrs, setFilterAttrs }) {
             })}
         </Stack>
     );
-}
+})
 
 // CollectionCard Component
 export function CollectionCard({ collectionData, type, account, handleRemove }) {
@@ -915,7 +916,7 @@ export function FilterDetail({
 }
 
 // NFTCard Component
-export function NFTCard({ nft, handleRemove }) {
+export const NFTCard = React.memo(({ nft, handleRemove }) => {
     const theme = useTheme();
     const { accountProfile } = useContext(AppContext);
     const isAdmin = accountProfile?.admin;
@@ -938,7 +939,7 @@ export function NFTCard({ nft, handleRemove }) {
     } = nft;
 
     const isSold = false;
-    const imgUrl = getNftCoverUrl(nft, 'big');
+    const imgUrl = useMemo(() => getNftCoverUrl(nft, 'big'), [nft]);
     const isVideo = false;
     const rawName = nft.meta?.name || meta?.Name || 'No Name';
     
@@ -962,7 +963,7 @@ export function NFTCard({ nft, handleRemove }) {
     const name = simplifyName(rawName);
     
     // Function to get rarity color and tier based on rank
-    const getRarityInfo = (rank) => {
+    const getRarityInfo = useCallback((rank) => {
         // Assuming total collection size for percentage calculation
         // You may need to pass actual collection size as a prop
         const maxRank = nft.collection_size || 10000; // Default to 10000 if not provided
@@ -987,7 +988,7 @@ export function NFTCard({ nft, handleRemove }) {
             // Common: Rest - Gray
             return { color: '#64748b', bg: '#64748b', tier: 'Common', desc: 'Common' };
         }
-    };
+    }, [nft.collection_size]);
 
     const getColors = (colors) => {
         setColors((c) => [...c, ...colors]);
@@ -1183,8 +1184,11 @@ export function NFTCard({ nft, handleRemove }) {
                                 loadingImg ? 'div' : isVideo ? 'video' : 'img'
                             }
                             image={imgUrl}
-                            loading={loadingImg.toString()}
-                            alt={'NFT' + uuid}
+                            loading="lazy"
+                            alt={name || 'NFT'}
+                            width="100%"
+                            height="100%"
+                            fetchpriority="low"
                         />
                         {loadingImg && (
                             <Skeleton
@@ -1212,6 +1216,8 @@ export function NFTCard({ nft, handleRemove }) {
                         src={imgUrl}
                         style={{ display: 'none' }}
                         onLoad={onImageLoaded}
+                        alt=""
+                        loading="lazy"
                     />
                     {isVideo && (
                         <video
@@ -1327,7 +1333,11 @@ export function NFTCard({ nft, handleRemove }) {
             </Link>
         </Box>
     );
-}
+}, (prevProps, nextProps) => {
+    return prevProps.nft.NFTokenID === nextProps.nft.NFTokenID && 
+           prevProps.nft.cost?.amount === nextProps.nft.cost?.amount &&
+           prevProps.nft.costb?.amount === nextProps.nft.costb?.amount;
+})
 
 // NFTs Component
 export function NFTs({ collection, urlParams = {} }) {
@@ -1542,13 +1552,16 @@ export function NFTs({ collection, urlParams = {} }) {
         }
     }, [urlParams, collection]);
 
-    const handleChangeSearch = debounce((e) => {
-        setSearch(e.target.value);
-    }, 300);
+    const handleChangeSearch = useMemo(
+        () => debounce((e) => {
+            setSearch(e.target.value);
+        }, 300),
+        []
+    );
 
-    const handleShowFilter = () => {
+    const handleShowFilter = useCallback(() => {
         setShowFilter((prevShow) => !prevShow);
-    };
+    }, []);
 
     const handleRemove = (NFTokenID) => {
         setLoading(true);
@@ -1570,7 +1583,7 @@ export function NFTs({ collection, urlParams = {} }) {
             });
     };
 
-    const handleSortChange = (newSubFilter) => {
+    const handleSortChange = useCallback((newSubFilter) => {
         let subFilterValue = '';
         switch (newSubFilter) {
             case 'Listed (non-XRP)':
@@ -1591,7 +1604,7 @@ export function NFTs({ collection, urlParams = {} }) {
         
         // Just update subFilter - let useEffect handle the reset
         setSubFilter(subFilterValue);
-    };
+    }, []);
 
     const loadMore = useCallback(() => {
         if (!loading && hasMore) {
@@ -1601,9 +1614,10 @@ export function NFTs({ collection, urlParams = {} }) {
 
     return (
         <Box sx={{ width: '100%' }}>
-            <GlassyBox sx={{ mb: 1.5, p: 0.5, display: 'flex', alignItems: 'center' }}>
+            <GlassyBox sx={{ mb: 1.5, p: 0.5, display: 'flex', alignItems: 'center' }} role="search">
                 <IconButton
-                    aria-label="filter"
+                    aria-label="Toggle filters"
+                    aria-expanded={showFilter}
                     onClick={handleShowFilter}
                     size="small"
                     sx={{
@@ -1624,7 +1638,8 @@ export function NFTs({ collection, urlParams = {} }) {
                     autoComplete="new-password"
                     inputProps={{ 
                         autoComplete: 'off',
-                        style: { padding: '6px 8px' }
+                        style: { padding: '6px 8px' },
+                        'aria-label': 'Search NFTs'
                     }}
                     onFocus={(event) => event.target.select()}
                     sx={{ pl: 1, pr: 0.5 }}
@@ -1726,22 +1741,6 @@ export function NFTs({ collection, urlParams = {} }) {
                                     <NFTCard
                                         nft={nft}
                                         handleRemove={handleRemove}
-                                        imageComponent={
-                                            <LazyLoadImage
-                                                src={nft.imageUrl}
-                                                alt={nft.name}
-                                                effect="blur"
-                                                wrapperProps={{
-                                                    style: {
-                                                        display: 'block',
-                                                        height: '100%',
-                                                        width: '100%',
-                                                        borderRadius: theme.shape.borderRadius,
-                                                        overflow: 'hidden'
-                                                    }
-                                                }}
-                                            />
-                                        }
                                     />
                                 </Box>
                             ))}
@@ -2258,13 +2257,15 @@ export function CollectionActivity({ collection, hideInExplore = false }) {
                                                         {`${account.substring(0, 6)}...${account.substring(account.length - 4)}`}
                                                     </Typography>
                                                 </Link>
-                                                <CopyToClipboard text={account} onCopy={()=>openSnackbar('Address copied to clipboard', 'success')}>
-                                                    <Tooltip title='Copy address'>
-                                                        <IconButton size="small" sx={{ ml: 0.5 }}>
-                                                            <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </CopyToClipboard>
+                                                <Suspense fallback={<IconButton size="small" disabled><ContentCopyIcon fontSize="small" /></IconButton>}>
+                                                    <CopyToClipboard text={account} onCopy={()=>openSnackbar('Address copied to clipboard', 'success')}>
+                                                        <Tooltip title='Copy address'>
+                                                            <IconButton size="small" sx={{ ml: 0.5 }} aria-label="Copy address">
+                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    </CopyToClipboard>
+                                                </Suspense>
                                             </Stack>
                                         </TableCell>
 
@@ -2294,13 +2295,15 @@ export function CollectionActivity({ collection, hideInExplore = false }) {
             )}
 
             {open && (
-                <Lightbox
-                    small={lightBoxImgUrl}
-                    large={lightBoxImgUrl}
-                    hideDownload
-                    hideZoom
-                    onClose={closeLightbox}
-                />
+                <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><ClipLoader /></Box>}>
+                    <Lightbox
+                        small={lightBoxImgUrl}
+                        large={lightBoxImgUrl}
+                        hideDownload
+                        hideZoom
+                        onClose={closeLightbox}
+                    />
+                </Suspense>
             )}
         </Box>
     );

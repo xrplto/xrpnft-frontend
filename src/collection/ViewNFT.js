@@ -51,36 +51,38 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 
 // Add this new styled component for the stat cards
 const StatCard = styled(Box)(({ theme }) => ({
-    padding: theme.spacing(2),
+    padding: theme.spacing(0.75),
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
     justifyContent: 'center',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.background.paper, 0.6),
+    borderRadius: theme.shape.borderRadius * 0.5,
+    backgroundColor: alpha(theme.palette.background.paper, 0.4),
     backdropFilter: 'blur(8px)',
-    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+    border: `1px solid ${alpha(theme.palette.divider, 0.08)}`,
     transition: 'all 0.2s ease-in-out',
+    minHeight: 36,
     '&:hover': {
-        backgroundColor: alpha(theme.palette.background.paper, 0.8),
-        borderColor: alpha(theme.palette.primary.main, 0.2)
+        backgroundColor: alpha(theme.palette.background.paper, 0.6),
+        borderColor: alpha(theme.palette.primary.main, 0.15)
     },
     [theme.breakpoints.down('sm')]: {
-        padding: theme.spacing(1.5),
+        padding: theme.spacing(0.5),
+        minHeight: 32,
     }
 }));
 
 const IconCover = styled('div')(({ theme }) => ({
-    width: 240,
-    height: 240,
+    width: 120,
+    height: 120,
     position: 'relative',
     overflow: 'hidden',
     borderRadius: theme.shape.borderRadius * 2,
-    boxShadow: theme.shadows[8],
+    boxShadow: theme.shadows[4],
     [theme.breakpoints.down('sm')]: {
-        width: 160,
-        height: 160
+        width: 80,
+        height: 80
     }
 }));
 
@@ -97,13 +99,13 @@ const HeaderContainer = styled(Box)(({ theme }) => ({
     background: alpha(theme.palette.background.default, 0.9),
     backdropFilter: 'blur(20px)',
     borderRadius: 0,
-    padding: theme.spacing(4, 0),
+    padding: theme.spacing(2, 0),
     overflow: 'hidden',
     width: '100%',
-    marginBottom: theme.spacing(4),
+    marginBottom: theme.spacing(2),
     [theme.breakpoints.down('sm')]: {
-        padding: theme.spacing(2, 0),
-        marginBottom: theme.spacing(2),
+        padding: theme.spacing(1.5, 0),
+        marginBottom: theme.spacing(1),
     }
 }));
 
@@ -117,21 +119,21 @@ const VerificationBadge = styled('div')(({ theme }) => ({
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 28,
-    height: 28,
+    width: 22,
+    height: 22,
     borderRadius: '50%',
     background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
     color: theme.palette.common.white,
-    marginLeft: theme.spacing(1.5),
+    marginLeft: theme.spacing(1),
     boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.3)}`,
-    border: `2px solid ${alpha(theme.palette.common.white, 0.2)}`,
+    border: `1px solid ${alpha(theme.palette.common.white, 0.2)}`,
     transition: 'all 0.3s ease',
     '&:hover': {
         transform: 'scale(1.1)',
         boxShadow: `0 4px 16px ${alpha(theme.palette.primary.main, 0.4)}`,
     },
     '& svg': {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: 'bold'
     }
 }));
@@ -239,7 +241,7 @@ export default function ViewNFT({ collection }) {
                             display: 'flex',
                             flexDirection: { xs: 'column', md: 'row' },
                             alignItems: { xs: 'center', md: 'flex-start' },
-                            gap: { xs: 3, md: 4 }
+                            gap: { xs: 2, md: 3 }
                         }}
                     >
                         <IconCover>
@@ -254,7 +256,7 @@ export default function ViewNFT({ collection }) {
                                 direction="row"
                                 justifyContent="space-between"
                                 alignItems="flex-start"
-                                sx={{ mb: 2 }}
+                                sx={{ mb: 1 }}
                             >
                                 <Box>
                                     <Stack
@@ -263,9 +265,9 @@ export default function ViewNFT({ collection }) {
                                         sx={{ mb: 1 }}
                                     >
                                         <Typography
-                                            variant={isMobile ? 'h4' : 'h3'}
+                                            variant={isMobile ? 'h5' : 'h4'}
                                             fontWeight="600"
-                                            sx={{ lineHeight: 1.2 }}
+                                            sx={{ lineHeight: 1.1 }}
                                         >
                                             {name}
                                         </Typography>
@@ -280,7 +282,7 @@ export default function ViewNFT({ collection }) {
                                     <Typography
                                         variant="body2"
                                         color="text.secondary"
-                                        sx={{ mb: 2 }}
+                                        sx={{ mb: 1 }}
                                     >
                                         <Link 
                                             href={`/account/${account}`} 
@@ -345,77 +347,98 @@ export default function ViewNFT({ collection }) {
                                     variant="body2"
                                     color="text.secondary"
                                     sx={{ 
-                                        mb: 3,
+                                        mb: 1.5,
                                         maxWidth: 600,
-                                        display: { xs: 'none', sm: 'block' }
+                                        display: { xs: 'none', sm: 'block' },
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 1,
+                                        WebkitBoxOrient: 'vertical',
+                                        lineHeight: 1.3,
+                                        fontSize: '0.875rem'
                                     }}
                                 >
                                     {description}
                                 </Typography>
                             )}
 
-                            <Grid container spacing={2}>
-                                <Grid item xs={6} sm={4} lg={2}>
-                                    <StatCard>
-                                        <Typography variant="caption" color="text.secondary">
-                                            Floor Price
+                            <Stack 
+                                direction="row" 
+                                spacing={1} 
+                                flexWrap="wrap"
+                                sx={{ 
+                                    gap: 1,
+                                    '& > *': {
+                                        flex: { xs: '0 0 calc(50% - 4px)', sm: '0 0 calc(33.333% - 5px)', md: '1 1 auto' },
+                                        minWidth: { xs: 'calc(50% - 4px)', sm: 'auto' }
+                                    }
+                                }}
+                            >
+                                <StatCard>
+                                    <Stack direction="row" alignItems="baseline" spacing={0.5}>
+                                        <Typography variant="caption" color="text.secondary" fontSize="0.65rem">
+                                            Floor
                                         </Typography>
-                                        <Typography variant="h6" fontWeight="600">
-                                            {fNumber(floorPrice)} XRP
+                                        <Typography variant="body2" fontWeight="600">
+                                            {fNumber(floorPrice)}
                                         </Typography>
-                                    </StatCard>
-                                </Grid>
-                                <Grid item xs={6} sm={4} lg={2}>
-                                    <StatCard>
-                                        <Typography variant="caption" color="text.secondary">
-                                            24h Volume
+                                        <Typography variant="caption" color="text.secondary" fontSize="0.65rem">
+                                            XRP
                                         </Typography>
-                                        <Typography variant="h6" fontWeight="600">
-                                            {volume24h} XRP
+                                    </Stack>
+                                </StatCard>
+                                <StatCard>
+                                    <Stack direction="row" alignItems="baseline" spacing={0.5}>
+                                        <Typography variant="caption" color="text.secondary" fontSize="0.65rem">
+                                            24h Vol
                                         </Typography>
-                                    </StatCard>
-                                </Grid>
-                                <Grid item xs={6} sm={4} lg={2}>
-                                    <StatCard>
-                                        <Typography variant="caption" color="text.secondary">
-                                            Total Volume
+                                        <Typography variant="body2" fontWeight="600">
+                                            {volume24h}
                                         </Typography>
-                                        <Typography variant="h6" fontWeight="600">
-                                            {volume2} XRP
+                                    </Stack>
+                                </StatCard>
+                                <StatCard>
+                                    <Stack direction="row" alignItems="baseline" spacing={0.5}>
+                                        <Typography variant="caption" color="text.secondary" fontSize="0.65rem">
+                                            Total Vol
                                         </Typography>
-                                    </StatCard>
-                                </Grid>
-                                <Grid item xs={6} sm={4} lg={2}>
-                                    <StatCard>
-                                        <Typography variant="caption" color="text.secondary">
+                                        <Typography variant="body2" fontWeight="600">
+                                            {volume2}
+                                        </Typography>
+                                    </Stack>
+                                </StatCard>
+                                <StatCard>
+                                    <Stack direction="row" alignItems="baseline" spacing={0.5}>
+                                        <Typography variant="caption" color="text.secondary" fontSize="0.65rem">
                                             Items
                                         </Typography>
-                                        <Typography variant="h6" fontWeight="600">
+                                        <Typography variant="body2" fontWeight="600">
                                             {fNumber(items)}
                                         </Typography>
-                                    </StatCard>
-                                </Grid>
-                                <Grid item xs={6} sm={4} lg={2}>
-                                    <StatCard>
-                                        <Typography variant="caption" color="text.secondary">
+                                    </Stack>
+                                </StatCard>
+                                <StatCard>
+                                    <Stack direction="row" alignItems="baseline" spacing={0.5}>
+                                        <Typography variant="caption" color="text.secondary" fontSize="0.65rem">
                                             Owners
                                         </Typography>
-                                        <Typography variant="h6" fontWeight="600">
+                                        <Typography variant="body2" fontWeight="600">
                                             {fNumber(extra.owners)}
                                         </Typography>
-                                    </StatCard>
-                                </Grid>
-                                <Grid item xs={6} sm={4} lg={2}>
-                                    <StatCard>
-                                        <Typography variant="caption" color="text.secondary">
+                                    </Stack>
+                                </StatCard>
+                                <StatCard>
+                                    <Stack direction="row" alignItems="baseline" spacing={0.5}>
+                                        <Typography variant="caption" color="text.secondary" fontSize="0.65rem">
                                             Listed
                                         </Typography>
-                                        <Typography variant="h6" fontWeight="600">
+                                        <Typography variant="body2" fontWeight="600">
                                             {percentListed}%
                                         </Typography>
-                                    </StatCard>
-                                </Grid>
-                            </Grid>
+                                    </Stack>
+                                </StatCard>
+                            </Stack>
                         </Box>
                     </Box>
                 </Box>
