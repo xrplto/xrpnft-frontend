@@ -121,6 +121,9 @@ const CardWrapper2 = styled(Card)(({ theme }) => ({
     border: `1px solid ${alpha(theme.palette.divider, 0.12)}`,
     boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
     position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
 
     '&:hover': {
         transform: 'translateY(-2px)',
@@ -133,15 +136,17 @@ const GlassContent2 = styled(CardContent)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    height: '120px',
+    minHeight: '140px',
     padding: theme.spacing(2),
-    gap: theme.spacing(1)
+    gap: theme.spacing(1),
+    flex: '0 0 auto'
 }));
 
 const ImageContainer = styled(Box)(({ theme }) => ({
     position: 'relative',
     paddingTop: '100%',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    flex: '1 1 auto'
 }));
 
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
@@ -988,18 +993,15 @@ export function NFTCard({ nft, handleRemove }) {
         <Box
             sx={{
                 position: 'relative',
+                height: '100%',
+                width: '100%',
                 '&:hover': {
                     zIndex: 1
                 },
             }}
         >
-            <Link href={`/nft/${NFTokenID}`} underline="none">
-                <CardWrapper2
-                    sx={{
-                        width: '100%',
-                        height: '100%',
-                    }}
-                >
+            <Link href={`/nft/${NFTokenID}`} underline="none" sx={{ display: 'flex', height: '100%', width: '100%' }}>
+                <CardWrapper2 sx={{ width: '100%' }}>
                     {isAdmin && (
                         <CloseIcon
                             sx={{
@@ -1095,17 +1097,15 @@ export function NFTCard({ nft, handleRemove }) {
                                 {renderPrice()}
                                 {renderRarityRank()}
                             </Stack>
-                            {(costb || updateEvent) && (
-                                <Stack
-                                    direction="row"
-                                    justifyContent="space-between"
-                                    alignItems="center"
-                                    sx={{ minHeight: '20px' }}
-                                >
-                                    {renderOffer()}
-                                    {renderEvent()}
-                                </Stack>
-                            )}
+                            <Stack
+                                direction="row"
+                                justifyContent="space-between"
+                                alignItems="center"
+                                sx={{ minHeight: '20px' }}
+                            >
+                                {renderOffer()}
+                                {renderEvent()}
+                            </Stack>
                         </Box>
                     </GlassContent2>
                 </CardWrapper2>
@@ -1446,9 +1446,30 @@ export function NFTs({ collection, urlParams = {} }) {
                         }
                         scrollThreshold={0.9}
                     >
-                        <Grid container spacing={{ xs: 1, sm: 2, md: 2, lg: 2.5, xl: 3 }}>
+                        <Box sx={{ 
+                            display: 'flex', 
+                            flexWrap: 'wrap', 
+                            justifyContent: 'space-between',
+                            '&::after': {
+                                content: '""',
+                                flex: 'auto'
+                            }
+                        }}>
                             {nfts.map((nft, index) => (
-                                <Grid item xs={6} sm={4} md={3} lg={2.4} xl={2} key={nft.NFTokenID || index}>
+                                <Box 
+                                    key={nft.NFTokenID || index} 
+                                    sx={{ 
+                                        width: {
+                                            xs: 'calc((100% - 8px) / 2)',      // 2 per row on mobile
+                                            sm: 'calc((100% - 36px) / 4)',     // 4 per row on small  
+                                            md: 'calc((100% - 64px) / 5)',     // 5 per row on medium
+                                            lg: 'calc((100% - 96px) / 7)',     // 7 per row on large
+                                            xl: 'calc((100% - 240px) / 13)'    // 13 per row on extra large
+                                        },
+                                        mb: { xs: 1, sm: 1.5, md: 2, lg: 2, xl: 2.5 },
+                                        display: 'flex'
+                                    }}
+                                >
                                     <NFTCard
                                         nft={nft}
                                         handleRemove={handleRemove}
@@ -1469,9 +1490,9 @@ export function NFTs({ collection, urlParams = {} }) {
                                             />
                                         }
                                     />
-                                </Grid>
+                                </Box>
                             ))}
-                        </Grid>
+                        </Box>
                     </InfiniteScroll>
                 </Grid>
             </Grid>
