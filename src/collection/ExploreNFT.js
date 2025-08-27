@@ -1418,10 +1418,10 @@ export function NFTs({ collection, urlParams = {} }) {
                     }}
                 />
             </GlassyBox>
-            <Grid container spacing={1} justifyContent="space-between" mt={1}>
+            <Grid container spacing={2} justifyContent="space-between" mt={1}>
                 {showFilter && (
-                    <Grid item xs={12} md={3} xl={2} pt={0.5}>
-                        <GlassyBox sx={{ p: 2 }}>
+                    <Grid item xs={12} md={3} lg={2.5} xl={2} pt={0.5}>
+                        <GlassyBox sx={{ p: 2, position: 'sticky', top: 80 }}>
                             <FilterDetail
                                 collection={collection}
                                 filter={filter}
@@ -1434,7 +1434,7 @@ export function NFTs({ collection, urlParams = {} }) {
                         </GlassyBox>
                     </Grid>
                 )}
-                <Grid item xs={12} md={showFilter ? 9 : 12} xl={showFilter ? 10 : 12}>
+                <Grid item xs={12} md={showFilter ? 9 : 12} lg={showFilter ? 9.5 : 12} xl={showFilter ? 10 : 12}>
                     <InfiniteScroll
                         dataLength={nfts.length}
                         next={loadMore}
@@ -1446,9 +1446,9 @@ export function NFTs({ collection, urlParams = {} }) {
                         }
                         scrollThreshold={0.9}
                     >
-                        <Grid container spacing={{ xs: 1, sm: 2, md: 3 }}>
+                        <Grid container spacing={{ xs: 1, sm: 2, md: 2, lg: 2.5, xl: 3 }}>
                             {nfts.map((nft, index) => (
-                                <Grid item xs={6} sm={4} md={3} lg={12/7} xl={12/7} key={nft.NFTokenID || index}>
+                                <Grid item xs={6} sm={4} md={3} lg={2.4} xl={2} key={nft.NFTokenID || index}>
                                     <NFTCard
                                         nft={nft}
                                         handleRemove={handleRemove}
