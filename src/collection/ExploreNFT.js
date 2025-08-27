@@ -1275,7 +1275,7 @@ export function NFTs({ collection, urlParams = {} }) {
         });
         
         setLoading(true);
-        const limit = 32;
+        const limit = 96;
         
         // Build query parameters
         const params = new URLSearchParams({
@@ -1284,12 +1284,17 @@ export function NFTs({ collection, urlParams = {} }) {
         });
         
         // Add collection-specific parameters or URL parameters
-        // Prioritize URL parameters over collection parameters
+        // Use collection slug if available, otherwise fall back to issuer/taxon
+        const collectionSlug = collection?.slug || urlParams.collection;
         const issuer = urlParams.issuer || collection?.account;
         const taxon = urlParams.taxon || collection?.taxon;
         
-        if (issuer) params.append('issuer', issuer);
-        if (taxon && taxon !== '') params.append('taxon', taxon);
+        if (collectionSlug) {
+            params.append('collection', collectionSlug);
+        } else {
+            if (issuer) params.append('issuer', issuer);
+            if (taxon && taxon !== '') params.append('taxon', taxon);
+        }
         
         
         // Add optional parameters
@@ -1393,7 +1398,7 @@ export function NFTs({ collection, urlParams = {} }) {
             .finally(() => {
                 setLoading(false);
             });
-    }, [page, subFilter, filterAttrs, collection?.account, collection?.taxon, search, setDeletingNfts, urlParams]);
+    }, [page, subFilter, filterAttrs, collection?.account, collection?.taxon, collection?.slug, search, setDeletingNfts, urlParams]);
 
     // Effect for subFilter changes - reset to page 0
     useEffect(() => {
