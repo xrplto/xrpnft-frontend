@@ -842,20 +842,24 @@ export default function Minting({ showHeader = true, defaultValues }) {
                 />
             </Stack>
 
-            <Stack spacing={2} mb={3}>
+            <Stack spacing={2} mb={3} sx={{ maxWidth: '100%' }}>
                 <Typography variant="p4">Token Flags</Typography>
                 <Typography variant="p3">Configure the properties and restrictions for your NFT</Typography>
                 
-                <Grid container spacing={2}>
+                <Grid container spacing={3}>
                     {TOKEN_FLAGS.map((f) => (
-                        <Grid item xs={12} sm={6} key={f.value}>
+                        <Grid item xs={12} md={6} lg={6} key={f.value}>
                             <Card 
                                 sx={{ 
-                                    p: 2, 
+                                    p: 3, 
                                     cursor: 'pointer',
-                                    border: '1px solid',
+                                    border: '2px solid',
                                     borderColor: (flag & f.value) !== 0 ? 'primary.main' : 'divider',
                                     bgcolor: (flag & f.value) !== 0 ? 'action.selected' : 'background.paper',
+                                    height: '100%',
+                                    minHeight: 120,
+                                    display: 'flex',
+                                    alignItems: 'stretch',
                                     '&:hover': {
                                         borderColor: 'primary.main',
                                         bgcolor: 'action.hover'
@@ -863,7 +867,7 @@ export default function Minting({ showHeader = true, defaultValues }) {
                                 }}
                                 onClick={() => handleFlagChange({ target: { value: f.value } })}
                             >
-                                <Stack direction="row" alignItems="flex-start" spacing={1}>
+                                <Stack direction="row" alignItems="flex-start" spacing={1} sx={{ width: '100%' }}>
                                     <Checkbox
                                         checked={(flag & f.value) !== 0}
                                         onChange={handleFlagChange}
@@ -874,7 +878,7 @@ export default function Minting({ showHeader = true, defaultValues }) {
                                         <Typography variant="subtitle2" fontWeight="bold">
                                             {f.label}
                                         </Typography>
-                                        <Typography variant="caption" color="text.secondary">
+                                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
                                             {f.desc}
                                         </Typography>
                                     </Stack>

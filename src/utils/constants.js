@@ -65,7 +65,7 @@ export const TOKEN_FLAGS = [
     {
         label: 'OnlyXRP',
         value: 2,
-        desc: 'If set, nft can only be offered or sold for XRP.'
+        desc: 'If set, the minted NFToken can only be bought or sold for XRP. This can be desirable if the token has a transfer fee.'
     },
     {
         label: 'Transferable',
