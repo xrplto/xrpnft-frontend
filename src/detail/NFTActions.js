@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { TwitterShareButton } from 'react-share';
 
 // Material
@@ -50,7 +50,6 @@ import QRDialog from 'src/components/QRDialog';
 import ConfirmAcceptOfferDialog from './ConfirmAcceptOfferDialog';
 import BurnNFT from './BurnNFT';
 import TransferDialog from './TransferDialog';
-import HistoryList from './HistoryList';
 
 // Styled components
 import { alpha, styled } from '@mui/material/styles';
@@ -70,10 +69,13 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { parseNFTokenID } from 'src/utils/parse';
 import NFTPreview from './NFTPreview';
 import Properties from './Properties';
-import CodeHighlight from 'src/components/CodeHighlight';
 import { fVolume } from 'src/utils/formatNumber';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Collapse from '@mui/material/Collapse';
+
+// Lazy load heavy components
+const CodeHighlight = lazy(() => import('src/components/CodeHighlight'));
+const HistoryList = lazy(() => import('./HistoryList'));
 
 // Broker addresses configuration
 const BROKER_ADDRESSES = {
@@ -506,19 +508,28 @@ export default function NFTActions({ nft }) {
         taxon: apiTaxon
     } = nft;
 
-    // NFTDetails data
-    const { flag: parsedFlag, issuer: parsedIssuer, transferFee } = parseNFTokenID(NFTokenID);
+    // NFTDetails data - Memoize expensive computations
+    const { flag: parsedFlag, issuer: parsedIssuer, transferFee } = useMemo(
+        () => parseNFTokenID(NFTokenID),
+        [NFTokenID]
+    );
     const taxon = apiTaxon;
-    const strDateTime = created ? new Date(created).toLocaleString() : (date ? new Date(date).toLocaleString() : '');
-    const properties = props || getProperties(meta);
+    const strDateTime = useMemo(
+        () => created ? new Date(created).toLocaleString() : (date ? new Date(date).toLocaleString() : ''),
+        [created, date]
+    );
+    const properties = useMemo(
+        () => props || getProperties(meta),
+        [props, meta]
+    );
     const hasProperties = properties && properties.length > 0;
-    const formatAddress = (addr, length = 'short') => {
+    const formatAddress = useCallback((addr, length = 'short') => {
         if (!addr) return '';
         if (length === 'full') return addr;
         if (length === 'long') return `${addr.substring(0, 20)}...${addr.substring(addr.length - 16)}`;
         if (length === 'medium') return `${addr.substring(0, 12)}...${addr.substring(addr.length - 8)}`;
         return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
-    };
+    }, []);
 
     const collectionName = collection || '[No Collection]';
     const nftName = name || '[No Name]';
@@ -616,7 +627,7 @@ export default function NFTActions({ nft }) {
                     }
                 })
                 .catch((err) => {
-                    console.log('Error on getting nft offers list!!!', err);
+                    console.error('Error fetching offers:', err);
                 })
                 .then(function () {
                     // always executed
@@ -674,7 +685,6 @@ export default function NFTActions({ nft }) {
         };
 
         async function getPayload() {
-            console.log(counter + ' ' + isRunning, xummUuid);
             if (isRunning) return;
             isRunning = true;
             try {
@@ -706,12 +716,18 @@ export default function NFTActions({ nft }) {
     }, [openScanQR, xummUuid, sync]);
 
     useEffect(() => {
+        let isMounted = true;
         async function getLowestSellOffer() {
+            if (!NFTokenID || !nft.account) return;
+            
             const client = new Client('wss://s1.ripple.com');
 
             try {
                 await client.connect();
-                console.log('Connected to XRPL');
+                if (!isMounted) {
+                    await client.disconnect();
+                    return;
+                }
 
                 const request = {
                     command: 'nft_sell_offers',
@@ -719,7 +735,6 @@ export default function NFTActions({ nft }) {
                 };
 
                 const response = await client.request(request);
-                console.log('NFT Sell Offers:', JSON.stringify(response.result, null, 2));
 
                 // Find the lowest valid sell offer
                 let lowestOffer = null;
@@ -748,30 +763,35 @@ export default function NFTActions({ nft }) {
                     const brokerFee = hasBroker ? parseFloat((baseAmount * brokerFeePercentage).toFixed(6)) : 0;
                     const totalAmount = parseFloat((baseAmount + brokerFee).toFixed(6));
 
-                    setLowestSellOffer({
-                        baseAmount,
-                        totalAmount: hasBroker ? totalAmount : baseAmount,
-                        brokerFee,
-                        brokerFeePercentage,
-                        hasBroker,
-                        brokerName: brokerInfo ? brokerInfo.name : null,
-                        offerIndex: lowestOffer.offer.nft_offer_index,
-                        seller: lowestOffer.offer.owner,
-                        destination: brokerAddress,
-                        offer: lowestOffer.offer
-                    });
+                    if (isMounted) {
+                        setLowestSellOffer({
+                            baseAmount,
+                            totalAmount: hasBroker ? totalAmount : baseAmount,
+                            brokerFee,
+                            brokerFeePercentage,
+                            hasBroker,
+                            brokerName: brokerInfo ? brokerInfo.name : null,
+                            offerIndex: lowestOffer.offer.nft_offer_index,
+                            seller: lowestOffer.offer.owner,
+                            destination: brokerAddress,
+                            offer: lowestOffer.offer
+                        });
+                    }
                 } else {
-                    setLowestSellOffer(null);
+                    if (isMounted) setLowestSellOffer(null);
                 }
             } catch (error) {
                 console.error('Error fetching NFT sell offers:', error);
             } finally {
                 await client.disconnect();
-                console.log('Disconnected from XRPL');
             }
         }
 
         getLowestSellOffer();
+        
+        return () => {
+            isMounted = false;
+        };
     }, [NFTokenID, nft.account]);
 
     const doProcessOffer = async (offer, isAcceptOrCancel) => {
@@ -867,7 +887,7 @@ export default function NFTActions({ nft }) {
         onDisconnectXumm();
     };
 
-    const getValidOffers = (offers, isSell) => {
+    const getValidOffers = useCallback((offers, isSell) => {
         const newOffers = [];
         for (const offer of offers) {
             if (isSell) {
@@ -894,7 +914,7 @@ export default function NFTActions({ nft }) {
         }
 
         return newOffers;
-    };
+    }, [isOwner, accountLogin, nft.account]);
 
     const handleCreateSellOffer = () => {
         setIsSellOffer(true);
@@ -914,14 +934,14 @@ export default function NFTActions({ nft }) {
         setBurnt(true);
     };
 
-    const handleCancelOffer = async (offer) => {
+    const handleCancelOffer = useCallback(async (offer) => {
         doProcessOffer(offer, false);
-    };
+    }, [doProcessOffer]);
 
-    const handleAcceptOffer = async (offer) => {
+    const handleAcceptOffer = useCallback(async (offer) => {
         setAcceptOffer(offer);
         setOpenConfirm(true);
-    };
+    }, []);
 
     const onContinueAccept = async () => {
         doProcessOffer(acceptOffer, true);
@@ -1032,7 +1052,7 @@ export default function NFTActions({ nft }) {
                                                 {account}
                                             </MonoLink>
                                             <CopyToClipboard text={account} onCopy={() => openSnackbar('Copied!', 'success')}>
-                                                <TinyButton size="small">
+                                                <TinyButton size="small" aria-label="Copy owner address">
                                                     <ContentCopyIcon />
                                                 </TinyButton>
                                             </CopyToClipboard>
@@ -1046,7 +1066,7 @@ export default function NFTActions({ nft }) {
                                                 {parsedIssuer}
                                             </MonoLink>
                                             <CopyToClipboard text={parsedIssuer} onCopy={() => openSnackbar('Copied!', 'success')}>
-                                                <TinyButton size="small">
+                                                <TinyButton size="small" aria-label="Copy issuer address">
                                                     <ContentCopyIcon />
                                                 </TinyButton>
                                             </CopyToClipboard>
@@ -1099,12 +1119,13 @@ export default function NFTActions({ nft }) {
                                                 href={`https://bithomp.com/explorer/${NFTokenID}`}
                                                 target="_blank"
                                                 rel="noreferrer noopener nofollow"
+                                                aria-label="View NFT on Bithomp Explorer"
                                             >
                                                 {formatAddress(NFTokenID, 'long')}
                                                 <OpenInNewIcon style={{ fontSize: 10 }} />
                                             </MonoLink>
                                             <CopyToClipboard text={NFTokenID} onCopy={() => openSnackbar('Copied!', 'success')}>
-                                                <TinyButton size="small">
+                                                <TinyButton size="small" aria-label="Copy NFT ID">
                                                     <ContentCopyIcon />
                                                 </TinyButton>
                                             </CopyToClipboard>
@@ -1119,12 +1140,13 @@ export default function NFTActions({ nft }) {
                                                     href={`https://bithomp.com/explorer/${hash}`}
                                                     target="_blank"
                                                     rel="noreferrer noopener nofollow"
+                                                    aria-label="View transaction on Bithomp Explorer"
                                                 >
                                                     {formatAddress(hash, 'long')}
                                                     <OpenInNewIcon style={{ fontSize: 10 }} />
                                                 </MonoLink>
                                                 <CopyToClipboard text={hash} onCopy={() => openSnackbar('Copied!', 'success')}>
-                                                    <TinyButton size="small">
+                                                    <TinyButton size="small" aria-label="Copy transaction hash">
                                                         <ContentCopyIcon />
                                                     </TinyButton>
                                                 </CopyToClipboard>
@@ -1159,7 +1181,9 @@ export default function NFTActions({ nft }) {
                                     <Collapse in={showMemo}>
                                         {isValidJSON(memo) ? (
                                             <MetadataBox sx={{ mt: 1 }}>
-                                                <CodeHighlight json={parseMemo(memo)} />
+                                                <Suspense fallback={<Typography variant="caption">Loading...</Typography>}>
+                                                    <CodeHighlight json={parseMemo(memo)} />
+                                                </Suspense>
                                             </MetadataBox>
                                         ) : (
                                             <Typography variant="body2" sx={{ fontSize: '0.75rem', mt: 1 }}>
@@ -1185,7 +1209,9 @@ export default function NFTActions({ nft }) {
                                 <Collapse in={showRawMetadata}>
                                     {meta && (
                                         <MetadataBox sx={{ mt: 1 }}>
-                                            <CodeHighlight json={meta} />
+                                            <Suspense fallback={<Typography variant="caption">Loading...</Typography>}>
+                                                <CodeHighlight json={meta} />
+                                            </Suspense>
                                         </MetadataBox>
                                     )}
                                 </Collapse>
@@ -1357,6 +1383,7 @@ export default function NFTActions({ nft }) {
                                     <IconButton 
                                         onClick={handleShareClick} 
                                         ref={anchorRef}
+                                        aria-label="Share NFT"
                                         sx={{ 
                                             background: alpha(theme.palette.background.default, 0.5),
                                             '&:hover': {
@@ -1660,7 +1687,9 @@ export default function NFTActions({ nft }) {
                                 </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
-                                <HistoryList nft={nft} />
+                                <Suspense fallback={<Box sx={{ textAlign: 'center', py: 2 }}><PulseLoader color="#00AB55" size={8} /></Box>}>
+                                    <HistoryList nft={nft} />
+                                </Suspense>
                             </AccordionDetails>
                         </SimpleAccordion>
                     </Stack>
