@@ -20,6 +20,25 @@ export default function Trait({ prop, total, issuer, taxon, cslug }) {
     if (total > 0 && count > 0)
         rarity = new Decimal(count).mul(100).div(total).toDP(2, Decimal.ROUND_DOWN).toNumber();
 
+    // Function to get color based on rarity percentage
+    const getRarityColor = (percentage) => {
+        if (percentage <= 1) {
+            return '#9333ea'; // Mythic: Purple
+        } else if (percentage <= 5) {
+            return '#ef4444'; // Legendary: Red
+        } else if (percentage <= 15) {
+            return '#f97316'; // Epic: Orange
+        } else if (percentage <= 35) {
+            return '#eab308'; // Rare: Yellow
+        } else if (percentage <= 60) {
+            return '#3b82f6'; // Uncommon: Blue
+        } else {
+            return '#64748b'; // Common: Gray
+        }
+    };
+
+    const rarityColor = rarity > 0 ? getRarityColor(rarity) : theme.palette.text.secondary;
+
     const tooltipTitle = total > 0 ? `${count} out of ${total} have this trait` : 'Rarity data not available';
 
     const handleClick = () => {
@@ -88,7 +107,7 @@ export default function Trait({ prop, total, issuer, taxon, cslug }) {
                         {value}
                     </Typography>
                     {total > 0 && (
-                        <Typography sx={{ fontSize: 10, color: theme.palette.text.secondary }}>
+                        <Typography sx={{ fontSize: 10, color: rarityColor, fontWeight: 600 }}>
                             {rarity}%
                         </Typography>
                     )}

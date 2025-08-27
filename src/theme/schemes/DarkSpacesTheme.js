@@ -142,7 +142,7 @@ export const DarkSpacesTheme = createTheme({
     // direction: i18n.dir(),
     colors: {
         nav: {
-            background: '#121619'
+            background: '#111314' // Updated to match main background
         },
         gradients: {
             blue1: colors.gradients.blue1,
@@ -255,8 +255,8 @@ export const DarkSpacesTheme = createTheme({
     },
     header: {
         height: '80px',
-        background: themeColors.primaryAlt,
-        boxShadow: '0px 1px 0px' + themeColors.primaryAlt,
+        background: '#111314', // Updated to match main background
+        boxShadow: '0px 1px 0px #111314',
         textColor: colors.secondary.main
     },
     spacing: 9,
