@@ -1539,9 +1539,12 @@ export function NFTs({ collection, urlParams = {} }) {
                     }}
                 />
             </GlassyBox>
-            <Grid container spacing={2} justifyContent="space-between" mt={1}>
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
                 {showFilter && (
-                    <Grid item xs={12} md={3} lg={2.5} xl={2} pt={0.5}>
+                    <Box sx={{ 
+                        width: { xs: '100%', md: '250px', lg: '280px', xl: '300px' },
+                        flexShrink: 0
+                    }}>
                         <GlassyBox sx={{ p: 2, position: 'sticky', top: 80 }}>
                             <FilterDetail
                                 collection={collection}
@@ -1553,32 +1556,33 @@ export function NFTs({ collection, urlParams = {} }) {
                                 setPage={setPage}
                             />
                         </GlassyBox>
-                    </Grid>
+                    </Box>
                 )}
-                <Grid item xs={12} md={showFilter ? 9 : 12} lg={showFilter ? 9.5 : 12} xl={showFilter ? 10 : 12}
-                    sx={{
-                        '& ::-webkit-scrollbar': {
-                            width: '2px',
-                            height: '2px',
-                        },
-                        '& ::-webkit-scrollbar-track': {
-                            background: 'transparent',
-                            borderRadius: '10px',
-                        },
-                        '& ::-webkit-scrollbar-thumb': {
-                            background: theme => alpha(theme.palette.primary.main, 0.2),
-                            borderRadius: '10px',
-                            '&:hover': {
-                                background: theme => alpha(theme.palette.primary.main, 0.3),
-                            }
-                        },
-                        '& ::-webkit-scrollbar-corner': {
-                            background: 'transparent',
-                        },
-                        // Firefox
-                        scrollbarWidth: 'thin',
-                        scrollbarColor: theme => `${alpha(theme.palette.primary.main, 0.2)} transparent`,
-                    }}>
+                <Box sx={{ 
+                    flexGrow: 1, 
+                    minWidth: 0,
+                    '& ::-webkit-scrollbar': {
+                        width: '2px',
+                        height: '2px',
+                    },
+                    '& ::-webkit-scrollbar-track': {
+                        background: 'transparent',
+                        borderRadius: '10px',
+                    },
+                    '& ::-webkit-scrollbar-thumb': {
+                        background: theme => alpha(theme.palette.primary.main, 0.2),
+                        borderRadius: '10px',
+                        '&:hover': {
+                            background: theme => alpha(theme.palette.primary.main, 0.3),
+                        }
+                    },
+                    '& ::-webkit-scrollbar-corner': {
+                        background: 'transparent',
+                    },
+                    // Firefox
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: theme => `${alpha(theme.palette.primary.main, 0.2)} transparent`,
+                }}>
                     <InfiniteScroll
                         dataLength={nfts.length}
                         next={loadMore}
@@ -1607,9 +1611,9 @@ export function NFTs({ collection, urlParams = {} }) {
                                         width: {
                                             xs: 'calc((100% - 8px) / 2)',      // 2 per row on mobile
                                             sm: 'calc((100% - 36px) / 4)',     // 4 per row on small  
-                                            md: 'calc((100% - 64px) / 5)',     // 5 per row on medium
-                                            lg: 'calc((100% - 96px) / 7)',     // 7 per row on large
-                                            xl: 'calc((100% - 240px) / 13)'    // 13 per row on extra large
+                                            md: showFilter ? 'calc((100% - 48px) / 4)' : 'calc((100% - 64px) / 5)',     // Adjust for filter
+                                            lg: showFilter ? 'calc((100% - 80px) / 5)' : 'calc((100% - 96px) / 7)',     // Adjust for filter
+                                            xl: showFilter ? 'calc((100% - 192px) / 10)' : 'calc((100% - 240px) / 13)'    // Adjust for filter
                                         },
                                         mb: { xs: 1, sm: 1.5, md: 2, lg: 2, xl: 2.5 },
                                         display: 'flex'
@@ -1639,8 +1643,8 @@ export function NFTs({ collection, urlParams = {} }) {
                             ))}
                         </Box>
                     </InfiniteScroll>
-                </Grid>
-            </Grid>
+                </Box>
+            </Box>
         </Box>
     );
 }
