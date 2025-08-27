@@ -441,30 +441,32 @@ export default function HistoryList({ nft }) {
                                                 <Typography variant='caption' noWrap>- - -</Typography>
                                             )}
                                         </TableCell>
-                                        <TableCell align="left" width='22%'>
-                                            <Stack direction="row" alignItems="center" spacing={1}>
-                                                <Typography variant='caption' noWrap>{formatDateTime(row.date)}</Typography>
-                                                {row.hash && (
-                                                    <Tooltip title="View on Bithomp" arrow placement="top">
-                                                        <IconButton 
-                                                            size="small"
-                                                            component="a"
-                                                            href={`https://bithomp.com/explorer/${row.hash}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            sx={{ 
-                                                                padding: 0.25,
-                                                                color: 'text.secondary',
-                                                                '&:hover': {
-                                                                    color: 'primary.main'
-                                                                }
-                                                            }}
-                                                        >
-                                                            <OpenInNewIcon sx={{ fontSize: 14 }} />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                )}
-                                            </Stack>
+                                        <TableCell align="left" width='20%'>
+                                            <Typography variant='caption' noWrap>{formatDateTime(row.date)}</Typography>
+                                        </TableCell>
+                                        <TableCell align="center" width='5%'>
+                                            {row.hash ? (
+                                                <Tooltip title="View on Bithomp" arrow placement="top">
+                                                    <IconButton 
+                                                        size="small"
+                                                        component="a"
+                                                        href={`https://bithomp.com/explorer/${row.hash}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        sx={{ 
+                                                            padding: 0.25,
+                                                            color: 'text.secondary',
+                                                            '&:hover': {
+                                                                color: 'primary.main'
+                                                            }
+                                                        }}
+                                                    >
+                                                        <OpenInNewIcon sx={{ fontSize: 14 }} />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            ) : (
+                                                <Box sx={{ width: 22, height: 22 }} />
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 ))}
