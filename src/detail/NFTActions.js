@@ -132,12 +132,12 @@ const DetailContainer = styled(Box)(({ theme }) => ({
 }));
 
 const DetailCard = styled(Paper)(({ theme }) => ({
-    background: '#111314',
-    borderRadius: theme.shape.borderRadius * 2,
+    background: theme.palette.mode === 'dark' ? '#0a0a0b' : '#fafafa',
+    borderRadius: 12,
     padding: 0,
     overflow: 'hidden',
-    boxShadow: theme.shadows[2],
-    border: `1px solid ${alpha(theme.palette.divider, 0.08)}`,
+    boxShadow: 'none',
+    border: `1px solid ${alpha(theme.palette.divider, 0.04)}`,
     height: 'fit-content',
     width: '100%',
     maxWidth: '480px',
@@ -146,7 +146,7 @@ const DetailCard = styled(Paper)(({ theme }) => ({
 const Section = styled(Box)(({ theme }) => ({
     padding: theme.spacing(2),
     '&:not(:last-child)': {
-        borderBottom: `1px solid ${alpha(theme.palette.divider, 0.08)}`
+        borderBottom: `1px solid ${alpha(theme.palette.divider, 0.03)}`
     }
 }));
 

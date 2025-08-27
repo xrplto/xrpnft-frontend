@@ -6,6 +6,7 @@ import {
     Typography,
     Tooltip,
     useTheme,
+    alpha,
 } from '@mui/material';
 
 export default function Trait({ prop, total, issuer, taxon, cslug }) {
@@ -78,17 +79,25 @@ export default function Trait({ prop, total, issuer, taxon, cslug }) {
                 sx={{
                     width: '100%',
                     height: "100%",
-                    borderRadius: '8px',
-                    border: `1px solid ${primaryColor}`,
+                    borderRadius: '6px',
+                    border: theme.palette.mode === 'dark' ? 
+                        `1px solid ${alpha(theme.palette.divider, 0.08)}` :
+                        `1px solid ${alpha(theme.palette.divider, 0.06)}`,
                     padding: 1,
                     textAlign: 'center',
-                    background: `linear-gradient(145deg, ${primaryColor}10, ${primaryColor}20)`,
-                    transition: 'all 0.3s ease',
+                    background: theme.palette.mode === 'dark' ?
+                        alpha(theme.palette.background.paper, 0.3) :
+                        alpha(theme.palette.background.paper, 0.5),
+                    transition: 'all 0.2s ease',
                     cursor: 'pointer',
                     '&:hover': {
-                        transform: 'translateY(-2px)',
-                        boxShadow: `0 4px 12px ${primaryColor}4D`,
-                        background: `linear-gradient(145deg, ${primaryColor}20, ${primaryColor}30)`,
+                        transform: 'translateY(-1px)',
+                        boxShadow: theme.palette.mode === 'dark' ?
+                            `0 4px 8px ${alpha(theme.palette.common.black, 0.2)}` :
+                            `0 2px 4px ${alpha(theme.palette.common.black, 0.05)}`,
+                        background: theme.palette.mode === 'dark' ?
+                            alpha(theme.palette.background.paper, 0.5) :
+                            alpha(theme.palette.background.paper, 0.8),
                     },
                 }}
             >
@@ -96,18 +105,18 @@ export default function Trait({ prop, total, issuer, taxon, cslug }) {
                     <Typography sx={{ 
                         overflowWrap: 'break-word', 
                         textTransform: 'uppercase', 
-                        color: primaryColor, 
-                        fontWeight: 700, 
-                        fontSize: 10,
+                        color: alpha(theme.palette.text.secondary, 0.6), 
+                        fontWeight: 600, 
+                        fontSize: 9,
                         letterSpacing: 0.5,
                     }}>
                         {type}
                     </Typography>
-                    <Typography sx={{ fontWeight: 600, color: theme.palette.text.primary, fontSize: 14 }}>
+                    <Typography sx={{ fontWeight: 500, color: alpha(theme.palette.text.primary, 0.9), fontSize: 13 }}>
                         {value}
                     </Typography>
                     {total > 0 && (
-                        <Typography sx={{ fontSize: 10, color: rarityColor, fontWeight: 600 }}>
+                        <Typography sx={{ fontSize: 10, color: rarityColor, fontWeight: 500 }}>
                             {rarity}%
                         </Typography>
                     )}

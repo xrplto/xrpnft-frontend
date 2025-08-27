@@ -379,15 +379,15 @@ export default function HistoryList({ nft }) {
                                                 variant='caption' 
                                                 noWrap
                                                 sx={{
-                                                    fontWeight: row.type === 'Listing' ? 600 : 
-                                                               row.type === 'Sale' ? 600 :
-                                                               row.type === 'Transfer' ? 500 : 400,
-                                                    color: row.type === 'Listing' ? 'error.main' :
-                                                           row.type === 'Sale' ? 'success.main' :
-                                                           row.type === 'Buy Offer' ? 'info.main' :
-                                                           row.type === 'Transfer' ? 'warning.main' :
-                                                           row.type === 'Cancel' ? 'text.secondary' :
-                                                           row.type === 'Mint' ? 'primary.main' : 'inherit'
+                                                    fontWeight: 500,
+                                                    fontSize: '0.75rem',
+                                                    color: row.type === 'Listing' ? '#ef4444' :
+                                                           row.type === 'Sale' ? '#10b981' :
+                                                           row.type === 'Buy Offer' ? '#3b82f6' :
+                                                           row.type === 'Transfer' ? '#f59e0b' :
+                                                           row.type === 'Cancel' ? '#6b7280' :
+                                                           row.type === 'Mint' ? '#8b5cf6' : 'inherit',
+                                                    opacity: 0.9
                                                 }}
                                             >
                                                 {row.type}

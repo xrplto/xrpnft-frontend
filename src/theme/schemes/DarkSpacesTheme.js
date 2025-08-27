@@ -4,23 +4,23 @@ import '@mui/lab/themeAugmentation';
 // import i18n from 'src/i18n/i18n';
 
 const themeColors = {
-    primary: '#4A90E2', // A softer blue for primary actions
-    secondary: '#B0BEC5', // A lighter gray for secondary elements
-    success: '#66BB6A', // A softer green for success states
-    warning: '#FFA726', // A muted orange for warnings
-    error: '#EF5350', // A softer red for errors
-    info: '#29B6F6', // A lighter blue for informational elements
+    primary: '#3B82F6', // Modern blue for primary actions
+    secondary: '#94A3B8', // Muted slate for secondary elements
+    success: '#10B981', // Modern green for success states
+    warning: '#F59E0B', // Amber for warnings
+    error: '#EF4444', // Modern red for errors
+    info: '#06B6D4', // Cyan for informational elements
     black: '#FFFFFF', // Keep white for contrast
-    white: '#1E1E1E', // A dark gray for backgrounds
-    primaryAlt: '#121212', // An even darker shade for alternative backgrounds
+    white: '#18181B', // Zinc-900 for backgrounds
+    primaryAlt: '#09090B', // Zinc-950 for alternative backgrounds
     trueWhite: '#ffffff', // Keep true white for specific cases
     text: {
-        primary: '#E0E0E0', // Light gray for primary text
-        secondary: '#9E9E9E' // Darker gray for secondary text
+        primary: '#E4E4E7', // Zinc-200 for primary text
+        secondary: '#A1A1AA' // Zinc-400 for secondary text
     },
     background: {
-        default: '#121212', // Very dark gray for main background
-        paper: '#1E1E1E' // Slightly lighter for elevated surfaces
+        default: '#09090B', // Zinc-950 for main background
+        paper: '#18181B' // Zinc-900 for elevated surfaces
     }
 };
 
@@ -58,16 +58,16 @@ const colors = {
     },
     layout: {
         general: {
-            bodyBg: '#121619' //'#1C1C1C'
+            bodyBg: '#09090B' // Zinc-950
         },
         sidebar: {
             background: themeColors.primaryAlt,
             textColor: themeColors.secondary,
-            dividerBg: '#1d1818',
-            menuItemColor: '#A3A3A3',
+            dividerBg: '#27272A', // Zinc-800
+            menuItemColor: '#A1A1AA', // Zinc-400
             menuItemColorActive: '#ffffff',
             menuItemBg: themeColors.primaryAlt,
-            menuItemBgActive: '#221e1e',
+            menuItemBgActive: '#18181B', // Zinc-900
             menuItemIconColor: themeColors.secondary,
             menuItemIconColorActive: '#ffffff',
             menuItemHeadingColor: darken(themeColors.secondary, 0.3)
@@ -142,7 +142,7 @@ export const DarkSpacesTheme = createTheme({
     // direction: i18n.dir(),
     colors: {
         nav: {
-            background: '#111314' // Updated to match main background
+            background: '#09090B' // Zinc-950 to match main background
         },
         gradients: {
             blue1: colors.gradients.blue1,
@@ -255,8 +255,8 @@ export const DarkSpacesTheme = createTheme({
     },
     header: {
         height: '80px',
-        background: '#111314', // Updated to match main background
-        boxShadow: '0px 1px 0px #111314',
+        background: '#09090B', // Zinc-950 to match main background
+        boxShadow: 'none',
         textColor: colors.secondary.main
     },
     spacing: 9,
@@ -306,7 +306,7 @@ export const DarkSpacesTheme = createTheme({
             disabled: colors.alpha.black[50]
         },
         background: {
-            paper: '#21252B', // colors.alpha.white[100],
+            paper: '#18181B', // Zinc-900
             default: colors.layout.general.bodyBg
         },
         action: {
@@ -784,9 +784,9 @@ export const DarkSpacesTheme = createTheme({
         MuiPaper: {
             styleOverrides: {
                 root: {
-                    background: '#21252B',
+                    background: '#18181B',
                     padding: 0,
-                    border: '1px solid #32373C'
+                    border: '1px solid #27272A'
                 }
                 // elevation0: {
                 //   boxShadow: 'none'
