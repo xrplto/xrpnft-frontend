@@ -59,6 +59,7 @@ import FactCheckIcon from '@mui/icons-material/FactCheck';
 import BookmarkAddedIcon from '@mui/icons-material/BookmarkAdded';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DiamondIcon from '@mui/icons-material/Diamond';
 
 // External libraries
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -113,13 +114,13 @@ const GlassContent = styled(CardContent)(({ theme }) => ({
 
 const CardWrapper2 = styled(Card)(({ theme }) => ({
     borderRadius: theme.shape.borderRadius,
-    background: theme.palette.background.paper,
+    background: '#000000',
     padding: 0,
     cursor: 'pointer',
     transition: 'all 0.2s ease-in-out',
     overflow: 'hidden',
-    border: `1px solid ${alpha(theme.palette.divider, 0.12)}`,
-    boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+    border: `1px solid ${alpha('#ffffff', 0.08)}`,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
@@ -127,7 +128,7 @@ const CardWrapper2 = styled(Card)(({ theme }) => ({
 
     '&:hover': {
         transform: 'translateY(-2px)',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.7)',
         borderColor: alpha(theme.palette.primary.main, 0.4),
     }
 }));
@@ -136,10 +137,12 @@ const GlassContent2 = styled(CardContent)(({ theme }) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    minHeight: '140px',
-    padding: theme.spacing(2),
-    gap: theme.spacing(1),
-    flex: '0 0 auto'
+    minHeight: '60px',
+    padding: theme.spacing(1),
+    gap: theme.spacing(0.25),
+    flex: '0 0 auto',
+    background: '#000000',
+    color: '#ffffff'
 }));
 
 const ImageContainer = styled(Box)(({ theme }) => ({
@@ -838,7 +841,26 @@ export function NFTCard({ nft, handleRemove }) {
     const isSold = false;
     const imgUrl = getNftCoverUrl(nft, 'big');
     const isVideo = false;
-    const name = nft.meta?.name || meta?.Name || 'No Name';
+    const rawName = nft.meta?.name || meta?.Name || 'No Name';
+    
+    // Simplify name if it matches pattern "CollectionName #Number" or "CollectionName Number"
+    const simplifyName = (fullName) => {
+        // Match patterns like "Wonkazz 200", "Fuzzybear #2222", "Collection Name #123"
+        const patterns = [
+            /^.*\s+#(\d+)$/,  // Matches "Name #123"
+            /^.*\s+(\d+)$/,   // Matches "Name 123"
+        ];
+        
+        for (const pattern of patterns) {
+            const match = fullName.match(pattern);
+            if (match) {
+                return `#${match[1]}`;
+            }
+        }
+        return fullName;
+    };
+    
+    const name = simplifyName(rawName);
 
     const getColors = (colors) => {
         setColors((c) => [...c, ...colors]);
@@ -861,26 +883,25 @@ export function NFTCard({ nft, handleRemove }) {
         if (!cost)
             return (
                 <Typography
-                    variant="body2"
                     color="text.secondary"
-                    fontSize="0.875rem"
+                    sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
                 >
                     Unlisted
                 </Typography>
             );
 
         return cost.currency === 'XRP' ? (
-            <Stack direction="row" spacing={0.5} alignItems="center">
+            <Stack direction="row" spacing={0.25} alignItems="center">
                 <Icon
                     icon={rippleSolid}
-                    width="18"
-                    height="18"
+                    width="14"
+                    height="14"
                     color={theme.palette.primary.main}
                 />
                 <Typography
-                    variant="body1"
+                    variant="body2"
                     fontWeight="600"
-                    fontSize={{ xs: '0.9375rem', sm: '1rem' }}
+                    fontSize={{ xs: '0.75rem', sm: '0.8125rem' }}
                     color="text.primary"
                 >
                     {fNumber(cost.amount)}
@@ -1073,40 +1094,81 @@ export function NFTCard({ nft, handleRemove }) {
                         />
                     )}
                     <GlassContent2>
-                        <Typography
-                            variant="subtitle2"
-                            sx={{
-                                fontWeight: 500,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                fontSize: { xs: '0.875rem', sm: '0.9375rem' },
-                                color: theme.palette.text.primary,
-                            }}
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            sx={{ width: '100%' }}
                         >
-                            {name}
-                        </Typography>
-
-                        <Box sx={{ mt: 'auto' }}>
-                            <Stack
-                                direction="row"
-                                alignItems="center"
-                                justifyContent="space-between"
-                                sx={{ mb: 0.5 }}
+                            <Typography
+                                sx={{
+                                    fontWeight: 600,
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                                    color: theme.palette.text.primary,
+                                    maxWidth: '60%'
+                                }}
                             >
+                                {name}
+                            </Typography>
+                            {rarity_rank > 0 && (
+                                <Stack direction="row" spacing={0.25} alignItems="center">
+                                    <DiamondIcon 
+                                        sx={{ 
+                                            fontSize: { xs: 10, sm: 12 },
+                                            color: theme.palette.warning.main
+                                        }} 
+                                    />
+                                    <Typography
+                                        sx={{
+                                            fontSize: { xs: '0.65rem', sm: '0.7rem' },
+                                            fontWeight: 600,
+                                            color: theme.palette.warning.dark
+                                        }}
+                                    >
+                                        {fIntNumber(rarity_rank)}
+                                    </Typography>
+                                </Stack>
+                            )}
+                        </Stack>
+                        
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            sx={{ width: '100%' }}
+                        >
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 {renderPrice()}
-                                {renderRarityRank()}
-                            </Stack>
-                            <Stack
-                                direction="row"
-                                justifyContent="space-between"
-                                alignItems="center"
-                                sx={{ minHeight: '20px' }}
-                            >
-                                {renderOffer()}
-                                {renderEvent()}
-                            </Stack>
-                        </Box>
+                                {costb && (
+                                    <Typography
+                                        sx={{
+                                            fontSize: '0.6rem',
+                                            color: 'success.main',
+                                            fontWeight: 500
+                                        }}
+                                    >
+                                        O:{fNumber(costb.amount)}
+                                    </Typography>
+                                )}
+                            </Box>
+                            {updateEvent && (
+                                <Typography
+                                    sx={{
+                                        fontSize: '0.6rem',
+                                        color: 'text.secondary',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        maxWidth: '40%'
+                                    }}
+                                >
+                                    {updateEvent}
+                                </Typography>
+                            )}
+                        </Stack>
                     </GlassContent2>
                 </CardWrapper2>
             </Link>
