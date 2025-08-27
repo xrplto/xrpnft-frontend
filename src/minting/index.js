@@ -842,83 +842,85 @@ export default function Minting({ showHeader = true, defaultValues }) {
                 />
             </Stack>
 
-            <Stack spacing={2} mb={3} sx={{ maxWidth: '100%' }}>
-                <Typography variant="p4">Token Flags</Typography>
-                <Typography variant="p3">Configure the properties and restrictions for your NFT</Typography>
+            <Stack spacing={2} mb={3}>
+                <Typography variant="p4">Token Properties</Typography>
                 
-                <Grid container spacing={3}>
+                <Stack spacing={1.5}>
                     {TOKEN_FLAGS.map((f) => (
-                        <Grid item xs={12} md={6} lg={6} key={f.value}>
-                            <Card 
-                                sx={{ 
-                                    p: 3, 
-                                    cursor: 'pointer',
-                                    border: '2px solid',
-                                    borderColor: (flag & f.value) !== 0 ? 'primary.main' : 'divider',
-                                    bgcolor: (flag & f.value) !== 0 ? 'action.selected' : 'background.paper',
-                                    height: '100%',
-                                    minHeight: 120,
-                                    display: 'flex',
-                                    alignItems: 'stretch',
-                                    '&:hover': {
-                                        borderColor: 'primary.main',
-                                        bgcolor: 'action.hover'
-                                    }
-                                }}
-                                onClick={() => handleFlagChange({ target: { value: f.value } })}
-                            >
-                                <Stack direction="row" alignItems="flex-start" spacing={1} sx={{ width: '100%' }}>
-                                    <Checkbox
-                                        checked={(flag & f.value) !== 0}
-                                        onChange={handleFlagChange}
-                                        value={f.value}
-                                        sx={{ mt: -0.5 }}
-                                    />
-                                    <Stack spacing={0.5} flex={1}>
-                                        <Typography variant="subtitle2" fontWeight="bold">
-                                            {f.label}
-                                        </Typography>
-                                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                                            {f.desc}
-                                        </Typography>
-                                    </Stack>
+                        <FormControlLabel
+                            key={f.value}
+                            control={
+                                <Checkbox
+                                    checked={(flag & f.value) !== 0}
+                                    onChange={handleFlagChange}
+                                    value={f.value}
+                                    size="small"
+                                />
+                            }
+                            label={
+                                <Stack spacing={0}>
+                                    <Typography variant="body2" fontWeight="medium">
+                                        {f.label}
+                                    </Typography>
+                                    <Typography variant="caption" color="text.secondary">
+                                        {f.desc}
+                                    </Typography>
                                 </Stack>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
-
-                <Card 
-                    sx={{ 
-                        p: 2,
-                        mt: 2,
-                        cursor: 'pointer',
-                        border: '1px solid',
-                        borderColor: explicit ? 'warning.main' : 'divider',
-                        bgcolor: explicit ? 'warning.light' : 'background.paper',
-                        '&:hover': {
-                            borderColor: 'warning.main',
-                            bgcolor: 'action.hover'
-                        }
-                    }}
-                    onClick={() => setExplicit(!explicit)}
-                >
-                    <Stack direction="row" alignItems="flex-start" spacing={1}>
-                        <Checkbox
-                            checked={explicit}
-                            onChange={() => setExplicit(!explicit)}
-                            sx={{ mt: -0.5, color: explicit ? 'warning.main' : 'default' }}
+                            }
+                            sx={{
+                                alignItems: 'flex-start',
+                                m: 0,
+                                p: 1.5,
+                                borderRadius: 1,
+                                border: '1px solid',
+                                borderColor: (flag & f.value) !== 0 ? 'primary.light' : 'transparent',
+                                bgcolor: (flag & f.value) !== 0 ? 'action.hover' : 'transparent',
+                                '&:hover': {
+                                    bgcolor: 'action.hover'
+                                },
+                                '& .MuiCheckbox-root': {
+                                    pt: 0.5
+                                }
+                            }}
                         />
-                        <Stack spacing={0.5} flex={1}>
-                            <Typography variant="subtitle2" fontWeight="bold" color={explicit ? 'warning.dark' : 'text.primary'}>
-                                Explicit Content
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                                Check if the content is for audiences over 18. This will add appropriate warnings to your NFT.
-                            </Typography>
-                        </Stack>
-                    </Stack>
-                </Card>
+                    ))}
+                    
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={explicit}
+                                onChange={() => setExplicit(!explicit)}
+                                size="small"
+                                sx={{ color: explicit ? 'warning.main' : 'default' }}
+                            />
+                        }
+                        label={
+                            <Stack spacing={0}>
+                                <Typography variant="body2" fontWeight="medium" color={explicit ? 'warning.dark' : 'text.primary'}>
+                                    Explicit Content ⚠️
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                    Mark this NFT as containing adult content (18+)
+                                </Typography>
+                            </Stack>
+                        }
+                        sx={{
+                            alignItems: 'flex-start',
+                            m: 0,
+                            p: 1.5,
+                            borderRadius: 1,
+                            border: '1px solid',
+                            borderColor: explicit ? 'warning.light' : 'transparent',
+                            bgcolor: explicit ? 'warning.light' : 'transparent',
+                            '&:hover': {
+                                bgcolor: explicit ? 'warning.light' : 'action.hover'
+                            },
+                            '& .MuiCheckbox-root': {
+                                pt: 0.5
+                            }
+                        }}
+                    />
+                </Stack>
             </Stack>
 
             <Stack alignItems="right">
