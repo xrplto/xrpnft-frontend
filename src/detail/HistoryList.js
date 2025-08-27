@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 
 // Material
 import {
@@ -11,9 +11,12 @@ import {
     TableBody,
     TableCell,
     TableRow,
-    Typography
+    Typography,
+    IconButton,
+    Tooltip
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 
 // Loader
 import { PulseLoader } from "react-spinners";
@@ -29,8 +32,16 @@ function truncate(str, n) {
     return (str.length > n) ? str.substr(0, n-1) + ' ...' : str;
 };
 
-function formatDateTime(dateString) {
-    const date = new Date(dateString);
+function formatDateTime(timestamp) {
+    if (!timestamp && timestamp !== 0) return 'N/A';
+    
+    // XRP Ledger timestamp is seconds since Jan 1, 2000 00:00 UTC (Ripple epoch)
+    // Add 946684800 seconds to convert to Unix timestamp
+    const date = new Date((timestamp + 946684800) * 1000);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) return 'N/A';
+    
     const options = {
         weekday: 'short',
         day: '2-digit',
@@ -47,33 +58,278 @@ function formatDateTime(dateString) {
 }
 
 function formatAmount(amount) {
-    return parseFloat(amount).toFixed(1);
+    if (typeof amount === 'string') {
+        // XRP amounts are in drops (1 XRP = 1,000,000 drops)
+        const xrp = parseFloat(amount) / 1000000;
+        return xrp.toFixed(2);
+    }
+    return parseFloat(amount).toFixed(2);
+}
+
+function getTransactionInfo(tx, amount, to) {
+    // Check if transaction is from XRP.cafe by SourceTag
+    const isXrpCafeTransaction = tx.SourceTag === 101102979;
+    
+    let type = '';
+    let marketplace = 'XRPL'; // Default to XRPL
+    
+    if (tx.TransactionType === 'NFTokenMint') {
+        // Check if minter is XRP.cafe minting service
+        const isXrpCafeMint = tx.Account === 'rKqqb5QZXVAL3VqXJL6obfRGeHou1DtyBV' || isXrpCafeTransaction;
+        type = 'Mint';
+        marketplace = isXrpCafeMint ? 'XRP.cafe' : 'XRPL';
+    }
+    else if (tx.TransactionType === 'NFTokenBurn') {
+        type = 'Burn';
+        marketplace = isXrpCafeTransaction ? 'XRP.cafe' : 'XRPL';
+    }
+    else if (tx.TransactionType === 'NFTokenCreateOffer') {
+        // Check if destination is XRP Cafe broker address
+        const dest = tx.Destination || to;
+        const isXrpCafe = isXrpCafeTransaction || (dest && (
+            dest === 'rpx9JThQ2y33xWYfhEUPXrTsQXKdtFycUu' || // XRP Cafe broker
+            dest.startsWith('rpx9JThQ2') || // XRP Cafe broker prefix
+            dest === 'rXMART8usFd5kABXCayoP6ZfB35b4v43t'    // Alternative broker
+        ));
+        
+        // Check if it's a sell offer (Flags & 1)
+        if (tx.Flags & 1) {
+            const isZero = tx.Amount === '0' || tx.Amount === 0;
+            type = isZero ? 'Transfer' : 'Listing';
+            marketplace = isXrpCafe ? 'XRP.cafe' : 'XRPL';
+        } else {
+            type = 'Buy Offer';
+            marketplace = isXrpCafe ? 'XRP.cafe' : 'XRPL';
+        }
+    }
+    else if (tx.TransactionType === 'NFTokenAcceptOffer') {
+        // Check if the amount is 0 to determine if it's a transfer
+        if (amount) {
+            const isZero = (typeof amount === 'string' && amount === '0') || 
+                          (typeof amount === 'object' && amount.value === '0');
+            type = isZero ? 'Transfer' : 'Sale';
+        } else {
+            type = 'Sale';
+        }
+        marketplace = isXrpCafeTransaction ? 'XRP.cafe' : 'XRPL';
+    }
+    else if (tx.TransactionType === 'NFTokenCancelOffer') {
+        type = 'Cancel';
+        marketplace = isXrpCafeTransaction ? 'XRP.cafe' : 'XRPL';
+    }
+    else {
+        type = tx.TransactionType;
+        marketplace = 'XRPL';
+    }
+    
+    return { type, marketplace };
+}
+
+function getTransactionDetails(tx, meta) {
+    let amount = null;
+    let from = tx.Account;
+    let to = null;
+    
+    // For NFTokenAcceptOffer (Sale/Transfer), look in metadata for details
+    if (tx.TransactionType === 'NFTokenAcceptOffer' && meta) {
+        const affectedNodes = meta.AffectedNodes || [];
+        
+        // Find the offer details
+        for (const node of affectedNodes) {
+            const deleted = node.DeletedNode;
+            if (deleted && deleted.FinalFields && deleted.LedgerEntryType === 'NFTokenOffer') {
+                amount = deleted.FinalFields.Amount;
+                // For sell offers, the owner is the seller (from)
+                // For buy offers, the owner is the buyer (to)
+                if (deleted.FinalFields.Flags & 1) {
+                    // Sell offer - owner is seller
+                    from = deleted.FinalFields.Owner;
+                    to = tx.Account;
+                } else {
+                    // Buy offer - owner is buyer
+                    from = tx.Account;
+                    to = deleted.FinalFields.Owner;
+                }
+                break;
+            }
+            const modified = node.ModifiedNode;
+            if (modified && modified.FinalFields && modified.LedgerEntryType === 'NFTokenOffer') {
+                amount = modified.FinalFields.Amount;
+                if (modified.FinalFields.Flags & 1) {
+                    from = modified.FinalFields.Owner;
+                    to = tx.Account;
+                } else {
+                    from = tx.Account;
+                    to = modified.FinalFields.Owner;
+                }
+                break;
+            }
+        }
+        
+        // Look for the new owner in NFTokenPage changes
+        for (const node of affectedNodes) {
+            const modified = node.ModifiedNode;
+            if (modified && modified.LedgerEntryType === 'NFTokenPage') {
+                // The page owner is the new NFT owner after the transaction
+                if (modified.FinalFields) {
+                    const pageOwner = modified.LedgerIndex?.substring(0, 40);
+                    if (pageOwner && pageOwner !== from) {
+                        to = to || pageOwner;
+                    }
+                }
+            }
+        }
+    }
+    
+    // For NFTokenCreateOffer, use the Amount field directly
+    if (tx.TransactionType === 'NFTokenCreateOffer') {
+        amount = tx.Amount;
+        if (tx.Destination) {
+            to = tx.Destination;
+        }
+    }
+    
+    // For NFTokenMint
+    if (tx.TransactionType === 'NFTokenMint') {
+        // Check if it's XRP.cafe mint
+        const isXrpCafeMint = tx.Account === 'rKqqb5QZXVAL3VqXJL6obfRGeHou1DtyBV';
+        if (isXrpCafeMint) {
+            // For XRP.cafe mints, the minting service mints on behalf of the issuer
+            // Show XRP.cafe as from and issuer as to
+            from = 'rKqqb5QZXVAL3VqXJL6obfRGeHou1DtyBV'; // XRP.cafe Minter
+            // The Issuer field contains the actual owner who requested the mint
+            to = tx.Issuer || tx.Account;
+        } else {
+            // Regular mint - minter is both from and to unless destination specified
+            from = tx.Account;
+            to = tx.Destination || tx.Account;
+        }
+    }
+    
+    return { amount, from, to };
 }
 
 export default function HistoryList({ nft }) {
     const theme = useTheme();
-    const BASE_URL = 'https://api.xrpnft.com/api';
+    const CLIO_URL = 'wss://s1.ripple.com:51233';
     const { accountProfile, sync } = useContext(AppContext);
     const [hists, setHists] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [marker, setMarker] = useState(null);
+    const [hasMore, setHasMore] = useState(true);
+    const containerRef = useRef(null);
+
+    const fetchHistory = async (isLoadMore = false) => {
+        if (isLoadMore) {
+            setLoadingMore(true);
+        } else {
+            setLoading(true);
+        }
+        
+        try {
+            const ws = new WebSocket(CLIO_URL);
+            
+            await new Promise((resolve) => {
+                ws.onopen = resolve;
+            });
+
+            const request = {
+                id: 1,
+                command: "nft_history",
+                nft_id: nft.NFTokenID,
+                limit: 50
+            };
+            
+            if (isLoadMore && marker) {
+                request.marker = marker;
+            }
+
+            ws.send(JSON.stringify(request));
+
+            const response = await new Promise((resolve, reject) => {
+                ws.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    if (data.status === 'error') {
+                        reject(new Error(data.error_message || 'Failed to fetch history'));
+                    } else {
+                        resolve(data);
+                    }
+                    ws.close();
+                };
+                ws.onerror = reject;
+            });
+
+            if (response.result && response.result.transactions) {
+                const transactions = response.result.transactions.map(t => {
+                    const details = getTransactionDetails(t.tx, t.meta);
+                    const info = getTransactionInfo(t.tx, details.amount, details.to);
+                    return {
+                        type: info.type,
+                        marketplace: info.marketplace,
+                        from: details.from,
+                        to: details.to,
+                        amount: details.amount,
+                        hash: t.tx.hash,
+                        date: t.date || t.tx.date,
+                        ledger: t.ledger_index
+                    };
+                });
+                
+                if (isLoadMore) {
+                    setHists(prev => [...prev, ...transactions]);
+                } else {
+                    setHists(transactions);
+                }
+                
+                // Set marker for next page
+                if (response.result.marker) {
+                    setMarker(response.result.marker);
+                    setHasMore(true);
+                } else {
+                    setMarker(null);
+                    setHasMore(false);
+                }
+            }
+        } catch (err) {
+            console.error("Error fetching NFT history:", err);
+        } finally {
+            if (isLoadMore) {
+                setLoadingMore(false);
+            } else {
+                setLoading(false);
+            }
+        }
+    };
 
     useEffect(() => {
-        function getHistories() {
-            setLoading(true);
-            axios.get(`${BASE_URL}/history/${nft.NFTokenID}`)
-                .then(res => {
-                    let ret = res.status === 200 ? res.data : undefined;
-                    if (ret) {
-                        setHists(ret.histories);
-                    }
-                    setLoading(false);
-                }).catch(err => {
-                    console.error("Error on getting nft history list!!!", err);
-                    setLoading(false);
-                });
+        if (nft.NFTokenID) {
+            fetchHistory(false);
         }
-        getHistories();
-    }, [sync]);
+    }, [nft.NFTokenID, sync]);
+
+    // Handle scroll for infinite loading
+    useEffect(() => {
+        const handleScroll = () => {
+            if (!containerRef.current || loadingMore || !hasMore) return;
+            
+            const container = containerRef.current;
+            const scrollHeight = container.scrollHeight;
+            const scrollTop = container.scrollTop;
+            const clientHeight = container.clientHeight;
+            
+            // Load more when user is near bottom (within 100px)
+            if (scrollHeight - scrollTop - clientHeight < 100) {
+                fetchHistory(true);
+            }
+        };
+        
+        const container = containerRef.current;
+        if (container) {
+            container.addEventListener('scroll', handleScroll);
+            return () => container.removeEventListener('scroll', handleScroll);
+        }
+    }, [loadingMore, hasMore, marker]);
 
     return (
         <>
@@ -84,10 +340,19 @@ export default function HistoryList({ nft }) {
             ) : (
                 <Stack mt={1}>
                     <Box
+                        ref={containerRef}
                         sx={{
                             width: "100%",
+                            maxHeight: "600px",
+                            overflowY: "auto",
                             overflowX: "hidden",
-                            "::-webkit-scrollbar": { display: "none" },
+                            "::-webkit-scrollbar": { width: "8px" },
+                            "::-webkit-scrollbar-track": { background: "#1a1a1a" },
+                            "::-webkit-scrollbar-thumb": { 
+                                background: "#444",
+                                borderRadius: "4px",
+                                "&:hover": { background: "#555" }
+                            },
                         }}
                     >
                         <Table size="small" sx={{
@@ -99,30 +364,130 @@ export default function HistoryList({ nft }) {
                             minWidth: "100%",
                         }}>
                             <TableBody>
-                                {hists && hists.slice().reverse().map((row) => (
-                                    <TableRow key={row.uuid}>
+                                {hists && hists.map((row, idx) => (
+                                    <TableRow 
+                                        key={row.hash || idx}
+                                        sx={{
+                                            '&:hover': {
+                                                backgroundColor: 'action.hover',
+                                            },
+                                            transition: 'background-color 0.2s'
+                                        }}
+                                    >
+                                        <TableCell align="left" width='12%'>
+                                            <Typography 
+                                                variant='caption' 
+                                                noWrap
+                                                sx={{
+                                                    fontWeight: row.type === 'Listing' ? 600 : 
+                                                               row.type === 'Sale' ? 600 :
+                                                               row.type === 'Transfer' ? 500 : 400,
+                                                    color: row.type === 'Listing' ? 'error.main' :
+                                                           row.type === 'Sale' ? 'success.main' :
+                                                           row.type === 'Buy Offer' ? 'info.main' :
+                                                           row.type === 'Transfer' ? 'warning.main' :
+                                                           row.type === 'Cancel' ? 'text.secondary' :
+                                                           row.type === 'Mint' ? 'primary.main' : 'inherit'
+                                                }}
+                                            >
+                                                {row.type}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell align="left" width='10%'>
+                                            <Typography 
+                                                variant='caption' 
+                                                noWrap
+                                                sx={{ 
+                                                    fontSize: '0.7rem',
+                                                    fontWeight: row.marketplace === 'XRP.cafe' ? 600 : 500,
+                                                    color: row.marketplace === 'XRP.cafe' ? 'primary.main' : 'text.secondary'
+                                                }}
+                                            >
+                                                {row.marketplace}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell align="left" width='18%'>
+                                            {row.from && (
+                                                <Stack direction="row" alignItems="center" spacing={0.5}>
+                                                    <Typography variant='caption' sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>From:</Typography>
+                                                    <Link href={`/account/${row.from}`}>
+                                                        <Typography variant='caption' noWrap>{truncate(row.from, 10)}</Typography>
+                                                    </Link>
+                                                </Stack>
+                                            )}
+                                        </TableCell>
+                                        <TableCell align="left" width='18%'>
+                                            {row.to ? (
+                                                <Stack direction="row" alignItems="center" spacing={0.5}>
+                                                    <Typography variant='caption' sx={{ fontSize: '0.65rem', color: 'text.secondary' }}>To:</Typography>
+                                                    <Link href={`/account/${row.to}`}>
+                                                        <Typography variant='caption' noWrap>{truncate(row.to, 10)}</Typography>
+                                                    </Link>
+                                                </Stack>
+                                            ) : (
+                                                <Typography variant='caption' noWrap sx={{ color: 'text.secondary' }}>- - -</Typography>
+                                            )}
+                                        </TableCell>
                                         <TableCell align="left" width='15%'>
-                                            <Typography variant='caption' noWrap>{row.type}</Typography>
-                                        </TableCell>
-                                        <TableCell align="left" width='30%'>
-                                            <Link href={`/account/${row.account}`}>
-                                                <Typography variant='caption' noWrap>{truncate(row.account, 12)}</Typography>
-                                            </Link>
-                                        </TableCell>
-                                        <TableCell align="left" width='25%'>
-                                            {row.type === 'SALE' ?
-                                                <Typography variant='caption' noWrap>{formatAmount(row.cost.amount)} {normalizeCurrencyCodeXummImpl(row.cost.currency)}</Typography>
-                                                :
+                                            {row.amount ? (
+                                                typeof row.amount === 'string' ? (
+                                                    <Typography variant='caption' noWrap>{formatAmount(row.amount)} XRP</Typography>
+                                                ) : (
+                                                    <Typography variant='caption' noWrap>
+                                                        {formatAmount(row.amount.value)} {normalizeCurrencyCodeXummImpl(row.amount.currency)}
+                                                    </Typography>
+                                                )
+                                            ) : (
                                                 <Typography variant='caption' noWrap>- - -</Typography>
-                                            }
+                                            )}
                                         </TableCell>
-                                        <TableCell align="left" width='30%'>
-                                            <Typography variant='caption' noWrap>{formatDateTime(row.time)}</Typography>
+                                        <TableCell align="left" width='22%'>
+                                            <Stack direction="row" alignItems="center" spacing={1}>
+                                                <Typography variant='caption' noWrap>{formatDateTime(row.date)}</Typography>
+                                                {row.hash && (
+                                                    <Tooltip title="View on Bithomp" arrow placement="top">
+                                                        <IconButton 
+                                                            size="small"
+                                                            component="a"
+                                                            href={`https://bithomp.com/explorer/${row.hash}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            sx={{ 
+                                                                padding: 0.25,
+                                                                color: 'text.secondary',
+                                                                '&:hover': {
+                                                                    color: 'primary.main'
+                                                                }
+                                                            }}
+                                                        >
+                                                            <OpenInNewIcon sx={{ fontSize: 14 }} />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                )}
+                                            </Stack>
                                         </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
+                        {loadingMore && (
+                            <Stack alignItems="center" py={2}>
+                                <PulseLoader color='#00AB55' size={8} />
+                            </Stack>
+                        )}
+                        {!hasMore && hists.length > 0 && (
+                            <Typography 
+                                variant="caption" 
+                                sx={{ 
+                                    display: 'block',
+                                    textAlign: 'center',
+                                    py: 2,
+                                    color: 'text.secondary'
+                                }}
+                            >
+                                No more transactions
+                            </Typography>
+                        )}
                     </Box>
                 </Stack>
             )}

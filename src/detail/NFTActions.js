@@ -1630,102 +1630,90 @@ export default function NFTActions({ nft }) {
                             </SimpleAccordion>
                         )}
 
-                        <SimpleAccordion defaultExpanded>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                                <Stack direction="row" alignItems="center" spacing={1}>
-                                    <Typography variant="subtitle2" fontWeight={500}>
-                                        Buy Offers
+                        {/* Buy Offers Section */}
+                        {buyOffers.length > 0 && (
+                            <Box sx={{ 
+                                p: 1.5, 
+                                borderRadius: 2,
+                                background: alpha(theme.palette.background.paper, 0.5),
+                                border: `1px solid ${alpha(theme.palette.divider, 0.08)}`
+                            }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 0.5 }}>
+                                    <Typography variant="caption" fontWeight={600} color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                                        Buy Offers ({buyOffers.length})
                                     </Typography>
-                                    {buyOffers.length > 0 && (
-                                        <CountBadge>({buyOffers.length})</CountBadge>
-                                    )}
-                                </Stack>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                {loading ? (
-                                    <Box sx={{ textAlign: 'center', py: 2 }}>
-                                        <PulseLoader color="#00AB55" size={8} />
-                                    </Box>
-                                ) : buyOffers.length > 0 ? (
-                                    <Stack spacing={1}>
-                                        {buyOffers.map((offer, index) => {
-                                            const amount = normalizeAmount(offer.amount);
-                                            return (
-                                                <Box key={index} sx={{ 
-                                                    p: 2, 
-                                                    background: `linear-gradient(135deg, ${alpha(theme.palette.background.default, 0.5)}, ${alpha(theme.palette.background.paper, 0.8)})`,
-                                                    borderRadius: 2,
-                                                    border: `1px solid ${alpha(theme.palette.divider, 0.08)}`,
-                                                    transition: 'all 0.3s ease',
-                                                    '&:hover': {
-                                                        transform: 'translateX(4px)',
-                                                        boxShadow: theme.shadows[2],
-                                                    }
-                                                }}>
-                                                    <Stack direction="row" justifyContent="space-between" alignItems="center">
-                                                        <Box>
-                                                            <Stack direction="row" spacing={0.5} alignItems="center">
-                                                                <Icon icon={rippleSolid} fontSize={16} />
-                                                                <Typography variant="body2" fontWeight={500}>
-                                                                    {formatXRPAmount(amount.amount, true)}
-                                                                </Typography>
-                                                            </Stack>
-                                                            <Typography variant="caption" color="text.secondary">
-                                                                from {offer.owner}
-                                                            </Typography>
-                                                        </Box>
-                                                        {isOwner ? (
+                                    
+                                    {loading ? (
+                                        <PulseLoader color="#00AB55" size={6} />
+                                    ) : (
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
+                                            {buyOffers.slice(0, 3).map((offer, index) => {
+                                                const amount = normalizeAmount(offer.amount);
+                                                const percentage = lowestSellOffer ? 
+                                                    ((amount.amount / lowestSellOffer.totalAmount) * 100).toFixed(0) : 0;
+                                                return (
+                                                    <Box key={index} sx={{ 
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: 0.75,
+                                                        px: 1,
+                                                        py: 0.5,
+                                                        borderRadius: 0.5,
+                                                        background: alpha(theme.palette.background.default, 0.3),
+                                                        border: `1px solid ${alpha(theme.palette.divider, 0.05)}`
+                                                    }}>
+                                                        <Icon icon={rippleSolid} style={{ fontSize: 12 }} />
+                                                        <Typography variant="caption" fontWeight={600} sx={{ fontSize: '0.7rem' }}>
+                                                            {formatXRPAmount(amount.amount, false)}
+                                                        </Typography>
+                                                        <Typography 
+                                                            variant="caption" 
+                                                            sx={{ 
+                                                                fontSize: '0.65rem',
+                                                                fontWeight: 600,
+                                                                color: percentage >= 90 ? 'success.main' : 
+                                                                       percentage >= 70 ? 'warning.main' : 'text.secondary'
+                                                            }}
+                                                        >
+                                                            {percentage}%
+                                                        </Typography>
+                                                        <Typography variant="caption" color="text.secondary" sx={{ 
+                                                            fontSize: '0.65rem',
+                                                            maxWidth: '60px',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                            whiteSpace: 'nowrap'
+                                                        }}>
+                                                            {formatAddress(offer.owner, 'short')}
+                                                        </Typography>
+                                                        {isOwner && (
                                                             <Button
-                                                                variant="contained"
+                                                                variant="text"
                                                                 size="small"
                                                                 onClick={() => handleAcceptOffer(offer)}
+                                                                sx={{ 
+                                                                    minWidth: 0,
+                                                                    p: 0.25,
+                                                                    fontSize: '0.65rem',
+                                                                    ml: 0.5
+                                                                }}
                                                             >
                                                                 Accept
                                                             </Button>
-                                                        ) : (
-                                                            accountLogin === offer.owner && (
-                                                                <Button
-                                                                    variant="text"
-                                                                    size="small"
-                                                                    color="error"
-                                                                    onClick={() => handleCancelOffer(offer)}
-                                                                    sx={{ minWidth: 0, p: 0.5 }}
-                                                                >
-                                                                    Cancel
-                                                                </Button>
-                                                            )
                                                         )}
-                                                    </Stack>
-                                                </Box>
-                                            );
-                                        })}
-                                    </Stack>
-                                ) : (
-                                    <Box sx={{ 
-                                        py: 3, 
-                                        textAlign: 'center',
-                                        background: alpha(theme.palette.background.default, 0.3),
-                                        borderRadius: 2,
-                                        border: `1px dashed ${alpha(theme.palette.divider, 0.2)}`
-                                    }}>
-                                        <LocalOfferIcon sx={{ fontSize: 32, color: 'text.secondary', mb: 1 }} />
-                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-                                            No buy offers yet
-                                        </Typography>
-                                        {!isOwner && (
-                                            <Button
-                                                variant="contained"
-                                                size="small"
-                                                onClick={handleCreateBuyOffer}
-                                                startIcon={<LocalOfferIcon />}
-                                            >
-                                                Make an Offer
-                                            </Button>
-                                        )}
-                                    </Box>
-                                )}
-                            </AccordionDetails>
-                        </SimpleAccordion>
+                                                    </Box>
+                                                );
+                                            })}
+                                            {buyOffers.length > 3 && (
+                                                <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem', ml: 1 }}>
+                                                    +{buyOffers.length - 3} more
+                                                </Typography>
+                                            )}
+                                        </Box>
+                                    )}
+                                </Box>
+                            </Box>
+                        )}
 
                         <SimpleAccordion defaultExpanded>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>

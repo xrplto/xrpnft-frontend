@@ -12,8 +12,8 @@ export default function Detail({ nft }) {
     const { status } = nft;
 
     return (
-        <Container maxWidth="lg" sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Box py={3} sx={{ width: '100%', maxWidth: '1200px' }}>
+        <Container maxWidth="xl" sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box py={3} sx={{ width: '100%', maxWidth: '1400px' }}>
                 {status === NFToken.SELL_WITH_MINT_BULK ? (
                     <NFTActionsBulk nft={nft} />
                 ) : (
