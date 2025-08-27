@@ -1,7 +1,6 @@
 import Decimal from 'decimal.js';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
     alpha, useTheme, useMediaQuery,
     styled,
@@ -53,11 +52,9 @@ const WarningDialogTitle = (props) => {
     );
 };
 
-const Label = withStyles({
-    root: {
-        color: alpha('#637381', 0.99)
-    }
-})(Typography);
+const Label = styled(Typography)({
+    color: alpha('#637381', 0.99)
+});
 
 const CustomSelect = styled(Select)(({ theme }) => ({
     '& .MuiOutlinedInput-notchedOutline' : {

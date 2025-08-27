@@ -3,7 +3,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
     styled,
     useTheme,
@@ -70,41 +69,32 @@ import QRDialog from 'src/components/QRDialog';
 import BulkToolbar from './BulkToolbar';
 
 // ----------------------------------------------------------------------
-const CancelTypography = withStyles({
-    root: {
-        color: '#FF6C40',
-        borderRadius: '6px',
-        border: '0.05em solid #FF6C40',
-        //fontSize: '0.5rem',
-        lineHeight: '1',
-        paddingLeft: '3px',
-        paddingRight: '3px'
-    }
-})(Typography);
+const CancelTypography = styled(Typography)({
+    color: '#FF6C40',
+    borderRadius: '6px',
+    border: '0.05em solid #FF6C40',
+    lineHeight: '1',
+    paddingLeft: '3px',
+    paddingRight: '3px'
+});
 
-const BuyTypography = withStyles({
-    root: {
-        color: '#007B55',
-        borderRadius: '6px',
-        border: '0.05em solid #007B55',
-        //fontSize: '0.5rem',
-        lineHeight: '1',
-        paddingLeft: '3px',
-        paddingRight: '3px'
-    }
-})(Typography);
+const BuyTypography = styled(Typography)({
+    color: '#007B55',
+    borderRadius: '6px',
+    border: '0.05em solid #007B55',
+    lineHeight: '1',
+    paddingLeft: '3px',
+    paddingRight: '3px'
+});
 
-const SellTypography = withStyles({
-    root: {
-        color: '#B72136',
-        borderRadius: '6px',
-        border: '0.05em solid #B72136',
-        //fontSize: '0.5rem',
-        lineHeight: '1',
-        paddingLeft: '3px',
-        paddingRight: '3px'
-    }
-})(Typography);
+const SellTypography = styled(Typography)({
+    color: '#B72136',
+    borderRadius: '6px',
+    border: '0.05em solid #B72136',
+    lineHeight: '1',
+    paddingLeft: '3px',
+    paddingRight: '3px'
+});
 
 // ----------------------------------------------------------------------
 

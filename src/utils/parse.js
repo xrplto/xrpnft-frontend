@@ -6,7 +6,6 @@ import { encodeAccountID } from 'ripple-address-codec';
 import isIPFS from 'is-ipfs';
 import Decimal from 'decimal.js';
 import hashicon from 'hashicon';
-import { createCanvas } from 'canvas';
 
 // ----------------------------------------------------------------------
 function extractUrisFromString(uris_string) {
@@ -751,8 +750,21 @@ export const fetcher = url => axios.get(url).then(res => res)
 export function getHashIcon(account) {
     let url = '/static/account_logo.png';
     try {
-        const icon = hashicon(account, { createCanvas });
-        url = icon.toDataURL();
+        // Only use createCanvas if running on server-side and canvas is available
+        if (typeof window === 'undefined') {
+            // Server-side rendering - try to use canvas if available
+            try {
+                const { createCanvas } = require('canvas');
+                const icon = hashicon(account, { createCanvas });
+                url = icon.toDataURL();
+            } catch (canvasError) {
+                // Canvas not available, fallback to default
+            }
+        } else {
+            // Client-side rendering - use browser's built-in canvas
+            const icon = hashicon(account);
+            url = icon.toDataURL();
+        }
     } catch (e) {
     }
     return url;

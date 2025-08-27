@@ -3,7 +3,6 @@ import Decimal from 'decimal.js';
 import { v4 as uuidv4 } from 'uuid';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
     alpha, useTheme, useMediaQuery,
     styled,

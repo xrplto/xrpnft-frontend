@@ -4,7 +4,6 @@ import FormData from 'form-data';
 import { useState, useEffect, useRef } from 'react';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
   styled,
   Avatar,
@@ -130,14 +129,12 @@ const CardOverlayCircle = styled('div')(
 `
 );
 
-const DisabledButton = withStyles({
-  root: {
-    '&.Mui-disabled': {
-      pointerEvents: 'unset', // allow :hover styles to be triggered
-      cursor: 'not-allowed' // and custom cursor can be defined without :hover state
-    }
+const DisabledButton = styled(Button)({
+  '&.Mui-disabled': {
+    pointerEvents: 'unset', // allow :hover styles to be triggered
+    cursor: 'not-allowed' // and custom cursor can be defined without :hover state
   }
-})(Button);
+});
 
 const CustomSelect = styled(Select)(({ theme }) => ({
   '& .MuiOutlinedInput-notchedOutline': {

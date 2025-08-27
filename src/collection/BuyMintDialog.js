@@ -4,7 +4,6 @@ import Decimal from 'decimal.js';
 import { keyframes } from '@mui/system';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
     alpha, useTheme, useMediaQuery,
     styled,

@@ -1,22 +1,20 @@
 // Material
 import { visuallyHidden } from '@mui/utils';
-import { withStyles } from '@mui/styles';
 import {
     Box,
     TableRow,
     TableCell,
     TableHead,
-    TableSortLabel
+    TableSortLabel,
+    styled
 } from '@mui/material';
 // ----------------------------------------------------------------------
 
-const StickyTableCell = withStyles((theme) => ({
-    head: {
-        position: "sticky",
-        zIndex: 1000,
-        top: 0
-    }
-})) (TableCell);
+const StickyTableCell = styled(TableCell)({
+    position: "sticky",
+    zIndex: 1000,
+    top: 0
+});
 
 const TABLE_HEAD = [
     { no: 0, id: 'id',        label: '#',         align: 'left',  width: '3%' },

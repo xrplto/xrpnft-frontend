@@ -7,7 +7,6 @@ import Decimal from 'decimal.js';
 import { Client } from 'xrpl';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
     styled,
     Avatar,

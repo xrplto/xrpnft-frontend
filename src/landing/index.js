@@ -30,7 +30,6 @@ import {
     alpha,
     IconButton
 } from '@mui/material';
-import { withStyles } from '@mui/styles';
 import { visuallyHidden } from '@mui/utils';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import CheckIcon from '@mui/icons-material/Check';
@@ -136,21 +135,15 @@ const StyledTableHead = styled(TableHead)(({ theme }) => ({
     }
 }));
 
-const StickyTableCell = withStyles((theme) => ({
-    head: {
-        position: 'sticky',
-        zIndex: 100,
+const StickyTableCell = styled(TableCell)(({ theme }) => ({
+    position: 'sticky',
+    zIndex: 100,
+    left: 24,
+    backgroundColor: theme.palette.background.paper,
+    '&.MuiTableCell-head': {
         top: 0,
-        left: 24,
-        backgroundColor: theme.palette.background.paper
-    },
-    body: {
-        position: 'sticky',
-        zIndex: 100,
-        left: 24,
-        backgroundColor: theme.palette.background.paper
     }
-}))(TableCell);
+}));
 
 const TransitionTypo = styled(Typography)(
     ({ theme }) => `

@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { isMobileSafari, isSafari, isChrome, isIOS, deviceType, OsTypes } from 'react-device-detect';
 
 // Material
-import { withStyles } from '@mui/styles';
 import {
     alpha, styled, useTheme,
     Alert,
@@ -40,11 +39,9 @@ import PayMethod from './PayMethod';
 // Utils
 import { fIntNumber, fNumber } from 'src/utils/formatNumber';
 
-const Label = withStyles({
-    root: {
-        color: alpha('#637381', 0.99),
-    }
-})(Typography);
+const Label = styled(Typography)({
+    color: alpha('#637381', 0.99),
+});
 
 function GetNum(amount) {
     let num = 0;

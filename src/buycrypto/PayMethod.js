@@ -1,5 +1,4 @@
 // Material
-import { withStyles } from '@mui/styles';
 import {
     alpha, styled,
     Stack,
@@ -11,11 +10,9 @@ import {
 import { fIntNumber } from 'src/utils/formatNumber';
 
 // ----------------------------------------------------------------------
-const Label = withStyles({
-    root: {
-        color: alpha('#637381', 0.99),
-    }
-})(Typography);
+const Label = styled(Typography)({
+    color: alpha('#637381', 0.99),
+});
 
 // ----------------------------------------------------------------------
 
