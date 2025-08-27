@@ -843,63 +843,78 @@ export default function Minting({ showHeader = true, defaultValues }) {
             </Stack>
 
             <Stack spacing={2} mb={3}>
-                <Typography variant="p4">Flags</Typography>
-                <FormGroup sx={{ flexDirection: 'row' }}>
+                <Typography variant="p4">Token Flags</Typography>
+                <Typography variant="p3">Configure the properties and restrictions for your NFT</Typography>
+                
+                <Grid container spacing={2}>
                     {TOKEN_FLAGS.map((f) => (
-                        <FormControlLabel
-                            key={f.value}
-                            label={f.label}
-                            value={f.value}
-                            control={
-                                <Checkbox
-                                    checked={(flag & f.value) !== 0}
-                                    onChange={handleFlagChange}
-                                />
-                            }
-                        />
+                        <Grid item xs={12} sm={6} key={f.value}>
+                            <Card 
+                                sx={{ 
+                                    p: 2, 
+                                    cursor: 'pointer',
+                                    border: '1px solid',
+                                    borderColor: (flag & f.value) !== 0 ? 'primary.main' : 'divider',
+                                    bgcolor: (flag & f.value) !== 0 ? 'action.selected' : 'background.paper',
+                                    '&:hover': {
+                                        borderColor: 'primary.main',
+                                        bgcolor: 'action.hover'
+                                    }
+                                }}
+                                onClick={() => handleFlagChange({ target: { value: f.value } })}
+                            >
+                                <Stack direction="row" alignItems="flex-start" spacing={1}>
+                                    <Checkbox
+                                        checked={(flag & f.value) !== 0}
+                                        onChange={handleFlagChange}
+                                        value={f.value}
+                                        sx={{ mt: -0.5 }}
+                                    />
+                                    <Stack spacing={0.5} flex={1}>
+                                        <Typography variant="subtitle2" fontWeight="bold">
+                                            {f.label}
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                            {f.desc}
+                                        </Typography>
+                                    </Stack>
+                                </Stack>
+                            </Card>
+                        </Grid>
                     ))}
-                </FormGroup>
+                </Grid>
 
-                <Stack spacing={1} pl={0}>
-                    <Typography variant="p3">
-                        <Typography variant="s2">Burnable:</Typography> If set,
-                        indicates that the issuer (or an entity authorized by
-                        the issuer) can destroy the object. The object's owner
-                        can always do so.
-                    </Typography>
-                    <Typography variant="p3">
-                        <Typography variant="s2">OnlyXRP:</Typography> If set,
-                        NFT can only be offered or sold for XRP.
-                    </Typography>
-                    <Typography variant="p3">
-                        <Typography variant="s2">Transferable:</Typography> If
-                        set, indicates that this NFT can be transferred. This
-                        flag has no effect if the token is being transferred
-                        from the issuer or to the issuer.
-                    </Typography>
-                    <Typography variant="p3">
-                        <Typography variant="s2">Mutable:</Typography> If set,
-                        the URI field of the minted NFToken can be updated
-                        using the NFTokenModify transaction.
-                    </Typography>
-                </Stack>
-
-                <FormGroup sx={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <FormControlLabel
-                        key="check_explicit"
-                        label="Explicit content"
-                        value="explicit"
-                        control={
-                            <Checkbox
-                                checked={explicit}
-                                onChange={() => setExplicit(!explicit)}
-                            />
+                <Card 
+                    sx={{ 
+                        p: 2,
+                        mt: 2,
+                        cursor: 'pointer',
+                        border: '1px solid',
+                        borderColor: explicit ? 'warning.main' : 'divider',
+                        bgcolor: explicit ? 'warning.light' : 'background.paper',
+                        '&:hover': {
+                            borderColor: 'warning.main',
+                            bgcolor: 'action.hover'
                         }
-                    />
-                    <Typography variant="p3">
-                        Check if the content is for audiences over 18.
-                    </Typography>
-                </FormGroup>
+                    }}
+                    onClick={() => setExplicit(!explicit)}
+                >
+                    <Stack direction="row" alignItems="flex-start" spacing={1}>
+                        <Checkbox
+                            checked={explicit}
+                            onChange={() => setExplicit(!explicit)}
+                            sx={{ mt: -0.5, color: explicit ? 'warning.main' : 'default' }}
+                        />
+                        <Stack spacing={0.5} flex={1}>
+                            <Typography variant="subtitle2" fontWeight="bold" color={explicit ? 'warning.dark' : 'text.primary'}>
+                                Explicit Content
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                                Check if the content is for audiences over 18. This will add appropriate warnings to your NFT.
+                            </Typography>
+                        </Stack>
+                    </Stack>
+                </Card>
             </Stack>
 
             <Stack alignItems="right">
