@@ -94,15 +94,11 @@ export default function NFTCard({ onCreate }) {
                 try {
                     if (res.status === 200 && res.data) {
                         const ret = res.data;
-                        console.log('Collections returned by XRPNFT API:', ret.collections);
                         if (ret.collections.length > 0) {
-                            // Filter out collections with type: "bulk", "random", or "sequence"
                             const filteredCollections = ret.collections.filter(collection => 
                                 !["bulk", "random", "sequence"].includes(collection.type)
                             );
                             setCollections(filteredCollections);
-
-                            // Check if user has any bulk, random, or sequence collections
                             const hasBulkTypes = ret.collections.some(collection => 
                                 ["bulk", "random", "sequence"].includes(collection.type)
                             );
@@ -110,11 +106,11 @@ export default function NFTCard({ onCreate }) {
                         }
                     }
                 } catch (error) {
-                    console.log(error);
+                    console.error('Error processing collections:', error);
                 }
             })
             .catch((err) => {
-                console.log('err->>', err);
+                console.error('Error fetching collections:', err);
             });
     };
 
@@ -130,15 +126,34 @@ export default function NFTCard({ onCreate }) {
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease-in-out',
-                background: (theme) => `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.background.default} 100%)`,
-                '&:hover': {
-                    transform: 'translateY(-5px)',
-                    boxShadow: (theme) => `0 8px 30px ${theme.palette.secondary.main}33`,
+                cursor: expanded ? 'default' : 'pointer',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                background: (theme) => theme.palette.background.paper,
+                border: (theme) => `1px solid ${expanded ? theme.palette.primary.main : theme.palette.divider}`,
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '4px',
+                    background: (theme) => `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
+                    opacity: expanded ? 1 : 0,
+                    transition: 'opacity 0.3s',
+                },
+                '&:hover': expanded ? {} : {
+                    transform: 'translateY(-8px) scale(1.02)',
+                    boxShadow: (theme) => theme.shadows[8],
+                    borderColor: (theme) => theme.palette.primary.main,
                 },
             }}
-            onClick={handleExpand}
+            onClick={(e) => {
+                if (!expanded) {
+                    handleExpand();
+                }
+            }}
         >
             <Stack
                 sx={{
@@ -149,10 +164,12 @@ export default function NFTCard({ onCreate }) {
             >
                 <Box
                     sx={{
-                        backgroundColor: (theme) => theme.palette.secondary.main,
+                        background: (theme) => `linear-gradient(135deg, ${theme.palette.secondary.main}, ${theme.palette.secondary.dark})`,
                         borderRadius: '50%',
                         p: 3,
                         mb: 3,
+                        display: 'inline-flex',
+                        boxShadow: (theme) => theme.shadows[4],
                         transition: 'all 0.3s ease-in-out',
                         '&:hover': {
                             transform: 'rotate(15deg)',
@@ -162,11 +179,11 @@ export default function NFTCard({ onCreate }) {
                     <UploadIcon
                         sx={{
                             fontSize: 48,
-                            color: (theme) => theme.palette.secondary.contrastText,
+                            color: 'white',
                         }}
                     />
                 </Box>
-                <Typography variant="h5" align="center" sx={{ fontWeight: 'bold', mb: 1 }}>
+                <Typography variant="h5" align="center" sx={{ fontWeight: 'bold', mb: 1, color: 'text.primary' }}>
                     Create a single NFT
                 </Typography>
                 <Typography variant="body1" align="center" sx={{ color: 'text.secondary' }}>
@@ -174,26 +191,57 @@ export default function NFTCard({ onCreate }) {
                 </Typography>
             </Stack>
             {expanded && (
-                <Box sx={{ mt: 4 }}>
-                    <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
-                        Select a collection:
+                <Box sx={{ 
+                    mt: 3, 
+                    pt: 3, 
+                    borderTop: (theme) => `1px solid ${theme.palette.divider}`,
+                    maxHeight: '300px',
+                    overflowY: 'auto',
+                    '&::-webkit-scrollbar': {
+                        width: '6px',
+                    },
+                    '&::-webkit-scrollbar-track': {
+                        background: 'transparent',
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                        background: (theme) => theme.palette.grey[400],
+                        borderRadius: '3px',
+                    },
+                }}>
+                    <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 500, color: 'text.secondary' }}>
+                        Choose Collection:
                     </Typography>
                     {collections.map(({ name, logoImage }, index) => (
-                        <Stack
+                        <Box
                             key={index}
-                            direction="row"
+                            component="button"
                             sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
                                 alignItems: 'center',
-                                mb: 2,
-                                p: 2,
-                                borderRadius: 1,
+                                width: '100%',
+                                mb: 1.5,
+                                p: 1.5,
+                                borderRadius: 1.5,
+                                border: (theme) => `1px solid ${theme.palette.divider}`,
+                                backgroundColor: (theme) => theme.palette.background.default,
+                                cursor: 'pointer',
+                                textAlign: 'left',
                                 transition: 'all 0.2s ease-in-out',
                                 '&:hover': {
                                     backgroundColor: (theme) => theme.palette.action.hover,
-                                    transform: 'translateX(5px)',
+                                    borderColor: (theme) => theme.palette.primary.main,
+                                    transform: 'translateX(4px)',
+                                    boxShadow: (theme) => theme.shadows[2],
                                 },
                             }}
-                            onClick={() => onCreate(name)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                if (onCreate && typeof onCreate === 'function') {
+                                    onCreate(name);
+                                }
+                            }}
                         >
                             <IconCover>
                                 <IconWrapper>
@@ -202,10 +250,10 @@ export default function NFTCard({ onCreate }) {
                                     />
                                 </IconWrapper>
                             </IconCover>
-                            <Typography variant="subtitle1" sx={{ ml: 2, fontWeight: 'medium' }}>
+                            <Typography variant="body2" sx={{ ml: 2, fontWeight: 500, color: 'text.primary' }}>
                                 {name}
                             </Typography>
-                        </Stack>
+                        </Box>
                     ))}
                 </Box>
             )}

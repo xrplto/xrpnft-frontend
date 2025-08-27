@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AppContext } from 'src/AppContext';
 
 // Material
 import { Box, Button, styled, Toolbar } from '@mui/material';
@@ -14,6 +15,8 @@ import CreateHeader from 'src/create/CreateHeader';
 import CreateContainer from 'src/create/CreateContainer';
 import CollectionCard from 'src/create/CollectionCard';
 import NFTCard from 'src/create/NFTCard';
+import BulkCollectionsCard from 'src/create/BulkCollectionsCard';
+import MyCollectionsCard from 'src/create/MyCollectionsCard';
 
 import CreateCollection from 'src/collection/create';
 import Minting from 'src/minting';
@@ -35,6 +38,56 @@ const BackButton = ({ onClick }) => (
 export default function Create() {
     const [state, setState] = useState('');
     const [collectionName, setCollectionName] = useState(null);
+    const [collections, setCollections] = useState([]);
+    const [hasBulkCollections, setHasBulkCollections] = useState(false);
+    const { accountProfile } = useContext(AppContext);
+    
+    console.log('Create component rendered, current state:', state, 'collectionName:', collectionName);
+    
+    useEffect(() => {
+        if (accountProfile?.account && accountProfile?.token) {
+            const BASE_URL = 'https://api.xrpnft.com/api';
+            axios
+                .get(`${BASE_URL}/collection/query?account=${accountProfile.account}`, {
+                    headers: { 'x-access-token': accountProfile.token }
+                })
+                .then((res) => {
+                    if (res.status === 200 && res.data) {
+                        setCollections(res.data.collections || []);
+                        const hasBulkTypes = res.data.collections?.some(collection => 
+                            ["bulk", "random", "sequence"].includes(collection.type)
+                        ) || false;
+                        setHasBulkCollections(hasBulkTypes);
+                    }
+                })
+                .catch((err) => {
+                    console.log('Error loading collections:', err);
+                });
+        }
+    }, [accountProfile]);
+    
+    // Define the callback function separately to ensure proper reference
+    const handleNFTCreate = (selectedCollectionName) => {
+        console.log('=== CREATE.JS handleNFTCreate CALLBACK ===');
+        console.log('Received collection name:', selectedCollectionName);
+        console.log('Current state before update:', state);
+        console.log('Current collectionName before update:', collectionName);
+        
+        try {
+            console.log('Setting collectionName to:', selectedCollectionName);
+            setCollectionName(selectedCollectionName);
+            
+            console.log('Setting state to: nft');
+            setState('nft');
+            
+            console.log('Both state updates called successfully');
+            
+        } catch (error) {
+            console.error('Error in handleNFTCreate:', error);
+            console.error('Stack:', error.stack);
+        }
+        console.log('=== END CREATE.JS handleNFTCreate CALLBACK ===');
+    };
 
     const handleBack = () => {
         setState('');
@@ -54,10 +107,13 @@ export default function Create() {
                             onCreate={() => setState('collection')}
                         />
                         <NFTCard
-                            onCreate={(collectionName) => {
-                                setCollectionName(collectionName);
-                                setState('nft');
-                            }}
+                            onCreate={handleNFTCreate}
+                        />
+                        <BulkCollectionsCard 
+                            hasBulkCollections={hasBulkCollections} 
+                        />
+                        <MyCollectionsCard 
+                            collections={collections} 
                         />
                     </>
                 )}
