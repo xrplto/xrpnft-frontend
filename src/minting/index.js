@@ -444,10 +444,8 @@ export default function Minting({ showHeader = true, defaultValues }) {
     };
 
     const handleFlagChange = (e) => {
-        const value = e.target.value;
-        if (value === '1') setFlag(flag ^ value);
-        // if (value !== '8' && value !== '4') // Disable TRANSFERABLE, Trustline flag
-        //     setFlag(flag ^ value);
+        const value = parseInt(e.target.value, 10);
+        setFlag(flag ^ value);
     };
 
     const handleCollectionQuery = (e) => {
