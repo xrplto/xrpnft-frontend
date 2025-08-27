@@ -869,18 +869,18 @@ export default function Minting({ showHeader = true, defaultValues }) {
                     </Typography>
                     <Typography variant="p3">
                         <Typography variant="s2">OnlyXRP:</Typography> If set,
-                        nft can only be offered or sold for XRP.
-                    </Typography>
-                    <Typography variant="p3">
-                        <Typography variant="s2">TrustLine:</Typography> If set,
-                        indicates that the issuer wants a trustline to be
-                        automatically created. You can't set now.
+                        NFT can only be offered or sold for XRP.
                     </Typography>
                     <Typography variant="p3">
                         <Typography variant="s2">Transferable:</Typography> If
                         set, indicates that this NFT can be transferred. This
                         flag has no effect if the token is being transferred
-                        from the issuer or to the issuer. You can't uncheck it.
+                        from the issuer or to the issuer.
+                    </Typography>
+                    <Typography variant="p3">
+                        <Typography variant="s2">Mutable:</Typography> If set,
+                        the URI field of the minted NFToken can be updated
+                        using the NFTokenModify transaction.
                     </Typography>
                 </Stack>
 

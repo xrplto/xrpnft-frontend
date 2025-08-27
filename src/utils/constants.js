@@ -68,14 +68,14 @@ export const TOKEN_FLAGS = [
         desc: 'If set, nft can only be offered or sold for XRP.'
     },
     {
-        label: 'TrustLine',
-        value: 4,
-        desc: 'If set, indicates that the issuer wants a trustline to be automatically created.'
-    },
-    {
         label: 'Transferable',
         value: 8,
-        desc: '	If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer.'
+        desc: 'If set, indicates that this NFT can be transferred. This flag has no effect if the token is being transferred from the issuer or to the issuer.'
+    },
+    {
+        label: 'Mutable',
+        value: 16,
+        desc: 'If set, the URI field of the minted NFToken can be updated using the NFTokenModify transaction.'
     },
 ]
 export const NON_FLAGS = [6, 7, 14, 15]
