@@ -9,7 +9,9 @@ import useDebounce from 'src/hooks/useDebounce';
 // Material
 import {
     styled,
+    alpha,
     Avatar,
+    Box,
     Button,
     Card,
     CardMedia,
@@ -103,6 +105,7 @@ function Minting({ showHeader = true, defaultValues }) {
     const [collectionName, setCollectionName] = useState(
         defaultValues?.collectionName
     );
+    const [selectedCollection, setSelectedCollection] = useState(null);
     const [traits, setTraits] = useState([]);
     const [royalty, setRoyalty] = useState('0');
     const [explicit, setExplicit] = useState(false);
@@ -161,6 +164,16 @@ function Minting({ showHeader = true, defaultValues }) {
             loadCollections();
         }
     }, [debouncedFilter, account, accountToken, loadCollections]);
+
+    // Set selected collection when defaultValues or collections change
+    useEffect(() => {
+        if (defaultValues?.collectionName && collections.length > 0) {
+            const collection = collections.find(c => c.name === defaultValues.collectionName);
+            if (collection) {
+                setSelectedCollection(collection);
+            }
+        }
+    }, [defaultValues?.collectionName, collections]);
 
     useEffect(() => {
         var timer = null;
@@ -461,8 +474,10 @@ function Minting({ showHeader = true, defaultValues }) {
     const handleChangeCollection = useCallback((event) => {
         const value = event.target.value;
         setCollectionName(value);
+        const collection = collections.find(c => c.name === value);
+        setSelectedCollection(collection);
         setFilter('');
-    }, []);
+    }, [collections]);
 
     const handleChangeRoyalty = useCallback((e) => {
         const value = e.target.value;
@@ -645,30 +660,81 @@ function Minting({ showHeader = true, defaultValues }) {
                 />
             </Stack>
 
-            {!defaultValues?.collectionName && (
-                <Stack spacing={2} mb={3}>
-                    <Typography variant="p4">
-                        Collection <Typography variant="s2">*</Typography>
-                    </Typography>
-                    <Typography variant="p3">
-                        This is the collection where your item will appear.
-                    </Typography>
+            <Stack spacing={2} mb={3}>
+                <Typography variant="p4">
+                    Collection <Typography variant="s2">*</Typography>
+                </Typography>
+                <Typography variant="p3">
+                    This is the collection where your item will appear.
+                </Typography>
 
+                {selectedCollection && (
+                    <Card sx={{ 
+                        p: 2, 
+                        mb: 2, 
+                        background: theme => alpha(theme.palette.primary.main, 0.05),
+                        border: theme => `1px solid ${alpha(theme.palette.primary.main, 0.2)}`
+                    }}>
+                        <Stack direction="row" alignItems="center" spacing={2}>
+                            <Avatar 
+                                alt={selectedCollection.name}
+                                src={selectedCollection.logoImage ? 
+                                    `https://s1.xrpnft.com/collection/${selectedCollection.logoImage}` : 
+                                    ''
+                                }
+                                sx={{ width: 60, height: 60, border: '2px solid', borderColor: 'divider' }}
+                            >
+                                {!selectedCollection.logoImage && selectedCollection.name?.charAt(0)}
+                            </Avatar>
+                            <Box flex={1}>
+                                <Typography variant="h6" fontWeight="600">
+                                    {selectedCollection.name}
+                                </Typography>
+                                {selectedCollection.description && (
+                                    <Typography variant="body2" color="text.secondary" 
+                                        sx={{ 
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            display: '-webkit-box',
+                                            WebkitLineClamp: 2,
+                                            WebkitBoxOrient: 'vertical'
+                                        }}
+                                    >
+                                        {selectedCollection.description}
+                                    </Typography>
+                                )}
+                            </Box>
+                            {!defaultValues?.collectionName && (
+                                <Button 
+                                    size="small" 
+                                    variant="outlined"
+                                    onClick={() => {
+                                        setCollectionName('');
+                                        setSelectedCollection(null);
+                                    }}
+                                >
+                                    Change
+                                </Button>
+                            )}
+                        </Stack>
+                    </Card>
+                )}
+
+                {!defaultValues?.collectionName && !selectedCollection && (
                     <CustomSelect
                         id="select_collection"
                         value={collectionName}
                         onChange={handleChangeCollection}
                         MenuProps={{ disableScrollLock: true }}
-                        // renderValue={(idx) => (
-                        //     <>
-                        //     {(collections.length > 0 && idx > -1 && collections.length > idx) &&
-                        //         <Stack direction='row' alignItems="center">
-                        //             <Avatar alt="C" src={`https://s1.xrpnft.com/collection/${collections[idx].logoImage}`} sx={{ mr:2, width: 32, height: 32 }} />
-                        //             <Typography variant='d4'>{collections[idx].name}</Typography>
-                        //         </Stack>
-                        //     }
-                        //     </>
-                        // )}
+                        renderValue={(value) => (
+                            value ? (
+                                <Stack direction="row" alignItems="center">
+                                    <Typography>{value}</Typography>
+                                </Stack>
+                            ) : (
+                                <Typography color="text.secondary">Select a collection</Typography>
+                            )
+                        )}
                     >
                         <TextField
                             id="textFilter"
@@ -718,19 +784,8 @@ function Minting({ showHeader = true, defaultValues }) {
                             </MenuItem>
                         ))}
                     </CustomSelect>
-                    {/* <TextField required placeholder='Select collection' margin='dense'
-                    onChange={handleCollectionFieldChange}
-                    value={collectionName}
-                    sx={{
-                        '&.MuiTextField-root': {
-                            marginTop: 1
-                        }
-                    }}
-                /> */}
-                    {/* <PropertySection />
-                <LevelsSection /> */}
-                </Stack>
-            )}
+                )}
+            </Stack>
 
             <Stack spacing={2} mb={3}>
                 <Typography variant="p4">Attributes</Typography>

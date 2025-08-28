@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext, useCallback } from 'react';
+import { useRouter } from 'next/router';
 import axios from 'axios';
 import { AppContext } from 'src/AppContext';
 
@@ -36,6 +37,7 @@ const BackButton = ({ onClick }) => (
 );
 
 export default function Create() {
+    const router = useRouter();
     const [state, setState] = useState('');
     const [collectionName, setCollectionName] = useState(null);
     const [collections, setCollections] = useState([]);
@@ -43,6 +45,20 @@ export default function Create() {
     const { accountProfile } = useContext(AppContext);
     
     console.log('Create component rendered, current state:', state, 'collectionName:', collectionName);
+    
+    // Handle query parameters on mount
+    useEffect(() => {
+        if (router.query.action === 'nft') {
+            setState('nft');
+            if (router.query.collection) {
+                // Find the collection name from slug if available
+                const foundCollection = collections.find(c => c.slug === router.query.collection);
+                setCollectionName(foundCollection?.name || router.query.collection);
+            }
+        } else if (router.query.action === 'collection') {
+            setState('collection');
+        }
+    }, [router.query, collections]);
     
     useEffect(() => {
         if (accountProfile?.account && accountProfile?.token) {
@@ -74,7 +90,9 @@ export default function Create() {
     const handleBack = useCallback(() => {
         setState('');
         setCollectionName(null);
-    }, []);
+        // Clear query parameters when going back
+        router.push('/create', undefined, { shallow: true });
+    }, [router]);
 
     return (
         <CreateWrapper>

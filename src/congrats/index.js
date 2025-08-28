@@ -432,7 +432,7 @@ export default function Congrats() {
                             <Link
                                 underline="none"
                                 color="inherit"
-                                href={`/create`}
+                                href={`/create?action=nft${cslug ? `&collection=${cslug}` : ''}`}
                                 rel="noreferrer noopener nofollow"
                                 sx={{ flex: 1 }}
                             >
