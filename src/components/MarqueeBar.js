@@ -193,11 +193,15 @@ const MarqueeBar = ({ isVisible = true }) => {
     };
 
     const truncateName = (name, maxLength = 20) => {
+        if (!name || typeof name !== 'string') return '';
         if (name.length <= maxLength) return name;
         return name.slice(0, maxLength - 3) + '...';
     };
 
     const NameDisplay = ({ name, maxLength }) => {
+        if (!name || typeof name !== 'string') {
+            return <span></span>;
+        }
         const truncatedName = truncateName(name, maxLength);
         return (
             <Tooltip title={name} arrow placement="top">
@@ -257,7 +261,7 @@ const MarqueeBar = ({ isVisible = true }) => {
                                             marginTop: '2px'
                                         }}
                                     >
-                                        {nft.collection && (
+                                        {nft.collection && typeof nft.collection === 'string' && (
                                             <NameDisplay
                                                 name={nft.collection}
                                                 maxLength={12}
