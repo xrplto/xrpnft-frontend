@@ -9,8 +9,30 @@ import ScrollToTop from 'src/components/ScrollToTop';
 
 const OverviewWrapper = styled(Box)(
     ({ theme }) => `
-        // overflow: hidden;
-        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background: ${theme.palette.mode === 'dark' 
+            ? `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.grey[900]} 100%)`
+            : `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.background.paper} 100%)`};
+        position: relative;
+        overflow: hidden;
+        
+        &::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, ${theme.palette.primary.main}08 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
 `
 );
 
@@ -25,9 +47,32 @@ export default function Overview({ data }) {
 
             <Header />
 
-            <Container maxWidth="sm">
-                <CreateCollection onCreate={handleCreate} />
-            </Container>
+            <Box sx={{ 
+                flex: '1 0 auto', 
+                py: { xs: 3, md: 6 },
+                position: 'relative',
+                zIndex: 1
+            }}>
+                <Container maxWidth="lg">
+                    <Box sx={{ 
+                        maxWidth: 900, 
+                        mx: 'auto',
+                        animation: 'fadeInUp 0.8s ease-out',
+                        '@keyframes fadeInUp': {
+                            from: {
+                                opacity: 0,
+                                transform: 'translateY(30px)'
+                            },
+                            to: {
+                                opacity: 1,
+                                transform: 'translateY(0)'
+                            }
+                        }
+                    }}>
+                        <CreateCollection onCreate={handleCreate} />
+                    </Box>
+                </Container>
+            </Box>
 
             <ScrollToTop />
 

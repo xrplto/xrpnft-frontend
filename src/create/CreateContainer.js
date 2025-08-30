@@ -1,45 +1,40 @@
-import { Box, Container, Stack, useTheme } from '@mui/material';
+import { Box, styled, alpha } from '@mui/material';
+
+const StyledContainer = styled(Box)(({ theme }) => ({
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius * 3,
+    boxShadow: theme.palette.mode === 'dark' 
+        ? '0 8px 32px rgba(0,0,0,0.4)'
+        : '0 8px 32px rgba(0,0,0,0.08)',
+    padding: theme.spacing(3),
+    position: 'relative',
+    backdropFilter: 'blur(10px)',
+    background: theme.palette.mode === 'dark'
+        ? alpha(theme.palette.background.paper, 0.95)
+        : alpha(theme.palette.background.paper, 0.98),
+    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+        padding: theme.spacing(5),
+    },
+    '&::before': {
+        content: '""',
+        position: 'absolute',
+        inset: 0,
+        borderRadius: 'inherit',
+        padding: 1,
+        background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, transparent)`,
+        mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+        maskComposite: 'exclude',
+        pointerEvents: 'none'
+    }
+}));
 
 export default function CreateContainer({ children }) {
-    const theme = useTheme();
-
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                minHeight: '100vh',
-                backgroundColor: theme.palette.background.default,
-                backgroundImage: `radial-gradient(circle at 50% 50%, ${theme.palette.primary.main}22 0%, transparent 50%), 
-                                  radial-gradient(circle at 100% 0%, ${theme.palette.secondary.main}22 0%, transparent 50%)`,
-                backgroundSize: '100% 100%, 50% 50%',
-                backgroundPosition: 'center center, top right',
-                backgroundRepeat: 'no-repeat',
-            }}
-        >
-            <Box flexGrow={1}>
-                <Container maxWidth="lg">
-                    <Stack
-                        spacing={3}
-                        direction={{ xs: 'column', lg: 'row' }}
-                        sx={{
-                            px: { xs: 2, sm: 3 },
-                            py: { xs: 4, sm: 6 },
-                            justifyContent: 'center',
-                            alignItems: 'stretch',
-                            flexWrap: 'wrap',
-                            '& > *': {
-                                flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 12px)', lg: '1 1 calc(25% - 12px)' },
-                                minWidth: { xs: '100%', sm: 'calc(50% - 12px)', lg: '280px' },
-                                maxWidth: { xs: '100%', sm: '100%', lg: '400px' },
-                            },
-                        }}
-                    >
-                        {children}
-                    </Stack>
-                </Container>
-            </Box>
-            {/* Footer component should be placed here */}
-        </Box>
+        <StyledContainer>
+            {children}
+        </StyledContainer>
     );
 }

@@ -13,6 +13,7 @@ import {
     Divider,
     FormControl,
     FormControlLabel,
+    Grid,
     IconButton,
     Link,
     MenuItem,
@@ -38,6 +39,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Add this import
+import ClassIcon from '@mui/icons-material/Class';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -56,35 +58,75 @@ import LoadingTextField from 'src/components/LoadingTextField';
 import AddCostDialog from './AddCostDialog';
 
 const CardWrapper = styled('div')(({ theme }) => ({
-    border: `dashed 3px ${alpha(theme.palette.primary.main, 0.3)}`,
-    borderRadius: theme.shape.borderRadius,
+    border: `dashed 2px ${alpha(theme.palette.primary.main, 0.3)}`,
+    borderRadius: theme.shape.borderRadius * 2,
     padding: theme.spacing(0.5),
     width: 'fit-content',
+    position: 'relative',
+    transition: 'all 0.3s ease',
     '&:hover': {
         cursor: 'pointer',
-        borderColor: theme.palette.primary.main
+        borderColor: theme.palette.primary.main,
+        transform: 'scale(1.02)',
+        boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.2)}`,
+        '&::after': {
+            opacity: 1
+        }
+    },
+    '&::after': {
+        content: '""',
+        position: 'absolute',
+        inset: -3,
+        borderRadius: 'inherit',
+        background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.2)}, transparent)`,
+        opacity: 0,
+        transition: 'opacity 0.3s ease',
+        pointerEvents: 'none',
+        zIndex: -1
     }
 }));
 
 const CardWrapperCircle = styled('div')(({ theme }) => ({
-    border: `dashed 3px ${alpha(theme.palette.primary.main, 0.3)}`,
+    border: `dashed 2px ${alpha(theme.palette.primary.main, 0.3)}`,
     borderRadius: '50%',
     padding: theme.spacing(0.5),
     width: 'fit-content',
     overflow: 'hidden',
+    position: 'relative',
+    transition: 'all 0.3s ease',
     '&:hover': {
         cursor: 'pointer',
-        borderColor: theme.palette.primary.main
+        borderColor: theme.palette.primary.main,
+        transform: 'scale(1.05)',
+        boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.2)}`,
+        '&::after': {
+            opacity: 1
+        }
+    },
+    '&::after': {
+        content: '""',
+        position: 'absolute',
+        inset: -3,
+        borderRadius: '50%',
+        background: `radial-gradient(circle, ${alpha(theme.palette.primary.main, 0.2)}, transparent)`,
+        opacity: 0,
+        transition: 'opacity 0.3s ease',
+        pointerEvents: 'none',
+        zIndex: -1
     }
 }));
 
 const CardWrapper3 = styled('div')(({ theme }) => ({
-    border: `dashed 3px ${alpha(theme.palette.primary.main, 0.3)}`,
-    borderRadius: theme.shape.borderRadius,
+    border: `dashed 2px ${alpha(theme.palette.primary.main, 0.3)}`,
+    borderRadius: theme.shape.borderRadius * 2,
     padding: theme.spacing(0.5),
+    transition: 'all 0.3s ease',
+    position: 'relative',
     '&:hover': {
         cursor: 'pointer',
-        borderColor: theme.palette.primary.main
+        borderColor: theme.palette.primary.main,
+        transform: 'translateY(-2px)',
+        boxShadow: `0 12px 24px ${alpha(theme.palette.primary.main, 0.15)}`
     }
 }));
 
@@ -129,25 +171,75 @@ const DisabledButton = styled(Button)({
 
 const CustomSelect = styled(Select)(({ theme }) => ({
     '& .MuiOutlinedInput-notchedOutline': {
-        borderLeft: 'none'
+        borderColor: alpha(theme.palette.divider, 0.3)
     },
     '&:hover .MuiOutlinedInput-notchedOutline': {
         borderColor: alpha(theme.palette.primary.main, 0.5)
     },
     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-        borderColor: theme.palette.primary.main
+        borderColor: theme.palette.primary.main,
+        borderWidth: 2
+    },
+    '& .MuiSelect-select': {
+        padding: theme.spacing(2)
     }
 }));
 
-const StyledContainer = styled(Container)(({ theme }) => ({
-    backgroundColor: alpha(theme.palette.background.paper, 0.8),
-    backdropFilter: 'blur(10px)',
-    borderRadius: theme.shape.borderRadius * 2,
-    boxShadow: theme.shadows[10],
-    padding: theme.spacing(4),
-    [theme.breakpoints.up('md')]: {
-        padding: theme.spacing(6),
+const CategoryMenuItem = styled(MenuItem)(({ theme }) => ({
+    padding: theme.spacing(2),
+    '&:hover': {
+        backgroundColor: alpha(theme.palette.primary.main, 0.08)
     },
+    '&.Mui-selected': {
+        backgroundColor: alpha(theme.palette.primary.main, 0.12),
+        '&:hover': {
+            backgroundColor: alpha(theme.palette.primary.main, 0.16)
+        }
+    }
+}));
+
+const CategoryIcon = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+    color: theme.palette.primary.main,
+    '& svg': {
+        fontSize: 24
+    }
+}));
+
+const StyledContainer = styled(Box)(({ theme }) => ({
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius * 3,
+    boxShadow: theme.palette.mode === 'dark' 
+        ? '0 8px 32px rgba(0,0,0,0.4)'
+        : '0 8px 32px rgba(0,0,0,0.08)',
+    padding: theme.spacing(3),
+    position: 'relative',
+    backdropFilter: 'blur(10px)',
+    background: theme.palette.mode === 'dark'
+        ? alpha(theme.palette.background.paper, 0.95)
+        : alpha(theme.palette.background.paper, 0.98),
+    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    [theme.breakpoints.up('md')]: {
+        padding: theme.spacing(5),
+    },
+    '&::before': {
+        content: '""',
+        position: 'absolute',
+        inset: 0,
+        borderRadius: 'inherit',
+        padding: 1,
+        background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, transparent)`,
+        mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+        maskComposite: 'exclude',
+        pointerEvents: 'none'
+    }
 }));
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
@@ -163,29 +255,22 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const BlurredBackground = styled(Box)(({ theme }) => ({
-    position: 'fixed',
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundImage: 'url(/static/background-image.jpg)', // Replace with your background image
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    filter: 'blur(10px)',
-    transform: 'scale(1.1)', // Prevents blur from showing edges
+    background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.05)} 0%, ${alpha(theme.palette.background.paper, 0.9)} 100%)`,
     zIndex: -1,
-    minHeight: '100vh', // Change this from height to minHeight
+    minHeight: '100vh'
 }));
 
 const ContentWrapper = styled(Box)(({ theme }) => ({
     position: 'relative',
     zIndex: 1,
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    paddingTop: theme.spacing(4),    // Add top padding
-    paddingBottom: theme.spacing(4), // Add bottom padding
+    width: '100%',
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3)
 }));
 
 export default function CreateCollection({ showHeader = true, onCreate }) {
@@ -494,42 +579,93 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
     };
 
     return (
-        <>
-            <BlurredBackground />
-            <ContentWrapper>
-                <StyledContainer maxWidth="md">
-                    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 6 }}>
+        <Box sx={{ position: 'relative', width: '100%' }}>
+            <StyledContainer>
+                <Stack spacing={4}>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
                         {showHeader && (
-                            <Typography variant="h3" component="h1" fontWeight="bold">
-                                Create Your Collection
-                            </Typography>
+                            <>
+                                <Button
+                                    startIcon={<ArrowBackIcon />}
+                                    onClick={handleGoBack}
+                                    variant="outlined"
+                                    sx={{
+                                        borderRadius: 3,
+                                        textTransform: 'none',
+                                        fontWeight: 600,
+                                        px: 3,
+                                        py: 1.25,
+                                        borderColor: theme => alpha(theme.palette.primary.main, 0.3),
+                                        backdropFilter: 'blur(10px)',
+                                        transition: 'all 0.3s ease',
+                                        '&:hover': {
+                                            borderColor: theme => theme.palette.primary.main,
+                                            backgroundColor: theme => alpha(theme.palette.primary.main, 0.08),
+                                            transform: 'translateX(-4px)'
+                                        }
+                                    }}
+                                >
+                                    Back to Create
+                                </Button>
+                                <Typography 
+                                    variant="h3" 
+                                    component="h1" 
+                                    fontWeight="800"
+                                    sx={{
+                                        background: theme => `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+                                        WebkitBackgroundClip: 'text',
+                                        WebkitTextFillColor: 'transparent',
+                                        textAlign: 'center'
+                                    }}
+                                >
+                                    Create Your Collection
+                                </Typography>
+                                <Box sx={{ width: 150 }} />
+                            </>
                         )}
-                        <StyledButton
-                            startIcon={<ArrowBackIcon />}
-                            onClick={handleGoBack}
-                            variant="outlined"
-                            color="primary"
-                        >
-                            Go Back
-                        </StyledButton>
+                        {!showHeader && (
+                            <Box />
+                        )}
                     </Stack>
+                    
                     <AddCostDialog
                         open={openAddCost}
                         setOpen={setOpenAddCost}
                         openSnackbar={openSnackbar}
                         onAddCost={handleAddCost}
                     />
-                    <SectionTitle variant="h5">Logo Image</SectionTitle>
-                    <Stack spacing={1} sx={{ mt: 4, mb: 3 }}>
-                        <Typography variant="p2">
-                            <Typography variant="s2">*</Typography> Required fields
+                    
+                    {/* Logo Image Section */}
+                    <Box
+                        sx={{
+                            p: 3,
+                            borderRadius: 3,
+                            background: theme => alpha(theme.palette.primary.main, 0.02),
+                            border: theme => `1px solid ${alpha(theme.palette.primary.main, 0.08)}`
+                        }}
+                    >
+                        <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+                            <Box
+                                sx={{
+                                    width: 8,
+                                    height: 8,
+                                    borderRadius: '50%',
+                                    backgroundColor: 'error.main',
+                                    animation: 'pulse 2s infinite'
+                                }}
+                            />
+                            <Typography variant="subtitle2" color="text.secondary" fontWeight="500">
+                                Required field
+                            </Typography>
+                        </Stack>
+                        <Typography variant="h5" fontWeight="700" sx={{ mb: 1 }}>
+                            Logo Image
                         </Typography>
-                        <Typography variant="p4" sx={{ pt: 2, pb: 1 }}>
-                            Logo image <Typography variant="s2">*</Typography>
-                        </Typography>
-                        <Typography variant="p3">
-                            This image will also be used for navigation. 350 x 350
-                            recommended.(Max: 10MB)
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 3, lineHeight: 1.6 }}>
+                            Your collection's visual identity. This will appear throughout the marketplace.
+                            <Box component="span" sx={{ display: 'block', mt: 0.5, fontWeight: 500 }}>
+                                Recommended: 350 x 350px • Max: 10MB • PNG, JPG, GIF
+                            </Box>
                         </Typography>
                         <CardWrapperCircle>
                             <input
@@ -597,10 +733,14 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                                 />
                             </Card>
                         </CardWrapperCircle>
-                        <Typography variant="p4" sx={{ pt: 2, pb: 1 }}>
+                    </Box>
+
+                    {/* Featured Image Section */}
+                    <Box>
+                        <Typography variant="h6" fontWeight="600" sx={{ mb: 1 }}>
                             Featured image
                         </Typography>
-                        <Typography variant="p3">
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                             This image will be used for featuring your collection on
                             the homepage, category pages, or other promotional areas
                             of XRPNFT.COM. 600 x 400 recommended.(Max: 10MB)
@@ -671,11 +811,14 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                                 />
                             </Card>
                         </CardWrapper>
+                    </Box>
 
-                        <Typography variant="p4" sx={{ pt: 2, pb: 1 }}>
+                    {/* Banner Image Section */}
+                    <Box>
+                        <Typography variant="h6" fontWeight="600" sx={{ mb: 1 }}>
                             Banner image
                         </Typography>
-                        <Typography variant="p3">
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                             This image will appear at the top of your collection
                             page. Avoid including too much text in this banner
                             image, as the dimensions change on different devices.
@@ -747,11 +890,13 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                                 />
                             </Card>
                         </CardWrapper3>
+                    </Box>
 
-                        <Typography variant="p4" sx={{ pt: 2, pb: 1 }}>
-                            Name <Typography variant="s2">*</Typography>
+                    {/* Name Section */}
+                    <Box>
+                        <Typography variant="h6" fontWeight="600" sx={{ mb: 1 }}>
+                            Name *
                         </Typography>
-
                         <LoadingTextField
                             id="id_collection_name"
                             placeholder="Example: My XRPL NFTs"
@@ -762,52 +907,105 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                             onChange={(e) => {
                                 setName(e.target.value);
                             }}
+                            fullWidth
                         />
-                    </Stack>
+                    </Box>
 
-                    <Stack spacing={2} mb={3}>
-                        <Typography variant="p4">Category</Typography>
-                        <Typography variant="p3">
+                    {/* Category Section */}
+                    <Box>
+                        <Typography variant="h6" fontWeight="600">
+                            Category
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
                             This helps your NFT to be found when people search by
-                            Category. Once you set, you can not change Category when
+                            category. Once you set, you cannot change the category when
                             you edit your collection.
                         </Typography>
                         <CustomSelect
                             id="select_category"
                             value={category}
                             onChange={handleChangeCategory}
-                            MenuProps={{ disableScrollLock: true }}
+                            MenuProps={{ 
+                                disableScrollLock: true,
+                                PaperProps: {
+                                    sx: {
+                                        maxHeight: 400,
+                                        '& .MuiList-root': {
+                                            padding: 1
+                                        }
+                                    }
+                                }
+                            }}
+                            renderValue={(value) => {
+                                const selectedCat = CATEGORIES.find(cat => cat.title === value);
+                                return (
+                                    <Stack direction="row" spacing={2} alignItems="center">
+                                        <CategoryIcon>
+                                            {selectedCat?.icon || <ClassIcon />}
+                                        </CategoryIcon>
+                                        <Box>
+                                            <Typography variant="subtitle1" fontWeight="500">
+                                                {value || 'Select a category'}
+                                            </Typography>
+                                            {value !== 'NONE' && (
+                                                <Typography variant="caption" color="text.secondary">
+                                                    {selectedCat?.slug}
+                                                </Typography>
+                                            )}
+                                        </Box>
+                                    </Stack>
+                                );
+                            }}
                         >
                             {CATEGORIES.map((cat, idx) => (
-                                <MenuItem
+                                <CategoryMenuItem
                                     key={idx}
                                     value={cat.title}
-                                    sx={{ pt: 2, pb: 2 }}
                                 >
                                     <Stack
                                         direction="row"
-                                        spacing={1}
+                                        spacing={2}
                                         alignItems="center"
+                                        sx={{ width: '100%' }}
                                     >
-                                        {cat.icon}
-                                        <Typography variant="d4">
-                                            {cat.title}
-                                        </Typography>
+                                        <CategoryIcon>
+                                            {cat.icon}
+                                        </CategoryIcon>
+                                        <Box flex={1}>
+                                            <Typography variant="subtitle1" fontWeight="500">
+                                                {cat.title}
+                                            </Typography>
+                                            {cat.slug && (
+                                                <Typography variant="caption" color="text.secondary">
+                                                    {cat.slug}
+                                                </Typography>
+                                            )}
+                                        </Box>
+                                        {category === cat.title && (
+                                            <Box
+                                                sx={{
+                                                    width: 8,
+                                                    height: 8,
+                                                    borderRadius: '50%',
+                                                    backgroundColor: 'primary.main'
+                                                }}
+                                            />
+                                        )}
                                     </Stack>
-                                </MenuItem>
+                                </CategoryMenuItem>
                             ))}
                         </CustomSelect>
-                    </Stack>
+                    </Box>
 
-                    <Stack spacing={2} mb={3}>
-                        <Typography variant="p4">
-                            URL <Typography variant="s2">*</Typography>
+                    {/* URL Section */}
+                    <Box>
+                        <Typography variant="h6" fontWeight="600" sx={{ mb: 1 }}>
+                            URL *
                         </Typography>
-                        <Typography variant="p3">
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                             Customize your URL on XRPNFT.COM. Must only contain
                             lowercase letters, numbers, and hyphens.
                         </Typography>
-
                         <LoadingTextField
                             id="id_collection_slug"
                             placeholder="my-xrpl-nfts"
@@ -822,58 +1020,104 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                                     : '';
                                 setSlug(newSlug);
                             }}
+                            fullWidth
                         />
-                    </Stack>
+                    </Box>
 
-                    <Stack spacing={2} mb={3}>
-                        <Typography variant="p4">
-                            Type <Typography variant="s2">*</Typography>
+                    {/* Type Section */}
+                    <Box>
+                        <Typography variant="h6" fontWeight="600" sx={{ mb: 1 }}>
+                            Type *
                         </Typography>
-                        <Typography variant="p3">
-                            Select your collection type.
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                            Select your collection type to determine how NFTs will be minted.
                         </Typography>
 
-                        <Stack spacing={1} pl={0}>
-                            <Typography variant="p3">
-                                <Typography variant="s2">Normal:</Typography> You
-                                can mint NFTs one by one for this collection.
-                            </Typography>
-                            <Typography variant="p3">
-                                <Typography variant="s2">Bulk:</Typography> You can
-                                upload bulk NFTs and sell NFTs with Mints.
-                            </Typography>
-                            <Typography variant="p3">
-                                <Typography variant="s2">Random:</Typography> You
-                                can upload bulk NFTs and sell NFTs randomly with
-                                Mints.
-                            </Typography>
-                            <Typography variant="p3">
-                                <Typography variant="s2">Sequence:</Typography> You
-                                can upload bulk NFTs and sell NFTs sequently with
-                                Mints.
-                            </Typography>
-                        </Stack>
-
-                        <ToggleButtonGroup
-                            color="primary"
-                            value={type}
-                            exclusive
-                            size="small"
-                            onChange={handleChangeType}
-                        >
-                            <ToggleButton value="normal" sx={{ pl: 2, pr: 2 }}>
-                                Normal
-                            </ToggleButton>
-                            <ToggleButton value="bulk" sx={{ pl: 3, pr: 3 }}>
-                                Bulk
-                            </ToggleButton>
-                            <ToggleButton value="random" sx={{ pl: 3, pr: 3 }}>
-                                Random
-                            </ToggleButton>
-                            <ToggleButton value="sequence" sx={{ pl: 3, pr: 3 }}>
-                                Sequence
-                            </ToggleButton>
-                        </ToggleButtonGroup>
+                        <Grid container spacing={2}>
+                            {[
+                                {
+                                    value: 'normal',
+                                    label: 'Normal',
+                                    description: 'Mint NFTs one by one for this collection'
+                                },
+                                {
+                                    value: 'bulk',
+                                    label: 'Bulk',
+                                    description: 'Upload bulk NFTs and sell NFTs with Mints'
+                                },
+                                {
+                                    value: 'random',
+                                    label: 'Random',
+                                    description: 'Upload bulk NFTs and sell NFTs randomly with Mints'
+                                },
+                                {
+                                    value: 'sequence',
+                                    label: 'Sequence',
+                                    description: 'Upload bulk NFTs and sell NFTs sequentially with Mints'
+                                }
+                            ].map((option) => (
+                                <Grid item xs={12} sm={6} key={option.value}>
+                                    <Card
+                                        sx={{
+                                            p: 3,
+                                            cursor: 'pointer',
+                                            border: theme => `2px solid ${
+                                                type === option.value 
+                                                    ? theme.palette.primary.main 
+                                                    : alpha(theme.palette.divider, 0.2)
+                                            }`,
+                                            backgroundColor: theme => 
+                                                type === option.value 
+                                                    ? alpha(theme.palette.primary.main, 0.04)
+                                                    : theme.palette.background.paper,
+                                            transition: 'all 0.2s ease',
+                                            height: '100%',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            position: 'relative',
+                                            '&:hover': {
+                                                borderColor: theme => alpha(theme.palette.primary.main, 0.4),
+                                                backgroundColor: theme => alpha(theme.palette.primary.main, 0.02),
+                                                transform: 'translateY(-2px)',
+                                                boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+                                            }
+                                        }}
+                                        onClick={() => handleChangeType({ target: { value: option.value } })}
+                                    >
+                                        <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
+                                            <Box flex={1}>
+                                                <Typography variant="h6" fontWeight="600" gutterBottom>
+                                                    {option.label}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {option.description}
+                                                </Typography>
+                                            </Box>
+                                            {type === option.value && (
+                                                <Box
+                                                    sx={{
+                                                        width: 24,
+                                                        height: 24,
+                                                        borderRadius: '50%',
+                                                        backgroundColor: 'primary.main',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        color: 'white',
+                                                        fontSize: '0.75rem',
+                                                        fontWeight: 'bold',
+                                                        flexShrink: 0,
+                                                        ml: 2
+                                                    }}
+                                                >
+                                                    ✓
+                                                </Box>
+                                            )}
+                                        </Stack>
+                                    </Card>
+                                </Grid>
+                            ))}
+                        </Grid>
 
                         {type !== 'normal' && (
                             <>
@@ -1151,41 +1395,46 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                                 )}
                             </>
                         )}
-                    </Stack>
+                    </Box>
 
-                    <Stack spacing={2} mb={3}>
-                        <Typography variant="p4">Description</Typography>
-                        <Typography variant="p3">
+                    {/* Description Section */}
+                    <Box>
+                        <Typography variant="h6" fontWeight="600" sx={{ mb: 1 }}>
+                            Description
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                             <Link href="https://www.markdownguide.org/cheat-sheet/">
                                 Markdown
                             </Link>{' '}
                             syntax is supported. 0 of 1000 characters used.
                         </Typography>
                         <TextField
-                            placeholder=""
+                            placeholder="Provide a detailed description of your collection"
                             margin="dense"
                             multiline
-                            maxRows={4}
+                            rows={4}
+                            fullWidth
                             value={description}
                             onChange={(e) => {
                                 setDescription(e.target.value);
                             }}
                             sx={{
                                 '&.MuiTextField-root': {
-                                    marginTop: 1,
-                                    minHeight: 10
+                                    marginTop: 1
                                 },
                                 '& .MuiOutlinedInput-root': {
-                                    height: 100,
                                     alignItems: 'start'
                                 }
                             }}
                         />
-                    </Stack>
+                    </Box>
 
-                    <Stack spacing={2} mb={3}>
-                        <Typography variant="p4">Taxon</Typography>
-                        <Typography variant="p3">
+                    {/* Taxon Section */}
+                    <Box>
+                        <Typography variant="h6" fontWeight="600" sx={{ mb: 1 }}>
+                            Taxon
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                             Taxon links NFTs to this collection, NFTs minted for
                             this collection will have this Taxon in their NFTokenID
                             field. Taxon is automatically set.
@@ -1194,127 +1443,230 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                         <TextField
                             id="id_collection_taxon"
                             disabled
-                            placeholder=""
+                            placeholder="Automatically generated"
                             margin="dense"
+                            fullWidth
                             value={taxon}
                         />
-                    </Stack>
+                    </Box>
 
-                    <Stack spacing={2} mb={3}>
-                        <Typography variant="p4">
-                            Rarity <Typography variant="s2">*</Typography>
+                    {/* Rarity Section */}
+                    <Box>
+                        <Typography variant="h6" fontWeight="600" sx={{ mb: 1 }}>
+                            Rarity *
                         </Typography>
-                        <Typography variant="p3">
-                            Select your collection's rarity calculation
-                            method.&nbsp;
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                            Select your collection's rarity calculation method.{' '}
                             <Link
                                 target="_blank"
                                 href={`https://raritytools.medium.com/ranking-rarity-understanding-rarity-calculation-methods-86ceaeb9b98c`}
                                 rel="noreferrer noopener nofollow"
+                                sx={{ fontWeight: 500 }}
                             >
-                                Read More
+                                Learn More →
                             </Link>
                         </Typography>
 
-                        <Stack spacing={1} pl={0}>
-                            <Typography variant="p3">
-                                <Typography variant="s2">Standard:</Typography>{' '}
-                                Simply compare the rarest trait of each NFT(%).
-                            </Typography>
-                            <Typography variant="p3">
-                                <Typography variant="s2">Average:</Typography>{' '}
-                                Average the rarity of traits that exist on the
-                                NFT(%).
-                            </Typography>
-                            <Typography variant="p3">
-                                <Typography variant="s2">Statistical:</Typography>{' '}
-                                Multiply all of its trait rarities together(%).
-                            </Typography>
-                            <Typography variant="p3">
-                                <Typography variant="s2">Score:</Typography> Sum of
-                                the Rarity Score of all of its trait values(not %,
-                                just a value).
-                            </Typography>
-                            <Typography variant="p3">
-                                <Typography variant="s2">Self:</Typography> Rarity
-                                and Rank are included in each NFT metadata.
-                            </Typography>
-                        </Stack>
-
-                        <FormControl sx={{ ml: 5 }}>
-                            {/* <FormLabel id="on-sale-sub-filter">On Sale sub</FormLabel> */}
-                            <RadioGroup
-                                aria-labelledby="demo-controlled-radio-buttons-group"
-                                name="controlled-radio-buttons-group"
-                                value={rarity}
-                                onChange={handleChangeRarity}
-                            >
-                                <FormControlLabel
-                                    value="standard"
-                                    control={<Radio />}
-                                    label="Standard"
-                                />
-                                <FormControlLabel
-                                    value="average"
-                                    control={<Radio />}
-                                    label="Average"
-                                />
-                                <FormControlLabel
-                                    value="statistical"
-                                    control={<Radio />}
-                                    label="Statistical"
-                                />
-                                <FormControlLabel
-                                    value="score"
-                                    control={<Radio />}
-                                    label="Score"
-                                />
-                                <FormControlLabel
-                                    value="self"
-                                    control={<Radio />}
-                                    label="Self"
-                                />
-                            </RadioGroup>
-                        </FormControl>
-                    </Stack>
-
-                    <Stack spacing={2} mb={3}>
-                        <Typography variant="p4">
-                            Private <Typography variant="s2">*</Typography>
-                        </Typography>
-                        <Typography variant="p3">
-                            Make your collection private when you need to upload
-                            NFTs or do something private. You can make collection
-                            public again after you've done all things.
-                        </Typography>
-
-                        <ToggleButtonGroup
-                            color="primary"
-                            value={privateCollection}
-                            exclusive
-                            size="small"
-                            onChange={handleChangePrivate}
+                        <RadioGroup
+                            aria-labelledby="rarity-radio-buttons-group"
+                            name="rarity-radio-buttons-group"
+                            value={rarity}
+                            onChange={handleChangeRarity}
                         >
-                            <ToggleButton
-                                value="no"
-                                sx={{ pl: 2, pr: 2, pt: 0.3, pb: 0.3 }}
-                            >
-                                No
-                            </ToggleButton>
-                            <ToggleButton
-                                value="yes"
-                                sx={{ pl: 2, pr: 2, pt: 0.3, pb: 0.3 }}
-                            >
-                                Yes
-                            </ToggleButton>
-                        </ToggleButtonGroup>
-                    </Stack>
+                            <Stack spacing={2}>
+                                {[
+                                    {
+                                        value: 'standard',
+                                        label: 'Standard',
+                                        description: 'Simply compare the rarest trait of each NFT (%)'
+                                    },
+                                    {
+                                        value: 'average',
+                                        label: 'Average',
+                                        description: 'Average the rarity of traits that exist on the NFT (%)'
+                                    },
+                                    {
+                                        value: 'statistical',
+                                        label: 'Statistical',
+                                        description: 'Multiply all of its trait rarities together (%)'
+                                    },
+                                    {
+                                        value: 'score',
+                                        label: 'Score',
+                                        description: 'Sum of the Rarity Score of all trait values (not %, just a value)'
+                                    },
+                                    {
+                                        value: 'self',
+                                        label: 'Self',
+                                        description: 'Rarity and Rank are included in each NFT metadata'
+                                    }
+                                ].map((option) => (
+                                    <Card
+                                        key={option.value}
+                                        sx={{
+                                            p: 2.5,
+                                            cursor: 'pointer',
+                                            border: theme => `2px solid ${
+                                                rarity === option.value 
+                                                    ? theme.palette.primary.main 
+                                                    : alpha(theme.palette.divider, 0.2)
+                                            }`,
+                                            backgroundColor: theme => 
+                                                rarity === option.value 
+                                                    ? alpha(theme.palette.primary.main, 0.04)
+                                                    : theme.palette.background.paper,
+                                            transition: 'all 0.2s ease',
+                                            '&:hover': {
+                                                borderColor: theme => alpha(theme.palette.primary.main, 0.4),
+                                                backgroundColor: theme => alpha(theme.palette.primary.main, 0.02),
+                                                transform: 'translateY(-2px)',
+                                                boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+                                            }
+                                        }}
+                                        onClick={() => handleChangeRarity({ target: { value: option.value } })}
+                                    >
+                                        <FormControlLabel
+                                            value={option.value}
+                                            control={
+                                                <Radio 
+                                                    sx={{ 
+                                                        display: 'none'
+                                                    }} 
+                                                />
+                                            }
+                                            label={
+                                                <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
+                                                    <Box flex={1}>
+                                                        <Typography variant="h6" fontWeight="600" gutterBottom>
+                                                            {option.label}
+                                                        </Typography>
+                                                        <Typography variant="body2" color="text.secondary">
+                                                            {option.description}
+                                                        </Typography>
+                                                    </Box>
+                                                    {rarity === option.value && (
+                                                        <Box
+                                                            sx={{
+                                                                width: 24,
+                                                                height: 24,
+                                                                borderRadius: '50%',
+                                                                backgroundColor: 'primary.main',
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                color: 'white',
+                                                                fontSize: '0.75rem',
+                                                                fontWeight: 'bold',
+                                                                flexShrink: 0,
+                                                                ml: 2
+                                                            }}
+                                                        >
+                                                            ✓
+                                                        </Box>
+                                                    )}
+                                                </Stack>
+                                            }
+                                            sx={{ 
+                                                margin: 0, 
+                                                width: '100%',
+                                                '& .MuiFormControlLabel-label': {
+                                                    width: '100%'
+                                                }
+                                            }}
+                                        />
+                                    </Card>
+                                ))}
+                            </Stack>
+                        </RadioGroup>
+                    </Box>
 
-                    <Stack spacing={2} mb={3}>
-                        <Typography variant="p4">
-                            Passphrase <Typography variant="s2">*</Typography>
+                    {/* Private Section */}
+                    <Box>
+                        <Typography variant="h6" fontWeight="600" sx={{ mb: 1 }}>
+                            Token Properties *
                         </Typography>
-                        <Typography variant="p3">
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                            Control the visibility and access settings for your NFT collection.
+                        </Typography>
+
+                        <Stack spacing={2}>
+                            {[
+                                {
+                                    value: 'no',
+                                    label: 'Public Collection',
+                                    description: 'Your collection will be visible to everyone and searchable on the marketplace'
+                                },
+                                {
+                                    value: 'yes',
+                                    label: 'Private Collection',
+                                    description: 'Keep your collection hidden from public view until you decide to publish it'
+                                }
+                            ].map((option) => (
+                                <Card
+                                    key={option.value}
+                                    sx={{
+                                        p: 2.5,
+                                        cursor: 'pointer',
+                                        border: theme => `2px solid ${
+                                            privateCollection === option.value 
+                                                ? theme.palette.primary.main 
+                                                : alpha(theme.palette.divider, 0.2)
+                                        }`,
+                                        backgroundColor: theme => 
+                                            privateCollection === option.value 
+                                                ? alpha(theme.palette.primary.main, 0.04)
+                                                : theme.palette.background.paper,
+                                        transition: 'all 0.2s ease',
+                                        '&:hover': {
+                                            borderColor: theme => alpha(theme.palette.primary.main, 0.4),
+                                            backgroundColor: theme => alpha(theme.palette.primary.main, 0.02),
+                                            transform: 'translateY(-2px)',
+                                            boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+                                        }
+                                    }}
+                                    onClick={() => handleChangePrivate(null, option.value)}
+                                >
+                                    <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
+                                        <Box flex={1}>
+                                            <Typography variant="h6" fontWeight="600" gutterBottom>
+                                                {option.label}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary">
+                                                {option.description}
+                                            </Typography>
+                                        </Box>
+                                        {privateCollection === option.value && (
+                                            <Box
+                                                sx={{
+                                                    width: 24,
+                                                    height: 24,
+                                                    borderRadius: '50%',
+                                                    backgroundColor: 'primary.main',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    color: 'white',
+                                                    fontSize: '0.75rem',
+                                                    fontWeight: 'bold',
+                                                    flexShrink: 0,
+                                                    ml: 2
+                                                }}
+                                            >
+                                                ✓
+                                            </Box>
+                                        )}
+                                    </Stack>
+                                </Card>
+                            ))}
+                        </Stack>
+                    </Box>
+
+                    {/* Passphrase Section */}
+                    <Box>
+                        <Typography variant="h6" fontWeight="600" sx={{ mb: 1 }}>
+                            Passphrase *
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                             Contact support to get your own passphrase for your
                             account. Once you get your passphrase, you can use it
                             for 10 times only, if you want more, contact support
@@ -1336,17 +1688,26 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                         <LoadingTextField
                             id="id_create_collection_passphrase"
                             type="PASSPHRASE_CREATE_COLLECTION"
-                            placeholder="Passphrase"
+                            placeholder="Enter your passphrase"
                             startText=""
                             value={passphrase}
                             setValid={setValidPassword}
                             onChange={(e) => {
                                 setPassPhrase(e.target.value);
                             }}
+                            fullWidth
                         />
-                    </Stack>
+                    </Box>
 
-                    <Stack alignItems="flex-end">
+                    {/* Submit Button */}
+                    <Box sx={{ 
+                        display: 'flex', 
+                        justifyContent: 'center', 
+                        mt: 6,
+                        p: 4,
+                        borderRadius: 3,
+                        background: theme => `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.03)}, transparent)`
+                    }}>
                         <LoadingButton
                             disabled={!canCreate}
                             variant="contained"
@@ -1355,19 +1716,46 @@ export default function CreateCollection({ showHeader = true, onCreate }) {
                             startIcon={<SendIcon />}
                             onClick={onCreateCollection}
                             sx={{
-                                mt: 8,
-                                minWidth: 200,
-                                height: 56,
-                                borderRadius: (theme) => theme.shape.borderRadius * 2,
-                                fontWeight: 600,
-                                fontSize: '1.1rem',
+                                minWidth: 280,
+                                height: 64,
+                                borderRadius: 100,
+                                fontWeight: 700,
+                                fontSize: '1.2rem',
+                                letterSpacing: '0.5px',
+                                background: theme => `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+                                boxShadow: theme => `0 8px 32px ${alpha(theme.palette.primary.main, 0.3)}`,
+                                transition: 'all 0.3s ease',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                '&:hover': {
+                                    transform: 'translateY(-2px)',
+                                    boxShadow: theme => `0 12px 40px ${alpha(theme.palette.primary.main, 0.4)}`,
+                                },
+                                '&:disabled': {
+                                    background: theme => alpha(theme.palette.action.disabledBackground, 0.8),
+                                },
+                                '&::before': {
+                                    content: '""',
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    width: '100%',
+                                    height: '100%',
+                                    background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
+                                    transform: 'translate(-50%, -50%) scale(0)',
+                                    transition: 'transform 0.6s ease',
+                                    pointerEvents: 'none'
+                                },
+                                '&:active::before': {
+                                    transform: 'translate(-50%, -50%) scale(2)'
+                                }
                             }}
                         >
                             Create Collection
                         </LoadingButton>
-                    </Stack>
-                </StyledContainer>
-            </ContentWrapper>
-        </>
+                    </Box>
+                </Stack>
+            </StyledContainer>
+        </Box>
     );
 }

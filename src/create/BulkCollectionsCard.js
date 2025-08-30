@@ -18,7 +18,7 @@ export default function BulkCollectionsCard({ hasBulkCollections }) {
             sx={{
                 p: 4,
                 width: 1,
-                height: '100%',
+                height: '280px',
                 display: 'flex',
                 flexDirection: 'column',
                 cursor: 'pointer',

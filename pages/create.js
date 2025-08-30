@@ -4,8 +4,9 @@ import axios from 'axios';
 import { AppContext } from 'src/AppContext';
 
 // Material
-import { Box, Button, styled, Toolbar } from '@mui/material';
+import { Box, Button, styled, Toolbar, Container, alpha } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 // Components
 import Header from 'src/components/Header';
@@ -24,15 +25,56 @@ import Minting from 'src/minting';
 
 const CreateWrapper = styled(Box)(
     ({ theme }) => `
-        // overflow: hidden;
-        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background: ${theme.palette.mode === 'dark' 
+            ? `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.grey[900]} 100%)`
+            : `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.background.paper} 100%)`};
+        position: relative;
+        overflow: hidden;
+        
+        &::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, ${theme.palette.primary.main}08 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
 `
 );
 
 const BackButton = ({ onClick }) => (
-    <Button size="small" variant="contained" onClick={onClick}>
-        <ChevronLeftIcon />
-        Back
+    <Button 
+        startIcon={<ArrowBackIcon />}
+        variant="outlined" 
+        onClick={onClick}
+        sx={{
+            borderRadius: 3,
+            textTransform: 'none',
+            fontWeight: 600,
+            px: 3,
+            py: 1.25,
+            mb: 3,
+            borderColor: theme => alpha(theme.palette.primary.main, 0.3),
+            backdropFilter: 'blur(10px)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+                borderColor: theme => theme.palette.primary.main,
+                backgroundColor: theme => alpha(theme.palette.primary.main, 0.08),
+                transform: 'translateX(-4px)'
+            }
+        }}
+    >
+        Back to Options
     </Button>
 );
 
@@ -101,9 +143,30 @@ export default function Create() {
             <Header />
             <CreateHeader state={state} />
 
-            <CreateContainer>
+            <Box sx={{ 
+                flex: '1 0 auto', 
+                py: { xs: 3, md: 6 },
+                position: 'relative',
+                zIndex: 1
+            }}>
                 {state === '' && (
-                    <>
+                    <Container maxWidth="xl">
+                        <Box sx={{
+                            display: 'grid',
+                            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, minmax(280px, 320px))' },
+                            gap: 3,
+                            animation: 'fadeInUp 0.8s ease-out',
+                            '@keyframes fadeInUp': {
+                                from: {
+                                    opacity: 0,
+                                    transform: 'translateY(30px)'
+                                },
+                                to: {
+                                    opacity: 1,
+                                    transform: 'translateY(0)'
+                                }
+                            }
+                        }}>
                         <CollectionCard
                             onCreate={() => setState('collection')}
                         />
@@ -116,27 +179,60 @@ export default function Create() {
                         <MyCollectionsCard 
                             collections={collections} 
                         />
-                    </>
+                    </Box>
+                </Container>
                 )}
                 {state === 'collection' && (
-                    <Box>
-                        <BackButton onClick={handleBack} />
-                        <CreateCollection
-                            showHeader={false}
-                            onCreate={() => handleBack()}
-                        />
-                    </Box>
+                    <Container maxWidth="lg">
+                        <CreateContainer>
+                            <Box sx={{
+                                animation: 'slideIn 0.4s ease-out',
+                                '@keyframes slideIn': {
+                                    from: {
+                                        opacity: 0,
+                                        transform: 'translateX(20px)'
+                                    },
+                                    to: {
+                                        opacity: 1,
+                                        transform: 'translateX(0)'
+                                    }
+                                }
+                            }}>
+                                <BackButton onClick={handleBack} />
+                                <CreateCollection
+                                    showHeader={false}
+                                    onCreate={() => handleBack()}
+                                />
+                            </Box>
+                        </CreateContainer>
+                    </Container>
                 )}
                 {state === 'nft' && (
-                    <Box>
-                        <BackButton onClick={handleBack} />
-                        <Minting
-                            showHeader={false}
-                            defaultValues={{ collectionName }}
-                        />
-                    </Box>
+                    <Container maxWidth="lg">
+                        <CreateContainer>
+                            <Box sx={{
+                                animation: 'slideIn 0.4s ease-out',
+                                '@keyframes slideIn': {
+                                    from: {
+                                        opacity: 0,
+                                        transform: 'translateX(20px)'
+                                    },
+                                    to: {
+                                        opacity: 1,
+                                        transform: 'translateX(0)'
+                                    }
+                                }
+                            }}>
+                                <BackButton onClick={handleBack} />
+                                <Minting
+                                    showHeader={false}
+                                    defaultValues={{ collectionName }}
+                                />
+                            </Box>
+                        </CreateContainer>
+                    </Container>
                 )}
-            </CreateContainer>
+            </Box>
 
             <ScrollToTop />
 

@@ -4,7 +4,7 @@ import { memo, useContext, useEffect, useState, useCallback, useRef } from 'reac
 import { AppContext } from 'src/AppContext';
 
 // Material
-import { styled, Card, Stack, Typography, Button, Box, IconButton } from '@mui/material';
+import { styled, Card, Stack, Typography, Button, Box, IconButton, alpha } from '@mui/material';
 import UploadIcon from '@mui/icons-material/Upload';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -140,15 +140,16 @@ const NFTCard = memo(function NFTCard({ onCreate }) {
             sx={{
                 p: 4,
                 width: 1,
-                height: '100%',
+                height: expanded ? 'auto' : '280px',
+                minHeight: expanded ? '380px' : 'unset',
                 display: 'flex',
                 flexDirection: 'column',
                 cursor: expanded ? 'default' : 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                background: (theme) => theme.palette.background.paper,
-                border: (theme) => `1px solid ${expanded ? theme.palette.primary.main : theme.palette.divider}`,
                 position: 'relative',
                 overflow: 'hidden',
+                border: theme => `2px solid ${expanded ? theme.palette.secondary.main : alpha(theme.palette.divider, 0.1)}`,
+                background: theme => `linear-gradient(135deg, ${alpha(theme.palette.secondary.main, 0.02)} 0%, ${theme.palette.background.paper} 100%)`,
+                transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                 '&::before': {
                     content: '""',
                     position: 'absolute',
@@ -156,19 +157,31 @@ const NFTCard = memo(function NFTCard({ onCreate }) {
                     left: 0,
                     right: 0,
                     height: '4px',
-                    background: (theme) => `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
-                    opacity: expanded ? 1 : 0,
-                    transition: 'opacity 0.3s',
+                    background: theme => `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.secondary.dark})`,
+                    transform: expanded ? 'scaleX(1)' : 'scaleX(0)',
+                    transformOrigin: 'left',
+                    transition: 'transform 0.4s ease'
                 },
                 '&:hover': expanded ? {} : {
-                    transform: 'translateY(-8px) scale(1.02)',
-                    boxShadow: (theme) => theme.shadows[8],
-                    borderColor: (theme) => theme.palette.primary.main,
+                    transform: 'translateY(-8px)',
+                    boxShadow: theme => `0 20px 40px ${alpha(theme.palette.secondary.main, 0.25)}`,
+                    borderColor: theme => theme.palette.secondary.main,
+                    '&::before': {
+                        transform: 'scaleX(1)'
+                    },
+                    '& .icon-wrapper': {
+                        transform: 'rotate(-15deg) scale(1.1)',
+                        background: theme => `linear-gradient(135deg, ${theme.palette.secondary.main}, ${theme.palette.secondary.dark})`
+                    },
+                    '& .icon': {
+                        transform: 'scale(1.1)'
+                    }
                 },
             }}
             onClick={(e) => {
-                // Toggle expansion on click
-                handleExpand();
+                if (!expanded) {
+                    handleExpand();
+                }
             }}
         >
             <Stack
@@ -179,31 +192,58 @@ const NFTCard = memo(function NFTCard({ onCreate }) {
                 }}
             >
                 <Box
+                    className="icon-wrapper"
                     sx={{
-                        background: (theme) => `linear-gradient(135deg, ${theme.palette.secondary.main}, ${theme.palette.secondary.dark})`,
+                        background: theme => `linear-gradient(135deg, ${alpha(theme.palette.secondary.main, 0.9)}, ${theme.palette.secondary.main})`,
                         borderRadius: '50%',
                         p: 3,
                         mb: 3,
-                        display: 'inline-flex',
-                        boxShadow: (theme) => theme.shadows[4],
-                        transition: 'all 0.3s ease-in-out',
-                        '&:hover': {
-                            transform: 'rotate(15deg)',
-                        },
+                        position: 'relative',
+                        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                        boxShadow: theme => `0 8px 24px ${alpha(theme.palette.secondary.main, 0.3)}`,
+                        '&::after': {
+                            content: '""',
+                            position: 'absolute',
+                            inset: -8,
+                            borderRadius: '50%',
+                            background: theme => `radial-gradient(circle, ${alpha(theme.palette.secondary.main, 0.1)} 0%, transparent 70%)`,
+                            animation: 'pulse 2s infinite'
+                        }
                     }}
                 >
                     <UploadIcon
+                        className="icon"
                         sx={{
                             fontSize: 48,
-                            color: 'white',
+                            color: theme => theme.palette.secondary.contrastText,
+                            transition: 'transform 0.4s ease',
+                            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
                         }}
                     />
                 </Box>
-                <Typography variant="h5" align="center" sx={{ fontWeight: 'bold', mb: 1, color: 'text.primary' }}>
-                    Create a single NFT
+                <Typography 
+                    variant="h5" 
+                    align="center" 
+                    sx={{ 
+                        fontWeight: 700, 
+                        mb: 1,
+                        background: theme => `linear-gradient(135deg, ${theme.palette.text.primary}, ${theme.palette.secondary.main})`,
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent'
+                    }}
+                >
+                    Create Single NFT
                 </Typography>
-                <Typography variant="body1" align="center" sx={{ color: 'text.secondary' }}>
-                    Mint a unique NFT in your collection
+                <Typography 
+                    variant="body2" 
+                    align="center" 
+                    sx={{ 
+                        color: 'text.secondary',
+                        px: 2,
+                        lineHeight: 1.6
+                    }}
+                >
+                    Mint a unique NFT in your existing collection
                 </Typography>
             </Stack>
             {expanded && (
