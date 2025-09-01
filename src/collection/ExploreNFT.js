@@ -95,12 +95,11 @@ const CardWrapper = styled(Card)(({ theme }) => ({
     transition: 'all 0.3s ease-in-out',
     overflow: 'visible',
     border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
+    boxShadow: 'none',
     marginTop: theme.spacing(3),
     
     '&:hover': {
-        transform: 'translateY(-4px)',
-        boxShadow: `0 12px 48px 0 ${alpha(theme.palette.primary.main, 0.3)}`,
+        boxShadow: 'none',
         background: alpha(theme.palette.background.paper, 0.2),
         outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`,
         outlineOffset: '2px',
@@ -128,9 +127,12 @@ const CardWrapper2 = styled(Card)(({ theme }) => ({
     height: '100%',
 
     '&:hover': {
-        transform: 'translateY(-2px)',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.7)',
-        borderColor: alpha(theme.palette.primary.main, 0.4),
+        boxShadow: 'none',
+        background: alpha(theme.palette.background.paper, 0.25),
+        border: `1px solid ${alpha(theme.palette.primary.main, 0.4)}`,
+        outline: `2px solid ${alpha(theme.palette.primary.main, 0.5)}`,
+        outlineOffset: '2px',
+        zIndex: 10
     }
 }));
 
@@ -1718,6 +1720,7 @@ export function NFTs({ collection, urlParams = {} }) {
                             flexWrap: 'wrap', 
                             justifyContent: 'space-between',
                             px: { xs: 0.75, sm: 1, md: 1.25 },
+                            pt: 1,  // Add padding top to prevent outline cutoff
                             '&::after': {
                                 content: '""',
                                 flex: 'auto'

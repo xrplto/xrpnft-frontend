@@ -12,7 +12,7 @@ import {
 // Components
 import Header from 'src/components/Header';
 import Footer from 'src/components/Footer';
-import BuyCrypto from 'src/buycrypto';
+// import BuyCrypto from 'src/buycrypto';
 import ScrollToTop from 'src/components/ScrollToTop';
 
 const OverviewWrapper = styled(Box)(
@@ -31,10 +31,10 @@ export default function Overview({data}) {
             <Header />
 
             <Container maxWidth="sm">
-                <BuyCrypto
+                {/* <BuyCrypto
                     fiats={data.fiats}
                     coins={data.coins}
-                />
+                /> */}
             </Container>
 
             <ScrollToTop />

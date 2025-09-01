@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import { Box, Typography, Link, Tooltip } from '@mui/material';
 import axios from 'axios';
@@ -14,28 +14,28 @@ const MarqueeContainer = styled(Box)(({ theme }) => ({
     width: '100%',
     overflow: 'hidden',
     color: theme.palette.text.primary,
-    padding: theme.spacing(0.5, 0),
+    padding: theme.spacing(0.4, 0),
     position: 'relative',
     zIndex: 1000,
     backgroundColor: theme.palette.mode === 'dark' 
-        ? 'rgba(18, 18, 18, 0.95)' 
-        : 'rgba(255, 255, 255, 0.98)',
+        ? '#0A1628' 
+        : '#F7FAFC',
     backdropFilter: 'blur(10px)',
-    boxShadow: theme.palette.mode === 'dark'
-        ? '0 4px 20px rgba(0, 0, 0, 0.3)'
-        : '0 2px 15px rgba(0, 0, 0, 0.08)',
-    borderBottom: `1px solid ${theme.palette.divider}`,
+    borderBottom: `1px solid ${theme.palette.mode === 'dark' ? '#1E3A5F' : '#E1E8ED'}`,
     background: theme.palette.mode === 'dark'
-        ? 'linear-gradient(to bottom, rgba(30, 30, 30, 0.95), rgba(18, 18, 18, 0.95))'
-        : 'linear-gradient(to bottom, rgba(255, 255, 255, 0.98), rgba(248, 248, 248, 0.98))'
+        ? 'linear-gradient(90deg, #0A1628 0%, #0F2744 100%)'
+        : 'linear-gradient(90deg, #F7FAFC 0%, #EDF2F7 100%)'
 }));
 
 const MarqueeContent = styled(Box, {
-    shouldForwardProp: (prop) => prop !== 'animationDuration'
-})(({ theme, animationDuration }) => ({
+    shouldForwardProp: (prop) => prop !== 'animationDuration' && prop !== 'isPaused'
+})(({ theme, animationDuration, isPaused }) => ({
     display: 'inline-flex',
     animation: `${marqueeAnimation} ${animationDuration}s linear infinite`,
-    animationPlayState: 'running',
+    animationPlayState: isPaused ? 'paused' : 'running',
+    willChange: 'transform',
+    transform: 'translateZ(0)',
+    backfaceVisibility: 'hidden',
     '&:hover': {
         animationPlayState: 'paused'
     }
@@ -45,50 +45,38 @@ const MarqueeItem = styled(Box)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     whiteSpace: 'nowrap',
-    padding: theme.spacing(0.5, 2),
+    padding: theme.spacing(0.4, 1.5),
     margin: theme.spacing(0, 0.5),
-    borderRadius: theme.spacing(1.5),
-    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+    borderRadius: theme.spacing(1),
+    transition: 'all 0.2s ease',
     cursor: 'pointer',
-    position: 'relative',
     '&:hover': {
-        transform: 'translateY(-2px) scale(1.02)',
+        transform: 'translateY(-1px)',
         backgroundColor: theme.palette.mode === 'dark'
-            ? 'rgba(255, 255, 255, 0.08)'
-            : 'rgba(0, 0, 0, 0.04)',
-        boxShadow: theme.palette.mode === 'dark'
-            ? '0 4px 12px rgba(0, 0, 0, 0.4)'
-            : '0 4px 12px rgba(0, 0, 0, 0.1)',
+            ? 'rgba(59, 130, 246, 0.1)'
+            : 'rgba(59, 130, 246, 0.05)'
     }
 }));
 
 const NFTImage = styled('img')(({ theme }) => ({
-    width: '28px',
-    height: '28px',
-    marginRight: '10px',
-    borderRadius: '8px',
+    width: '24px',
+    height: '24px',
+    marginRight: '8px',
+    borderRadius: '6px',
     objectFit: 'cover',
-    border: theme.palette.mode === 'dark'
-        ? '2px solid rgba(255, 255, 255, 0.1)'
-        : '2px solid rgba(0, 0, 0, 0.06)',
-    boxShadow: '0 3px 8px rgba(0, 0, 0, 0.15)',
-    transition: 'all 0.2s ease',
-    '&:hover': {
-        transform: 'scale(1.05)',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
-    }
+    border: `1px solid ${theme.palette.mode === 'dark' ? '#1E3A5F' : '#E1E8ED'}`,
+    willChange: 'transform',
+    contain: 'layout style paint'
 }));
 
 const Divider = styled('div')(({ theme }) => ({
     width: '1px',
-    height: '24px',
-    backgroundColor: theme.palette.mode === 'dark'
-        ? 'rgba(255, 255, 255, 0.08)'
-        : 'rgba(0, 0, 0, 0.08)',
+    height: '20px',
+    backgroundColor: theme.palette.mode === 'dark' ? '#1E3A5F' : '#E1E8ED',
     margin: theme.spacing(0, 1),
     flexShrink: 0,
     alignSelf: 'center',
-    opacity: 0.6
+    opacity: 0.5
 }));
 
 const NFTLink = styled(Link)({
@@ -100,86 +88,129 @@ const NFTLink = styled(Link)({
 const MarqueeBar = ({ isVisible = true }) => {
     const [nfts, setNfts] = useState([]);
     const [animationDuration, setAnimationDuration] = useState(50); // Default duration
+    const [isInView, setIsInView] = useState(true); // Start as true
+    const [isPaused, setIsPaused] = useState(false);
+    const [imageErrors, setImageErrors] = useState(new Set());
     const marqueeContainerRef = useRef(null);
     const marqueeContentRef = useRef(null);
+    const observerRef = useRef(null);
     const BASE_URL = 'https://api.xrpnft.com/api';
     const theme = useTheme();
 
+    // Intersection Observer for lazy loading
     useEffect(() => {
-        const fetchRecentNFTs = async () => {
-            try {
-                const body = {
-                    page: 0,
-                    limit: 32,
-                    flag: 0,
-                    search: '',
-                    filter: 0,
-                    subFilter: 'pricexrpasc',
-                    filterAttrs: []
-                };
-
-                const response = await axios.post(`${BASE_URL}/nfts`, body);
-
-                let newNfts = response.data.nfts.map((nft) => ({
-                    ...nft,
-                    cost:
-                        nft.cost && Number(nft.cost.amount) > 0
-                            ? nft.cost
-                            : null,
-                    name: nft.meta?.name || nft.name || `NFT #${nft.sequence}`,
-                    image: nft.files?.[0]?.thumbnail?.small || ''
-                }));
-
-                // Sort NFTs, putting those with prices first
-                newNfts.sort((a, b) => {
-                    if (a.cost && b.cost) {
-                        return Number(a.cost.amount) - Number(b.cost.amount);
-                    }
-                    if (a.cost) return -1;
-                    if (b.cost) return 1;
-                    return 0;
-                });
-
-                // Only update state if data has changed to prevent animation reset
-                if (JSON.stringify(newNfts) !== JSON.stringify(nfts)) {
-                    setNfts(newNfts);
+        if (!isVisible) {
+            setIsInView(false);
+            return;
+        }
+        
+        // Set initial view state to true
+        setIsInView(true);
+        
+        if (!marqueeContainerRef.current) return;
+        
+        observerRef.current = new IntersectionObserver(
+            ([entry]) => {
+                setIsInView(entry.isIntersecting);
+                if (!entry.isIntersecting) {
+                    setIsPaused(true);
+                } else {
+                    setIsPaused(false);
                 }
-            } catch (error) {
-                console.error('Error fetching recent NFTs:', error);
+            },
+            { threshold: 0.01, rootMargin: '100px' }
+        );
+        
+        observerRef.current.observe(marqueeContainerRef.current);
+        
+        return () => {
+            if (observerRef.current) {
+                observerRef.current.disconnect();
             }
         };
+    }, [isVisible]);
 
-        fetchRecentNFTs();
-        const interval = setInterval(fetchRecentNFTs, 60000); // Refresh every minute
-        return () => clearInterval(interval);
-    }, [nfts]);
+    const fetchRecentNFTs = useCallback(async () => {
+        if (!isInView) return;
+        
+        try {
+            const body = {
+                page: 0,
+                limit: 24,
+                flag: 0,
+                search: '',
+                filter: 0,
+                subFilter: 'pricexrpasc',
+                filterAttrs: []
+            };
+
+            const response = await axios.post(`${BASE_URL}/nfts`, body);
+
+            let newNfts = response.data.nfts.map((nft) => ({
+                ...nft,
+                cost:
+                    nft.cost && Number(nft.cost.amount) > 0
+                        ? nft.cost
+                        : null,
+                name: nft.meta?.name || nft.name || `NFT #${nft.sequence}`,
+                image: nft.files?.[0]?.thumbnail?.small || ''
+            }));
+
+            // Sort NFTs, putting those with prices first
+            newNfts.sort((a, b) => {
+                if (a.cost && b.cost) {
+                    return Number(a.cost.amount) - Number(b.cost.amount);
+                }
+                if (a.cost) return -1;
+                if (b.cost) return 1;
+                return 0;
+            });
+
+            setNfts(prevNfts => {
+                if (JSON.stringify(newNfts) !== JSON.stringify(prevNfts)) {
+                    return newNfts;
+                }
+                return prevNfts;
+            });
+        } catch (error) {
+            console.error('Error fetching recent NFTs:', error);
+        }
+    }, [isInView, BASE_URL]);
 
     useEffect(() => {
-        // Calculate animation duration based on content width
-        const calculateAnimationDuration = () => {
-            if (marqueeContainerRef.current && marqueeContentRef.current) {
-                const containerWidth = marqueeContainerRef.current.offsetWidth;
-                const contentWidth = marqueeContentRef.current.offsetWidth / 2; // Since content is duplicated
-                const totalWidth = contentWidth;
+        if (!isInView) return;
+        
+        fetchRecentNFTs();
+        const interval = setInterval(fetchRecentNFTs, 90000); // Refresh every 1.5 minutes
+        return () => clearInterval(interval);
+    }, [isInView, fetchRecentNFTs]);
 
-                // Desired speed in pixels per second
-                const speed = 40; // Slower, smoother scrolling
+    const calculateAnimationDuration = useCallback(() => {
+        if (marqueeContainerRef.current && marqueeContentRef.current) {
+            const contentWidth = marqueeContentRef.current.offsetWidth / 2;
+            const speed = 35;
+            const duration = contentWidth / speed;
+            setAnimationDuration(duration);
+        }
+    }, []);
 
-                // Calculate duration
-                const duration = totalWidth / speed;
-
-                setAnimationDuration(duration);
-            }
+    useEffect(() => {
+        if (!isInView || nfts.length === 0) return;
+        
+        const timeoutId = setTimeout(calculateAnimationDuration, 100);
+        
+        const handleResize = () => {
+            requestAnimationFrame(calculateAnimationDuration);
         };
+        
+        window.addEventListener('resize', handleResize, { passive: true });
+        return () => {
+            clearTimeout(timeoutId);
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [nfts, isInView, calculateAnimationDuration]);
 
-        calculateAnimationDuration();
-
-        // Recalculate on window resize
-        window.addEventListener('resize', calculateAnimationDuration);
-        return () => window.removeEventListener('resize', calculateAnimationDuration);
-    }, [nfts]);
-
-    const getEventText = (updateEvent) => {
+    const getEventText = useCallback((updateEvent) => {
         switch (updateEvent) {
             case 'SALE':
                 return 'Buy';
@@ -190,38 +221,43 @@ const MarqueeBar = ({ isVisible = true }) => {
             default:
                 return updateEvent;
         }
-    };
+    }, []);
 
-    const truncateName = (name, maxLength = 20) => {
+    const truncateName = useCallback((name, maxLength = 20) => {
         if (!name || typeof name !== 'string') return '';
         if (name.length <= maxLength) return name;
         return name.slice(0, maxLength - 3) + '...';
-    };
+    }, []);
 
-    const NameDisplay = ({ name, maxLength }) => {
+    const NameDisplay = useMemo(() => ({ name, maxLength }) => {
         if (!name || typeof name !== 'string') {
             return <span></span>;
         }
         const truncatedName = truncateName(name, maxLength);
         return (
-            <Tooltip title={name} arrow placement="top">
+            <Tooltip title={name} arrow placement="top" enterDelay={500}>
                 <span>{truncatedName}</span>
             </Tooltip>
         );
-    };
+    }, [truncateName]);
+
+    const handleImageError = useCallback((nftId) => {
+        setImageErrors(prev => new Set(prev).add(nftId));
+    }, []);
 
     if (!isVisible) {
         return null;
     }
 
     // Duplicate the content twice to ensure seamless scrolling
-    const duplicatedNfts = [...nfts, ...nfts];
+    const duplicatedNfts = useMemo(() => [...nfts, ...nfts], [nfts]);
 
     return (
         <MarqueeContainer ref={marqueeContainerRef}>
             <MarqueeContent
                 ref={marqueeContentRef}
                 animationDuration={animationDuration}
+                isPaused={isPaused}
             >
                 {duplicatedNfts.map((nft, index) => (
                     <React.Fragment key={`${nft.NFTokenID}-${index}`}>
@@ -231,10 +267,15 @@ const MarqueeBar = ({ isVisible = true }) => {
                             color="inherit"
                         >
                             <MarqueeItem>
-                                {nft.image && (
+                                {nft.image && !imageErrors.has(nft.NFTokenID) && (
                                     <NFTImage
                                         src={`https://s2.xrpnft.com/d1/${nft.image}`}
                                         alt={nft.name}
+                                        loading="lazy"
+                                        decoding="async"
+                                        onError={() => handleImageError(nft.NFTokenID)}
+                                        width="32"
+                                        height="32"
                                     />
                                 )}
                                 <Box>
@@ -242,9 +283,9 @@ const MarqueeBar = ({ isVisible = true }) => {
                                         variant="body2"
                                         sx={{ 
                                             fontWeight: 600,
-                                            fontSize: '0.875rem',
+                                            fontSize: '0.8rem',
                                             letterSpacing: '-0.01em',
-                                            lineHeight: 1.3
+                                            lineHeight: 1.2
                                         }}
                                     >
                                         <NameDisplay
@@ -255,10 +296,9 @@ const MarqueeBar = ({ isVisible = true }) => {
                                     <Typography
                                         variant="caption"
                                         sx={{
-                                            opacity: 0.7,
-                                            fontSize: '0.7rem',
-                                            letterSpacing: '0.02em',
-                                            marginTop: '2px'
+                                            opacity: 0.6,
+                                            fontSize: '0.65rem',
+                                            marginTop: '1px'
                                         }}
                                     >
                                         {nft.collection && typeof nft.collection === 'string' && (
@@ -272,17 +312,16 @@ const MarqueeBar = ({ isVisible = true }) => {
                                 <Typography
                                     variant="caption"
                                     sx={{
-                                        marginLeft: 2,
+                                        marginLeft: 1.5,
                                         fontWeight: 600,
-                                        color: theme.palette.primary.main,
+                                        color: '#3B82F6',
                                         textTransform: 'uppercase',
-                                        letterSpacing: '0.08em',
-                                        fontSize: '0.7rem',
+                                        letterSpacing: '0.05em',
+                                        fontSize: '0.6rem',
                                         padding: '2px 6px',
                                         borderRadius: '4px',
-                                        backgroundColor: theme.palette.mode === 'dark'
-                                            ? 'rgba(144, 202, 249, 0.12)'
-                                            : 'rgba(33, 150, 243, 0.08)'
+                                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                        border: '1px solid rgba(59, 130, 246, 0.2)'
                                     }}
                                 >
                                     {getEventText(nft.updateEvent)}
@@ -291,11 +330,10 @@ const MarqueeBar = ({ isVisible = true }) => {
                                     <Typography
                                         variant="caption"
                                         sx={{
-                                            marginLeft: 1.5,
+                                            marginLeft: 1,
                                             fontWeight: 700,
-                                            color: theme.palette.success.main,
-                                            fontSize: '0.8rem',
-                                            letterSpacing: '-0.02em'
+                                            fontSize: '0.75rem',
+                                            color: '#10B981'
                                         }}
                                     >
                                         {`${Number(nft.cost.amount).toFixed(
