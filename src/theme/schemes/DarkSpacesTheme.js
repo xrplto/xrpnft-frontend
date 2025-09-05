@@ -329,12 +329,38 @@ export const DarkSpacesTheme = createTheme({
             mobile: 450,
             sm: 600,
             md: 900,
-            lg: 1200,
-            xl: 1536,
-            xxl: 2248
+            lg: 1400,  // Increased from 1200
+            xl: 1920,  // Increased from 1536
+            xxl: 2560  // Increased from 2248
         }
     },
     components: {
+        MuiContainer: {
+            styleOverrides: {
+                root: {
+                    maxWidth: 'none !important', // Remove default container constraints
+                    paddingLeft: 24,
+                    paddingRight: 24,
+                    '@media (min-width: 600px)': {
+                        paddingLeft: 32,
+                        paddingRight: 32
+                    },
+                    '@media (min-width: 900px)': {
+                        paddingLeft: 48,
+                        paddingRight: 48
+                    }
+                },
+                maxWidthLg: {
+                    maxWidth: '1600px !important'  // Increased from default 1200px
+                },
+                maxWidthXl: {
+                    maxWidth: '2000px !important'  // Increased from default 1536px
+                },
+                maxWidthXxl: {
+                    maxWidth: '2400px !important'  // New breakpoint
+                }
+            }
+        },
         MuiBackdrop: {
             styleOverrides: {
                 root: {

@@ -546,7 +546,7 @@ export const getNftCoverUrl = (nft, size = 'big', type = '') => {
             if (file) {
                 // return big thumbnail if requied size fail
                 const thumbnail = file.thumbnail?.[size] || file.thumbnail?.big || file.convertedFile || ((!file.isIPFS && file.dfile) ? file.dfile : '');
-                if (thumbnail) {
+                if (thumbnail && typeof thumbnail === 'string' && thumbnail.trim() !== '') {
                     return `https://s2.xrpnft.com/d1/${thumbnail}`
                 } else if (file.dfile && file.isIPFS && file.IPFSPath){
                     return `https://gateway.xrpnft.com/ipfs/${file.IPFSPath}`
@@ -574,9 +574,19 @@ export const getNftFilesUrls = (nft, type = 'image') => {
             // Now serving convertedFile whever possible
             if (!file.isIPFS && file.dfile) {
                 const fileName = file.convertedFile ?? file.dfile;
-                file.cachedUrl = `https://s2.xrpnft.com/d1/${fileName}`;
+                if (fileName && typeof fileName === 'string' && fileName.trim() !== '') {
+                    file.cachedUrl = `https://s2.xrpnft.com/d1/${fileName}`;
+                } else {
+                    file.cachedUrl = null;
+                }
             } else if (file.isIPFS && file.IPFSPath) {
-                file.cachedUrl = file.convertedFile ? `https://s2.xrpnft.com/d1/${file.convertedFile}` : `https://gateway.xrpnft.com/ipfs/${file.IPFSPath}`;
+                if (file.convertedFile && typeof file.convertedFile === 'string' && file.convertedFile.trim() !== '') {
+                    file.cachedUrl = `https://s2.xrpnft.com/d1/${file.convertedFile}`;
+                } else if (file.IPFSPath && typeof file.IPFSPath === 'string' && file.IPFSPath.trim() !== '') {
+                    file.cachedUrl = `https://gateway.xrpnft.com/ipfs/${file.IPFSPath}`;
+                } else {
+                    file.cachedUrl = null;
+                }
             } else {
                 file.cachedUrl = null;
             }
@@ -592,9 +602,11 @@ export const getImgUrl = (nft, size) => { // (NFTokenID, meta, dfile, size) // a
 
     let { NFTokenID, meta, dfile, ufile, thumbnail /*, isIPFS, PFSPinnedFiles, ufileIPFSPath*/ } = nft;
     //console.log('getImgUrl:', NFTokenID, meta, dfile, size, thumbnail, nft);
-    if (size && thumbnail && Object.values(thumbnail)) {
+    if (size && thumbnail && Object.values(thumbnail).length > 0) {
         thumbnail = Object.values(thumbnail)[0];
-        return `https://s2.xrpnft.com/d1/${thumbnail}`
+        if (thumbnail && typeof thumbnail === 'string' && thumbnail.trim() !== '') {
+            return `https://s2.xrpnft.com/d1/${thumbnail}`
+        }
     }
     if (!meta) return '';
     const image = dfile.image; // meta.
@@ -605,11 +617,11 @@ export const getImgUrl = (nft, size) => { // (NFTokenID, meta, dfile, size) // a
     //const isVideo = video?true:false;
 
     if (dfile && (size || thumbnail)) { // TODO: re-parse to always have full size local image
-        if (/*isVideo &&*/ dfile.video)
+        if (/*isVideo &&*/ dfile.video && typeof dfile.video === 'string' && dfile.video.trim() !== '')
             return `https://s2.xrpnft.com/d1/${dfile.video}`;
-        if (/*!isVideo &&*/ dfile.animation) // TODO: maybe re-parse to always have image
+        if (/*!isVideo &&*/ dfile.animation && typeof dfile.animation === 'string' && dfile.animation.trim() !== '') // TODO: maybe re-parse to always have image
             return `https://s2.xrpnft.com/d1/${dfile.animation}`;
-        if (/*!isVideo &&*/ dfile.image)
+        if (/*!isVideo &&*/ dfile.image && typeof dfile.image === 'string' && dfile.image.trim() !== '')
             return `https://s2.xrpnft.com/d1/${dfile.image}`;
     }
 

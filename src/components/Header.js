@@ -44,7 +44,6 @@ import { AppContext } from 'src/AppContext';
 import NFTLogo from './Logo';
 import Wallet from './Wallet';
 import NavSearchBar from './NavSearchBar';
-import MarqueeBar from './MarqueeBar';
 
 const HeaderWrapper = styled(AppBar)(({ theme }) => ({
     width: '100%',
@@ -344,7 +343,6 @@ export default function Header() {
                     )}
                 </StyledToolbar>
             </HeaderWrapper>
-            <MarqueeBar />
         </>
     );
 }

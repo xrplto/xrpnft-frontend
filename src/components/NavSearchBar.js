@@ -18,10 +18,13 @@ import {
     Box,
     Divider,
     Fade,
-    CircularProgress
+    CircularProgress,
+    Chip,
+    Paper
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CasinoIcon from '@mui/icons-material/Casino';
+import RocketLaunchOutlinedIcon from '@mui/icons-material/RocketLaunchOutlined';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AnimationIcon from '@mui/icons-material/Animation';
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -107,72 +110,202 @@ const RenderOption = ({
                 href={hLink}
             >
                 <MenuItem sx={{ 
-                    pt: 0.75,
-                    pb: 0.75,
-                    borderRadius: 1,
-                    transition: 'all 0.3s ease',
+                    py: 0.375,
+                    px: 1.25,
+                    borderRadius: 0,
+                    transition: 'all 0.2s ease',
+                    borderBottom: '1px solid',
+                    borderColor: 'divider',
                     '&:hover': {
-                        backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.08),
+                        backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.04),
+                    },
+                    '&:last-child': {
+                        borderBottom: 'none'
                     }
                 }}>
                     <Stack direction="row" spacing={0.75} alignItems="center" width="100%">
-                        <Avatar
-                            alt={name || 'Item'}
-                            variant={option_type === "NFTS" ? "rounded" : logo ? "circular" : "square"}
-                            sx={{
-                                backgroundColor: 'transparent',
-                                borderRadius: option_type === "NFTS" ? '6px' : undefined,
-                                overflow: 'hidden',
-                                width: 36,
-                                height: 36,
-                                boxShadow: 1,
-                            }}
-                        >
-                            <CardMedia
-                                component={isVideo ? "video" : 'img'}
-                                src={imgUrl}
+                        <Box sx={{ position: 'relative' }}>
+                            <Avatar
                                 alt={name || 'Item'}
+                                variant={option_type === "NFTS" ? "rounded" : "circular"}
                                 sx={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                    borderRadius: option_type === "NFTS" ? '6px' : undefined,
+                                    backgroundColor: 'grey.100',
+                                    borderRadius: option_type === "NFTS" ? '8px' : '50%',
+                                    overflow: 'hidden',
+                                    width: 32,
+                                    height: 32,
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                                    border: '2px solid',
+                                    borderColor: 'background.paper',
+                                    transition: 'all 0.2s ease',
                                 }}
-                            />
-                        </Avatar>
-                        <Stack direction="column" spacing={0} flexGrow={1}>
-                            <Stack direction="row" spacing={0.5} alignItems="center">
-                                <Typography variant="body2" fontWeight="bold" fontSize="0.8rem">{name ?? ''}</Typography>
+                            >
+                                <CardMedia
+                                    component={isVideo ? "video" : 'img'}
+                                    src={imgUrl}
+                                    alt={name || 'Item'}
+                                    sx={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        borderRadius: option_type === "NFTS" ? '9px' : '50%',
+                                    }}
+                                />
+                            </Avatar>
+                            {option_type === 'COLLECTIONS' && verified === 'yes' && (
+                                <Box sx={{
+                                    position: 'absolute',
+                                    bottom: -1,
+                                    right: -1,
+                                    width: 14,
+                                    height: 14,
+                                    borderRadius: '50%',
+                                    backgroundColor: 'primary.main',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
+                                }}>
+                                    <VerifiedIcon sx={{ fontSize: 10, color: 'white' }} />
+                                </Box>
+                            )}
+                        </Box>
+                        <Stack direction="column" spacing={0.125} flexGrow={1} sx={{ minWidth: 0 }}>
+                            <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between" width="100%">
+                                <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 1, minWidth: 0 }}>
+                                    <Typography 
+                                        variant="body2" 
+                                        fontWeight={600} 
+                                        sx={{ 
+                                            color: 'text.primary',
+                                            fontSize: '0.85rem',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap'
+                                        }}
+                                    >
+                                        {name ?? ''}
+                                    </Typography>
+                                    {
+                                        option_type === 'COLLECTIONS' && <>
+                                            {type === "random" &&
+                                                <Chip 
+                                                    label="Launch" 
+                                                    size="small" 
+                                                    color="warning"
+                                                    variant="filled"
+                                                    icon={<RocketLaunchOutlinedIcon />}
+                                                    sx={{ 
+                                                        height: 18, 
+                                                        fontSize: '0.6rem',
+                                                        fontWeight: 500,
+                                                        '& .MuiChip-icon': {
+                                                            fontSize: '0.7rem'
+                                                        }
+                                                    }}
+                                                />
+                                            }
+                                            {type === "sequence" &&
+                                                <Chip 
+                                                    label="Sequence" 
+                                                    size="small" 
+                                                    color="info" 
+                                                    variant="filled"
+                                                    icon={<AnimationIcon />}
+                                                    sx={{ 
+                                                        height: 18, 
+                                                        fontSize: '0.6rem',
+                                                        fontWeight: 500,
+                                                        '& .MuiChip-icon': {
+                                                            fontSize: '0.7rem'
+                                                        }
+                                                    }}
+                                                />
+                                            }
+                                        </>
+                                    }
+                                </Stack>
                                 {
-                                    option_type === 'COLLECTIONS' && <>
-                                        {verified === 'yes' &&
-                                            <Tooltip title='Verified'>
-                                                <VerifiedIcon fontSize="small" style={{color: "#4589ff", fontSize: '0.9rem'}} />
-                                            </Tooltip>
-                                        }
-                                        {type === "random" &&
-                                            <Tooltip title="Random Collection">
-                                                <CasinoIcon color='info' style={{fontSize: '0.9rem'}} />
-                                            </Tooltip>
-                                        }
-                                        {type === "sequence" &&
-                                            <Tooltip title="Sequence Collection">
-                                                <AnimationIcon color='info' style={{fontSize: '0.9rem'}} />
-                                            </Tooltip>
-                                        }
-                                    </>
+                                    option_type === 'COLLECTIONS' &&
+                                    <Stack direction="row" spacing={1.5} alignItems="center" sx={{ flexShrink: 0 }}>
+                                        {floor && (
+                                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                                <Typography 
+                                                    variant="caption" 
+                                                    sx={{ 
+                                                        color: 'primary.main', 
+                                                        fontSize: '0.75rem',
+                                                        fontWeight: 600,
+                                                        whiteSpace: 'nowrap',
+                                                        lineHeight: 1
+                                                    }}
+                                                >
+                                                    ✕{floor.amount}
+                                                </Typography>
+                                                <Typography 
+                                                    variant="caption" 
+                                                    sx={{ 
+                                                        color: 'text.secondary',
+                                                        fontSize: '0.6rem',
+                                                        fontWeight: 400,
+                                                        whiteSpace: 'nowrap',
+                                                        lineHeight: 1
+                                                    }}
+                                                >
+                                                    Floor
+                                                </Typography>
+                                            </Box>
+                                        )}
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                            <Typography 
+                                                variant="caption" 
+                                                sx={{ 
+                                                    color: 'success.main', 
+                                                    fontSize: '0.75rem',
+                                                    fontWeight: 600,
+                                                    whiteSpace: 'nowrap',
+                                                    lineHeight: 1
+                                                }}
+                                            >
+                                                ✕{formatNumber(totalVolume)}
+                                            </Typography>
+                                            <Typography 
+                                                variant="caption" 
+                                                sx={{ 
+                                                    color: 'text.secondary',
+                                                    fontSize: '0.6rem',
+                                                    fontWeight: 400,
+                                                    whiteSpace: 'nowrap',
+                                                    lineHeight: 1
+                                                }}
+                                            >
+                                                Volume
+                                            </Typography>
+                                        </Box>
+                                    </Stack>
                                 }
                             </Stack>
                             {
-                                option_type === 'COLLECTIONS' &&
-                                <Stack direction="row" spacing={0.75} alignItems="center">
-                                    {floor && <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Floor: <span style={{color: 'inherit', fontWeight: 'bold'}}>{floor.amount} {floor.currency}</span></Typography>}
-                                    <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Total Volume: <span style={{color: 'inherit', fontWeight: 'bold'}}>{formatNumber(totalVolume)} {totalVolume !== undefined && totalVolume !== null ? 'XRP' : ''}</span></Typography>
-                                </Stack>
-                            }
-                            {
                                 option_type === 'ACCOUNTS' &&
-                                <Typography variant="caption" color="text.secondary" sx={{ fontStyle: 'italic', fontSize: '0.7rem' }}>{account}</Typography>
+                                <Typography 
+                                    variant="caption" 
+                                    sx={{ 
+                                        color: 'text.primary', 
+                                        fontSize: '0.75rem',
+                                        fontFamily: 'monospace',
+                                        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'grey.800' : 'grey.100',
+                                        px: 1,
+                                        py: 0.25,
+                                        borderRadius: 1,
+                                        fontWeight: 500,
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                        maxWidth: '200px'
+                                    }}
+                                >
+                                    {account}
+                                </Typography>
                             }
                         </Stack>
                     </Stack>
@@ -214,8 +347,15 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                     const ret = res.data;
                     const newOptions = [];
 
-                    // Sort collections to prioritize verified ones
+                    // Sort collections by volume (highest to lowest), then by verified status
                     const sortedCollections = ret.collections.sort((a, b) => {
+                        // First sort by volume (highest to lowest)
+                        const volumeA = a.totalVolume || 0;
+                        const volumeB = b.totalVolume || 0;
+                        if (volumeA !== volumeB) {
+                            return volumeB - volumeA;
+                        }
+                        // If volumes are equal, prioritize verified collections
                         if (a.verified === 'yes' && b.verified !== 'yes') return -1;
                         if (a.verified !== 'yes' && b.verified === 'yes') return 1;
                         return 0;
@@ -286,20 +426,38 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
             id={id}
             sx={{
                 width: '100%',
+                '& .MuiAutocomplete-paper': {
+                    borderRadius: 1,
+                    boxShadow: '0 12px 48px 0 rgba(0,0,0,0.15)',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    mt: 0.5,
+                    overflow: 'visible'
+                },
+                '& .MuiAutocomplete-listbox': {
+                    padding: 0,
+                    maxHeight: 'none',
+                    overflow: 'visible'
+                },
                 '&.MuiAutocomplete-root .MuiOutlinedInput-root': {
-                    paddingTop: 0.5,
-                    paddingBottom: 0.5,
-                    transition: 'all 0.3s ease',
+                    paddingTop: 0.125,
+                    paddingBottom: 0.125,
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    borderRadius: 1,
+                    backgroundColor: (theme) => alpha(theme.palette.background.paper, 0.8),
+                    backdropFilter: 'blur(8px)',
                     '& fieldset': {
-                        borderColor: alpha(theme.palette.primary.main, 0.5),
-                        borderWidth: 2,
+                        borderColor: alpha(theme.palette.primary.main, 0.2),
+                        borderWidth: 1.5,
                     },
                     '&:hover fieldset': {
-                        borderColor: theme.palette.primary.main,
+                        borderColor: alpha(theme.palette.primary.main, 0.5),
+                        boxShadow: `0 0 0 4px ${alpha(theme.palette.primary.main, 0.1)}`
                     },
                     '&.Mui-focused fieldset': {
                         borderColor: theme.palette.primary.main,
                         borderWidth: 2,
+                        boxShadow: `0 0 0 4px ${alpha(theme.palette.primary.main, 0.1)}`
                     },
                 },
                 '&.MuiTextField-root': {
@@ -321,21 +479,51 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
             loading={loading}
             renderGroup={(params) => (
                 <Box key={params.key}>
-                    <Divider textAlign="left" sx={{ my: 0.75 }}>
-                        <Typography variant="overline" color="primary" fontWeight="bold" fontSize="0.6rem">
-                            {params.group}
+                    <Box sx={{ 
+                        px: 1.75, 
+                        py: 0.5, 
+                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.04),
+                        borderTop: '1px solid',
+                        borderColor: 'divider',
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 1
+                    }}>
+                        <Typography 
+                            variant="overline" 
+                            sx={{
+                                color: 'primary.main',
+                                fontWeight: 700,
+                                fontSize: '0.7rem',
+                                letterSpacing: 1
+                            }}
+                        >
+{params.group === 'NFTS' ? 'NFTs' : params.group === 'COLLECTIONS' ? 'Collections' : 'Accounts'}
                         </Typography>
-                    </Divider>
+                    </Box>
                     {params.children}
                 </Box>
             )}
             noOptionsText={
-                <Box sx={{ p: 3, textAlign: 'center' }}>
-                    <Typography variant="body1" color="text.secondary">
+                <Box sx={{ p: 4, textAlign: 'center' }}>
+                    <Box sx={{ 
+                        width: 64, 
+                        height: 64, 
+                        borderRadius: '50%',
+                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mx: 'auto',
+                        mb: 2
+                    }}>
+                        <SearchIcon sx={{ fontSize: 32, color: 'primary.main' }} />
+                    </Box>
+                    <Typography variant="h6" color="text.primary" sx={{ mb: 1, fontWeight: 600 }}>
                         No results found
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                        Try adjusting your search or filter to find what you're looking for.
+                    <Typography variant="body2" color="text.secondary">
+                        Try different keywords or check your spelling
                     </Typography>
                 </Box>
             }

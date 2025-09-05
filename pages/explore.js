@@ -15,11 +15,33 @@ import {
   alpha,
   Link,
   Chip,
-  Stack
+  Stack,
+  Toolbar
 } from '@mui/material';
 import LeaderboardOutlinedIcon from '@mui/icons-material/LeaderboardOutlined';
-import Layout from '../src/components/Layout';
+import { useContext } from 'react';
+import { AppContext } from '../src/AppContext';
+import Header from '../src/components/Header';
+import Footer from '../src/components/Footer';
 import ScrollToTop from '../src/components/ScrollToTop';
+
+// Styled Components
+const OverviewWrapper = styled(Box)(({ theme }) => ({
+  flex: 1
+}));
+
+const BackgroundWrapper = styled(Box)(({ theme }) => ({
+  width: '100%',
+  height: '90%',
+  position: 'absolute',
+  backgroundSize: 'cover',
+  backgroundColor: 'rgb(32, 34, 37)',
+  backgroundPosition: 'center center',
+  opacity: 0.99,
+  zIndex: -1,
+  filter: 'blur(8px)',
+  WebkitMask: 'linear-gradient(rgb(255, 255, 255), transparent)'
+}));
 
 // NFT Card styled exactly like the collection pages
 const CardWrapper = styled(Card)(({ theme }) => ({
@@ -64,6 +86,7 @@ const SequenceOverlay = styled(Box)(({ theme }) => ({
 }));
 
 export default function Explore() {
+  const { darkMode } = useContext(AppContext);
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
@@ -109,13 +132,31 @@ export default function Explore() {
     fetchNFTs(nextPage);
   };
 
+  // Use first NFT's image for background
+  const backgroundImage = nfts.length > 0 && nfts[0]?.thumbnail?.small 
+    ? `https://s2.xrpnft.com/d1/${nfts[0].thumbnail.small}`
+    : null;
+
   return (
-    <>
+    <OverviewWrapper>
       <Head>
         <title>Explore NFTs | XRPNFT</title>
         <meta name="description" content="Explore NFTs on the XRP Ledger" />
       </Head>
-      <Layout>
+
+      <BackgroundWrapper
+        style={{
+          backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
+          opacity: darkMode ? 0.2 : 0.3
+        }}
+      />
+
+      <Header />
+
+      <Toolbar id="back-to-top-anchor" />
+
+      <Container maxWidth="xl">
+        <Container maxWidth="lg" sx={{ py: 0 }}>
         <Box sx={{ py: 0 }}>
           <Box 
             sx={{ 
@@ -433,8 +474,13 @@ export default function Explore() {
             </Box>
           )}
         </Box>
-        <ScrollToTop />
-      </Layout>
-    </>
+        </Container>
+      </Container>
+
+      <ScrollToTop />
+      
+      <Footer />
+
+    </OverviewWrapper>
   );
 }

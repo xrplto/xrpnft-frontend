@@ -11,13 +11,13 @@ const ThemeProviderWrapper = (props) => {
     
     let baseTheme = themeCreator(darkMode);
 
-    // Create the main theme with wider constrained width for containers
+    // Create the main theme with much wider containers for better table display
     let mainTheme = createTheme(baseTheme, {
         components: {
             MuiContainer: {
                 styleOverrides: {
                     root: {
-                        maxWidth: '1600px !important',
+                        maxWidth: 'none !important', // Remove all width constraints
                         margin: '0 auto',
                         paddingLeft: '16px',
                         paddingRight: '16px',
@@ -30,14 +30,14 @@ const ThemeProviderWrapper = (props) => {
                             paddingRight: '32px',
                         },
                         [baseTheme.breakpoints.up('lg')]: {
-                            paddingLeft: '40px',
-                            paddingRight: '40px',
-                            maxWidth: '1400px !important',
-                        },
-                        [baseTheme.breakpoints.up('xl')]: {
                             paddingLeft: '48px',
                             paddingRight: '48px',
-                            maxWidth: '1536px !important',
+                            maxWidth: '2000px !important', // Much wider for large screens
+                        },
+                        [baseTheme.breakpoints.up('xl')]: {
+                            paddingLeft: '64px',
+                            paddingRight: '64px', 
+                            maxWidth: '2400px !important', // Ultra-wide support
                         },
                     },
                 },

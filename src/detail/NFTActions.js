@@ -531,8 +531,8 @@ export default function NFTActions({ nft }) {
         return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
     }, []);
 
-    const collectionName = collection || '[No Collection]';
-    const nftName = name || '[No Name]';
+    const collectionName = (typeof collection === 'string' && collection) ? collection : '[No Collection]';
+    const nftName = (typeof name === 'string' && name) ? name : '[No Name]';
 
     const floorPrice = cfloor?.amount || 0;
 
@@ -781,7 +781,14 @@ export default function NFTActions({ nft }) {
                     if (isMounted) setLowestSellOffer(null);
                 }
             } catch (error) {
-                console.error('Error fetching NFT sell offers:', error);
+                // Handle the case where there are no sell offers (notFound error)
+                if (error?.data?.error === 'notFound' || error?.message?.includes('notFound')) {
+                    // This is expected when NFT has no sell offers - no need to log
+                    if (isMounted) setLowestSellOffer(null);
+                } else {
+                    // Log other unexpected errors
+                    console.error('Error fetching NFT sell offers:', error);
+                }
             } finally {
                 await client.disconnect();
             }
@@ -1157,7 +1164,7 @@ export default function NFTActions({ nft }) {
                             </Section>
 
                             {/* Description */}
-                            {meta?.description && (
+                            {meta?.description && typeof meta.description === 'string' && (
                                 <Section>
                                     <SectionTitle>About {collectionName}</SectionTitle>
                                     <Typography variant="body2" sx={{ fontSize: '0.8125rem', color: 'text.secondary', lineHeight: 1.5 }}>
@@ -1187,7 +1194,7 @@ export default function NFTActions({ nft }) {
                                             </MetadataBox>
                                         ) : (
                                             <Typography variant="body2" sx={{ fontSize: '0.75rem', mt: 1 }}>
-                                                {memo}
+                                                {parseMemo(memo)}
                                             </Typography>
                                         )}
                                     </Collapse>
@@ -1708,10 +1715,26 @@ export default function NFTActions({ nft }) {
                 PaperProps={{ sx: { p: 1, width: 180 } }}
             >
                 <Stack spacing={1}>
-                    <TwitterShareButton url={shareUrl} title={shareTitle} via="xrpnft">
-                        <Button fullWidth size="small" variant="text" sx={{ justifyContent: 'flex-start' }}>
-                            <Icon icon="mdi:twitter" style={{ marginRight: 8 }} /> Share on X
-                        </Button>
+                    <TwitterShareButton 
+                        url={shareUrl} 
+                        title={shareTitle} 
+                        via="xrpnft"
+                        style={{ 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            width: '100%',
+                            padding: '6px 8px',
+                            borderRadius: '4px',
+                            textAlign: 'left',
+                            background: 'transparent',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontSize: '0.875rem',
+                            color: 'inherit',
+                            textDecoration: 'none'
+                        }}
+                    >
+                        <Icon icon="mdi:twitter" style={{ marginRight: 8 }} /> Share on X
                     </TwitterShareButton>
                     <Button
                         fullWidth

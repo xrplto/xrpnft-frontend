@@ -78,7 +78,7 @@ export default function Collections() {
 
             <Box sx={{ width: '100%' }}>
                 <Stack sx={{mt: 5, minHeight: '50vh', px: { xs: 2, sm: 3, md: 4 }}}>
-                    <CollectionList type={CollectionListType.ALL}/>
+                    <CollectionList type={CollectionListType.ALL} forceTableView={true}/>
                 </Stack>
             </Box>
         </>
