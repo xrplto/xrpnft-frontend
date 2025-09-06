@@ -110,7 +110,7 @@ export default function Wallets({}) {
                                         >
                                             <Tooltip title="Check on Bithomp">
                                                 <IconButton edge="end" aria-label="bithomp" size="small">
-                                                    <Avatar alt="bithomp" src="/static/bithomp.ico" sx={{ width: 16, height: 16 }} />
+                                                    <Avatar alt="xaman" src="/public/xaman-logo.png" sx={{ width: 16, height: 16 }} />
                                                 </IconButton>
                                             </Tooltip>
                                         </Link>

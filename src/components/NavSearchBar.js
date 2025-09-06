@@ -38,6 +38,24 @@ import { getHashIcon } from 'src/utils/parse';
 
 import { useTheme, alpha } from '@mui/material/styles';
 
+// Helper function to format XRP values
+const formatXRP = (value) => {
+    if (!value || value === 0) return '0';
+    
+    // For very small values, show more decimals
+    if (value < 1) {
+        return parseFloat(value).toFixed(4);
+    }
+    // For values 1-999, show 2 decimals
+    else if (value < 1000) {
+        return parseFloat(value).toFixed(2);
+    }
+    // For large values, round to whole numbers
+    else {
+        return Math.floor(value).toLocaleString();
+    }
+};
+
 // Add this helper function at the top of the file, outside of any component
 const formatNumber = (num) => {
     if (num === undefined || num === null) {
@@ -240,7 +258,7 @@ const RenderOption = ({
                                                         lineHeight: 1
                                                     }}
                                                 >
-                                                    ✕{floor.amount}
+                                                    ✕{formatXRP(floor.amount)}
                                                 </Typography>
                                                 <Typography 
                                                     variant="caption" 
@@ -440,15 +458,22 @@ export default function NavSearchBar({ id, placeholder, type, fullSearch, setFul
                     overflow: 'visible'
                 },
                 '&.MuiAutocomplete-root .MuiOutlinedInput-root': {
-                    paddingTop: 0.125,
-                    paddingBottom: 0.125,
+                    height: '36px',
+                    paddingTop: 0,
+                    paddingBottom: 0,
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    borderRadius: 1,
+                    borderRadius: 0.5,
                     backgroundColor: (theme) => alpha(theme.palette.background.paper, 0.8),
                     backdropFilter: 'blur(8px)',
+                    '& .MuiInputBase-input': {
+                        padding: '8px 0',
+                        height: '20px',
+                        fontSize: '0.875rem',
+                    },
                     '& fieldset': {
                         borderColor: alpha(theme.palette.primary.main, 0.2),
                         borderWidth: 1.5,
+                        borderRadius: 0.5,
                     },
                     '&:hover fieldset': {
                         borderColor: alpha(theme.palette.primary.main, 0.5),

@@ -25,7 +25,8 @@ import {
     ToggleButton,
     ToggleButtonGroup,
     Typography,
-    Divider
+    Divider,
+    alpha
 } from '@mui/material';
 import { tableCellClasses } from "@mui/material/TableCell";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -135,6 +136,50 @@ const CustomSelect = styled(Select)(({ theme }) => ({
     },
     '& .MuiOutlinedInput-notchedOutline' : {
         border: 'none'
+    }
+}));
+
+const SimpleTable = styled(Table)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.6),
+    borderRadius: 12,
+    overflow: 'hidden',
+    backdropFilter: 'blur(10px)',
+    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+    '& .MuiTableCell-root': {
+        border: 'none',
+        padding: theme.spacing(2),
+        fontSize: '0.875rem'
+    },
+    '& .MuiTableHead-root': {
+        '& .MuiTableCell-root': {
+            background: alpha(theme.palette.primary.main, 0.1),
+            fontWeight: 600,
+            color: theme.palette.primary.main,
+            fontSize: '0.8125rem'
+        },
+        '& .MuiTableRow-root:first-of-type': {
+            '& .MuiTableCell-root:first-of-type': {
+                borderTopLeftRadius: 12
+            },
+            '& .MuiTableCell-root:last-of-type': {
+                borderTopRightRadius: 12
+            }
+        }
+    },
+    '& .MuiTableBody-root': {
+        '& .MuiTableRow-root:last-of-type': {
+            '& .MuiTableCell-root:first-of-type': {
+                borderBottomLeftRadius: 12
+            },
+            '& .MuiTableCell-root:last-of-type': {
+                borderBottomRightRadius: 12
+            }
+        }
+    },
+    '& .MuiTableRow-root': {
+        '&:hover': {
+            background: alpha(theme.palette.action.hover, 0.05)
+        }
     }
 }));
 
@@ -512,12 +557,7 @@ export default function Collections({account}) {
                     "::-webkit-scrollbar": { display: "none" },
                 }}
             >
-                <Table stickyHeader sx={{
-                    [`& .${tableCellClasses.root}`]: {
-                        borderBottom: "1px solid",
-                        borderColor: theme.palette.divider
-                    }
-                }}>
+                <SimpleTable stickyHeader>
                     <TableBody>
                     {
                         collections && collections.map((row, idx) => {
@@ -948,7 +988,7 @@ export default function Collections({account}) {
                         })
                     }
                     </TableBody>
-                </Table>
+                </SimpleTable>
             </Box>
         </>
     );

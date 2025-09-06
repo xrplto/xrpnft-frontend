@@ -17,7 +17,8 @@ import {
     Link,
     useMediaQuery,
     alpha,
-    ButtonGroup
+    ButtonGroup,
+    Chip
 } from '@mui/material';
 
 // Context
@@ -75,6 +76,31 @@ const CollectionIcon = styled('img')(({ theme }) => ({
     [theme.breakpoints.down('sm')]: {
         width: 32,
         height: 32
+    }
+}));
+
+const VerifiedBadge = styled(Box)(({ theme }) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 18,
+    height: 18,
+    borderRadius: '50%',
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    marginLeft: theme.spacing(0.5),
+    fontSize: '10px',
+    fontWeight: 600,
+    boxShadow: `0 2px 4px ${alpha(theme.palette.primary.main, 0.3)}`,
+    transition: 'all 0.2s ease',
+    '&:hover': {
+        transform: 'scale(1.1)',
+        boxShadow: `0 3px 6px ${alpha(theme.palette.primary.main, 0.4)}`
+    },
+    '& svg': {
+        width: 12,
+        height: 12,
+        fill: 'currentColor'
     }
 }));
 
@@ -165,7 +191,7 @@ const Sparkline = ({ collection, theme }) => {
                       theme.palette.text.secondary;
     
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width={width} height={height}>
                 <polyline points={points} fill="none" stroke={trendColor} strokeWidth="2" strokeLinecap="round" />
                 {dataPoints.map((value, index) => {
@@ -174,9 +200,6 @@ const Sparkline = ({ collection, theme }) => {
                     return <circle key={index} cx={x} cy={y} r="2" fill={trendColor} opacity={index === dataPoints.length - 1 ? 1 : 0.6} />;
                 })}
             </svg>
-            <Typography variant="caption" sx={{ color: trendColor, fontWeight: 600, fontSize: '0.7rem' }}>
-                {formatXRP(currentFloor)}
-            </Typography>
         </Box>
     );
 };
@@ -311,12 +334,13 @@ export default function Overview({ collections = [] }) {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Collection</TableCell>
-                                        {!isMobile && <TableCell align="center">Floor</TableCell>}
+                                        {!isMobile && <TableCell align="right">Floor</TableCell>}
                                         {!isMobile && <TableCell align="right">Top Offer</TableCell>}
                                         {!isMobile && <TableCell align="right">Change</TableCell>}
                                         <TableCell align="right">24h Volume</TableCell>
                                         {!isMobile && <TableCell align="right">Sales</TableCell>}
                                         {!isMobile && <TableCell align="right">Listed</TableCell>}
+                                        {!isMobile && <TableCell align="center">Trend</TableCell>}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -336,14 +360,18 @@ export default function Overview({ collections = [] }) {
                                                         alt={`${collection.name} logo`}
                                                     />
                                                     <Box>
-                                                        <Typography variant="subtitle2" fontWeight={600}>
-                                                            {collection.name}
+                                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                            <Typography variant="subtitle2" fontWeight={600}>
+                                                                {collection.name}
+                                                            </Typography>
                                                             {collection.verified === 'yes' && (
-                                                                <Typography component="span" sx={{ color: 'primary.main', ml: 0.5, fontSize: '1rem' }}>
-                                                                    ✓
-                                                                </Typography>
+                                                                <VerifiedBadge title="Verified Collection">
+                                                                    <svg viewBox="0 0 24 24">
+                                                                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                                                    </svg>
+                                                                </VerifiedBadge>
                                                             )}
-                                                        </Typography>
+                                                        </Box>
                                                         {isMobile && (
                                                             <Typography variant="caption" color="text.secondary">
                                                                 Floor: {collection.floor?.amount ? formatXRP(collection.floor.amount) : '-'} XRP • Vol: {formatXRP(collection.totalVol24h || 0)} XRP
@@ -363,8 +391,10 @@ export default function Overview({ collections = [] }) {
                                                 </Stack>
                                             </TableCell>
                                             {!isMobile && (
-                                                <TableCell align="center">
-                                                    <Sparkline collection={collection} theme={theme} />
+                                                <TableCell align="right">
+                                                    <Typography variant="body2" fontWeight={600}>
+                                                        {collection.floor?.amount ? `${formatXRP(collection.floor.amount)} XRP` : '-'}
+                                                    </Typography>
                                                 </TableCell>
                                             )}
                                             {!isMobile && (
@@ -412,6 +442,11 @@ export default function Overview({ collections = [] }) {
                                                             return `${itemsFormatted} (${percentage}%)`;
                                                         })()}
                                                     </Typography>
+                                                </TableCell>
+                                            )}
+                                            {!isMobile && (
+                                                <TableCell align="center">
+                                                    <Sparkline collection={collection} theme={theme} />
                                                 </TableCell>
                                             )}
                                         </TableRow>

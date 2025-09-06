@@ -32,15 +32,14 @@ const OverviewWrapper = styled(Box)(({ theme }) => ({
 
 const BackgroundWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
-  height: '90%',
-  position: 'absolute',
-  backgroundSize: 'cover',
-  backgroundColor: 'rgb(32, 34, 37)',
-  backgroundPosition: 'center center',
-  opacity: 0.99,
-  zIndex: -1,
-  filter: 'blur(8px)',
-  WebkitMask: 'linear-gradient(rgb(255, 255, 255), transparent)'
+  height: '100%',
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: '#000000',
+  zIndex: -1
 }));
 
 // NFT Card styled exactly like the collection pages
@@ -144,16 +143,11 @@ export default function Explore() {
         <meta name="description" content="Explore NFTs on the XRP Ledger" />
       </Head>
 
-      <BackgroundWrapper
-        style={{
-          backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
-          opacity: darkMode ? 0.2 : 0.3
-        }}
-      />
+      <Toolbar id="back-to-top-anchor" />
+
+      <BackgroundWrapper />
 
       <Header />
-
-      <Toolbar id="back-to-top-anchor" />
 
       <Container maxWidth="xl">
         <Container maxWidth="lg" sx={{ py: 0 }}>

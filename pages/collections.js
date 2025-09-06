@@ -24,7 +24,8 @@ import {
     Stack,
     IconButton,
     Pagination,
-    Toolbar
+    Toolbar,
+    Chip
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
@@ -44,15 +45,14 @@ const OverviewWrapper = styled(Box)(({ theme }) => ({
 
 const BackgroundWrapper = styled(Box)(({ theme }) => ({
     width: '100%',
-    height: '90%',
-    position: 'absolute',
-    backgroundSize: 'cover',
-    backgroundColor: 'rgb(32, 34, 37)',
-    backgroundPosition: 'center center',
-    opacity: 0.99,
-    zIndex: -1,
-    filter: 'blur(8px)',
-    WebkitMask: 'linear-gradient(rgb(255, 255, 255), transparent)'
+    height: '100%',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#000000',
+    zIndex: -1
 }));
 
 const SimpleTable = styled(Table)(({ theme }) => ({
@@ -120,6 +120,31 @@ const CollectionIcon = styled('img')(({ theme }) => ({
     }
 }));
 
+const VerifiedBadge = styled(Box)(({ theme }) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 18,
+    height: 18,
+    borderRadius: '50%',
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    marginLeft: theme.spacing(0.5),
+    fontSize: '10px',
+    fontWeight: 600,
+    boxShadow: `0 2px 4px ${alpha(theme.palette.primary.main, 0.3)}`,
+    transition: 'all 0.2s ease',
+    '&:hover': {
+        transform: 'scale(1.1)',
+        boxShadow: `0 3px 6px ${alpha(theme.palette.primary.main, 0.4)}`
+    },
+    '& svg': {
+        width: 12,
+        height: 12,
+        fill: 'currentColor'
+    }
+}));
+
 // Helper function to format XRP values
 const formatXRP = (value) => {
     if (!value || value === 0) return '0';
@@ -171,69 +196,16 @@ const Sparkline = ({ collection, theme }) => {
                       theme.palette.text.secondary;
     
     return (
-        <Tooltip
-            title={
-                <Box sx={{ p: 1 }}>
-                    <Typography variant="caption" sx={{ display: 'block', fontWeight: 600 }}>
-                        Floor Price History
-                    </Typography>
-                    <Typography variant="caption" sx={{ display: 'block' }}>
-                        Current: {formatXRP(currentFloor)} XRP
-                    </Typography>
-                    <Typography variant="caption" sx={{ display: 'block' }}>
-                        24h ago: {formatXRP(floor24hAgo)} XRP
-                    </Typography>
-                    <Typography variant="caption" sx={{ display: 'block' }}>
-                        7d ago: {formatXRP(floor7dAgo)} XRP
-                    </Typography>
-                    <Typography variant="caption" sx={{ display: 'block' }}>
-                        30d ago: {formatXRP(floor30dAgo)} XRP
-                    </Typography>
-                    <Typography variant="caption" sx={{ display: 'block', mt: 0.5 }}>
-                        Last update: {new Date(collection.floorLastUpdate).toLocaleString()}
-                    </Typography>
-                </Box>
-            }
-        >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'help' }}>
-                <svg width={width} height={height} style={{ overflow: 'visible' }}>
-                    <polyline
-                        points={points}
-                        fill="none"
-                        stroke={trendColor}
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                    {/* Add dots for each data point */}
-                    {dataPoints.map((value, index) => {
-                        const x = (index / (dataPoints.length - 1)) * width;
-                        const y = height - ((value - minValue) / range) * height;
-                        return (
-                            <circle
-                                key={index}
-                                cx={x}
-                                cy={y}
-                                r="2"
-                                fill={trendColor}
-                                opacity={index === dataPoints.length - 1 ? 1 : 0.6}
-                            />
-                        );
-                    })}
-                </svg>
-                <Typography 
-                    variant="caption" 
-                    sx={{ 
-                        color: trendColor, 
-                        fontWeight: 600, 
-                        fontSize: '0.7rem',
-                        minWidth: '40px'
-                    }}
-                >
-                    {formatXRP(currentFloor)}
-                </Typography>
-            </Box>
-        </Tooltip>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width={width} height={height}>
+                <polyline points={points} fill="none" stroke={trendColor} strokeWidth="2" strokeLinecap="round" />
+                {dataPoints.map((value, index) => {
+                    const x = (index / (dataPoints.length - 1)) * width;
+                    const y = height - ((value - minValue) / range) * height;
+                    return <circle key={index} cx={x} cy={y} r="2" fill={trendColor} opacity={index === dataPoints.length - 1 ? 1 : 0.6} />;
+                })}
+            </svg>
+        </Box>
     );
 };
 
@@ -401,8 +373,9 @@ export default function CollectionsPage() {
                 <title>Explore Collections - XRPNFT</title>
                 <meta name="description" content="Discover the leading NFT collections on XRPNFT, ranked by volume, floor price, and other key metrics." />
             </Head>
+            <BackgroundWrapper />
             <Layout>
-                <Box sx={{ py: 0 }}>
+                <Box sx={{ py: 0, background: 'transparent' }}>
                     <Box 
                         sx={{ 
                             width: '100vw',
@@ -487,7 +460,8 @@ export default function CollectionsPage() {
                         width: '100vw', 
                         marginLeft: 'calc(-50vw + 50%)', 
                         px: { xs: 2, sm: 4, md: 6, lg: 8, xl: 12 },
-                        boxSizing: 'border-box' 
+                        boxSizing: 'border-box',
+                        background: 'transparent'
                     }}>
                         <ControlsContainer>
                         <Box sx={{
@@ -553,12 +527,12 @@ export default function CollectionsPage() {
                             <CircularProgress size={60} />
                         </Box>
                     ) : filteredCollections.length > 0 ? (
-                        <Box sx={{ width: '100%', overflowX: 'auto' }}>
+                        <Box sx={{ width: '100%', overflowX: 'auto', background: 'transparent' }}>
                             <SimpleTable>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Collection</TableCell>
-                                    {!isMobile && <TableCell align="center">Floor Chart</TableCell>}
+                                    {!isMobile && <TableCell align="right">Floor</TableCell>}
                                     {!isMobile && <TableCell align="right">Top Offer</TableCell>}
                                     {!isMobile && <TableCell align="right">Change</TableCell>}
                                     <TableCell align="right">24h Volume</TableCell>
@@ -567,6 +541,7 @@ export default function CollectionsPage() {
                                     {!isMobile && <TableCell align="right">Sales 24h</TableCell>}
                                     {!isMobile && <TableCell align="right">Total Sales</TableCell>}
                                     {!isMobile && <TableCell align="right">Listed</TableCell>}
+                                    {!isMobile && <TableCell align="center">Trend</TableCell>}
                                     {!isMobile && <TableCell align="right">Owners</TableCell>}
                                     {!isMobile && <TableCell align="right">Items</TableCell>}
                                     {!isMobile && <TableCell align="right">Active</TableCell>}
@@ -597,14 +572,18 @@ export default function CollectionsPage() {
                                                     alt={`${collection.name} logo`}
                                                 />
                                                 <Box>
-                                                    <Typography variant="subtitle2" fontWeight={600}>
-                                                        {collection.name}
+                                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                        <Typography variant="subtitle2" fontWeight={600}>
+                                                            {collection.name}
+                                                        </Typography>
                                                         {collection.verified === 'yes' && (
-                                                            <Typography component="span" sx={{ color: 'primary.main', ml: 0.5, fontSize: '1rem' }}>
-                                                                ✓
-                                                            </Typography>
+                                                            <VerifiedBadge title="Verified Collection">
+                                                                <svg viewBox="0 0 24 24">
+                                                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                                                                </svg>
+                                                            </VerifiedBadge>
                                                         )}
-                                                    </Typography>
+                                                    </Box>
                                                     {isMobile && (
                                                         <>
                                                             <Typography variant="caption" color="text.secondary">
@@ -635,8 +614,10 @@ export default function CollectionsPage() {
                                             </Stack>
                                         </TableCell>
                                         {!isMobile && (
-                                            <TableCell align="center">
-                                                <Sparkline collection={collection} theme={theme} />
+                                            <TableCell align="right">
+                                                <Typography variant="body2" fontWeight={600}>
+                                                    {collection.floor?.amount ? `${formatXRP(collection.floor.amount)} XRP` : '-'}
+                                                </Typography>
                                             </TableCell>
                                         )}
                                         {!isMobile && (
@@ -705,6 +686,11 @@ export default function CollectionsPage() {
                                                         return `${itemsFormatted} (${percentage}%)`;
                                                     })()}
                                                 </Typography>
+                                            </TableCell>
+                                        )}
+                                        {!isMobile && (
+                                            <TableCell align="center">
+                                                <Sparkline collection={collection} theme={theme} />
                                             </TableCell>
                                         )}
                                         {!isMobile && (

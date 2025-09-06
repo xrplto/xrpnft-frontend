@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { AppContext } from 'src/AppContext';
-import { Typography, Link, useTheme, Box } from '@mui/material';
+import { Link, useTheme } from '@mui/material';
 
 function Logo() {
     const theme = useTheme();
@@ -10,39 +10,32 @@ function Logo() {
         <Link
             href="/"
             sx={{ 
-                pl: 0, 
-                pr: 0, 
-                py: 0.5, 
-                display: 'inline-flex',
-                textDecoration: 'none',
-                alignItems: 'center'
+                textDecoration: 'none !important',
+                fontSize: '1.5rem',
+                fontWeight: 600,
+                letterSpacing: '-0.025em',
+                color: darkMode ? '#fff' : '#000',
+                position: 'relative',
+                transition: 'all 0.2s ease',
+                '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    bottom: '-2px',
+                    left: 0,
+                    width: 0,
+                    height: '2px',
+                    backgroundColor: theme.palette.primary.main,
+                    transition: 'width 0.3s ease'
+                },
+                '&:hover': {
+                    textDecoration: 'none !important'
+                },
+                '&:hover::after': {
+                    width: '100%'
+                }
             }}
-            rel="noreferrer noopener nofollow"
         >
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Typography 
-                    variant="h3" 
-                    component="span"
-                    sx={{ 
-                        fontWeight: 1000,
-                        color: darkMode ? 'white' : 'black',
-                        letterSpacing: '0.05em',
-                    }}
-                >
-                    XRP
-                </Typography>
-                <Typography 
-                    variant="h3" 
-                    component="span"
-                    sx={{ 
-                        fontWeight: 1000,
-                        color: theme.palette.primary.main,
-                        letterSpacing: '0.05em',
-                    }}
-                >
-                    NFT
-                </Typography>
-            </Box>
+            XRP<span style={{ color: theme.palette.primary.main }}>NFT</span>
         </Link>
     );
 }

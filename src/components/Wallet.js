@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useRef, useState, useEffect } from 'react';
+import { CircularProgress } from '@mui/material';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 // Material
@@ -79,62 +80,62 @@ const shimmer = keyframes`
   }
 `;
 
-// Premium styled components
-const StyledModal = styled(Modal)(({ theme }) => ({
+// Simple modal components
+const SimpleModal = styled(Modal)({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  backdropFilter: 'blur(10px)',
-  background: 'rgba(0, 0, 0, 0.2)',
-}));
+});
 
-const StyledBox = styled(Box)(({ theme }) => ({
-  position: 'relative',
+const SimpleBox = styled(Box)(({ theme }) => ({
   backgroundColor: alpha(theme.palette.background.paper, 0.95),
-  borderRadius: 24,
-  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-  padding: theme.spacing(4),
-  width: 360,
-  maxWidth: '90vw',
-  maxHeight: '90vh',
-  overflowY: 'auto',
   backdropFilter: 'blur(20px)',
-  background: theme.palette.mode === 'dark'
-    ? 'linear-gradient(135deg, rgba(18, 22, 25, 0.95) 0%, rgba(30, 35, 40, 0.95) 100%)'
-    : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(249, 250, 251, 0.95) 100%)',
+  borderRadius: theme.spacing(2),
+  padding: theme.spacing(4),
+  width: 400,
+  maxWidth: '90vw',
+  outline: 'none',
   border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    borderRadius: 24,
-    padding: 1,
-    background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.4)}, ${alpha(theme.palette.secondary.main, 0.4)})`,
-    mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-    maskComposite: 'xor',
-    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-    WebkitMaskComposite: 'xor',
-  },
+  boxShadow: `0 12px 40px 0 ${alpha(theme.palette.primary.main, 0.15)}`,
 }));
 
-const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
-  borderRadius: 16,
-  margin: theme.spacing(1, 0),
-  padding: theme.spacing(2, 2.5),
-  background: theme.palette.mode === 'dark'
-    ? alpha(theme.palette.background.paper, 0.6)
-    : alpha(theme.palette.background.paper, 0.8),
-  backdropFilter: 'blur(10px)',
-  border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+const SimpleButton = styled(Button)(({ theme }) => ({
+  width: '100%',
+  height: '48px',
+  padding: theme.spacing(1.5, 2),
+  backgroundColor: alpha(theme.palette.background.paper, 0.8),
+  backdropFilter: 'blur(8px)',
+  color: theme.palette.text.primary,
+  border: `1.5px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+  borderRadius: theme.spacing(0.75),
+  textTransform: 'none',
+  fontWeight: 500,
+  fontSize: '0.875rem',
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  boxShadow: 'none',
   '&:hover': {
-    backgroundColor: alpha(theme.palette.primary.main, 0.1),
-    transform: 'translateY(-2px)',
-    boxShadow: '0 10px 20px -5px rgba(0, 0, 0, 0.1)',
-    border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+    borderColor: alpha(theme.palette.primary.main, 0.5),
+    boxShadow: `0 0 0 4px ${alpha(theme.palette.primary.main, 0.1)}`,
+    backgroundColor: alpha(theme.palette.background.paper, 0.9),
+    transform: 'translateY(-1px)',
+  },
+  '&:focus': {
+    borderColor: theme.palette.primary.main,
+    borderWidth: 2,
+    boxShadow: `0 0 0 4px ${alpha(theme.palette.primary.main, 0.1)}`,
+    outline: 'none',
   },
   '&:active': {
     transform: 'translateY(0)',
+    boxShadow: `0 0 0 2px ${alpha(theme.palette.primary.main, 0.1)}`,
+  },
+  '&:disabled': {
+    backgroundColor: alpha(theme.palette.background.paper, 0.5),
+    color: theme.palette.text.disabled,
+    borderColor: alpha(theme.palette.primary.main, 0.1),
+    backdropFilter: 'none',
+    transform: 'none',
+    boxShadow: 'none',
   },
 }));
 
@@ -146,11 +147,14 @@ const PremiumButton = styled(Button)(({ theme }) => ({
   fontSize: '0.875rem',
   fontWeight: 600,
   letterSpacing: '0.3px',
-  padding: '8px 20px',
-  borderRadius: 10,
+  padding: '8px 16px',
+  height: '36px',
+  borderRadius: 4,
   textTransform: 'none',
   boxShadow: '0 4px 15px rgba(74, 144, 226, 0.3)',
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  minWidth: 'auto',
+  whiteSpace: 'nowrap',
   '&::before': {
     content: '""',
     position: 'absolute',
@@ -215,34 +219,6 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const WalletTitle = styled(Typography)(({ theme }) => ({
-  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-  backgroundClip: 'text',
-  WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent',
-  fontWeight: 700,
-  fontSize: '1.5rem',
-  marginBottom: theme.spacing(0.5),
-}));
-
-const WalletSubtitle = styled(Typography)(({ theme }) => ({
-  color: theme.palette.text.secondary,
-  fontSize: '0.8rem',
-  marginBottom: theme.spacing(3),
-  fontWeight: 400,
-}));
-
-const ConnectIcon = styled(Box)(({ theme }) => ({
-  width: 48,
-  height: 48,
-  borderRadius: 12,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  background: alpha(theme.palette.primary.main, 0.1),
-  color: theme.palette.primary.main,
-  marginRight: theme.spacing(2),
-}));
 
 export default function Wallet() {
     const theme = useTheme();
@@ -261,6 +237,7 @@ export default function Wallet() {
     const [uuid, setUuid] = useState(null);
     const [qrUrl, setQrUrl] = useState(null);
     const [nextUrl, setNextUrl] = useState(null);
+    const [connecting, setConnecting] = useState(false);
 
     let logoImageUrl = null;
     if (accountProfile) {
@@ -337,6 +314,7 @@ export default function Wallet() {
 
     const onConnectXumm = async () => {
         setLoading(true);
+        setConnecting(true);
         try {
             const res = await axios.post(`${BASE_URL}/account/login`);
             if (res.status === 200) {
@@ -353,6 +331,7 @@ export default function Wallet() {
             alert(err);
         }
         setLoading(false);
+        setConnecting(false);
     };
 
     const onCancelLoginXumm = async (xuuid) => {
@@ -425,75 +404,29 @@ export default function Wallet() {
             ) : (
                 <PremiumButton
                     onClick={handleOpen}
-                    startIcon={<Icon icon="mdi:wallet" width={18} height={18} />}
                 >
-                    Connect
+                    Log In
                 </PremiumButton>
             )}
 
             {!accountLogin && (
-                <StyledModal
+                <SimpleModal
                     open={open}
                     onClose={handleClose}
-                    aria-labelledby="wallet-modal-title"
-                    aria-describedby="wallet-modal-description"
-                    closeAfterTransition
                 >
-                    <Fade in={open} timeout={400}>
-                        <StyledBox>
-                            <Box sx={{ textAlign: 'center', mb: 4 }}>
-                                <Icon 
-                                    icon="mdi:wallet-outline" 
-                                    width={48} 
-                                    height={48} 
-                                    style={{ 
-                                        color: theme.palette.primary.main,
-                                        marginBottom: 16,
-                                    }} 
-                                />
-                                <WalletTitle variant="h4" component="h2">
-                                    Connect Wallet
-                                </WalletTitle>
-                                <WalletSubtitle>
-                                    Choose your wallet
-                                </WalletSubtitle>
-                            </Box>
-                            
-                            <StyledMenuItem
-                                key="xumm"
-                                onClick={handleLogin}
-                                disableRipple
-                            >
-                                <Stack direction='row' alignItems='center' sx={{ width: '100%' }}>
-                                    <ConnectIcon>
-                                        <Avatar 
-                                            alt="xumm" 
-                                            src="/static/xumm.jpg" 
-                                            sx={{ width: 32, height: 32 }} 
-                                        />
-                                    </ConnectIcon>
-                                    <Box sx={{ flex: 1 }}>
-                                        <Typography 
-                                            variant='subtitle1' 
-                                            sx={{ 
-                                                fontWeight: 600,
-                                                color: theme.palette.text.primary,
-                                            }}
-                                        >
-                                            Xaman
-                                        </Typography>
-                                    </Box>
-                                    <Icon 
-                                        icon="mdi:chevron-right" 
-                                        width={24} 
-                                        height={24}
-                                        style={{ color: theme.palette.text.secondary }}
-                                    />
-                                </Stack>
-                            </StyledMenuItem>
-                        </StyledBox>
-                    </Fade>
-                </StyledModal>
+                    <SimpleBox>
+                        <Typography variant="h5" sx={{ mb: 3, textAlign: 'center', fontWeight: 600 }}>
+                            Connect Wallet
+                        </Typography>
+                        
+                        <SimpleButton
+                            onClick={handleLogin}
+                            disabled={connecting}
+                        >
+                            {connecting ? 'Connecting...' : 'Xaman'}
+                        </SimpleButton>
+                    </SimpleBox>
+                </SimpleModal>
             )}
 
             <LoginDialog

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { AppContext } from 'src/AppContext';
 
 // Material
-import { Box, Button, styled, Toolbar, Container, alpha } from '@mui/material';
+import { Box, Button, styled, Toolbar, Container, alpha, Typography } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
@@ -28,27 +28,22 @@ const CreateWrapper = styled(Box)(
         display: flex;
         flex-direction: column;
         min-height: 100vh;
-        background: ${theme.palette.mode === 'dark' 
-            ? `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.grey[900]} 100%)`
-            : `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.background.paper} 100%)`};
+        background: transparent;
         position: relative;
-        overflow: hidden;
-        
-        &::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, ${theme.palette.primary.main}08 0%, transparent 70%);
-            animation: pulse 15s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.1); }
-        }
+`
+);
+
+const BlackBackgroundWrapper = styled(Box)(
+    ({ theme }) => `
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #000000;
+        z-index: -1;
 `
 );
 
@@ -84,7 +79,7 @@ export default function Create() {
     const [collectionName, setCollectionName] = useState(null);
     const [collections, setCollections] = useState([]);
     const [hasBulkCollections, setHasBulkCollections] = useState(false);
-    const { accountProfile } = useContext(AppContext);
+    const { accountProfile, darkMode } = useContext(AppContext);
     
     console.log('Create component rendered, current state:', state, 'collectionName:', collectionName);
     
@@ -136,12 +131,100 @@ export default function Create() {
         router.push('/create', undefined, { shallow: true });
     }, [router]);
 
+    // Use first collection's logo for background
+    const backgroundImage = collections.length > 0 && collections[0]?.logoImage 
+        ? `https://s1.xrpnft.com/collection/${collections[0].logoImage}`
+        : null;
+
     return (
         <CreateWrapper>
             <Toolbar id="back-to-top-anchor" />
 
+            <BlackBackgroundWrapper />
+
             <Header />
-            <CreateHeader state={state} />
+            
+            {/* Header Section matching collections.js style */}
+            <Box 
+                sx={{ 
+                    width: '100vw',
+                    marginLeft: 'calc(-50vw + 50%)',
+                    borderBottom: theme => `1px solid ${alpha(theme.palette.divider, 0.06)}`,
+                    background: theme => `linear-gradient(90deg, 
+                        ${alpha(theme.palette.primary.main, 0.03)} 0%, 
+                        ${alpha(theme.palette.background.paper, 0.5)} 50%,
+                        ${alpha(theme.palette.primary.main, 0.01)} 100%)`,
+                    backdropFilter: 'blur(40px)',
+                    mb: 4,
+                    position: 'relative',
+                    '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: '1px',
+                        background: theme => `linear-gradient(90deg, 
+                            transparent 0%, 
+                            ${alpha(theme.palette.primary.main, 0.2)} 10%,
+                            transparent 90%)`
+                    }
+                }}
+            >
+                <Box sx={{ 
+                    px: { xs: 2, sm: 3, md: 4 }, 
+                    py: { xs: 2.5, sm: 3.5 },
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: { xs: 2, sm: 3 }
+                }}>
+                    <Box sx={{ 
+                        width: 3,
+                        height: 40,
+                        background: theme => `linear-gradient(180deg, 
+                            ${theme.palette.primary.main} 0%, 
+                            ${alpha(theme.palette.primary.main, 0.3)} 100%)`,
+                        borderRadius: 1
+                    }} />
+                    <Box>
+                        <Typography 
+                            variant="h5" 
+                            sx={{ 
+                                fontWeight: 300,
+                                fontSize: { xs: '1.4rem', sm: '1.75rem', md: '2rem' },
+                                letterSpacing: '-0.03em',
+                                display: 'flex',
+                                alignItems: 'baseline',
+                                flexWrap: 'wrap',
+                                gap: { xs: 0.5, sm: 1 }
+                            }}
+                        >
+                            <Box component="span" sx={{ 
+                                fontWeight: 800,
+                                background: theme => `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                backgroundClip: 'text',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em'
+                            }}>
+                                Create
+                            </Box>
+                            <Box component="span" sx={{ 
+                                fontSize: { xs: '0.9rem', sm: '1.05rem', md: '1.15rem' },
+                                color: 'text.secondary',
+                                fontWeight: 300,
+                                letterSpacing: '-0.01em',
+                                opacity: 0.9
+                            }}>
+                                {state === '' ? 'Mint NFTs on the XRP Ledger' : 
+                                 state === 'collection' ? 'Create a new collection' :
+                                 state === 'nft' ? 'Mint a new NFT' : ''}
+                            </Box>
+                        </Typography>
+                    </Box>
+                </Box>
+            </Box>
 
             <Box sx={{ 
                 flex: '1 0 auto', 
@@ -154,18 +237,7 @@ export default function Create() {
                         <Box sx={{
                             display: 'grid',
                             gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, minmax(280px, 320px))' },
-                            gap: 3,
-                            animation: 'fadeInUp 0.8s ease-out',
-                            '@keyframes fadeInUp': {
-                                from: {
-                                    opacity: 0,
-                                    transform: 'translateY(30px)'
-                                },
-                                to: {
-                                    opacity: 1,
-                                    transform: 'translateY(0)'
-                                }
-                            }
+                            gap: 3
                         }}>
                         <CollectionCard
                             onCreate={() => setState('collection')}
@@ -185,19 +257,7 @@ export default function Create() {
                 {state === 'collection' && (
                     <Container maxWidth="lg">
                         <CreateContainer>
-                            <Box sx={{
-                                animation: 'slideIn 0.4s ease-out',
-                                '@keyframes slideIn': {
-                                    from: {
-                                        opacity: 0,
-                                        transform: 'translateX(20px)'
-                                    },
-                                    to: {
-                                        opacity: 1,
-                                        transform: 'translateX(0)'
-                                    }
-                                }
-                            }}>
+                            <Box>
                                 <BackButton onClick={handleBack} />
                                 <CreateCollection
                                     showHeader={false}
@@ -210,19 +270,7 @@ export default function Create() {
                 {state === 'nft' && (
                     <Container maxWidth="lg">
                         <CreateContainer>
-                            <Box sx={{
-                                animation: 'slideIn 0.4s ease-out',
-                                '@keyframes slideIn': {
-                                    from: {
-                                        opacity: 0,
-                                        transform: 'translateX(20px)'
-                                    },
-                                    to: {
-                                        opacity: 1,
-                                        transform: 'translateX(0)'
-                                    }
-                                }
-                            }}>
+                            <Box>
                                 <BackButton onClick={handleBack} />
                                 <Minting
                                     showHeader={false}

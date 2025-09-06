@@ -47,35 +47,50 @@ import NavSearchBar from './NavSearchBar';
 
 const HeaderWrapper = styled(AppBar)(({ theme }) => ({
     width: '100%',
-    background: alpha(theme.palette.background.paper, 0.7),
-    backdropFilter: 'blur(10px)',
-    borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`
+    background: alpha(theme.palette.background.paper, 0.85),
+    backdropFilter: 'blur(20px)',
+    borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+    boxShadow: `0 4px 20px 0 ${alpha(theme.palette.primary.main, 0.08)}`,
+    transition: 'all 0.3s ease-in-out',
+    '&::before': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '1px',
+        background: `linear-gradient(90deg, transparent, ${alpha(theme.palette.primary.main, 0.3)}, transparent)`
+    }
 }));
 
-// Update the StyledToolbar component
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
     width: '100%',
-    padding: theme.spacing(0, 2),
+    minHeight: '60px !important',
+    height: '60px',
+    padding: theme.spacing(0, 3),
+    display: 'flex',
+    alignItems: 'center',
     [theme.breakpoints.up('sm')]: {
-        padding: theme.spacing(0, 3),
-    },
-    [theme.breakpoints.up('md')]: {
         padding: theme.spacing(0, 4),
     },
-    [theme.breakpoints.up('lg')]: {
+    [theme.breakpoints.up('md')]: {
         padding: theme.spacing(0, 5),
     },
-    [theme.breakpoints.up('xl')]: {
+    [theme.breakpoints.up('lg')]: {
         padding: theme.spacing(0, 6),
+    },
+    [theme.breakpoints.up('xl')]: {
+        padding: theme.spacing(0, 7),
     },
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
     color: theme.palette.text.primary,
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.primary.main, 0.1)
-    }
+    fontWeight: 500,
+    fontSize: '0.95rem',
+    textTransform: 'none',
+    borderRadius: theme.spacing(2),
+    padding: theme.spacing(1, 2)
 }));
 
 export default function Header() {
@@ -113,133 +128,178 @@ export default function Header() {
         <>
             <HeaderWrapper position="sticky" enableColorOnDark={true} elevation={0}>
                 <StyledToolbar disableGutters>
-                    <Box
-                        id="logo-container-laptop"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', sm: 'flex' }
-                        }}
-                    >
-                        <NFTLogo />
-                    </Box>
-
-                    {fullSearch && (
-                        <NavSearchBar
-                            id="id_search_items_collections_accounts"
-                            placeholder="Search NFTs, collections, and accounts"
-                            type="SEARCH_ITEM_COLLECTION_ACCOUNT"
-                            fullSearch={fullSearch}
-                            setFullSearch={setFullSearch}
-                        />
-                    )}
-
-                    {!fullSearch && (
+                    {/* Left side - Logo and Navigation */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Box
-                            id="logo-container-mobile"
+                            id="logo-container-laptop"
                             sx={{
+                                ml: 2,
                                 mr: 2,
-                                display: { xs: 'flex', sm: 'none' }
+                                display: { xs: 'none', sm: 'flex' }
                             }}
                         >
                             <NFTLogo />
                         </Box>
-                    )}
-                    {!fullSearch && !isMobile && (
-                        <NavSearchBar
-                            id="id_search_items_collections_accounts"
-                            placeholder="Search NFTs, collections, and accounts"
-                            type="SEARCH_ITEM_COLLECTION_ACCOUNT"
-                            fullSearch={fullSearch}
-                            setFullSearch={setFullSearch}
-                        />
-                    )}
 
-                    <Box
-                        sx={{
-                            flexGrow: 1,
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                            alignItems: 'center'
-                        }}
-                    >
-                        {!isMobile && (
-                            <>
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/explore`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <StyledButton>Explore</StyledButton>
-                                </Link>
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/collections`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <StyledButton>Collections</StyledButton>
-                                </Link>
-                                <Link
-                                    underline="none"
-                                    color="inherit"
-                                    href={`/create`}
-                                    rel="noreferrer noopener nofollow"
-                                >
-                                    <StyledButton>Create</StyledButton>
-                                </Link>
-                            </>
+                        {!fullSearch && (
+                            <Box
+                                id="logo-container-mobile"
+                                sx={{
+                                    ml: 2,
+                                    mr: 2,
+                                    display: { xs: 'flex', sm: 'none' }
+                                }}
+                            >
+                                <NFTLogo />
+                            </Box>
                         )}
 
+                        {/* Navigation Links next to logo */}
+                        {!fullSearch && !isMobile && (
+                            <Stack direction="row" spacing={1} sx={{ ml: 2 }}>
+                                <Typography
+                                    component="a"
+                                    href="/explore"
+                                    sx={{
+                                        color: theme.palette.text.primary,
+                                        fontWeight: 500,
+                                        fontSize: '0.95rem',
+                                        textDecoration: 'none',
+                                        px: 2,
+                                        py: 1,
+                                        cursor: 'pointer',
+                                        transition: 'opacity 0.2s ease',
+                                        '&:hover': {
+                                            opacity: 0.7
+                                        }
+                                    }}
+                                >
+                                    Explore
+                                </Typography>
+                                <Typography
+                                    component="a"
+                                    href="/collections"
+                                    sx={{
+                                        color: theme.palette.text.primary,
+                                        fontWeight: 500,
+                                        fontSize: '0.95rem',
+                                        textDecoration: 'none',
+                                        px: 2,
+                                        py: 1,
+                                        cursor: 'pointer',
+                                        transition: 'opacity 0.2s ease',
+                                        '&:hover': {
+                                            opacity: 0.7
+                                        }
+                                    }}
+                                >
+                                    Collections
+                                </Typography>
+                                <Typography
+                                    component="a"
+                                    href="/create"
+                                    sx={{
+                                        color: theme.palette.text.primary,
+                                        fontWeight: 500,
+                                        fontSize: '0.95rem',
+                                        textDecoration: 'none',
+                                        px: 2,
+                                        py: 1,
+                                        cursor: 'pointer',
+                                        transition: 'opacity 0.2s ease',
+                                        '&:hover': {
+                                            opacity: 0.7
+                                        }
+                                    }}
+                                >
+                                    Create
+                                </Typography>
+                            </Stack>
+                        )}
+                    </Box>
+
+                    {/* Center - Search Bar */}
+                    {fullSearch && (
+                        <Box sx={{ flex: 1, mx: 3 }}>
+                            <NavSearchBar
+                                id="id_search_items_collections_accounts"
+                                placeholder="Search NFTs, collections, and accounts"
+                                type="SEARCH_ITEM_COLLECTION_ACCOUNT"
+                                fullSearch={fullSearch}
+                                setFullSearch={setFullSearch}
+                            />
+                        </Box>
+                    )}
+
+                    {!fullSearch && !isMobile && (
+                        <Box sx={{ flex: 1, mx: 4, mr: 2 }}>
+                            <NavSearchBar
+                                id="id_search_items_collections_accounts"
+                                placeholder="Search NFTs, collections, and accounts"
+                                type="SEARCH_ITEM_COLLECTION_ACCOUNT"
+                                fullSearch={fullSearch}
+                                setFullSearch={setFullSearch}
+                            />
+                        </Box>
+                    )}
+
+                    {/* Right side - Actions */}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            ml: 'auto'
+                        }}
+                    >
                         {!fullSearch && isMobile && (
                             <IconButton
                                 aria-label="search"
                                 onClick={handleFullSearch}
                                 sx={{
-                                    color: 'primary.main'
+                                    color: 'primary.main',
+                                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                    mr: 1,
+                                    transition: 'all 0.3s ease',
+                                    '&:hover': {
+                                        bgcolor: alpha(theme.palette.primary.main, 0.2),
+                                        transform: 'scale(1.05)'
+                                    },
+                                    '&:active': {
+                                        transform: 'scale(0.95)'
+                                    }
                                 }}
                             >
                                 <SearchIcon />
                             </IconButton>
                         )}
                         {!fullSearch && (
-                            <Wallet>
-                                {({ openWalletConnect }) => (
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={openWalletConnect}
-                                        startIcon={<AccountBalanceWalletOutlinedIcon />}
-                                        sx={{
-                                            mr: 2,
-                                            textTransform: 'none',
-                                            '&:hover': {
-                                                backgroundColor: alpha(
-                                                    theme.palette.primary.main,
-                                                    0.8
-                                                )
-                                            }
-                                        }}
-                                    >
-                                        Connect
-                                    </Button>
-                                )}
-                            </Wallet>
+                            <Box sx={{ mx: 1, my: 0.5 }}>
+                                <Wallet />
+                            </Box>
                         )}
                         {!isMobile && (
                             <IconButton
                                 onClick={toggleTheme}
                                 sx={{
+                                    ml: 1,
+                                    mr: 2,
                                     bgcolor: alpha(
                                         theme.palette.primary.main,
                                         0.1
                                     ),
                                     color: 'primary.main',
+                                    borderRadius: theme.spacing(1.5),
+                                    transition: 'all 0.3s ease',
                                     '&:hover': {
                                         bgcolor: alpha(
                                             theme.palette.primary.main,
                                             0.2
-                                        )
+                                        ),
+                                        transform: 'rotate(180deg) scale(1.1)'
+                                    },
+                                    '&:active': {
+                                        transform: 'rotate(180deg) scale(0.9)'
                                     }
                                 }}
                             >
@@ -272,11 +332,17 @@ export default function Header() {
                                         0.1
                                     ),
                                     color: 'primary.main',
+                                    borderRadius: theme.spacing(1.5),
+                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                                     '&:hover': {
                                         bgcolor: alpha(
                                             theme.palette.primary.main,
                                             0.2
-                                        )
+                                        ),
+                                        transform: 'scale(1.05)'
+                                    },
+                                    '&:active': {
+                                        transform: 'scale(0.95)'
                                     }
                                 }}
                             >
@@ -299,12 +365,24 @@ export default function Header() {
                                 sx={{
                                     display: { xs: 'block', md: 'none' },
                                     '& .MuiPaper-root': {
-                                        background: alpha(theme.palette.background.paper, 0.9),
-                                        backdropFilter: 'blur(10px)',
-                                        boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.1)}`,
-                                        width: '200px',
-                                        maxHeight: '80vh', // Limit the height to 80% of the viewport height
-                                        overflowY: 'auto', // Add scroll if content exceeds maxHeight
+                                        background: alpha(theme.palette.background.paper, 0.95),
+                                        backdropFilter: 'blur(20px)',
+                                        boxShadow: `0 12px 40px 0 ${alpha(theme.palette.primary.main, 0.15)}`,
+                                        borderRadius: theme.spacing(2),
+                                        border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+                                        width: '220px',
+                                        maxHeight: '80vh',
+                                        overflowY: 'auto',
+                                        mt: 1,
+                                        '&::before': {
+                                            content: '""',
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            right: 0,
+                                            height: '2px',
+                                            background: `linear-gradient(90deg, ${alpha(theme.palette.primary.main, 0.8)}, ${alpha(theme.palette.secondary.main, 0.8)})`
+                                        }
                                     }
                                 }}
                             >
@@ -313,27 +391,61 @@ export default function Header() {
                                     { text: 'Collections', icon: <CollectionsIcon />, href: '/collections' },
                                     { text: 'Create', icon: <AddPhotoAlternateIcon />, href: '/create' },
                                 ].map((item) => (
-                                    <MenuItem key={item.text} onClick={handleCloseNavMenu} sx={{ py: 1 }}>
+                                    <MenuItem 
+                                        key={item.text} 
+                                        onClick={handleCloseNavMenu} 
+                                        sx={{ 
+                                            py: 1.5, 
+                                            px: 2,
+                                            borderRadius: theme.spacing(1),
+                                            mx: 1,
+                                            mb: 0.5
+                                        }}
+                                        disableRipple
+                                    >
                                         <Link
                                             href={item.href}
                                             underline="none"
                                             color="inherit"
-                                            sx={{ display: 'flex', alignItems: 'center', width: '100%' }}
+                                            sx={{ 
+                                                display: 'flex', 
+                                                alignItems: 'center', 
+                                                width: '100%',
+                                                color: theme.palette.text.primary
+                                            }}
                                         >
                                             {item.icon}
-                                            <Typography sx={{ ml: 2 }}>{item.text}</Typography>
+                                            <Typography sx={{ ml: 2, fontWeight: 500 }}>{item.text}</Typography>
                                         </Link>
                                     </MenuItem>
                                 ))}
                                 <Divider sx={{ my: 1 }} />
-                                <MenuItem onClick={toggleTheme} sx={{ py: 1 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                <MenuItem 
+                                    onClick={toggleTheme} 
+                                    sx={{ 
+                                        py: 1.5, 
+                                        px: 2,
+                                        borderRadius: theme.spacing(1),
+                                        mx: 1,
+                                        transition: 'all 0.2s ease',
+                                        '&:hover': {
+                                            backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                                            transform: 'translateX(4px)'
+                                        }
+                                    }}
+                                >
+                                    <Box sx={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        width: '100%',
+                                        color: theme.palette.text.primary
+                                    }}>
                                         {darkMode ? (
                                             <Icon icon={baselineBrightness4} width={24} height={24} />
                                         ) : (
                                             <Icon icon={baselineBrightnessHigh} width={24} height={24} />
                                         )}
-                                        <Typography sx={{ ml: 2 }}>
+                                        <Typography sx={{ ml: 2, fontWeight: 500 }}>
                                             {darkMode ? 'Light Mode' : 'Dark Mode'}
                                         </Typography>
                                     </Box>
