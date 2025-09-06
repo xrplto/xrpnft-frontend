@@ -493,6 +493,116 @@ export default function Overview({ collections = [] }) {
                             </Box>
                         </Box>
                     )}
+
+                    {/* P2P Marketplace Section */}
+                    <Box sx={{ mt: { xs: 6, md: 8 } }}>
+                        <Typography variant="h4" fontWeight={600} sx={{ mb: 4 }}>
+                            P2P Marketplace
+                        </Typography>
+                        
+                        <Box sx={{ 
+                            display: 'grid', 
+                            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, 
+                            gap: 4,
+                            mb: 4 
+                        }}>
+                            <Box sx={{ 
+                                p: 4, 
+                                borderRadius: 2, 
+                                background: alpha(theme.palette.background.paper, 0.6),
+                                backdropFilter: 'blur(10px)',
+                                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                                textAlign: 'center'
+                            }}>
+                                <Box sx={{ 
+                                    width: 60, 
+                                    height: 60, 
+                                    borderRadius: '50%', 
+                                    background: alpha(theme.palette.success.main, 0.1),
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    mx: 'auto',
+                                    mb: 2
+                                }}>
+                                    <Typography variant="h4" color="success.main">💰</Typography>
+                                </Box>
+                                <Typography variant="h6" fontWeight={600} sx={{ mb: 1 }}>
+                                    No Broker Fees
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    Trade directly peer-to-peer with zero intermediary fees. Keep 100% of your profits.
+                                </Typography>
+                            </Box>
+
+                            <Box sx={{ 
+                                p: 4, 
+                                borderRadius: 2, 
+                                background: alpha(theme.palette.background.paper, 0.6),
+                                backdropFilter: 'blur(10px)',
+                                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                                textAlign: 'center'
+                            }}>
+                                <Box sx={{ 
+                                    width: 60, 
+                                    height: 60, 
+                                    borderRadius: '50%', 
+                                    background: alpha(theme.palette.primary.main, 0.1),
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    mx: 'auto',
+                                    mb: 2
+                                }}>
+                                    <Typography variant="h4" color="primary.main">🔄</Typography>
+                                </Box>
+                                <Typography variant="h6" fontWeight={600} sx={{ mb: 1 }}>
+                                    Interoperability
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    Submit buy offers on any marketplace and use any XRPL token. Your offers work across all XRP NFT marketplaces automatically.
+                                </Typography>
+                            </Box>
+
+                            <Box sx={{ 
+                                p: 4, 
+                                borderRadius: 2, 
+                                background: alpha(theme.palette.background.paper, 0.6),
+                                backdropFilter: 'blur(10px)',
+                                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                                textAlign: 'center'
+                            }}>
+                                <Box sx={{ 
+                                    width: 60, 
+                                    height: 60, 
+                                    borderRadius: '50%', 
+                                    background: alpha(theme.palette.warning.main, 0.1),
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    mx: 'auto',
+                                    mb: 2
+                                }}>
+                                    <Typography variant="h4" color="warning.main">🔒</Typography>
+                                </Box>
+                                <Typography variant="h6" fontWeight={600} sx={{ mb: 1 }}>
+                                    Secure Transactions
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    All transactions settle directly on-chain without any middleman intervention.
+                                </Typography>
+                            </Box>
+                        </Box>
+
+                        <Box sx={{ textAlign: 'center' }}>
+                            <HeroButton variant="contained" href="/collections" sx={{ mr: 2 }}>
+                                Start Trading P2P
+                            </HeroButton>
+                            <HeroButton variant="outlined" href="/how-it-works">
+                                Learn More
+                            </HeroButton>
+                        </Box>
+                    </Box>
                 </Container>
             </Container>
 
