@@ -426,63 +426,6 @@ export default function Overview({ collections = [], gmetrics = null }) {
                                         </Box>
                                     );
                                 })()}
-                                
-                                {/* Compact Metrics Below Collections */}
-                                {gmetrics && (
-                                    <Box sx={{ 
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        gap: 1,
-                                        mt: 2,
-                                        flexWrap: 'wrap'
-                                    }}>
-                                        <Box sx={{ 
-                                            textAlign: 'center',
-                                            px: 1,
-                                            py: 0.5,
-                                            borderRadius: 0.5,
-                                            background: alpha(theme.palette.success.main, 0.06),
-                                            minWidth: '50px'
-                                        }}>
-                                            <Typography variant="subtitle2" color="success.main" fontWeight={700} sx={{ lineHeight: 1, fontSize: '0.85rem' }}>
-                                                {formatCompact(gmetrics.total24hVolume || 0)}
-                                            </Typography>
-                                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', fontWeight: 400 }}>
-                                                24h Vol
-                                            </Typography>
-                                        </Box>
-                                        <Box sx={{ 
-                                            textAlign: 'center',
-                                            px: 1,
-                                            py: 0.5,
-                                            borderRadius: 0.5,
-                                            background: alpha(theme.palette.primary.main, 0.06),
-                                            minWidth: '45px'
-                                        }}>
-                                            <Typography variant="subtitle2" color="primary.main" fontWeight={700} sx={{ lineHeight: 1, fontSize: '0.85rem' }}>
-                                                {gmetrics.activeCollections24h || 0}
-                                            </Typography>
-                                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', fontWeight: 400 }}>
-                                                Active
-                                            </Typography>
-                                        </Box>
-                                        <Box sx={{ 
-                                            textAlign: 'center',
-                                            px: 1,
-                                            py: 0.5,
-                                            borderRadius: 0.5,
-                                            background: alpha(theme.palette.info.main, 0.06),
-                                            minWidth: '45px'
-                                        }}>
-                                            <Typography variant="subtitle2" color="info.main" fontWeight={700} sx={{ lineHeight: 1, fontSize: '0.85rem' }}>
-                                                {formatCompact(gmetrics.totalCollections || 0)}
-                                            </Typography>
-                                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', fontWeight: 400 }}>
-                                                Total
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                )}
                         </Box>
 
                         {/* Market Chart - Right Side */}
@@ -829,7 +772,35 @@ export default function Overview({ collections = [], gmetrics = null }) {
                     </Box>
                     {collections.length > 0 && (
                         <Box sx={{ mt: { xs: 0.5, md: 1.5 } }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 3 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                                {gmetrics && (
+                                    <Box sx={{ display: 'flex', gap: 3 }}>
+                                        <Box>
+                                            <Typography variant="body2" fontWeight={600}>
+                                                {formatCompact(gmetrics.total24hVolume || 0)}
+                                            </Typography>
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                                                24h Vol
+                                            </Typography>
+                                        </Box>
+                                        <Box>
+                                            <Typography variant="body2" fontWeight={600}>
+                                                {gmetrics.activeCollections24h || 0}
+                                            </Typography>
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                                                Active
+                                            </Typography>
+                                        </Box>
+                                        <Box>
+                                            <Typography variant="body2" fontWeight={600}>
+                                                {formatCompact(gmetrics.totalCollections || 0)}
+                                            </Typography>
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                                                Total
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                )}
                                 <Link 
                                     href="/collections" 
                                     underline="hover" 
