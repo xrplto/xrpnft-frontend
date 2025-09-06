@@ -551,6 +551,101 @@ export default function HowItWorks({ ogp }) {
                             </Box>
                         </Box>
 
+                        {/* XRPL Tokens Section - Commented out for now
+                        <Box sx={{ mb: 4 }}>
+                            <Typography variant="h4" fontWeight={600} sx={{ mb: 3 }}>
+                                Why Use XRPL Tokens for Offers?
+                            </Typography>
+                            
+                            <Box sx={{ 
+                                p: 4, 
+                                borderRadius: 3, 
+                                background: `linear-gradient(135deg, ${alpha(theme.palette.info.main, 0.1)} 0%, ${alpha(theme.palette.info.main, 0.05)} 100%)`,
+                                border: `2px solid ${alpha(theme.palette.info.main, 0.3)}`,
+                                position: 'relative',
+                                overflow: 'hidden'
+                            }}>
+                                <Box sx={{ 
+                                    position: 'absolute', 
+                                    top: 16, 
+                                    right: 16, 
+                                    width: 8, 
+                                    height: 8, 
+                                    borderRadius: '50%', 
+                                    backgroundColor: 'info.main',
+                                    opacity: 0.8
+                                }} />
+                                
+                                <Typography variant="h5" fontWeight={700} color="info.main" sx={{ mb: 3 }}>
+                                    Avoid Royalty Fees with XRPL Tokens
+                                </Typography>
+
+                                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 4, mb: 3 }}>
+                                    <Box>
+                                        <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
+                                            Smart Trading Strategy
+                                        </Typography>
+                                        <Stack spacing={2}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                                <Box sx={{ 
+                                                    width: 6, 
+                                                    height: 6, 
+                                                    borderRadius: '50%', 
+                                                    backgroundColor: 'info.main' 
+                                                }} />
+                                                <Typography variant="body2">
+                                                    Use meme coins and other XRPL tokens for offers
+                                                </Typography>
+                                            </Box>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                                <Box sx={{ 
+                                                    width: 6, 
+                                                    height: 6, 
+                                                    borderRadius: '50%', 
+                                                    backgroundColor: 'info.main' 
+                                                }} />
+                                                <Typography variant="body2">
+                                                    Bypass NFT creator royalty fees completely
+                                                </Typography>
+                                            </Box>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                                <Box sx={{ 
+                                                    width: 6, 
+                                                    height: 6, 
+                                                    borderRadius: '50%', 
+                                                    backgroundColor: 'info.main' 
+                                                }} />
+                                                <Typography variant="body2">
+                                                    Keep 100% of trading value for yourself
+                                                </Typography>
+                                            </Box>
+                                        </Stack>
+                                    </Box>
+                                    
+                                    <Box>
+                                        <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
+                                            How It Works
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            When NFTs are minted with transfer fees (royalties), these fees only apply when trading with tokens that the creator has trust lines for. By using alternative XRPL tokens like meme coins, you can trade NFTs without triggering royalty payments to creators.
+                                        </Typography>
+                                        <Box sx={{ 
+                                            mt: 2, 
+                                            p: 2, 
+                                            borderRadius: 1, 
+                                            backgroundColor: alpha(theme.palette.info.main, 0.1),
+                                            border: `1px solid ${alpha(theme.palette.info.main, 0.2)}`
+                                        }}>
+                                            <Typography variant="caption" color="info.main" fontWeight={600}>
+                                                💡 Pro Tip: Popular XRPL tokens include meme coins, DeFi tokens, and community tokens available on XRPL DEX
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            </Box>
+                        </Box>
+                        */}
+
                         <Box sx={{ 
                             background: alpha(theme.palette.primary.main, 0.05),
                             border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,

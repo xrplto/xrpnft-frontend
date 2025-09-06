@@ -166,6 +166,21 @@ const formatXRP = (value) => {
     }
 };
 
+// Helper function to format compact numbers
+const formatCompact = (value) => {
+    if (!value || value === 0) return '0';
+    
+    if (value < 1000) {
+        return parseFloat(value).toFixed(0);
+    }
+    else if (value < 1000000) {
+        return `${(value/1000).toFixed(1)}K`;
+    }
+    else {
+        return `${(value/1000000).toFixed(1)}M`;
+    }
+};
+
 // Sparkline Component for Floor Price History
 const Sparkline = ({ collection, theme }) => {
     const currentFloor = collection.floor?.amount || 0;
@@ -204,13 +219,17 @@ const Sparkline = ({ collection, theme }) => {
     );
 };
 
-export default function Overview({ collections = [] }) {
+export default function Overview({ collections = [], gmetrics = null }) {
     const { darkMode } = useContext(AppContext);
     const [animatedText, setAnimatedText] = useState('with No Barriers');
     const phrases = ['with No Barriers', 'on Layer 1', 'with No Brokers'];
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [displayLimit, setDisplayLimit] = useState(10);
+    const [chartPeriod, setChartPeriod] = useState('7d');
+    const [hoveredPoint, setHoveredPoint] = useState(null);
+    const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+    const [featuredIndex, setFeaturedIndex] = useState(0);
 
     // Use first collection's logo for background
     const backgroundImage = collections.length > 0 && collections[0]?.logoImage 
@@ -265,53 +284,549 @@ export default function Overview({ collections = [] }) {
             <Header />
 
             <Container maxWidth="xl"> 
-                <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
-                    <Box sx={{ mb: { xs: 4, md: 6 } }}>
-                        <Typography
-                            variant="h2"
-                            fontWeight={700}
-                            sx={{
-                                fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-                                lineHeight: 1.2,
-                                letterSpacing: '-0.02em',
-                                mb: 2
-                            }}
-                        >
-                            XRP NFT Marketplace
-                        </Typography>
+                <Container maxWidth="lg" sx={{ pt: { xs: 2, md: 3 }, pb: { xs: 4, md: 6 } }}>
+                    {/* Featured Collections and Chart Row */}
+                    <Box sx={{ 
+                        mb: { xs: 4, md: 6 },
+                        display: 'flex',
+                        flexDirection: { xs: 'column', md: 'row' },
+                        gap: { xs: 4, md: 4 },
+                        alignItems: 'flex-start'
+                    }}>
+                        {/* Featured Collections Section - Left Side */}
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                                {(() => {
+                                    const collections = [
+                                        { name: 'Fuzzybears', slug: 'fuzzybears', image: '1754245929256_e702449529933a912d6e667d311d9d5a.webp' },
+                                        { name: 'Fuzzy Bars', slug: 'fuzzy-bars', image: '1754245929492_d103e6a50c4e19e711d7c5a5c9fd2649.webp' },
+                                        { name: 'SEAL', slug: 'seals', image: '1754246357046_2515466dd42ea300ce63dbfe80f10d40.webp' },
+                                        { name: 'PIGEONS', slug: 'pigeons-2', image: 'thumbnail-1f6a41da02f65ed39a7c46b668e89bb1.webp' }
+                                    ];
+                                    
+                                    const displayedCollections = [
+                                        collections[featuredIndex],
+                                        collections[(featuredIndex + 1) % collections.length],
+                                        collections[(featuredIndex + 2) % collections.length]
+                                    ];
+                                    
+                                    return (
+                                        <Box sx={{ position: 'relative' }}>
+                                            {/* Next Button Overlay */}
+                                            <Button
+                                                size="medium"
+                                                variant="contained"
+                                                onClick={() => {
+                                                    setFeaturedIndex((prev) => (prev + 1) % collections.length);
+                                                }}
+                                                sx={{ 
+                                                    position: 'absolute',
+                                                    top: '50%',
+                                                    right: '-20px',
+                                                    transform: 'translateY(-50%)',
+                                                    zIndex: 10,
+                                                    minWidth: '44px',
+                                                    width: '44px',
+                                                    height: '44px',
+                                                    borderRadius: '8px 20px 20px 8px',
+                                                    background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.9)}, ${alpha(theme.palette.primary.dark, 0.9)})`,
+                                                    color: 'white',
+                                                    border: `2px solid ${alpha(theme.palette.primary.light, 0.3)}`,
+                                                    boxShadow: `0 6px 20px ${alpha(theme.palette.primary.main, 0.3)}`,
+                                                    backdropFilter: 'blur(12px)',
+                                                    fontSize: '1.2rem',
+                                                    fontWeight: 'bold',
+                                                    '&:hover': {
+                                                        background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+                                                        borderColor: alpha(theme.palette.primary.light, 0.5),
+                                                        transform: 'translateY(-50%) scale(1.1)',
+                                                        boxShadow: `0 8px 25px ${alpha(theme.palette.primary.main, 0.4)}`
+                                                    },
+                                                    '&:active': {
+                                                        transform: 'translateY(-50%) scale(0.95)'
+                                                    }
+                                                }}
+                                            >
+                                                ▶
+                                            </Button>
+                                            
+                                            <Box sx={{ 
+                                                display: 'grid',
+                                                gridTemplateColumns: 'repeat(3, 1fr)',
+                                                gap: 2
+                                            }}>
+                                            {displayedCollections.map((collection, index) => (
+                                                <Box
+                                                    key={`${collection.slug}-${featuredIndex}-${index}`}
+                                                    component="a"
+                                                    href={`/collection/${collection.slug}`}
+                                                    sx={{
+                                                        display: 'block',
+                                                        textDecoration: 'none',
+                                                        borderRadius: 1.5,
+                                                        background: alpha(theme.palette.background.paper, 0.4),
+                                                        backdropFilter: 'blur(8px)',
+                                                        border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                                                        overflow: 'hidden',
+                                                        transition: 'all 0.2s ease',
+                                                        cursor: 'pointer',
+                                                        '&:hover': {
+                                                            transform: 'translateY(-2px)',
+                                                            boxShadow: `0 8px 24px ${alpha(theme.palette.common.black, 0.12)}`,
+                                                            border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`
+                                                        }
+                                                    }}
+                                                >
+                                                    <Box sx={{ 
+                                                        aspectRatio: '1',
+                                                        backgroundImage: `url(https://s1.xrpnft.com/collection/${collection.image})`,
+                                                        backgroundSize: 'cover',
+                                                        backgroundPosition: 'center',
+                                                        position: 'relative'
+                                                    }}>
+                                                        {/* Featured Badge */}
+                                                        <Box sx={{
+                                                            position: 'absolute',
+                                                            top: 8,
+                                                            right: 8,
+                                                            background: `linear-gradient(135deg, ${theme.palette.warning.main}, ${theme.palette.warning.dark})`,
+                                                            color: 'white',
+                                                            px: 1,
+                                                            py: 0.5,
+                                                            borderRadius: '0 8px 0 8px',
+                                                            fontSize: '0.65rem',
+                                                            fontWeight: 700,
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: 0.5,
+                                                            textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+                                                            boxShadow: `0 2px 8px ${alpha(theme.palette.warning.main, 0.3)}`
+                                                        }}>
+                                                            <span style={{ fontSize: '0.7rem' }}>⭐</span>
+                                                            FEATURED
+                                                        </Box>
+                                                        
+                                                        <Box sx={{
+                                                            position: 'absolute',
+                                                            bottom: 0,
+                                                            left: 0,
+                                                            right: 0,
+                                                            background: `linear-gradient(transparent, ${alpha(theme.palette.common.black, 0.7)})`,
+                                                            p: 1.5
+                                                        }}>
+                                                            <Typography 
+                                                                variant="subtitle2" 
+                                                                color="white" 
+                                                                fontWeight={600}
+                                                                sx={{ 
+                                                                    fontSize: '0.8rem',
+                                                                    textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                                                                }}
+                                                            >
+                                                                {collection.name}
+                                                            </Typography>
+                                                        </Box>
+                                                    </Box>
+                                                </Box>
+                                            ))}
+                                            </Box>
+                                        </Box>
+                                    );
+                                })()}
+                                
+                                {/* Compact Metrics Below Collections */}
+                                {gmetrics && (
+                                    <Box sx={{ 
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        gap: 1,
+                                        mt: 2,
+                                        flexWrap: 'wrap'
+                                    }}>
+                                        <Box sx={{ 
+                                            textAlign: 'center',
+                                            px: 1,
+                                            py: 0.5,
+                                            borderRadius: 0.5,
+                                            background: alpha(theme.palette.success.main, 0.06),
+                                            minWidth: '50px'
+                                        }}>
+                                            <Typography variant="subtitle2" color="success.main" fontWeight={700} sx={{ lineHeight: 1, fontSize: '0.85rem' }}>
+                                                {formatCompact(gmetrics.total24hVolume || 0)}
+                                            </Typography>
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', fontWeight: 400 }}>
+                                                24h Vol
+                                            </Typography>
+                                        </Box>
+                                        <Box sx={{ 
+                                            textAlign: 'center',
+                                            px: 1,
+                                            py: 0.5,
+                                            borderRadius: 0.5,
+                                            background: alpha(theme.palette.primary.main, 0.06),
+                                            minWidth: '45px'
+                                        }}>
+                                            <Typography variant="subtitle2" color="primary.main" fontWeight={700} sx={{ lineHeight: 1, fontSize: '0.85rem' }}>
+                                                {gmetrics.activeCollections24h || 0}
+                                            </Typography>
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', fontWeight: 400 }}>
+                                                Active
+                                            </Typography>
+                                        </Box>
+                                        <Box sx={{ 
+                                            textAlign: 'center',
+                                            px: 1,
+                                            py: 0.5,
+                                            borderRadius: 0.5,
+                                            background: alpha(theme.palette.info.main, 0.06),
+                                            minWidth: '45px'
+                                        }}>
+                                            <Typography variant="subtitle2" color="info.main" fontWeight={700} sx={{ lineHeight: 1, fontSize: '0.85rem' }}>
+                                                {formatCompact(gmetrics.totalCollections || 0)}
+                                            </Typography>
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem', fontWeight: 400 }}>
+                                                Total
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                )}
+                        </Box>
 
-                        <Typography
-                            variant="h6"
-                            color="text.secondary"
-                            sx={{
-                                fontSize: { xs: '1rem', md: '1.25rem' },
-                                fontWeight: 400,
-                                mb: 3
-                            }}
-                        >
-                            Trade XRP NFTs <AnimatedText>{animatedText}</AnimatedText>
-                        </Typography>
-
-                        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ mb: 2 }}>
-                            <HeroButton variant="contained" href="/collections">
-                                Explore Collections
-                            </HeroButton>
-                            <HeroButton variant="outlined" href="/create">
-                                Create NFT
-                            </HeroButton>
-                        </Stack>
-
-                        <Typography variant="caption" color="text.secondary">
-                            Works with: xrp.cafe • bidds • Art Dept • XPMarket • Opul
-                        </Typography>
+                        {/* Market Chart - Right Side */}
+                        {gmetrics && gmetrics.graphData30d && (
+                            <Box sx={{ flex: 1, minWidth: 0, height: '100%' }}>
+                                    {(() => {
+                                        const data = chartPeriod === '7d' 
+                                            ? gmetrics.graphData30d.slice(-7) 
+                                            : gmetrics.graphData30d || [];
+                                        const totalVol = data.reduce((sum, d) => sum + (d.volume || 0), 0);
+                                        const totalSales = data.reduce((sum, d) => sum + (d.sales || 0), 0);
+                                        const maxVol = Math.max(...data.map(d => d.volume || 0));
+                                        const maxSales = Math.max(...data.map(d => d.sales || 0), 1);
+                                        
+                                        // Chart dimensions
+                                        const chartWidth = 100; // percentage
+                                        const chartHeight = 280;
+                                        const barWidth = (chartWidth / data.length) * 0.6; // 60% of available space per bar
+                                        
+                                        return (
+                                            <Box sx={{ 
+                                                borderRadius: 2,
+                                                background: alpha(theme.palette.background.paper, 0.6),
+                                                backdropFilter: 'blur(10px)',
+                                                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                                                overflow: 'visible',
+                                                height: 'fit-content',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                position: 'relative'
+                                            }}>
+                                                {/* Chart Header */}
+                                                <Box sx={{ p: 1.5, borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}` }}>
+                                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                                                        <Typography variant="body1" fontWeight={600}>
+                                                            Market Activity
+                                                        </Typography>
+                                                        <ButtonGroup size="small">
+                                                            <Button
+                                                                variant={chartPeriod === '7d' ? 'contained' : 'outlined'}
+                                                                onClick={() => setChartPeriod('7d')}
+                                                                sx={{ fontSize: '0.7rem', py: 0.25, px: 1 }}
+                                                            >
+                                                                7D
+                                                            </Button>
+                                                            <Button
+                                                                variant={chartPeriod === '30d' ? 'contained' : 'outlined'}
+                                                                onClick={() => setChartPeriod('30d')}
+                                                                sx={{ fontSize: '0.7rem', py: 0.25, px: 1 }}
+                                                            >
+                                                                30D
+                                                            </Button>
+                                                        </ButtonGroup>
+                                                    </Box>
+                                                    <Box sx={{ display: 'flex', gap: 3 }}>
+                                                        <Box>
+                                                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                                                                Volume
+                                                            </Typography>
+                                                            <Typography variant="body2" fontWeight={600} color="success.main">
+                                                                {formatCompact(totalVol)} XRP
+                                                            </Typography>
+                                                        </Box>
+                                                        <Box>
+                                                            <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                                                                Sales
+                                                            </Typography>
+                                                            <Typography variant="body2" fontWeight={600} color="primary.main">
+                                                                {formatCompact(totalSales)}
+                                                            </Typography>
+                                                        </Box>
+                                                    </Box>
+                                                </Box>
+                                                
+                                                {/* Chart Area */}
+                                                <Box sx={{ 
+                                                    position: 'relative',
+                                                    p: 2,
+                                                    height: 195,
+                                                    display: 'flex',
+                                                    gap: 1,
+                                                    overflow: 'visible'
+                                                }}>
+                                                    {/* Y-axis labels */}
+                                                    {data.length > 0 && (
+                                                        <Box sx={{ 
+                                                            display: 'flex',
+                                                            flexDirection: 'column',
+                                                            justifyContent: 'space-between',
+                                                            width: '40px',
+                                                            py: 0.5
+                                                        }}>
+                                                            {[100, 75, 50, 25, 0].map((percent) => (
+                                                                <Typography 
+                                                                    key={percent}
+                                                                    variant="caption" 
+                                                                    sx={{ 
+                                                                        fontSize: '0.6rem',
+                                                                        color: 'text.secondary',
+                                                                        textAlign: 'right',
+                                                                        lineHeight: 1
+                                                                    }}
+                                                                >
+                                                                    {percent === 100 ? formatCompact(maxVol) : 
+                                                                     percent === 0 ? '0' : 
+                                                                     formatCompact(maxVol * (percent / 100))}
+                                                                </Typography>
+                                                            ))}
+                                                        </Box>
+                                                    )}
+                                                    
+                                                    {data.length > 0 ? (
+                                                        <Box sx={{ flex: 1, height: '100%', position: 'relative' }}>
+                                                            <Box sx={{ 
+                                                                position: 'absolute',
+                                                                inset: 0,
+                                                                display: 'flex',
+                                                                alignItems: 'flex-end',
+                                                                gap: 1,
+                                                                px: 1
+                                                            }}>
+                                                                {data.map((point, index) => {
+                                                                    const barHeight = maxVol > 0 ? (point.volume / maxVol) * 100 : 0;
+                                                                    const salesHeight = maxSales > 0 ? (point.sales / maxSales) * 100 : 0;
+                                                                    
+                                                                    // Debug
+                                                                    if (index === 0) {
+                                                                        console.log('Chart data:', { 
+                                                                            point, 
+                                                                            barHeight, 
+                                                                            salesHeight, 
+                                                                            maxVol, 
+                                                                            maxSales,
+                                                                            dataLength: data.length 
+                                                                        });
+                                                                    }
+                                                                    
+                                                                    return (
+                                                                        <Box
+                                                                            key={index}
+                                                                            sx={{
+                                                                                flex: 1,
+                                                                                display: 'flex',
+                                                                                flexDirection: 'column',
+                                                                                alignItems: 'center',
+                                                                                justifyContent: 'flex-end',
+                                                                                position: 'relative',
+                                                                                height: '100%',
+                                                                                cursor: 'pointer',
+                                                                                '&:hover .volume-bar': {
+                                                                                    opacity: 1
+                                                                                },
+                                                                                '&:hover .data-point': {
+                                                                                    transform: 'scale(1.5)'
+                                                                                }
+                                                                            }}
+                                                                            onMouseEnter={() => setHoveredPoint({ index, volume: point.volume, sales: point.sales })}
+                                                                            onMouseLeave={() => setHoveredPoint(null)}
+                                                                        >
+                                                                            {/* Volume Bar */}
+                                                                            <Box
+                                                                                className="volume-bar"
+                                                                                sx={{
+                                                                                    position: 'absolute',
+                                                                                    bottom: 0,
+                                                                                    width: '80%',
+                                                                                    height: barHeight > 0 ? `${barHeight}%` : '2px',
+                                                                                    minHeight: barHeight > 0 ? '5px' : '2px',
+                                                                                    background: barHeight > 0 
+                                                                                        ? `linear-gradient(to top, ${alpha(theme.palette.success.main, 0.3)}, ${theme.palette.success.main})`
+                                                                                        : theme.palette.divider,
+                                                                                    borderRadius: '4px 4px 0 0',
+                                                                                    opacity: hoveredPoint?.index === index ? 1 : 0.8,
+                                                                                    transition: 'all 0.3s ease'
+                                                                                }}
+                                                                            />
+                                                                            
+                                                                            {/* Sales Point */}
+                                                                            <Box
+                                                                                className="data-point"
+                                                                                sx={{
+                                                                                    position: 'absolute',
+                                                                                    bottom: salesHeight > 0 ? `${salesHeight}%` : '5px',
+                                                                                    width: 10,
+                                                                                    height: 10,
+                                                                                    borderRadius: '50%',
+                                                                                    background: theme.palette.primary.main,
+                                                                                    border: `2px solid ${theme.palette.background.paper}`,
+                                                                                    boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.4)}`,
+                                                                                    transition: 'all 0.3s ease',
+                                                                                    zIndex: 3
+                                                                                }}
+                                                                            />
+                                                                            
+                                                                            {/* Hover Info */}
+                                                                            {hoveredPoint?.index === index && (
+                                                                                <Box sx={{
+                                                                                    position: 'absolute',
+                                                                                    bottom: `${Math.min(Math.max(barHeight, salesHeight) + 5, 75)}%`,
+                                                                                    background: theme.palette.background.paper,
+                                                                                    p: 1,
+                                                                                    borderRadius: 1,
+                                                                                    boxShadow: 2,
+                                                                                    zIndex: 1200,
+                                                                                    minWidth: '120px'
+                                                                                }}>
+                                                                                    <Typography variant="caption" fontWeight={700} color="text.primary">
+                                                                                        {point.date || `Day ${index + 1}`}
+                                                                                    </Typography>
+                                                                                    <Box sx={{ mt: 0.5 }}>
+                                                                                        <Typography variant="caption" color="success.main" fontWeight={600}>
+                                                                                            Vol: {formatXRP(point.volume)} XRP
+                                                                                        </Typography>
+                                                                                        {point.volumeByPlatform && Object.keys(point.volumeByPlatform).length > 0 && (
+                                                                                            <Box sx={{ ml: 1, mt: 0.25 }}>
+                                                                                                {Object.entries(point.volumeByPlatform)
+                                                                                                    .sort(([,a], [,b]) => b - a)
+                                                                                                    .slice(0, 3)
+                                                                                                    .map(([platform, vol]) => (
+                                                                                                        <Typography key={platform} variant="caption" sx={{ display: 'block', fontSize: '0.6rem', color: 'text.secondary' }}>
+                                                                                                            {platform}: {formatCompact(vol)}
+                                                                                                        </Typography>
+                                                                                                    ))
+                                                                                                }
+                                                                                            </Box>
+                                                                                        )}
+                                                                                    </Box>
+                                                                                    <Box sx={{ mt: 0.5 }}>
+                                                                                        <Typography variant="caption" color="primary.main" fontWeight={600}>
+                                                                                            Sales: {point.sales}
+                                                                                        </Typography>
+                                                                                        {point.salesByPlatform && Object.keys(point.salesByPlatform).length > 0 && (
+                                                                                            <Box sx={{ ml: 1, mt: 0.25 }}>
+                                                                                                {Object.entries(point.salesByPlatform)
+                                                                                                    .sort(([,a], [,b]) => b - a)
+                                                                                                    .slice(0, 3)
+                                                                                                    .map(([platform, sales]) => (
+                                                                                                        <Typography key={platform} variant="caption" sx={{ display: 'block', fontSize: '0.6rem', color: 'text.secondary' }}>
+                                                                                                            {platform}: {sales}
+                                                                                                        </Typography>
+                                                                                                    ))
+                                                                                                }
+                                                                                            </Box>
+                                                                                        )}
+                                                                                    </Box>
+                                                                                </Box>
+                                                                            )}
+                                                                        </Box>
+                                                                    );
+                                                                })}
+                                                            </Box>
+                                                            
+                                                            {/* Grid lines and Sales Line */}
+                                                            <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }} viewBox="0 0 100 100" preserveAspectRatio="none">
+                                                                {/* Horizontal grid lines */}
+                                                                {[0, 25, 50, 75, 100].map((y) => (
+                                                                    <line
+                                                                        key={y}
+                                                                        x1="0"
+                                                                        y1={y}
+                                                                        x2="100"
+                                                                        y2={y}
+                                                                        stroke={theme.palette.divider}
+                                                                        strokeWidth="0.5"
+                                                                        opacity="0.3"
+                                                                        strokeDasharray="2 2"
+                                                                    />
+                                                                ))}
+                                                                
+                                                                {/* Sales line */}
+                                                                <polyline
+                                                                    points={data.map((point, index) => {
+                                                                        const x = (index + 0.5) * (100 / data.length);
+                                                                        const y = 100 - (maxSales > 0 ? (point.sales / maxSales) * 100 : 0);
+                                                                        return `${x},${y}`;
+                                                                    }).join(' ')}
+                                                                    fill="none"
+                                                                    stroke={theme.palette.primary.main}
+                                                                    strokeWidth="2"
+                                                                    opacity="0.8"
+                                                                />
+                                                            </svg>
+                                                        </Box>
+                                                    ) : (
+                                                        <Box sx={{ 
+                                                            display: 'flex', 
+                                                            alignItems: 'center', 
+                                                            justifyContent: 'center',
+                                                            height: '100%'
+                                                        }}>
+                                                            <Typography variant="body2" color="text.secondary">
+                                                                No chart data available
+                                                            </Typography>
+                                                        </Box>
+                                                    )}
+                                                </Box>
+                                                
+                                                {/* Chart Legend */}
+                                                <Box sx={{ 
+                                                    display: 'flex', 
+                                                    justifyContent: 'center', 
+                                                    gap: 2, 
+                                                    py: 1,
+                                                    px: 2,
+                                                    borderTop: `1px solid ${alpha(theme.palette.divider, 0.1)}`
+                                                }}>
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                                        <Box sx={{ 
+                                                            width: 12, 
+                                                            height: 12, 
+                                                            borderRadius: '2px',
+                                                            background: theme.palette.success.main
+                                                        }} />
+                                                        <Typography variant="caption" color="text.secondary">
+                                                            Volume
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                                        <Box sx={{ 
+                                                            width: 8, 
+                                                            height: 8, 
+                                                            borderRadius: '50%',
+                                                            background: theme.palette.primary.main
+                                                        }} />
+                                                        <Typography variant="caption" color="text.secondary">
+                                                            Sales
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                            </Box>
+                                        );
+                                    })()}
+                            </Box>
+                        )}
                     </Box>
-
                     {collections.length > 0 && (
                         <Box sx={{ mt: { xs: 4, md: 6 } }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                                <Typography variant="h4" fontWeight={600}>
-                                    Top Collections
-                                </Typography>
+                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 3 }}>
                                 <Link 
                                     href="/collections" 
                                     underline="hover" 
@@ -493,7 +1008,11 @@ export default function Overview({ collections = [] }) {
                             </Box>
                         </Box>
                     )}
+                </Container>
+            </Container>
 
+            <Container maxWidth="xl"> 
+                <Container maxWidth="lg">
                     {/* P2P Marketplace Section */}
                     <Box sx={{ mt: { xs: 6, md: 8 } }}>
                         <Typography variant="h4" fontWeight={600} sx={{ mb: 4 }}>
@@ -616,9 +1135,10 @@ export default function Overview({ collections = [] }) {
 
 export async function getStaticProps() {
     let collections = [];
+    let gmetrics = null;
     
     try {
-        const response = await fetch('https://api.xrpnft.com/api/collections?limit=100&orderBy=totalVol24h&order=desc&compact=true');
+        const response = await fetch('https://api.xrpnft.com/api/collections?limit=100&orderBy=totalVol24h&order=desc&compact=true&gmetrics=true');
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -635,7 +1155,9 @@ export async function getStaticProps() {
         
         if (data.result === 'success' && data.collections) {
             collections = data.collections;
+            gmetrics = data.gmetrics;
             console.log('Successfully fetched', collections.length, 'collections');
+            console.log('Global metrics:', gmetrics ? 'Available' : 'Not available');
         } else {
             console.error('API did not return success or collections missing', data);
         }
@@ -645,7 +1167,8 @@ export async function getStaticProps() {
 
     return {
         props: {
-            collections
+            collections,
+            gmetrics
         },
         revalidate: 300 // Revalidate every 5 minutes
     };

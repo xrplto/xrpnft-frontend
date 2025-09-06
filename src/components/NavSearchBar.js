@@ -245,7 +245,7 @@ const RenderOption = ({
                                 </Stack>
                                 {
                                     option_type === 'COLLECTIONS' &&
-                                    <Stack direction="row" spacing={1.5} alignItems="center" sx={{ flexShrink: 0 }}>
+                                    <Stack direction="row" spacing={2.5} alignItems="center" sx={{ flexShrink: 0 }}>
                                         {floor && (
                                             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                                                 <Typography 
@@ -264,8 +264,8 @@ const RenderOption = ({
                                                     variant="caption" 
                                                     sx={{ 
                                                         color: 'text.secondary',
-                                                        fontSize: '0.6rem',
-                                                        fontWeight: 400,
+                                                        fontSize: '0.65rem',
+                                                        fontWeight: 500,
                                                         whiteSpace: 'nowrap',
                                                         lineHeight: 1
                                                     }}
@@ -291,8 +291,8 @@ const RenderOption = ({
                                                 variant="caption" 
                                                 sx={{ 
                                                     color: 'text.secondary',
-                                                    fontSize: '0.6rem',
-                                                    fontWeight: 400,
+                                                    fontSize: '0.65rem',
+                                                    fontWeight: 500,
                                                     whiteSpace: 'nowrap',
                                                     lineHeight: 1
                                                 }}

@@ -52,6 +52,7 @@ const HeaderWrapper = styled(AppBar)(({ theme }) => ({
     borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
     boxShadow: `0 4px 20px 0 ${alpha(theme.palette.primary.main, 0.08)}`,
     transition: 'all 0.3s ease-in-out',
+    zIndex: 1100,
     '&::before': {
         content: '""',
         position: 'absolute',

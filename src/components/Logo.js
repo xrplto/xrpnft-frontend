@@ -24,7 +24,8 @@ function Logo() {
                     left: 0,
                     width: 0,
                     height: '2px',
-                    backgroundColor: theme.palette.primary.main,
+                    background: 'linear-gradient(90deg, #1976d2, #42a5f5, #64b5f6)',
+                    borderRadius: '1px',
                     transition: 'width 0.3s ease'
                 },
                 '&:hover': {
@@ -35,7 +36,19 @@ function Logo() {
                 }
             }}
         >
-            XRP<span style={{ color: theme.palette.primary.main }}>NFT</span>
+            <span style={{ position: 'relative' }}>
+                X<span style={{ 
+                    position: 'absolute',
+                    top: '-8px',
+                    right: '-5px',
+                    fontSize: '0.8rem',
+                    filter: 'hue-rotate(200deg) saturate(1.2)',
+                    color: theme.palette.primary.main
+                }}>🐦</span>
+            </span>RP<span style={{ 
+                color: theme.palette.primary.main,
+                fontWeight: 700 
+            }}>NFT</span>
         </Link>
     );
 }
