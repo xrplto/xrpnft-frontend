@@ -274,12 +274,6 @@ export default function Overview({ collections = [], gmetrics = null }) {
 
             <Toolbar id="back-to-top-anchor" />
 
-            <BackgroundWrapper
-                style={{
-                    backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
-                    opacity: darkMode ? 0.2 : 0.3
-                }}
-            />
 
             <Header />
 
@@ -495,7 +489,9 @@ export default function Overview({ collections = [], gmetrics = null }) {
                         {gmetrics && gmetrics.graphData30d && (
                             <Box sx={{ flex: 1, minWidth: 0, height: '100%' }}>
                                     {(() => {
-                                        const data = chartPeriod === '7d' 
+                                        const data = chartPeriod === '24h' 
+                                            ? gmetrics.graphData30d.slice(-1)
+                                            : chartPeriod === '7d' 
                                             ? gmetrics.graphData30d.slice(-7) 
                                             : gmetrics.graphData30d || [];
                                         const totalVol = data.reduce((sum, d) => sum + (d.volume || 0), 0);
@@ -528,16 +524,23 @@ export default function Overview({ collections = [], gmetrics = null }) {
                                                         </Typography>
                                                         <ButtonGroup size="small">
                                                             <Button
+                                                                variant={chartPeriod === '24h' ? 'contained' : 'outlined'}
+                                                                onClick={() => setChartPeriod('24h')}
+                                                                sx={{ fontSize: '0.7rem', py: 0.25, px: 0.75 }}
+                                                            >
+                                                                24H
+                                                            </Button>
+                                                            <Button
                                                                 variant={chartPeriod === '7d' ? 'contained' : 'outlined'}
                                                                 onClick={() => setChartPeriod('7d')}
-                                                                sx={{ fontSize: '0.7rem', py: 0.25, px: 1 }}
+                                                                sx={{ fontSize: '0.7rem', py: 0.25, px: 0.75 }}
                                                             >
                                                                 7D
                                                             </Button>
                                                             <Button
                                                                 variant={chartPeriod === '30d' ? 'contained' : 'outlined'}
                                                                 onClick={() => setChartPeriod('30d')}
-                                                                sx={{ fontSize: '0.7rem', py: 0.25, px: 1 }}
+                                                                sx={{ fontSize: '0.7rem', py: 0.25, px: 0.75 }}
                                                             >
                                                                 30D
                                                             </Button>
@@ -825,7 +828,7 @@ export default function Overview({ collections = [], gmetrics = null }) {
                         )}
                     </Box>
                     {collections.length > 0 && (
-                        <Box sx={{ mt: { xs: 4, md: 6 } }}>
+                        <Box sx={{ mt: { xs: 0.5, md: 1.5 } }}>
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', mb: 3 }}>
                                 <Link 
                                     href="/collections" 
@@ -1033,24 +1036,11 @@ export default function Overview({ collections = [], gmetrics = null }) {
                                 border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
                                 textAlign: 'center'
                             }}>
-                                <Box sx={{ 
-                                    width: 60, 
-                                    height: 60, 
-                                    borderRadius: '50%', 
-                                    background: alpha(theme.palette.success.main, 0.1),
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    mx: 'auto',
-                                    mb: 2
-                                }}>
-                                    <Typography variant="h4" color="success.main">💰</Typography>
-                                </Box>
-                                <Typography variant="h6" fontWeight={600} sx={{ mb: 1 }}>
+                                <Typography variant="h6" fontWeight={600} sx={{ mb: 1.5 }}>
                                     No Broker Fees
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Trade directly peer-to-peer with zero intermediary fees. Keep 100% of your profits.
+                                    Trade directly peer-to-peer with zero intermediary fees. Unlike traditional marketplaces charging 1-2% commission, keep 100% of your profits through true P2P trading on the XRP Ledger.
                                 </Typography>
                             </Box>
 
@@ -1062,24 +1052,11 @@ export default function Overview({ collections = [], gmetrics = null }) {
                                 border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
                                 textAlign: 'center'
                             }}>
-                                <Box sx={{ 
-                                    width: 60, 
-                                    height: 60, 
-                                    borderRadius: '50%', 
-                                    background: alpha(theme.palette.primary.main, 0.1),
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    mx: 'auto',
-                                    mb: 2
-                                }}>
-                                    <Typography variant="h4" color="primary.main">🔄</Typography>
-                                </Box>
-                                <Typography variant="h6" fontWeight={600} sx={{ mb: 1 }}>
+                                <Typography variant="h6" fontWeight={600} sx={{ mb: 1.5 }}>
                                     Interoperability
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Submit buy offers on any marketplace and use any XRPL token. Your offers work across all XRP NFT marketplaces automatically.
+                                    List once, sell anywhere. Your NFTs and offers work seamlessly across all XRP marketplaces, accepting any XRPL token for maximum reach and liquidity.
                                 </Typography>
                             </Box>
 
@@ -1091,29 +1068,16 @@ export default function Overview({ collections = [], gmetrics = null }) {
                                 border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
                                 textAlign: 'center'
                             }}>
-                                <Box sx={{ 
-                                    width: 60, 
-                                    height: 60, 
-                                    borderRadius: '50%', 
-                                    background: alpha(theme.palette.warning.main, 0.1),
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    mx: 'auto',
-                                    mb: 2
-                                }}>
-                                    <Typography variant="h4" color="warning.main">🔒</Typography>
-                                </Box>
-                                <Typography variant="h6" fontWeight={600} sx={{ mb: 1 }}>
+                                <Typography variant="h6" fontWeight={600} sx={{ mb: 1.5 }}>
                                     Secure Transactions
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    All transactions settle directly on-chain without any middleman intervention.
+                                    Built on XRP Ledger's native NFT standard (XLS-20), every trade is cryptographically secured, instantly finalized on-chain with no custody risk and minimal fees.
                                 </Typography>
                             </Box>
                         </Box>
 
-                        <Box sx={{ textAlign: 'center' }}>
+                        <Box sx={{ textAlign: 'center', mb: 4 }}>
                             <HeroButton variant="contained" href="/collections" sx={{ mr: 2 }}>
                                 Start Trading P2P
                             </HeroButton>
