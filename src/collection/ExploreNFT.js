@@ -69,9 +69,9 @@ import { ClipLoader, PulseLoader } from 'react-spinners';
 import PropTypes from 'prop-types';
 import { lazy, Suspense } from 'react';
 
-// Lazy load heavy components
-const Lightbox = lazy(() => import('react-modal-image').then(module => ({ default: module.Lightbox })));
-const CopyToClipboard = lazy(() => import('react-copy-to-clipboard').then(module => ({ default: module.CopyToClipboard })));
+// Import Lightbox and CopyToClipboard directly without lazy loading to avoid import issues
+import { Lightbox } from 'react-modal-image';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 // Iconify
 import { Icon } from '@iconify/react';
@@ -1835,7 +1835,7 @@ export function CollectionActivity({ collection, hideInExplore = false }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { openSnackbar } = useContext(AppContext);
     const [page, setPage] = useState(0);
-    const [rows, setRows] = useState(10);
+    const [rows, setRows] = useState(20);
     const [total, setTotal] = useState(0);
     const [hists, setHists] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -1855,25 +1855,56 @@ export function CollectionActivity({ collection, hideInExplore = false }) {
                 page: page,
                 limit: rows
             });
-            if (collection?.account) historyParams.append('issuer', collection.account);
-            if (collection?.taxon) historyParams.append('taxon', collection.taxon);
+            
+            // Use collection ID (cid) - this is typically stored in _id field
+            if (collection?._id) {
+                historyParams.append('cid', collection._id);
+            } else if (collection?.id) {
+                historyParams.append('cid', collection.id);
+            } else if (collection?.cid) {
+                historyParams.append('cid', collection.cid);
+            } else {
+                // Fallback to issuer/taxon if no collection ID is available
+                if (collection?.account) historyParams.append('issuer', collection.account);
+                if (collection?.taxon) historyParams.append('taxon', collection.taxon);
+            }
+            
+            console.log('[CollectionActivity] Fetching activities:', {
+                url: `${BASE_URL}/collectionhistory/?${historyParams.toString()}`,
+                collection,
+                params: Object.fromEntries(historyParams),
+                timestamp: new Date().toISOString()
+            });
             
             axios.get(`${BASE_URL}/collectionhistory/?${historyParams.toString()}`)
                 .then(res => {
                     let ret = res.status === 200 ? res.data : undefined;
+                    console.log('[CollectionActivity] Response:', {
+                        status: res.status,
+                        data: ret,
+                        total: ret?.total,
+                        histsCount: ret?.hists?.length,
+                        timestamp: new Date().toISOString()
+                    });
                     if (ret) {
                         setTotal(ret.total);
                         setHists(ret.hists);
                     }
                 })
                 .catch(err => {
+                    console.error('[CollectionActivity] Error fetching activities:', {
+                        error: err.message,
+                        status: err.response?.status,
+                        data: err.response?.data,
+                        timestamp: new Date().toISOString()
+                    });
                 })
                 .finally(() => {
                     setLoading(false);
                 });
         }
         getActivities();
-    }, [collection?.account, collection?.taxon, page, rows]);
+    }, [collection?._id, collection?.id, collection?.cid, collection?.account, collection?.taxon, page, rows]);
 
     const getChipStyle = (color) => {
         let backgroundColor;
@@ -2260,15 +2291,13 @@ export function CollectionActivity({ collection, hideInExplore = false }) {
                                                         {`${account.substring(0, 6)}...${account.substring(account.length - 4)}`}
                                                     </Typography>
                                                 </Link>
-                                                <Suspense fallback={<IconButton size="small" disabled><ContentCopyIcon fontSize="small" /></IconButton>}>
-                                                    <CopyToClipboard text={account} onCopy={()=>openSnackbar('Address copied to clipboard', 'success')}>
-                                                        <Tooltip title='Copy address'>
-                                                            <IconButton size="small" sx={{ ml: 0.5 }} aria-label="Copy address">
-                                                                <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </CopyToClipboard>
-                                                </Suspense>
+                                                <CopyToClipboard text={account} onCopy={()=>openSnackbar('Address copied to clipboard', 'success')}>
+                                                    <Tooltip title='Copy address'>
+                                                        <IconButton size="small" sx={{ ml: 0.5 }} aria-label="Copy address">
+                                                            <ContentCopyIcon fontSize="small" sx={{ width: 16, height: 16 }}/>
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                </CopyToClipboard>
                                             </Stack>
                                         </TableCell>
 
@@ -2298,15 +2327,13 @@ export function CollectionActivity({ collection, hideInExplore = false }) {
             )}
 
             {open && (
-                <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><ClipLoader /></Box>}>
-                    <Lightbox
-                        small={lightBoxImgUrl}
-                        large={lightBoxImgUrl}
-                        hideDownload
-                        hideZoom
-                        onClose={closeLightbox}
-                    />
-                </Suspense>
+                <Lightbox
+                    small={lightBoxImgUrl}
+                    large={lightBoxImgUrl}
+                    hideDownload
+                    hideZoom
+                    onClose={closeLightbox}
+                />
             )}
         </Box>
     );

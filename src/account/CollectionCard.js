@@ -112,7 +112,7 @@ const ImageBackdrop = styled('span')(({ theme }) => ({
     transition: theme.transitions.create('opacity'),
 }));
 
-export default function CollectionCard({ item, isMine }) {
+export default function CollectionCard({ item, isMine, nftCount, nftsForSale, account: userAccount, type }) {
 
     // {
     //     "_id": "6310c27cf81fe46884ef89ba",
@@ -128,8 +128,13 @@ export default function CollectionCard({ item, isMine }) {
     //     "uuid": "bc80f29343bb43f09f73d8e5e290ee4a"
     // }
 
+    if (!item) {
+        return null;
+    }
+
     const {
         uuid,
+        id,
         name,
         slug,
         account,
@@ -144,7 +149,7 @@ export default function CollectionCard({ item, isMine }) {
     // const featuredImageUrl = '/static/covers/6.jpg';
     // const logoImageUrl = '/static/covers/icon1.png';
 
-    const featuredImageUrl = `https://s1.xrpnft.com/collection/${featuredImage}`;
+    const featuredImageUrl = featuredImage ? `https://s1.xrpnft.com/collection/${featuredImage}` : `https://s1.xrpnft.com/collection/${logoImage}`;
     const logoImageUrl = `https://s1.xrpnft.com/collection/${logoImage}`;
 
     const [colors, setColors] = useState([]);
@@ -179,24 +184,38 @@ export default function CollectionCard({ item, isMine }) {
                 />
             </ColorExtractor>
 
-            <Stack direction="row" spacing={1.5} sx={{p:3, mt:-6}} alignItems="center">
-                <IconCover>
-                    <IconWrapper>
-                        <IconImage src={logoImageUrl}/>
-                    </IconWrapper>
-                </IconCover>
+            <Stack direction="row" spacing={1.5} sx={{p:3, mt:-6}} alignItems="center" justifyContent="space-between" width="100%">
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                    <IconCover>
+                        <IconWrapper>
+                            <IconImage src={logoImageUrl}/>
+                        </IconWrapper>
+                    </IconCover>
 
-                <Stack direction="row" spacing={0.5} sx={{pt: 2}}>
-                    <Typography variant="p1">{name}</Typography>
-                    {verified === 'yes' &&
-                        <Tooltip title='Verified'>
-                            <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
-                        </Tooltip>
-                    }
+                    <Stack spacing={0.5}>
+                        <Stack direction="row" spacing={0.5} alignItems="center">
+                            <Typography variant="p1">{name}</Typography>
+                            {verified === 'yes' &&
+                                <Tooltip title='Verified'>
+                                    <VerifiedIcon fontSize="small" style={{color: "#4589ff"}} />
+                                </Tooltip>
+                            }
+                        </Stack>
+                        <Stack direction="row" spacing={2}>
+                            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                                {nftCount || 0} NFTs
+                            </Typography>
+                            {nftsForSale > 0 && (
+                                <Typography variant="caption" sx={{ color: 'success.main' }}>
+                                    {nftsForSale} for sale
+                                </Typography>
+                            )}
+                        </Stack>
+                    </Stack>
                 </Stack>
             </Stack>
 
-            <Link href={`/collection/${slug}`} underline='none'>
+            <Link href={userAccount && type ? `/account/${userAccount}/collection${type.charAt(0).toUpperCase() + type.slice(1)}/${id}` : `/collection/${slug}`} underline='none'>
                 <ImageBackdrop className="MuiImageBackdrop-root" />
             </Link>
 

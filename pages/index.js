@@ -251,6 +251,15 @@ export default function Overview({ collections = [], gmetrics = null }) {
         return () => clearInterval(intervalId);
     }, []);
 
+    // Auto-rotate featured collections
+    useEffect(() => {
+        const rotationInterval = setInterval(() => {
+            setFeaturedIndex((prev) => (prev + 1) % 4); // 4 is the number of featured collections
+        }, 4000); // Rotate every 4 seconds
+
+        return () => clearInterval(rotationInterval);
+    }, []);
+
     return (
         <OverviewWrapper>
             <Head>
@@ -306,42 +315,53 @@ export default function Overview({ collections = [], gmetrics = null }) {
                                     return (
                                         <Box sx={{ position: 'relative' }}>
                                             {/* Next Button Overlay */}
-                                            <Button
-                                                size="medium"
-                                                variant="contained"
+                                            <Box
                                                 onClick={() => {
                                                     setFeaturedIndex((prev) => (prev + 1) % collections.length);
                                                 }}
                                                 sx={{ 
                                                     position: 'absolute',
                                                     top: '50%',
-                                                    right: '-20px',
+                                                    right: '-12px',
                                                     transform: 'translateY(-50%)',
                                                     zIndex: 10,
-                                                    minWidth: '44px',
-                                                    width: '44px',
-                                                    height: '44px',
-                                                    borderRadius: '8px 20px 20px 8px',
-                                                    background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.9)}, ${alpha(theme.palette.primary.dark, 0.9)})`,
-                                                    color: 'white',
-                                                    border: `2px solid ${alpha(theme.palette.primary.light, 0.3)}`,
-                                                    boxShadow: `0 6px 20px ${alpha(theme.palette.primary.main, 0.3)}`,
-                                                    backdropFilter: 'blur(12px)',
-                                                    fontSize: '1.2rem',
-                                                    fontWeight: 'bold',
+                                                    width: '32px',
+                                                    height: '32px',
+                                                    borderRadius: '50%',
+                                                    background: alpha(theme.palette.background.paper, 0.8),
+                                                    backdropFilter: 'blur(8px)',
+                                                    border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    cursor: 'pointer',
+                                                    transition: 'all 0.2s ease',
                                                     '&:hover': {
-                                                        background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
-                                                        borderColor: alpha(theme.palette.primary.light, 0.5),
-                                                        transform: 'translateY(-50%) scale(1.1)',
-                                                        boxShadow: `0 8px 25px ${alpha(theme.palette.primary.main, 0.4)}`
+                                                        background: theme.palette.background.paper,
+                                                        borderColor: alpha(theme.palette.primary.main, 0.3),
+                                                        transform: 'translateY(-50%) translateX(2px)'
                                                     },
                                                     '&:active': {
                                                         transform: 'translateY(-50%) scale(0.95)'
                                                     }
                                                 }}
                                             >
-                                                ▶
-                                            </Button>
+                                                <svg 
+                                                    width="16" 
+                                                    height="16" 
+                                                    viewBox="0 0 24 24" 
+                                                    fill="none"
+                                                    style={{ color: theme.palette.text.secondary }}
+                                                >
+                                                    <path 
+                                                        d="M9 18l6-6-6-6" 
+                                                        stroke="currentColor" 
+                                                        strokeWidth="2" 
+                                                        strokeLinecap="round" 
+                                                        strokeLinejoin="round"
+                                                    />
+                                                </svg>
+                                            </Box>
                                             
                                             <Box sx={{ 
                                                 display: 'grid',

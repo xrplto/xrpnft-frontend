@@ -46,6 +46,26 @@ import { AppContext } from 'src/AppContext';
 // Utils
 import { getHashIcon } from 'src/utils/parse';
 
+// Add StatCard component similar to collection page
+const StatCard = styled(Box)(({ theme }) => ({
+    padding: theme.spacing(0.75),
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    borderRadius: theme.shape.borderRadius * 0.5,
+    backgroundColor: alpha(theme.palette.background.paper, 0.4),
+    backdropFilter: 'blur(8px)',
+    border: 'none',
+    transition: 'all 0.2s ease-in-out',
+    minHeight: 20,
+    [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(0.3),
+        minHeight: 17,
+    }
+}));
+
 // Components
 import NFTs from './NFTs';
 import Offers from './Offers';
@@ -100,8 +120,8 @@ const BannerWrapper = styled('div')(
     ({ theme }) => `
     position: relative;
     overflow: hidden;
-    height: 280px;  // Decreased from 320px to 280px
-    margin-bottom: ${theme.spacing(6)};
+    height: 120px;  // Made very compact like collection pages
+    margin-bottom: ${theme.spacing(2)};
     background-color: ${theme.palette.background.default};
     border-radius: ${
         theme.shape.borderRadius
@@ -147,12 +167,12 @@ const GlassBox = styled(Box)(({ theme }) => ({
     background: alpha(theme.palette.background.paper, 0.1),
     backdropFilter: 'blur(10px)',
     borderRadius: theme.shape.borderRadius * 2,
-    padding: theme.spacing(3),
-    boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.2)}`,
-    border: `1px solid ${alpha(theme.palette.primary.main, 0.18)}`,
+    padding: theme.spacing(0.5, 2),
+    boxShadow: 'none',
+    border: 'none',
     '&:hover': {
         background: alpha(theme.palette.background.paper, 0.15),
-        boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.3)}`
+        boxShadow: 'none'
     },
     display: 'flex',
     flexDirection: { xs: 'column', md: 'row' },
@@ -349,13 +369,23 @@ export default function Account({ profile, limit, tab, collection, type }) {
         if (!account) return;
 
         try {
-            const collectedResponse = await axios.post(
-                `${BASE_URL}/account/collectedCreated`,
-                { account, type: 'collected' }
+            const collectedParams = new URLSearchParams({
+                account,
+                type: 'collected',
+                _t: Date.now()
+            });
+            
+            const createdParams = new URLSearchParams({
+                account,
+                type: 'created',
+                _t: Date.now()
+            });
+
+            const collectedResponse = await axios.get(
+                `${BASE_URL}/account/collectedCreated?${collectedParams.toString()}`
             );
-            const createdResponse = await axios.post(
-                `${BASE_URL}/account/collectedCreated`,
-                { account, type: 'created' }
+            const createdResponse = await axios.get(
+                `${BASE_URL}/account/collectedCreated?${createdParams.toString()}`
             );
 
             if (collectedResponse.status === 200 && createdResponse.status === 200) {
@@ -524,7 +554,7 @@ export default function Account({ profile, limit, tab, collection, type }) {
 
     return (
         <>
-            <Box sx={{ position: 'relative', mt: { xs: 4, md: 7 }, mx: { xs: 0, md: 4 } }}>
+            <Box sx={{ position: 'relative', mt: 0, mx: 0, width: '100%' }}>
                 <BackgroundImage
                     sx={{
                         backgroundImage: `url(${bannerImage})`
@@ -547,8 +577,8 @@ export default function Account({ profile, limit, tab, collection, type }) {
                     <Avatar
                         variant="square"
                         sx={{
-                            width: { xs: 100, sm: 150, md: 220 },
-                            height: { xs: 100, sm: 150, md: 220 },
+                            width: { xs: 60, sm: 80, md: 100 },
+                            height: { xs: 60, sm: 80, md: 100 },
                             mr: { md: 4 },
                             mb: { xs: 2, md: 0 },
                             borderRadius: (theme) => `${theme.shape.borderRadius * 2}px`,
@@ -720,49 +750,74 @@ export default function Account({ profile, limit, tab, collection, type }) {
                             variant="body2"
                             text={description}
                             maxLines={2}
-                            sx={{ mb: { xs: 2, md: 4 }, display: { xs: 'none', sm: 'block' } }}
+                            sx={{ mb: { xs: 1, md: 1 }, display: { xs: 'none', sm: 'block' } }}
                         />
 
-                        {/* NFT statistics grid */}
-                        <Grid container spacing={1} sx={{ mb: { xs: 2, md: 3 } }}>
-                            {[
-                                { label: 'Collections', value: nftStats.collectionCount, icon: <CollectionsIcon /> },
-                                { label: 'Total NFTs', value: nftStats.totalCount, icon: <ImageIcon /> },
-                                { label: 'NFTs for Sale', value: nftStats.totalForSale, icon: <ShoppingCartIcon /> },
-                                { label: 'Created NFTs', value: nftStats.createdCount, icon: <BrushIcon /> },
-                                { label: 'XRP Available', value: availableBalance, icon: <AccountBalanceWalletIcon /> },
-                            ].map((stat, index) => (
-                                <Grid item xs={4} sm={4} md={2.4} key={index}>
-                                    <Paper
-                                        elevation={3}
-                                        sx={{
-                                            p: { xs: 1, md: 2 },
-                                            height: '100%',
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            textAlign: 'center',
-                                            transition: 'all 0.3s',
-                                            '&:hover': {
-                                                transform: 'translateY(-5px)',
-                                                boxShadow: (theme) => theme.shadows[6],
-                                            },
-                                        }}
-                                    >
-                                        <Tooltip title={stat.label}>
-                                            {React.cloneElement(stat.icon, { fontSize: 'small' })}
-                                        </Tooltip>
-                                        <Typography variant="body2" sx={{ mt: 0.5, fontWeight: 'bold' }}>
-                                            {stat.value || '0'}
-                                        </Typography>
-                                        <Typography variant="caption" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
-                                            {stat.label}
-                                        </Typography>
-                                    </Paper>
-                                </Grid>
-                            ))}
-                        </Grid>
+                        {/* NFT statistics - matching collection page format */}
+                        <Stack 
+                            direction="row" 
+                            spacing={1} 
+                            flexWrap="wrap"
+                            sx={{ 
+                                gap: 1,
+                                mb: { xs: 2, md: 3 },
+                                '& > *': {
+                                    flex: { xs: '0 0 calc(50% - 4px)', sm: '0 0 calc(33.333% - 5px)', md: '1 1 auto' },
+                                    minWidth: { xs: 'calc(50% - 4px)', sm: 'auto' }
+                                }
+                            }}
+                        >
+                            <StatCard>
+                                <Stack direction="row" alignItems="baseline" spacing={0.5}>
+                                    <Typography variant="caption" color="text.secondary" fontSize="0.65rem">
+                                        Collections
+                                    </Typography>
+                                    <Typography variant="body2" fontWeight="600">
+                                        {nftStats.collectionCount || '0'}
+                                    </Typography>
+                                </Stack>
+                            </StatCard>
+                            <StatCard>
+                                <Stack direction="row" alignItems="baseline" spacing={0.5}>
+                                    <Typography variant="caption" color="text.secondary" fontSize="0.65rem">
+                                        Total NFTs
+                                    </Typography>
+                                    <Typography variant="body2" fontWeight="600">
+                                        {nftStats.totalCount || '0'}
+                                    </Typography>
+                                </Stack>
+                            </StatCard>
+                            <StatCard>
+                                <Stack direction="row" alignItems="baseline" spacing={0.5}>
+                                    <Typography variant="caption" color="text.secondary" fontSize="0.65rem">
+                                        NFTs for Sale
+                                    </Typography>
+                                    <Typography variant="body2" fontWeight="600">
+                                        {nftStats.totalForSale || '0'}
+                                    </Typography>
+                                </Stack>
+                            </StatCard>
+                            <StatCard>
+                                <Stack direction="row" alignItems="baseline" spacing={0.5}>
+                                    <Typography variant="caption" color="text.secondary" fontSize="0.65rem">
+                                        Created NFTs
+                                    </Typography>
+                                    <Typography variant="body2" fontWeight="600">
+                                        {nftStats.createdCount || '0'}
+                                    </Typography>
+                                </Stack>
+                            </StatCard>
+                            <StatCard>
+                                <Stack direction="row" alignItems="baseline" spacing={0.5}>
+                                    <Typography variant="caption" color="text.secondary" fontSize="0.65rem">
+                                        XRP Available
+                                    </Typography>
+                                    <Typography variant="body2" fontWeight="600">
+                                        {availableBalance || '0'}
+                                    </Typography>
+                                </Stack>
+                            </StatCard>
+                        </Stack>
                     </Box>
                 </GlassBox>
             </Box>
