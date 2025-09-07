@@ -1306,12 +1306,12 @@ export const NFTCard = React.memo(({ nft, handleRemove }) => {
                                 {costb && (
                                     <Typography
                                         sx={{
-                                            fontSize: '0.6rem',
-                                            color: 'success.main',
-                                            fontWeight: 500
+                                            fontSize: '0.75rem',
+                                            color: 'text.secondary',
+                                            fontWeight: 400
                                         }}
                                     >
-                                        O:{fNumber(costb.amount)}
+                                        {fNumber(costb.amount)}
                                     </Typography>
                                 )}
                             </Box>
