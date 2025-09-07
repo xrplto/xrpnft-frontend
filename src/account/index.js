@@ -167,7 +167,7 @@ const GlassBox = styled(Box)(({ theme }) => ({
     background: alpha(theme.palette.background.paper, 0.1),
     backdropFilter: 'blur(10px)',
     borderRadius: theme.shape.borderRadius * 2,
-    padding: theme.spacing(0.5, 2),
+    padding: theme.spacing(2, 0),
     boxShadow: 'none',
     border: 'none',
     '&:hover': {

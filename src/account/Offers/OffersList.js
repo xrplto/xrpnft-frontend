@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo, useCallback } from 'react';
 import { FadeLoader } from 'react-spinners';
 import { normalizeAmount } from 'src/utils/normalizers';
 
@@ -24,15 +24,22 @@ import {
     CardContent,
     Grid,
     Chip,
-    Dialog
+    Dialog,
+    styled,
+    alpha
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TransferWithinAStationIcon from '@mui/icons-material/TransferWithinAStation';
 
-// Loader
-import { PuffLoader, PulseLoader } from 'react-spinners';
-import { ProgressBar, Discuss } from 'react-loader-spinner';
+// CSS Spinner with keyframes
+if (typeof document !== 'undefined' && !document.querySelector('#offers-spinner-keyframes')) {
+    const style = document.createElement('style');
+    style.id = 'offers-spinner-keyframes';
+    style.textContent = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+}
+const Spinner = () => <div style={{width: 20, height: 20, border: '3px solid #f3f3f3', borderTop: '3px solid #00AB55', borderRadius: '50%', animation: 'spin 1s linear infinite'}} />;
 
 // Utils
 import { formatDateTime } from 'src/utils/formatTime';
@@ -52,6 +59,21 @@ import QRDialog from 'src/components/QRDialog';
 import SeeMoreTypography from 'src/components/SeeMoreTypography';
 import ConfirmAcceptOfferDialog from '../ConfirmAcceptOfferDialog';
 import ListToolbar from '../ListToolbar';
+
+// Styled Components
+const ModernOfferCard = styled(Box)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.15),
+    backdropFilter: 'blur(20px)',
+    borderRadius: theme.shape.borderRadius * 2,
+    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    padding: theme.spacing(1.5),
+    transition: 'all 0.3s ease-in-out',
+    '&:hover': {
+        transform: 'translateY(-2px)',
+        boxShadow: `0 8px 32px 0 ${alpha(theme.palette.primary.main, 0.15)}`,
+        background: alpha(theme.palette.background.paper, 0.2)
+    }
+}));
 
 // Inline FlagsContainer component
 const FlagsContainer = ({ Flags }) => {
@@ -89,7 +111,7 @@ function truncate(str, n) {
     return str.length > n ? str.substr(0, n - 1) + ' ...' : str;
 }
 
-export default function OffersList({ account, type, setTotalOffers }) {
+const OffersList = memo(function OffersList({ account, type, setTotalOffers }) {
     const BASE_URL = 'https://api.xrpnft.com/api';
     const { accountProfile, openSnackbar, sync, setSync } =
         useContext(AppContext);
@@ -395,15 +417,7 @@ export default function OffersList({ account, type, setTotalOffers }) {
                 }}
                 open={pageLoading}
             >
-                <ProgressBar
-                    height="80"
-                    width="80"
-                    ariaLabel="progress-bar-loading"
-                    wrapperStyle={{}}
-                    wrapperClass="progress-bar-wrapper"
-                    borderColor="#F4442E"
-                    barColor="#51E5FF"
-                />
+                <Spinner />
             </Backdrop>
 
             {type === 'orphaned' && (
@@ -437,7 +451,7 @@ export default function OffersList({ account, type, setTotalOffers }) {
 
             {loading ? (
                 <Stack alignItems="center" sx={{ my: 4 }}>
-                    <PulseLoader color="#00AB55" size={10} />
+                    <Spinner />
                 </Stack>
             ) : offers && offers.length === 0 ? (
                 <Stack alignItems="center" sx={{ my: 4 }}>
@@ -489,9 +503,9 @@ export default function OffersList({ account, type, setTotalOffers }) {
             )}
         </Box>
     );
-}
+});
 
-function OfferCard({
+const OfferCard = memo(function OfferCard({
     offer,
     isOwner,
     accountLogin,
@@ -501,6 +515,7 @@ function OfferCard({
     handleHideOffer,
     isMobile
 }) {
+    const theme = useTheme();
     const [openImageDialog, setOpenImageDialog] = useState(false);
 
     const {
@@ -528,113 +543,83 @@ function OfferCard({
 
     return (
         <>
-            <Card elevation={3}>
-                <CardContent sx={{ p: isMobile ? 1 : 2 }}>
-                    <Grid container spacing={isMobile ? 1 : 2} alignItems="center">
-                        <Grid item xs={12} sm={6} md={4}>
-                            <Link href={`/nft/${NFTokenID}`} underline="none">
-                                <Stack direction="row" spacing={1} alignItems="center">
-                                    <CardMedia
-                                        component={isVideo ? 'video' : 'img'}
-                                        image={imgUrl}
-                                        alt={name}
-                                        sx={{
-                                            width: isMobile ? 48 : 64,
-                                            height: isMobile ? 36 : 48,
-                                            borderRadius: 1,
-                                            cursor: 'pointer'
-                                        }}
-                                        onClick={handleImageClick}
-                                    />
-                                    <Stack>
-                                        <Link
-                                            href={`/collection/${cslug}`}
-                                            underline="none"
-                                        >
-                                            <Typography
-                                                variant="caption"
-                                                color="text.secondary"
-                                            >
-                                                {collection || ''}
-                                            </Typography>
-                                        </Link>
-                                        <Typography
-                                            variant={
-                                                isMobile ? 'body2' : 'subtitle2'
-                                            }
-                                            noWrap
-                                        >
-                                            {name}
-                                        </Typography>
-                                    </Stack>
-                                </Stack>
-                            </Link>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <Typography variant={isMobile ? 'subtitle1' : 'h6'} component="div">
-                                {price.amount} {price.name}
+            <Box sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between',
+                p: 2, 
+                borderRadius: 2,
+                background: alpha(theme.palette.background.paper, 0.05),
+                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                width: '100%',
+                '&:hover': { background: alpha(theme.palette.background.paper, 0.1) }
+            }}>
+                {/* Left side - NFT info */}
+                <Stack direction="row" spacing={2} alignItems="center" sx={{ flex: 1 }}>
+                    <Link href={`/nft/${NFTokenID}`}>
+                        <img src={imgUrl} alt={name} style={{ width: 48, height: 48, borderRadius: 8 }} />
+                    </Link>
+                    <Stack spacing={0.5} sx={{ minWidth: 200 }}>
+                        <Link href={`/nft/${NFTokenID}`} underline="none">
+                            <Typography variant="body1" fontWeight={600}>{name}</Typography>
+                        </Link>
+                        <Typography variant="caption" color="text.secondary">{collection}</Typography>
+                    </Stack>
+                </Stack>
+
+                {/* Center - Price and additional info */}
+                <Stack direction="row" spacing={3} alignItems="center">
+                    <Stack spacing={0.5} alignItems="center">
+                        <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Price</Typography>
+                        <Typography variant="h6" fontWeight={700} color="primary.main">
+                            {price.amount} {price.name}
+                        </Typography>
+                    </Stack>
+                    
+                    {expire_string && (
+                        <Stack spacing={0.5} alignItems="center">
+                            <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Expires</Typography>
+                            <Typography variant="caption" color="text.secondary">
+                                {expire_string}
                             </Typography>
-                            {expire_string && (
-                                <Typography variant="caption" color="text.secondary">
-                                    Expires: {expire_string}
-                                </Typography>
-                            )}
-                            <Link 
-                                href={`https://bithomp.com/explorer/${offer.index}`}
-                                target="_blank"
-                                underline="hover"
-                                color="text.secondary"
-                            >
-                                <Typography variant="caption" display="block">
-                                    {truncate(offer.index, isMobile ? 8 : 10)}
-                                </Typography>
-                            </Link>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={2}>
-                            <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                                <Chip
-                                    label={
-                                        isSell
-                                            ? 'Sell offer'
-                                            : type === 'orphaned'
-                                            ? 'Orphaned offer'
-                                            : 'Buy offer'
-                                    }
-                                    color={isSell ? 'primary' : 'secondary'}
-                                    size="small"
-                                />
-                                {orphaned === 'yes' && (
-                                    <Chip
-                                        label="Orphaned"
-                                        color="warning"
-                                        size="small"
-                                    />
-                                )}
-                                {expired && (
-                                    <Chip
-                                        label="Expired"
-                                        color="error"
-                                        size="small"
-                                    />
-                                )}
-                            </Stack>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <Stack direction="row" spacing={1} justifyContent={isMobile ? 'flex-start' : 'flex-end'}>
-                                {renderActionButtons(
-                                    offer,
-                                    isOwner,
-                                    accountLogin,
-                                    type,
-                                    handleAcceptOffer,
-                                    handleCancelOffer,
-                                    handleHideOffer
-                                )}
-                            </Stack>
-                        </Grid>
-                    </Grid>
-                </CardContent>
-            </Card>
+                        </Stack>
+                    )}
+                    
+                    {offer.nftMatches?.[0]?.rarity_rank && (
+                        <Stack spacing={0.5} alignItems="center">
+                            <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Rarity</Typography>
+                            <Typography variant="caption" fontWeight={600}>
+                                #{offer.nftMatches[0].rarity_rank} / {offer.nftMatches[0].total}
+                            </Typography>
+                        </Stack>
+                    )}
+                    
+                    <Stack spacing={0.5} alignItems="center">
+                        <Typography variant="caption" color="text.secondary" fontSize="0.7rem">From</Typography>
+                        <Typography variant="caption" fontWeight={600}>
+                            {offer.account?.slice(0, 8)}...
+                        </Typography>
+                    </Stack>
+                    
+                    {offer.origin && (
+                        <Stack spacing={0.5} alignItems="center">
+                            <Typography variant="caption" color="text.secondary" fontSize="0.7rem">Origin</Typography>
+                            <Typography variant="caption">{offer.origin}</Typography>
+                        </Stack>
+                    )}
+                    
+                    <Chip 
+                        label={isSell ? 'Sell' : 'Buy'} 
+                        color={isSell ? 'success' : 'secondary'} 
+                        size="small" 
+                    />
+                </Stack>
+
+                {/* Right side - Action buttons with proper spacing */}
+                <Box sx={{ ml: 3 }}>
+                    {renderActionButtons(offer, isOwner, accountLogin, type, handleAcceptOffer, handleCancelOffer, handleHideOffer)}
+                </Box>
+            </Box>
 
             <Dialog
                 open={openImageDialog}
@@ -657,7 +642,7 @@ function OfferCard({
             </Dialog>
         </>
     );
-}
+});
 
 function renderActionButtons(
     offer,
@@ -669,10 +654,12 @@ function renderActionButtons(
     handleHideOffer
 ) {
     const { isSell, orphaned, offerAccount, destination, expired } = offer;
+    const buttons = [];
 
     if (expired) {
-        return (
+        buttons.push(
             <Button
+                key="remove"
                 variant="contained"
                 size="small"
                 color="error"
@@ -681,11 +668,12 @@ function renderActionButtons(
                 Remove
             </Button>
         );
+        return <Stack direction="row" spacing={1}>{buttons}</Stack>;
     }
 
     if (type === 'received' && accountLogin) {
         return (
-            <>
+            <Stack direction="row" spacing={1}>
                 {isOwner && (
                     <>
                         <Button
@@ -715,25 +703,27 @@ function renderActionButtons(
                         Cancel
                     </Button>
                 )}
-            </>
+            </Stack>
         );
     }
 
     if (isSell) {
         if (isOwner || accountLogin === offerAccount) {
             return (
-                <Button
-                    variant={
-                        type === 'buys' && orphaned !== 'yes'
-                            ? 'outlined'
-                            : 'contained'
-                    }
-                    size="small"
-                    color="error"
-                    onClick={() => handleCancelOffer(offer)}
-                >
-                    Cancel
-                </Button>
+                <Stack direction="row" spacing={1}>
+                    <Button
+                        variant={
+                            type === 'buys' && orphaned !== 'yes'
+                                ? 'outlined'
+                                : 'contained'
+                        }
+                        size="small"
+                        color="error"
+                        onClick={() => handleCancelOffer(offer)}
+                    >
+                        Cancel
+                    </Button>
+                </Stack>
             );
         } else if (
             orphaned !== 'yes' &&
@@ -741,48 +731,56 @@ function renderActionButtons(
             accountLogin === destination
         ) {
             return (
-                <Button
-                    variant="contained"
-                    size="small"
-                    color="error"
-                    onClick={() => handleCancelOffer(offer)}
-                >
-                    Cancel
-                </Button>
+                <Stack direction="row" spacing={1}>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        color="error"
+                        onClick={() => handleCancelOffer(offer)}
+                    >
+                        Cancel
+                    </Button>
+                </Stack>
             );
         }
     } else {
         if (isOwner && accountLogin !== offerAccount) {
             return (
-                <Button
-                    variant="contained"
-                    size="small"
-                    color="error"
-                    onClick={() => handleCancelOffer(offer)}
-                >
-                    Cancel
-                </Button>
+                <Stack direction="row" spacing={1}>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        color="error"
+                        onClick={() => handleCancelOffer(offer)}
+                    >
+                        Cancel
+                    </Button>
+                </Stack>
             );
         } else if (accountLogin === offerAccount) {
             return (
-                <Button
-                    variant={
-                        type === 'buys' && orphaned !== 'yes'
-                            ? 'outlined'
-                            : 'contained'
-                    }
-                    size="small"
-                    color="error"
-                    onClick={() => handleCancelOffer(offer)}
-                >
-                    Cancel
-                </Button>
+                <Stack direction="row" spacing={1}>
+                    <Button
+                        variant={
+                            type === 'buys' && orphaned !== 'yes'
+                                ? 'outlined'
+                                : 'contained'
+                        }
+                        size="small"
+                        color="error"
+                        onClick={() => handleCancelOffer(offer)}
+                    >
+                        Cancel
+                    </Button>
+                </Stack>
             );
         }
     }
 
     return null;
 }
+
+export default OffersList;
 
 function parseOfferData(offer) {
     const price = normalizeAmount(offer.amount);

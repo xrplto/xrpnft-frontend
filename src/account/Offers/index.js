@@ -1,13 +1,37 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { styled, alpha } from '@mui/material/styles';
 
 // Material
-import { Box, Button, Paper, Stack } from '@mui/material';
+import { Box, Button, Paper, Stack, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 // Components
 import TransferredNFTs from './TransferredNFTs';
 import OffersList from './OffersList';
 import StyledBadge from '../StyledBadge';
+
+const BASE_URL = 'https://api.xrpnft.com/api';
+
+const StyledAccordion = styled(Accordion)(({ theme }) => ({
+    background: alpha(theme.palette.background.paper, 0.15),
+    backdropFilter: 'blur(20px)',
+    borderRadius: theme.shape.borderRadius * 2,
+    border: `1px solid ${alpha(theme.palette.common.white, 0.18)}`,
+    boxShadow: 'none',
+    '&:before': { display: 'none' },
+    '&.Mui-expanded': { margin: 0 }
+}));
+
+const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+    padding: theme.spacing(1, 2),
+    minHeight: 48,
+    '&.Mui-expanded': { minHeight: 48 },
+    '& .MuiAccordionSummary-content': {
+        margin: 0,
+        '&.Mui-expanded': { margin: 0 }
+    }
+}));
 
 export default function Offers({ account, acceptNfts, setAcceptNfts, orphanedOffers, setOrphanedOffers, buyOffers, setBuyOffers, sellOffers, setSellOffers, receivedOffers, setReceivedOffers, updateNotificationCount }) {
     const [openCollected, setOpenCollected] = useState(false);
@@ -57,61 +81,32 @@ export default function Offers({ account, acceptNfts, setAcceptNfts, orphanedOff
     }, [account, updateNotificationCount]);
 
     return (
-        <Stack rowGap={2}>
-            <Paper sx={{ border: 'none' }}>
-                <Button fullWidth onClick={handleClickCollected}>
-                    <StyledBadge color="primary" badgeContent={acceptNfts}>
-                        Transfers
-                    </StyledBadge>
-                </Button>
-                <Box m={2} sx={{ display: openCollected ? 'block' : 'none' }}>
-                    <TransferredNFTs account={account} setTotalOffers={setAcceptNfts} />
-                </Box>
-            </Paper>
-
-            <Paper sx={{ border: 'none' }}>
-                <Button fullWidth onClick={handleClickSell}>
-                    <StyledBadge color="primary" badgeContent={sellOffers}>
-                        Sell Offers
-                    </StyledBadge>
-                </Button>
-                <Box m={2} sx={{ display: openSell ? 'block' : 'none' }}>
-                    <OffersList account={account} type="sells" setTotalOffers={setSellOffers} />
-                </Box>
-            </Paper>
-
-            <Paper sx={{ border: 'none' }}>
-                <Button fullWidth onClick={handleClickBuy}>
-                    <StyledBadge color="primary" badgeContent={buyOffers}>
-                        Buy Offers
-                    </StyledBadge>
-                </Button>
-                <Box m={2} sx={{ display: openBuy ? 'block' : 'none' }}>
-                    <OffersList account={account} type="buys" setTotalOffers={setBuyOffers} />
-                </Box>
-            </Paper>
-
-            <Paper sx={{ border: 'none' }}>
-                <Button fullWidth onClick={handleClickOrphaned}>
-                    <StyledBadge color="primary" badgeContent={orphanedOffers}>
-                        Orphaned Offers
-                    </StyledBadge>
-                </Button>
-                <Box m={2} sx={{ display: openOrphaned ? 'block' : 'none' }}>
-                    <OffersList account={account} type="orphaned" setTotalOffers={setOrphanedOffers} />
-                </Box>
-            </Paper>
-
-            <Paper sx={{ border: 'none' }}>
-                <Button fullWidth onClick={handleClickReceived}>
-                    <StyledBadge color="primary" badgeContent={receivedOffers}>
-                        Offers Received
-                    </StyledBadge>
-                </Button>
-                <Box m={2} sx={{ display: openReceived ? 'block' : 'none' }}>
-                    <OffersList account={account} type="received" setTotalOffers={setReceivedOffers} />
-                </Box>
-            </Paper>
+        <Stack spacing={2}>
+            {[
+                { key: 'transfers', label: 'Transfers', count: acceptNfts, isOpen: openCollected, toggle: handleClickCollected, component: <TransferredNFTs account={account} setTotalOffers={setAcceptNfts} /> },
+                { key: 'sell', label: 'Sell Offers', count: sellOffers, isOpen: openSell, toggle: handleClickSell, component: <OffersList account={account} type="sells" setTotalOffers={setSellOffers} /> },
+                { key: 'buy', label: 'Buy Offers', count: buyOffers, isOpen: openBuy, toggle: handleClickBuy, component: <OffersList account={account} type="buys" setTotalOffers={setBuyOffers} /> },
+                { key: 'orphaned', label: 'Orphaned Offers', count: orphanedOffers, isOpen: openOrphaned, toggle: handleClickOrphaned, component: <OffersList account={account} type="orphaned" setTotalOffers={setOrphanedOffers} /> },
+                { key: 'received', label: 'Offers Received', count: receivedOffers, isOpen: openReceived, toggle: handleClickReceived, component: <OffersList account={account} type="received" setTotalOffers={setReceivedOffers} /> }
+            ].map(({ key, label, count, isOpen, toggle, component }) => (
+                <StyledAccordion key={key} expanded={isOpen} onChange={toggle}>
+                    <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Stack direction="row" alignItems="center" justifyContent="space-between" width="100%" sx={{ pr: 1 }}>
+                            <Typography variant="h6" fontWeight={600}>
+                                {label}
+                            </Typography>
+                            {count > 0 && (
+                                <StyledBadge color="primary" badgeContent={count} />
+                            )}
+                        </Stack>
+                    </StyledAccordionSummary>
+                    <AccordionDetails sx={{ p: 0 }}>
+                        <Box sx={{ p: 2 }}>
+                            {component}
+                        </Box>
+                    </AccordionDetails>
+                </StyledAccordion>
+            ))}
         </Stack>
     );
 }
