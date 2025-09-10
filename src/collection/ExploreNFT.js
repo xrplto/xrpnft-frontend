@@ -618,7 +618,7 @@ export function CollectionCard({ collectionData, type, account, handleRemove }) 
 
     const collection = collectionData.collection;
     const name = collection.name || 'No Name';
-    const imgUrl = `https://s1.xrpnft.com/collection/${collection.logoImage}`;
+    const imgUrl = collection.logoImage ? `https://s1.xrpnft.com/collection/${collection.logoImage}` : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiByeD0iMTIiIGZpbGw9InVybCgjZ3JhZGllbnQpIi8+CjxyZWN0IHg9IjMwIiB5PSIzMCIgd2lkdGg9IjE0MCIgaGVpZ2h0PSIxNDAiIHJ4PSI4IiBzdHJva2U9InJnYmEoMTA3LCA3MSwgMjU1LCAwLjUpIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz4KPHJlY3QgeD0iNzAiIHk9IjcwIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHJ4PSI0IiBmaWxsPSJyZ2JhKDEwNywgNzEsIDI1NSwgMC41KSIvPgo8cGF0aCBkPSJNMTcwIDEzMGwtMjUtMjVjLTIuNzY3LTIuNzY3LTcuMjQzLTIuNzY3LTEwLjAxIDBMNzAgMTcwIiBzdHJva2U9InJnYmEoMTA3LCA3MSwgMjU1LCAwLjUpIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkaWVudCIgeDE9IjAiIHkxPSIwIiB4Mj0iMjAwIiB5Mj0iMjAwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOnJnYmEoMTA3LCA3MSwgMjU1LCAwLjEpO3N0b3Atb3BhY2l0eToxIiAvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOnJnYmEoMTU1LCA4MSwgMjI0LCAwLjEpO3N0b3Atb3BhY2l0eToxIiAvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+Cjwvc3ZnPgo=';
     const collectionType = type.charAt(0).toUpperCase() + type.slice(1);
 
     const onImageLoaded = () => {
@@ -672,19 +672,40 @@ export function CollectionCard({ collectionData, type, account, handleRemove }) 
                         onClick={(e) => handleRemoveCollection(e)}
                     />
                 }
-                <CardMedia
-                    component={loadingImg ? 'div' : 'img'}
-                    image={imgUrl}
-                    loading={loadingImg.toString()}
-                    alt={name}
-                    sx={{
+                {collection.logoImage ? (
+                    <CardMedia
+                        component={loadingImg ? 'div' : 'img'}
+                        image={imgUrl}
+                        loading={loadingImg.toString()}
+                        alt={name}
+                        sx={{
+                            width: '100%',
+                            flexGrow: 1,
+                            objectFit: 'cover',
+                            borderTopLeftRadius: theme.shape.borderRadius * 2,
+                            borderTopRightRadius: theme.shape.borderRadius * 2,
+                        }}
+                    />
+                ) : (
+                    <Box sx={{
                         width: '100%',
                         flexGrow: 1,
-                        objectFit: 'cover',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.secondary.main, 0.1)})`,
                         borderTopLeftRadius: theme.shape.borderRadius * 2,
                         borderTopRightRadius: theme.shape.borderRadius * 2,
-                    }}
-                />
+                        border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
+                        minHeight: 200
+                    }}>
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke={alpha(theme.palette.primary.main, 0.5)} strokeWidth="1.5" fill="none"/>
+                            <rect x="7" y="7" width="4" height="4" rx="1" fill={alpha(theme.palette.primary.main, 0.5)}/>
+                            <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21" stroke={alpha(theme.palette.primary.main, 0.5)} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </Box>
+                )}
                 {loadingImg && (
                     <Skeleton
                         variant='rectangular'

@@ -245,10 +245,29 @@ export default function ViewNFT({ collection }) {
                         }}
                     >
                         <IconCover>
-                            <IconImage
-                                src={`https://s1.xrpnft.com/collection/${logoImage}`}
-                                alt={name}
-                            />
+                            {logoImage ? (
+                                <IconImage
+                                    src={`https://s1.xrpnft.com/collection/${logoImage}`}
+                                    alt={name}
+                                />
+                            ) : (
+                                <Box sx={{
+                                    width: '100%',
+                                    height: '100%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.secondary.main, 0.1)})`,
+                                    borderRadius: '12px',
+                                    border: `1px solid ${alpha(theme.palette.divider, 0.2)}`
+                                }}>
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                                        <rect x="3" y="3" width="18" height="18" rx="2" stroke={alpha(theme.palette.primary.main, 0.5)} strokeWidth="1.5" fill="none"/>
+                                        <rect x="7" y="7" width="4" height="4" rx="1" fill={alpha(theme.palette.primary.main, 0.5)}/>
+                                        <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21" stroke={alpha(theme.palette.primary.main, 0.5)} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                </Box>
+                            )}
                         </IconCover>
 
                         <Box sx={{ flex: 1, width: '100%' }}>
