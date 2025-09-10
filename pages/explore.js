@@ -329,11 +329,14 @@ export default function Explore() {
                     >
                       <Box sx={{ aspectRatio: '1', overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
                         {imageUrl ? (
-                          <CardMedia
+                          <Box
                             component="img"
                             height="250"
-                            image={imageUrl}
-                            alt={nftName}
+                            src={imageUrl}
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
                             sx={{ 
                               objectFit: 'cover',
                               backgroundColor: 'background.default',
@@ -343,22 +346,23 @@ export default function Explore() {
                             }}
                             loading="lazy"
                           />
-                        ) : (
-                          <CardMedia
-                            component="img"
-                            height="250"
-                            image="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDMwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiByeD0iMTIiIGZpbGw9InVybCgjZ3JhZGllbnQpIi8+CjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIHJ4PSI4IiBzdHJva2U9InJnYmEoMTA3LCA3MSwgMjU1LCAwLjUpIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiLz4KPHJlY3QgeD0iMTAwIiB5PSIxMDAiIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgcng9IjYiIGZpbGw9InJnYmEoMTA3LCA3MSwgMjU1LCAwLjUpIi8+CjxwYXRoIGQ9Ik0yNTAgMjAwbC00MC00MGMtNC0zLjUtMTAtMy41LTE0IDBMMTAwIDI1MCIgc3Ryb2tlPSJyZ2JhKDEwNywgNzEsIDI1NSwgMC41KSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHg9IjEzMCIgeT0iMTMwIj4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSI+CjxwYXRoIGQ9Ik0xMiAyYy01LjUxNCAwLTEwIDQuNDg2LTEwIDEwczQuNDg2IDEwIDEwIDEwIDEwLTQuNDg2IDEwLTEwUzE3LjUxNCAyIDEyIDJ6bS00IDEySDZsNC00djJ6bTQgMGgtMmwtMi0yaDR2MnptNC0yaDJsLTQgNHYtMnoiIGZpbGw9InJnYmEoMTA3LCA3MSwgMjU1LCAwLjQpIi8+Cjwvc3ZnPgo8L3N2Zz4KPHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzAiIHg9IjIwIiB5PSIyMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgcng9IjQiIGZpbGw9InJnYmEoMTU1LCA4MSwgMjI0LCAwLjIpIi8+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNCIgcng9IjIiIGZpbGw9InJnYmEoMTU1LCA4MSwgMjI0LCAwLjQpIi8+Cjwvc3ZnPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkaWVudCIgeDE9IjAiIHkxPSIwIiB4Mj0iMzAwIiB5Mj0iMzAwIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOnJnYmEoMTA3LCA3MSwgMjU1LCAwLjA4KTtzdG9wLW9wYWNpdHk6MSIgLz4KPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjpyZ2JhKDE1NSwgODEsIDIyNCwgMC4wNik7c3RvcC1vcGFjaXR5OjEiIC8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+Cg=="
-                            alt="No image available"
-                            sx={{ 
-                              objectFit: 'cover',
-                              backgroundColor: 'background.default',
-                              width: '100%',
-                              height: '100%',
-                              display: 'block'
-                            }}
-                            loading="lazy"
-                          />
-                        )}
+                        ) : null}
+                        <Box sx={{
+                          display: imageUrl ? 'none' : 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '100%',
+                          height: '100%',
+                          background: `linear-gradient(135deg, rgba(107, 71, 255, 0.08), rgba(155, 81, 224, 0.06))`,
+                          border: `1px solid rgba(107, 71, 255, 0.2)`,
+                          borderRadius: 1
+                        }}>
+                          <svg width="60" height="60" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="rgba(107, 71, 255, 0.5)" strokeWidth="1.5" fill="none"/>
+                            <rect x="7" y="7" width="4" height="4" rx="1" fill="rgba(107, 71, 255, 0.5)"/>
+                            <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21" stroke="rgba(107, 71, 255, 0.5)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </Box>
                         {nft.MasterSequence && (
                           <SequenceOverlay>
                             #{nft.MasterSequence}
