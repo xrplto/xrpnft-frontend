@@ -864,10 +864,40 @@ export default function Overview({ collections = [], gmetrics = null }) {
                                                     <Typography variant="body2" color="text.secondary" fontWeight={600}>
                                                         {index + 1}
                                                     </Typography>
-                                                    <CollectionIcon
-                                                        src={`https://s1.xrpnft.com/collection/${collection.logoImage}`}
-                                                        alt={`${collection.name} logo`}
-                                                    />
+                                                    {collection.logoImage ? (
+                                                        <CollectionIcon
+                                                            src={`https://s1.xrpnft.com/collection/${collection.logoImage}`}
+                                                            alt={`${collection.name} logo`}
+                                                        />
+                                                    ) : (
+                                                        <Box sx={{ 
+                                                            width: { xs: 32, sm: 40 }, 
+                                                            height: { xs: 32, sm: 40 }, 
+                                                            borderRadius: '8px', 
+                                                            background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)}, ${alpha(theme.palette.secondary.main, 0.1)})`,
+                                                            border: `1px solid ${alpha(theme.palette.divider, 0.2)}`,
+                                                            display: 'flex', 
+                                                            alignItems: 'center', 
+                                                            justifyContent: 'center',
+                                                            position: 'relative',
+                                                            overflow: 'hidden'
+                                                        }}>
+                                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                                                <rect x="3" y="3" width="18" height="18" rx="2" stroke={alpha(theme.palette.primary.main, 0.5)} strokeWidth="1.5" fill="none"/>
+                                                                <rect x="7" y="7" width="4" height="4" rx="1" fill={alpha(theme.palette.primary.main, 0.5)}/>
+                                                                <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21" stroke={alpha(theme.palette.primary.main, 0.5)} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                                            </svg>
+                                                            <Box sx={{
+                                                                position: 'absolute',
+                                                                top: -10,
+                                                                right: -10,
+                                                                width: 20,
+                                                                height: 20,
+                                                                borderRadius: 1,
+                                                                background: `linear-gradient(45deg, ${alpha(theme.palette.primary.main, 0.1)}, transparent)`,
+                                                            }} />
+                                                        </Box>
+                                                    )}
                                                     <Box>
                                                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                                             <Typography variant="subtitle2" fontWeight={600}>
